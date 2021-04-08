@@ -19,7 +19,7 @@
 **Устанавливаем зависимости:**
 
 на Debian/Ubuntu:  
-```sudo apt install ffmpeg wget git libmpv1 python3 python3-requests python3-pyqt5 python3-pil python3-tk```
+```sudo apt install ffmpeg git libmpv1 python3 python3-requests python3-pyqt5 python3-pil python3-tk```
 
 на Windows:  
 Устанавливаем Git с [официального сайта](https://git-scm.com/download/win)  
@@ -46,3 +46,7 @@
 ( можете создать ярлык: **ПКМ** -> **Отправить** -> **Рабочий стол (создать ярлык)** )
 
 на Linux: ```./start_linux.sh```
+
+**Просмотр записей:**
+
+Для просмотра записей рекомендуется использовать [VLC media player](https://www.videolan.org/).  
