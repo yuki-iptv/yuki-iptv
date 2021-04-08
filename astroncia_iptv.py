@@ -388,6 +388,9 @@ if __name__ == '__main__':
             udp_proxy_starts = udp_proxy_text.startswith('http://') or udp_proxy_text.startswith('https://')
             if udp_proxy_text and not udp_proxy_starts:
                 udp_proxy_text = 'http://' + udp_proxy_text
+            if udp_proxy_text:
+                if os.path.isfile(str(Path('local', 'playlist.json'))):
+                    os.remove(str(Path('local', 'playlist.json')))
             settings_arr = {
                 "m3u": sm3u.text(),
                 "epg": sepg.text(),

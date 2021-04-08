@@ -25,7 +25,6 @@
 Устанавливаем Git с [официального сайта](https://git-scm.com/download/win)  
 Устанавливаем Python 3 с [официального сайта](https://www.python.org/downloads/windows/) - Windows Installer (64-bit) (Recommended)  
 (**поставьте галочку Add Python 3 to PATH при установке**)  
-Устанавливаем Qt 5 ([скачать оффлайн установщик](https://gitlab.com/astroncia/qt5-offline-installers/-/raw/master/qt-opensource-windows-x86-msvc2013-5.7.0.exe))  
 Устанавливаем Python модули:  
 ```pip install requests PyQt5 Pillow```
 

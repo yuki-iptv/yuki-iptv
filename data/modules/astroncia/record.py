@@ -31,7 +31,15 @@ def record(input_url, out_file):
             '-codec', 'copy',
             out_file
         ]
-    ffmpeg_proc = subprocess.Popen(arr)
+    startupinfo = None
+    if os.name == 'nt':
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    ffmpeg_proc = subprocess.Popen(
+        arr,
+        shell=False,
+        startupinfo=startupinfo
+    )
 
 def stop_record():
     global ffmpeg_proc
