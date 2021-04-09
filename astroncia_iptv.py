@@ -333,6 +333,7 @@ if __name__ == '__main__':
         chan_win.move(qr.topLeft())
 
         def m3u_select():
+            reset_prov()
             fname = QtWidgets.QFileDialog.getOpenFileName(
                 settings_win,
                 LANG['selectplaylist']
@@ -341,6 +342,7 @@ if __name__ == '__main__':
                 sm3u.setText(fname)
 
         def epg_select():
+            reset_prov()
             fname = QtWidgets.QFileDialog.getOpenFileName(
                 settings_win,
                 LANG['selectepg']
@@ -549,11 +551,9 @@ if __name__ == '__main__':
         sm3ufile = QtWidgets.QPushButton(settings_win)
         sm3ufile.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'file.png'))))
         sm3ufile.clicked.connect(m3u_select)
-        sm3ufile.clicked.connect(reset_prov)
         sm3uupd = QtWidgets.QPushButton(settings_win)
         sm3uupd.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'update.png'))))
         sm3uupd.clicked.connect(update_m3u)
-        sm3uupd.clicked.connect(reset_prov)
 
         sepgfile = QtWidgets.QPushButton(settings_win)
         sepgfile.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'file.png'))))
