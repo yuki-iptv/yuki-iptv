@@ -374,6 +374,7 @@ if __name__ == '__main__':
         def doPlay(play_url1):
             loading.show()
             player.loop = False
+            player.stop()
             player.play(play_url1)
 
         def chan_set_save():
@@ -1309,6 +1310,10 @@ if __name__ == '__main__':
 
         @player.event_callback('end_file')
         def ready_handler_2(event): # pylint: disable=unused-argument
+            if event['event']['error'] != 0:
+                time_stop = time.time() + 2
+                l1.show()
+                l1.setText2(LANG['playerror'])
             try:
                 loading.hide()
             except RuntimeError:

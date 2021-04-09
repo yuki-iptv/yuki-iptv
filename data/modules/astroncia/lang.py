@@ -3,6 +3,7 @@ lang = {
         'name': 'English',
         'strings': {
             'error': 'Error',
+            'playerror': 'Playing error',
             'error2': 'Astroncia IPTV error',
             'starting': 'starting',
             'binarynotfound': 'Binary modules not found!',
@@ -87,6 +88,7 @@ T - open/close channels list
         'name': 'Русский',
         'strings': {
             'error': 'Ошибка',
+            'playerror': 'Ошибка проигрывания',
             'error2': 'Ошибка Astroncia IPTV',
             'starting': 'запускается',
             'binarynotfound': 'Не найдены бинарные модули!',
