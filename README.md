@@ -9,6 +9,11 @@
 
 Программа предоставляется **как есть**, никаких гарантий.  
 
+Зеркала репозитория:  
+
+[https://gitlab.com/astroncia/iptv](https://gitlab.com/astroncia/iptv)  
+[https://github.com/rootalc/astroncia_iptv](https://github.com/rootalc/astroncia_iptv)  
+
 ## Зависимости
 
 - Python 3 (3.7 или более новая версия)
@@ -35,6 +40,11 @@
 **Клонируем репозиторий:**
 
 ```git clone --depth=1 https://gitlab.com/astroncia/iptv.git astroncia_iptv```  
+```cd astroncia_iptv```  
+
+ИЛИ  
+
+```git clone --depth=1 https://github.com/rootalc/astroncia_iptv astroncia_iptv```  
 ```cd astroncia_iptv```  
 
 **Устанавливаем Python модули:**  
