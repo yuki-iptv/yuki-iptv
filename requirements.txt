@@ -1,0 +1,3 @@
+requests==2.25.1
+PyQt5==5.15.4
+Pillow==8.2.0

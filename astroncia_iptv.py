@@ -19,6 +19,8 @@ import signal
 import base64
 import argparse
 import subprocess
+import locale
+import ctypes
 import webbrowser
 import multiprocessing
 from tkinter import Tk, messagebox
@@ -26,6 +28,7 @@ import requests
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 from PyQt5 import QtGui
+from data.modules.astroncia.lang import lang
 from data.modules.astroncia.ua import user_agent
 from data.modules.astroncia.m3u import M3uParser
 from data.modules.astroncia.epg import worker
@@ -54,10 +57,35 @@ if DOCK_WIDGET2_HEIGHT < 0:
 if DOCK_WIDGET_WIDTH < 0:
     DOCK_WIDGET_WIDTH = 0
 
+LANG_LOCALE = '?'
+try:
+    if os.name == 'nt':
+        try:
+            loc = locale.windows_locale[ctypes.windll.kernel32.GetUserDefaultUILanguage()]
+        except: # pylint: disable=bare-except
+            loc = locale.getdefaultlocale()[0]
+    else:
+        loc = locale.getdefaultlocale()[0]
+    LANG_LOCALE = loc.split("_")[0]
+except: # pylint: disable=bare-except
+    pass
+print("System locale: {}".format(LANG_LOCALE))
+LANG_DEFAULT = LANG_LOCALE if LANG_LOCALE in lang else 'en'
+try:
+    settings_file0 = open(str(Path('local', 'settings.json')), 'r')
+    settings_lang0 = json.loads(settings_file0.read())['lang']
+    settings_file0.close()
+except:
+    settings_lang0 = LANG_DEFAULT
+
+LANG = lang[settings_lang0]['strings'] if settings_lang0 in lang else lang[LANG_DEFAULT]['strings']
+LANG_NAME = lang[settings_lang0]['name'] if settings_lang0 in lang else lang[LANG_DEFAULT]['name']
+print("Settings locale: {}\n".format(LANG_NAME))
+
 def show_exception(e):
     window = Tk()
     window.wm_withdraw()
-    messagebox.showinfo(title="Ошибка", message="Ошибка Astroncia IPTV\n\n{}".format(str(e)))
+    messagebox.showinfo(title=LANG['error'], message="{}\n\n{}".format(LANG['error2'], str(e)))
     window.destroy()
     sys.exit(0)
 
@@ -73,7 +101,7 @@ if os.name == 'nt':
 
 if __name__ == '__main__':
     try:
-        print("Astroncia IPTV запускается...")
+        print("Astroncia IPTV {}...".format(LANG['starting']))
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
         modules_path = str(Path(os.path.dirname(__file__), 'data', 'modules', 'binary'))
         if os.name == 'nt':
@@ -83,7 +111,7 @@ if __name__ == '__main__':
 
         if os.name == 'nt':
             if not (os.path.isfile(str(Path(modules_path, 'ffmpeg.exe'))) and os.path.isfile(str(Path(modules_path, 'mpv-1.dll')))):
-                show_exception("Не найдены бинарные модули!")
+                show_exception(LANG['binarynotfound'])
 
         from data.modules import mpv
 
@@ -130,7 +158,8 @@ if __name__ == '__main__':
                 "udp_proxy": "",
                 "save_folder": "",
                 "provider": "",
-                "nocache": False
+                "nocache": False,
+                "lang": LANG_DEFAULT
             }
             m3u = ""
 
@@ -194,7 +223,7 @@ if __name__ == '__main__':
         if settings['nocache']:
             use_cache = False
         if not use_cache:
-            print("Кэширование плейлиста отключено")
+            print(LANG['nocacheplaylist'])
         if use_cache and os.path.isfile(str(Path('local', 'playlist.json'))):
             pj = open(str(Path('local', 'playlist.json')), 'r')
             pj1 = json.loads(pj.read())['url']
@@ -204,7 +233,7 @@ if __name__ == '__main__':
         if (not use_cache) and os.path.isfile(str(Path('local', 'playlist.json'))):
             os.remove(str(Path('local', 'playlist.json')))
         if not os.path.isfile(str(Path('local', 'playlist.json'))):
-            print("Идёт загрузка плейлиста...")
+            print(LANG['loadingplaylist'])
             if settings['m3u']:
                 if os.path.isfile(settings['m3u']):
                     file = open(settings['m3u'], 'r')
@@ -226,7 +255,7 @@ if __name__ == '__main__':
                             groups.append(m3u_line['tvg-group'])
                 except: # pylint: disable=bare-except
                     print("Playlist parsing error!")
-                    show_exception("Ошибка загрузки плейлиста!")
+                    show_exception(LANG['playlistloaderror'])
 
             a = 'hidden_channels'
             if settings['provider'] in iptv_providers and a in iptv_providers[settings['provider']]:
@@ -236,11 +265,11 @@ if __name__ == '__main__':
                     ch2['tvg-name'] = ch2['tvg-name'] if 'tvg-name' in ch2 else ''
                     ch2['tvg-ID'] = ch2['tvg-ID'] if 'tvg-ID' in ch2 else ''
                     ch2['tvg-logo'] = ch2['tvg-logo'] if 'tvg-logo' in ch2 else ''
-                    ch2['tvg-group'] = ch2['tvg-group'] if 'tvg-group' in ch2 else 'Все каналы'
+                    ch2['tvg-group'] = ch2['tvg-group'] if 'tvg-group' in ch2 else LANG['allchannels']
                     array[ch2['title']] = ch2
-            print("Загрузка плейлиста завершена!")
+            print(LANG['playlistloaddone'])
             if use_cache:
-                print("Кэширую плейлист...")
+                print(LANG['cachingplaylist'])
                 cm3u = json.dumps({
                     'url': settings['m3u'],
                     'array': array,
@@ -250,9 +279,9 @@ if __name__ == '__main__':
                 cm3uf = open(str(Path('local', 'playlist.json')), 'w')
                 cm3uf.write(cm3u)
                 cm3uf.close()
-                print("Кэш плейлиста сохранён!")
+                print(LANG['playlistcached'])
         else:
-            print("Использую кэшированный плейлист")
+            print(LANG['usingcachedplaylist'])
             cm3uf = open(str(Path('local', 'playlist.json')), 'r')
             cm3u = json.loads(cm3uf.read())
             cm3uf.close()
@@ -260,9 +289,9 @@ if __name__ == '__main__':
             groups = cm3u['groups']
             m3u = cm3u['m3u']
 
-        if 'Все каналы' in groups:
-            groups.remove('Все каналы')
-        groups = ['Все каналы', 'Избранное'] + groups
+        if LANG['allchannels'] in groups:
+            groups.remove(LANG['allchannels'])
+        groups = [LANG['allchannels'], LANG['favourite']] + groups
 
         icons_file = open(str(Path('data', 'channel_icons.json')), 'r')
         icons = json.loads(icons_file.read())
@@ -283,17 +312,17 @@ if __name__ == '__main__':
 
         settings_win = QtWidgets.QMainWindow()
         settings_win.resize(400, 200)
-        settings_win.setWindowTitle('Настройки')
+        settings_win.setWindowTitle(LANG['settings'])
         settings_win.setWindowIcon(main_icon)
 
         help_win = QtWidgets.QMainWindow()
         help_win.resize(400, 400)
-        help_win.setWindowTitle('Помощь')
+        help_win.setWindowTitle(LANG['help'])
         help_win.setWindowIcon(main_icon)
 
         chan_win = QtWidgets.QMainWindow()
         chan_win.resize(400, 250)
-        chan_win.setWindowTitle('Настройки канала')
+        chan_win.setWindowTitle(LANG['channelsettings'])
         chan_win.setWindowIcon(main_icon)
 
         time_stop = 0
@@ -307,7 +336,7 @@ if __name__ == '__main__':
         def m3u_select():
             fname = QtWidgets.QFileDialog.getOpenFileName(
                 settings_win,
-                'Выберите m3u плейлист'
+                LANG['selectplaylist']
             )[0]
             if fname:
                 sm3u.setText(fname)
@@ -315,7 +344,7 @@ if __name__ == '__main__':
         def epg_select():
             fname = QtWidgets.QFileDialog.getOpenFileName(
                 settings_win,
-                'Выберите файл телепрограммы (XMLTV EPG)'
+                LANG['selectepg']
             )[0]
             if fname:
                 sepg.setText(fname)
@@ -323,7 +352,7 @@ if __name__ == '__main__':
         def save_folder_select():
             folder_name = QtWidgets.QFileDialog.getExistingDirectory(
                 settings_win,
-                'Выберите папку для записи и скриншотов',
+                LANG['selectwritefolder'],
                 options=QtWidgets.QFileDialog.ShowDirsOnly
             )
             if folder_name:
@@ -338,7 +367,7 @@ if __name__ == '__main__':
         title.setFont(myFont2)
         title.setAlignment(QtCore.Qt.AlignCenter)
 
-        deinterlace_lbl = QtWidgets.QLabel("Деинтерлейс:")
+        deinterlace_lbl = QtWidgets.QLabel("{}:".format(LANG['deinterlace']))
         deinterlace_chk = QtWidgets.QCheckBox()
 
         def doPlay(play_url1):
@@ -347,7 +376,7 @@ if __name__ == '__main__':
             player.play(play_url1)
 
         def chan_set_save():
-            chan_3 = title.text().replace("Канал: ", "")
+            chan_3 = title.text().replace("{}: ".format(LANG['channel']), "")
             channel_sets[chan_3] = {"deinterlace": deinterlace_chk.isChecked()}
             save_channel_sets()
             if playing_chan == chan_3:
@@ -356,7 +385,7 @@ if __name__ == '__main__':
                 doPlay(playing_url)
             chan_win.close()
 
-        save_btn = QtWidgets.QPushButton("Сохранить настройки")
+        save_btn = QtWidgets.QPushButton(LANG['savesettings'])
         save_btn.clicked.connect(chan_set_save)
 
         horizontalLayout = QtWidgets.QHBoxLayout()
@@ -391,14 +420,22 @@ if __name__ == '__main__':
             if udp_proxy_text:
                 if os.path.isfile(str(Path('local', 'playlist.json'))):
                     os.remove(str(Path('local', 'playlist.json')))
+            lang1 = LANG_DEFAULT
+            for lng1 in lang:
+                if lang[lng1]['name'] == slang.currentText():
+                    lang1 = lng1
+            if lang1 != settings["lang"]:
+                if os.path.isfile(str(Path('local', 'playlist.json'))):
+                    os.remove(str(Path('local', 'playlist.json')))
             settings_arr = {
                 "m3u": sm3u.text(),
                 "epg": sepg.text(),
                 "deinterlace": sdei.isChecked(),
                 "udp_proxy": udp_proxy_text,
                 "save_folder": sfld.text(),
-                "provider": sprov.currentText() if sprov.currentText() != '--не выбрано--' else '',
-                "nocache": supdate.isChecked()
+                "provider": sprov.currentText() if sprov.currentText() != '--{}--'.format(LANG['notselected']) else '',
+                "nocache": supdate.isChecked(),
+                "lang": lang1
             }
             settings_file1 = open(str(Path('local', 'settings.json')), 'w')
             settings_file1.write(json.dumps(settings_arr))
@@ -425,22 +462,28 @@ if __name__ == '__main__':
 
         wid2 = QtWidgets.QWidget()
 
-        m3u_label = QtWidgets.QLabel('M3U плейлист:')
-        update_label = QtWidgets.QLabel('Обновлять\nпри запуске:')
-        epg_label = QtWidgets.QLabel('Адрес\nтелепрограммы\n(XMLTV):')
-        dei_label = QtWidgets.QLabel('Деинтерлейс:')
-        udp_label = QtWidgets.QLabel('UDP прокси:')
-        fld_label = QtWidgets.QLabel('Папка для записей\nи скриншотов:')
+        m3u_label = QtWidgets.QLabel('{}:'.format(LANG['m3uplaylist']))
+        update_label = QtWidgets.QLabel('{}:'.format(LANG['updateatboot']))
+        epg_label = QtWidgets.QLabel('{}:'.format(LANG['epgaddress']))
+        dei_label = QtWidgets.QLabel('{}:'.format(LANG['deinterlace']))
+        udp_label = QtWidgets.QLabel('{}:'.format(LANG['udpproxy']))
+        fld_label = QtWidgets.QLabel('{}:'.format(LANG['writefolder']))
+        lang_label = QtWidgets.QLabel('{}:'.format(LANG['interfacelang']))
 
         def reset_channel_settings():
             os.remove(str(Path('local', 'channels.json')))
             os.remove(str(Path('local', 'favourites.json')))
             save_settings()
+        def reset_prov():
+            if sprov.currentText() != '--{}--'.format(LANG['notselected']):
+                sprov.setCurrentIndex(0)
 
         sm3u = QtWidgets.QLineEdit()
         sm3u.setText(settings['m3u'])
+        sm3u.textEdited.connect(reset_prov)
         sepg = QtWidgets.QLineEdit()
         sepg.setText(settings['epg'])
+        sepg.textEdited.connect(reset_prov)
         sudp = QtWidgets.QLineEdit()
         sudp.setText(settings['udp_proxy'])
         sdei = QtWidgets.QCheckBox()
@@ -449,25 +492,32 @@ if __name__ == '__main__':
         supdate.setChecked(settings['nocache'])
         sfld = QtWidgets.QLineEdit()
         sfld.setText(settings['save_folder'])
-        sselect = QtWidgets.QLabel("Или выберите\nвашего провайдера:")
+        sselect = QtWidgets.QLabel("{}:".format(LANG['orselectyourprovider']))
         sselect.setStyleSheet('color: #00008B;')
-        ssave = QtWidgets.QPushButton("Сохранить настройки")
+        ssave = QtWidgets.QPushButton(LANG['savesettings'])
         ssave.setStyleSheet('font-weight: bold; color: green;')
         ssave.clicked.connect(save_settings)
-        sreset = QtWidgets.QPushButton("Сбросить настройки каналов")
+        sreset = QtWidgets.QPushButton(LANG['resetchannelsettings'])
         sreset.clicked.connect(reset_channel_settings)
         sprov = QtWidgets.QComboBox()
+        slang = QtWidgets.QComboBox()
+        lng0 = -1
+        for lng in lang:
+            lng0 += 1
+            slang.addItem(lang[lng]['name'])
+            if lang[lng]['name'] == LANG_NAME:
+                slang.setCurrentIndex(lng0)
         def close_settings():
             settings_win.hide()
             if not win.isVisible():
                 sys.exit(0)
         def prov_select(self): # pylint: disable=unused-argument
             prov1 = sprov.currentText()
-            if prov1 != '--не выбрано--':
+            if prov1 != '--{}--'.format(LANG['notselected']):
                 sm3u.setText(iptv_providers[prov1]['m3u'])
                 sepg.setText(iptv_providers[prov1]['epg'])
         sprov.currentIndexChanged.connect(prov_select)
-        sprov.addItem('--не выбрано--')
+        sprov.addItem('--{}--'.format(LANG['notselected']))
         provs = {}
         ic3 = 0
         for prov in iptv_providers:
@@ -481,7 +531,7 @@ if __name__ == '__main__':
                     sprov.setCurrentIndex(prov_d)
                 except: # pylint: disable=bare-except
                     pass
-        sclose = QtWidgets.QPushButton("Закрыть")
+        sclose = QtWidgets.QPushButton(LANG['close'])
         sclose.clicked.connect(close_settings)
 
         def force_update_epg():
@@ -552,50 +602,32 @@ if __name__ == '__main__':
         grid.addWidget(sframe2, 6, 2)
         grid.addWidget(sframe3, 6, 3)
 
-        grid.addWidget(fld_label, 7, 0)
-        grid.addWidget(sfld, 7, 1)
-        grid.addWidget(sfolder, 7, 2)
+        grid.addWidget(lang_label, 7, 0)
+        grid.addWidget(slang, 7, 1)
 
-        grid.addWidget(udp_label, 8, 0)
-        grid.addWidget(sudp, 8, 1)
+        grid.addWidget(fld_label, 8, 0)
+        grid.addWidget(sfld, 8, 1)
+        grid.addWidget(sfolder, 8, 2)
 
-        grid.addWidget(dei_label, 9, 0)
-        grid.addWidget(sdei, 9, 1)
+        grid.addWidget(udp_label, 9, 0)
+        grid.addWidget(sudp, 9, 1)
 
-        grid.addWidget(ssave, 10, 1)
-        grid.addWidget(sreset, 11, 1)
-        grid.addWidget(sclose, 12, 1)
+        grid.addWidget(dei_label, 10, 0)
+        grid.addWidget(sdei, 10, 1)
+
+        grid.addWidget(ssave, 11, 1)
+        grid.addWidget(sreset, 12, 1)
+        grid.addWidget(sclose, 13, 1)
         wid2.setLayout(grid)
         settings_win.setCentralWidget(wid2)
 
         textbox = QtWidgets.QPlainTextEdit(help_win)
         textbox.resize(390, 370)
         textbox.setReadOnly(True)
-        textbox.setPlainText('''Astroncia IPTV    (c) kestral / astroncia
-
-Кроссплатформенный плеер
-для просмотра интернет-телевидения
-
-Поддерживается телепрограмма (EPG)
-только в формате XMLTV!
-
-Горячие клавиши:
-
-F - полноэкранный режим
-M - выключить звук
-Q - выйти из программы
-Пробел - пауза
-S - остановить проигрывание
-H - скриншот
-G - телепрограмма
-R - начать/остановить запись
-P - предыдущий канал
-N - следующий канал
-T - показать/скрыть список каналов
-        ''')
+        textbox.setPlainText(LANG['helptext'])
         close_btn = QtWidgets.QPushButton(help_win)
         close_btn.move(140, 370)
-        close_btn.setText("Закрыть")
+        close_btn.setText(LANG['close'])
         close_btn.clicked.connect(help_win.close)
 
         btn_update = QtWidgets.QPushButton()
@@ -684,7 +716,7 @@ T - показать/скрыть список каналов
         win.setAttribute(QtCore.Qt.WA_DontCreateNativeAncestors)
         win.setAttribute(QtCore.Qt.WA_NativeWindow)
 
-        chan = QtWidgets.QLabel("Не выбран канал", win)
+        chan = QtWidgets.QLabel(LANG['nochannelselected'], win)
         chan.setAlignment(QtCore.Qt.AlignCenter)
         chan.resize(200, 30)
 
@@ -763,11 +795,11 @@ T - показать/скрыть список каналов
         def mpv_play():
             if player.pause:
                 label3.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'pause.png'))))
-                label3.setToolTip("Пауза")
+                label3.setToolTip(LANG['pause'])
                 player.pause = False
             else:
                 label3.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'play.png'))))
-                label3.setToolTip("Воспроизвести")
+                label3.setToolTip(LANG['play'])
                 player.pause = True
 
         def mpv_stop():
@@ -779,7 +811,7 @@ T - показать/скрыть список каналов
             player.stop()
             player.loop = True
             player.play(str(Path('data', 'icons', 'main.png')))
-            chan.setText("Не выбран канал")
+            chan.setText(LANG['nochannelselected'])
             progress.hide()
             start_label.hide()
             stop_label.hide()
@@ -795,7 +827,7 @@ T - показать/скрыть список каналов
             global fullscreen, l1, time_stop
             if not fullscreen:
                 l1.show()
-                l1.setText2("Для выхода из полноэкранного режима нажмите клавишу F")
+                l1.setText2("{} F".format(LANG['exitfullscreen']))
                 time_stop = time.time() + 3
                 fullscreen = True
                 dockWidget.hide()
@@ -809,7 +841,7 @@ T - показать/скрыть список каналов
                 win.showFullScreen()
             else:
                 fullscreen = False
-                if l1.text().endswith('Для выхода из полноэкранного режима нажмите клавишу F'):
+                if l1.text().endswith('{} F'.format(LANG['exitfullscreen'])):
                     l1.setText2('')
                     if not gl_is_static:
                         l1.hide()
@@ -838,13 +870,13 @@ T - показать/скрыть список каналов
                     label6.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'volume-low.png'))))
                 player.mute = False
                 label7.setValue(old_value)
-                l1.setText2("Громкость: {}%".format(int(old_value)))
+                l1.setText2("{}: {}%".format(LANG['volume'], int(old_value)))
             else:
                 label6.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'mute.png'))))
                 player.mute = True
                 old_value = label7.value()
                 label7.setValue(0)
-                l1.setText2("Громкость выкл.")
+                l1.setText2(LANG['volumeoff'])
 
         def mpv_volume_set():
             global time_stop, l1
@@ -853,9 +885,9 @@ T - показать/скрыть список каналов
             try:
                 l1.show()
                 if vol == 0:
-                    l1.setText2("Громкость выкл.")
+                    l1.setText2(LANG['volumeoff'])
                 else:
-                    l1.setText2("Громкость: {}%".format(vol))
+                    l1.setText2("{}: {}%".format(LANG['volume'], vol))
             except NameError:
                 pass
             player.volume = vol
@@ -961,7 +993,7 @@ T - показать/скрыть список каналов
                 self.progressBar.setFormat('')
                 self.progressBar.setValue(progress_val)
 
-        current_group = 'Все каналы'
+        current_group = LANG['allchannels']
 
         def gen_chans(ch_array): # pylint: disable=too-many-locals, too-many-branches
             global ICONS_CACHE, playing_chan, current_group
@@ -970,8 +1002,8 @@ T - показать/скрыть список каналов
             k = 0
             for i in sorted(ch_array):
                 group1 = array[i]['tvg-group']
-                if current_group != 'Все каналы':
-                    if current_group == 'Избранное':
+                if current_group != LANG['allchannels']:
+                    if current_group == LANG['favourite']:
                         if not i in favourite_sets:
                             continue
                     else:
@@ -1093,7 +1125,7 @@ T - показать/скрыть список каналов
         def settings_context_menu():
             if chan_win.isVisible():
                 chan_win.close()
-            title.setText("Канал: " + item_selected)
+            title.setText(("{}: " + item_selected).format(LANG['channel']))
             if item_selected in channel_sets:
                 deinterlace_chk.setChecked(channel_sets[item_selected]['deinterlace'])
             else:
@@ -1120,12 +1152,12 @@ T - показать/скрыть список каналов
             sel_item = self.selectedItems()[0]
             itemSelected_event(sel_item)
             menu = QtWidgets.QMenu()
-            menu.addAction("Выбрать", select_context_menu)
+            menu.addAction(LANG['select'], select_context_menu)
             menu.addSeparator()
-            menu.addAction("Телепрограмма", tvguide_context_menu)
-            menu.addAction("Избранное", tvguide_favourites_add)
-            menu.addAction("Начать запись", tvguide_start_record)
-            menu.addAction("Настройки канала", settings_context_menu)
+            menu.addAction(LANG['tvguide'], tvguide_context_menu)
+            menu.addAction(LANG['favourite'], tvguide_favourites_add)
+            menu.addAction(LANG['startrecording'], tvguide_start_record)
+            menu.addAction(LANG['channelsettings'], settings_context_menu)
             menu.exec_(self.mapToGlobal(pos))
 
         win.listWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
@@ -1133,7 +1165,7 @@ T - показать/скрыть список каналов
         win.listWidget.currentItemChanged.connect(itemSelected_event)
         win.listWidget.itemClicked.connect(itemSelected_event)
         win.listWidget.itemDoubleClicked.connect(itemClicked_event)
-        loading = QtWidgets.QLabel('Загрузка...')
+        loading = QtWidgets.QLabel(LANG['loading'])
         loading.setAlignment(QtCore.Qt.AlignCenter)
         loading.setStyleSheet('color: #778a30')
         loading.hide()
@@ -1163,7 +1195,7 @@ T - показать/скрыть список каналов
             global l1, time_stop, playing_chan
             if playing_chan:
                 l1.show()
-                l1.setText2("Делаю скриншот...")
+                l1.setText2(LANG['doingscreenshot'])
                 ch = playing_chan.replace(" ", "_")
                 for char in FORBIDDEN_CHARS:
                     ch = ch.replace(char, "")
@@ -1174,14 +1206,14 @@ T - показать/скрыть список каналов
                     pillow_img = player.screenshot_raw()
                     pillow_img.save(file_path)
                     l1.show()
-                    l1.setText2("Скриншот сохранён!")
+                    l1.setText2(LANG['screenshotsaved'])
                 except: # pylint: disable=bare-except
                     l1.show()
-                    l1.setText2("Ошибка создания скриншота!")
+                    l1.setText2(LANG['screenshotsaveerror'])
                 time_stop = time.time() + 1
             else:
                 l1.show()
-                l1.setText2("Не выбран канал!")
+                l1.setText2("{}!".format(LANG['nochannelselected']))
                 time_stop = time.time() + 1
 
         def update_tvguide(chan_1=''):
@@ -1193,7 +1225,7 @@ T - показать/скрыть список каналов
                     chan_2 = sorted(array.items())[0][0]
             else:
                 chan_2 = chan_1
-            txt = 'Нет телепрограммы для канала'
+            txt = LANG['notvguideforchannel']
             if chan_2 in programmes:
                 txt = '\n'
                 prog = programmes[chan_2]
@@ -1227,7 +1259,7 @@ T - показать/скрыть список каналов
             if not is_recording:
                 is_recording = True
                 lbl2.show()
-                lbl2.setText("Подготовка записи")
+                lbl2.setText(LANG['preparingrecord'])
                 ch = ch1.replace(" ", "_")
                 for char in FORBIDDEN_CHARS:
                     ch = ch.replace(char, "")
@@ -1253,7 +1285,7 @@ T - показать/скрыть список каналов
             else:
                 time_stop = time.time() + 1
                 l1.show()
-                l1.setText2("Не выбран канал для записи")
+                l1.setText2(LANG['nochannelselforrecord'])
 
         def my_log(loglevel, component, message):
             print('[{}] {}: {}'.format(loglevel, component, message))
@@ -1302,7 +1334,7 @@ T - показать/скрыть список каналов
                 volume = 0
             time_stop = time.time() + 3
             l1.show()
-            l1.setText2("Громкость: {}%".format(volume))
+            l1.setText2("{}: {}%".format(LANG['volume'], volume))
             label7.setValue(volume)
             mpv_volume_set()
 
@@ -1335,27 +1367,27 @@ T - показать/скрыть список каналов
 
         label3 = QtWidgets.QPushButton()
         label3.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'pause.png'))))
-        label3.setToolTip("Пауза")
+        label3.setToolTip(LANG['pause'])
         label3.clicked.connect(mpv_play)
         label4 = QtWidgets.QPushButton()
         label4.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'stop.png'))))
-        label4.setToolTip("Стоп")
+        label4.setToolTip(LANG['stop'])
         label4.clicked.connect(mpv_stop)
         label5 = QtWidgets.QPushButton()
         label5.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'fullscreen.png'))))
-        label5.setToolTip("Полноэкранный режим")
+        label5.setToolTip(LANG['fullscreen'])
         label5.clicked.connect(mpv_fullscreen)
         label5_0 = QtWidgets.QPushButton()
         label5_0.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'folder.png'))))
-        label5_0.setToolTip("Открыть папку записей")
+        label5_0.setToolTip(LANG['openrecordingsfolder'])
         label5_0.clicked.connect(open_recording_folder)
         label5_1 = QtWidgets.QPushButton()
         label5_1.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'record.png'))))
-        label5_1.setToolTip("Запись")
+        label5_1.setToolTip(LANG["record"])
         label5_1.clicked.connect(do_record)
         label6 = QtWidgets.QPushButton()
         label6.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'volume.png'))))
-        label6.setToolTip("Громкость")
+        label6.setToolTip(LANG['volume'])
         label6.clicked.connect(mpv_mute)
         label7 = QtWidgets.QSlider(QtCore.Qt.Horizontal)
         label7.setMinimum(0)
@@ -1364,27 +1396,27 @@ T - показать/скрыть список каналов
         label7.setValue(100)
         label7_1 = QtWidgets.QPushButton()
         label7_1.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'screenshot.png'))))
-        label7_1.setToolTip("Скриншот")
+        label7_1.setToolTip(LANG['screenshot'])
         label7_1.clicked.connect(do_screenshot)
         label8 = QtWidgets.QPushButton()
         label8.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'settings.png'))))
-        label8.setToolTip("Настройки")
+        label8.setToolTip(LANG['settings'])
         label8.clicked.connect(show_settings)
         label8_1 = QtWidgets.QPushButton()
         label8_1.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'tvguide.png'))))
-        label8_1.setToolTip("Телепрограмма")
+        label8_1.setToolTip(LANG['tvguide'])
         label8_1.clicked.connect(show_tvguide)
         label8_2 = QtWidgets.QPushButton()
         label8_2.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'prev.png'))))
-        label8_2.setToolTip("Предыдущий канал")
+        label8_2.setToolTip(LANG['prevchannel'])
         label8_2.clicked.connect(prev_channel)
         label8_3 = QtWidgets.QPushButton()
         label8_3.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'next.png'))))
-        label8_3.setToolTip("Следующий канал")
+        label8_3.setToolTip(LANG['nextchannel'])
         label8_3.clicked.connect(next_channel)
         label9 = QtWidgets.QPushButton()
         label9.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'help.png'))))
-        label9.setToolTip("Помощь")
+        label9.setToolTip(LANG['help'])
         label9.clicked.connect(show_help)
         label10 = QtWidgets.QLabel('  (c) kestral / astroncia')
         label11 = QtWidgets.QLabel('  ' + datetime.datetime.today().strftime('%H:%M:%S'))
@@ -1504,7 +1536,7 @@ T - показать/скрыть список каналов
                         epg_updating = True
                         l1.setStatic2(True)
                         l1.show()
-                        static_text = "Обновление телепрограммы..."
+                        static_text = LANG['tvguideupdating']
                         l1.setText2("")
                         time_stop = time.time() + 3
                         try:
@@ -1519,7 +1551,7 @@ T - показать/скрыть список каналов
                             print("[TV guide, part 1] Caught exception: " + str(e1))
                             l1.setStatic2(False)
                             l1.show()
-                            l1.setText2("Ошибка обновления телепрограммы!")
+                            l1.setText2(LANG['tvguideupdatingerror'])
                             time_stop = time.time() + 3
                             epg_updating = False
                     else:
@@ -1546,7 +1578,7 @@ T - показать/скрыть список каналов
                         lbl2.setText("REC " + record_time + " - " + record_size)
                     else:
                         recording_time = time.time()
-                        lbl2.setText("Ожидание записи")
+                        lbl2.setText(LANG['recordwaiting'])
             win.update()
             if(time.time() > time_stop) and time_stop != 0:
                 time_stop = 0
@@ -1579,7 +1611,7 @@ T - показать/скрыть список каналов
                             raise return_dict[4]
                         l1.setStatic2(False)
                         l1.show()
-                        l1.setText2("Обновление телепрограммы завершено!")
+                        l1.setText2(LANG['tvguideupdatingdone'])
                         time_stop = time.time() + 3
                         values = return_dict.values()
                         programmes = values[1]
@@ -1591,7 +1623,7 @@ T - показать/скрыть список каналов
                         print("[TV guide, part 2] Caught exception: " + str(e2))
                         l1.setStatic2(False)
                         l1.show()
-                        l1.setText2("Ошибка обновления телепрограммы!")
+                        l1.setText2(LANG['tvguideupdatingerror'])
                         time_stop = time.time() + 3
                     epg_updating = False
                     waiting_for_epg = False

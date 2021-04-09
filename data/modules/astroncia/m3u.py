@@ -8,12 +8,40 @@
 
 import os
 import re
+import json
+import locale
+import ctypes
+from pathlib import Path
+from data.modules.astroncia.lang import lang
 
 class M3uParser:
     
     def __init__(self, udp_proxy):
         self.files = []
         self.udp_proxy = udp_proxy
+        LANG_LOCALE = '?'
+        try:
+            if os.name == 'nt':
+                try:
+                    loc = locale.windows_locale[ctypes.windll.kernel32.GetUserDefaultUILanguage()]
+                except: # pylint: disable=bare-except
+                    loc = locale.getdefaultlocale()[0]
+            else:
+                loc = locale.getdefaultlocale()[0]
+            LANG_LOCALE = loc.split("_")[0]
+        except: # pylint: disable=bare-except
+            pass
+        print("System locale: {}".format(LANG_LOCALE))
+        LANG_DEFAULT = LANG_LOCALE if LANG_LOCALE in lang else 'en'
+        try:
+            settings_file0 = open(str(Path('local', 'settings.json')), 'r')
+            settings_lang0 = json.loads(settings_file0.read())['lang']
+            settings_file0.close()
+        except:
+            settings_lang0 = LANG_DEFAULT
+
+        LANG = lang[settings_lang0]['strings'] if settings_lang0 in lang else lang[LANG_DEFAULT]['strings']
+        self.allchannels = LANG['allchannels']
     
     #Read the file from the given path
     def readM3u(self, filename):
@@ -67,9 +95,9 @@ class M3uParser:
             try:
                 group = m.group(1)
             except AttributeError:
-                group = "Все каналы"
+                group = self.allchannels
             if not group:
-                group = "Все каналы"
+                group = self.allchannels
             m = re.search("[,](?!.*[,])(.*?)$", lineInfo)
             try:
                 title = m.group(1)
