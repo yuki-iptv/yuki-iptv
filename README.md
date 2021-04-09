@@ -10,7 +10,6 @@
 Программа предоставляется **как есть**, никаких гарантий.  
 
 Зеркала репозитория:  
-
 [https://gitlab.com/astroncia/iptv](https://gitlab.com/astroncia/iptv)  
 [https://github.com/rootalc/astroncia_iptv](https://github.com/rootalc/astroncia_iptv)  
 

@@ -8,7 +8,6 @@
 Software provided **as is**, no guarantees.  
 
 Repository mirrors:  
-
 [https://gitlab.com/astroncia/iptv](https://gitlab.com/astroncia/iptv)  
 [https://github.com/rootalc/astroncia_iptv](https://github.com/rootalc/astroncia_iptv)  
 
