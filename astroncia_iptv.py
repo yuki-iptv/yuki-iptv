@@ -79,13 +79,13 @@ if __name__ == '__main__':
         if os.name == 'nt':
             os.environ["PATH"] = modules_path + os.pathsep + os.environ["PATH"]
 
-        from data.modules import mpv
-
         m3u = ""
 
         if os.name == 'nt':
             if not (os.path.isfile(str(Path(modules_path, 'ffmpeg.exe'))) and os.path.isfile(str(Path(modules_path, 'mpv-1.dll')))):
                 show_exception("Не найдены бинарные модули!")
+
+        from data.modules import mpv
 
         if not os.path.isdir('local'):
             os.mkdir('local')
