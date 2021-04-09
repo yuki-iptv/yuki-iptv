@@ -52,7 +52,7 @@ on Linux: ```./start_linux.sh```
 
 ## View recordings
 
-MKV container used for recordings
+MKV container used for recordings  
 For recordings view recommended [VLC media player](https://www.videolan.org/).  
 
 ## Program update
