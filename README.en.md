@@ -39,10 +39,10 @@ Install Python modules:
 
 **Installing binary dependenices (only for Windows):**
 
-Download files
+Download files  
 [ffmpeg.exe](https://gitlab.com/astroncia/iptv-binary-deps/-/raw/master/ffmpeg.exe)  
 [mpv-1.dll](https://gitlab.com/astroncia/iptv-binary-deps/-/raw/master/mpv-1.dll)  
-and put to folder **astroncia_iptv\data\modules\binary**
+and put to folder **astroncia_iptv\data\modules\binary**  
 
 **Starting:**
 
