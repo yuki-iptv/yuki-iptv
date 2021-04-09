@@ -71,4 +71,5 @@
 
 ## Обновление программы
 
+Удалите папку local в astroncia_iptv  
 ```git pull```  
