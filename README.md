@@ -35,7 +35,8 @@
 ```git clone --depth=1 https://gitlab.com/astroncia/iptv.git astroncia_iptv```  
 ```cd astroncia_iptv```  
 
-Устанавливаем Python модули:  
+**Устанавливаем Python модули:**  
+
 ```pip install -r requirements.txt```  
 
 **Устанавливаем бинарные зависимости (только для Windows):**

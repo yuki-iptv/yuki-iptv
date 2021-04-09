@@ -35,7 +35,8 @@ Install Python 3 from [official website](https://www.python.org/downloads/window
 ```git clone --depth=1 https://gitlab.com/astroncia/iptv.git astroncia_iptv```  
 ```cd astroncia_iptv```  
 
-Install Python modules:  
+**Install Python modules:**  
+
 ```pip install -r requirements.txt```  
 
 **Installing binary dependenices (only for Windows):**
