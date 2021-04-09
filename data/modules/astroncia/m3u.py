@@ -57,12 +57,7 @@ class M3uParser:
             self.lines.pop()
         if self.lines[0].startswith('#EXTM3U'):
             self.lines.pop(0)
-        i = -1
-        for l in self.lines:
-            i += 1
-            if l.startswith('#EXTGRP:'):
-                self.lines.pop(i)
-            self.lines[i] = l.rstrip()
+        self.lines = [x for x in self.lines if not (x.startswith('#EXTGRP:') or x.startswith('#EXTVLCOPT:'))]
         return len(self.lines)
     
     def parseFile(self):
