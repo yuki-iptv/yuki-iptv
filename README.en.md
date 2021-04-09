@@ -45,7 +45,7 @@ OR
 ```git clone --depth=1 https://github.com/rootalc/astroncia_iptv astroncia_iptv```  
 ```cd astroncia_iptv```  
 
-**Install Python modules:**  
+**Installing Python modules:**  
 
 ```pip3 install -r requirements.txt```  
 
