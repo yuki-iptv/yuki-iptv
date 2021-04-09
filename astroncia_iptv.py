@@ -19,7 +19,6 @@ import signal
 import base64
 import argparse
 import subprocess
-import locale
 import ctypes
 import webbrowser
 import multiprocessing
@@ -75,7 +74,7 @@ try:
     settings_file0 = open(str(Path('local', 'settings.json')), 'r')
     settings_lang0 = json.loads(settings_file0.read())['lang']
     settings_file0.close()
-except:
+except: # pylint: disable=bare-except
     settings_lang0 = LANG_DEFAULT
 
 LANG = lang[settings_lang0]['strings'] if settings_lang0 in lang else lang[LANG_DEFAULT]['strings']
@@ -411,7 +410,7 @@ if __name__ == '__main__':
         chan_win.setCentralWidget(wid)
 
         # Settings window
-        def save_settings():
+        def save_settings(): # pylint: disable=too-many-branches
             global epg_thread, manager
             udp_proxy_text = sudp.text()
             udp_proxy_starts = udp_proxy_text.startswith('http://') or udp_proxy_text.startswith('https://')
