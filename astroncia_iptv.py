@@ -1312,16 +1312,17 @@ if __name__ == '__main__':
 
         @player.event_callback('end_file')
         def ready_handler_2(event): # pylint: disable=unused-argument
-            try:
-                loading.hide()
-            except RuntimeError:
-                pass
             loading.setText(LANG['loading'])
             loading.setStyleSheet('color: #778a30')
             loading.show()
             if event['event']['error'] != 0:
                 loading.setText(LANG['playerror'])
                 loading.setStyleSheet('color: red')
+            else:
+                try:
+                    loading.hide()
+                except RuntimeError:
+                    pass
 
         @player.on_key_press('MBTN_LEFT_DBL')
         def my_leftdbl_binding():
