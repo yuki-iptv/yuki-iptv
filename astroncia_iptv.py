@@ -1002,7 +1002,7 @@ if __name__ == '__main__':
             res = {}
             l = -1
             k = 0
-            for i in sorted(ch_array):
+            for i in ch_array:
                 group1 = array[i]['tvg-group']
                 if current_group != LANG['allchannels']:
                     if current_group == LANG['favourite']:
