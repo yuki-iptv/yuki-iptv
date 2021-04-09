@@ -43,7 +43,7 @@
 
 ИЛИ  
 
-```git clone --depth=1 https://github.com/rootalc/astroncia_iptv astroncia_iptv```  
+```git clone --depth=1 https://github.com/rootalc/astroncia_iptv.git astroncia_iptv```  
 ```cd astroncia_iptv```  
 
 **Устанавливаем Python модули:**  
