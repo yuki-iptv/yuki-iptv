@@ -29,13 +29,14 @@ on Windows:
 Install Git from [official website](https://git-scm.com/download/win)  
 Install Python 3 from [official website](https://www.python.org/downloads/windows/) - Windows Installer (64-bit) (Recommended)  
 (**Check 'Add Python 3 to PATH' at install**)  
-Install Python modules:  
-```pip install -r requirements.txt```
 
 **Cloning repository:**
 
 ```git clone --depth=1 https://gitlab.com/astroncia/iptv.git astroncia_iptv```  
-```cd astroncia_iptv```
+```cd astroncia_iptv```  
+
+Install Python modules:  
+```pip install -r requirements.txt```  
 
 **Installing binary dependenices (only for Windows):**
 

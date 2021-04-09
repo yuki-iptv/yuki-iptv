@@ -29,13 +29,14 @@
 Устанавливаем Git с [официального сайта](https://git-scm.com/download/win)  
 Устанавливаем Python 3 с [официального сайта](https://www.python.org/downloads/windows/) - Windows Installer (64-bit) (Recommended)  
 (**поставьте галочку Add Python 3 to PATH при установке**)  
-Устанавливаем Python модули:  
-```pip install -r requirements.txt```
 
 **Клонируем репозиторий:**
 
 ```git clone --depth=1 https://gitlab.com/astroncia/iptv.git astroncia_iptv```  
-```cd astroncia_iptv```
+```cd astroncia_iptv```  
+
+Устанавливаем Python модули:  
+```pip install -r requirements.txt```  
 
 **Устанавливаем бинарные зависимости (только для Windows):**
 
