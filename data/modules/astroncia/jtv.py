@@ -5,9 +5,13 @@ import struct
 from data.modules.astroncia.time import print_with_time
 
 def filetime_to_datetime(time, settings):
-    filetime = struct.unpack("<Q", time)[0]
-    timestamp = filetime / 10
-    return round((datetime.datetime(1601, 1, 1) + datetime.timedelta(microseconds=timestamp)).timestamp() + (3600 * settings["offset"]))
+    if len(time) == 8:
+        filetime = struct.unpack("<Q", time)[0]
+        timestamp = filetime / 10
+        return round((datetime.datetime(1601, 1, 1) + datetime.timedelta(microseconds=timestamp)).timestamp() + (3600 * settings["offset"]))
+    else:
+        print_with_time("WARNING: broken JTV time detected!")
+        return 0
 
 def parse_titles(data, encoding="cp1251"):
     jtv_headers = [b"JTV 3.x TV Program Data\x0a\x0a\x0a", b"JTV 3.x TV Program Data\xa0\xa0\xa0"]
