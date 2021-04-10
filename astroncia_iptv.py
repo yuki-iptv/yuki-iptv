@@ -1659,15 +1659,12 @@ if __name__ == '__main__':
                 else:
                     l1.setText2("")
 
-        audio_codec = 'audio'
-
         def thread_check_tvguide_obsolete():
-            global first_boot, ic2, audio_codec
+            global first_boot, ic2
             try:
-                audio_codec1 = player.audio_codec.split(" ")[0]
-                audio_codec = audio_codec1
+                audio_codec = player.audio_codec.split(" ")[0]
             except: # pylint: disable=bare-except
-                pass
+                audio_codec = 'audio'
             try:
                 codec = player.video_codec.split(" ")[0]
                 width = player.width
