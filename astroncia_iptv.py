@@ -1318,23 +1318,12 @@ if __name__ == '__main__':
         player.loop = True
         player.play(str(Path('data', 'icons', 'main.png')))
 
-        @player.event_callback('file_loaded')
-        def ready_handler(event): # pylint: disable=unused-argument
-            loading.hide()
-
         @player.event_callback('end_file')
         def ready_handler_2(event): # pylint: disable=unused-argument
-            loading.setText(LANG['loading'])
-            loading.setStyleSheet('color: #778a30')
-            loading.show()
             if event['event']['error'] != 0:
                 loading.setText(LANG['playerror'])
                 loading.setStyleSheet('color: red')
-            else:
-                try:
-                    loading.hide()
-                except RuntimeError:
-                    pass
+                loading.show()
 
         @player.on_key_press('MBTN_LEFT_DBL')
         def my_leftdbl_binding():
@@ -1628,6 +1617,8 @@ if __name__ == '__main__':
                 height = 600
             if not (codec == 'png' and width == 800 and height == 600):
                 label12.setText('    {} {}x{}'.format(codec, width, height))
+                if loading.text() == LANG['loading']:
+                    loading.hide()
             else:
                 label12.setText('')
             ic2 += 0.1  # pylint: disable=undefined-variable
