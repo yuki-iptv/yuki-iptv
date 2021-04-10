@@ -384,6 +384,21 @@ if __name__ == '__main__':
             loading.show()
             player.loop = False
             player.stop()
+            if play_url1.startswith("udp://") or play_url1.startswith("rtp://"):
+                try:
+                    print_with_time("Using multicast optimized settings")
+                    player.cache = 'no'
+                    player.untimed = True
+                    player['audio-buffer'] = 0
+                    player['vd-lavc-threads'] = 1
+                    player['cache-pause'] = False
+                    player['demuxer-lavf-probe-info'] = 'nostreams'
+                    player['demuxer-lavf-analyzeduration'] = 0.1
+                    player['video-sync'] = 'audio'
+                    player['interpolation'] = False
+                    player['video-latency-hacks'] = True
+                except: # pylint: disable=bare-except
+                    print_with_time("Failed to set multicast optimized settings!")
             player.play(play_url1)
 
         def chan_set_save():
@@ -1658,7 +1673,7 @@ if __name__ == '__main__':
                 codec = 'png'
                 width = 800
                 height = 600
-            if not (codec == 'png' and width == 800 and height == 600):
+            if (not (codec == 'png' and width == 800 and height == 600)) and (width and height):
                 label12.setText('    {} {}x{} / {}'.format(codec, width, height, audio_codec))
                 if loading.text() == LANG['loading']:
                     loading.hide()
