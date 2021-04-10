@@ -36,12 +36,16 @@ from data.modules.astroncia.format import format_seconds_to_hhmmss
 from data.modules.astroncia.conversion import convert_size
 from data.modules.astroncia.providers import iptv_providers
 
+def print_with_time(str):
+    cur_time = datetime.datetime.today().strftime('%H:%M:%S')
+    print('[{}] {}'.format(cur_time, str))
+
 if not sys.version_info >= (3, 7, 0):
-    print("Incompatible Python version! Required >= 3.7")
+    print_with_time("Incompatible Python version! Required >= 3.7")
     sys.exit(1)
 
 if not (os.name == 'nt' or os.name == 'posix'):
-    print("Unsupported platform!")
+    print_with_time("Unsupported platform!")
     sys.exit(1)
 
 WINDOW_SIZE = (1200, 600)
@@ -68,7 +72,7 @@ try:
     LANG_LOCALE = loc.split("_")[0]
 except: # pylint: disable=bare-except
     pass
-print("System locale: {}".format(LANG_LOCALE))
+print_with_time("System locale: {}".format(LANG_LOCALE))
 LANG_DEFAULT = LANG_LOCALE if LANG_LOCALE in lang else 'en'
 try:
     settings_file0 = open(str(Path('local', 'settings.json')), 'r')
@@ -79,7 +83,7 @@ except: # pylint: disable=bare-except
 
 LANG = lang[settings_lang0]['strings'] if settings_lang0 in lang else lang[LANG_DEFAULT]['strings']
 LANG_NAME = lang[settings_lang0]['name'] if settings_lang0 in lang else lang[LANG_DEFAULT]['name']
-print("Settings locale: {}\n".format(LANG_NAME))
+print_with_time("Settings locale: {}\n".format(LANG_NAME))
 
 def show_exception(e):
     window = Tk()
@@ -100,7 +104,7 @@ if os.name == 'nt':
 
 if __name__ == '__main__':
     try:
-        print("Astroncia IPTV {}...".format(LANG['starting']))
+        print_with_time("Astroncia IPTV {}...".format(LANG['starting']))
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
         modules_path = str(Path(os.path.dirname(__file__), 'data', 'modules', 'binary'))
         if os.name == 'nt':
@@ -222,7 +226,7 @@ if __name__ == '__main__':
         if settings['nocache']:
             use_cache = False
         if not use_cache:
-            print(LANG['nocacheplaylist'])
+            print_with_time(LANG['nocacheplaylist'])
         if use_cache and os.path.isfile(str(Path('local', 'playlist.json'))):
             pj = open(str(Path('local', 'playlist.json')), 'r')
             pj1 = json.loads(pj.read())['url']
@@ -232,7 +236,7 @@ if __name__ == '__main__':
         if (not use_cache) and os.path.isfile(str(Path('local', 'playlist.json'))):
             os.remove(str(Path('local', 'playlist.json')))
         if not os.path.isfile(str(Path('local', 'playlist.json'))):
-            print(LANG['loadingplaylist'])
+            print_with_time(LANG['loadingplaylist'])
             if settings['m3u']:
                 if os.path.isfile(settings['m3u']):
                     file = open(settings['m3u'], 'r')
@@ -250,14 +254,14 @@ if __name__ == '__main__':
                     m3u_data0 = m3u_parser.readM3u(m3u)
                     m3u_data = m3u_data0[0]
                     epg_url = m3u_data0[1]
-                    #if epg_url and not settings["epg"]:
-                    #    settings["epg"] = epg_url
+                    if epg_url and not settings["epg"]:
+                        settings["epg"] = epg_url
                     for m3u_line in m3u_data:
                         array[m3u_line['title']] = m3u_line
                         if not m3u_line['tvg-group'] in groups:
                             groups.append(m3u_line['tvg-group'])
                 except: # pylint: disable=bare-except
-                    print("Playlist parsing error!")
+                    print_with_time("Playlist parsing error!")
                     show_exception(LANG['playlistloaderror'])
 
             a = 'hidden_channels'
@@ -270,9 +274,9 @@ if __name__ == '__main__':
                     ch2['tvg-logo'] = ch2['tvg-logo'] if 'tvg-logo' in ch2 else ''
                     ch2['tvg-group'] = ch2['tvg-group'] if 'tvg-group' in ch2 else LANG['allchannels']
                     array[ch2['title']] = ch2
-            print(LANG['playlistloaddone'])
+            print_with_time(LANG['playlistloaddone'])
             if use_cache:
-                print(LANG['cachingplaylist'])
+                print_with_time(LANG['cachingplaylist'])
                 cm3u = json.dumps({
                     'url': settings['m3u'],
                     'array': array,
@@ -282,9 +286,9 @@ if __name__ == '__main__':
                 cm3uf = open(str(Path('local', 'playlist.json')), 'w')
                 cm3uf.write(cm3u)
                 cm3uf.close()
-                print(LANG['playlistcached'])
+                print_with_time(LANG['playlistcached'])
         else:
-            print(LANG['usingcachedplaylist'])
+            print_with_time(LANG['usingcachedplaylist'])
             cm3uf = open(str(Path('local', 'playlist.json')), 'r')
             cm3u = json.loads(cm3uf.read())
             cm3uf.close()
@@ -1300,7 +1304,7 @@ if __name__ == '__main__':
                 l1.setText2(LANG['nochannelselforrecord'])
 
         def my_log(loglevel, component, message):
-            print('[{}] {}: {}'.format(loglevel, component, message))
+            print_with_time('[{}] {}: {}'.format(loglevel, component, message))
 
         player = mpv.MPV(
             wid=str(int(win.main_widget.winId())),
@@ -1567,7 +1571,7 @@ if __name__ == '__main__':
                             waiting_for_epg = True
                         except Exception as e1:
                             epg_failed = True
-                            print("[TV guide, part 1] Caught exception: " + str(e1))
+                            print_with_time("[TV guide, part 1] Caught exception: " + str(e1))
                             l1.setStatic2(False)
                             l1.show()
                             l1.setText2(LANG['tvguideupdatingerror'])
@@ -1639,7 +1643,7 @@ if __name__ == '__main__':
                         btn_update.click() # start update in main thread
                     except Exception as e2:
                         epg_failed = True
-                        print("[TV guide, part 2] Caught exception: " + str(e2))
+                        print_with_time("[TV guide, part 2] Caught exception: " + str(e2))
                         l1.setStatic2(False)
                         l1.show()
                         l1.setText2(LANG['tvguideupdatingerror'])

@@ -7,8 +7,13 @@ import xml.etree.ElementTree as ET
 import requests
 from data.modules.astroncia.ua import user_agent
 
+def print_with_time(str):
+    cur_time = datetime.datetime.today().strftime('%H:%M:%S')
+    print('[{}] {}'.format(cur_time, str))
+
 def load_epg(settings):
     '''Load EPG file'''
+    print_with_time("Loading EPG...")
     if os.path.isfile(settings['epg']):
         epg_file = open(settings['epg'], 'rb')
         epg = epg_file.read()
@@ -18,12 +23,15 @@ def load_epg(settings):
             settings['epg'],
             headers={'User-Agent': user_agent},
             stream=True,
-            timeout=5
+            timeout=35
         ).content
+    print_with_time("EPG loaded, parsing XML...")
     try:
         tree = ET.ElementTree(ET.fromstring(epg))
     except ET.ParseError:
         tree = ET.ElementTree(ET.fromstring(gzip.decompress(epg)))
+    print_with_time("Parsing XML done!")
+    print_with_time("Parsing EPG...")
     return tree
 
 def fetch_epg(settings):
@@ -74,6 +82,7 @@ def fetch_epg(settings):
     except Exception as exc0:
         epg_ok = False
         exc = exc0
+    print_with_time("Parsing EPG done!")
     return [{}, programmes_epg, epg_ok, exc]
 
 def worker(procnum, sys_settings, return_dict1): # pylint: disable=unused-argument
