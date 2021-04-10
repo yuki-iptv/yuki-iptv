@@ -21,9 +21,8 @@ import argparse
 import subprocess
 import ctypes
 import webbrowser
-import multiprocessing
 from tkinter import Tk, messagebox
-from multiprocessing import Process, freeze_support # pylint: disable=ungrouped-imports, unused-import
+from multiprocessing import Process, Manager, freeze_support
 import requests
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
@@ -1613,9 +1612,10 @@ if __name__ == '__main__':
                         l1.setText2("")
                         time_stop = time.time() + 3
                         try:
-                            manager = multiprocessing.Manager()
+                            manager = Manager()
                             return_dict = manager.dict()
-                            p = multiprocessing.Process(target=worker, args=(0, settings, return_dict))
+                            freeze_support()
+                            p = Process(target=worker, args=(0, settings, return_dict))
                             epg_thread = p
                             p.start()
                             waiting_for_epg = True
