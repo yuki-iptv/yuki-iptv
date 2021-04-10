@@ -1622,7 +1622,7 @@ if __name__ == '__main__':
                 codec = player.video_codec.split(" ")[0]
                 width = player.width
                 height = player.height
-            except:
+            except: # pylint: disable=bare-except
                 codec = 'png'
                 width = 800
                 height = 600
