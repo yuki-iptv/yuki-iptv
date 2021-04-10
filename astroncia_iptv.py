@@ -35,10 +35,7 @@ from data.modules.astroncia.record import record, stop_record
 from data.modules.astroncia.format import format_seconds_to_hhmmss
 from data.modules.astroncia.conversion import convert_size
 from data.modules.astroncia.providers import iptv_providers
-
-def print_with_time(str1):
-    cur_time = datetime.datetime.today().strftime('%H:%M:%S')
-    print('[{}] {}'.format(cur_time, str1))
+from data.modules.astroncia.time import print_with_time
 
 if not sys.version_info >= (3, 7, 0):
     print_with_time("Incompatible Python version! Required >= 3.7")
@@ -1609,13 +1606,15 @@ if __name__ == '__main__':
         def thread_check_tvguide_obsolete():
             global first_boot, ic2
             try:
-                codec = player.video_codec.split(" ")[0]
                 audio_codec = player.audio_codec.split(" ")[0]
+            except: # pylint: disable=bare-except
+                audio_codec = 'audio'
+            try:
+                codec = player.video_codec.split(" ")[0]
                 width = player.width
                 height = player.height
             except: # pylint: disable=bare-except
                 codec = 'png'
-                audio_codec = ''
                 width = 800
                 height = 600
             if not (codec == 'png' and width == 800 and height == 600):
