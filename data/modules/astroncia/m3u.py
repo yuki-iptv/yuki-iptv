@@ -11,6 +11,7 @@ import re
 import json
 import locale
 import ctypes
+import re
 from pathlib import Path
 from data.modules.astroncia.lang import lang
 
@@ -45,10 +46,11 @@ class M3uParser:
     
     #Read the file from the given path
     def readM3u(self, filename):
+        self.epg_url = ''
         self.filename = filename
         self.readAllLines()
         self.parseFile()
-        return self.files
+        return [self.files, self.epg_url]
 
     #Read all file lines
     def readAllLines(self):
@@ -56,6 +58,13 @@ class M3uParser:
         if not self.lines[-1]:
             self.lines.pop()
         if self.lines[0].startswith('#EXTM3U'):
+            self.epg_url = ""
+            try:
+                self.epg_url = re.findall('url-tvg="(.*?)"', self.lines[0])[0]
+            except: # pylint: disable=bare-except
+                pass
+            # No dead URLs, please
+            self.epg_url = self.epg_url if self.epg_url != 'http://server/jtv.zip' else ''
             self.lines.pop(0)
         self.lines = [x.rstrip() for x in self.lines if not (x.startswith('#EXTGRP:') or x.startswith('#EXTVLCOPT:'))]
         self.lines = [x0 for x0 in self.lines if x0]

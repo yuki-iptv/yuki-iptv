@@ -247,7 +247,11 @@ if __name__ == '__main__':
             m3u_parser = M3uParser(settings['udp_proxy'])
             if m3u:
                 try:
-                    m3u_data = m3u_parser.readM3u(m3u)
+                    m3u_data0 = m3u_parser.readM3u(m3u)
+                    m3u_data = m3u_data0[0]
+                    epg_url = m3u_data0[1]
+                    #if epg_url and not settings["epg"]:
+                    #    settings["epg"] = epg_url
                     for m3u_line in m3u_data:
                         array[m3u_line['title']] = m3u_line
                         if not m3u_line['tvg-group'] in groups:
@@ -1049,7 +1053,11 @@ if __name__ == '__main__':
                         prog = ''
                 # Create QCustomQWidget
                 myQCustomQWidget = QCustomQWidget()
-                myQCustomQWidget.setTextUp(str(k) + ". " + i)
+                MAX_SIZE_CHAN = 21
+                chan_name = i
+                if len(chan_name) > MAX_SIZE_CHAN:
+                    chan_name = chan_name[0:MAX_SIZE_CHAN] + "..."
+                myQCustomQWidget.setTextUp(str(k) + ". " + chan_name)
                 MAX_SIZE = 31
                 if len(prog) > MAX_SIZE:
                     prog = prog[0:MAX_SIZE] + "..."
