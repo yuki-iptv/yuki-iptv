@@ -36,9 +36,9 @@ from data.modules.astroncia.format import format_seconds_to_hhmmss
 from data.modules.astroncia.conversion import convert_size
 from data.modules.astroncia.providers import iptv_providers
 
-def print_with_time(str):
+def print_with_time(str1):
     cur_time = datetime.datetime.today().strftime('%H:%M:%S')
-    print('[{}] {}'.format(cur_time, str))
+    print('[{}] {}'.format(cur_time, str1))
 
 if not sys.version_info >= (3, 7, 0):
     print_with_time("Incompatible Python version! Required >= 3.7")

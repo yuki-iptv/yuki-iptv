@@ -7,9 +7,9 @@ import xml.etree.ElementTree as ET
 import requests
 from data.modules.astroncia.ua import user_agent
 
-def print_with_time(str):
+def print_with_time(str2):
     cur_time = datetime.datetime.today().strftime('%H:%M:%S')
-    print('[{}] {}'.format(cur_time, str))
+    print('[{}] {}'.format(cur_time, str2))
 
 def load_epg(settings):
     '''Load EPG file'''
