@@ -1441,12 +1441,16 @@ if __name__ == '__main__':
         label9.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'help.png'))))
         label9.setToolTip(LANG['help'])
         label9.clicked.connect(show_help)
+        label12 = QtWidgets.QLabel('')
         label10 = QtWidgets.QLabel('  (c) kestral / astroncia')
         label11 = QtWidgets.QLabel('  ' + datetime.datetime.today().strftime('%H:%M:%S'))
         myFont3 = QtGui.QFont()
         myFont3.setPointSize(11)
         myFont3.setBold(True)
         label11.setFont(myFont3)
+        myFont4 = QtGui.QFont()
+        myFont4.setPointSize(12)
+        label12.setFont(myFont4)
 
         progress = QtWidgets.QProgressBar()
         progress.setValue(0)
@@ -1478,6 +1482,7 @@ if __name__ == '__main__':
         hlayout2.addWidget(label9)
         hlayout2.addWidget(label11)
         hlayout2.addWidget(label10)
+        hlayout2.addWidget(label12)
 
         #hlayout1.addStretch(1)
         vlayout3.addLayout(hlayout1)
@@ -1613,6 +1618,18 @@ if __name__ == '__main__':
 
         def thread_check_tvguide_obsolete():
             global first_boot, ic2
+            try:
+                codec = player.video_codec.split(" ")[0]
+                width = player.width
+                height = player.height
+            except:
+                codec = 'png'
+                width = 800
+                height = 600
+            if not (codec == 'png' and width == 800 and height == 600):
+                label12.setText('    {} {}x{}'.format(codec, width, height))
+            else:
+                label12.setText('')
             ic2 += 0.1  # pylint: disable=undefined-variable
             if ic2 > 9.9:
                 ic2 = 0
