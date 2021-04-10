@@ -818,6 +818,7 @@ if __name__ == '__main__':
             global playing, playing_chan, playing_url
             playing_chan = ''
             playing_url = ''
+            loading.hide()
             chan.setText('')
             playing = False
             player.stop()
