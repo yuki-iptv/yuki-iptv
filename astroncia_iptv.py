@@ -1610,14 +1610,16 @@ if __name__ == '__main__':
             global first_boot, ic2
             try:
                 codec = player.video_codec.split(" ")[0]
+                audio_codec = player.audio_codec.split(" ")[0]
                 width = player.width
                 height = player.height
             except: # pylint: disable=bare-except
                 codec = 'png'
+                audio_codec = ''
                 width = 800
                 height = 600
             if not (codec == 'png' and width == 800 and height == 600):
-                label12.setText('    {} {}x{}'.format(codec, width, height))
+                label12.setText('    {} {}x{} / {}'.format(codec, width, height, audio_codec))
                 if loading.text() == LANG['loading']:
                     loading.hide()
             else:
