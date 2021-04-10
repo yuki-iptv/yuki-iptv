@@ -23,6 +23,7 @@ import ctypes
 import webbrowser
 from tkinter import Tk, messagebox
 from multiprocessing import Process, Manager, freeze_support
+freeze_support()
 import requests
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
@@ -101,7 +102,6 @@ if os.name == 'nt':
     os.environ["QT_QPA_PLATFORM_PLUGIN_PATH"] = str(Path(os.path.dirname(a0), 'Lib', 'site-packages', 'PyQt5', 'Qt5', 'plugins'))
 
 if __name__ == '__main__':
-    freeze_support()
     try:
         print_with_time("Astroncia IPTV {}...".format(LANG['starting']))
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -1614,7 +1614,6 @@ if __name__ == '__main__':
                         try:
                             manager = Manager()
                             return_dict = manager.dict()
-                            freeze_support()
                             p = Process(target=worker, args=(0, settings, return_dict))
                             epg_thread = p
                             p.start()
