@@ -18,14 +18,14 @@ lang = {
             'help': 'Help',
             'channelsettings': 'Channel settings',
             'selectplaylist': 'Select m3u playlist',
-            'selectepg': 'Select EPG file (XMLTV EPG)',
+            'selectepg': 'Select EPG file (XMLTV or JTV EPG)',
             'selectwritefolder': 'Select folder for recordings and screenshots',
             'deinterlace': 'Deinterlace',
             'channel': 'Channel',
             'savesettings': 'Save settings',
             'm3uplaylist': 'M3U playlist',
             'updateatboot': 'Update\nat launch',
-            'epgaddress': 'TV guide\naddress\n(XMLTV)',
+            'epgaddress': 'TV guide\naddress\n(XMLTV or JTV)',
             'udpproxy': 'UDP proxy',
             'writefolder': 'Folder for recordings\nand screenshots',
             'orselectyourprovider': 'Or select\nyour provider',
@@ -62,11 +62,13 @@ lang = {
             'allchannels': 'All channels',
             'favourite': 'Favourites',
             'interfacelang': 'Interface language',
+            'tvguideoffset': 'TV guide offset',
+            'hours': 'hours',
             'helptext': '''Astroncia IPTV    (c) kestral / astroncia
 
 Cross-platform IPTV player
 
-Supports TV guide (EPG) only in XMLTV format!
+Supports TV guide (EPG) only in XMLTV and JTV formats!
 
 Hotkeys:
 
@@ -103,14 +105,14 @@ T - open/close channels list
             'help': 'Помощь',
             'channelsettings': 'Настройки канала',
             'selectplaylist': 'Выберите m3u плейлист',
-            'selectepg': 'Выберите файл телепрограммы (XMLTV EPG)',
+            'selectepg': 'Выберите файл телепрограммы (XMLTV / JTV EPG)',
             'selectwritefolder': 'Выберите папку для записи и скриншотов',
             'deinterlace': 'Деинтерлейс',
             'channel': 'Канал',
             'savesettings': 'Сохранить настройки',
             'm3uplaylist': 'M3U плейлист',
             'updateatboot': 'Обновлять\nпри запуске',
-            'epgaddress': 'Адрес\nтелепрограммы\n(XMLTV)',
+            'epgaddress': 'Адрес\nтелепрограммы\n(XMLTV / JTV)',
             'udpproxy': 'UDP прокси',
             'writefolder': 'Папка для записей\nи скриншотов',
             'orselectyourprovider': 'Или выберите\nвашего провайдера',
@@ -147,13 +149,15 @@ T - open/close channels list
             'allchannels': 'Все каналы',
             'favourite': 'Избранное',
             'interfacelang': 'Язык интерфейса',
+            'tvguideoffset': 'Общая поправка',
+            'hours': 'часов',
             'helptext': '''Astroncia IPTV    (c) kestral / astroncia
 
 Кроссплатформенный плеер
 для просмотра интернет-телевидения
 
 Поддерживается телепрограмма (EPG)
-только в формате XMLTV!
+только в форматах XMLTV и JTV!
 
 Горячие клавиши:
 

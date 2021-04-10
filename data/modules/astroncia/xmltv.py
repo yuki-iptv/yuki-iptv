@@ -20,18 +20,18 @@ def parse_as_xmltv(epg, settings):
     for programme in tree.findall('./programme'):
         start = datetime.datetime.strptime(
             programme.attrib['start'].split(" ")[0], '%Y%m%d%H%M%S'
-        ).timestamp()
+        ).timestamp() + (3600 * settings["offset"])
         stop = datetime.datetime.strptime(
             programme.attrib['stop'].split(" ")[0], '%Y%m%d%H%M%S'
-        ).timestamp()
+        ).timestamp() + (3600 * settings["offset"])
         chans = ids[programme.attrib['channel']]
         for channel_epg_1 in chans:
             day_start = (
                 datetime.datetime.now() - datetime.timedelta(days=1)
-            ).replace(hour=0, minute=0, second=0).timestamp()
+            ).replace(hour=0, minute=0, second=0).timestamp() + (3600 * settings["offset"])
             day_end = (
                 datetime.datetime.now() + datetime.timedelta(days=1)
-            ).replace(hour=23, minute=59, second=59).timestamp()
+            ).replace(hour=23, minute=59, second=59).timestamp() + (3600 * settings["offset"])
             if not channel_epg_1 in programmes_epg:
                 programmes_epg[channel_epg_1] = []
             if start > day_start and stop < day_end:

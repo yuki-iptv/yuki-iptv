@@ -35,7 +35,7 @@ def fetch_epg(settings):
         try:
             programmes_epg = parse_as_xmltv(epg, settings)
         except: # pylint: disable=bare-except
-            programmes_epg = parse_jtv(epg)
+            programmes_epg = parse_jtv(epg, settings)
         print_with_time("Parsing done!")
         print_with_time("Parsing EPG...")
     except Exception as exc0:

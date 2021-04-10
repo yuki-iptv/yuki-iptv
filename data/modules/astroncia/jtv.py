@@ -4,10 +4,10 @@ import datetime
 import struct
 from data.modules.astroncia.time import print_with_time
 
-def filetime_to_datetime(time):
+def filetime_to_datetime(time, settings):
     filetime = struct.unpack("<Q", time)[0]
     timestamp = filetime / 10
-    return round((datetime.datetime(1601, 1, 1) + datetime.timedelta(microseconds=timestamp)).timestamp())
+    return round((datetime.datetime(1601, 1, 1) + datetime.timedelta(microseconds=timestamp)).timestamp() + (3600 * settings["offset"]))
 
 def parse_titles(data, encoding="cp1251"):
     jtv_headers = [b"JTV 3.x TV Program Data\x0a\x0a\x0a", b"JTV 3.x TV Program Data\xa0\xa0\xa0"]
@@ -23,7 +23,7 @@ def parse_titles(data, encoding="cp1251"):
         titles.append(title)
     return titles
 
-def parse_schedule(data):
+def parse_schedule(data, settings):
     schedules = []
     records_num = struct.unpack('<H', data[0:2])[0]
     data = data[2:]
@@ -32,7 +32,7 @@ def parse_schedule(data):
         i = i + 1
         record = data[0:12]
         data = data[12:]
-        schedules.append(filetime_to_datetime(record[2:-2]))
+        schedules.append(filetime_to_datetime(record[2:-2], settings))
     return schedules
 
 def fix_zip_filename(filename):
@@ -42,7 +42,7 @@ def fix_zip_filename(filename):
         unicode_name = filename
     return unicode_name
 
-def parse_jtv(c):
+def parse_jtv(c, settings):
     print_with_time("Trying parsing as JTV...")
     zf = zipfile.ZipFile(io.BytesIO(c), "r")
     array = {}
@@ -58,7 +58,7 @@ def parse_jtv(c):
             n = fn[0:-4].replace('_', ' ')
             if not n in array:
                 array[n] = {}
-            array[n]['schedules'] = parse_schedule(zf.read(fileinfo))
+            array[n]['schedules'] = parse_schedule(zf.read(fileinfo), settings)
     array_out = {}
     for chan in array:
         array_out[chan] = []

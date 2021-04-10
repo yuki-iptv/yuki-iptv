@@ -159,7 +159,8 @@ if __name__ == '__main__':
                 "save_folder": "",
                 "provider": "",
                 "nocache": False,
-                "lang": LANG_DEFAULT
+                "lang": LANG_DEFAULT,
+                "offset": 0
             }
             m3u = ""
 
@@ -429,6 +430,9 @@ if __name__ == '__main__':
             if udp_proxy_text:
                 if os.path.isfile(str(Path('local', 'playlist.json'))):
                     os.remove(str(Path('local', 'playlist.json')))
+            if settings["offset"] != soffset.value():
+                if os.path.isfile(str(Path('local', 'tvguide.json'))):
+                    os.remove(str(Path('local', 'tvguide.json')))
             lang1 = LANG_DEFAULT
             for lng1 in lang:
                 if lang[lng1]['name'] == slang.currentText():
@@ -444,7 +448,8 @@ if __name__ == '__main__':
                 "save_folder": sfld.text(),
                 "provider": sprov.currentText() if sprov.currentText() != '--{}--'.format(LANG['notselected']) else '',
                 "nocache": supdate.isChecked(),
-                "lang": lang1
+                "lang": lang1,
+                "offset": soffset.value()
             }
             settings_file1 = open(str(Path('local', 'settings.json')), 'w')
             settings_file1.write(json.dumps(settings_arr))
@@ -478,6 +483,8 @@ if __name__ == '__main__':
         udp_label = QtWidgets.QLabel('{}:'.format(LANG['udpproxy']))
         fld_label = QtWidgets.QLabel('{}:'.format(LANG['writefolder']))
         lang_label = QtWidgets.QLabel('{}:'.format(LANG['interfacelang']))
+        offset_label = QtWidgets.QLabel('{}:'.format(LANG['tvguideoffset']))
+        hours_label = QtWidgets.QLabel(LANG['hours'])
 
         def reset_channel_settings():
             os.remove(str(Path('local', 'channels.json')))
@@ -574,6 +581,11 @@ if __name__ == '__main__':
         sfolder.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'file.png'))))
         sfolder.clicked.connect(save_folder_select)
 
+        soffset = QtWidgets.QSpinBox()
+        soffset.setMinimum(-240)
+        soffset.setMaximum(240)
+        soffset.setValue(settings["offset"])
+
         sframe = QtWidgets.QFrame()
         sframe.setFrameShape(QtWidgets.QFrame.HLine)
         sframe.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -586,6 +598,18 @@ if __name__ == '__main__':
         sframe3 = QtWidgets.QFrame()
         sframe3.setFrameShape(QtWidgets.QFrame.HLine)
         sframe3.setFrameShadow(QtWidgets.QFrame.Raised)
+        sframe4 = QtWidgets.QFrame()
+        sframe4.setFrameShape(QtWidgets.QFrame.HLine)
+        sframe4.setFrameShadow(QtWidgets.QFrame.Raised)
+        sframe5 = QtWidgets.QFrame()
+        sframe5.setFrameShape(QtWidgets.QFrame.HLine)
+        sframe5.setFrameShadow(QtWidgets.QFrame.Raised)
+        sframe6 = QtWidgets.QFrame()
+        sframe6.setFrameShape(QtWidgets.QFrame.HLine)
+        sframe6.setFrameShadow(QtWidgets.QFrame.Raised)
+        sframe7 = QtWidgets.QFrame()
+        sframe7.setFrameShape(QtWidgets.QFrame.HLine)
+        sframe7.setFrameShadow(QtWidgets.QFrame.Raised)
 
         grid = QtWidgets.QGridLayout()
         grid.setSpacing(10)
@@ -598,35 +622,44 @@ if __name__ == '__main__':
         grid.addWidget(update_label, 2, 0)
         grid.addWidget(supdate, 2, 1)
 
-        grid.addWidget(epg_label, 3, 0)
-        grid.addWidget(sepg, 3, 1)
-        grid.addWidget(sepgfile, 3, 2)
-        grid.addWidget(sepgupd, 3, 3)
+        grid.addWidget(sframe, 3, 0)
+        grid.addWidget(sframe1, 3, 1)
+        grid.addWidget(sframe2, 3, 2)
+        grid.addWidget(sframe3, 3, 3)
 
-        grid.addWidget(sselect, 4, 1)
-        grid.addWidget(sprov, 5, 1)
+        grid.addWidget(epg_label, 4, 0)
+        grid.addWidget(sepg, 4, 1)
+        grid.addWidget(sepgfile, 4, 2)
+        grid.addWidget(sepgupd, 4, 3)
 
-        grid.addWidget(sframe, 6, 0)
-        grid.addWidget(sframe1, 6, 1)
-        grid.addWidget(sframe2, 6, 2)
-        grid.addWidget(sframe3, 6, 3)
+        grid.addWidget(offset_label, 5, 0)
+        grid.addWidget(soffset, 5, 1)
+        grid.addWidget(hours_label, 5, 2)
 
-        grid.addWidget(lang_label, 7, 0)
-        grid.addWidget(slang, 7, 1)
+        grid.addWidget(sselect, 6, 1)
+        grid.addWidget(sprov, 7, 1)
 
-        grid.addWidget(fld_label, 8, 0)
-        grid.addWidget(sfld, 8, 1)
-        grid.addWidget(sfolder, 8, 2)
+        grid.addWidget(sframe4, 8, 0)
+        grid.addWidget(sframe5, 8, 1)
+        grid.addWidget(sframe6, 8, 2)
+        grid.addWidget(sframe7, 8, 3)
 
-        grid.addWidget(udp_label, 9, 0)
-        grid.addWidget(sudp, 9, 1)
+        grid.addWidget(lang_label, 9, 0)
+        grid.addWidget(slang, 9, 1)
 
-        grid.addWidget(dei_label, 10, 0)
-        grid.addWidget(sdei, 10, 1)
+        grid.addWidget(fld_label, 10, 0)
+        grid.addWidget(sfld, 10, 1)
+        grid.addWidget(sfolder, 10, 2)
 
-        grid.addWidget(ssave, 11, 1)
-        grid.addWidget(sreset, 12, 1)
-        grid.addWidget(sclose, 13, 1)
+        grid.addWidget(udp_label, 11, 0)
+        grid.addWidget(sudp, 11, 1)
+
+        grid.addWidget(dei_label, 12, 0)
+        grid.addWidget(sdei, 12, 1)
+
+        grid.addWidget(ssave, 13, 1)
+        grid.addWidget(sreset, 14, 1)
+        grid.addWidget(sclose, 15, 1)
         wid2.setLayout(grid)
         settings_win.setCentralWidget(wid2)
 
