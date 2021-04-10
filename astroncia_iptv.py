@@ -36,6 +36,7 @@ from data.modules.astroncia.format import format_seconds_to_hhmmss
 from data.modules.astroncia.conversion import convert_size
 from data.modules.astroncia.providers import iptv_providers
 from data.modules.astroncia.time import print_with_time
+from data.modules.astroncia.epgurls import EPG_URLS
 
 if not sys.version_info >= (3, 7, 0):
     print_with_time("Incompatible Python version! Required >= 3.7")
@@ -493,6 +494,9 @@ if __name__ == '__main__':
         def reset_prov():
             if sprov.currentText() != '--{}--'.format(LANG['notselected']):
                 sprov.setCurrentIndex(0)
+        def combo_reset():
+            if sepgcombox.currentIndex() != 0:
+                reset_prov()
 
         sm3u = QtWidgets.QLineEdit()
         sm3u.setText(settings['m3u'])
@@ -500,6 +504,10 @@ if __name__ == '__main__':
         sepg = QtWidgets.QLineEdit()
         sepg.setText(settings['epg'])
         sepg.textEdited.connect(reset_prov)
+        sepgcombox = QtWidgets.QComboBox()
+        sepgcombox.setLineEdit(sepg)
+        sepgcombox.addItems([settings['epg']] + EPG_URLS)
+        sepgcombox.currentIndexChanged.connect(combo_reset)
         sudp = QtWidgets.QLineEdit()
         sudp.setText(settings['udp_proxy'])
         sdei = QtWidgets.QCheckBox()
@@ -628,7 +636,7 @@ if __name__ == '__main__':
         grid.addWidget(sframe3, 3, 3)
 
         grid.addWidget(epg_label, 4, 0)
-        grid.addWidget(sepg, 4, 1)
+        grid.addWidget(sepgcombox, 4, 1)
         grid.addWidget(sepgfile, 4, 2)
         grid.addWidget(sepgupd, 4, 3)
 
