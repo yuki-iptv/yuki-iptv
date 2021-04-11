@@ -13,6 +13,16 @@
 [https://gitlab.com/astroncia/iptv](https://gitlab.com/astroncia/iptv)  
 [https://github.com/rootalc/astroncia_iptv](https://github.com/rootalc/astroncia_iptv)  
 
+## Возможности
+
+Просмотр IPTV от вашего провайдера (если он предоставляет m3u8 плейлист)  
+Просмотр незашифрованных потоков UDP (мультикаст), HTTP, HLS (m3u8)  
+Добавление каналов в избранное  
+Запись телепередач (не умеет: записывать по расписанию)  
+Горячие клавиши  
+Поддержка телепрограммы (EPG) в форматах XMLTV и JTV  
+Группы каналов (директива EXTGRP: не поддерживается, только через group-title)  
+
 ## Зависимости
 
 - Python 3 (3.7 или более новая версия)
