@@ -36,8 +36,8 @@ from data.modules.astroncia.providers import iptv_providers
 from data.modules.astroncia.time import print_with_time
 from data.modules.astroncia.epgurls import EPG_URLS
 
-if not sys.version_info >= (3, 6, 0):
-    print_with_time("Incompatible Python version! Required >= 3.6")
+if not sys.version_info >= (3, 7, 0):
+    print_with_time("Incompatible Python version! Required >= 3.7")
     sys.exit(1)
 
 if not (os.name == 'nt' or os.name == 'posix'):
