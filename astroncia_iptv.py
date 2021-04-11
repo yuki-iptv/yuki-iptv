@@ -36,8 +36,8 @@ from data.modules.astroncia.providers import iptv_providers
 from data.modules.astroncia.time import print_with_time
 from data.modules.astroncia.epgurls import EPG_URLS
 
-if not sys.version_info >= (3, 7, 0):
-    print_with_time("Incompatible Python version! Required >= 3.7")
+if not sys.version_info >= (3, 6, 0):
+    print_with_time("Incompatible Python version! Required >= 3.6")
     sys.exit(1)
 
 if not (os.name == 'nt' or os.name == 'posix'):
@@ -123,7 +123,11 @@ if __name__ == '__main__':
                 show_exception(LANG['binarynotfound'])
                 sys.exit(1)
 
-        from data.modules import mpv
+        try:
+            from data.modules import mpv
+        except: # pylint: disable=bare-except
+            print_with_time("Falling back to old mpv library...")
+            from data.modules import mpv_old as mpv
 
         if not os.path.isdir(LOCAL_DIR):
             os.mkdir(LOCAL_DIR)
@@ -390,12 +394,19 @@ if __name__ == '__main__':
         deinterlace_lbl = QtWidgets.QLabel("{}:".format(LANG['deinterlace']))
         deinterlace_chk = QtWidgets.QCheckBox()
 
+        def stopPlayer():
+            try:
+                player.stop()
+            except: # pylint: disable=bare-except
+                player.loop = True
+                player.play(str(Path('data', 'icons', 'main.png')))
+
         def doPlay(play_url1):
             loading.setText(LANG['loading'])
             loading.setStyleSheet('color: #778a30')
             loading.show()
             player.loop = False
-            player.stop()
+            stopPlayer()
             if play_url1.startswith("udp://") or play_url1.startswith("rtp://"):
                 try:
                     print_with_time("Using multicast optimized settings")
@@ -419,7 +430,7 @@ if __name__ == '__main__':
             save_channel_sets()
             if playing_chan == chan_3:
                 player.deinterlace = deinterlace_chk.isChecked()
-                player.stop()
+                stopPlayer()
                 doPlay(playing_url)
             chan_win.close()
 
@@ -891,7 +902,7 @@ if __name__ == '__main__':
             loading.hide()
             chan.setText('')
             playing = False
-            player.stop()
+            stopPlayer()
             player.loop = True
             player.play(str(Path('data', 'icons', 'main.png')))
             chan.setText(LANG['nochannelselected'])
@@ -1133,7 +1144,7 @@ if __name__ == '__main__':
                 if len(chan_name) > MAX_SIZE_CHAN:
                     chan_name = chan_name[0:MAX_SIZE_CHAN] + "..."
                 myQCustomQWidget.setTextUp(str(k) + ". " + chan_name)
-                MAX_SIZE = 31
+                MAX_SIZE = 28
                 if len(prog) > MAX_SIZE:
                     prog = prog[0:MAX_SIZE] + "..."
                 if i in programmes:

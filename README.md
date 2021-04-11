@@ -25,9 +25,9 @@
 
 ## Зависимости
 
-- Python 3 (3.7 или более новая версия)
+- Python 3 (3.6 или более новая версия)
 - Qt 5
-- libmpv1 (>= 0.29.1-1)
+- libmpv1 (>= 0.27.2)
 - PyQt5 (python3-pyqt5)
 - Pillow (python3-pil)
 - Tkinter (python3-tk)
