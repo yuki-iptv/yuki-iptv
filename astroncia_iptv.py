@@ -5,9 +5,6 @@
 # Icons by Font Awesome ( https://fontawesome.com/ )
 # https://fontawesome.com/license
 #
-# ===
-# BIG FAT WARNING: govnokod ahead!
-# ===
 from pathlib import Path
 import sys
 import os
@@ -66,7 +63,7 @@ args1 = parser.parse_args()
 LOCAL_DIR = 'local'
 SAVE_FOLDER_DEFAULT = str(Path(os.path.dirname(os.path.abspath(__file__)), 'AstronciaIPTV_saves'))
 
-if os.path.isfile(str(Path(os.path.dirname(os.path.abspath(__file__)), 'libxcb.so.1'))):
+if os.path.isfile(str(Path(os.path.dirname(os.path.abspath(__file__)), 'libxcb.so.1'))) or os.path.isfile(str(Path(os.path.dirname(os.path.abspath(__file__)), 'INSIDE_DEB'))):
     LOCAL_DIR = str(Path(os.environ['HOME'], '.AstronciaIPTV'))
     SAVE_FOLDER_DEFAULT = str(Path(os.environ['HOME'], '.AstronciaIPTV', 'saves'))
     if not os.path.isdir(LOCAL_DIR):
@@ -104,7 +101,6 @@ def show_exception(e):
     window.wm_withdraw()
     messagebox.showinfo(title=LANG['error'], message="{}\n\n{}".format(LANG['error2'], str(e)))
     window.destroy()
-    sys.exit(0)
 
 if os.name == 'nt':
     a0 = sys.executable
@@ -125,6 +121,7 @@ if __name__ == '__main__':
         if os.name == 'nt':
             if not (os.path.isfile(str(Path(modules_path, 'ffmpeg.exe'))) and os.path.isfile(str(Path(modules_path, 'mpv-1.dll')))):
                 show_exception(LANG['binarynotfound'])
+                sys.exit(1)
 
         from data.modules import mpv
 
@@ -274,6 +271,9 @@ if __name__ == '__main__':
                 except: # pylint: disable=bare-except
                     print_with_time("Playlist parsing error!")
                     show_exception(LANG['playlistloaderror'])
+                    m3u = ""
+                    array = {}
+                    groups = []
 
             a = 'hidden_channels'
             if settings['provider'] in iptv_providers and a in iptv_providers[settings['provider']]:
@@ -1152,7 +1152,7 @@ if __name__ == '__main__':
                 myQListWidgetItem.setData(QtCore.Qt.UserRole, i)
                 # Set size hint
                 myQListWidgetItem.setSizeHint(myQCustomQWidget.sizeHint())
-                res[l] = [myQListWidgetItem, myQCustomQWidget]
+                res[l] = [myQListWidgetItem, myQCustomQWidget, l]
             if playing_chan:
                 current_chan = None
                 try:
@@ -1179,6 +1179,11 @@ if __name__ == '__main__':
                 # Add QListWidgetItem into QListWidget
                 win.listWidget.addItem(channels_1[channel_1][0])
                 win.listWidget.setItemWidget(channels_1[channel_1][0], channels_1[channel_1][1])
+                #item1 = win.listWidget.item(channels_1[channel_1][2])
+                #win.listWidget.setItemWidget(item1, channels_1[channel_1][1])
+                #for item1 in range(win.listWidget.count()):
+                #    if item1 > len(channels_1):
+                #        win.listWidget.takeItem(item1)
             win.listWidget.setCurrentRow(row0)
             win.listWidget.verticalScrollBar().setValue(val0)
 
@@ -1811,3 +1816,4 @@ if __name__ == '__main__':
         sys.exit(app.exec_())
     except Exception as e3:
         show_exception(e3)
+        sys.exit(1)
