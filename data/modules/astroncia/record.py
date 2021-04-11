@@ -10,7 +10,10 @@ def record(input_url, out_file):
     if os.name == 'nt':
         ffmpeg_path = str(Path(os.getcwd(), 'data', 'modules', 'binary', 'ffmpeg.exe'))
     else:
-        ffmpeg_path = 'ffmpeg'
+        if os.path.isfile(str(Path(os.getcwd(), 'ffmpeg'))):
+            ffmpeg_path = str(Path(os.getcwd(), 'ffmpeg'))
+        else:
+            ffmpeg_path = 'ffmpeg'
     if input_url.startswith('http://') or input_url.startswith('https://'):
         arr = [
             ffmpeg_path,

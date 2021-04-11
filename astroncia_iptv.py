@@ -59,6 +59,21 @@ if DOCK_WIDGET2_HEIGHT < 0:
 if DOCK_WIDGET_WIDTH < 0:
     DOCK_WIDGET_WIDTH = 0
 
+parser = argparse.ArgumentParser(description='Astroncia IPTV')
+parser.add_argument('--python')
+args1 = parser.parse_args()
+
+LOCAL_DIR = 'local'
+SAVE_FOLDER_DEFAULT = str(Path(os.path.dirname(os.path.abspath(__file__)), 'AstronciaIPTV_saves'))
+
+if os.path.isfile(str(Path(os.path.dirname(os.path.abspath(__file__)), 'libxcb.so.1'))):
+    LOCAL_DIR = str(Path(os.environ['HOME'], '.AstronciaIPTV'))
+    SAVE_FOLDER_DEFAULT = str(Path(os.environ['HOME'], '.AstronciaIPTV', 'saves'))
+    if not os.path.isdir(LOCAL_DIR):
+        os.mkdir(LOCAL_DIR)
+    if not os.path.isdir(SAVE_FOLDER_DEFAULT):
+        os.mkdir(SAVE_FOLDER_DEFAULT)
+
 LANG_LOCALE = '?'
 try:
     if os.name == 'nt':
@@ -74,7 +89,7 @@ except: # pylint: disable=bare-except
 print_with_time("System locale: {}".format(LANG_LOCALE))
 LANG_DEFAULT = LANG_LOCALE if LANG_LOCALE in lang else 'en'
 try:
-    settings_file0 = open(str(Path('local', 'settings.json')), 'r')
+    settings_file0 = open(str(Path(LOCAL_DIR, 'settings.json')), 'r')
     settings_lang0 = json.loads(settings_file0.read())['lang']
     settings_file0.close()
 except: # pylint: disable=bare-except
@@ -90,10 +105,6 @@ def show_exception(e):
     messagebox.showinfo(title=LANG['error'], message="{}\n\n{}".format(LANG['error2'], str(e)))
     window.destroy()
     sys.exit(0)
-
-parser = argparse.ArgumentParser(description='Astroncia IPTV')
-parser.add_argument('--python')
-args1 = parser.parse_args()
 
 if os.name == 'nt':
     a0 = sys.executable
@@ -117,39 +128,39 @@ if __name__ == '__main__':
 
         from data.modules import mpv
 
-        if not os.path.isdir('local'):
-            os.mkdir('local')
+        if not os.path.isdir(LOCAL_DIR):
+            os.mkdir(LOCAL_DIR)
 
         channel_sets = {}
         def save_channel_sets():
             global channel_sets
-            file2 = open(str(Path('local', 'channels.json')), 'w')
+            file2 = open(str(Path(LOCAL_DIR, 'channels.json')), 'w')
             file2.write(json.dumps(channel_sets))
             file2.close()
 
-        if not os.path.isfile(str(Path('local', 'channels.json'))):
+        if not os.path.isfile(str(Path(LOCAL_DIR, 'channels.json'))):
             save_channel_sets()
         else:
-            file1 = open(str(Path('local', 'channels.json')), 'r')
+            file1 = open(str(Path(LOCAL_DIR, 'channels.json')), 'r')
             channel_sets = json.loads(file1.read())
             file1.close()
 
         favourite_sets = []
         def save_favourite_sets():
             global favourite_sets
-            file2 = open(str(Path('local', 'favourites.json')), 'w')
+            file2 = open(str(Path(LOCAL_DIR, 'favourites.json')), 'w')
             file2.write(json.dumps(favourite_sets))
             file2.close()
 
-        if not os.path.isfile(str(Path('local', 'favourites.json'))):
+        if not os.path.isfile(str(Path(LOCAL_DIR, 'favourites.json'))):
             save_favourite_sets()
         else:
-            file1 = open(str(Path('local', 'favourites.json')), 'r')
+            file1 = open(str(Path(LOCAL_DIR, 'favourites.json')), 'r')
             favourite_sets = json.loads(file1.read())
             file1.close()
 
-        if os.path.isfile(str(Path('local', 'settings.json'))):
-            settings_file = open(str(Path('local', 'settings.json')), 'r')
+        if os.path.isfile(str(Path(LOCAL_DIR, 'settings.json'))):
+            settings_file = open(str(Path(LOCAL_DIR, 'settings.json')), 'r')
             settings = json.loads(settings_file.read())
             settings_file.close()
         else:
@@ -158,7 +169,7 @@ if __name__ == '__main__':
                 "epg": "",
                 "deinterlace": True,
                 "udp_proxy": "",
-                "save_folder": "",
+                "save_folder": SAVE_FOLDER_DEFAULT,
                 "provider": "",
                 "nocache": False,
                 "lang": LANG_DEFAULT,
@@ -166,25 +177,25 @@ if __name__ == '__main__':
             }
             m3u = ""
 
-        if os.path.isfile(str(Path('local', 'tvguide.json'))):
-            tvguide_c = open(str(Path('local', 'tvguide.json')), 'r')
+        if os.path.isfile(str(Path(LOCAL_DIR, 'tvguide.json'))):
+            tvguide_c = open(str(Path(LOCAL_DIR, 'tvguide.json')), 'r')
             tvguide_c1 = json.loads(tvguide_c.read())["tvguide_url"]
             tvguide_c.close()
             if tvguide_c1 != settings["epg"]:
-                os.remove(str(Path('local', 'tvguide.json')))
+                os.remove(str(Path(LOCAL_DIR, 'tvguide.json')))
 
         tvguide_sets = {}
         def save_tvguide_sets():
             global tvguide_sets
             if tvguide_sets:
-                file2 = open(str(Path('local', 'tvguide.json')), 'w')
+                file2 = open(str(Path(LOCAL_DIR, 'tvguide.json')), 'w')
                 file2.write(json.dumps({"tvguide_sets": tvguide_sets, "tvguide_url": str(settings["epg"])}))
                 file2.close()
 
-        if not os.path.isfile(str(Path('local', 'tvguide.json'))):
+        if not os.path.isfile(str(Path(LOCAL_DIR, 'tvguide.json'))):
             save_tvguide_sets()
         else:
-            file1 = open(str(Path('local', 'tvguide.json')), 'r')
+            file1 = open(str(Path(LOCAL_DIR, 'tvguide.json')), 'r')
             tvguide_sets = json.loads(file1.read())["tvguide_sets"]
             file1.close()
 
@@ -227,15 +238,15 @@ if __name__ == '__main__':
             use_cache = False
         if not use_cache:
             print_with_time(LANG['nocacheplaylist'])
-        if use_cache and os.path.isfile(str(Path('local', 'playlist.json'))):
-            pj = open(str(Path('local', 'playlist.json')), 'r')
+        if use_cache and os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
+            pj = open(str(Path(LOCAL_DIR, 'playlist.json')), 'r')
             pj1 = json.loads(pj.read())['url']
             pj.close()
             if pj1 != settings['m3u']:
-                os.remove(str(Path('local', 'playlist.json')))
-        if (not use_cache) and os.path.isfile(str(Path('local', 'playlist.json'))):
-            os.remove(str(Path('local', 'playlist.json')))
-        if not os.path.isfile(str(Path('local', 'playlist.json'))):
+                os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
+        if (not use_cache) and os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
+            os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
+        if not os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
             print_with_time(LANG['loadingplaylist'])
             if settings['m3u']:
                 if os.path.isfile(settings['m3u']):
@@ -283,13 +294,13 @@ if __name__ == '__main__':
                     'groups': groups,
                     'm3u': m3u
                 })
-                cm3uf = open(str(Path('local', 'playlist.json')), 'w')
+                cm3uf = open(str(Path(LOCAL_DIR, 'playlist.json')), 'w')
                 cm3uf.write(cm3u)
                 cm3uf.close()
                 print_with_time(LANG['playlistcached'])
         else:
             print_with_time(LANG['usingcachedplaylist'])
-            cm3uf = open(str(Path('local', 'playlist.json')), 'r')
+            cm3uf = open(str(Path(LOCAL_DIR, 'playlist.json')), 'r')
             cm3u = json.loads(cm3uf.read())
             cm3uf.close()
             array = cm3u['array']
@@ -445,18 +456,18 @@ if __name__ == '__main__':
             if udp_proxy_text and not udp_proxy_starts:
                 udp_proxy_text = 'http://' + udp_proxy_text
             if udp_proxy_text:
-                if os.path.isfile(str(Path('local', 'playlist.json'))):
-                    os.remove(str(Path('local', 'playlist.json')))
+                if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
+                    os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
             if settings["offset"] != soffset.value():
-                if os.path.isfile(str(Path('local', 'tvguide.json'))):
-                    os.remove(str(Path('local', 'tvguide.json')))
+                if os.path.isfile(str(Path(LOCAL_DIR, 'tvguide.json'))):
+                    os.remove(str(Path(LOCAL_DIR, 'tvguide.json')))
             lang1 = LANG_DEFAULT
             for lng1 in lang:
                 if lang[lng1]['name'] == slang.currentText():
                     lang1 = lng1
             if lang1 != settings["lang"]:
-                if os.path.isfile(str(Path('local', 'playlist.json'))):
-                    os.remove(str(Path('local', 'playlist.json')))
+                if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
+                    os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
             settings_arr = {
                 "m3u": sm3u.text(),
                 "epg": sepg.text(),
@@ -468,7 +479,7 @@ if __name__ == '__main__':
                 "lang": lang1,
                 "offset": soffset.value()
             }
-            settings_file1 = open(str(Path('local', 'settings.json')), 'w')
+            settings_file1 = open(str(Path(LOCAL_DIR, 'settings.json')), 'w')
             settings_file1.write(json.dumps(settings_arr))
             settings_file1.close()
             settings_win.hide()
@@ -484,7 +495,12 @@ if __name__ == '__main__':
                 if args1.python:
                     os.execv(args1.python, ['python'] + sys.argv)
                 else:
-                    os.execv(sys.executable, ['python'] + sys.argv + ['--python', sys.executable])
+                    sys_executable = sys.executable
+                    if not os.path.isfile(sys_executable):
+                        sys_executable = str(Path(os.path.dirname(os.path.abspath(__file__)), 'astroncia_iptv'))
+                        os.execv(sys_executable, sys.argv)
+                    else:
+                        os.execv(sys_executable, ['python'] + sys.argv + ['--python', sys_executable])
             stop_record()
             if not os.name == 'nt':
                 sys.exit(0)
@@ -504,8 +520,8 @@ if __name__ == '__main__':
         hours_label = QtWidgets.QLabel(LANG['hours'])
 
         def reset_channel_settings():
-            os.remove(str(Path('local', 'channels.json')))
-            os.remove(str(Path('local', 'favourites.json')))
+            os.remove(str(Path(LOCAL_DIR, 'channels.json')))
+            os.remove(str(Path(LOCAL_DIR, 'favourites.json')))
             save_settings()
         def reset_prov():
             if sprov.currentText() != '--{}--'.format(LANG['notselected']):
@@ -576,15 +592,15 @@ if __name__ == '__main__':
 
         def force_update_epg():
             global use_local_tvguide, first_boot
-            if os.path.exists(str(Path('local', 'tvguide.json'))):
-                os.remove(str(Path('local', 'tvguide.json')))
+            if os.path.exists(str(Path(LOCAL_DIR, 'tvguide.json'))):
+                os.remove(str(Path(LOCAL_DIR, 'tvguide.json')))
             use_local_tvguide = False
             if not epg_updating:
                 first_boot = False
 
         def update_m3u():
-            if os.path.isfile(str(Path('local', 'playlist.json'))):
-                os.remove(str(Path('local', 'playlist.json')))
+            if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
+                os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
             save_settings()
 
         sm3ufile = QtWidgets.QPushButton(settings_win)
@@ -1361,13 +1377,21 @@ if __name__ == '__main__':
         def my_log(loglevel, component, message):
             print_with_time('[{}] {}: {}'.format(loglevel, component, message))
 
-        player = mpv.MPV(
-            wid=str(int(win.main_widget.winId())),
-            ytdl=False,
-            vo='' if os.name == 'nt' else 'gpu,direct3d,x11'
-            #log_handler=my_log,
-            #loglevel='info' # debug
-        )
+        try:
+            player = mpv.MPV(
+                wid=str(int(win.main_widget.winId())),
+                ytdl=False,
+                vo='' if os.name == 'nt' else 'gpu,direct3d,x11'
+                #log_handler=my_log,
+                #loglevel='info' # debug
+            )
+        except: # pylint: disable=bare-except
+            player = mpv.MPV(
+                wid=str(int(win.main_widget.winId())),
+                vo='' if os.name == 'nt' else 'gpu,direct3d,x11'
+                #log_handler=my_log,
+                #loglevel='info' # debug
+            )
         player.user_agent = user_agent
         player.volume = 100
         player.loop = True
