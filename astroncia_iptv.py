@@ -36,7 +36,7 @@ from data.modules.astroncia.providers import iptv_providers
 from data.modules.astroncia.time import print_with_time
 from data.modules.astroncia.epgurls import EPG_URLS
 
-APP_VERSION = '0.0.2'
+APP_VERSION = '0.0.3'
 
 if not sys.version_info >= (3, 6, 0):
     print_with_time("Incompatible Python version! Required >= 3.6")
@@ -1435,7 +1435,7 @@ if __name__ == '__main__':
                 #log_handler=my_log,
                 #loglevel='info' # debug
             )
-        if settings['hwaccel']:
+        if not settings['hwaccel']:
             try:
                 player['x11-bypass-compositor'] = 'yes'
             except: # pylint: disable=bare-except
