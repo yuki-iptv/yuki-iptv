@@ -180,7 +180,7 @@ if __name__ == '__main__':
                 "hwaccel": True
             }
             m3u = ""
-        if not 'hwaccel' in settings:
+        if 'hwaccel' not in settings:
             settings['hwaccel'] = True
         if settings['hwaccel']:
             print_with_time("{} {}".format(LANG['hwaccel'].replace('\n', ' '), LANG['enabled']))
