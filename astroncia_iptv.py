@@ -1623,7 +1623,10 @@ if __name__ == '__main__':
             global stopped
             stopped = True
             if epg_thread:
-                epg_thread.kill()
+                try:
+                    epg_thread.kill()
+                except: # pylint: disable=bare-except
+                    epg_thread.terminate()
             if manager:
                 manager.shutdown()
             stop_record()
