@@ -11,6 +11,17 @@ Repository mirrors:
 [https://gitlab.com/astroncia/iptv](https://gitlab.com/astroncia/iptv)  
 [https://github.com/rootalc/astroncia_iptv](https://github.com/rootalc/astroncia_iptv)  
 
+## Download
+
+[Version for Windows](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/Astroncia_IPTV_setup.exe)  
+[AppImage](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv-appimage-x86_64.AppImage)  
+[deb package](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv.deb)  
+
+For Ubuntu recommended install from [Launchpad PPA - ppa:astroncia/iptv](https://launchpad.net/~astroncia/+archive/ubuntu/iptv):  
+```sudo add-apt-repository ppa:astroncia/iptv```  
+```sudo apt-get update```  
+```sudo apt-get install astroncia-iptv```  
+
 ## Dependencies
 
 - Python 3 (3.6 or newer version)
