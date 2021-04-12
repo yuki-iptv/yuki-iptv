@@ -64,6 +64,9 @@ lang = {
             'interfacelang': 'Interface language',
             'tvguideoffset': 'TV guide offset',
             'hours': 'hours',
+            'hwaccel': 'Hardware\nacceleration',
+            'enabled': 'enabled',
+            'disabled': 'disabled',
             'helptext': '''Astroncia IPTV    (c) kestral / astroncia
 
 Cross-platform IPTV player
@@ -151,6 +154,9 @@ T - open/close channels list
             'interfacelang': 'Язык интерфейса',
             'tvguideoffset': 'Общая поправка',
             'hours': 'часов',
+            'hwaccel': 'Аппаратное\nускорение',
+            'enabled': 'включено',
+            'disabled': 'выключено',
             'helptext': '''Astroncia IPTV    (c) kestral / astroncia
 
 Кроссплатформенный плеер

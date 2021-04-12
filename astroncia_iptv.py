@@ -176,9 +176,16 @@ if __name__ == '__main__':
                 "provider": "",
                 "nocache": False,
                 "lang": LANG_DEFAULT,
-                "offset": 0
+                "offset": 0,
+                "hwaccel": True
             }
             m3u = ""
+        if not 'hwaccel' in settings:
+            settings['hwaccel'] = True
+        if settings['hwaccel']:
+            print_with_time("{} {}".format(LANG['hwaccel'].replace('\n', ' '), LANG['enabled']))
+        else:
+            print_with_time("{} {}".format(LANG['hwaccel'].replace('\n', ' '), LANG['disabled']))
 
         if os.path.isfile(str(Path(LOCAL_DIR, 'tvguide.json'))):
             tvguide_c = open(str(Path(LOCAL_DIR, 'tvguide.json')), 'r')
@@ -490,7 +497,8 @@ if __name__ == '__main__':
                 "provider": sprov.currentText() if sprov.currentText() != '--{}--'.format(LANG['notselected']) else '',
                 "nocache": supdate.isChecked(),
                 "lang": lang1,
-                "offset": soffset.value()
+                "offset": soffset.value(),
+                "hwaccel": shwaccel.isChecked()
             }
             settings_file1 = open(str(Path(LOCAL_DIR, 'settings.json')), 'w')
             settings_file1.write(json.dumps(settings_arr))
@@ -529,6 +537,7 @@ if __name__ == '__main__':
         update_label = QtWidgets.QLabel('{}:'.format(LANG['updateatboot']))
         epg_label = QtWidgets.QLabel('{}:'.format(LANG['epgaddress']))
         dei_label = QtWidgets.QLabel('{}:'.format(LANG['deinterlace']))
+        hwaccel_label = QtWidgets.QLabel('{}:'.format(LANG['hwaccel']))
         udp_label = QtWidgets.QLabel('{}:'.format(LANG['udpproxy']))
         fld_label = QtWidgets.QLabel('{}:'.format(LANG['writefolder']))
         lang_label = QtWidgets.QLabel('{}:'.format(LANG['interfacelang']))
@@ -560,6 +569,8 @@ if __name__ == '__main__':
         sudp.setText(settings['udp_proxy'])
         sdei = QtWidgets.QCheckBox()
         sdei.setChecked(settings['deinterlace'])
+        shwaccel = QtWidgets.QCheckBox()
+        shwaccel.setChecked(settings['hwaccel'])
         supdate = QtWidgets.QCheckBox()
         supdate.setChecked(settings['nocache'])
         sfld = QtWidgets.QLineEdit()
@@ -713,9 +724,12 @@ if __name__ == '__main__':
         grid.addWidget(dei_label, 12, 0)
         grid.addWidget(sdei, 12, 1)
 
-        grid.addWidget(ssave, 13, 1)
-        grid.addWidget(sreset, 14, 1)
-        grid.addWidget(sclose, 15, 1)
+        grid.addWidget(hwaccel_label, 13, 0)
+        grid.addWidget(shwaccel, 13, 1)
+
+        grid.addWidget(ssave, 14, 1)
+        grid.addWidget(sreset, 15, 1)
+        grid.addWidget(sclose, 16, 1)
         wid2.setLayout(grid)
         settings_win.setCentralWidget(wid2)
 
@@ -1398,25 +1412,34 @@ if __name__ == '__main__':
         def my_log(loglevel, component, message):
             print_with_time('[{}] {}: {}'.format(loglevel, component, message))
 
+        if settings['hwaccel']:
+            VIDEO_OUTPUT = 'gpu,direct3d,xv,x11'
+            HWACCEL = True
+        else:
+            VIDEO_OUTPUT = 'direct3d,xv,x11'
+            HWACCEL = False
         try:
             player = mpv.MPV(
                 wid=str(int(win.main_widget.winId())),
                 ytdl=False,
-                vo='' if os.name == 'nt' else 'gpu,direct3d,x11'
+                vo='' if os.name == 'nt' else VIDEO_OUTPUT,
+                hwdec=HWACCEL
                 #log_handler=my_log,
                 #loglevel='info' # debug
             )
         except: # pylint: disable=bare-except
             player = mpv.MPV(
                 wid=str(int(win.main_widget.winId())),
-                vo='' if os.name == 'nt' else 'gpu,direct3d,x11'
+                vo='' if os.name == 'nt' else VIDEO_OUTPUT,
+                hwdec=HWACCEL
                 #log_handler=my_log,
                 #loglevel='info' # debug
             )
-        try:
-            player['x11-bypass-compositor'] = 'yes'
-        except: # pylint: disable=bare-except
-            pass
+        if settings['hwaccel']:
+            try:
+                player['x11-bypass-compositor'] = 'yes'
+            except: # pylint: disable=bare-except
+                pass
         player.user_agent = user_agent
         player.volume = 100
         player.loop = True
