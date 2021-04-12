@@ -35,6 +35,7 @@ from data.modules.astroncia.conversion import convert_size
 from data.modules.astroncia.providers import iptv_providers
 from data.modules.astroncia.time import print_with_time
 from data.modules.astroncia.epgurls import EPG_URLS
+from data.modules.astroncia.bitrate import humanbytes
 
 APP_VERSION = '0.0.3'
 
@@ -1738,6 +1739,13 @@ if __name__ == '__main__':
         def thread_check_tvguide_obsolete():
             global first_boot, ic2
             try:
+                if player.video_bitrate:
+                    video_bitrate = "/ " + str(humanbytes(player.video_bitrate)) + " "
+                else:
+                    video_bitrate = ""
+            except: # pylint: disable=bare-except
+                video_bitrate = ""
+            try:
                 audio_codec = player.audio_codec.split(" ")[0]
             except: # pylint: disable=bare-except
                 audio_codec = 'audio'
@@ -1750,7 +1758,7 @@ if __name__ == '__main__':
                 width = 800
                 height = 600
             if (not (codec == 'png' and width == 800 and height == 600)) and (width and height):
-                label12.setText('    {} {}x{} / {}'.format(codec, width, height, audio_codec))
+                label12.setText('    {} {}x{} {}/ {}'.format(codec, width, height, video_bitrate, audio_codec))
                 if loading.text() == LANG['loading']:
                     loading.hide()
             else:
