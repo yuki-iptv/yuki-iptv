@@ -1413,6 +1413,10 @@ if __name__ == '__main__':
                 #log_handler=my_log,
                 #loglevel='info' # debug
             )
+        try:
+            player['x11-bypass-compositor'] = 'yes'
+        except: # pylint: disable=bare-except
+            pass
         player.user_agent = user_agent
         player.volume = 100
         player.loop = True
