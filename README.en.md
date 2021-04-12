@@ -22,6 +22,16 @@ For Ubuntu recommended install from [Launchpad PPA - ppa:astroncia/iptv](https:/
 ```sudo apt-get update```  
 ```sudo apt-get install astroncia-iptv```  
 
+## Capabilities
+
+Watching IPTV from your provider (if it provides an m3u8 playlist)  
+Viewing unencrypted streams UDP (multicast), HTTP, HLS (m3u8)  
+Adding channels to favorites  
+Recording TV programs (cannot: record according to schedule)  
+Hotkeys  
+TV program support (EPG) in XMLTV and JTV formats  
+Channel groups (EXTGRP: directive not supported, only via group-title)  
+
 ## Dependencies
 
 - Python 3 (3.6 or newer version)
