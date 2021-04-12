@@ -497,7 +497,10 @@ if __name__ == '__main__':
             settings_file1.close()
             settings_win.hide()
             if epg_thread:
-                epg_thread.kill()
+                try:
+                    epg_thread.kill()
+                except: # pylint: disable=bare-except
+                    epg_thread.terminate()
             if manager:
                 manager.shutdown()
             win.close()
