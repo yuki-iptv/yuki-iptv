@@ -199,6 +199,13 @@ if __name__ == '__main__':
                 tvguide_c = open(str(Path(LOCAL_DIR, 'tvguide.dat')), 'rb')
                 tvguide_c1 = json.loads(codecs.decode(codecs.decode(tvguide_c.read(), 'zlib'), 'utf-8'))["tvguide_url"]
                 tvguide_c.close()
+                if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
+                    cm3uf1 = open(str(Path(LOCAL_DIR, 'playlist.json')), 'r')
+                    cm3u1 = json.loads(cm3uf1.read())
+                    cm3uf1.close()
+                    epg_url1 = cm3u['epgurl']
+                    if not settings["epg"]:
+                        settings["epg"] = epg_url1
                 if tvguide_c1 != settings["epg"]:
                     os.remove(str(Path(LOCAL_DIR, 'tvguide.dat')))
             except: # pylint: disable=bare-except
