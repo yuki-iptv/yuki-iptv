@@ -161,6 +161,9 @@ T - open/close channels list
             'bitrates': ['бит/с', 'Кбит/с', 'Мбит/с', 'Гбит/с', 'Тбит/с'],
             'helptext': '''Astroncia IPTV, версия {}    (c) kestral / astroncia
 
+Поддержка:
+https://forum.ubuntu.ru/index.php?topic=314803
+
 Кроссплатформенный плеер
 для просмотра интернет-телевидения
 

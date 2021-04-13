@@ -371,7 +371,7 @@ if __name__ == '__main__':
         settings_win.setWindowIcon(main_icon)
 
         help_win = QtWidgets.QMainWindow()
-        help_win.resize(400, 400)
+        help_win.resize(400, 430)
         help_win.setWindowTitle(LANG['help'])
         help_win.setWindowIcon(main_icon)
 
@@ -758,11 +758,11 @@ if __name__ == '__main__':
         settings_win.setCentralWidget(wid2)
 
         textbox = QtWidgets.QPlainTextEdit(help_win)
-        textbox.resize(390, 370)
+        textbox.resize(390, 400)
         textbox.setReadOnly(True)
         textbox.setPlainText(LANG['helptext'].format(APP_VERSION))
         close_btn = QtWidgets.QPushButton(help_win)
-        close_btn.move(140, 370)
+        close_btn.move(140, 400)
         close_btn.setText(LANG['close'])
         close_btn.clicked.connect(help_win.close)
 

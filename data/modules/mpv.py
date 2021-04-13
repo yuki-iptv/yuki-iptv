@@ -48,6 +48,8 @@ else:
     locale.setlocale(locale.LC_NUMERIC, 'C')
 
     sofile = ctypes.util.find_library('mpv')
+    if sofile is None and os.path.isfile('libmpv.so.1'):
+        sofile = Path(os.getcwd(), 'libmpv.so.1')
     if sofile is None:
         raise OSError("Cannot find libmpv in the usual places. Depending on your distro, you may try installing an "
                 "mpv-devel or mpv-libs package. If you have libmpv around but this script can't find it, consult "
