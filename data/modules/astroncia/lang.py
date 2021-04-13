@@ -67,7 +67,7 @@ lang = {
             'hwaccel': 'Hardware\nacceleration',
             'enabled': 'enabled',
             'disabled': 'disabled',
-            'helptext': '''Astroncia IPTV    (c) kestral / astroncia
+            'helptext': '''Astroncia IPTV, version {}    (c) kestral / astroncia
 
 Cross-platform IPTV player
 
@@ -157,7 +157,7 @@ T - open/close channels list
             'hwaccel': 'Аппаратное\nускорение',
             'enabled': 'включено',
             'disabled': 'выключено',
-            'helptext': '''Astroncia IPTV    (c) kestral / astroncia
+            'helptext': '''Astroncia IPTV, версия {}    (c) kestral / astroncia
 
 Кроссплатформенный плеер
 для просмотра интернет-телевидения

@@ -37,7 +37,7 @@ from data.modules.astroncia.time import print_with_time
 from data.modules.astroncia.epgurls import EPG_URLS
 from data.modules.astroncia.bitrate import humanbytes
 
-APP_VERSION = '0.0.3'
+APP_VERSION = '0.0.4'
 
 if not sys.version_info >= (3, 6, 0):
     print_with_time("Incompatible Python version! Required >= 3.6")
@@ -737,7 +737,7 @@ if __name__ == '__main__':
         textbox = QtWidgets.QPlainTextEdit(help_win)
         textbox.resize(390, 370)
         textbox.setReadOnly(True)
-        textbox.setPlainText(LANG['helptext'])
+        textbox.setPlainText(LANG['helptext'].format(APP_VERSION))
         close_btn = QtWidgets.QPushButton(help_win)
         close_btn.move(140, 370)
         close_btn.setText(LANG['close'])
@@ -1788,6 +1788,8 @@ if __name__ == '__main__':
                         time_stop = time.time() + 3
                         values = return_dict.values()
                         programmes = values[1]
+                        if not is_program_actual(programmes):
+                            raise Exception("Programme not actual")
                         tvguide_sets = programmes
                         save_tvguide_sets()
                         btn_update.click() # start update in main thread
