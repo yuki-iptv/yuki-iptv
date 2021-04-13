@@ -38,7 +38,7 @@ from data.modules.astroncia.time import print_with_time
 from data.modules.astroncia.epgurls import EPG_URLS
 from data.modules.astroncia.bitrate import humanbytes
 
-APP_VERSION = '0.0.5'
+APP_VERSION = '0.0.6'
 
 if not sys.version_info >= (3, 5, 0):
     print_with_time("Incompatible Python version! Required >= 3.5")
@@ -230,7 +230,7 @@ if __name__ == '__main__':
             sets1 = tvguide_sets.copy()
             if sets1:
                 for prog2 in sets1:
-                    sets1[prog2] = [x12 for x12 in sets1[prog2] if time.time() + 7200 > x12['start'] and time.time() - 7200 < x12['stop']]
+                    sets1[prog2] = [x12 for x12 in sets1[prog2] if time.time() + 172800 > x12['start'] and time.time() - 172800 < x12['stop']]
             return sets1
 
         def is_program_actual(sets0):
