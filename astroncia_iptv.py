@@ -219,8 +219,11 @@ if __name__ == '__main__':
                 file2.write(codecs.encode(bytes(json.dumps({"tvguide_sets": clean_programme(), "tvguide_url": str(settings["epg"]), "prog_ids": prog_ids}), 'utf-8'), 'zlib'))
                 file2.close()
 
+        epg_thread_2 = None
+
         def save_tvguide_sets():
-            Process(target=save_tvguide_sets_proc).start()
+            epg_thread_2 = Process(target=save_tvguide_sets_proc)
+            epg_thread_2.start()
 
         if not os.path.isfile(str(Path(LOCAL_DIR, 'tvguide.dat'))):
             save_tvguide_sets()
@@ -443,6 +446,16 @@ if __name__ == '__main__':
         deinterlace_lbl = QtWidgets.QLabel("{}:".format(LANG['deinterlace']))
         deinterlace_chk = QtWidgets.QCheckBox()
 
+        def hideLoading():
+            loading.hide()
+            loading_movie.stop()
+            loading1.hide()
+
+        def showLoading():
+            loading.show()
+            loading_movie.start()
+            loading1.show()
+
         def stopPlayer():
             try:
                 player.stop()
@@ -453,7 +466,7 @@ if __name__ == '__main__':
         def doPlay(play_url1):
             loading.setText(LANG['loading'])
             loading.setStyleSheet('color: #778a30')
-            loading.show()
+            showLoading()
             player.loop = False
             stopPlayer()
             if play_url1.startswith("udp://") or play_url1.startswith("rtp://"):
@@ -510,7 +523,7 @@ if __name__ == '__main__':
 
         # Settings window
         def save_settings(): # pylint: disable=too-many-branches
-            global epg_thread, manager
+            global epg_thread, epg_thread_2, manager
             udp_proxy_text = sudp.text()
             udp_proxy_starts = udp_proxy_text.startswith('http://') or udp_proxy_text.startswith('https://')
             if udp_proxy_text and not udp_proxy_starts:
@@ -553,6 +566,11 @@ if __name__ == '__main__':
                     epg_thread.kill()
                 except: # pylint: disable=bare-except
                     epg_thread.terminate()
+            if epg_thread_2:
+                try:
+                    epg_thread_2.kill()
+                except: # pylint: disable=bare-except
+                    epg_thread_2.terminate()
             if manager:
                 manager.shutdown()
             win.close()
@@ -884,6 +902,15 @@ if __name__ == '__main__':
         chan.setAlignment(QtCore.Qt.AlignCenter)
         chan.resize(200, 30)
 
+        loading1 = QtWidgets.QLabel(win) # TODO
+        loading_movie = QtGui.QMovie(str(Path('data', 'icons', 'loading.gif')))
+        loading1.setMovie(loading_movie)
+        loading1.setStyleSheet('background-color: white;')
+        loading1.resize(32, 32)
+        loading1.setAlignment(QtCore.Qt.AlignCenter)
+        loading1.move(win.rect().center())
+        loading1.hide()
+
         lbl2 = QtWidgets.QLabel(win)
         lbl2.setAlignment(QtCore.Qt.AlignCenter)
         lbl2.setStyleSheet('color: #e0071a')
@@ -970,7 +997,7 @@ if __name__ == '__main__':
             global playing, playing_chan, playing_url
             playing_chan = ''
             playing_url = ''
-            loading.hide()
+            hideLoading()
             chan.setText('')
             playing = False
             stopPlayer()
@@ -1368,7 +1395,7 @@ if __name__ == '__main__':
         loading = QtWidgets.QLabel(LANG['loading'])
         loading.setAlignment(QtCore.Qt.AlignCenter)
         loading.setStyleSheet('color: #778a30')
-        loading.hide()
+        hideLoading()
         myFont2 = QtGui.QFont()
         myFont2.setPointSize(12)
         myFont2.setBold(True)
@@ -1528,7 +1555,7 @@ if __name__ == '__main__':
             if event['event']['error'] != 0:
                 loading.setText(LANG['playerror'])
                 loading.setStyleSheet('color: red')
-                loading.show()
+                showLoading()
 
         @player.on_key_press('MBTN_LEFT_DBL')
         def my_leftdbl_binding():
@@ -1730,13 +1757,18 @@ if __name__ == '__main__':
         stopped = False
 
         def myExitHandler():
-            global stopped
+            global stopped, epg_thread, epg_thread_2
             stopped = True
             if epg_thread:
                 try:
                     epg_thread.kill()
                 except: # pylint: disable=bare-except
                     epg_thread.terminate()
+            if epg_thread_2:
+                try:
+                    epg_thread_2.kill()
+                except: # pylint: disable=bare-except
+                    epg_thread_2.terminate()
             if manager:
                 manager.shutdown()
             stop_record()
@@ -1837,7 +1869,7 @@ if __name__ == '__main__':
             if (not (codec == 'png' and width == 800 and height == 600)) and (width and height):
                 label12.setText('    {}x{}{} - {} / {}'.format(width, height, video_bitrate, codec, audio_codec))
                 if loading.text() == LANG['loading']:
-                    loading.hide()
+                    hideLoading()
             else:
                 label12.setText('')
             ic2 += 0.1  # pylint: disable=undefined-variable
