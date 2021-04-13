@@ -1133,10 +1133,14 @@ if __name__ == '__main__':
                 k += 1
                 prog = ''
                 prog_search = i
-                if str(array[i]['tvg-ID']) in prog_ids:
-                    prog_search_lst = prog_ids[str(array[i]['tvg-ID'])]
-                    if prog_search_lst:
-                        prog_search = prog_search_lst[0]
+                if array[i]['tvg-ID']:
+                    if str(array[i]['tvg-ID']) in prog_ids:
+                        prog_search_lst = prog_ids[str(array[i]['tvg-ID'])]
+                        if prog_search_lst:
+                            prog_search = prog_search_lst[0]
+                if array[i]['tvg-name']:
+                    if str(array[i]['tvg-name']) in programmes:
+                        prog_search = str(array[i]['tvg-name'])
                 if prog_search in programmes:
                     current_prog = {
                         'start': 0,
