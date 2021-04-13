@@ -190,13 +190,13 @@ if __name__ == '__main__':
         else:
             print_with_time("{} {}".format(LANG['hwaccel'].replace('\n', ' '), LANG['disabled']))
 
-        if os.path.isfile(str(Path(LOCAL_DIR, 'tvguide.json'))):
+        if os.path.isfile(str(Path(LOCAL_DIR, 'tvguide.dat'))):
             try:
-                tvguide_c = open(str(Path(LOCAL_DIR, 'tvguide.json')), 'rb')
+                tvguide_c = open(str(Path(LOCAL_DIR, 'tvguide.dat')), 'rb')
                 tvguide_c1 = json.loads(codecs.decode(codecs.decode(tvguide_c.read(), 'zlib'), 'utf-8'))["tvguide_url"]
                 tvguide_c.close()
                 if tvguide_c1 != settings["epg"]:
-                    os.remove(str(Path(LOCAL_DIR, 'tvguide.json')))
+                    os.remove(str(Path(LOCAL_DIR, 'tvguide.dat')))
             except: # pylint: disable=bare-except
                 tvguide_c1 = ""
 
@@ -204,14 +204,14 @@ if __name__ == '__main__':
         def save_tvguide_sets():
             global tvguide_sets
             if tvguide_sets:
-                file2 = open(str(Path(LOCAL_DIR, 'tvguide.json')), 'wb')
+                file2 = open(str(Path(LOCAL_DIR, 'tvguide.dat')), 'wb')
                 file2.write(codecs.encode(bytes(json.dumps({"tvguide_sets": clean_programme(), "tvguide_url": str(settings["epg"]), "prog_ids": prog_ids}), 'utf-8'), 'zlib'))
                 file2.close()
 
-        if not os.path.isfile(str(Path(LOCAL_DIR, 'tvguide.json'))):
+        if not os.path.isfile(str(Path(LOCAL_DIR, 'tvguide.dat'))):
             save_tvguide_sets()
         else:
-            file1 = open(str(Path(LOCAL_DIR, 'tvguide.json')), 'rb')
+            file1 = open(str(Path(LOCAL_DIR, 'tvguide.dat')), 'rb')
             try:
                 tvguide_json = json.loads(codecs.decode(file1.read(), 'zlib'))
             except: # pylint: disable=bare-except
@@ -500,8 +500,8 @@ if __name__ == '__main__':
                 if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
                     os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
             if settings["offset"] != soffset.value():
-                if os.path.isfile(str(Path(LOCAL_DIR, 'tvguide.json'))):
-                    os.remove(str(Path(LOCAL_DIR, 'tvguide.json')))
+                if os.path.isfile(str(Path(LOCAL_DIR, 'tvguide.dat'))):
+                    os.remove(str(Path(LOCAL_DIR, 'tvguide.dat')))
             lang1 = LANG_DEFAULT
             for lng1 in lang:
                 if lang[lng1]['name'] == slang.currentText():
@@ -640,8 +640,8 @@ if __name__ == '__main__':
 
         def force_update_epg():
             global use_local_tvguide, first_boot
-            if os.path.exists(str(Path(LOCAL_DIR, 'tvguide.json'))):
-                os.remove(str(Path(LOCAL_DIR, 'tvguide.json')))
+            if os.path.exists(str(Path(LOCAL_DIR, 'tvguide.dat'))):
+                os.remove(str(Path(LOCAL_DIR, 'tvguide.dat')))
             use_local_tvguide = False
             if not epg_updating:
                 first_boot = False
