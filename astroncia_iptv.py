@@ -38,7 +38,7 @@ from data.modules.astroncia.time import print_with_time
 from data.modules.astroncia.epgurls import EPG_URLS
 from data.modules.astroncia.bitrate import humanbytes
 
-APP_VERSION = '0.0.6'
+APP_VERSION = '0.0.7'
 
 if not sys.version_info >= (3, 5, 0):
     print_with_time("Incompatible Python version! Required >= 3.5")
@@ -454,9 +454,9 @@ if __name__ == '__main__':
                     print_with_time("Using multicast optimized settings")
                     player.cache = 'no'
                     player.untimed = True
+                    player['cache-pause'] = False
                     player['audio-buffer'] = 0
                     player['vd-lavc-threads'] = 1
-                    player['cache-pause'] = False
                     player['demuxer-lavf-probe-info'] = 'nostreams'
                     player['demuxer-lavf-analyzeduration'] = 0.1
                     player['video-sync'] = 'audio'
