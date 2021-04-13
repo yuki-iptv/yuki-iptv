@@ -1320,6 +1320,14 @@ if __name__ == '__main__':
         win.listWidget.currentItemChanged.connect(itemSelected_event)
         win.listWidget.itemClicked.connect(itemSelected_event)
         win.listWidget.itemDoubleClicked.connect(itemClicked_event)
+        def enterPressed():
+            itemClicked_event(win.listWidget.currentItem())
+        QtWidgets.QShortcut(
+            QtCore.Qt.Key_Return,
+            win.listWidget,
+            context=QtCore.Qt.WidgetShortcut,
+            activated=enterPressed
+        )
         loading = QtWidgets.QLabel(LANG['loading'])
         loading.setAlignment(QtCore.Qt.AlignCenter)
         loading.setStyleSheet('color: #778a30')
