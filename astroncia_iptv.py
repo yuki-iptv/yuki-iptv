@@ -203,7 +203,7 @@ if __name__ == '__main__':
                     cm3uf1 = open(str(Path(LOCAL_DIR, 'playlist.json')), 'r')
                     cm3u1 = json.loads(cm3uf1.read())
                     cm3uf1.close()
-                    epg_url1 = cm3u['epgurl']
+                    epg_url1 = cm3u1['epgurl']
                     if not settings["epg"]:
                         settings["epg"] = epg_url1
                 if tvguide_c1 != settings["epg"]:
