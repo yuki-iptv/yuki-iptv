@@ -49,7 +49,7 @@
 **Устанавливаем зависимости:**
 
 на Debian/Ubuntu:  
-```sudo apt install ffmpeg git libmpv1 python3 python3-requests python3-pyqt5 python3-pil python3-tk```
+```sudo apt install ffmpeg git libmpv1 python3 python3-requests python3-pyqt5 python3-pil python3-tk python3-pip```
 
 на Windows:  
 Устанавливаем Git с [официального сайта](https://git-scm.com/download/win)  

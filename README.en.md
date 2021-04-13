@@ -47,7 +47,7 @@ Channel groups (EXTGRP: directive not supported, only via group-title)
 **Installing dependencies:**
 
 on Debian/Ubuntu:  
-```sudo apt install ffmpeg git libmpv1 python3 python3-requests python3-pyqt5 python3-pil python3-tk```
+```sudo apt install ffmpeg git libmpv1 python3 python3-requests python3-pyqt5 python3-pil python3-tk python3-pip```
 
 on Windows:  
 Install Git from [official website](https://git-scm.com/download/win)  
