@@ -38,7 +38,7 @@ from data.modules.astroncia.time import print_with_time
 from data.modules.astroncia.epgurls import EPG_URLS
 from data.modules.astroncia.bitrate import humanbytes
 
-APP_VERSION = '0.0.4'
+APP_VERSION = '0.0.5'
 
 if not sys.version_info >= (3, 6, 0):
     print_with_time("Incompatible Python version! Required >= 3.6")
@@ -193,7 +193,7 @@ if __name__ == '__main__':
         if os.path.isfile(str(Path(LOCAL_DIR, 'tvguide.json'))):
             try:
                 tvguide_c = open(str(Path(LOCAL_DIR, 'tvguide.json')), 'rb')
-                tvguide_c1 = json.loads(codecs.decode(tvguide_c.read(), 'utf-8'))["tvguide_url"]
+                tvguide_c1 = json.loads(codecs.decode(codecs.decode(tvguide_c.read(), 'zlib'), 'utf-8'))["tvguide_url"]
                 tvguide_c.close()
                 if tvguide_c1 != settings["epg"]:
                     os.remove(str(Path(LOCAL_DIR, 'tvguide.json')))
