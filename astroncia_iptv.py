@@ -121,6 +121,7 @@ if __name__ == '__main__':
             os.environ["PATH"] = modules_path + os.pathsep + os.environ["PATH"]
 
         m3u = ""
+        clockOn = False
 
         if os.name == 'nt':
             if not (os.path.isfile(str(Path(modules_path, 'ffmpeg.exe'))) and os.path.isfile(str(Path(modules_path, 'mpv-1.dll')))):
@@ -173,7 +174,7 @@ if __name__ == '__main__':
             settings = {
                 "m3u": "",
                 "epg": "",
-                "deinterlace": True,
+                "deinterlace": False,
                 "udp_proxy": "",
                 "save_folder": SAVE_FOLDER_DEFAULT,
                 "provider": "",
@@ -294,6 +295,7 @@ if __name__ == '__main__':
                         m3u = ""
 
             m3u_parser = M3uParser(settings['udp_proxy'])
+            epg_url = ""
             if m3u:
                 try:
                     m3u_data0 = m3u_parser.readM3u(m3u)
@@ -329,7 +331,8 @@ if __name__ == '__main__':
                     'url': settings['m3u'],
                     'array': array,
                     'groups': groups,
-                    'm3u': m3u
+                    'm3u': m3u,
+                    'epgurl': epg_url
                 })
                 cm3uf = open(str(Path(LOCAL_DIR, 'playlist.json')), 'w')
                 cm3uf.write(cm3u)
@@ -343,6 +346,9 @@ if __name__ == '__main__':
             array = cm3u['array']
             groups = cm3u['groups']
             m3u = cm3u['m3u']
+            epg_url = cm3u['epgurl']
+            if epg_url and not settings["epg"]:
+                settings["epg"] = epg_url
 
         if LANG['allchannels'] in groups:
             groups.remove(LANG['allchannels'])
@@ -1132,12 +1138,15 @@ if __name__ == '__main__':
 
         current_group = LANG['allchannels']
 
+        def doSort(arr0):
+            return arr0
+
         def gen_chans(ch_array): # pylint: disable=too-many-locals, too-many-branches
             global ICONS_CACHE, playing_chan, current_group
             res = {}
             l = -1
             k = 0
-            for i in ch_array:
+            for i in doSort(ch_array):
                 group1 = array[i]['tvg-group']
                 if current_group != LANG['allchannels']:
                     if current_group == LANG['favourite']:
@@ -1464,17 +1473,17 @@ if __name__ == '__main__':
                 wid=str(int(win.main_widget.winId())),
                 ytdl=False,
                 vo='' if os.name == 'nt' else VIDEO_OUTPUT,
-                hwdec=HWACCEL
-                #log_handler=my_log,
-                #loglevel='info' # debug
+                hwdec=HWACCEL,
+                log_handler=my_log,
+                loglevel='info' # debug
             )
         except: # pylint: disable=bare-except
             player = mpv.MPV(
                 wid=str(int(win.main_widget.winId())),
                 vo='' if os.name == 'nt' else VIDEO_OUTPUT,
-                hwdec=HWACCEL
-                #log_handler=my_log,
-                #loglevel='info' # debug
+                hwdec=HWACCEL,
+                log_handler=my_log,
+                loglevel='info' # debug
             )
         if not settings['hwaccel']:
             try:
@@ -1600,7 +1609,7 @@ if __name__ == '__main__':
         label9.clicked.connect(show_help)
         label12 = QtWidgets.QLabel('')
         label10 = QtWidgets.QLabel('  (c) kestral / astroncia')
-        label11 = QtWidgets.QLabel('  ' + datetime.datetime.today().strftime('%H:%M:%S'))
+        label11 = QtWidgets.QLabel()
         myFont3 = QtGui.QFont()
         myFont3.setPointSize(11)
         myFont3.setBold(True)
@@ -1780,7 +1789,7 @@ if __name__ == '__main__':
             global first_boot, ic2
             try:
                 if player.video_bitrate:
-                    video_bitrate = "/ " + str(humanbytes(player.video_bitrate, LANG['bitrates'])) + " "
+                    video_bitrate = " - " + str(humanbytes(player.video_bitrate, LANG['bitrates']))
                 else:
                     video_bitrate = ""
             except: # pylint: disable=bare-except
@@ -1798,7 +1807,7 @@ if __name__ == '__main__':
                 width = 800
                 height = 600
             if (not (codec == 'png' and width == 800 and height == 600)) and (width and height):
-                label12.setText('    {} {}x{} {}/ {}'.format(codec, width, height, video_bitrate, audio_codec))
+                label12.setText('    {}x{}{} - {} / {}'.format(width, height, video_bitrate, codec, audio_codec))
                 if loading.text() == LANG['loading']:
                     loading.hide()
             else:
@@ -1846,8 +1855,8 @@ if __name__ == '__main__':
                 thread_4_lock = False
 
         def thread_update_time():
-            if label11:
-                label11.setText('  ' + datetime.datetime.today().strftime('%H:%M:%S'))
+            if label11 and clockOn:
+                label11.setText('  ' + time.strftime('%H:%M:%S', time.localtime()))
 
         def key_t():
             if dockWidget.isVisible():
@@ -1865,6 +1874,13 @@ if __name__ == '__main__':
             settings_win.close()
             win.close()
 
+        def show_clock():
+            global clockOn
+            clockOn = not clockOn
+            thread_update_time()
+            if not clockOn:
+                label11.setText('')
+
         QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Q), win).activated.connect(key_quit) # q - quit
         QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Space), win).activated.connect(mpv_play) # space - pause
         QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_S), win).activated.connect(mpv_stop) # s - stop
@@ -1873,6 +1889,7 @@ if __name__ == '__main__':
         QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_R), win).activated.connect(do_record) # r - record
         QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_P), win).activated.connect(prev_channel) # p - prev channel
         QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_N), win).activated.connect(next_channel) # n - next channel
+        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_O), win).activated.connect(show_clock) # o - show/hide clock
 
         app.aboutToQuit.connect(myExitHandler)
 

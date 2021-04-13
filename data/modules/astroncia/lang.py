@@ -87,6 +87,7 @@ R - start/stop record
 P - previous channel
 N - next channel
 T - open/close channels list
+O - show/hide clock
             '''
         }
     },
@@ -183,6 +184,7 @@ R - начать/остановить запись
 P - предыдущий канал
 N - следующий канал
 T - показать/скрыть список каналов
+O - показать/скрыть часы
             '''
         }
     }
