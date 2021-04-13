@@ -222,6 +222,7 @@ if __name__ == '__main__':
         epg_thread_2 = None
 
         def save_tvguide_sets():
+            global epg_thread_2
             epg_thread_2 = Process(target=save_tvguide_sets_proc)
             epg_thread_2.start()
 
@@ -902,7 +903,7 @@ if __name__ == '__main__':
         chan.setAlignment(QtCore.Qt.AlignCenter)
         chan.resize(200, 30)
 
-        loading1 = QtWidgets.QLabel(win) # TODO
+        loading1 = QtWidgets.QLabel(win)
         loading_movie = QtGui.QMovie(str(Path('data', 'icons', 'loading.gif')))
         loading1.setMovie(loading_movie)
         loading1.setStyleSheet('background-color: white;')
