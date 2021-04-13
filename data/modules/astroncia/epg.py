@@ -28,12 +28,15 @@ def load_epg(settings):
 def fetch_epg(settings):
     '''Parsing EPG'''
     programmes_epg = {}
+    prog_ids = {}
     epg_ok = True
     exc = None
     try:
         epg = load_epg(settings)
         try:
-            programmes_epg = parse_as_xmltv(epg, settings)
+            pr_xmltv = parse_as_xmltv(epg, settings)
+            programmes_epg = pr_xmltv[0]
+            prog_ids = pr_xmltv[1]
         except: # pylint: disable=bare-except
             programmes_epg = parse_jtv(epg, settings)
         print_with_time("Parsing done!")
@@ -42,7 +45,7 @@ def fetch_epg(settings):
         epg_ok = False
         exc = exc0
     print_with_time("Parsing EPG done!")
-    return [{}, programmes_epg, epg_ok, exc]
+    return [{}, programmes_epg, epg_ok, exc, prog_ids]
 
 def worker(procnum, sys_settings, return_dict1): # pylint: disable=unused-argument
     '''Worker running from multiprocess'''
@@ -52,3 +55,4 @@ def worker(procnum, sys_settings, return_dict1): # pylint: disable=unused-argume
     return_dict1[2] = True
     return_dict1[3] = epg[2]
     return_dict1[4] = epg[3]
+    return_dict1[5] = epg[4]

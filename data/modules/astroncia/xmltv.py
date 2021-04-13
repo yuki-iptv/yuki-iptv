@@ -49,4 +49,4 @@ def parse_as_xmltv(epg, settings):
                     "title": prog_title,
                     "desc": prog_desc
                 })
-    return programmes_epg
+    return [programmes_epg, ids]

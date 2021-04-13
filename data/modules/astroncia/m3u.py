@@ -86,7 +86,7 @@ class M3uParser:
                 name = m.group(1)
             except AttributeError:
                 name = ""
-            m = re.search("tvg-ID=\"(.*?)\"", lineInfo)
+            m = re.search("tvg-id=\"(.*?)\"", lineInfo)
             try:
                 id = m.group(1)
             except AttributeError:

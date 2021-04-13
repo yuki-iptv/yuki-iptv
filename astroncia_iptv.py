@@ -136,6 +136,7 @@ if __name__ == '__main__':
             os.mkdir(LOCAL_DIR)
 
         channel_sets = {}
+        prog_ids = {}
         def save_channel_sets():
             global channel_sets
             file2 = open(str(Path(LOCAL_DIR, 'channels.json')), 'w')
@@ -200,14 +201,19 @@ if __name__ == '__main__':
             global tvguide_sets
             if tvguide_sets:
                 file2 = open(str(Path(LOCAL_DIR, 'tvguide.json')), 'w')
-                file2.write(json.dumps({"tvguide_sets": tvguide_sets, "tvguide_url": str(settings["epg"])}))
+                file2.write(json.dumps({"tvguide_sets": tvguide_sets, "tvguide_url": str(settings["epg"]), "prog_ids": prog_ids}))
                 file2.close()
 
         if not os.path.isfile(str(Path(LOCAL_DIR, 'tvguide.json'))):
             save_tvguide_sets()
         else:
             file1 = open(str(Path(LOCAL_DIR, 'tvguide.json')), 'r')
-            tvguide_sets = json.loads(file1.read())["tvguide_sets"]
+            tvguide_json = json.loads(file1.read())
+            tvguide_sets = tvguide_json["tvguide_sets"]
+            try:
+                prog_ids = tvguide_json["prog_ids"]
+            except: # pylint: disable=bare-except
+                pass
             file1.close()
 
         def is_program_actual(sets0):
@@ -1126,14 +1132,19 @@ if __name__ == '__main__':
                 l += 1
                 k += 1
                 prog = ''
-                if i in programmes:
+                prog_search = i
+                if str(array[i]['tvg-ID']) in prog_ids:
+                    prog_search_lst = prog_ids[str(array[i]['tvg-ID'])]
+                    if prog_search_lst:
+                        prog_search = prog_search_lst[0]
+                if prog_search in programmes:
                     current_prog = {
                         'start': 0,
                         'stop': 0,
                         'title': '',
                         'desc': ''
                     }
-                    for pr in programmes[i]:
+                    for pr in programmes[prog_search]:
                         if time.time() > pr['start'] and time.time() < pr['stop']:
                             current_prog = pr
                             break
@@ -1167,7 +1178,7 @@ if __name__ == '__main__':
                 MAX_SIZE = 28
                 if len(prog) > MAX_SIZE:
                     prog = prog[0:MAX_SIZE] + "..."
-                if i in programmes:
+                if prog_search in programmes:
                     myQCustomQWidget.setTextDown(prog)
                     myQCustomQWidget.setTextProgress(start_time)
                     myQCustomQWidget.setTextEnd(stop_time)
@@ -1775,10 +1786,10 @@ if __name__ == '__main__':
         def thread_tvguide_2():
             global stopped, time_stop, first_boot, programmes, btn_update, \
             epg_thread, static_text, manager, tvguide_sets, epg_updating, ic, \
-            return_dict, waiting_for_epg, thread_4_lock, epg_failed
+            return_dict, waiting_for_epg, thread_4_lock, epg_failed, prog_ids
             if not thread_4_lock:
                 thread_4_lock = True
-                if waiting_for_epg and return_dict and len(return_dict) == 5:
+                if waiting_for_epg and return_dict and len(return_dict) == 6:
                     try:
                         if not return_dict[3]:
                             raise return_dict[4]
@@ -1790,6 +1801,7 @@ if __name__ == '__main__':
                         programmes = values[1]
                         if not is_program_actual(programmes):
                             raise Exception("Programme not actual")
+                        prog_ids = return_dict[5]
                         tvguide_sets = programmes
                         save_tvguide_sets()
                         btn_update.click() # start update in main thread
