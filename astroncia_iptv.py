@@ -201,12 +201,15 @@ if __name__ == '__main__':
                 tvguide_c1 = ""
 
         tvguide_sets = {}
-        def save_tvguide_sets():
+        def save_tvguide_sets_proc():
             global tvguide_sets
             if tvguide_sets:
                 file2 = open(str(Path(LOCAL_DIR, 'tvguide.dat')), 'wb')
                 file2.write(codecs.encode(bytes(json.dumps({"tvguide_sets": clean_programme(), "tvguide_url": str(settings["epg"]), "prog_ids": prog_ids}), 'utf-8'), 'zlib'))
                 file2.close()
+
+        def save_tvguide_sets():
+            Process(target=save_tvguide_sets_proc).start()
 
         if not os.path.isfile(str(Path(LOCAL_DIR, 'tvguide.dat'))):
             save_tvguide_sets()
