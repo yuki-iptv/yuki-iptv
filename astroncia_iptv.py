@@ -181,11 +181,14 @@ if __name__ == '__main__':
                 "nocache": False,
                 "lang": LANG_DEFAULT,
                 "offset": 0,
-                "hwaccel": True
+                "hwaccel": True,
+                "sort": 0
             }
             m3u = ""
         if 'hwaccel' not in settings:
             settings['hwaccel'] = True
+        if 'sort' not in settings:
+            settings['sort'] = 0
         if settings['hwaccel']:
             print_with_time("{} {}".format(LANG['hwaccel'].replace('\n', ' '), LANG['enabled']))
         else:
@@ -511,6 +514,9 @@ if __name__ == '__main__':
             if settings["offset"] != soffset.value():
                 if os.path.isfile(str(Path(LOCAL_DIR, 'tvguide.dat'))):
                     os.remove(str(Path(LOCAL_DIR, 'tvguide.dat')))
+            if sort_widget.currentIndex() != settings['sort']:
+                if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
+                    os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
             lang1 = LANG_DEFAULT
             for lng1 in lang:
                 if lang[lng1]['name'] == slang.currentText():
@@ -528,7 +534,8 @@ if __name__ == '__main__':
                 "nocache": supdate.isChecked(),
                 "lang": lang1,
                 "offset": soffset.value(),
-                "hwaccel": shwaccel.isChecked()
+                "hwaccel": shwaccel.isChecked(),
+                "sort": sort_widget.currentIndex()
             }
             settings_file1 = open(str(Path(LOCAL_DIR, 'settings.json')), 'w')
             settings_file1.write(json.dumps(settings_arr))
@@ -568,6 +575,7 @@ if __name__ == '__main__':
         epg_label = QtWidgets.QLabel('{}:'.format(LANG['epgaddress']))
         dei_label = QtWidgets.QLabel('{}:'.format(LANG['deinterlace']))
         hwaccel_label = QtWidgets.QLabel('{}:'.format(LANG['hwaccel']))
+        sort_label = QtWidgets.QLabel('{}:'.format(LANG['sort']))
         udp_label = QtWidgets.QLabel('{}:'.format(LANG['udpproxy']))
         fld_label = QtWidgets.QLabel('{}:'.format(LANG['writefolder']))
         lang_label = QtWidgets.QLabel('{}:'.format(LANG['interfacelang']))
@@ -612,6 +620,10 @@ if __name__ == '__main__':
         ssave.clicked.connect(save_settings)
         sreset = QtWidgets.QPushButton(LANG['resetchannelsettings'])
         sreset.clicked.connect(reset_channel_settings)
+        sort_widget = QtWidgets.QComboBox()
+        for sortI in LANG['sortitems']:
+            sort_widget.addItem(sortI)
+        sort_widget.setCurrentIndex(settings['sort'])
         sprov = QtWidgets.QComboBox()
         slang = QtWidgets.QComboBox()
         lng0 = -1
@@ -757,9 +769,12 @@ if __name__ == '__main__':
         grid.addWidget(hwaccel_label, 13, 0)
         grid.addWidget(shwaccel, 13, 1)
 
-        grid.addWidget(ssave, 14, 1)
-        grid.addWidget(sreset, 15, 1)
-        grid.addWidget(sclose, 16, 1)
+        grid.addWidget(sort_label, 14, 0)
+        grid.addWidget(sort_widget, 14, 1)
+
+        grid.addWidget(ssave, 15, 1)
+        grid.addWidget(sreset, 16, 1)
+        grid.addWidget(sclose, 17, 1)
         wid2.setLayout(grid)
         settings_win.setCentralWidget(wid2)
 
@@ -1139,6 +1154,12 @@ if __name__ == '__main__':
         current_group = LANG['allchannels']
 
         def doSort(arr0):
+            if settings['sort'] == 0:
+                return arr0
+            if settings['sort'] == 1:
+                return sorted(arr0)
+            if settings['sort'] == 2:
+                return sorted(arr0, reverse=True)
             return arr0
 
         def gen_chans(ch_array): # pylint: disable=too-many-locals, too-many-branches
