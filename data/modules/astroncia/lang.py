@@ -67,6 +67,7 @@ lang = {
             'hwaccel': 'Hardware\nacceleration',
             'enabled': 'enabled',
             'disabled': 'disabled',
+            'bitrates': ['bps', 'kbps', 'Mbps', 'Gbps', 'Tbps'],
             'helptext': '''Astroncia IPTV, version {}    (c) kestral / astroncia
 
 Cross-platform IPTV player
@@ -157,6 +158,7 @@ T - open/close channels list
             'hwaccel': 'Аппаратное\nускорение',
             'enabled': 'включено',
             'disabled': 'выключено',
+            'bitrates': ['бит/с', 'Кбит/с', 'Мбит/с', 'Гбит/с', 'Тбит/с'],
             'helptext': '''Astroncia IPTV, версия {}    (c) kestral / astroncia
 
 Кроссплатформенный плеер

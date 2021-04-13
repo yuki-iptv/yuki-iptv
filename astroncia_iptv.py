@@ -1755,7 +1755,7 @@ if __name__ == '__main__':
             global first_boot, ic2
             try:
                 if player.video_bitrate:
-                    video_bitrate = "/ " + str(humanbytes(player.video_bitrate)) + " "
+                    video_bitrate = "/ " + str(humanbytes(player.video_bitrate, LANG['bitrates'])) + " "
                 else:
                     video_bitrate = ""
             except: # pylint: disable=bare-except
