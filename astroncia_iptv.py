@@ -16,6 +16,7 @@ import signal
 import base64
 import argparse
 import subprocess
+import codecs
 import ctypes
 import webbrowser
 from tkinter import Tk, messagebox
@@ -190,31 +191,44 @@ if __name__ == '__main__':
             print_with_time("{} {}".format(LANG['hwaccel'].replace('\n', ' '), LANG['disabled']))
 
         if os.path.isfile(str(Path(LOCAL_DIR, 'tvguide.json'))):
-            tvguide_c = open(str(Path(LOCAL_DIR, 'tvguide.json')), 'r')
-            tvguide_c1 = json.loads(tvguide_c.read())["tvguide_url"]
-            tvguide_c.close()
-            if tvguide_c1 != settings["epg"]:
-                os.remove(str(Path(LOCAL_DIR, 'tvguide.json')))
+            try:
+                tvguide_c = open(str(Path(LOCAL_DIR, 'tvguide.json')), 'rb')
+                tvguide_c1 = json.loads(codecs.decode(tvguide_c.read(), 'utf-8'))["tvguide_url"]
+                tvguide_c.close()
+                if tvguide_c1 != settings["epg"]:
+                    os.remove(str(Path(LOCAL_DIR, 'tvguide.json')))
+            except: # pylint: disable=bare-except
+                tvguide_c1 = ""
 
         tvguide_sets = {}
         def save_tvguide_sets():
             global tvguide_sets
             if tvguide_sets:
-                file2 = open(str(Path(LOCAL_DIR, 'tvguide.json')), 'w')
-                file2.write(json.dumps({"tvguide_sets": tvguide_sets, "tvguide_url": str(settings["epg"]), "prog_ids": prog_ids}))
+                file2 = open(str(Path(LOCAL_DIR, 'tvguide.json')), 'wb')
+                file2.write(codecs.encode(bytes(json.dumps({"tvguide_sets": clean_programme(), "tvguide_url": str(settings["epg"]), "prog_ids": prog_ids}), 'utf-8'), 'zlib'))
                 file2.close()
 
         if not os.path.isfile(str(Path(LOCAL_DIR, 'tvguide.json'))):
             save_tvguide_sets()
         else:
-            file1 = open(str(Path(LOCAL_DIR, 'tvguide.json')), 'r')
-            tvguide_json = json.loads(file1.read())
+            file1 = open(str(Path(LOCAL_DIR, 'tvguide.json')), 'rb')
+            try:
+                tvguide_json = json.loads(codecs.decode(file1.read(), 'zlib'))
+            except: # pylint: disable=bare-except
+                tvguide_json = {"tvguide_sets": {}, "tvguide_url": "", "prog_ids": {}}
             tvguide_sets = tvguide_json["tvguide_sets"]
             try:
                 prog_ids = tvguide_json["prog_ids"]
             except: # pylint: disable=bare-except
                 pass
             file1.close()
+
+        def clean_programme():
+            sets1 = tvguide_sets.copy()
+            if sets1:
+                for prog2 in sets1:
+                    sets1[prog2] = [x12 for x12 in sets1[prog2] if time.time() + 7200 > x12['start'] and time.time() - 7200 < x12['stop']]
+            return sets1
 
         def is_program_actual(sets0):
             found_prog = False
