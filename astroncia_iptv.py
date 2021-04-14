@@ -1649,7 +1649,6 @@ if __name__ == '__main__':
         @player.event_callback('end_file')
         def ready_handler_2(event): # pylint: disable=unused-argument
             if event['event']['error'] != 0:
-                print(event['event'])
                 if loading.isVisible():
                     loading.setText(LANG['playerror'])
                     loading.setStyleSheet('color: red')
