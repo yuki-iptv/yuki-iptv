@@ -408,7 +408,8 @@ if __name__ == '__main__':
         qr = settings_win.frameGeometry()
         qr.moveCenter(QtWidgets.QDesktopWidget().availableGeometry().center())
         settings_win_l = qr.topLeft()
-        settings_win_l.setY(settings_win_l.y() - 60)
+        origY = settings_win_l.y() - 60
+        settings_win_l.setY(origY)
         settings_win.move(settings_win_l)
         help_win.move(qr.topLeft())
         chan_win.move(qr.topLeft())
@@ -850,6 +851,8 @@ if __name__ == '__main__':
             for lbl in lbls:
                 lbl.hide()
             settings_win.setMaximumSize(400, 200)
+            settings_win_l.setY(origY)
+            settings_win.move(settings_win_l)
 
         def showMoreSettings():
             morebtn.setText(LANG["lesssettings"])
@@ -857,6 +860,8 @@ if __name__ == '__main__':
             for lbl in lbls:
                 lbl.show()
             settings_win.setMaximumSize(597, 619)
+            settings_win_l.setY(0)
+            settings_win.move(settings_win_l)
 
         def more_settings():
             if lbls[0].isVisible():
