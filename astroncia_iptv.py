@@ -498,6 +498,11 @@ if __name__ == '__main__':
                     player['video-latency-hacks'] = True
                 except: # pylint: disable=bare-except
                     print_with_time("Failed to set multicast optimized settings!")
+            try:
+                player.stream_lavf_o = '-reconnect=1 -reconnect_at_eof=1 -reconnect_streamed=1 -reconnect_delay_max=2'
+            except: # pylint: disable=bare-except
+                pass
+            player.loop = True
             player.play(play_url1)
 
         def chan_set_save():
