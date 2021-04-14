@@ -544,7 +544,7 @@ if __name__ == '__main__':
             if playing_chan == chan_3:
                 player.deinterlace = deinterlace_chk.isChecked()
                 stopPlayer()
-                doPlay(playing_url)
+                doPlay(playing_url, uas[useragent_choose.currentIndex()])
             chan_win.close()
 
         save_btn = QtWidgets.QPushButton(LANG['savesettings'])
@@ -1518,8 +1518,13 @@ if __name__ == '__main__':
             title.setText(("{}: " + item_selected).format(LANG['channel']))
             if item_selected in channel_sets:
                 deinterlace_chk.setChecked(channel_sets[item_selected]['deinterlace'])
+                try:
+                    useragent_choose.setCurrentIndex(channel_sets[item_selected]['useragent'])
+                except: # pylint: disable=bare-except
+                    pass
             else:
                 deinterlace_chk.setChecked(False)
+                useragent_choose.setCurrentIndex(0)
             chan_win.show()
 
         def tvguide_favourites_add():
