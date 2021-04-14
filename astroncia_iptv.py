@@ -1850,6 +1850,7 @@ if __name__ == '__main__':
         label8_1 = QtWidgets.QPushButton()
         label8_1.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'tvguide.png'))))
         label8_1.setToolTip(LANG['tvguide'])
+        label8_1.clicked.connect(show_tvguide)
         label8_4 = QtWidgets.QPushButton()
         label8_4.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'sort.png'))))
         label8_4.setToolTip(LANG['sort'].replace('\n', ' '))
