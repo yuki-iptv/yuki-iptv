@@ -74,6 +74,7 @@ lang = {
             'seconds': 'seconds.',
             'cache': 'Cache',
             'chansearch': 'Search channel',
+            'reconnecting': 'Reconnecting...',
             'bitrates': ['bps', 'kbps', 'Mbps', 'Gbps', 'Tbps'],
             'helptext': '''Astroncia IPTV, version {}    (c) kestral / astroncia
 
@@ -173,6 +174,7 @@ O - show/hide clock
             'seconds': 'секунд.',
             'cache': 'Кэш',
             'chansearch': 'Поиск по каналам',
+            'reconnecting': 'Переподключение...',
             'bitrates': ['бит/с', 'Кбит/с', 'Мбит/с', 'Гбит/с', 'Тбит/с'],
             'helptext': '''Astroncia IPTV, версия {}    (c) kestral / astroncia
 

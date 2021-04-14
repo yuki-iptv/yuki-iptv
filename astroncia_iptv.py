@@ -1949,8 +1949,30 @@ if __name__ == '__main__':
                 else:
                     l1.setText2("")
 
+        x_conn = None
+
+        def do_reconnect():
+            global x_conn
+            if (playing_chan and not loading.isVisible()) and (player.cache_buffering_state == 0):
+                print_with_time("Reconnecting to stream")
+                doPlay(playing_url)
+                x_conn = None
+
+        def check_connection():
+            global x_conn
+            try:
+                if (playing_chan and not loading.isVisible()) and (player.cache_buffering_state == 0):
+                    print_with_time("Connection to stream lost, waiting 5 secs...")
+                    if not x_conn:
+                        x_conn = QtCore.QTimer()
+                        x_conn.timeout.connect(do_reconnect)
+                        x_conn.start(5000)
+            except: # pylint: disable=bare-except
+                print_with_time("Failed to set connection loss detector!")
+
         def thread_check_tvguide_obsolete():
             global first_boot, ic2
+            check_connection()
             try:
                 if player.video_bitrate:
                     video_bitrate = " - " + str(humanbytes(player.video_bitrate, LANG['bitrates']))
