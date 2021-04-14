@@ -461,7 +461,8 @@ if __name__ == '__main__':
         def showLoading():
             loading.show()
             loading_movie.start()
-            loading1.show()
+            if not os.name == 'nt':
+                loading1.show()
 
         def stopPlayer():
             try:
