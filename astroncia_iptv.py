@@ -52,8 +52,7 @@ WINDOW_SIZE = (1200, 600)
 DOCK_WIDGET2_HEIGHT = int(WINDOW_SIZE[1] / 6)
 DOCK_WIDGET_WIDTH = int((WINDOW_SIZE[0] / 2) - 200)
 TVGUIDE_WIDTH = int((WINDOW_SIZE[0] / 5))
-#BCOLOR = "#A2A3A3"
-BCOLOR = "white"
+BCOLOR = "#A2A3A3"
 
 if DOCK_WIDGET2_HEIGHT < 0:
     DOCK_WIDGET2_HEIGHT = 0
@@ -1184,7 +1183,7 @@ if __name__ == '__main__':
                 self.label = QtWidgets.QLabel(content)
                 self.label.setAlignment(QtCore.Qt.AlignCenter)
                 self.label.setWordWrap(True)
-                self.label.setStyleSheet('background-color: ' + BCOLOR)
+                self.label.setStyleSheet('background-color: white')
                 lay.addWidget(self.label)
 
             def setText(self, text):
