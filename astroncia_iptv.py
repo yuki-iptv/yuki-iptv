@@ -366,9 +366,12 @@ if __name__ == '__main__':
             array = cm3u['array']
             groups = cm3u['groups']
             m3u = cm3u['m3u']
-            epg_url = cm3u['epgurl']
-            if epg_url and not settings["epg"]:
-                settings["epg"] = epg_url
+            try:
+                epg_url = cm3u['epgurl']
+                if epg_url and not settings["epg"]:
+                    settings["epg"] = epg_url
+            except: # pylint: disable=bare-except
+                pass
 
         if LANG['allchannels'] in groups:
             groups.remove(LANG['allchannels'])
