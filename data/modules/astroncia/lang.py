@@ -71,6 +71,8 @@ lang = {
             'lesssettings': 'Less settings',
             'enabled': 'enabled',
             'disabled': 'disabled',
+            'seconds': 'seconds.',
+            'cache': 'Cache',
             'chansearch': 'Search channel',
             'bitrates': ['bps', 'kbps', 'Mbps', 'Gbps', 'Tbps'],
             'helptext': '''Astroncia IPTV, version {}    (c) kestral / astroncia
@@ -168,6 +170,8 @@ O - show/hide clock
             'lesssettings': 'Меньше настроек!',
             'enabled': 'включено',
             'disabled': 'выключено',
+            'seconds': 'секунд.',
+            'cache': 'Кэш',
             'chansearch': 'Поиск по каналам',
             'bitrates': ['бит/с', 'Кбит/с', 'Мбит/с', 'Гбит/с', 'Тбит/с'],
             'helptext': '''Astroncia IPTV, версия {}    (c) kestral / astroncia

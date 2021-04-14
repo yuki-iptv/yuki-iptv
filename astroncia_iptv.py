@@ -182,13 +182,16 @@ if __name__ == '__main__':
                 "lang": LANG_DEFAULT,
                 "offset": 0,
                 "hwaccel": True,
-                "sort": 0
+                "sort": 0,
+                "cache_secs": 1
             }
             m3u = ""
         if 'hwaccel' not in settings:
             settings['hwaccel'] = True
         if 'sort' not in settings:
             settings['sort'] = 0
+        if 'cache_secs' not in settings:
+            settings['cache_secs'] = 1
         if settings['hwaccel']:
             print_with_time("{} {}".format(LANG['hwaccel'].replace('\n', ' '), LANG['enabled']))
         else:
@@ -404,7 +407,9 @@ if __name__ == '__main__':
 
         qr = settings_win.frameGeometry()
         qr.moveCenter(QtWidgets.QDesktopWidget().availableGeometry().center())
-        settings_win.move(qr.topLeft())
+        settings_win_l = qr.topLeft()
+        settings_win_l.setY(settings_win_l.y() - 60)
+        settings_win.move(settings_win_l)
         help_win.move(qr.topLeft())
         chan_win.move(qr.topLeft())
 
@@ -556,7 +561,8 @@ if __name__ == '__main__':
                 "lang": lang1,
                 "offset": soffset.value(),
                 "hwaccel": shwaccel.isChecked(),
-                "sort": sort_widget.currentIndex()
+                "sort": sort_widget.currentIndex(),
+                "cache_secs": scache1.value()
             }
             settings_file1 = open(str(Path(LOCAL_DIR, 'settings.json')), 'w')
             settings_file1.write(json.dumps(settings_arr))
@@ -602,6 +608,7 @@ if __name__ == '__main__':
         dei_label = QtWidgets.QLabel('{}:'.format(LANG['deinterlace']))
         hwaccel_label = QtWidgets.QLabel('{}:'.format(LANG['hwaccel']))
         sort_label = QtWidgets.QLabel('{}:'.format(LANG['sort']))
+        cache_label = QtWidgets.QLabel('{}:'.format(LANG['cache']))
         udp_label = QtWidgets.QLabel('{}:'.format(LANG['udpproxy']))
         fld_label = QtWidgets.QLabel('{}:'.format(LANG['writefolder']))
         lang_label = QtWidgets.QLabel('{}:'.format(LANG['interfacelang']))
@@ -639,6 +646,7 @@ if __name__ == '__main__':
         supdate.setChecked(settings['nocache'])
         sfld = QtWidgets.QLineEdit()
         sfld.setText(settings['save_folder'])
+        scache = QtWidgets.QLabel(LANG['seconds'])
         sselect = QtWidgets.QLabel("{}:".format(LANG['orselectyourprovider']))
         sselect.setStyleSheet('color: #00008B;')
         ssave = QtWidgets.QPushButton(LANG['savesettings'])
@@ -760,6 +768,11 @@ if __name__ == '__main__':
 
         morebtn = QtWidgets.QPushButton(LANG["moresettings"])
 
+        scache1 = QtWidgets.QSpinBox()
+        scache1.setMinimum(0)
+        scache1.setMaximum(120)
+        scache1.setValue(settings["cache_secs"])
+
         grid = QtWidgets.QGridLayout()
         grid.setSpacing(10)
 
@@ -816,17 +829,21 @@ if __name__ == '__main__':
         grid.addWidget(hwaccel_label, 15, 0)
         grid.addWidget(shwaccel, 15, 1)
 
-        grid.addWidget(sort_label, 16, 0)
-        grid.addWidget(sort_widget, 16, 1)
+        grid.addWidget(cache_label, 16, 0)
+        grid.addWidget(scache1, 16, 1)
+        grid.addWidget(scache, 16, 2)
 
-        grid.addWidget(ssave, 17, 1)
-        grid.addWidget(sreset, 18, 1)
-        grid.addWidget(sclose, 19, 1)
+        grid.addWidget(sort_label, 17, 0)
+        grid.addWidget(sort_widget, 17, 1)
+
+        grid.addWidget(ssave, 18, 1)
+        grid.addWidget(sreset, 19, 1)
+        grid.addWidget(sclose, 20, 1)
         wid2.setLayout(grid)
         settings_win.setCentralWidget(wid2)
 
 
-        lbls = [lang_label, slang, fld_label, sfld, sfolder, udp_label, sudp, dei_label, sdei, hwaccel_label, shwaccel, sort_label, sort_widget]
+        lbls = [lang_label, slang, fld_label, sfld, sfolder, udp_label, sudp, dei_label, sdei, hwaccel_label, shwaccel, cache_label, scache1, scache, sort_label, sort_widget]
         def hideMoreSettings():
             morebtn.setText(LANG["moresettings"])
             global lbls
@@ -1600,6 +1617,15 @@ if __name__ == '__main__':
             player['network-timeout'] = 5
         except: # pylint: disable=bare-except
             pass
+
+        if settings["cache_secs"] != 0:
+            try:
+                player['cache-secs'] = settings["cache_secs"]
+                print_with_time('Cache set to {}s'.format(settings["cache_secs"]))
+            except: # pylint: disable=bare-except
+                pass
+        else:
+            print_with_time("Using default cache settings")
         player.user_agent = user_agent
         player.volume = 100
         player.loop = True
@@ -1608,9 +1634,13 @@ if __name__ == '__main__':
         @player.event_callback('end_file')
         def ready_handler_2(event): # pylint: disable=unused-argument
             if event['event']['error'] != 0:
-                loading.setText(LANG['playerror'])
-                loading.setStyleSheet('color: red')
-                showLoading()
+                print(event['event'])
+                if loading.isVisible():
+                    loading.setText(LANG['playerror'])
+                    loading.setStyleSheet('color: red')
+                    showLoading()
+                    loading1.hide()
+                    loading_movie.stop()
 
         @player.on_key_press('MBTN_LEFT_DBL')
         def my_leftdbl_binding():
