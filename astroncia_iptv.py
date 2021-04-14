@@ -27,7 +27,7 @@ from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 from PyQt5 import QtGui
 from data.modules.astroncia.lang import lang
-from data.modules.astroncia.ua import user_agent
+from data.modules.astroncia.ua import user_agent, uas
 from data.modules.astroncia.m3u import M3uParser
 from data.modules.astroncia.epg import worker
 from data.modules.astroncia.record import record, stop_record
@@ -37,6 +37,7 @@ from data.modules.astroncia.providers import iptv_providers
 from data.modules.astroncia.time import print_with_time
 from data.modules.astroncia.epgurls import EPG_URLS
 from data.modules.astroncia.bitrate import humanbytes
+from data.modules.astroncia.selectionmodel import ReorderableListModel, SelectionModel
 
 APP_VERSION = '0.0.10'
 
@@ -404,6 +405,11 @@ if __name__ == '__main__':
         help_win.setWindowTitle(LANG['help'])
         help_win.setWindowIcon(main_icon)
 
+        sort_win = QtWidgets.QMainWindow()
+        sort_win.resize(400, 500)
+        sort_win.setWindowTitle(LANG['sort'].replace('\n', ' '))
+        sort_win.setWindowIcon(main_icon)
+
         chan_win = QtWidgets.QMainWindow()
         chan_win.resize(400, 250)
         chan_win.setWindowTitle(LANG['channelsettings'])
@@ -418,7 +424,23 @@ if __name__ == '__main__':
         settings_win_l.setY(origY)
         settings_win.move(settings_win_l)
         help_win.move(qr.topLeft())
+        sort_win.move(qr.topLeft())
         chan_win.move(qr.topLeft())
+
+        def save_sort():
+            global channel_sort
+            channel_sort = model.getNodes()
+            file4 = open(str(Path(LOCAL_DIR, 'sort.json')), 'w')
+            file4.write(json.dumps(channel_sort))
+            file4.close()
+            sort_win.hide()
+
+        close_sort_btn = QtWidgets.QPushButton(LANG['close'], sort_win)
+        close_sort_btn.move(145, 465)
+        close_sort_btn.clicked.connect(sort_win.hide)
+        save_sort_btn = QtWidgets.QPushButton(LANG['save'], sort_win)
+        save_sort_btn.clicked.connect(save_sort)
+        save_sort_btn.move(145, 430)
 
         def m3u_select():
             reset_prov()
@@ -457,7 +479,12 @@ if __name__ == '__main__':
         title.setAlignment(QtCore.Qt.AlignCenter)
 
         deinterlace_lbl = QtWidgets.QLabel("{}:".format(LANG['deinterlace']))
+        useragent_lbl = QtWidgets.QLabel("{}:".format(LANG['useragent']))
         deinterlace_chk = QtWidgets.QCheckBox()
+        useragent_choose = QtWidgets.QComboBox()
+        useragent_choose.addItem(LANG['empty'])
+        useragent_choose.addItem('Windows')
+        useragent_choose.addItem('Android')
 
         def hideLoading():
             loading.hide()
@@ -477,7 +504,7 @@ if __name__ == '__main__':
                 player.loop = True
                 player.play(str(Path('data', 'icons', 'main.png')))
 
-        def doPlay(play_url1):
+        def doPlay(play_url1, ua_ch=user_agent):
             loading.setText(LANG['loading'])
             loading.setStyleSheet('color: #778a30')
             showLoading()
@@ -502,12 +529,17 @@ if __name__ == '__main__':
                 player.stream_lavf_o = '-reconnect=1 -reconnect_at_eof=1 -reconnect_streamed=1 -reconnect_delay_max=2'
             except: # pylint: disable=bare-except
                 pass
+            print_with_time("Using user-agent: {}".format(ua_ch))
+            player.user_agent = ua_ch
             player.loop = True
             player.play(play_url1)
 
         def chan_set_save():
             chan_3 = title.text().replace("{}: ".format(LANG['channel']), "")
-            channel_sets[chan_3] = {"deinterlace": deinterlace_chk.isChecked()}
+            channel_sets[chan_3] = {
+                "deinterlace": deinterlace_chk.isChecked(),
+                "useragent": useragent_choose.currentIndex()
+            }
             save_channel_sets()
             if playing_chan == chan_3:
                 player.deinterlace = deinterlace_chk.isChecked()
@@ -528,12 +560,20 @@ if __name__ == '__main__':
         horizontalLayout2.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2.setAlignment(QtCore.Qt.AlignCenter)
 
+        horizontalLayout2_1 = QtWidgets.QHBoxLayout()
+        horizontalLayout2_1.addWidget(QtWidgets.QLabel("\n"))
+        horizontalLayout2_1.addWidget(useragent_lbl)
+        horizontalLayout2_1.addWidget(useragent_choose)
+        horizontalLayout2_1.addWidget(QtWidgets.QLabel("\n"))
+        horizontalLayout2_1.setAlignment(QtCore.Qt.AlignCenter)
+
         horizontalLayout3 = QtWidgets.QHBoxLayout()
         horizontalLayout3.addWidget(save_btn)
 
         verticalLayout = QtWidgets.QVBoxLayout(wid)
         verticalLayout.addLayout(horizontalLayout)
         verticalLayout.addLayout(horizontalLayout2)
+        verticalLayout.addLayout(horizontalLayout2_1)
         verticalLayout.addLayout(horizontalLayout3)
         verticalLayout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
 
@@ -629,8 +669,12 @@ if __name__ == '__main__':
         hours_label = QtWidgets.QLabel(LANG['hours'])
 
         def reset_channel_settings():
-            os.remove(str(Path(LOCAL_DIR, 'channels.json')))
-            os.remove(str(Path(LOCAL_DIR, 'favourites.json')))
+            if os.path.isfile(str(Path(LOCAL_DIR, 'channels.json'))):
+                os.remove(str(Path(LOCAL_DIR, 'channels.json')))
+            if os.path.isfile(str(Path(LOCAL_DIR, 'favourites.json'))):
+                os.remove(str(Path(LOCAL_DIR, 'favourites.json')))
+            if os.path.isfile(str(Path(LOCAL_DIR, 'sort.json'))):
+                os.remove(str(Path(LOCAL_DIR, 'sort.json')))
             save_settings()
         def reset_prov():
             if sprov.currentText() != '--{}--'.format(LANG['notselected']):
@@ -909,6 +953,12 @@ if __name__ == '__main__':
             else:
                 help_win.hide()
 
+        def show_sort():
+            if not sort_win.isVisible():
+                sort_win.show()
+            else:
+                sort_win.hide()
+
         # This is necessary since PyQT stomps over the locale settings needed by libmpv.
         # This needs to happen after importing PyQT before creating the first mpv.MPV instance.
         locale.setlocale(locale.LC_NUMERIC, 'C')
@@ -1047,12 +1097,17 @@ if __name__ == '__main__':
             playing = True
             win.update()
             playing_url = play_url
+            ua_choose = user_agent
             if j in channel_sets:
                 d = channel_sets[j]
                 player.deinterlace = d['deinterlace']
+                if not 'useragent' in d:
+                    d['useragent'] = 0
+                d['useragent'] = uas[d['useragent']]
+                ua_choose = d['useragent']
             else:
                 player.deinterlace = settings['deinterlace']
-            doPlay(play_url)
+            doPlay(play_url, ua_choose)
 
         item_selected = ''
 
@@ -1270,6 +1325,18 @@ if __name__ == '__main__':
 
         current_group = LANG['allchannels']
 
+        channel_sort = {}
+        if os.path.isfile(str(Path(LOCAL_DIR, 'sort.json'))):
+            file3 = open(str(Path(LOCAL_DIR, 'sort.json')), 'r')
+            channel_sort = json.loads(file3.read())
+            file3.close()
+
+        def sort_custom(sub):
+            try:
+                return channel_sort.index(sub)
+            except: # pylint: disable=bare-except
+                return sub
+
         def doSort(arr0):
             if settings['sort'] == 0:
                 return arr0
@@ -1277,6 +1344,8 @@ if __name__ == '__main__':
                 return sorted(arr0)
             if settings['sort'] == 2:
                 return sorted(arr0, reverse=True)
+            if settings['sort'] == 3:
+                return sorted(arr0, reverse=False, key=sort_custom)
             return arr0
 
         def gen_chans(): # pylint: disable=too-many-locals, too-many-branches
@@ -1409,10 +1478,30 @@ if __name__ == '__main__':
         btn_update.clicked.connect(redraw_chans)
 
         channels = gen_chans()
+        modelA = []
         for channel in channels:
             # Add QListWidgetItem into QListWidget
+            modelA.append(channels[channel][3])
             win.listWidget.addItem(channels[channel][0])
             win.listWidget.setItemWidget(channels[channel][0], channels[channel][1])
+
+        model = ReorderableListModel()
+        if not channel_sort:
+            model.setNodes(modelA)
+        else:
+            model.setNodes(channel_sort)
+        selectionModel = SelectionModel(model)
+        model.dragDropFinished.connect(selectionModel.onModelItemsReordered)
+        sort_label = QtWidgets.QLabel(LANG['donotforgetsort'], sort_win)
+        sort_label.resize(400, 50)
+        sort_label.setAlignment(QtCore.Qt.AlignCenter)
+        sort_list = QtWidgets.QListView(sort_win)
+        sort_list.resize(400, 370)
+        sort_list.move(0, 50)
+        sort_list.setModel(model)
+        sort_list.setSelectionModel(selectionModel)
+        sort_list.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
+        sort_list.setDragDropOverwriteMode(False)
 
         sel_item = None
 
@@ -1753,7 +1842,10 @@ if __name__ == '__main__':
         label8_1 = QtWidgets.QPushButton()
         label8_1.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'tvguide.png'))))
         label8_1.setToolTip(LANG['tvguide'])
-        label8_1.clicked.connect(show_tvguide)
+        label8_4 = QtWidgets.QPushButton()
+        label8_4.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'sort.png'))))
+        label8_4.setToolTip(LANG['sort'].replace('\n', ' '))
+        label8_4.clicked.connect(show_sort)
         label8_2 = QtWidgets.QPushButton()
         label8_2.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'prev.png'))))
         label8_2.setToolTip(LANG['prevchannel'])
@@ -1801,6 +1893,7 @@ if __name__ == '__main__':
         hlayout2.addWidget(label7)
         hlayout2.addWidget(label7_1)
         hlayout2.addWidget(label8)
+        hlayout2.addWidget(label8_4)
         hlayout2.addWidget(label8_1)
         hlayout2.addWidget(label8_2)
         hlayout2.addWidget(label8_3)
@@ -2051,6 +2144,7 @@ if __name__ == '__main__':
                 dockWidget.show()
 
         # Key bindings
+        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_I), win).activated.connect(show_sort) # i - sort channels
         QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_T), win).activated.connect(key_t)
         QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Escape), win).activated.connect(esc_handler) # escape key
         QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_F), win).activated.connect(mpv_fullscreen) # f - fullscreen

@@ -21,8 +21,11 @@ lang = {
             'selectepg': 'Select EPG file (XMLTV or JTV EPG)',
             'selectwritefolder': 'Select folder for recordings and screenshots',
             'deinterlace': 'Deinterlace',
+            'useragent': 'User agent',
+            'empty': 'None',
             'channel': 'Channel',
             'savesettings': 'Save settings',
+            'save': 'Save',
             'm3uplaylist': 'M3U playlist',
             'updateatboot': 'Update\nat launch',
             'epgaddress': 'TV guide\naddress\n(XMLTV or JTV)',
@@ -66,7 +69,8 @@ lang = {
             'hours': 'hours',
             'hwaccel': 'Hardware\nacceleration',
             'sort': 'Channel\nsort',
-            'sortitems': ['as in playlist', 'alphabetical order', 'reverse alphabetical order'],
+            'sortitems': ['as in playlist', 'alphabetical order', 'reverse alphabetical order', 'custom'],
+            'donotforgetsort': 'Do not forget\nto set custom sort order in settings!',
             'moresettings': 'More settings',
             'lesssettings': 'Less settings',
             'enabled': 'enabled',
@@ -82,6 +86,9 @@ Cross-platform IPTV player
 
 Supports TV guide (EPG) only in XMLTV and JTV formats!
 
+Channel not working?
+Right mouse button opens channel settings
+
 Hotkeys:
 
 F - fullscreen mode
@@ -96,6 +103,7 @@ P - previous channel
 N - next channel
 T - open/close channels list
 O - show/hide clock
+I - channel sort
             '''
         }
     },
@@ -121,8 +129,11 @@ O - show/hide clock
             'selectepg': 'Выберите файл телепрограммы (XMLTV / JTV EPG)',
             'selectwritefolder': 'Выберите папку для записи и скриншотов',
             'deinterlace': 'Деинтерлейс',
+            'useragent': 'User agent',
+            'empty': 'Пустой',
             'channel': 'Канал',
             'savesettings': 'Сохранить настройки',
+            'save': 'Сохранить',
             'm3uplaylist': 'M3U плейлист',
             'updateatboot': 'Обновлять\nпри запуске',
             'epgaddress': 'Адрес\nтелепрограммы\n(XMLTV / JTV)',
@@ -166,7 +177,8 @@ O - show/hide clock
             'hours': 'часов',
             'hwaccel': 'Аппаратное\nускорение',
             'sort': 'Сортировка\nканалов',
-            'sortitems': ['как в плейлисте', 'по алфавиту', 'по алфавиту в обратном порядке'],
+            'sortitems': ['как в плейлисте', 'по алфавиту', 'по алфавиту в обратном порядке', 'пользовательская'],
+            'donotforgetsort': 'Не забудьте указать\nпользовательскую сортировку в настройках!',
             'moresettings': 'Больше настроек!',
             'lesssettings': 'Меньше настроек!',
             'enabled': 'включено',
@@ -187,6 +199,9 @@ https://forum.ubuntu.ru/index.php?topic=314803
 Поддерживается телепрограмма (EPG)
 только в форматах XMLTV и JTV!
 
+Не работает канал?
+Правая клавиша мыши открывает настройки канала.
+
 Горячие клавиши:
 
 F - полноэкранный режим
@@ -201,6 +216,7 @@ P - предыдущий канал
 N - следующий канал
 T - показать/скрыть список каналов
 O - показать/скрыть часы
+I - сортировка каналов
             '''
         }
     }
