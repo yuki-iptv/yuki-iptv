@@ -38,7 +38,7 @@ from data.modules.astroncia.time import print_with_time
 from data.modules.astroncia.epgurls import EPG_URLS
 from data.modules.astroncia.bitrate import humanbytes
 
-APP_VERSION = '0.0.8'
+APP_VERSION = '0.0.9'
 
 if not sys.version_info >= (3, 5, 0):
     print_with_time("Incompatible Python version! Required >= 3.5")
