@@ -851,6 +851,7 @@ if __name__ == '__main__':
             for lbl in lbls:
                 lbl.hide()
             settings_win.setMaximumSize(400, 200)
+            settings_win.resize(400, 200)
             settings_win_l.setY(origY)
             settings_win.move(settings_win_l)
 
@@ -860,6 +861,7 @@ if __name__ == '__main__':
             for lbl in lbls:
                 lbl.show()
             settings_win.setMaximumSize(597, 619)
+            settings_win.resize(597, 619)
             settings_win_l.setY(0)
             settings_win.move(settings_win_l)
 
