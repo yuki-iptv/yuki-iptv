@@ -1178,6 +1178,7 @@ if __name__ == '__main__':
                 QtWidgets.QScrollArea.__init__(self, *args, **kwargs)
                 self.setWidgetResizable(True)
                 content = QtWidgets.QWidget(self)
+                content.setStyleSheet('background-color: white')
                 self.setWidget(content)
                 lay = QtWidgets.QVBoxLayout(content)
                 self.label = QtWidgets.QLabel(content)
