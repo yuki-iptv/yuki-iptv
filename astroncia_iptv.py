@@ -174,7 +174,7 @@ if __name__ == '__main__':
             settings = {
                 "m3u": "",
                 "epg": "",
-                "deinterlace": False,
+                "deinterlace": True,
                 "udp_proxy": "",
                 "save_folder": SAVE_FOLDER_DEFAULT,
                 "provider": "",
@@ -745,6 +745,20 @@ if __name__ == '__main__':
         sframe7 = QtWidgets.QFrame()
         sframe7.setFrameShape(QtWidgets.QFrame.HLine)
         sframe7.setFrameShadow(QtWidgets.QFrame.Raised)
+        sframe8 = QtWidgets.QFrame()
+        sframe8.setFrameShape(QtWidgets.QFrame.HLine)
+        sframe8.setFrameShadow(QtWidgets.QFrame.Raised)
+        sframe9 = QtWidgets.QFrame()
+        sframe9.setFrameShape(QtWidgets.QFrame.HLine)
+        sframe9.setFrameShadow(QtWidgets.QFrame.Raised)
+        sframe10 = QtWidgets.QFrame()
+        sframe10.setFrameShape(QtWidgets.QFrame.HLine)
+        sframe10.setFrameShadow(QtWidgets.QFrame.Raised)
+        sframe11 = QtWidgets.QFrame()
+        sframe11.setFrameShape(QtWidgets.QFrame.HLine)
+        sframe11.setFrameShadow(QtWidgets.QFrame.Raised)
+
+        morebtn = QtWidgets.QPushButton(LANG["moresettings"])
 
         grid = QtWidgets.QGridLayout()
         grid.setSpacing(10)
@@ -779,30 +793,61 @@ if __name__ == '__main__':
         grid.addWidget(sframe6, 8, 2)
         grid.addWidget(sframe7, 8, 3)
 
-        grid.addWidget(lang_label, 9, 0)
-        grid.addWidget(slang, 9, 1)
+        grid.addWidget(morebtn, 9, 1)
 
-        grid.addWidget(fld_label, 10, 0)
-        grid.addWidget(sfld, 10, 1)
-        grid.addWidget(sfolder, 10, 2)
+        grid.addWidget(sframe8, 10, 0)
+        grid.addWidget(sframe9, 10, 1)
+        grid.addWidget(sframe10, 10, 2)
+        grid.addWidget(sframe11, 10, 3)
 
-        grid.addWidget(udp_label, 11, 0)
-        grid.addWidget(sudp, 11, 1)
+        grid.addWidget(lang_label, 11, 0)
+        grid.addWidget(slang, 11, 1)
 
-        grid.addWidget(dei_label, 12, 0)
-        grid.addWidget(sdei, 12, 1)
+        grid.addWidget(fld_label, 12, 0)
+        grid.addWidget(sfld, 12, 1)
+        grid.addWidget(sfolder, 12, 2)
 
-        grid.addWidget(hwaccel_label, 13, 0)
-        grid.addWidget(shwaccel, 13, 1)
+        grid.addWidget(udp_label, 13, 0)
+        grid.addWidget(sudp, 13, 1)
 
-        grid.addWidget(sort_label, 14, 0)
-        grid.addWidget(sort_widget, 14, 1)
+        grid.addWidget(dei_label, 14, 0)
+        grid.addWidget(sdei, 14, 1)
 
-        grid.addWidget(ssave, 15, 1)
-        grid.addWidget(sreset, 16, 1)
-        grid.addWidget(sclose, 17, 1)
+        grid.addWidget(hwaccel_label, 15, 0)
+        grid.addWidget(shwaccel, 15, 1)
+
+        grid.addWidget(sort_label, 16, 0)
+        grid.addWidget(sort_widget, 16, 1)
+
+        grid.addWidget(ssave, 17, 1)
+        grid.addWidget(sreset, 18, 1)
+        grid.addWidget(sclose, 19, 1)
         wid2.setLayout(grid)
         settings_win.setCentralWidget(wid2)
+
+
+        lbls = [lang_label, slang, fld_label, sfld, sfolder, udp_label, sudp, dei_label, sdei, hwaccel_label, shwaccel, sort_label, sort_widget]
+        def hideMoreSettings():
+            morebtn.setText(LANG["moresettings"])
+            global lbls
+            for lbl in lbls:
+                lbl.hide()
+            settings_win.setMaximumSize(400, 200)
+
+        def showMoreSettings():
+            morebtn.setText(LANG["lesssettings"])
+            global lbls
+            for lbl in lbls:
+                lbl.show()
+            settings_win.setMaximumSize(597, 619)
+
+        def more_settings():
+            if lbls[0].isVisible():
+                hideMoreSettings()
+            else:
+                showMoreSettings()
+        morebtn.clicked.connect(more_settings)
+        hideMoreSettings()
 
         textbox = QtWidgets.QPlainTextEdit(help_win)
         textbox.resize(390, 400)
@@ -1197,8 +1242,9 @@ if __name__ == '__main__':
                 return sorted(arr0, reverse=True)
             return arr0
 
-        def gen_chans(ch_array): # pylint: disable=too-many-locals, too-many-branches
-            global ICONS_CACHE, playing_chan, current_group
+        def gen_chans(): # pylint: disable=too-many-locals, too-many-branches
+            global ICONS_CACHE, playing_chan, current_group, array
+            ch_array = array
             res = {}
             l = -1
             k = 0
@@ -1276,11 +1322,11 @@ if __name__ == '__main__':
                 else:
                     myQCustomQWidget.setIcon(TV_ICON)
                 # Create QListWidgetItem
-                myQListWidgetItem = QtWidgets.QListWidgetItem(win.listWidget)
+                myQListWidgetItem = QtWidgets.QListWidgetItem()
                 myQListWidgetItem.setData(QtCore.Qt.UserRole, i)
                 # Set size hint
                 myQListWidgetItem.setSizeHint(myQCustomQWidget.sizeHint())
-                res[l] = [myQListWidgetItem, myQCustomQWidget, l]
+                res[l] = [myQListWidgetItem, myQCustomQWidget, l, i]
             if playing_chan:
                 current_chan = None
                 try:
@@ -1302,16 +1348,14 @@ if __name__ == '__main__':
             row0 = win.listWidget.currentRow()
             val0 = win.listWidget.verticalScrollBar().value()
             win.listWidget.clear()
-            channels_1 = gen_chans(array)
+            channels_1 = gen_chans()
             for channel_1 in channels_1:
+                filter_txt = channelfilter.text()
+                c_name = channels_1[channel_1][3]
                 # Add QListWidgetItem into QListWidget
-                win.listWidget.addItem(channels_1[channel_1][0])
-                win.listWidget.setItemWidget(channels_1[channel_1][0], channels_1[channel_1][1])
-                #item1 = win.listWidget.item(channels_1[channel_1][2])
-                #win.listWidget.setItemWidget(item1, channels_1[channel_1][1])
-                #for item1 in range(win.listWidget.count()):
-                #    if item1 > len(channels_1):
-                #        win.listWidget.takeItem(item1)
+                if filter_txt.lower().strip() in c_name.lower():
+                    win.listWidget.addItem(channels_1[channel_1][0])
+                    win.listWidget.setItemWidget(channels_1[channel_1][0], channels_1[channel_1][1])
             win.listWidget.setCurrentRow(row0)
             win.listWidget.verticalScrollBar().setValue(val0)
 
@@ -1327,7 +1371,7 @@ if __name__ == '__main__':
 
         btn_update.clicked.connect(redraw_chans)
 
-        channels = gen_chans(array)
+        channels = gen_chans()
         for channel in channels:
             # Add QListWidgetItem into QListWidget
             win.listWidget.addItem(channels[channel][0])
@@ -1393,6 +1437,8 @@ if __name__ == '__main__':
             context=QtCore.Qt.WidgetShortcut,
             activated=enterPressed
         )
+        def channelfilter_do():
+            redraw_chans()
         loading = QtWidgets.QLabel(LANG['loading'])
         loading.setAlignment(QtCore.Qt.AlignCenter)
         loading.setStyleSheet('color: #778a30')
@@ -1405,10 +1451,14 @@ if __name__ == '__main__':
         combobox.currentIndexChanged.connect(group_change)
         for group in groups:
             combobox.addItem(group)
+        channelfilter = QtWidgets.QLineEdit()
+        channelfilter.setPlaceholderText(LANG['chansearch'])
+        channelfilter.textChanged.connect(channelfilter_do)
         layout = QtWidgets.QGridLayout()
         widget = QtWidgets.QWidget()
         widget.setLayout(layout)
         widget.layout().addWidget(combobox)
+        widget.layout().addWidget(channelfilter)
         widget.layout().addWidget(win.listWidget)
         widget.layout().addWidget(loading)
         dockWidget.setFixedWidth(DOCK_WIDGET_WIDTH)
@@ -1546,6 +1596,10 @@ if __name__ == '__main__':
                 player['x11-bypass-compositor'] = 'yes'
             except: # pylint: disable=bare-except
                 pass
+        try:
+            player['network-timeout'] = 5
+        except: # pylint: disable=bare-except
+            pass
         player.user_agent = user_agent
         player.volume = 100
         player.loop = True

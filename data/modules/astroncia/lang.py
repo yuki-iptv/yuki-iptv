@@ -67,8 +67,11 @@ lang = {
             'hwaccel': 'Hardware\nacceleration',
             'sort': 'Channel\nsort',
             'sortitems': ['as in playlist', 'alphabetical order', 'reverse alphabetical order'],
+            'moresettings': 'More settings',
+            'lesssettings': 'Less settings',
             'enabled': 'enabled',
             'disabled': 'disabled',
+            'chansearch': 'Search channel',
             'bitrates': ['bps', 'kbps', 'Mbps', 'Gbps', 'Tbps'],
             'helptext': '''Astroncia IPTV, version {}    (c) kestral / astroncia
 
@@ -161,8 +164,11 @@ O - show/hide clock
             'hwaccel': 'Аппаратное\nускорение',
             'sort': 'Сортировка\nканалов',
             'sortitems': ['как в плейлисте', 'по алфавиту', 'по алфавиту в обратном порядке'],
+            'moresettings': 'Больше настроек!',
+            'lesssettings': 'Меньше настроек!',
             'enabled': 'включено',
             'disabled': 'выключено',
+            'chansearch': 'Поиск по каналам',
             'bitrates': ['бит/с', 'Кбит/с', 'Мбит/с', 'Гбит/с', 'Тбит/с'],
             'helptext': '''Astroncia IPTV, версия {}    (c) kestral / astroncia
 
