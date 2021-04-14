@@ -1348,7 +1348,10 @@ if __name__ == '__main__':
             if settings['sort'] == 2:
                 return sorted(arr0, reverse=True)
             if settings['sort'] == 3:
-                return sorted(arr0, reverse=False, key=sort_custom)
+                try:
+                    return sorted(arr0, reverse=False, key=sort_custom)
+                except: # pylint: disable=bare-except
+                    return arr0
             return arr0
 
         def gen_chans(): # pylint: disable=too-many-locals, too-many-branches
