@@ -1956,14 +1956,14 @@ if __name__ == '__main__':
             if (playing_chan and not loading.isVisible()) and (player.cache_buffering_state == 0):
                 print_with_time("Reconnecting to stream")
                 doPlay(playing_url)
-                x_conn = None
+            x_conn = None
 
         def check_connection():
             global x_conn
             try:
                 if (playing_chan and not loading.isVisible()) and (player.cache_buffering_state == 0):
-                    print_with_time("Connection to stream lost, waiting 5 secs...")
                     if not x_conn:
+                        print_with_time("Connection to stream lost, waiting 5 secs...")
                         x_conn = QtCore.QTimer()
                         x_conn.timeout.connect(do_reconnect)
                         x_conn.start(5000)
