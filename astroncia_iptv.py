@@ -39,7 +39,7 @@ from data.modules.astroncia.epgurls import EPG_URLS
 from data.modules.astroncia.bitrate import humanbytes
 from data.modules.astroncia.selectionmodel import ReorderableListModel, SelectionModel
 
-APP_VERSION = '0.0.10'
+APP_VERSION = '0.0.11'
 
 if not sys.version_info >= (3, 5, 0):
     print_with_time("Incompatible Python version! Required >= 3.5")
