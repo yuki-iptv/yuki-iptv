@@ -1103,7 +1103,10 @@ if __name__ == '__main__':
                 player.deinterlace = d['deinterlace']
                 if not 'useragent' in d:
                     d['useragent'] = 0
-                d['useragent'] = uas[d['useragent']]
+                try:
+                    d['useragent'] = uas[d['useragent']]
+                except: # pylint: disable=bare-except
+                    pass
                 ua_choose = d['useragent']
             else:
                 player.deinterlace = settings['deinterlace']
