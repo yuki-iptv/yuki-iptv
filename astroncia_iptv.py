@@ -1342,7 +1342,7 @@ if __name__ == '__main__':
             try:
                 return channel_sort.index(sub)
             except: # pylint: disable=bare-except
-                return sub
+                return 0
 
         def doSort(arr0):
             if settings['sort'] == 0:
