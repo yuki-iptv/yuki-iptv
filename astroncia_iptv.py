@@ -777,7 +777,8 @@ if __name__ == '__main__':
             prov1 = sprov.currentText()
             if prov1 != '--{}--'.format(LANG['notselected']):
                 sm3u.setText(iptv_providers[prov1]['m3u'])
-                sepg.setText(iptv_providers[prov1]['epg'])
+                if 'epg' in iptv_providers[prov1]:
+                    sepg.setText(iptv_providers[prov1]['epg'])
         sprov.currentIndexChanged.connect(prov_select)
         sprov.addItem('--{}--'.format(LANG['notselected']))
         provs = {}
@@ -1501,12 +1502,12 @@ if __name__ == '__main__':
         row0 = -1
 
         def redraw_chans():
+            channels_1 = gen_chans()
             global row0
             update_tvguide()
             row0 = win.listWidget.currentRow()
             val0 = win.listWidget.verticalScrollBar().value()
             win.listWidget.clear()
-            channels_1 = gen_chans()
             for channel_1 in channels_1:
                 filter_txt = channelfilter.text()
                 c_name = channels_1[channel_1][3]
