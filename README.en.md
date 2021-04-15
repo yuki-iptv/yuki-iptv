@@ -30,7 +30,7 @@ Adding channels to favorites
 Recording TV programs (cannot: record according to schedule)  
 Hotkeys  
 TV program support (EPG) in XMLTV and JTV formats  
-Channel groups (EXTGRP: directive not supported, only via group-title)  
+Channel groups  
 
 ## Dependencies
 
