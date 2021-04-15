@@ -378,9 +378,12 @@ if __name__ == '__main__':
             groups.remove(LANG['allchannels'])
         groups = [LANG['allchannels'], LANG['favourite']] + groups
 
-        icons_file = open(str(Path('data', 'channel_icons.json')), 'r')
-        icons = json.loads(icons_file.read())
-        icons_file.close()
+        if os.path.isfile(str(Path('data', 'channel_icons.json'))):
+            icons_file = open(str(Path('data', 'channel_icons.json')), 'r')
+            icons = json.loads(icons_file.read())
+            icons_file.close()
+        else:
+            icons = {}
 
         def sigint_handler(*args): # pylint: disable=unused-argument
             """Handler for the SIGINT signal."""
