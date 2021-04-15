@@ -6,6 +6,9 @@
 #
 # The Font Awesome pictograms are licensed under the CC BY 3.0 License - http://creativecommons.org/licenses/by/3.0/
 #
+# == WARNING ==
+# Freezing on large playlists (1000+ channels)
+#
 from pathlib import Path
 import sys
 import os
