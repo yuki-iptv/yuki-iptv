@@ -70,7 +70,7 @@
 **Устанавливаем иконки для телеканалов:**  
 
 ```git clone --depth=1 https://gitlab.com/astroncia/channel-icons.git```  
-```cp -R channel-icons/* astroncia_iptv/data/```  
+```cp -R channel-icons/* data/```  
 
 **Устанавливаем Python модули:**  
 

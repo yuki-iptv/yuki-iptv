@@ -68,7 +68,7 @@ OR
 **Installing channel icons:**  
 
 ```git clone --depth=1 https://gitlab.com/astroncia/channel-icons.git```  
-```cp -R channel-icons/* astroncia_iptv/data/```  
+```cp -R channel-icons/* data/```  
 
 **Installing Python modules:**  
 
