@@ -2201,13 +2201,25 @@ if __name__ == '__main__':
 
         QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Q), win).activated.connect(key_quit) # q - quit
         QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Space), win).activated.connect(mpv_play) # space - pause
+        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_MediaTogglePlayPause), win).activated.connect(mpv_play)
+        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_MediaPlay), win).activated.connect(mpv_play)
+        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_MediaPause), win).activated.connect(mpv_play)
+        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Play), win).activated.connect(mpv_play)
         QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_S), win).activated.connect(mpv_stop) # s - stop
+        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Stop), win).activated.connect(mpv_stop)
+        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_MediaStop), win).activated.connect(mpv_stop)
         QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_H), win).activated.connect(do_screenshot) # h - screenshot
         QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_G), win).activated.connect(show_tvguide) # g - tv guide
         QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_R), win).activated.connect(do_record) # r - record
+        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_MediaRecord), win).activated.connect(do_record)
         QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_P), win).activated.connect(prev_channel) # p - prev channel
+        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_MediaPrevious), win).activated.connect(prev_channel)
         QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_N), win).activated.connect(next_channel) # n - next channel
+        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_MediaNext), win).activated.connect(next_channel)
         QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_O), win).activated.connect(show_clock) # o - show/hide clock
+        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_VolumeUp), win).activated.connect(my_up_binding)
+        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_VolumeDown), win).activated.connect(my_down_binding)
+        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_VolumeMute), win).activated.connect(mpv_mute)
 
         app.aboutToQuit.connect(myExitHandler)
 
