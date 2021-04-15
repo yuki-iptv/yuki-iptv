@@ -65,6 +65,11 @@ OR
 ```git clone --depth=1 https://github.com/rootalc/astroncia_iptv.git astroncia_iptv```  
 ```cd astroncia_iptv```  
 
+**Installing channel icons:**  
+
+```git clone --depth=1 https://gitlab.com/astroncia/channel-icons.git```  
+```cp -R channel-icons/* astroncia_iptv/data/```  
+
 **Installing Python modules:**  
 
 ```python3 -m pip install -r requirements.txt```  

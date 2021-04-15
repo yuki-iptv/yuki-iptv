@@ -67,6 +67,11 @@
 ```git clone --depth=1 https://github.com/rootalc/astroncia_iptv.git astroncia_iptv```  
 ```cd astroncia_iptv```  
 
+**Устанавливаем иконки для телеканалов:**  
+
+```git clone --depth=1 https://gitlab.com/astroncia/channel-icons.git```  
+```cp -R channel-icons/* astroncia_iptv/data/```  
+
 **Устанавливаем Python модули:**  
 
 ```python3 -m pip install -r requirements.txt```  
