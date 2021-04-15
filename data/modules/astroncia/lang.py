@@ -80,6 +80,7 @@ lang = {
             'chansearch': 'Search channel',
             'reconnecting': 'Reconnecting...',
             'group': 'Group',
+            'hide': 'Hide channel',
             'bitrates': ['bps', 'kbps', 'Mbps', 'Gbps', 'Tbps'],
             'helptext': '''Astroncia IPTV, version {}    (c) kestral / astroncia
 
@@ -189,6 +190,7 @@ I - channel sort
             'chansearch': 'Поиск по каналам',
             'reconnecting': 'Переподключение...',
             'group': 'Группа',
+            'hide': 'Скрыть канал',
             'bitrates': ['бит/с', 'Кбит/с', 'Мбит/с', 'Гбит/с', 'Тбит/с'],
             'helptext': '''Astroncia IPTV, версия {}    (c) kestral / astroncia
 

@@ -375,13 +375,16 @@ if __name__ == '__main__':
             except: # pylint: disable=bare-except
                 pass
 
-        for ch3 in array:
+        for ch3 in array.copy():
             if ch3 in channel_sets:
                 if 'group' in channel_sets[ch3]:
                     if channel_sets[ch3]['group']:
                         array[ch3]['tvg-group'] = channel_sets[ch3]['group']
                         if channel_sets[ch3]['group'] not in groups:
                             groups.append(channel_sets[ch3]['group'])
+                if 'hidden' in channel_sets[ch3]:
+                    if channel_sets[ch3]['hidden']:
+                        array.pop(ch3)
 
         if LANG['allchannels'] in groups:
             groups.remove(LANG['allchannels'])
@@ -502,7 +505,9 @@ if __name__ == '__main__':
         useragent_lbl = QtWidgets.QLabel("{}:".format(LANG['useragent']))
         group_lbl = QtWidgets.QLabel("{}:".format(LANG['group']))
         group_text = QtWidgets.QLineEdit()
+        hidden_lbl = QtWidgets.QLabel("{}:".format(LANG['hide']))
         deinterlace_chk = QtWidgets.QCheckBox()
+        hidden_chk = QtWidgets.QCheckBox()
         useragent_choose = QtWidgets.QComboBox()
         useragent_choose.addItem(LANG['empty'])
         useragent_choose.addItem('Windows Browser')
@@ -562,7 +567,8 @@ if __name__ == '__main__':
             channel_sets[chan_3] = {
                 "deinterlace": deinterlace_chk.isChecked(),
                 "useragent": useragent_choose.currentIndex(),
-                "group": group_text.text()
+                "group": group_text.text(),
+                "hidden": hidden_chk.isChecked()
             }
             save_channel_sets()
             if playing_chan == chan_3:
@@ -598,6 +604,13 @@ if __name__ == '__main__':
         horizontalLayout2_2.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_2.setAlignment(QtCore.Qt.AlignCenter)
 
+        horizontalLayout2_3 = QtWidgets.QHBoxLayout()
+        horizontalLayout2_3.addWidget(QtWidgets.QLabel("\n"))
+        horizontalLayout2_3.addWidget(hidden_lbl)
+        horizontalLayout2_3.addWidget(hidden_chk)
+        horizontalLayout2_3.addWidget(QtWidgets.QLabel("\n"))
+        horizontalLayout2_3.setAlignment(QtCore.Qt.AlignCenter)
+
         horizontalLayout3 = QtWidgets.QHBoxLayout()
         horizontalLayout3.addWidget(save_btn)
 
@@ -606,6 +619,7 @@ if __name__ == '__main__':
         verticalLayout.addLayout(horizontalLayout2)
         verticalLayout.addLayout(horizontalLayout2_1)
         verticalLayout.addLayout(horizontalLayout2_2)
+        verticalLayout.addLayout(horizontalLayout2_3)
         verticalLayout.addLayout(horizontalLayout3)
         verticalLayout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
 
@@ -1564,8 +1578,13 @@ if __name__ == '__main__':
                     group_text.setText(channel_sets[item_selected]['group'])
                 except: # pylint: disable=bare-except
                     group_text.setText('')
+                try:
+                    hidden_chk.setChecked(channel_sets[item_selected]['hidden'])
+                except: # pylint: disable=bare-except
+                    hidden_chk.setChecked(False)
             else:
                 deinterlace_chk.setChecked(True)
+                hidden_chk.setChecked(False)
                 useragent_choose.setCurrentIndex(0)
                 group_text.setText('')
             chan_win.show()
