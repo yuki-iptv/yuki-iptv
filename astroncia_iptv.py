@@ -3,7 +3,8 @@
 # pylint: disable=invalid-name, global-statement, missing-docstring, wrong-import-position, c-extension-no-member, too-many-lines, too-many-statements, broad-except, line-too-long
 #
 # Icons by Font Awesome ( https://fontawesome.com/ )
-# https://fontawesome.com/license
+#
+# The Font Awesome pictograms are licensed under the CC BY 3.0 License - http://creativecommons.org/licenses/by/3.0/
 #
 from pathlib import Path
 import sys
