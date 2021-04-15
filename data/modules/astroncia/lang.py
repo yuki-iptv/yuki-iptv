@@ -81,6 +81,11 @@ lang = {
             'reconnecting': 'Reconnecting...',
             'group': 'Group',
             'hide': 'Hide channel',
+            'contrast': 'Contrast',
+            'brightness': 'Brightness',
+            'hue': 'Hue',
+            'saturation': 'Saturation',
+            'gamma': 'Gamma',
             'bitrates': ['bps', 'kbps', 'Mbps', 'Gbps', 'Tbps'],
             'helptext': '''Astroncia IPTV, version {}    (c) kestral / astroncia
 
@@ -191,6 +196,11 @@ I - channel sort
             'reconnecting': 'Переподключение...',
             'group': 'Группа',
             'hide': 'Скрыть канал',
+            'contrast': 'Контраст',
+            'brightness': 'Яркость',
+            'hue': 'Оттенок',
+            'saturation': 'Насыщенность',
+            'gamma': 'Гамма',
             'bitrates': ['бит/с', 'Кбит/с', 'Мбит/с', 'Гбит/с', 'Тбит/с'],
             'helptext': '''Astroncia IPTV, версия {}    (c) kestral / astroncia
 

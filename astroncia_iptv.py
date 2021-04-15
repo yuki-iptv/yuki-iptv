@@ -515,6 +515,28 @@ if __name__ == '__main__':
         useragent_choose.addItem('iPhone')
         useragent_choose.addItem('Linux Browser')
 
+        contrast_lbl = QtWidgets.QLabel("{}:".format(LANG['contrast']))
+        brightness_lbl = QtWidgets.QLabel("{}:".format(LANG['brightness']))
+        hue_lbl = QtWidgets.QLabel("{}:".format(LANG['hue']))
+        saturation_lbl = QtWidgets.QLabel("{}:".format(LANG['saturation']))
+        gamma_lbl = QtWidgets.QLabel("{}:".format(LANG['gamma']))
+
+        contrast_choose = QtWidgets.QSpinBox()
+        contrast_choose.setMinimum(-100)
+        contrast_choose.setMaximum(100)
+        brightness_choose = QtWidgets.QSpinBox()
+        brightness_choose.setMinimum(-100)
+        brightness_choose.setMaximum(100)
+        hue_choose = QtWidgets.QSpinBox()
+        hue_choose.setMinimum(-100)
+        hue_choose.setMaximum(100)
+        saturation_choose = QtWidgets.QSpinBox()
+        saturation_choose.setMinimum(-100)
+        saturation_choose.setMaximum(100)
+        gamma_choose = QtWidgets.QSpinBox()
+        gamma_choose.setMinimum(-100)
+        gamma_choose.setMaximum(100)
+
         def hideLoading():
             loading.hide()
             loading_movie.stop()
@@ -558,6 +580,15 @@ if __name__ == '__main__':
             except: # pylint: disable=bare-except
                 pass
             print_with_time("Using user-agent: {}".format(ua_ch))
+            if player.deinterlace:
+                print_with_time("Deinterlace: enabled")
+            else:
+                print_with_time("Deinterlace: disabled")
+            print_with_time("Contrast: {}".format(player.contrast))
+            print_with_time("Brightness: {}".format(player.brightness))
+            print_with_time("Hue: {}".format(player.hue))
+            print_with_time("Saturation: {}".format(player.saturation))
+            print_with_time("Gamma: {}".format(player.gamma))
             player.user_agent = ua_ch
             player.loop = True
             player.play(play_url1)
@@ -568,11 +599,21 @@ if __name__ == '__main__':
                 "deinterlace": deinterlace_chk.isChecked(),
                 "useragent": useragent_choose.currentIndex(),
                 "group": group_text.text(),
-                "hidden": hidden_chk.isChecked()
+                "hidden": hidden_chk.isChecked(),
+                "contrast": contrast_choose.value(),
+                "brightness": brightness_choose.value(),
+                "hue": hue_choose.value(),
+                "saturation": saturation_choose.value(),
+                "gamma": gamma_choose.value()
             }
             save_channel_sets()
             if playing_chan == chan_3:
                 player.deinterlace = deinterlace_chk.isChecked()
+                player.contrast = contrast_choose.value()
+                player.brightness = brightness_choose.value()
+                player.hue = hue_choose.value()
+                player.saturation = saturation_choose.value()
+                player.gamma = gamma_choose.value()
                 stopPlayer()
                 doPlay(playing_url, uas[useragent_choose.currentIndex()])
             chan_win.close()
@@ -611,6 +652,41 @@ if __name__ == '__main__':
         horizontalLayout2_3.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_3.setAlignment(QtCore.Qt.AlignCenter)
 
+        horizontalLayout2_4 = QtWidgets.QHBoxLayout()
+        horizontalLayout2_4.addWidget(QtWidgets.QLabel("\n"))
+        horizontalLayout2_4.addWidget(contrast_lbl)
+        horizontalLayout2_4.addWidget(contrast_choose)
+        horizontalLayout2_4.addWidget(QtWidgets.QLabel("\n"))
+        horizontalLayout2_4.setAlignment(QtCore.Qt.AlignCenter)
+
+        horizontalLayout2_5 = QtWidgets.QHBoxLayout()
+        horizontalLayout2_5.addWidget(QtWidgets.QLabel("\n"))
+        horizontalLayout2_5.addWidget(brightness_lbl)
+        horizontalLayout2_5.addWidget(brightness_choose)
+        horizontalLayout2_5.addWidget(QtWidgets.QLabel("\n"))
+        horizontalLayout2_5.setAlignment(QtCore.Qt.AlignCenter)
+
+        horizontalLayout2_6 = QtWidgets.QHBoxLayout()
+        horizontalLayout2_6.addWidget(QtWidgets.QLabel("\n"))
+        horizontalLayout2_6.addWidget(hue_lbl)
+        horizontalLayout2_6.addWidget(hue_choose)
+        horizontalLayout2_6.addWidget(QtWidgets.QLabel("\n"))
+        horizontalLayout2_6.setAlignment(QtCore.Qt.AlignCenter)
+
+        horizontalLayout2_7 = QtWidgets.QHBoxLayout()
+        horizontalLayout2_7.addWidget(QtWidgets.QLabel("\n"))
+        horizontalLayout2_7.addWidget(saturation_lbl)
+        horizontalLayout2_7.addWidget(saturation_choose)
+        horizontalLayout2_7.addWidget(QtWidgets.QLabel("\n"))
+        horizontalLayout2_7.setAlignment(QtCore.Qt.AlignCenter)
+
+        horizontalLayout2_8 = QtWidgets.QHBoxLayout()
+        horizontalLayout2_8.addWidget(QtWidgets.QLabel("\n"))
+        horizontalLayout2_8.addWidget(gamma_lbl)
+        horizontalLayout2_8.addWidget(gamma_choose)
+        horizontalLayout2_8.addWidget(QtWidgets.QLabel("\n"))
+        horizontalLayout2_8.setAlignment(QtCore.Qt.AlignCenter)
+
         horizontalLayout3 = QtWidgets.QHBoxLayout()
         horizontalLayout3.addWidget(save_btn)
 
@@ -620,6 +696,11 @@ if __name__ == '__main__':
         verticalLayout.addLayout(horizontalLayout2_1)
         verticalLayout.addLayout(horizontalLayout2_2)
         verticalLayout.addLayout(horizontalLayout2_3)
+        verticalLayout.addLayout(horizontalLayout2_4)
+        verticalLayout.addLayout(horizontalLayout2_5)
+        verticalLayout.addLayout(horizontalLayout2_6)
+        verticalLayout.addLayout(horizontalLayout2_7)
+        verticalLayout.addLayout(horizontalLayout2_8)
         verticalLayout.addLayout(horizontalLayout3)
         verticalLayout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
 
@@ -1154,6 +1235,26 @@ if __name__ == '__main__':
                     d['useragent'] = uas[d['useragent']]
                 except: # pylint: disable=bare-except
                     pass
+                if 'contrast' in d:
+                    player.contrast = d['contrast']
+                else:
+                    player.contrast = 0
+                if 'brightness' in d:
+                    player.brightness = d['brightness']
+                else:
+                    player.brightness = 0
+                if 'hue' in d:
+                    player.hue = d['hue']
+                else:
+                    player.hue = 0
+                if 'saturation' in d:
+                    player.saturation = d['saturation']
+                else:
+                    player.saturation = 0
+                if 'gamma' in d:
+                    player.gamma = d['gamma']
+                else:
+                    player.gamma = 0
                 ua_choose = d['useragent']
             else:
                 player.deinterlace = settings['deinterlace']
@@ -1401,6 +1502,19 @@ if __name__ == '__main__':
                     return arr0
             return arr0
 
+        #def gen_chans_2():
+        #    channels_1 = gen_chans()
+        #    items1 = []
+        #    for channel_1 in channels_1:
+        #        filter_txt = channelfilter.text()
+        #        c_name = channels_1[channel_1][3]
+        #        # Add QListWidgetItem into QListWidget
+        #        if filter_txt.lower().strip() in c_name.lower():
+        #            items1.append(channels_1[channel_1])
+        #    return items1
+
+        #noclear = len(array) == len(items1) and len(array) == win.listWidget.count()
+
         def gen_chans(): # pylint: disable=too-many-locals, too-many-branches
             global ICONS_CACHE, playing_chan, current_group, array
             ch_array = array
@@ -1583,9 +1697,34 @@ if __name__ == '__main__':
                     hidden_chk.setChecked(channel_sets[item_selected]['hidden'])
                 except: # pylint: disable=bare-except
                     hidden_chk.setChecked(False)
+                try:
+                    contrast_choose.setValue(channel_sets[item_selected]['contrast'])
+                except: # pylint: disable=bare-except
+                    contrast_choose.setValue(0)
+                try:
+                    brightness_choose.setValue(channel_sets[item_selected]['brightness'])
+                except: # pylint: disable=bare-except
+                    brightness_choose.setValue(0)
+                try:
+                    hue_choose.setValue(channel_sets[item_selected]['hue'])
+                except: # pylint: disable=bare-except
+                    hue_choose.setValue(0)
+                try:
+                    saturation_choose.setValue(channel_sets[item_selected]['saturation'])
+                except: # pylint: disable=bare-except
+                    saturation_choose.setValue(0)
+                try:
+                    gamma_choose.setValue(channel_sets[item_selected]['gamma'])
+                except: # pylint: disable=bare-except
+                    gamma_choose.setValue(0)
             else:
                 deinterlace_chk.setChecked(True)
                 hidden_chk.setChecked(False)
+                contrast_choose.setValue(0)
+                brightness_choose.setValue(0)
+                hue_choose.setValue(0)
+                saturation_choose.setValue(0)
+                gamma_choose.setValue(0)
                 useragent_choose.setCurrentIndex(0)
                 group_text.setText('')
             chan_win.show()
