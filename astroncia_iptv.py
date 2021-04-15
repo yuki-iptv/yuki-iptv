@@ -1774,9 +1774,22 @@ if __name__ == '__main__':
                     loading1.hide()
                     loading_movie.stop()
 
+        @player.on_key_press('MBTN_RIGHT')
+        def my_mouse_right():
+            if playing_chan:
+                mpv_play()
+
         @player.on_key_press('MBTN_LEFT_DBL')
         def my_leftdbl_binding():
             mpv_fullscreen()
+
+        @player.on_key_press('MBTN_FORWARD')
+        def my_forward_binding():
+            next_channel()
+
+        @player.on_key_press('MBTN_BACK')
+        def my_back_binding():
+            prev_channel()
 
         @player.on_key_press('WHEEL_UP')
         def my_up_binding():
