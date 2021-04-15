@@ -1207,7 +1207,7 @@ if __name__ == '__main__':
 
         playing_url = ''
 
-        def itemClicked_event(item):
+        def itemClicked_event(item): # pylint: disable=too-many-branches
             global playing, playing_chan, item_selected, playing_url
             j = item.data(QtCore.Qt.UserRole)
             playing_chan = j
