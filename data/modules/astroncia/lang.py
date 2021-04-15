@@ -31,7 +31,7 @@ lang = {
             'epgaddress': 'TV guide\naddress\n(XMLTV or JTV)',
             'udpproxy': 'UDP proxy',
             'writefolder': 'Folder for recordings\nand screenshots',
-            'orselectyourprovider': 'Or select\nyour provider',
+            'orselectyourprovider': 'Or select\nprovider',
             'resetchannelsettings': 'Reset channel settings and sorting',
             'notselected': 'Not selected',
             'close': 'Close',
@@ -79,6 +79,7 @@ lang = {
             'cache': 'Cache',
             'chansearch': 'Search channel',
             'reconnecting': 'Reconnecting...',
+            'group': 'Group',
             'bitrates': ['bps', 'kbps', 'Mbps', 'Gbps', 'Tbps'],
             'helptext': '''Astroncia IPTV, version {}    (c) kestral / astroncia
 
@@ -139,7 +140,7 @@ I - channel sort
             'epgaddress': 'Адрес\nтелепрограммы\n(XMLTV / JTV)',
             'udpproxy': 'UDP прокси',
             'writefolder': 'Папка для записей\nи скриншотов',
-            'orselectyourprovider': 'Или выберите\nвашего провайдера',
+            'orselectyourprovider': 'Или выберите\nпровайдера',
             'resetchannelsettings': 'Сбросить настройки каналов и сортировку',
             'notselected': 'не выбрано',
             'close': 'Закрыть',
@@ -187,6 +188,7 @@ I - channel sort
             'cache': 'Кэш',
             'chansearch': 'Поиск по каналам',
             'reconnecting': 'Переподключение...',
+            'group': 'Группа',
             'bitrates': ['бит/с', 'Кбит/с', 'Мбит/с', 'Гбит/с', 'Тбит/с'],
             'helptext': '''Astroncia IPTV, версия {}    (c) kestral / astroncia
 
@@ -199,8 +201,15 @@ https://forum.ubuntu.ru/index.php?topic=314803
 Поддерживается телепрограмма (EPG)
 только в форматах XMLTV и JTV!
 
-Не работает канал?
-Правая клавиша мыши открывает настройки канала.
+Не работает канал? Правая клавиша мыши открывает настройки канала.
+
+После указания группы в настройках переоткройте приложение.
+
+Если у Вас плейлист IPTV от вашего интернет-провайдера (не приватный),
+прошу скинуть мне на эл.почту:
+kestraly (at) gmail.com
+адрес плейлиста, адрес EPG (если есть), название провайдера, город.
+Добавлю в приложение.
 
 Горячие клавиши:
 

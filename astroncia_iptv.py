@@ -375,6 +375,14 @@ if __name__ == '__main__':
             except: # pylint: disable=bare-except
                 pass
 
+        for ch3 in array:
+            if ch3 in channel_sets:
+                if 'group' in channel_sets[ch3]:
+                    if channel_sets[ch3]['group']:
+                        array[ch3]['tvg-group'] = channel_sets[ch3]['group']
+                        if channel_sets[ch3]['group'] not in groups:
+                            groups.append(channel_sets[ch3]['group'])
+
         if LANG['allchannels'] in groups:
             groups.remove(LANG['allchannels'])
         groups = [LANG['allchannels'], LANG['favourite']] + groups
@@ -492,6 +500,8 @@ if __name__ == '__main__':
 
         deinterlace_lbl = QtWidgets.QLabel("{}:".format(LANG['deinterlace']))
         useragent_lbl = QtWidgets.QLabel("{}:".format(LANG['useragent']))
+        group_lbl = QtWidgets.QLabel("{}:".format(LANG['group']))
+        group_text = QtWidgets.QLineEdit()
         deinterlace_chk = QtWidgets.QCheckBox()
         useragent_choose = QtWidgets.QComboBox()
         useragent_choose.addItem(LANG['empty'])
@@ -551,7 +561,8 @@ if __name__ == '__main__':
             chan_3 = title.text().replace("{}: ".format(LANG['channel']), "")
             channel_sets[chan_3] = {
                 "deinterlace": deinterlace_chk.isChecked(),
-                "useragent": useragent_choose.currentIndex()
+                "useragent": useragent_choose.currentIndex(),
+                "group": group_text.text()
             }
             save_channel_sets()
             if playing_chan == chan_3:
@@ -580,6 +591,13 @@ if __name__ == '__main__':
         horizontalLayout2_1.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_1.setAlignment(QtCore.Qt.AlignCenter)
 
+        horizontalLayout2_2 = QtWidgets.QHBoxLayout()
+        horizontalLayout2_2.addWidget(QtWidgets.QLabel("\n"))
+        horizontalLayout2_2.addWidget(group_lbl)
+        horizontalLayout2_2.addWidget(group_text)
+        horizontalLayout2_2.addWidget(QtWidgets.QLabel("\n"))
+        horizontalLayout2_2.setAlignment(QtCore.Qt.AlignCenter)
+
         horizontalLayout3 = QtWidgets.QHBoxLayout()
         horizontalLayout3.addWidget(save_btn)
 
@@ -587,6 +605,7 @@ if __name__ == '__main__':
         verticalLayout.addLayout(horizontalLayout)
         verticalLayout.addLayout(horizontalLayout2)
         verticalLayout.addLayout(horizontalLayout2_1)
+        verticalLayout.addLayout(horizontalLayout2_2)
         verticalLayout.addLayout(horizontalLayout3)
         verticalLayout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
 
@@ -1541,9 +1560,14 @@ if __name__ == '__main__':
                     useragent_choose.setCurrentIndex(channel_sets[item_selected]['useragent'])
                 except: # pylint: disable=bare-except
                     pass
+                try:
+                    group_text.setText(channel_sets[item_selected]['group'])
+                except: # pylint: disable=bare-except
+                    group_text.setText('')
             else:
                 deinterlace_chk.setChecked(True)
                 useragent_choose.setCurrentIndex(0)
+                group_text.setText('')
             chan_win.show()
 
         def tvguide_favourites_add():
