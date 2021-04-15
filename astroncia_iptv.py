@@ -446,11 +446,18 @@ if __name__ == '__main__':
         save_sort_btn.clicked.connect(save_sort)
         save_sort_btn.move(145, 430)
 
+        home_folder = ""
+        try:
+            home_folder = os.environ['HOME']
+        except: # pylint: disable=bare-except
+            pass
+
         def m3u_select():
             reset_prov()
             fname = QtWidgets.QFileDialog.getOpenFileName(
                 settings_win,
-                LANG['selectplaylist']
+                LANG['selectplaylist'],
+                home_folder
             )[0]
             if fname:
                 sm3u.setText(fname)
@@ -459,7 +466,8 @@ if __name__ == '__main__':
             reset_prov()
             fname = QtWidgets.QFileDialog.getOpenFileName(
                 settings_win,
-                LANG['selectepg']
+                LANG['selectepg'],
+                home_folder
             )[0]
             if fname:
                 sepg.setText(fname)
@@ -487,8 +495,10 @@ if __name__ == '__main__':
         deinterlace_chk = QtWidgets.QCheckBox()
         useragent_choose = QtWidgets.QComboBox()
         useragent_choose.addItem(LANG['empty'])
-        useragent_choose.addItem('Windows')
+        useragent_choose.addItem('Windows Browser')
         useragent_choose.addItem('Android')
+        useragent_choose.addItem('iPhone')
+        useragent_choose.addItem('Linux Browser')
 
         def hideLoading():
             loading.hide()

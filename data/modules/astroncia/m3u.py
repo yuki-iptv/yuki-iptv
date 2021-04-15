@@ -14,6 +14,7 @@ import ctypes
 import re
 from pathlib import Path
 from data.modules.astroncia.lang import lang
+from data.modules.astroncia.extgrp import parse_extgrp
 
 class M3uParser:
     
@@ -54,7 +55,7 @@ class M3uParser:
 
     #Read all file lines
     def readAllLines(self):
-        self.lines = [line.rstrip('\n') for line in self.filename.strip().split('\n')]
+        self.lines = [line.rstrip('\n').rstrip() for line in self.filename.strip().split('\n')]
         if not self.lines[-1]:
             self.lines.pop()
         if self.lines[0].startswith('#EXTM3U'):
@@ -66,8 +67,9 @@ class M3uParser:
             # No dead URLs, please
             self.epg_url = self.epg_url if self.epg_url != 'http://server/jtv.zip' else ''
             self.lines.pop(0)
-        self.lines = [x.rstrip() for x in self.lines if not (x.startswith('#EXTGRP:') or x.startswith('#EXTVLCOPT:'))]
+        self.lines = [x.rstrip() for x in self.lines if not x.startswith('#EXTVLCOPT:')]
         self.lines = [x0 for x0 in self.lines if x0]
+        self.lines = parse_extgrp(self.lines)
         return len(self.lines)
     
     def parseFile(self):
