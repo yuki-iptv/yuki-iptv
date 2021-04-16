@@ -40,6 +40,7 @@ Channel groups
 - PyQt5 (python3-pyqt5)
 - Pillow (python3-pil)
 - Tkinter (python3-tk)
+- pandas (python3-pandas)
 - python3-requests
 - ffmpeg
 
@@ -48,7 +49,7 @@ Channel groups
 **Installing dependencies:**
 
 on Debian/Ubuntu:  
-```sudo apt install ffmpeg git libmpv1 python3 python3-requests python3-pyqt5 python3-pil python3-tk python3-pip python3-setuptools python3-dev qt5-default python3-wheel```
+```sudo apt install ffmpeg git libmpv1 python3 python3-requests python3-pyqt5 python3-pil python3-tk python3-pandas python3-pip python3-setuptools python3-dev qt5-default python3-wheel```
 
 on Windows:  
 Install Git from [official website](https://git-scm.com/download/win)  
