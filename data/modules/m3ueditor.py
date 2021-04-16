@@ -99,7 +99,7 @@ class Viewer(QMainWindow):
       self.lb.setFocus()
 
     def convert_to_csv(self):
-        mylist = open(self.m3u_file, 'r').read().splitlines()
+        mylist = [line.strip() for line in open(self.m3u_file, 'r').read().splitlines() if not (line.strip().startswith('#EXTGRP:') or line.strip().startswith('#EXTVLCOPT:'))]
 
         headers = ['tvg-name', 'group-title', 'tvg-logo', 'tvg-id', 'url']
         group = ""
