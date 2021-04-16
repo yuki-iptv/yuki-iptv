@@ -2425,6 +2425,7 @@ if __name__ == '__main__':
         QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_VolumeUp), win).activated.connect(my_up_binding)
         QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_VolumeDown), win).activated.connect(my_down_binding)
         QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_VolumeMute), win).activated.connect(mpv_mute)
+        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_E), win).activated.connect(show_timeshift) # e - show timeshift
 
         app.aboutToQuit.connect(myExitHandler)
 

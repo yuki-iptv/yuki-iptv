@@ -112,6 +112,7 @@ N - next channel
 T - open/close channels list
 O - show/hide clock
 I - channel sort
+E - timeshift
             '''
         }
     },
@@ -240,6 +241,7 @@ N - следующий канал
 T - показать/скрыть список каналов
 O - показать/скрыть часы
 I - сортировка каналов
+E - таймшифт
             '''
         }
     }
