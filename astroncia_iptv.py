@@ -871,7 +871,7 @@ if __name__ == '__main__':
             ic3 += 1
             provs[prov] = ic3
             sprov.addItem(prov)
-        if settings['provider']:
+        if settings['provider'] and settings['provider'] in provs:
             prov_d = provs[settings['provider']]
             if prov_d and prov_d != -1:
                 try:

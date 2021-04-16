@@ -1,18 +1,18 @@
 '''IPTV providers URLs'''
 iptv_providers = {
-    "iptvm3u.ru (Россия)": {
+    "[Общедоступный] iptvm3u.ru (Россия)": {
         'm3u': 'https://iptvm3u.ru/listru.m3u',
         'epg': 'http://epg.it999.ru/edem.xml.gz'
     },
-    'iptv-org/github (Россия)': {
+    '[Общедоступный] iptv-org/github (Россия)': {
         'm3u': 'https://iptv-org.github.io/iptv/countries/ru.m3u',
         'epg': 'http://www.teleguide.info/download/new3/xmltv.xml.gz'
     },
-    'iptv-org/github (Украина)': {
+    '[Общедоступный] iptv-org/github (Украина)': {
         'm3u': 'https://iptv-org.github.io/iptv/countries/ua.m3u',
         'epg': 'http://www.teleguide.info/download/new3/xmltv.xml.gz'
     },
-    'iptv-org/github (Беларусь)': {
+    '[Общедоступный] iptv-org/github (Беларусь)': {
         'm3u': 'https://iptv-org.github.io/iptv/countries/by.m3u',
         'epg': 'http://www.teleguide.info/download/new3/xmltv.xml.gz'
     },
