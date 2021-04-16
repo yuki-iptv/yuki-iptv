@@ -36,7 +36,7 @@ Sorting channels
 Video settings for each channel - contrast, brightness, hue, saturation, gamma  
 Change user agent for each channel  
 Timeshift  
-M3u playlist editor  
+M3U playlist editor  
 
 ## Dependencies
 
