@@ -279,12 +279,6 @@ if __name__ == '__main__':
         channels = {}
         programmes = {}
 
-        def show_m3u_editor():
-            if m3u_editor.isVisible():
-                m3u_editor.hide()
-            else:
-                m3u_editor.show()
-
         save_folder = settings['save_folder']
 
         if not os.path.isdir(str(Path(save_folder))):
