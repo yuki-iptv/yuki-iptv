@@ -11,8 +11,8 @@ Software provided **as is**, no guarantees.
 
 ## License
 
-Code - GPLv3  
-Icons - CC BY 3.0  
+Code: GPLv3  
+Icons: CC BY 3.0  
 
 ## Download
 
