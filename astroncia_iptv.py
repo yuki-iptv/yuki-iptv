@@ -23,6 +23,7 @@ import subprocess
 import codecs
 import ctypes
 import webbrowser
+import threading
 from tkinter import Tk, messagebox
 from multiprocessing import Process, Manager, freeze_support
 freeze_support()
@@ -110,6 +111,17 @@ def show_exception(e):
     window.wm_withdraw()
     messagebox.showinfo(title=LANG['error'], message="{}\n\n{}".format(LANG['error2'], str(e)))
     window.destroy()
+
+# Used as a decorator to run things in the background
+def async_function(func):
+    def wrapper(*args, **kwargs):
+        thread = threading.Thread(target=func, args=args, kwargs=kwargs)
+        thread.daemon = True
+        thread.start()
+        return thread
+    return wrapper
+
+# @async_function
 
 if os.name == 'nt':
     a0 = sys.executable
