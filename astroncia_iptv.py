@@ -592,7 +592,6 @@ if __name__ == '__main__':
             print_with_time("Hue: {}".format(player.hue))
             print_with_time("Saturation: {}".format(player.saturation))
             print_with_time("Gamma: {}".format(player.gamma))
-            player.osc = True
             player.user_agent = ua_ch
             player.loop = True
             player.play(play_url1)
@@ -1930,7 +1929,7 @@ if __name__ == '__main__':
                 loglevel='info' # debug
             )
         player.osc = False
-        player.script_opts = 'osc-visibility=auto,osc-barmargin=50'
+        player.script_opts = 'osc-visibility=always,osc-barmargin=50'
         if not settings['hwaccel']:
             try:
                 player['x11-bypass-compositor'] = 'yes'
@@ -2029,6 +2028,15 @@ if __name__ == '__main__':
         def next_channel():
             go_channel(1)
 
+        def show_timeshift():
+            if playing_chan:
+                if player.osc:
+                    player.osc = False
+                else:
+                    player.osc = True
+            else:
+                player.osc = False
+
         label3 = QtWidgets.QPushButton()
         label3.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'pause.png'))))
         label3.setToolTip(LANG['pause'])
@@ -2062,6 +2070,10 @@ if __name__ == '__main__':
         label7_1.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'screenshot.png'))))
         label7_1.setToolTip(LANG['screenshot'])
         label7_1.clicked.connect(do_screenshot)
+        label7_2 = QtWidgets.QPushButton()
+        label7_2.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'timeshift.png'))))
+        label7_2.setToolTip(LANG['timeshift'])
+        label7_2.clicked.connect(show_timeshift)
         label8 = QtWidgets.QPushButton()
         label8.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'settings.png'))))
         label8.setToolTip(LANG['settings'])
@@ -2120,6 +2132,7 @@ if __name__ == '__main__':
         hlayout2.addWidget(label6)
         hlayout2.addWidget(label7)
         hlayout2.addWidget(label7_1)
+        hlayout2.addWidget(label7_2)
         hlayout2.addWidget(label8)
         hlayout2.addWidget(label8_4)
         hlayout2.addWidget(label8_1)

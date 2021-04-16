@@ -86,6 +86,7 @@ lang = {
             'hue': 'Hue',
             'saturation': 'Saturation',
             'gamma': 'Gamma',
+            'timeshift': 'Timeshift',
             'bitrates': ['bps', 'kbps', 'Mbps', 'Gbps', 'Tbps'],
             'helptext': '''Astroncia IPTV, version {}    (c) kestral / astroncia
 
@@ -201,6 +202,7 @@ I - channel sort
             'hue': 'Оттенок',
             'saturation': 'Насыщенность',
             'gamma': 'Гамма',
+            'timeshift': 'Таймшифт',
             'bitrates': ['бит/с', 'Кбит/с', 'Мбит/с', 'Гбит/с', 'Тбит/с'],
             'helptext': '''Astroncia IPTV, версия {}    (c) kestral / astroncia
 
