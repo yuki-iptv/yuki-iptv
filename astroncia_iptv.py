@@ -119,6 +119,10 @@ if os.name == 'nt':
 
 if __name__ == '__main__':
     try:
+        os.environ['GDK_BACKEND'] = 'x11'
+    except: # pylint: disable=bare-except
+        pass
+    try:
         print_with_time("Astroncia IPTV {}...".format(LANG['starting']))
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
         modules_path = str(Path(os.path.dirname(__file__), 'data', 'modules', 'binary'))
