@@ -2153,7 +2153,8 @@ if __name__ == '__main__':
         hlayout2.addWidget(label8_1)
         hlayout2.addWidget(label8_2)
         hlayout2.addWidget(label8_3)
-        hlayout2.addWidget(label8_5)
+        if not os.name == 'nt':
+            hlayout2.addWidget(label8_5)
         hlayout2.addWidget(label9)
         hlayout2.addWidget(label11)
         hlayout2.addWidget(label10)

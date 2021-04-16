@@ -1,5 +1,3 @@
-# Copied from https://github.com/Axel-Erfurt/m3uEdit
-# Thanks!
 import sys
 import os
 import pandas as pd
