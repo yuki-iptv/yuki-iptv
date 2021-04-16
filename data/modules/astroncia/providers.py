@@ -1,5 +1,8 @@
 '''IPTV providers URLs'''
 iptv_providers = {
+    "[Worldwide] Free-TV": {
+        'm3u': 'https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8'
+    },
     "[Общедоступный] iptvm3u.ru (Россия)": {
         'm3u': 'https://iptvm3u.ru/listru.m3u',
         'epg': 'http://epg.it999.ru/edem.xml.gz'
