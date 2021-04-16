@@ -592,6 +592,7 @@ if __name__ == '__main__':
             print_with_time("Hue: {}".format(player.hue))
             print_with_time("Saturation: {}".format(player.saturation))
             print_with_time("Gamma: {}".format(player.gamma))
+            player.osc = True
             player.user_agent = ua_ch
             player.loop = True
             player.play(play_url1)
@@ -1286,6 +1287,7 @@ if __name__ == '__main__':
 
         def mpv_stop():
             global playing, playing_chan, playing_url
+            player.osc = False
             playing_chan = ''
             playing_url = ''
             hideLoading()
@@ -1927,6 +1929,8 @@ if __name__ == '__main__':
                 log_handler=my_log,
                 loglevel='info' # debug
             )
+        player.osc = False
+        player.script_opts = 'osc-visibility=auto,osc-barmargin=50'
         if not settings['hwaccel']:
             try:
                 player['x11-bypass-compositor'] = 'yes'
