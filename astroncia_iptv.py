@@ -43,6 +43,7 @@ from data.modules.astroncia.time import print_with_time
 from data.modules.astroncia.epgurls import EPG_URLS
 from data.modules.astroncia.bitrate import humanbytes
 from data.modules.astroncia.selectionmodel import ReorderableListModel, SelectionModel
+from data.modules.m3ueditor import Viewer
 
 APP_VERSION = '0.0.13'
 
@@ -294,6 +295,14 @@ if __name__ == '__main__':
         main_icon = QtGui.QIcon(str(Path(os.path.dirname(__file__), 'data', 'icons', 'tv.png')))
         channels = {}
         programmes = {}
+
+        m3u_editor = Viewer(lang=LANG)
+
+        def show_m3u_editor():
+            if m3u_editor.isVisible():
+                m3u_editor.hide()
+            else:
+                m3u_editor.show()
 
         save_folder = settings['save_folder']
 
@@ -2112,6 +2121,10 @@ if __name__ == '__main__':
         label8_3.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'next.png'))))
         label8_3.setToolTip(LANG['nextchannel'])
         label8_3.clicked.connect(next_channel)
+        label8_5 = QtWidgets.QPushButton()
+        label8_5.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'edit.png'))))
+        label8_5.setToolTip(LANG['m3u_m3ueditor'])
+        label8_5.clicked.connect(show_m3u_editor)
         label9 = QtWidgets.QPushButton()
         label9.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'help.png'))))
         label9.setToolTip(LANG['help'])
@@ -2156,6 +2169,8 @@ if __name__ == '__main__':
         hlayout2.addWidget(label8_1)
         hlayout2.addWidget(label8_2)
         hlayout2.addWidget(label8_3)
+        if not os.name == 'nt':
+            hlayout2.addWidget(label8_5)
         hlayout2.addWidget(label9)
         hlayout2.addWidget(label11)
         hlayout2.addWidget(label10)
