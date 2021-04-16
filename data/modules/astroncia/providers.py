@@ -3,22 +3,6 @@ iptv_providers = {
     "[Worldwide] Free-TV": {
         'm3u': 'https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8'
     },
-    "[Общедоступный] iptvm3u.ru (Россия)": {
-        'm3u': 'https://iptvm3u.ru/listru.m3u',
-        'epg': 'http://epg.it999.ru/edem.xml.gz'
-    },
-    '[Общедоступный] iptv-org/github (Россия)': {
-        'm3u': 'https://iptv-org.github.io/iptv/countries/ru.m3u',
-        'epg': 'http://www.teleguide.info/download/new3/xmltv.xml.gz'
-    },
-    '[Общедоступный] iptv-org/github (Украина)': {
-        'm3u': 'https://iptv-org.github.io/iptv/countries/ua.m3u',
-        'epg': 'http://www.teleguide.info/download/new3/xmltv.xml.gz'
-    },
-    '[Общедоступный] iptv-org/github (Беларусь)': {
-        'm3u': 'https://iptv-org.github.io/iptv/countries/by.m3u',
-        'epg': 'http://www.teleguide.info/download/new3/xmltv.xml.gz'
-    },
     "[Интернет-провайдер] SkyNet (Россия, Санкт-Петербург)": {
         'm3u': 'http://m3u.sknt.ru/cat/',
         'epg': 'http://astroncia.crabdance.com:59642/epg.xml.gz',
