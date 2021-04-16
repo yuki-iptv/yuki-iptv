@@ -9,6 +9,11 @@
 
 Software provided **as is**, no guarantees.  
 
+## License
+
+Code - GPLv3  
+Icons - CC BY 3.0  
+
 ## Download
 
 **[Version for Windows](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/Astroncia_IPTV_setup.exe)**  
