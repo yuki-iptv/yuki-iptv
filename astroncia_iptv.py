@@ -1592,10 +1592,12 @@ if __name__ == '__main__':
                     myQCustomQWidget.setTextProgress(start_time)
                     myQCustomQWidget.setTextEnd(stop_time)
                     myQCustomQWidget.setProgress(int(percentage))
-                if i in icons:
-                    if not icons[i] in ICONS_CACHE:
-                        ICONS_CACHE[icons[i]] = QtGui.QIcon(str(Path('data', 'channel_icons', icons[i])))
-                    myQCustomQWidget.setIcon(ICONS_CACHE[icons[i]])
+                i_icon = i.lower()
+                icons_l = {picon.lower(): icons[picon] for picon in icons}
+                if i_icon in icons_l:
+                    if not icons_l[i_icon] in ICONS_CACHE:
+                        ICONS_CACHE[icons_l[i_icon]] = QtGui.QIcon(str(Path('data', 'channel_icons', icons_l[i_icon])))
+                    myQCustomQWidget.setIcon(ICONS_CACHE[icons_l[i_icon]])
                 else:
                     myQCustomQWidget.setIcon(TV_ICON)
                 # Create QListWidgetItem
