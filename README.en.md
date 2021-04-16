@@ -67,11 +67,6 @@ Install Python 3 from [official website](https://www.python.org/downloads/window
 ```git clone --depth=1 https://gitlab.com/astroncia/iptv.git astroncia_iptv```  
 ```cd astroncia_iptv```  
 
-OR  
-
-```git clone --depth=1 https://github.com/rootalc/astroncia_iptv.git astroncia_iptv```  
-```cd astroncia_iptv```  
-
 **Installing channel icons:**  
 
 ```git clone --depth=1 https://gitlab.com/astroncia/channel-icons.git```  
