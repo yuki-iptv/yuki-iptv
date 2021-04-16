@@ -20,13 +20,21 @@ For Ubuntu recommended install from [Launchpad PPA - ppa:astroncia/iptv](https:/
 
 ## Capabilities
 
-Watching IPTV from your provider (if it provides an m3u8 playlist)  
+Watching IPTV (from m3u8 playlist)  
 Viewing unencrypted streams UDP (multicast), HTTP, HLS (m3u8)  
 Adding channels to favorites  
 Recording TV programs (cannot: record according to schedule)  
 Hotkeys  
-TV program support (EPG) in XMLTV and JTV formats  
-Channel groups  
+Channel search  
+TV program (EPG) support in XMLTV and JTV formats  
+Display of technical information - video / audio codec, bit rate, resolution  
+Channel groups (from playlist and custom)  
+Hide channels  
+Sorting channels  
+Video settings for each channel - contrast, brightness, hue, saturation, gamma  
+Change user agent for each channel  
+Timeshift  
+M3u playlist editor  
 
 ## Dependencies
 
