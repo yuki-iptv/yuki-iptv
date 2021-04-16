@@ -7,10 +7,6 @@
 
 Software provided **as is**, no guarantees.  
 
-Repository mirrors:  
-[https://gitlab.com/astroncia/iptv](https://gitlab.com/astroncia/iptv)  
-[https://github.com/rootalc/astroncia_iptv](https://github.com/rootalc/astroncia_iptv)  
-
 ## Download
 
 **[Version for Windows](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/Astroncia_IPTV_setup.exe)**  
