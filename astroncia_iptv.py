@@ -44,7 +44,7 @@ from data.modules.astroncia.bitrate import humanbytes
 from data.modules.astroncia.selectionmodel import ReorderableListModel, SelectionModel
 from data.modules.m3ueditor import Viewer
 
-APP_VERSION = '0.0.12'
+APP_VERSION = '0.0.13'
 
 if not sys.version_info >= (3, 4, 0):
     print_with_time("Incompatible Python version! Required >= 3.4")
