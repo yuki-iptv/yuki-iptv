@@ -1253,8 +1253,8 @@ if __name__ == '__main__':
             play_url = array[j]['url']
             chan.setText('  ' + j)
             current_prog = None
-            if settings['epg'] and j in programmes:
-                for pr in programmes[j]:
+            if settings['epg'] and j.lower() in programmes:
+                for pr in programmes[j.lower()]:
                     if time.time() > pr['start'] and time.time() < pr['stop']:
                         current_prog = pr
                         break
@@ -1900,6 +1900,7 @@ if __name__ == '__main__':
             else:
                 chan_2 = chan_1
             txt = LANG['notvguideforchannel']
+            chan_2 = chan_2.lower()
             if chan_2 in programmes:
                 txt = '\n'
                 prog = programmes[chan_2]
