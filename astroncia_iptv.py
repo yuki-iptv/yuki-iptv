@@ -2040,7 +2040,8 @@ if __name__ == '__main__':
             if os.name == 'nt':
                 webbrowser.open('file:///' + str(absolute_path))
             else:
-                subprocess.Popen(['xdg-open', str(absolute_path)])
+                xdg_open = subprocess.Popen(['xdg-open', str(absolute_path)])
+                xdg_open.wait()
 
         def go_channel(i1):
             row = win.listWidget.currentRow()

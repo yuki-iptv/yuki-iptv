@@ -29,6 +29,6 @@ def parse_extgrp(t):
             else:
                 group = nextline.partition('#EXTGRP:')[2]
                 url = tlist[x+2]
-            result.append(f'#EXTINF:-1 tvg-name="{tvgname}" tvg-name-astroncia-iptv="{name}" group-title="{group}" tvg-logo="{logo}",{name}\n{url}')
+            result.append('#EXTINF:-1 tvg-name="{}" tvg-name-astroncia-iptv="{}" group-title="{}" tvg-logo="{}",{}\n{}'.format(tvgname, name, group, logo, name, url))
 
     return '\n'.join(result).split('\n')

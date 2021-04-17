@@ -146,9 +146,9 @@ class Viewer(QMainWindow):
                     logo = line.partition('tvg-logo=')[2].partition(' ')[0]
                 else:
                     logo = ""
-                csv_content += (f'{ch}\t{group}\t{logo}\t{id}\t{url}\n')
+                csv_content += ('{}\t{}\t{}\t{}\t{}\n'.format(ch, group, logo, id, url))
         self.fname = self.m3u_file.rpartition("/")[2].replace(".m3u", ".csv")
-        self.csv_file = f'/tmp/{self.fname}'
+        self.csv_file = '/tmp/{}'.format(self.fname)
         with open(self.csv_file, 'w') as f:
             f.write(csv_content)
 
@@ -345,7 +345,7 @@ class Viewer(QMainWindow):
                 id = line[3]
                 url = line[4]
 
-                m3u_content += f'#EXTINF:-1 tvg-name="{ch}" group-title="{group}" tvg-logo="{logo}" tvg-id="{id}",{ch}\n{url}\n'
+                m3u_content += '#EXTINF:-1 tvg-name="{}" group-title="{}" tvg-logo="{}" tvg-id="{}",{}\n{}\n'.format(ch, group, logo, id, ch, url)
 
             with open(fileName, 'w') as f:
                 f.write(m3u_content)
