@@ -110,6 +110,7 @@ lang = {
             'saturation': 'Saturation',
             'gamma': 'Gamma',
             'timeshift': 'Timeshift',
+            'jtvoffsetrecommendation': 'Recommended to set 0 here if JTV',
             'bitrates': ['bps', 'kbps', 'Mbps', 'Gbps', 'Tbps'],
             'helptext': '''Astroncia IPTV, version {}    (c) kestral / astroncia
 
@@ -135,7 +136,7 @@ N - next channel
 T - open/close channels list
 O - show/hide clock
 I - channel sort
-E - timeshift
+E - timeshift (only on Linux)
             '''
         }
     },
@@ -250,6 +251,7 @@ E - timeshift
             'saturation': 'Насыщенность',
             'gamma': 'Гамма',
             'timeshift': 'Таймшифт',
+            'jtvoffsetrecommendation': 'Рекомендуется указать 0, если JTV',
             'bitrates': ['бит/с', 'Кбит/с', 'Мбит/с', 'Гбит/с', 'Тбит/с'],
             'helptext': '''Astroncia IPTV, версия {}    (c) kestral / astroncia
 
@@ -287,7 +289,7 @@ N - следующий канал
 T - показать/скрыть список каналов
 O - показать/скрыть часы
 I - сортировка каналов
-E - таймшифт
+E - таймшифт (только для Linux)
             '''
         }
     }

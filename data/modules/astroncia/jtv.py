@@ -8,7 +8,7 @@ def filetime_to_datetime(time, settings):
     if len(time) == 8:
         filetime = struct.unpack("<Q", time)[0]
         timestamp = filetime / 10
-        return round((datetime.datetime(1601, 1, 1) + datetime.timedelta(microseconds=timestamp)).timestamp() + (3600 * settings["offset"]))
+        return round((datetime.datetime(1601, 1, 1) + datetime.timedelta(microseconds=timestamp)).timestamp() + (3600 * settings["timezone"]))
     else:
         print_with_time("WARNING: broken JTV time detected!")
         return 0

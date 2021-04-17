@@ -188,6 +188,9 @@ if __name__ == '__main__':
             favourite_sets = json.loads(file1.read())
             file1.close()
 
+        tz_offset = time.timezone if (time.localtime().tm_isdst == 0) else time.altzone
+        DEF_TIMEZONE = tz_offset / 60 / 60 * -1
+
         if os.path.isfile(str(Path(LOCAL_DIR, 'settings.json'))):
             settings_file = open(str(Path(LOCAL_DIR, 'settings.json')), 'r')
             settings = json.loads(settings_file.read())
@@ -202,7 +205,7 @@ if __name__ == '__main__':
                 "provider": "",
                 "nocache": False,
                 "lang": LANG_DEFAULT,
-                "offset": 0,
+                "timezone": DEF_TIMEZONE,
                 "hwaccel": True,
                 "sort": 0,
                 "cache_secs": 1
@@ -214,6 +217,8 @@ if __name__ == '__main__':
             settings['sort'] = 0
         if 'cache_secs' not in settings:
             settings['cache_secs'] = 1
+        if 'timezone' not in settings:
+            settings['timezone'] = DEF_TIMEZONE
         if settings['hwaccel']:
             print_with_time("{} {}".format(LANG['hwaccel'].replace('\n', ' '), LANG['enabled']))
         else:
@@ -745,7 +750,7 @@ if __name__ == '__main__':
             if udp_proxy_text:
                 if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
                     os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
-            if settings["offset"] != soffset.value():
+            if settings["timezone"] != soffset.value():
                 if os.path.isfile(str(Path(LOCAL_DIR, 'tvguide.dat'))):
                     os.remove(str(Path(LOCAL_DIR, 'tvguide.dat')))
             if sort_widget.currentIndex() != settings['sort']:
@@ -767,7 +772,7 @@ if __name__ == '__main__':
                 "provider": sprov.currentText() if sprov.currentText() != '--{}--'.format(LANG['notselected']) else '',
                 "nocache": supdate.isChecked(),
                 "lang": lang1,
-                "offset": soffset.value(),
+                "timezone": soffset.value(),
                 "hwaccel": shwaccel.isChecked(),
                 "sort": sort_widget.currentIndex(),
                 "cache_secs": scache1.value()
@@ -821,6 +826,8 @@ if __name__ == '__main__':
         fld_label = QtWidgets.QLabel('{}:'.format(LANG['writefolder']))
         lang_label = QtWidgets.QLabel('{}:'.format(LANG['interfacelang']))
         offset_label = QtWidgets.QLabel('{}:'.format(LANG['tvguideoffset']))
+        set_label = QtWidgets.QLabel(LANG['jtvoffsetrecommendation'])
+        set_label.setStyleSheet('color: #666600')
         hours_label = QtWidgets.QLabel(LANG['hours'])
 
         def reset_channel_settings():
@@ -940,7 +947,7 @@ if __name__ == '__main__':
         soffset = QtWidgets.QSpinBox()
         soffset.setMinimum(-240)
         soffset.setMaximum(240)
-        soffset.setValue(settings["offset"])
+        soffset.setValue(settings["timezone"])
 
         sframe = QtWidgets.QFrame()
         sframe.setFrameShape(QtWidgets.QFrame.HLine)
@@ -1011,47 +1018,49 @@ if __name__ == '__main__':
         grid.addWidget(soffset, 5, 1)
         grid.addWidget(hours_label, 5, 2)
 
-        grid.addWidget(sselect, 6, 1)
-        grid.addWidget(sprov, 7, 1)
+        grid.addWidget(set_label, 6, 1)
 
-        grid.addWidget(sframe4, 8, 0)
-        grid.addWidget(sframe5, 8, 1)
-        grid.addWidget(sframe6, 8, 2)
-        grid.addWidget(sframe7, 8, 3)
+        grid.addWidget(sselect, 7, 1)
+        grid.addWidget(sprov, 8, 1)
 
-        grid.addWidget(morebtn, 9, 1)
+        grid.addWidget(sframe4, 9, 0)
+        grid.addWidget(sframe5, 9, 1)
+        grid.addWidget(sframe6, 9, 2)
+        grid.addWidget(sframe7, 9, 3)
 
-        grid.addWidget(sframe8, 10, 0)
-        grid.addWidget(sframe9, 10, 1)
-        grid.addWidget(sframe10, 10, 2)
-        grid.addWidget(sframe11, 10, 3)
+        grid.addWidget(morebtn, 10, 1)
 
-        grid.addWidget(lang_label, 11, 0)
-        grid.addWidget(slang, 11, 1)
+        grid.addWidget(sframe8, 11, 0)
+        grid.addWidget(sframe9, 11, 1)
+        grid.addWidget(sframe10, 11, 2)
+        grid.addWidget(sframe11, 11, 3)
 
-        grid.addWidget(fld_label, 12, 0)
-        grid.addWidget(sfld, 12, 1)
-        grid.addWidget(sfolder, 12, 2)
+        grid.addWidget(lang_label, 12, 0)
+        grid.addWidget(slang, 12, 1)
 
-        grid.addWidget(udp_label, 13, 0)
-        grid.addWidget(sudp, 13, 1)
+        grid.addWidget(fld_label, 13, 0)
+        grid.addWidget(sfld, 13, 1)
+        grid.addWidget(sfolder, 13, 2)
 
-        grid.addWidget(dei_label, 14, 0)
-        grid.addWidget(sdei, 14, 1)
+        grid.addWidget(udp_label, 14, 0)
+        grid.addWidget(sudp, 14, 1)
 
-        grid.addWidget(hwaccel_label, 15, 0)
-        grid.addWidget(shwaccel, 15, 1)
+        grid.addWidget(dei_label, 15, 0)
+        grid.addWidget(sdei, 15, 1)
 
-        grid.addWidget(cache_label, 16, 0)
-        grid.addWidget(scache1, 16, 1)
-        grid.addWidget(scache, 16, 2)
+        grid.addWidget(hwaccel_label, 16, 0)
+        grid.addWidget(shwaccel, 16, 1)
 
-        grid.addWidget(sort_label, 17, 0)
-        grid.addWidget(sort_widget, 17, 1)
+        grid.addWidget(cache_label, 17, 0)
+        grid.addWidget(scache1, 17, 1)
+        grid.addWidget(scache, 17, 2)
 
-        grid.addWidget(ssave, 18, 1)
-        grid.addWidget(sreset, 19, 1)
-        grid.addWidget(sclose, 20, 1)
+        grid.addWidget(sort_label, 18, 0)
+        grid.addWidget(sort_widget, 18, 1)
+
+        grid.addWidget(ssave, 19, 1)
+        grid.addWidget(sreset, 20, 1)
+        grid.addWidget(sclose, 21, 1)
         wid2.setLayout(grid)
         settings_win.setCentralWidget(wid2)
 
@@ -1500,8 +1509,28 @@ if __name__ == '__main__':
                 self.iconQLabel.setPixmap(image.pixmap(QtCore.QSize(32, 32)))
 
             def setProgress(self, progress_val):
+                self.progressBar.setStyleSheet('''
+                  background-color: #C0C6CA;
+                  border: 0px;
+                  padding: 0px;
+                  height: 5px;
+                ''')
+                self.setStyleSheet('''
+                  QProgressBar::chunk {
+                    background: #7D94B0;
+                    width:5px
+                  }
+                ''')
                 self.progressBar.setFormat('')
                 self.progressBar.setValue(progress_val)
+
+            def hideProgress(self):
+                self.progressBar.setStyleSheet('''
+                  background-color: white;
+                  border: 0px;
+                  padding: 0px;
+                  height: 5px;
+                ''')
 
         current_group = LANG['allchannels']
 
@@ -1617,6 +1646,8 @@ if __name__ == '__main__':
                     myQCustomQWidget.setTextProgress(start_time)
                     myQCustomQWidget.setTextEnd(stop_time)
                     myQCustomQWidget.setProgress(int(percentage))
+                else:
+                    myQCustomQWidget.hideProgress()
                 i_icon = i.lower()
                 icons_l = {picon.lower(): icons[picon] for picon in icons}
                 if i_icon in icons_l:
@@ -2265,7 +2296,7 @@ if __name__ == '__main__':
             return_dict, waiting_for_epg, epg_failed
             if not first_boot:
                 first_boot = True
-                if settings['epg'] and not epg_failed:
+                if settings['epg'] and settings['epg'] != 'http://' and not epg_failed:
                     if not use_local_tvguide:
                         epg_updating = True
                         l1.setStatic2(True)

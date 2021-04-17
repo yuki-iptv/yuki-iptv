@@ -18,20 +18,30 @@ def parse_as_xmltv(epg, settings):
                 ids[channel_epg.attrib['id']] = []
             ids[channel_epg.attrib['id']].append(display_name.text)
     for programme in tree.findall('./programme'):
+        timezone_offset = 0
+        try:
+            timezone_parse = programme.attrib['start'].split(" ")[1]
+            timezone_hours = 3600 * int("{}{}".format(timezone_parse[1], timezone_parse[2]))
+            timezone_minutes = 60 * int("{}{}".format(timezone_parse[3], timezone_parse[4]))
+            timezone_offset = timezone_hours + timezone_minutes
+            if timezone_parse[0] == '-':
+                timezone_offset = timezone_offset * -1
+        except: # pylint: disable=bare-except
+            pass
         start = datetime.datetime.strptime(
             programme.attrib['start'].split(" ")[0], '%Y%m%d%H%M%S'
-        ).timestamp() + (3600 * settings["offset"])
+        ).timestamp()- timezone_offset + (3600 * settings["timezone"])
         stop = datetime.datetime.strptime(
             programme.attrib['stop'].split(" ")[0], '%Y%m%d%H%M%S'
-        ).timestamp() + (3600 * settings["offset"])
+        ).timestamp()- timezone_offset + (3600 * settings["timezone"])
         chans = ids[programme.attrib['channel']]
         for channel_epg_1 in chans:
             day_start = (
                 datetime.datetime.now() - datetime.timedelta(days=1)
-            ).replace(hour=0, minute=0, second=0).timestamp() + (3600 * settings["offset"])
+            ).replace(hour=0, minute=0, second=0).timestamp()- timezone_offset + (3600 * settings["timezone"])
             day_end = (
                 datetime.datetime.now() + datetime.timedelta(days=1)
-            ).replace(hour=23, minute=59, second=59).timestamp() + (3600 * settings["offset"])
+            ).replace(hour=23, minute=59, second=59).timestamp()- timezone_offset + (3600 * settings["timezone"])
             if not channel_epg_1 in programmes_epg:
                 programmes_epg[channel_epg_1] = []
             if start > day_start and stop < day_end:
