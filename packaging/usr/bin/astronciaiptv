@@ -1,8 +1,6 @@
-#!/bin/bash
-cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
-env python3 -m astroncia_iptv
-ret_code="$?"
-if [ "$ret_code" = "0" ]; then
-reset
-fi
-exit "$ret_code"
+#!/bin/sh
+cd /usr/share/AstronciaIPTV
+/usr/share/AstronciaIPTV/astroncia_iptv.py "$@"
+exit_code="$?"
+reset || true
+exit "${exit_code}"
