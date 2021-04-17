@@ -203,7 +203,7 @@ if __name__ == '__main__':
                 "udp_proxy": "",
                 "save_folder": SAVE_FOLDER_DEFAULT,
                 "provider": "",
-                "nocache": False,
+                "nocache": True,
                 "lang": LANG_DEFAULT,
                 "timezone": DEF_TIMEZONE,
                 "hwaccel": True,
@@ -1592,15 +1592,15 @@ if __name__ == '__main__':
                 l += 1
                 k += 1
                 prog = ''
-                prog_search = i
+                prog_search = i.lower()
                 if array[i]['tvg-ID']:
                     if str(array[i]['tvg-ID']) in prog_ids:
                         prog_search_lst = prog_ids[str(array[i]['tvg-ID'])]
                         if prog_search_lst:
-                            prog_search = prog_search_lst[0]
+                            prog_search = prog_search_lst[0].lower()
                 if array[i]['tvg-name']:
                     if str(array[i]['tvg-name']) in programmes:
-                        prog_search = str(array[i]['tvg-name'])
+                        prog_search = str(array[i]['tvg-name']).lower()
                 if prog_search in programmes:
                     current_prog = {
                         'start': 0,
@@ -2321,7 +2321,7 @@ if __name__ == '__main__':
                             time_stop = time.time() + 3
                             epg_updating = False
                     else:
-                        programmes = tvguide_sets
+                        programmes = {prog0.lower(): tvguide_sets[prog0] for prog0 in tvguide_sets}
                         btn_update.click() # start update in main thread
 
             ic += 0.1 # pylint: disable=undefined-variable
@@ -2427,7 +2427,7 @@ if __name__ == '__main__':
                         l1.setText2(LANG['tvguideupdatingdone'])
                         time_stop = time.time() + 3
                         values = return_dict.values()
-                        programmes = values[1]
+                        programmes = {prog0.lower(): values[1][prog0] for prog0 in values[1]}
                         if not is_program_actual(programmes):
                             raise Exception("Programme not actual")
                         prog_ids = return_dict[5]
