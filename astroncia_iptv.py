@@ -624,6 +624,7 @@ if __name__ == '__main__':
             print_with_time("Gamma: {}".format(player.gamma))
             player.user_agent = ua_ch
             player.loop = True
+            player.stop()
             player.play(play_url1)
 
         def chan_set_save():
