@@ -19,7 +19,6 @@ Icons: CC BY 3.0
 **[Version for Windows](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/Astroncia_IPTV_setup.exe)**  
 [AppImage](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv-appimage-x86_64.AppImage)  
 [deb package](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv.deb)  
-[rpm package](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv-0.0.13-2.noarch.rpm)  
 
 For Ubuntu recommended install from [Launchpad PPA - ppa:astroncia/iptv](https://launchpad.net/~astroncia/+archive/ubuntu/iptv):  
 ```sudo add-apt-repository ppa:astroncia/iptv```  
