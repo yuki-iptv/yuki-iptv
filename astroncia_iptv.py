@@ -71,16 +71,16 @@ parser = argparse.ArgumentParser(description='Astroncia IPTV')
 parser.add_argument('--python')
 args1 = parser.parse_args()
 
-LOCAL_DIR = 'local'
-SAVE_FOLDER_DEFAULT = str(Path(os.path.dirname(os.path.abspath(__file__)), 'AstronciaIPTV_saves'))
-
-if os.path.isfile(str(Path(os.path.dirname(os.path.abspath(__file__)), 'libxcb.so.1'))) or os.path.isfile(str(Path(os.path.dirname(os.path.abspath(__file__)), 'INSIDE_DEB'))):
+if 'HOME' in os.environ and os.path.isdir(os.environ['HOME']):
     LOCAL_DIR = str(Path(os.environ['HOME'], '.AstronciaIPTV'))
     SAVE_FOLDER_DEFAULT = str(Path(os.environ['HOME'], '.AstronciaIPTV', 'saves'))
     if not os.path.isdir(LOCAL_DIR):
         os.mkdir(LOCAL_DIR)
     if not os.path.isdir(SAVE_FOLDER_DEFAULT):
         os.mkdir(SAVE_FOLDER_DEFAULT)
+else:
+    LOCAL_DIR = 'local'
+    SAVE_FOLDER_DEFAULT = str(Path(os.path.dirname(os.path.abspath(__file__)), 'AstronciaIPTV_saves'))
 
 LANG_LOCALE = '?'
 try:
