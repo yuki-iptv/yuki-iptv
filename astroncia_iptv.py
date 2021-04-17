@@ -2455,12 +2455,6 @@ if __name__ == '__main__':
                 dockWidget.show()
 
         # Key bindings
-        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_I), win).activated.connect(show_sort) # i - sort channels
-        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_T), win).activated.connect(key_t)
-        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Escape), win).activated.connect(esc_handler) # escape key
-        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_F), win).activated.connect(mpv_fullscreen) # f - fullscreen
-        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_M), win).activated.connect(mpv_mute) # m - mute
-
         def key_quit():
             settings_win.close()
             win.close()
@@ -2472,28 +2466,37 @@ if __name__ == '__main__':
             if not clockOn:
                 label11.setText('')
 
-        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Q), win).activated.connect(key_quit) # q - quit
-        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Space), win).activated.connect(mpv_play) # space - pause
-        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_MediaTogglePlayPause), win).activated.connect(mpv_play)
-        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_MediaPlay), win).activated.connect(mpv_play)
-        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_MediaPause), win).activated.connect(mpv_play)
-        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Play), win).activated.connect(mpv_play)
-        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_S), win).activated.connect(mpv_stop) # s - stop
-        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Stop), win).activated.connect(mpv_stop)
-        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_MediaStop), win).activated.connect(mpv_stop)
-        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_H), win).activated.connect(do_screenshot) # h - screenshot
-        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_G), win).activated.connect(show_tvguide) # g - tv guide
-        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_R), win).activated.connect(do_record) # r - record
-        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_MediaRecord), win).activated.connect(do_record)
-        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_P), win).activated.connect(prev_channel) # p - prev channel
-        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_MediaPrevious), win).activated.connect(prev_channel)
-        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_N), win).activated.connect(next_channel) # n - next channel
-        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_MediaNext), win).activated.connect(next_channel)
-        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_O), win).activated.connect(show_clock) # o - show/hide clock
-        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_VolumeUp), win).activated.connect(my_up_binding)
-        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_VolumeDown), win).activated.connect(my_down_binding)
-        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_VolumeMute), win).activated.connect(mpv_mute)
-        QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_E), win).activated.connect(show_timeshift) # e - show timeshift
+        keybinds = {
+            QtCore.Qt.Key_I: show_sort, # i - sort channels
+            QtCore.Qt.Key_T: key_t,
+            QtCore.Qt.Key_Escape: esc_handler, # escape key
+            QtCore.Qt.Key_F: mpv_fullscreen, # f - fullscreen
+            QtCore.Qt.Key_M: mpv_mute, # m - mute
+            QtCore.Qt.Key_Q: key_quit, # q - quit
+            QtCore.Qt.Key_Space: mpv_play, # space - pause
+            QtCore.Qt.Key_MediaTogglePlayPause: mpv_play,
+            QtCore.Qt.Key_MediaPlay: mpv_play,
+            QtCore.Qt.Key_MediaPause: mpv_play,
+            QtCore.Qt.Key_Play: mpv_play,
+            QtCore.Qt.Key_S: mpv_stop, # s - stop
+            QtCore.Qt.Key_Stop: mpv_stop,
+            QtCore.Qt.Key_MediaStop: mpv_stop,
+            QtCore.Qt.Key_H: do_screenshot, # h - screenshot
+            QtCore.Qt.Key_G: show_tvguide, # g - tv guide
+            QtCore.Qt.Key_R: do_record, # r - record
+            QtCore.Qt.Key_MediaRecord: do_record,
+            QtCore.Qt.Key_P: prev_channel, # p - prev channel
+            QtCore.Qt.Key_MediaPrevious: prev_channel,
+            QtCore.Qt.Key_N: next_channel, # n - next channel
+            QtCore.Qt.Key_MediaNext: next_channel,
+            QtCore.Qt.Key_O: show_clock, # o - show/hide clock
+            QtCore.Qt.Key_VolumeUp: my_up_binding,
+            QtCore.Qt.Key_VolumeDown: my_down_binding,
+            QtCore.Qt.Key_VolumeMute: mpv_mute,
+            QtCore.Qt.Key_E: show_timeshift # e - show timeshift
+        }
+        for keybind in keybinds:
+            QtWidgets.QShortcut(QtGui.QKeySequence(keybind), win).activated.connect(keybinds[keybind])
 
         app.aboutToQuit.connect(myExitHandler)
 
@@ -2503,28 +2506,19 @@ if __name__ == '__main__':
             win.setFocus(QtCore.Qt.PopupFocusReason)
             win.activateWindow()
 
-            ic = 0
-            x = QtCore.QTimer()
-            x.timeout.connect(thread_tvguide)
-            x.start(100)
-
-            ic1 = 0
-            x2 = QtCore.QTimer()
-            x2.timeout.connect(thread_record)
-            x2.start(100)
-
-            ic2 = 0
-            x3 = QtCore.QTimer()
-            x3.timeout.connect(thread_check_tvguide_obsolete)
-            x3.start(100)
-
-            x4 = QtCore.QTimer()
-            x4.timeout.connect(thread_tvguide_2)
-            x4.start(1000)
-
-            x5 = QtCore.QTimer()
-            x5.timeout.connect(thread_update_time)
-            x5.start(1000)
+            ic, ic1, ic2 = 0, 0, 0
+            timers_array = {}
+            timers = {
+                thread_tvguide: 100,
+                thread_record: 100,
+                thread_check_tvguide_obsolete: 100,
+                thread_tvguide_2: 1000,
+                thread_update_time: 1000
+            }
+            for timer in timers:
+                timers_array[timer] = QtCore.QTimer()
+                timers_array[timer].timeout.connect(timer)
+                timers_array[timer].start(timers[timer])
         else:
             settings_win.show()
             settings_win.raise_()
