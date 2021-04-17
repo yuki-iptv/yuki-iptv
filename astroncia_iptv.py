@@ -1969,6 +1969,11 @@ if __name__ == '__main__':
 
         if settings["cache_secs"] != 0:
             try:
+                player['demuxer-readahead-secs'] = settings["cache_secs"]
+                print_with_time('Demuxer cache set to {}s'.format(settings["cache_secs"]))
+            except: # pylint: disable=bare-except
+                pass
+            try:
                 player['cache-secs'] = settings["cache_secs"]
                 print_with_time('Cache set to {}s'.format(settings["cache_secs"]))
             except: # pylint: disable=bare-except
