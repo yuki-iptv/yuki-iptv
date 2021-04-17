@@ -45,7 +45,7 @@ from data.modules.astroncia.bitrate import humanbytes
 from data.modules.astroncia.selectionmodel import ReorderableListModel, SelectionModel
 from data.modules.m3ueditor import Viewer
 
-APP_VERSION = '0.0.14'
+APP_VERSION = '0.0.15'
 
 if not sys.version_info >= (3, 4, 0):
     print_with_time("Incompatible Python version! Required >= 3.4")
@@ -1834,7 +1834,7 @@ if __name__ == '__main__':
             activated=enterPressed
         )
         def channelfilter_do():
-            redraw_chans()
+            btn_update.click()
         loading = QtWidgets.QLabel(LANG['loading'])
         loading.setAlignment(QtCore.Qt.AlignCenter)
         loading.setStyleSheet('color: #778a30')
