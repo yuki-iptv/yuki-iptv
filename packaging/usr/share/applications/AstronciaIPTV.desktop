@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Astroncia IPTV
-Comment=IPTV player
-Comment[ru]=IPTV плеер
-Exec=astronciaiptv
-Icon=astroncia-iptv
-Categories=AudioVideo;Player;Recorder;
