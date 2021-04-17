@@ -1260,7 +1260,7 @@ if __name__ == '__main__':
                 if not 'useragent' in d:
                     d['useragent'] = 0
                 try:
-                    d['useragent'] = uas[d['useragent']]
+                    d['useragent'] = uas.index(d['useragent'])
                 except: # pylint: disable=bare-except
                     pass
                 if 'contrast' in d:
