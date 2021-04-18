@@ -209,7 +209,7 @@ if __name__ == '__main__':
                 "hwaccel": True,
                 "sort": 0,
                 "cache_secs": 1,
-                "useragent": 0
+                "useragent": 2
             }
             m3u = ""
         if 'hwaccel' not in settings:
@@ -221,7 +221,7 @@ if __name__ == '__main__':
         if 'timezone' not in settings:
             settings['timezone'] = DEF_TIMEZONE
         if 'useragent' not in settings:
-            settings['useragent'] = 0
+            settings['useragent'] = 2
         if settings['hwaccel']:
             print_with_time("{} {}".format(LANG['hwaccel'].replace('\n', ' '), LANG['enabled']))
         else:
@@ -1263,7 +1263,7 @@ if __name__ == '__main__':
                 d = channel_sets[j]
                 player.deinterlace = d['deinterlace']
                 if not 'useragent' in d:
-                    d['useragent'] = 0
+                    d['useragent'] = settings['useragent']
                 try:
                     d['useragent'] = uas.index(d['useragent'])
                 except: # pylint: disable=bare-except
@@ -1734,7 +1734,7 @@ if __name__ == '__main__':
                 try:
                     useragent_choose.setCurrentIndex(channel_sets[item_selected]['useragent'])
                 except: # pylint: disable=bare-except
-                    pass
+                    useragent_choose.setCurrentIndex(settings['useragent'])
                 try:
                     group_text.setText(channel_sets[item_selected]['group'])
                 except: # pylint: disable=bare-except
@@ -1771,7 +1771,7 @@ if __name__ == '__main__':
                 hue_choose.setValue(0)
                 saturation_choose.setValue(0)
                 gamma_choose.setValue(0)
-                useragent_choose.setCurrentIndex(0)
+                useragent_choose.setCurrentIndex(settings['useragent'])
                 group_text.setText('')
             chan_win.show()
 
