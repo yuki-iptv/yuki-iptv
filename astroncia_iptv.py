@@ -1467,6 +1467,8 @@ if __name__ == '__main__':
                 self.progressLabel = QtWidgets.QLabel()
                 self.progressBar = QtWidgets.QProgressBar()
                 self.endLabel = QtWidgets.QLabel()
+                self.op = QtWidgets.QGraphicsOpacityEffect()
+                self.op.setOpacity(100)
                 self.allQHBoxLayout.addWidget(self.iconQLabel, 0, 0)
                 self.allQHBoxLayout.addLayout(self.textQVBoxLayout, 0, 1)
                 self.allQHBoxLayout.addWidget(self.progressLabel, 3, 0)
@@ -1510,28 +1512,14 @@ if __name__ == '__main__':
                 self.iconQLabel.setPixmap(image.pixmap(QtCore.QSize(32, 32)))
 
             def setProgress(self, progress_val):
-                self.progressBar.setStyleSheet('''
-                  background-color: #C0C6CA;
-                  border: 0px;
-                  padding: 0px;
-                  height: 5px;
-                ''')
-                self.setStyleSheet('''
-                  QProgressBar::chunk {
-                    background: #7D94B0;
-                    width:5px
-                  }
-                ''')
+                self.op.setOpacity(100)
+                self.progressBar.setGraphicsEffect(self.op)
                 self.progressBar.setFormat('')
                 self.progressBar.setValue(progress_val)
 
             def hideProgress(self):
-                self.progressBar.setStyleSheet('''
-                  background-color: white;
-                  border: 0px;
-                  padding: 0px;
-                  height: 5px;
-                ''')
+                self.op.setOpacity(0)
+                self.progressBar.setGraphicsEffect(self.op)
 
         current_group = LANG['allchannels']
 
