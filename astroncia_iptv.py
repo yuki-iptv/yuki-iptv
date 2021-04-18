@@ -1984,10 +1984,10 @@ if __name__ == '__main__':
 
         if settings['hwaccel']:
             VIDEO_OUTPUT = 'gpu,direct3d,xv,x11'
-            HWACCEL = True
+            HWACCEL = 'yes'
         else:
             VIDEO_OUTPUT = 'direct3d,xv,x11'
-            HWACCEL = False
+            HWACCEL = 'no'
         try:
             player = mpv.MPV(
                 wid=str(int(win.main_widget.winId())),
