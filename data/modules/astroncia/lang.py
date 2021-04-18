@@ -111,6 +111,9 @@ lang = {
             'gamma': 'Gamma',
             'timeshift': 'Timeshift',
             'jtvoffsetrecommendation': 'Recommended to set 0 here if JTV',
+            'tab_main': 'Main',
+            'tab_video': 'Video',
+            'tab_network': 'Network',
             'bitrates': ['bps', 'kbps', 'Mbps', 'Gbps', 'Tbps'],
             'helptext': '''Astroncia IPTV, version {}    (c) kestral / astroncia
 
@@ -252,6 +255,9 @@ E - timeshift (only on Linux)
             'gamma': 'Гамма',
             'timeshift': 'Таймшифт',
             'jtvoffsetrecommendation': 'Рекомендуется указать 0, если JTV',
+            'tab_main': 'Общие',
+            'tab_video': 'Видео',
+            'tab_network': 'Сеть',
             'bitrates': ['бит/с', 'Кбит/с', 'Мбит/с', 'Гбит/с', 'Тбит/с'],
             'helptext': '''Astroncia IPTV, версия {}    (c) kestral / astroncia
 

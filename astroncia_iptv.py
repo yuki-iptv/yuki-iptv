@@ -208,7 +208,8 @@ if __name__ == '__main__':
                 "timezone": DEF_TIMEZONE,
                 "hwaccel": True,
                 "sort": 0,
-                "cache_secs": 1
+                "cache_secs": 1,
+                "useragent": 0
             }
             m3u = ""
         if 'hwaccel' not in settings:
@@ -219,6 +220,8 @@ if __name__ == '__main__':
             settings['cache_secs'] = 1
         if 'timezone' not in settings:
             settings['timezone'] = DEF_TIMEZONE
+        if 'useragent' not in settings:
+            settings['useragent'] = 0
         if settings['hwaccel']:
             print_with_time("{} {}".format(LANG['hwaccel'].replace('\n', ' '), LANG['enabled']))
         else:
@@ -570,6 +573,9 @@ if __name__ == '__main__':
         gamma_choose.setMinimum(-100)
         gamma_choose.setMaximum(100)
 
+        def_user_agent = uas[settings['useragent']]
+        print_with_time("Default user agent: {}".format(def_user_agent))
+
         def hideLoading():
             loading.hide()
             loading_movie.stop()
@@ -587,7 +593,7 @@ if __name__ == '__main__':
                 player.loop = True
                 player.play(str(Path('data', 'icons', 'main.png')))
 
-        def doPlay(play_url1, ua_ch=user_agent):
+        def doPlay(play_url1, ua_ch=def_user_agent):
             loading.setText(LANG['loading'])
             loading.setStyleSheet('color: #778a30')
             showLoading()
@@ -612,7 +618,7 @@ if __name__ == '__main__':
                 player.stream_lavf_o = '-reconnect=1 -reconnect_at_eof=1 -reconnect_streamed=1 -reconnect_delay_max=2'
             except: # pylint: disable=bare-except
                 pass
-            print_with_time("Using user-agent: {}".format(ua_ch))
+            print_with_time("Using user-agent: {}".format(ua_ch if isinstance(ua_ch, str) else uas[ua_ch]))
             if player.deinterlace:
                 print_with_time("Deinterlace: enabled")
             else:
@@ -622,7 +628,7 @@ if __name__ == '__main__':
             print_with_time("Hue: {}".format(player.hue))
             print_with_time("Saturation: {}".format(player.saturation))
             print_with_time("Gamma: {}".format(player.gamma))
-            player.user_agent = ua_ch
+            player.user_agent = ua_ch if isinstance(ua_ch, str) else uas[ua_ch]
             player.loop = True
             player.stop()
             player.play(play_url1)
@@ -776,7 +782,8 @@ if __name__ == '__main__':
                 "timezone": soffset.value(),
                 "hwaccel": shwaccel.isChecked(),
                 "sort": sort_widget.currentIndex(),
-                "cache_secs": scache1.value()
+                "cache_secs": scache1.value(),
+                "useragent": useragent_choose_2.currentIndex()
             }
             settings_file1 = open(str(Path(LOCAL_DIR, 'settings.json')), 'w')
             settings_file1.write(json.dumps(settings_arr))
@@ -977,15 +984,6 @@ if __name__ == '__main__':
         sframe8 = QtWidgets.QFrame()
         sframe8.setFrameShape(QtWidgets.QFrame.HLine)
         sframe8.setFrameShadow(QtWidgets.QFrame.Raised)
-        sframe9 = QtWidgets.QFrame()
-        sframe9.setFrameShape(QtWidgets.QFrame.HLine)
-        sframe9.setFrameShadow(QtWidgets.QFrame.Raised)
-        sframe10 = QtWidgets.QFrame()
-        sframe10.setFrameShape(QtWidgets.QFrame.HLine)
-        sframe10.setFrameShadow(QtWidgets.QFrame.Raised)
-        sframe11 = QtWidgets.QFrame()
-        sframe11.setFrameShape(QtWidgets.QFrame.HLine)
-        sframe11.setFrameShadow(QtWidgets.QFrame.Raised)
 
         morebtn = QtWidgets.QPushButton(LANG["moresettings"])
 
@@ -1031,42 +1029,73 @@ if __name__ == '__main__':
 
         grid.addWidget(morebtn, 10, 1)
 
-        grid.addWidget(sframe8, 11, 0)
-        grid.addWidget(sframe9, 11, 1)
-        grid.addWidget(sframe10, 11, 2)
-        grid.addWidget(sframe11, 11, 3)
+        useragent_lbl_2 = QtWidgets.QLabel("{}:".format(LANG['useragent']))
+        useragent_choose_2 = QtWidgets.QComboBox()
+        useragent_choose_2.addItem(LANG['empty'])
+        useragent_choose_2.addItem('Windows Browser')
+        useragent_choose_2.addItem('Android')
+        useragent_choose_2.addItem('iPhone')
+        useragent_choose_2.addItem('Linux Browser')
+        useragent_choose_2.setCurrentIndex(settings['useragent'])
 
-        grid.addWidget(lang_label, 12, 0)
-        grid.addWidget(slang, 12, 1)
+        tabs = QtWidgets.QTabWidget()
 
-        grid.addWidget(fld_label, 13, 0)
-        grid.addWidget(sfld, 13, 1)
-        grid.addWidget(sfolder, 13, 2)
+        tab1 = QtWidgets.QWidget()
+        tab2 = QtWidgets.QWidget()
+        tab3 = QtWidgets.QWidget()
+        tabs.addTab(tab1, LANG['tab_main'])
+        tabs.addTab(tab2, LANG['tab_video'])
+        tabs.addTab(tab3, LANG['tab_network'])
+        tab1.layout = QtWidgets.QGridLayout()
+        tab1.layout.addWidget(lang_label, 0, 0)
+        tab1.layout.addWidget(slang, 0, 1)
+        tab1.layout.addWidget(fld_label, 1, 0)
+        tab1.layout.addWidget(sfld, 1, 1)
+        tab1.layout.addWidget(sfolder, 1, 2)
+        tab1.layout.addWidget(sort_label, 2, 0)
+        tab1.layout.addWidget(sort_widget, 2, 1)
+        tab1.setLayout(tab1.layout)
 
-        grid.addWidget(udp_label, 14, 0)
-        grid.addWidget(sudp, 14, 1)
+        tab2.layout = QtWidgets.QGridLayout()
+        tab2.layout.addWidget(dei_label, 0, 0)
+        tab2.layout.addWidget(sdei, 0, 1)
+        tab2.layout.addWidget(hwaccel_label, 1, 0)
+        tab2.layout.addWidget(shwaccel, 1, 1)
+        tab2.layout.addWidget(QtWidgets.QLabel(), 1, 2)
+        tab2.layout.addWidget(QtWidgets.QLabel(), 1, 3)
+        tab2.layout.addWidget(QtWidgets.QLabel(), 1, 4)
+        tab2.setLayout(tab2.layout)
 
-        grid.addWidget(dei_label, 15, 0)
-        grid.addWidget(sdei, 15, 1)
+        tab3.layout = QtWidgets.QGridLayout()
+        tab3.layout.addWidget(udp_label, 0, 0)
+        tab3.layout.addWidget(sudp, 0, 1)
+        tab3.layout.addWidget(cache_label, 1, 0)
+        tab3.layout.addWidget(scache1, 1, 1)
+        tab3.layout.addWidget(scache, 1, 2)
+        tab3.layout.addWidget(useragent_lbl_2, 2, 0)
+        tab3.layout.addWidget(useragent_choose_2, 2, 1)
+        tab3.setLayout(tab3.layout)
 
-        grid.addWidget(hwaccel_label, 16, 0)
-        grid.addWidget(shwaccel, 16, 1)
+        grid2 = QtWidgets.QVBoxLayout()
+        grid2.addWidget(tabs)
+        grid2.addWidget(sframe8)
 
-        grid.addWidget(cache_label, 17, 0)
-        grid.addWidget(scache1, 17, 1)
-        grid.addWidget(scache, 17, 2)
+        grid3 = QtWidgets.QGridLayout()
+        grid3.setSpacing(10)
 
-        grid.addWidget(sort_label, 18, 0)
-        grid.addWidget(sort_widget, 18, 1)
+        grid3.addWidget(ssave, 2, 1)
+        grid3.addWidget(sreset, 3, 1)
+        grid3.addWidget(sclose, 4, 1)
 
-        grid.addWidget(ssave, 19, 1)
-        grid.addWidget(sreset, 20, 1)
-        grid.addWidget(sclose, 21, 1)
-        wid2.setLayout(grid)
+        layout2 = QtWidgets.QVBoxLayout()
+        layout2.addLayout(grid)
+        layout2.addLayout(grid2)
+        layout2.addLayout(grid3)
+
+        wid2.setLayout(layout2)
         settings_win.setCentralWidget(wid2)
 
-
-        lbls = [lang_label, slang, fld_label, sfld, sfolder, udp_label, sudp, dei_label, sdei, hwaccel_label, shwaccel, cache_label, scache1, scache, sort_label, sort_widget]
+        lbls = [tabs]
         def hideMoreSettings():
             morebtn.setText(LANG["moresettings"])
             global lbls
@@ -1084,7 +1113,7 @@ if __name__ == '__main__':
                 lbl.show()
             settings_win.setMaximumSize(597, 619)
             settings_win.resize(597, 619)
-            settings_win_l.setY(0)
+            settings_win_l.setY(origY - 40)
             settings_win.move(settings_win_l)
 
         def more_settings():
@@ -1263,7 +1292,7 @@ if __name__ == '__main__':
             playing = True
             win.update()
             playing_url = play_url
-            ua_choose = user_agent
+            ua_choose = def_user_agent
             if j in channel_sets:
                 d = channel_sets[j]
                 player.deinterlace = d['deinterlace']
@@ -2001,7 +2030,7 @@ if __name__ == '__main__':
                 pass
         else:
             print_with_time("Using default cache settings")
-        player.user_agent = user_agent
+        player.user_agent = def_user_agent
         player.volume = 100
         player.loop = True
         player.play(str(Path('data', 'icons', 'main.png')))
