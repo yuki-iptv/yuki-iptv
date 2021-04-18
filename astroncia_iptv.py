@@ -588,7 +588,7 @@ if __name__ == '__main__':
 
         def stopPlayer():
             try:
-                player.stop()
+                player.command('stop')
             except: # pylint: disable=bare-except
                 player.loop = True
                 player.play(str(Path('data', 'icons', 'main.png')))
@@ -630,7 +630,7 @@ if __name__ == '__main__':
             print_with_time("Gamma: {}".format(player.gamma))
             player.user_agent = ua_ch if isinstance(ua_ch, str) else uas[ua_ch]
             player.loop = True
-            player.stop()
+            player.command('stop')
             player.play(play_url1)
 
         def chan_set_save():
