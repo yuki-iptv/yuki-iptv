@@ -471,7 +471,7 @@ if __name__ == '__main__':
         qr = settings_win.frameGeometry()
         qr.moveCenter(QtWidgets.QDesktopWidget().availableGeometry().center())
         settings_win_l = qr.topLeft()
-        origY = settings_win_l.y() - 60
+        origY = settings_win_l.y() - 80
         settings_win_l.setY(origY)
         settings_win.move(settings_win_l)
         help_win.move(qr.topLeft())
@@ -984,9 +984,6 @@ if __name__ == '__main__':
         sframe8 = QtWidgets.QFrame()
         sframe8.setFrameShape(QtWidgets.QFrame.HLine)
         sframe8.setFrameShadow(QtWidgets.QFrame.Raised)
-
-        morebtn = QtWidgets.QPushButton(LANG["moresettings"])
-
         scache1 = QtWidgets.QSpinBox()
         scache1.setMinimum(0)
         scache1.setMaximum(120)
@@ -1026,8 +1023,6 @@ if __name__ == '__main__':
         grid.addWidget(sframe5, 9, 1)
         grid.addWidget(sframe6, 9, 2)
         grid.addWidget(sframe7, 9, 3)
-
-        grid.addWidget(morebtn, 10, 1)
 
         useragent_lbl_2 = QtWidgets.QLabel("{}:".format(LANG['useragent']))
         useragent_choose_2 = QtWidgets.QComboBox()
@@ -1094,35 +1089,6 @@ if __name__ == '__main__':
 
         wid2.setLayout(layout2)
         settings_win.setCentralWidget(wid2)
-
-        lbls = [tabs]
-        def hideMoreSettings():
-            morebtn.setText(LANG["moresettings"])
-            global lbls
-            for lbl in lbls:
-                lbl.hide()
-            settings_win.setMaximumSize(400, 200)
-            settings_win.resize(400, 200)
-            settings_win_l.setY(origY)
-            settings_win.move(settings_win_l)
-
-        def showMoreSettings():
-            morebtn.setText(LANG["lesssettings"])
-            global lbls
-            for lbl in lbls:
-                lbl.show()
-            settings_win.setMaximumSize(597, 619)
-            settings_win.resize(597, 619)
-            settings_win_l.setY(origY - 40)
-            settings_win.move(settings_win_l)
-
-        def more_settings():
-            if lbls[0].isVisible():
-                hideMoreSettings()
-            else:
-                showMoreSettings()
-        morebtn.clicked.connect(more_settings)
-        hideMoreSettings()
 
         textbox = QtWidgets.QPlainTextEdit(help_win)
         textbox.resize(390, 400)
