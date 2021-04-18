@@ -1,7 +1,7 @@
 # Astroncia IPTV
 ### Cross-platform IPTV player
 
-![GUI](https://img10.lostpic.net/2021/04/16/87e9c821b1566cb1302ab61aec4d902e.png)  
+![GUI](https://i.ibb.co/Y3tPph2/astroncia-iptv-en-screenshot.png)  
 
 ## Information
 
