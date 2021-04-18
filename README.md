@@ -1,7 +1,7 @@
 # Astroncia IPTV
 ### Кроссплатформенный плеер для просмотра интернет-телевидения
 
-![Интерфейс](https://img10.lostpic.net/2021/04/16/5e7f7e4f98bd11cecd2594be7420b75f.png)  
+![Интерфейс](https://i.ibb.co/3rpf7H3/astroncia-iptv-screenshot.png)  
 
 ## Информация
 
