@@ -310,7 +310,7 @@ class Viewer(QMainWindow):
                 self.lb.setModel(self.model)
                 self.lb.resizeColumnsToContents()
                 self.lb.selectRow(0)
-                self.statusBar().showMessage(f"{fileName} " + self.LANG['m3u_loaded'], 0)
+                self.statusBar().showMessage("{} ".format(fileName) + self.LANG['m3u_loaded'], 0)
                 self.model.setChanged = False
                 self.lb.verticalHeader().setMinimumWidth(24)
 
