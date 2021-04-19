@@ -1670,10 +1670,11 @@ if __name__ == '__main__':
                 # Set size hint
                 myQListWidgetItem.setSizeHint(myQCustomQWidget.sizeHint())
                 res[l] = [myQListWidgetItem, myQCustomQWidget, l, i]
-            if playing_chan:
+            j1 = playing_chan.lower()
+            if j1:
                 current_chan = None
                 try:
-                    cur = programmes[playing_chan]
+                    cur = programmes[j1]
                     for pr in cur:
                         if time.time() > pr['start'] and time.time() < pr['stop']:
                             current_chan = pr
@@ -2242,10 +2243,10 @@ if __name__ == '__main__':
         hlayout2.addWidget(label12)
 
         #hlayout1.addStretch(1)
-        vlayout3.addLayout(hlayout1)
+        vlayout3.addLayout(hlayout2)
 
         hlayout2.addStretch(1)
-        vlayout3.addLayout(hlayout2)
+        vlayout3.addLayout(hlayout1)
 
         dockWidget2.setWidget(widget2)
         dockWidget2.setFloating(False)
