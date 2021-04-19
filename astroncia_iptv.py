@@ -211,7 +211,8 @@ if __name__ == '__main__':
                 "cache_secs": 1,
                 "useragent": 2,
                 "mpv_options": '',
-                'donotupdateepg': False
+                'donotupdateepg': False,
+                'gui': 0
             }
             m3u = ""
         if 'hwaccel' not in settings:
@@ -228,6 +229,8 @@ if __name__ == '__main__':
             settings['mpv_options'] = ''
         if 'donotupdateepg' not in settings:
             settings['donotupdateepg'] = False
+        if 'gui' not in settings:
+            settings['gui'] = 0
         if settings['hwaccel']:
             print_with_time("{} {}".format(LANG['hwaccel'].replace('\n', ' '), LANG['enabled']))
         else:
@@ -452,6 +455,29 @@ if __name__ == '__main__':
         TV_ICON = QtGui.QIcon(str(Path('data', 'icons', 'tv.png')))
         ICONS_CACHE = {}
 
+        class ScrollLabel(QtWidgets.QScrollArea):
+            def __init__(self, *args, **kwargs):
+                QtWidgets.QScrollArea.__init__(self, *args, **kwargs)
+                self.setWidgetResizable(True)
+                content = QtWidgets.QWidget(self)
+                content.setStyleSheet('background-color: white')
+                self.setWidget(content)
+                lay = QtWidgets.QVBoxLayout(content)
+                self.label = QtWidgets.QLabel(content)
+                self.label.setAlignment(QtCore.Qt.AlignCenter)
+                self.label.setWordWrap(True)
+                self.label.setStyleSheet('background-color: white')
+                lay.addWidget(self.label)
+
+            def setText(self, text):
+                self.label.setText(text)
+
+            def getText1(self):
+                return self.label.text()
+
+            def getLabelHeight(self):
+                return self.label.height()
+
         settings_win = QtWidgets.QMainWindow()
         settings_win.resize(400, 200)
         settings_win.setWindowTitle(LANG['settings'])
@@ -471,6 +497,13 @@ if __name__ == '__main__':
         chan_win.resize(400, 250)
         chan_win.setWindowTitle(LANG['channelsettings'])
         chan_win.setWindowIcon(main_icon)
+
+        epg_win = QtWidgets.QMainWindow()
+        epg_win.resize(400, 600)
+        epg_win.setWindowTitle(LANG['tvguide'])
+        epg_win.setWindowIcon(main_icon)
+        tvguide_lbl_2 = ScrollLabel(epg_win)
+        tvguide_lbl_2.resize(395, 595)
 
         time_stop = 0
 
@@ -791,7 +824,8 @@ if __name__ == '__main__':
                 "cache_secs": scache1.value(),
                 "useragent": useragent_choose_2.currentIndex(),
                 "mpv_options": mpv_options.text(),
-                'donotupdateepg': donot_flag.isChecked()
+                'donotupdateepg': donot_flag.isChecked(),
+                'gui': gui_choose.currentIndex()
             }
             settings_file1 = open(str(Path(LOCAL_DIR, 'settings.json')), 'w')
             settings_file1.write(json.dumps(settings_arr))
@@ -1048,15 +1082,23 @@ if __name__ == '__main__':
         donot_flag = QtWidgets.QCheckBox()
         donot_flag.setChecked(settings['donotupdateepg'])
 
+        gui_label = QtWidgets.QLabel("{}:".format(LANG['epg_gui']))
+        gui_choose = QtWidgets.QComboBox()
+        gui_choose.addItem(LANG['classic'])
+        gui_choose.addItem(LANG['simple'])
+        gui_choose.setCurrentIndex(settings['gui'])
+
         tabs = QtWidgets.QTabWidget()
 
         tab1 = QtWidgets.QWidget()
         tab2 = QtWidgets.QWidget()
         tab3 = QtWidgets.QWidget()
         tab4 = QtWidgets.QWidget()
+        tab5 = QtWidgets.QWidget()
         tabs.addTab(tab1, LANG['tab_main'])
         tabs.addTab(tab2, LANG['tab_video'])
         tabs.addTab(tab3, LANG['tab_network'])
+        tabs.addTab(tab5, LANG['tab_gui'])
         tabs.addTab(tab4, LANG['tab_other'])
         tab1.layout = QtWidgets.QGridLayout()
         tab1.layout.addWidget(lang_label, 0, 0)
@@ -1094,6 +1136,14 @@ if __name__ == '__main__':
         tab4.layout.addWidget(donot_label, 1, 0)
         tab4.layout.addWidget(donot_flag, 1, 1)
         tab4.setLayout(tab4.layout)
+
+        tab5.layout = QtWidgets.QGridLayout()
+        tab5.layout.addWidget(gui_label, 0, 0)
+        tab5.layout.addWidget(gui_choose, 0, 1)
+        tab5.layout.addWidget(QtWidgets.QLabel(), 1, 2)
+        tab5.layout.addWidget(QtWidgets.QLabel(), 1, 3)
+        tab5.layout.addWidget(QtWidgets.QLabel(), 1, 4)
+        tab5.setLayout(tab5.layout)
 
         grid2 = QtWidgets.QVBoxLayout()
         grid2.addWidget(tabs)
@@ -1451,29 +1501,6 @@ if __name__ == '__main__':
         dockWidget = QtWidgets.QDockWidget(win)
         win.listWidget = QtWidgets.QListWidget()
 
-        class ScrollLabel(QtWidgets.QScrollArea):
-            def __init__(self, *args, **kwargs):
-                QtWidgets.QScrollArea.__init__(self, *args, **kwargs)
-                self.setWidgetResizable(True)
-                content = QtWidgets.QWidget(self)
-                content.setStyleSheet('background-color: white')
-                self.setWidget(content)
-                lay = QtWidgets.QVBoxLayout(content)
-                self.label = QtWidgets.QLabel(content)
-                self.label.setAlignment(QtCore.Qt.AlignCenter)
-                self.label.setWordWrap(True)
-                self.label.setStyleSheet('background-color: white')
-                lay.addWidget(self.label)
-
-            def setText(self, text):
-                self.label.setText(text)
-
-            def getText1(self):
-                return self.label.text()
-
-            def getLabelHeight(self):
-                return self.label.height()
-
         tvguide_lbl = ScrollLabel(win)
         tvguide_lbl.move(0, 35)
         tvguide_lbl.setFixedWidth(TVGUIDE_WIDTH)
@@ -1548,6 +1575,42 @@ if __name__ == '__main__':
             def hideProgress(self):
                 self.op.setOpacity(0)
                 self.progressBar.setGraphicsEffect(self.op)
+
+        class QCustomQWidget_simple(QtWidgets.QWidget): # pylint: disable=too-many-instance-attributes
+            def __init__(self, parent=None):
+                super(QCustomQWidget_simple, self).__init__(parent)
+                self.textQHBoxLayout = QtWidgets.QHBoxLayout()      # QtWidgets
+                self.textUpQLabel = QtWidgets.QLabel()         # QtWidgets
+                myFont = QtGui.QFont()
+                myFont.setBold(True)
+                self.textUpQLabel.setFont(myFont)
+                self.iconQLabel = QtWidgets.QLabel()         # QtWidgets
+                self.textQHBoxLayout.addWidget(self.iconQLabel)
+                self.textQHBoxLayout.addWidget(self.textUpQLabel)
+                self.textQHBoxLayout.addStretch()
+                self.textQHBoxLayout.setSpacing(15)
+                self.setLayout(self.textQHBoxLayout)
+
+            def setTextUp(self, text):
+                self.textUpQLabel.setText(text)
+
+            def setTextDown(self, text):
+                pass
+
+            def setTextProgress(self, text):
+                pass
+
+            def setTextEnd(self, text):
+                pass
+
+            def setIcon(self, image):
+                self.iconQLabel.setPixmap(image.pixmap(QtCore.QSize(32, 32)))
+
+            def setProgress(self, progress_val):
+                pass
+
+            def hideProgress(self):
+                pass
 
         current_group = LANG['allchannels']
 
@@ -1649,7 +1712,10 @@ if __name__ == '__main__':
                         percentage = 0
                         prog = ''
                 # Create QCustomQWidget
-                myQCustomQWidget = QCustomQWidget()
+                if settings['gui'] == 0:
+                    myQCustomQWidget = QCustomQWidget()
+                else:
+                    myQCustomQWidget = QCustomQWidget_simple()
                 MAX_SIZE_CHAN = 21
                 chan_name = i
                 if len(chan_name) > MAX_SIZE_CHAN:
@@ -1941,14 +2007,25 @@ if __name__ == '__main__':
                         desc_2 = ('\n' + pr['desc'] + '\n') if 'desc' in pr else ''
                         txt += start_2 + stop_2 + title_2 + desc_2 + '\n'
             tvguide_lbl.setText(txt)
+            tvguide_lbl_2.setText(txt)
 
         def show_tvguide():
-            if tvguide_lbl.isVisible():
-                tvguide_lbl.setText('')
-                tvguide_lbl.hide()
+            if settings['gui'] == 0:
+                if tvguide_lbl.isVisible():
+                    tvguide_lbl.setText('')
+                    tvguide_lbl_2.setText('')
+                    tvguide_lbl.hide()
+                else:
+                    update_tvguide()
+                    tvguide_lbl.show()
             else:
-                update_tvguide()
-                tvguide_lbl.show()
+                if epg_win.isVisible():
+                    tvguide_lbl.setText('')
+                    tvguide_lbl_2.setText('')
+                    epg_win.hide()
+                else:
+                    update_tvguide()
+                    epg_win.show()
 
         is_recording = False
         recording_time = 0

@@ -118,6 +118,10 @@ lang = {
             'mpv_options': 'mpv options',
             'donotupdateepg': 'Do not update\nEPG at boot',
             'search': 'Search',
+            'tab_gui': 'GUI',
+            'epg_gui': 'TV guide\ninterface',
+            'classic': 'Classic',
+            'simple': 'Simple',
             'bitrates': ['bps', 'kbps', 'Mbps', 'Gbps', 'Tbps'],
             'helptext': '''Astroncia IPTV, version {}    (c) kestral / astroncia
 
@@ -266,6 +270,10 @@ E - timeshift (only on Linux)
             'mpv_options': 'mpv опции',
             'donotupdateepg': 'Не обновлять\nEPG при запуске',
             'search': 'Поиск',
+            'tab_gui': 'Интерфейс',
+            'epg_gui': 'Вид\nтелепрограммы',
+            'classic': 'Классический',
+            'simple': 'Упрощённый',
             'bitrates': ['бит/с', 'Кбит/с', 'Мбит/с', 'Гбит/с', 'Тбит/с'],
             'helptext': '''Astroncia IPTV, версия {}    (c) kestral / astroncia
 
