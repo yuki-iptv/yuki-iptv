@@ -2303,6 +2303,7 @@ if __name__ == '__main__':
             stop_record()
 
         first_boot = False
+        first_boot_1 = True
 
         epg_thread = None
         manager = None
@@ -2314,32 +2315,39 @@ if __name__ == '__main__':
         def thread_tvguide():
             global stopped, time_stop, first_boot, programmes, btn_update, \
             epg_thread, static_text, manager, tvguide_sets, epg_updating, ic, \
-            return_dict, waiting_for_epg, epg_failed
-            if (not first_boot) and (not settings['donotupdateepg']):
+            return_dict, waiting_for_epg, epg_failed, first_boot_1
+            if not first_boot:
                 first_boot = True
                 if settings['epg'] and settings['epg'] != 'http://' and not epg_failed:
                     if not use_local_tvguide:
-                        epg_updating = True
-                        l1.setStatic2(True)
-                        l1.show()
-                        static_text = LANG['tvguideupdating']
-                        l1.setText2("")
-                        time_stop = time.time() + 3
-                        try:
-                            manager = Manager()
-                            return_dict = manager.dict()
-                            p = Process(target=worker, args=(0, settings, return_dict))
-                            epg_thread = p
-                            p.start()
-                            waiting_for_epg = True
-                        except Exception as e1:
-                            epg_failed = True
-                            print_with_time("[TV guide, part 1] Caught exception: " + str(e1))
-                            l1.setStatic2(False)
+                        update_epg = not settings['donotupdateepg']
+                        if not first_boot_1:
+                            update_epg = True
+                        if update_epg:
+                            epg_updating = True
+                            l1.setStatic2(True)
                             l1.show()
-                            l1.setText2(LANG['tvguideupdatingerror'])
+                            static_text = LANG['tvguideupdating']
+                            l1.setText2("")
                             time_stop = time.time() + 3
-                            epg_updating = False
+                            try:
+                                manager = Manager()
+                                return_dict = manager.dict()
+                                p = Process(target=worker, args=(0, settings, return_dict))
+                                epg_thread = p
+                                p.start()
+                                waiting_for_epg = True
+                            except Exception as e1:
+                                epg_failed = True
+                                print_with_time("[TV guide, part 1] Caught exception: " + str(e1))
+                                l1.setStatic2(False)
+                                l1.show()
+                                l1.setText2(LANG['tvguideupdatingerror'])
+                                time_stop = time.time() + 3
+                                epg_updating = False
+                        else:
+                            print_with_time("EPG update at boot disabled")
+                        first_boot_1 = False
                     else:
                         programmes = {prog0.lower(): tvguide_sets[prog0] for prog0 in tvguide_sets}
                         btn_update.click() # start update in main thread
