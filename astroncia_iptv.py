@@ -1086,6 +1086,7 @@ if __name__ == '__main__':
         gui_choose = QtWidgets.QComboBox()
         gui_choose.addItem(LANG['classic'])
         gui_choose.addItem(LANG['simple'])
+        gui_choose.addItem(LANG['simple_noicons'])
         gui_choose.setCurrentIndex(settings['gui'])
 
         tabs = QtWidgets.QTabWidget()
@@ -1585,7 +1586,8 @@ if __name__ == '__main__':
                 myFont.setBold(True)
                 self.textUpQLabel.setFont(myFont)
                 self.iconQLabel = QtWidgets.QLabel()         # QtWidgets
-                self.textQHBoxLayout.addWidget(self.iconQLabel)
+                if settings['gui'] == 1:
+                    self.textQHBoxLayout.addWidget(self.iconQLabel)
                 self.textQHBoxLayout.addWidget(self.textUpQLabel)
                 self.textQHBoxLayout.addStretch()
                 self.textQHBoxLayout.setSpacing(15)

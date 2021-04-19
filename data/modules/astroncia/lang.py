@@ -122,6 +122,7 @@ lang = {
             'epg_gui': 'TV guide\ninterface',
             'classic': 'Classic',
             'simple': 'Simple',
+            'simple_noicons': 'Simple (no icons)',
             'bitrates': ['bps', 'kbps', 'Mbps', 'Gbps', 'Tbps'],
             'helptext': '''Astroncia IPTV, version {}    (c) kestral / astroncia
 
@@ -274,6 +275,7 @@ E - timeshift (only on Linux)
             'epg_gui': 'Вид\nтелепрограммы',
             'classic': 'Классический',
             'simple': 'Упрощённый',
+            'simple_noicons': 'Упрощённый (без иконок)',
             'bitrates': ['бит/с', 'Кбит/с', 'Мбит/с', 'Гбит/с', 'Тбит/с'],
             'helptext': '''Astroncia IPTV, версия {}    (c) kestral / astroncia
 
