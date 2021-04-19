@@ -210,7 +210,8 @@ if __name__ == '__main__':
                 "sort": 0,
                 "cache_secs": 1,
                 "useragent": 2,
-                "mpv_options": ''
+                "mpv_options": '',
+                'donotupdateepg': False
             }
             m3u = ""
         if 'hwaccel' not in settings:
@@ -225,6 +226,8 @@ if __name__ == '__main__':
             settings['useragent'] = 2
         if 'mpv_options' not in settings:
             settings['mpv_options'] = ''
+        if 'donotupdateepg' not in settings:
+            settings['donotupdateepg'] = False
         if settings['hwaccel']:
             print_with_time("{} {}".format(LANG['hwaccel'].replace('\n', ' '), LANG['enabled']))
         else:
@@ -787,7 +790,8 @@ if __name__ == '__main__':
                 "sort": sort_widget.currentIndex(),
                 "cache_secs": scache1.value(),
                 "useragent": useragent_choose_2.currentIndex(),
-                "mpv_options": mpv_options.text()
+                "mpv_options": mpv_options.text(),
+                'donotupdateepg': donot_flag.isChecked()
             }
             settings_file1 = open(str(Path(LOCAL_DIR, 'settings.json')), 'w')
             settings_file1.write(json.dumps(settings_arr))
@@ -1040,6 +1044,9 @@ if __name__ == '__main__':
         mpv_label = QtWidgets.QLabel("{}:".format(LANG['mpv_options']))
         mpv_options = QtWidgets.QLineEdit()
         mpv_options.setText(settings['mpv_options'])
+        donot_label = QtWidgets.QLabel("{}:".format(LANG['donotupdateepg']))
+        donot_flag = QtWidgets.QCheckBox()
+        donot_flag.setChecked(settings['donotupdateepg'])
 
         tabs = QtWidgets.QTabWidget()
 
@@ -1084,6 +1091,8 @@ if __name__ == '__main__':
         tab4.layout = QtWidgets.QGridLayout()
         tab4.layout.addWidget(mpv_label, 0, 0)
         tab4.layout.addWidget(mpv_options, 0, 1)
+        tab4.layout.addWidget(donot_label, 1, 0)
+        tab4.layout.addWidget(donot_flag, 1, 1)
         tab4.setLayout(tab4.layout)
 
         grid2 = QtWidgets.QVBoxLayout()
@@ -2306,7 +2315,7 @@ if __name__ == '__main__':
             global stopped, time_stop, first_boot, programmes, btn_update, \
             epg_thread, static_text, manager, tvguide_sets, epg_updating, ic, \
             return_dict, waiting_for_epg, epg_failed
-            if not first_boot:
+            if (not first_boot) and (not settings['donotupdateepg']):
                 first_boot = True
                 if settings['epg'] and settings['epg'] != 'http://' and not epg_failed:
                     if not use_local_tvguide:
