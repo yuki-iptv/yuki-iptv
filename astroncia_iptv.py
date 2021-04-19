@@ -209,7 +209,8 @@ if __name__ == '__main__':
                 "hwaccel": True,
                 "sort": 0,
                 "cache_secs": 1,
-                "useragent": 2
+                "useragent": 2,
+                "mpv_options": ''
             }
             m3u = ""
         if 'hwaccel' not in settings:
@@ -222,6 +223,8 @@ if __name__ == '__main__':
             settings['timezone'] = DEF_TIMEZONE
         if 'useragent' not in settings:
             settings['useragent'] = 2
+        if 'mpv_options' not in settings:
+            settings['mpv_options'] = ''
         if settings['hwaccel']:
             print_with_time("{} {}".format(LANG['hwaccel'].replace('\n', ' '), LANG['enabled']))
         else:
@@ -783,7 +786,8 @@ if __name__ == '__main__':
                 "hwaccel": shwaccel.isChecked(),
                 "sort": sort_widget.currentIndex(),
                 "cache_secs": scache1.value(),
-                "useragent": useragent_choose_2.currentIndex()
+                "useragent": useragent_choose_2.currentIndex(),
+                "mpv_options": mpv_options.text()
             }
             settings_file1 = open(str(Path(LOCAL_DIR, 'settings.json')), 'w')
             settings_file1.write(json.dumps(settings_arr))
@@ -1033,14 +1037,20 @@ if __name__ == '__main__':
         useragent_choose_2.addItem('Linux Browser')
         useragent_choose_2.setCurrentIndex(settings['useragent'])
 
+        mpv_label = QtWidgets.QLabel("{}:".format(LANG['mpv_options']))
+        mpv_options = QtWidgets.QLineEdit()
+        mpv_options.setText(settings['mpv_options'])
+
         tabs = QtWidgets.QTabWidget()
 
         tab1 = QtWidgets.QWidget()
         tab2 = QtWidgets.QWidget()
         tab3 = QtWidgets.QWidget()
+        tab4 = QtWidgets.QWidget()
         tabs.addTab(tab1, LANG['tab_main'])
         tabs.addTab(tab2, LANG['tab_video'])
         tabs.addTab(tab3, LANG['tab_network'])
+        tabs.addTab(tab4, LANG['tab_other'])
         tab1.layout = QtWidgets.QGridLayout()
         tab1.layout.addWidget(lang_label, 0, 0)
         tab1.layout.addWidget(slang, 0, 1)
@@ -1070,6 +1080,11 @@ if __name__ == '__main__':
         tab3.layout.addWidget(useragent_lbl_2, 2, 0)
         tab3.layout.addWidget(useragent_choose_2, 2, 1)
         tab3.setLayout(tab3.layout)
+
+        tab4.layout = QtWidgets.QGridLayout()
+        tab4.layout.addWidget(mpv_label, 0, 0)
+        tab4.layout.addWidget(mpv_options, 0, 1)
+        tab4.setLayout(tab4.layout)
 
         grid2 = QtWidgets.QVBoxLayout()
         grid2.addWidget(tabs)
@@ -1949,25 +1964,37 @@ if __name__ == '__main__':
             print_with_time('[{}] {}: {}'.format(loglevel, component, message))
 
         if settings['hwaccel']:
-            VIDEO_OUTPUT = 'gpu,opengl,direct3d,xv,x11'
+            VIDEO_OUTPUT = 'gpu,vdpau,opengl,direct3d,xv,x11'
             HWACCEL = 'yes'
         else:
             VIDEO_OUTPUT = 'direct3d,xv,x11'
             HWACCEL = 'no'
+        options = {
+            'vo': '' if os.name == 'nt' else VIDEO_OUTPUT,
+            'hwdec': HWACCEL
+        }
+        try:
+            mpv_options_1 = settings['mpv_options']
+            if "=" in mpv_options_1:
+                pairs = mpv_options_1.split()
+                for pair in pairs:
+                    key, value = pair.split("=")
+                    options[key.replace('--', '')] = value
+        except Exception as e1:
+            print("Could not parse MPV options!")
+            print(e1)
         try:
             player = mpv.MPV(
+                **options,
                 wid=str(int(win.main_widget.winId())),
                 ytdl=False,
-                vo='' if os.name == 'nt' else VIDEO_OUTPUT,
-                hwdec=HWACCEL,
                 log_handler=my_log,
                 loglevel='info' # debug
             )
         except: # pylint: disable=bare-except
             player = mpv.MPV(
+                **options,
                 wid=str(int(win.main_widget.winId())),
-                vo='' if os.name == 'nt' else VIDEO_OUTPUT,
-                hwdec=HWACCEL,
                 log_handler=my_log,
                 loglevel='info' # debug
             )

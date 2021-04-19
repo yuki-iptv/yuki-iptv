@@ -114,6 +114,8 @@ lang = {
             'tab_main': 'Main',
             'tab_video': 'Video',
             'tab_network': 'Network',
+            'tab_other': 'Other',
+            'mpv_options': 'mpv options',
             'bitrates': ['bps', 'kbps', 'Mbps', 'Gbps', 'Tbps'],
             'helptext': '''Astroncia IPTV, version {}    (c) kestral / astroncia
 
@@ -258,6 +260,8 @@ E - timeshift (only on Linux)
             'tab_main': 'Общие',
             'tab_video': 'Видео',
             'tab_network': 'Сеть',
+            'tab_other': 'Прочее',
+            'mpv_options': 'mpv опции',
             'bitrates': ['бит/с', 'Кбит/с', 'Мбит/с', 'Гбит/с', 'Тбит/с'],
             'helptext': '''Astroncia IPTV, версия {}    (c) kestral / astroncia
 
