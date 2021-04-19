@@ -1215,8 +1215,13 @@ if __name__ == '__main__':
         win.setAttribute(QtCore.Qt.WA_DontCreateNativeAncestors)
         win.setAttribute(QtCore.Qt.WA_NativeWindow)
 
-        chan = QtWidgets.QLabel(LANG['nochannelselected'], win)
+        chan = QtWidgets.QLabel(LANG['nochannelselected'])
         chan.setAlignment(QtCore.Qt.AlignCenter)
+        chan.setStyleSheet('color: green')
+        myFont4 = QtGui.QFont()
+        myFont4.setPointSize(11)
+        myFont4.setBold(True)
+        chan.setFont(myFont4)
         chan.resize(200, 30)
 
         loading1 = QtWidgets.QLabel(win)
@@ -1270,7 +1275,11 @@ if __name__ == '__main__':
             playing_chan = j
             item_selected = j
             play_url = array[j]['url']
-            chan.setText('  ' + j)
+            MAX_CHAN_SIZE = 35
+            channel_name = j
+            if len(channel_name) > MAX_CHAN_SIZE:
+                channel_name = channel_name[:MAX_CHAN_SIZE - 3] + '...'
+            chan.setText('  ' + channel_name)
             current_prog = None
             if settings['epg'] and j.lower() in programmes:
                 for pr in programmes[j.lower()]:
@@ -1871,6 +1880,7 @@ if __name__ == '__main__':
         widget.layout().addWidget(combobox)
         widget.layout().addWidget(widget3)
         widget.layout().addWidget(win.listWidget)
+        widget.layout().addWidget(chan)
         widget.layout().addWidget(loading)
         dockWidget.setFixedWidth(DOCK_WIDGET_WIDTH)
         dockWidget.setWidget(widget)
