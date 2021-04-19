@@ -123,6 +123,7 @@ lang = {
             'classic': 'Classic',
             'simple': 'Simple',
             'simple_noicons': 'Simple (no icons)',
+            'update': 'Update',
             'bitrates': ['bps', 'kbps', 'Mbps', 'Gbps', 'Tbps'],
             'helptext': '''Astroncia IPTV, version {}    (c) kestral / astroncia
 
@@ -276,6 +277,7 @@ E - timeshift (only on Linux)
             'classic': 'Классический',
             'simple': 'Упрощённый',
             'simple_noicons': 'Упрощённый (без иконок)',
+            'update': 'Обновить',
             'bitrates': ['бит/с', 'Кбит/с', 'Мбит/с', 'Гбит/с', 'Тбит/с'],
             'helptext': '''Astroncia IPTV, версия {}    (c) kestral / astroncia
 

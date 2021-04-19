@@ -982,6 +982,7 @@ if __name__ == '__main__':
         sm3uupd = QtWidgets.QPushButton(settings_win)
         sm3uupd.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'update.png'))))
         sm3uupd.clicked.connect(update_m3u)
+        sm3uupd.setToolTip(LANG['update'])
 
         sepgfile = QtWidgets.QPushButton(settings_win)
         sepgfile.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'file.png'))))
@@ -989,6 +990,7 @@ if __name__ == '__main__':
         sepgupd = QtWidgets.QPushButton(settings_win)
         sepgupd.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'update.png'))))
         sepgupd.clicked.connect(force_update_epg)
+        sepgupd.setToolTip(LANG['update'])
 
         sfolder = QtWidgets.QPushButton(settings_win)
         sfolder.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'file.png'))))
