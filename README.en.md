@@ -96,7 +96,7 @@ and put to folder **astroncia_iptv\data\modules\binary**
 
 on Windows: open file ```start_windows.vbs```  
 
-on Linux: ```./start_linux.sh```
+on GNU/Linux: ```./start_linux.sh```
 
 ## View recordings
 
