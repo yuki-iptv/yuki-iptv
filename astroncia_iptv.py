@@ -2072,7 +2072,7 @@ if __name__ == '__main__':
             print_with_time('[{}] {}: {}'.format(loglevel, component, message))
 
         if settings['hwaccel']:
-            VIDEO_OUTPUT = 'gpu,vdpau,vaapi,opengl,direct3d,xv,x11'
+            VIDEO_OUTPUT = 'gpu,opengl,direct3d,xv,x11'
             HWACCEL = 'yes'
         else:
             VIDEO_OUTPUT = 'direct3d,xv,x11'
