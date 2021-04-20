@@ -9,6 +9,10 @@
 
 Программа предоставляется **как есть**, никаких гарантий.  
 
+Зеркала репозитория:  
+[GitLab](https://gitlab.com/astroncia/iptv)  
+[Bitbucket](https://bitbucket.org/astroncia/astroncia-iptv/src/master/)  
+
 ## Лицензия
 
 Код: GPLv3  
