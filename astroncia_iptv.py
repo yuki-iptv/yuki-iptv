@@ -1340,7 +1340,7 @@ if __name__ == '__main__':
                         current_prog = pr
                         break
             show_progress(current_prog)
-            dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT + 10)
+            dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT + 20)
             playing = True
             win.update()
             playing_url = play_url
@@ -1450,7 +1450,7 @@ if __name__ == '__main__':
                     progress.show()
                     start_label.show()
                     stop_label.show()
-                    dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT + 10)
+                    dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT + 20)
                 dockWidget2.show()
                 dockWidget.show()
                 chan.show()
@@ -2349,7 +2349,7 @@ if __name__ == '__main__':
 
         dockWidget2.setWidget(widget2)
         dockWidget2.setFloating(False)
-        dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT + 10)
+        dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT + 20)
         dockWidget2.setFeatures(QtWidgets.QDockWidget.NoDockWidgetFeatures)
         win.addDockWidget(QtCore.Qt.BottomDockWidgetArea, dockWidget2)
 
