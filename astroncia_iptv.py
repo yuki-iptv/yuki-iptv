@@ -45,7 +45,7 @@ from data.modules.astroncia.bitrate import humanbytes
 from data.modules.astroncia.selectionmodel import ReorderableListModel, SelectionModel
 from data.modules.m3ueditor import Viewer
 
-APP_VERSION = '0.0.19'
+APP_VERSION = '0.0.20'
 
 if not sys.version_info >= (3, 4, 0):
     print_with_time("Incompatible Python version! Required >= 3.4")
@@ -1415,7 +1415,7 @@ if __name__ == '__main__':
             progress.hide()
             start_label.hide()
             stop_label.hide()
-            dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT - 20)
+            dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT - 10)
             win.update()
 
         def esc_handler():
@@ -1436,7 +1436,7 @@ if __name__ == '__main__':
                 #start_label.hide()
                 #stop_label.hide()
                 dockWidget2.hide()
-                dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT - 20)
+                dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT - 10)
                 win.update()
                 win.showFullScreen()
             else:
@@ -2356,7 +2356,7 @@ if __name__ == '__main__':
         progress.hide()
         start_label.hide()
         stop_label.hide()
-        dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT - 20)
+        dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT - 10)
 
         l1 = QtWidgets.QLabel(win)
         myFont1 = QtGui.QFont()
