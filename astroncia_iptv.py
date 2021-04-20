@@ -49,7 +49,6 @@ from PyQt5 import QtCore
 from PyQt5 import QtGui
 from data.modules.astroncia.lang import lang
 from data.modules.astroncia.ua import user_agent, uas
-from data.modules.astroncia.m3u import M3uParser
 from data.modules.astroncia.epg import worker
 from data.modules.astroncia.record import record, stop_record
 from data.modules.astroncia.format import format_seconds_to_hhmmss
@@ -59,6 +58,7 @@ from data.modules.astroncia.time import print_with_time
 from data.modules.astroncia.epgurls import EPG_URLS
 from data.modules.astroncia.bitrate import humanbytes
 from data.modules.astroncia.selectionmodel import ReorderableListModel, SelectionModel
+from data.modules.thirdparty.m3u import M3uParser
 from data.modules.thirdparty.m3ueditor import Viewer
 
 APP_VERSION = '0.0.20'
