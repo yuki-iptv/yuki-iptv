@@ -7,7 +7,7 @@ from functools import wraps
 
 from gi.repository.GLib import Variant
 from unidecode import unidecode
-from emoji import emoji_count, demojize
+#from emoji import emoji_count, demojize
 
 from .base import VALID_CHARS, Metadata, DbusMetadata, DbusTypes, \
     RAND_CHARS, NAME_PREFIX
@@ -39,9 +39,8 @@ VALID_CHARS_SUB: Tuple[str] = tuple(VALID_CHARS)
 
 
 def to_ascii(text: str) -> str:
-  if emoji_count(text):
-    text = demojize(text)
-
+  #if emoji_count(text):
+  #  text = demojize(text)
   return unidecode(text)
 
 
