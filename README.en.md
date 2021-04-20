@@ -5,6 +5,8 @@
 
 ## Information
 
+![GPLv3 logo](https://www.gnu.org/graphics/gplv3-with-text-136x68.png)  
+
 **32-bit Windows not supported!**  
 
 Software provided **as is**, no guarantees.  
