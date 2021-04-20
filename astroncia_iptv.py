@@ -59,7 +59,7 @@ from data.modules.astroncia.time import print_with_time
 from data.modules.astroncia.epgurls import EPG_URLS
 from data.modules.astroncia.bitrate import humanbytes
 from data.modules.astroncia.selectionmodel import ReorderableListModel, SelectionModel
-from data.modules.m3ueditor import Viewer
+from data.modules.thirdparty.m3ueditor import Viewer
 
 APP_VERSION = '0.0.20'
 
@@ -167,10 +167,10 @@ if __name__ == '__main__':
                 sys.exit(1)
 
         try:
-            from data.modules import mpv
+            from data.modules.thirdparty import mpv
         except: # pylint: disable=bare-except
             print_with_time("Falling back to old mpv library...")
-            from data.modules import mpv_old as mpv
+            from data.modules.thirdparty import mpv_old as mpv
 
         if not os.path.isdir(LOCAL_DIR):
             os.mkdir(LOCAL_DIR)
