@@ -1340,7 +1340,7 @@ if __name__ == '__main__':
                         current_prog = pr
                         break
             show_progress(current_prog)
-            dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT)
+            dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT + 10)
             playing = True
             win.update()
             playing_url = play_url
@@ -1415,7 +1415,7 @@ if __name__ == '__main__':
             progress.hide()
             start_label.hide()
             stop_label.hide()
-            dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT - 30)
+            dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT - 20)
             win.update()
 
         def esc_handler():
@@ -1436,7 +1436,7 @@ if __name__ == '__main__':
                 #start_label.hide()
                 #stop_label.hide()
                 dockWidget2.hide()
-                dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT - 30)
+                dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT - 20)
                 win.update()
                 win.showFullScreen()
             else:
@@ -1450,7 +1450,7 @@ if __name__ == '__main__':
                     progress.show()
                     start_label.show()
                     stop_label.show()
-                    dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT)
+                    dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT + 10)
                 dockWidget2.show()
                 dockWidget.show()
                 chan.show()
@@ -2287,7 +2287,9 @@ if __name__ == '__main__':
         label9.setToolTip(LANG['help'])
         label9.clicked.connect(show_help)
         label12 = QtWidgets.QLabel('')
-        label10 = QtWidgets.QLabel('  (c) kestral / astroncia')
+        label10 = QtWidgets.QLabel('(c) kestral / astroncia')
+        label10.setAlignment(QtCore.Qt.AlignCenter)
+        label10.setStyleSheet('color: #a60f46')
         label11 = QtWidgets.QLabel()
         myFont3 = QtGui.QFont()
         myFont3.setPointSize(11)
@@ -2305,6 +2307,7 @@ if __name__ == '__main__':
         vlayout3 = QtWidgets.QVBoxLayout()
         hlayout1 = QtWidgets.QHBoxLayout()
         hlayout2 = QtWidgets.QHBoxLayout()
+        hlayout3 = QtWidgets.QHBoxLayout()
         widget2 = QtWidgets.QWidget()
         widget2.setLayout(vlayout3)
 
@@ -2329,9 +2332,11 @@ if __name__ == '__main__':
         hlayout2.addWidget(label8_3)
         hlayout2.addWidget(label8_5)
         hlayout2.addWidget(label9)
+        hlayout2.addStretch(30000)
         hlayout2.addWidget(label11)
-        hlayout2.addWidget(label10)
         hlayout2.addWidget(label12)
+
+        hlayout3.addWidget(label10)
 
         #hlayout1.addStretch(1)
         vlayout3.addLayout(hlayout2)
@@ -2339,16 +2344,19 @@ if __name__ == '__main__':
         hlayout2.addStretch(1)
         vlayout3.addLayout(hlayout1)
 
+        hlayout2.addStretch(1)
+        vlayout3.addLayout(hlayout3)
+
         dockWidget2.setWidget(widget2)
         dockWidget2.setFloating(False)
-        dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT)
+        dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT + 10)
         dockWidget2.setFeatures(QtWidgets.QDockWidget.NoDockWidgetFeatures)
         win.addDockWidget(QtCore.Qt.BottomDockWidgetArea, dockWidget2)
 
         progress.hide()
         start_label.hide()
         stop_label.hide()
-        dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT - 30)
+        dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT - 20)
 
         l1 = QtWidgets.QLabel(win)
         myFont1 = QtGui.QFont()
@@ -2525,7 +2533,7 @@ if __name__ == '__main__':
                 width = 800
                 height = 600
             if (not (codec == 'png' and width == 800 and height == 600)) and (width and height):
-                label12.setText('    {}x{}{} - {} / {}'.format(width, height, video_bitrate, codec, audio_codec))
+                label12.setText('  {}x{}{} - {} / {}'.format(width, height, video_bitrate, codec, audio_codec))
                 if loading.text() == LANG['loading']:
                     hideLoading()
             else:
