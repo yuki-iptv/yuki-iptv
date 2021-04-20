@@ -60,6 +60,7 @@
 - pandas (python3-pandas)
 - PyGObject (python3-gi)
 - Python D-Bus (python3-pydbus)
+- python3-unidecode
 - python3-requests
 - ffmpeg
 
@@ -68,7 +69,7 @@
 **Устанавливаем зависимости:**
 
 на Debian/Ubuntu:  
-```sudo apt install ffmpeg git libmpv1 python3 python3-requests python3-pyqt5 python3-pil python3-tk python3-pandas python3-gi python3-pydbus python3-pip python3-setuptools python3-dev qt5-default python3-wheel```
+```sudo apt install ffmpeg git libmpv1 python3 python3-requests python3-pyqt5 python3-pil python3-tk python3-pandas python3-gi python3-unidecode python3-pydbus python3-pip python3-setuptools python3-dev qt5-default python3-wheel```
 
 на Windows:  
 Устанавливаем Git с [официального сайта](https://git-scm.com/download/win)  
