@@ -2475,8 +2475,11 @@ if __name__ == '__main__':
                     wait_until()
                     if not stopped:
                         print_with_time("Starting MPRIS loop")
-                        mpris.publish()
-                        mpris_loop.run()
+                        try:
+                            mpris.publish()
+                            mpris_loop.run()
+                        except: # pylint: disable=bare-except
+                            print_with_time("Failed to start MPRIS loop!")
 
                 mpris_loop = GLib.MainLoop()
                 mpris_thread = threading.Thread(target=mpris_loop_start)
