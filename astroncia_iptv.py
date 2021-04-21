@@ -2458,7 +2458,7 @@ if __name__ == '__main__':
 
                 # create mpris adapter and initialize mpris server
                 my_adapter = MyAppAdapter()
-                mpris = Server('astronciaiptv', adapter=my_adapter)
+                mpris = Server('astronciaiptvinstance' + str(os.getpid()), adapter=my_adapter)
                 event_handler = EventAdapter(mpris.player, mpris.root)
 
                 def wait_until():
