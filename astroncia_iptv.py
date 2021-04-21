@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 '''Astroncia IPTV - Cross platform IPTV player'''
-# pylint: disable=invalid-name, global-statement, missing-docstring, wrong-import-position, c-extension-no-member, too-many-lines, too-many-statements, broad-except, line-too-long
+# pylint: disable=invalid-name, global-statement, missing-docstring, wrong-import-position
+# pylint: disable=c-extension-no-member, too-many-lines, line-too-long, ungrouped-imports
+# pylint: disable=too-many-statements, broad-except, pointless-string-statement
 #
 # Icons by Font Awesome ( https://fontawesome.com/ )
 #
@@ -60,6 +62,15 @@ from data.modules.astroncia.bitrate import humanbytes
 from data.modules.astroncia.selectionmodel import ReorderableListModel, SelectionModel
 from data.modules.thirdparty.m3u import M3uParser
 from data.modules.thirdparty.m3ueditor import Viewer
+if not os.name == 'nt':
+    try:
+        from gi.repository import GLib
+        from data.modules.thirdparty.mpris_server.adapters import PlayState, MprisAdapter, \
+          Microseconds, VolumeDecimal, RateDecimal, Track, DEFAULT_RATE
+        from data.modules.thirdparty.mpris_server.events import EventAdapter
+        from data.modules.thirdparty.mpris_server.server import Server
+    except: # pylint: disable=bare-except
+        print("Failed to init MPRIS libraries!")
 
 APP_VERSION = '0.0.20'
 
@@ -460,9 +471,13 @@ if __name__ == '__main__':
 
         def sigint_handler(*args): # pylint: disable=unused-argument
             """Handler for the SIGINT signal."""
+            global mpris_loop
+            if mpris_loop:
+                mpris_loop.quit()
             app.quit()
 
         signal.signal(signal.SIGINT, sigint_handler)
+        signal.signal(signal.SIGTERM, sigint_handler)
 
         timer = QtCore.QTimer()
         timer.start(500)
@@ -641,12 +656,80 @@ if __name__ == '__main__':
             loading_movie.start()
             loading1.show()
 
+        event_handler = None
+
+        def mpv_override_play(arg_override_play):
+            global event_handler
+            #print_with_time("mpv_override_play called")
+            player.play(arg_override_play)
+            if (not os.name == 'nt') and event_handler:
+                try:
+                    event_handler.on_title()
+                except: # pylint: disable=bare-except
+                    pass
+                try:
+                    event_handler.on_options()
+                except: # pylint: disable=bare-except
+                    pass
+                try:
+                    event_handler.on_playback()
+                except: # pylint: disable=bare-except
+                    pass
+
+        def mpv_override_stop():
+            global event_handler
+            #print_with_time("mpv_override_stop called")
+            player.command('stop')
+            if (not os.name == 'nt') and event_handler:
+                try:
+                    event_handler.on_title()
+                except: # pylint: disable=bare-except
+                    pass
+                try:
+                    event_handler.on_options()
+                except: # pylint: disable=bare-except
+                    pass
+                try:
+                    event_handler.on_ended()
+                except: # pylint: disable=bare-except
+                    pass
+
+        def mpv_override_volume(volume_val):
+            global event_handler
+            #print_with_time("mpv_override_volume called")
+            player.volume = volume_val
+            if (not os.name == 'nt') and event_handler:
+                try:
+                    event_handler.on_volume()
+                except: # pylint: disable=bare-except
+                    pass
+
+        def mpv_override_mute(mute_val):
+            global event_handler
+            #print_with_time("mpv_override_mute called")
+            player.mute = mute_val
+            if (not os.name == 'nt') and event_handler:
+                try:
+                    event_handler.on_volume()
+                except: # pylint: disable=bare-except
+                    pass
+
+        def mpv_override_pause(pause_val):
+            global event_handler
+            #print_with_time("mpv_override_pause called")
+            player.pause = pause_val
+            if (not os.name == 'nt') and event_handler:
+                try:
+                    event_handler.on_playpause()
+                except: # pylint: disable=bare-except
+                    pass
+
         def stopPlayer():
             try:
-                player.command('stop')
+                mpv_override_stop()
             except: # pylint: disable=bare-except
                 player.loop = True
-                player.play(str(Path('data', 'icons', 'main.png')))
+                mpv_override_play(str(Path('data', 'icons', 'main.png')))
 
         def doPlay(play_url1, ua_ch=def_user_agent):
             loading.setText(LANG['loading'])
@@ -685,8 +768,8 @@ if __name__ == '__main__':
             print_with_time("Gamma: {}".format(player.gamma))
             player.user_agent = ua_ch if isinstance(ua_ch, str) else uas[ua_ch]
             player.loop = True
-            player.command('stop')
-            player.play(play_url1)
+            mpv_override_stop()
+            mpv_override_play(play_url1)
 
         def chan_set_save():
             chan_3 = title.text().replace("{}: ".format(LANG['channel']), "")
@@ -1012,9 +1095,11 @@ if __name__ == '__main__':
         sfolder.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'file.png'))))
         sfolder.clicked.connect(save_folder_select)
 
-        soffset = QtWidgets.QSpinBox()
+        soffset = QtWidgets.QDoubleSpinBox()
         soffset.setMinimum(-240)
         soffset.setMaximum(240)
+        soffset.setSingleStep(1)
+        soffset.setDecimals(1)
         soffset.setValue(settings["timezone"])
 
         sframe = QtWidgets.QFrame()
@@ -1410,11 +1495,11 @@ if __name__ == '__main__':
             if player.pause:
                 label3.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'pause.png'))))
                 label3.setToolTip(LANG['pause'])
-                player.pause = False
+                mpv_override_pause(False)
             else:
                 label3.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'play.png'))))
                 label3.setToolTip(LANG['play'])
-                player.pause = True
+                mpv_override_pause(True)
 
         def mpv_stop():
             global playing, playing_chan, playing_url
@@ -1426,7 +1511,7 @@ if __name__ == '__main__':
             playing = False
             stopPlayer()
             player.loop = True
-            player.play(str(Path('data', 'icons', 'main.png')))
+            mpv_override_play(str(Path('data', 'icons', 'main.png')))
             chan.setText(LANG['nochannelselected'])
             progress.hide()
             start_label.hide()
@@ -1484,12 +1569,12 @@ if __name__ == '__main__':
                     label6.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'volume.png'))))
                 else:
                     label6.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'volume-low.png'))))
-                player.mute = False
+                mpv_override_mute(False)
                 label7.setValue(old_value)
                 l1.setText2("{}: {}%".format(LANG['volume'], int(old_value)))
             else:
                 label6.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'mute.png'))))
-                player.mute = True
+                mpv_override_mute(True)
                 old_value = label7.value()
                 label7.setValue(0)
                 l1.setText2(LANG['volumeoff'])
@@ -1506,12 +1591,12 @@ if __name__ == '__main__':
                     l1.setText2("{}: {}%".format(LANG['volume'], vol))
             except NameError:
                 pass
-            player.volume = vol
+            mpv_override_volume(vol)
             if vol == 0:
-                player.mute = True
+                mpv_override_mute(True)
                 label6.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'mute.png'))))
             else:
-                player.mute = False
+                mpv_override_mute(False)
                 if vol > 50:
                     label6.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'volume.png'))))
                 else:
@@ -2088,7 +2173,7 @@ if __name__ == '__main__':
             print_with_time('[{}] {}: {}'.format(loglevel, component, message))
 
         if settings['hwaccel']:
-            VIDEO_OUTPUT = 'gpu,opengl,direct3d,xv,x11'
+            VIDEO_OUTPUT = 'gpu,vdpau,opengl,direct3d,xv,x11'
             HWACCEL = 'yes'
         else:
             VIDEO_OUTPUT = 'direct3d,xv,x11'
@@ -2148,9 +2233,9 @@ if __name__ == '__main__':
         else:
             print_with_time("Using default cache settings")
         player.user_agent = def_user_agent
-        player.volume = 100
+        mpv_override_volume(100)
         player.loop = True
-        player.play(str(Path('data', 'icons', 'main.png')))
+        mpv_override_play(str(Path('data', 'icons', 'main.png')))
 
         @player.event_callback('end_file')
         def ready_handler_2(event): # pylint: disable=unused-argument
@@ -2236,6 +2321,169 @@ if __name__ == '__main__':
                     player.osc = True
             else:
                 player.osc = False
+
+        # MPRIS
+        mpris_loop = None
+        if not os.name == 'nt':
+            try:
+                class MyAppAdapter(MprisAdapter): # pylint: disable=too-many-public-methods
+                    def metadata(self) -> dict:
+                        channel_keys = list(array.keys())
+                        metadata = {
+                            "mpris:trackid": "/org/astroncia/iptv/playlist/" + str(channel_keys.index(playing_chan) + 1 if playing_chan in channel_keys else 0),
+                            "xesam:url": playing_url,
+                            "xesam:title": playing_chan
+                        }
+                        return metadata
+
+                    def can_quit(self) -> bool:
+                        return True
+
+                    def quit(self):
+                        key_quit()
+
+                    def can_raise(self) -> bool:
+                        return False
+
+                    def can_fullscreen(self) -> bool:
+                        return False
+
+                    def has_tracklist(self) -> bool:
+                        return False
+
+                    def get_current_position(self) -> Microseconds:
+                        return player.time_pos * 1000000 if player.time_pos else 0
+
+                    def next(self):
+                        next_channel()
+
+                    def previous(self):
+                        prev_channel()
+
+                    def pause(self):
+                        mpv_play()
+
+                    def resume(self):
+                        mpv_play()
+
+                    def stop(self):
+                        mpv_stop()
+
+                    def play(self):
+                        mpv_play()
+
+                    def get_playstate(self) -> PlayState:
+                        if playing_chan: # pylint: disable=no-else-return
+                            if player.pause: # pylint: disable=no-else-return
+                                return PlayState.PAUSED
+                            else:
+                                return PlayState.PLAYING
+                        else:
+                            return PlayState.STOPPED
+
+                    def seek(self, time: Microseconds): # pylint: disable=redefined-outer-name
+                        pass
+
+                    def open_uri(self, uri: str):
+                        pass
+
+                    def is_repeating(self) -> bool:
+                        return False
+
+                    def is_playlist(self) -> bool:
+                        return self.can_go_next() or self.can_go_previous()
+
+                    def set_repeating(self, val: bool):
+                        pass
+
+                    def set_loop_status(self, val: str):
+                        pass
+
+                    def get_rate(self) -> RateDecimal:
+                        return DEFAULT_RATE
+
+                    def set_rate(self, val: RateDecimal):
+                        pass
+
+                    def get_shuffle(self) -> bool:
+                        return False
+
+                    def set_shuffle(self, val: bool):
+                        return False
+
+                    def get_art_url(self, track: int) -> str:
+                        return ''
+
+                    def get_volume(self) -> VolumeDecimal:
+                        return player.volume / 100
+
+                    def set_volume(self, val: VolumeDecimal):
+                        label7.setValue(int(val * 100))
+                        mpv_volume_set()
+
+                    def is_mute(self) -> bool:
+                        return player.mute
+
+                    def set_mute(self, val: bool):
+                        mpv_override_mute(val)
+
+                    def can_go_next(self) -> bool:
+                        return True
+
+                    def can_go_previous(self) -> bool:
+                        return True
+
+                    def can_play(self) -> bool:
+                        return True
+
+                    def can_pause(self) -> bool:
+                        return True
+
+                    def can_seek(self) -> bool:
+                        return False
+
+                    def can_control(self) -> bool:
+                        return True
+
+                    def get_stream_title(self) -> str:
+                        return playing_chan
+
+                    def get_previous_track(self) -> Track:
+                        return ''
+
+                    def get_next_track(self) -> Track:
+                        return ''
+
+                # create mpris adapter and initialize mpris server
+                my_adapter = MyAppAdapter()
+                mpris = Server('astronciaiptv', adapter=my_adapter)
+                event_handler = EventAdapter(mpris.player, mpris.root)
+
+                stopped = False
+
+                def wait_until():
+                    global stopped
+                    while True:
+                        if win.isVisible() or stopped: # pylint: disable=no-else-return
+                            return True
+                        else:
+                            time.sleep(0.1)
+                    return False
+
+                def mpris_loop_start():
+                    global stopped
+                    wait_until()
+                    if not stopped:
+                        print_with_time("Starting MPRIS loop")
+                        mpris.publish()
+                        mpris_loop.run()
+
+                mpris_loop = GLib.MainLoop()
+                mpris_thread = threading.Thread(target=mpris_loop_start)
+                mpris_thread.start()
+            except Exception as mpris_e: # pylint: disable=bare-except
+                print(mpris_e)
+                print_with_time("Failed to set up MPRIS!")
 
         label3 = QtWidgets.QPushButton()
         label3.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'pause.png'))))
@@ -2406,10 +2654,10 @@ if __name__ == '__main__':
         l1.setStatic2 = set_text_static
         l1.hide()
 
-        stopped = False
-
         def myExitHandler():
-            global stopped, epg_thread, epg_thread_2
+            global stopped, epg_thread, epg_thread_2, mpris_loop
+            if mpris_loop:
+                mpris_loop.quit()
             stopped = True
             if epg_thread:
                 try:
