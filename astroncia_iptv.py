@@ -2322,6 +2322,8 @@ if __name__ == '__main__':
             else:
                 player.osc = False
 
+        stopped = False
+
         # MPRIS
         mpris_loop = None
         if not os.name == 'nt':
@@ -2458,8 +2460,6 @@ if __name__ == '__main__':
                 my_adapter = MyAppAdapter()
                 mpris = Server('astronciaiptv', adapter=my_adapter)
                 event_handler = EventAdapter(mpris.player, mpris.root)
-
-                stopped = False
 
                 def wait_until():
                     global stopped
