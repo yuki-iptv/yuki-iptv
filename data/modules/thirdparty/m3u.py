@@ -1,11 +1,3 @@
-#!/usr/bin/python3
-# Purpose:    
-# Usage:    
-# Author:    Timmy93
-# Date:        
-# Version:    
-# Disclaimer: 
-
 import os
 import re
 import json
