@@ -42,7 +42,6 @@ import codecs
 import ctypes
 import webbrowser
 import threading
-from tkinter import Tk, messagebox
 from multiprocessing import Process, Manager, freeze_support
 freeze_support()
 import requests
@@ -134,11 +133,11 @@ LANG = lang[settings_lang0]['strings'] if settings_lang0 in lang else lang[LANG_
 LANG_NAME = lang[settings_lang0]['name'] if settings_lang0 in lang else lang[LANG_DEFAULT]['name']
 print_with_time("Settings locale: {}\n".format(LANG_NAME))
 
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
+
 def show_exception(e):
-    window = Tk()
-    window.wm_withdraw()
-    messagebox.showinfo(title=LANG['error'], message="{}\n\n{}".format(LANG['error2'], str(e)))
-    window.destroy()
+    eprint("{}\n\n{}".format(LANG['error2'], str(e)))
 
 # Used as a decorator to run things in the background
 def async_function(func):

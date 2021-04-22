@@ -56,7 +56,6 @@
 - libmpv1 (>= 0.27.2)
 - PyQt5 (python3-pyqt5)
 - Pillow (python3-pil)
-- Tkinter (python3-tk)
 - pandas (python3-pandas)
 - PyGObject (python3-gi)
 - Python D-Bus (python3-pydbus)
@@ -69,7 +68,7 @@
 **Устанавливаем зависимости:**
 
 на Debian/Ubuntu:  
-```sudo apt update && sudo apt install ffmpeg git libmpv1 python3 python3-requests python3-pyqt5 python3-pil python3-tk python3-pandas python3-gi python3-unidecode python3-pydbus python3-pip python3-setuptools python3-dev python3-wheel```
+```sudo apt update && sudo apt install ffmpeg git libmpv1 python3 python3-requests python3-pyqt5 python3-pil python3-pandas python3-gi python3-unidecode python3-pydbus python3-pip python3-setuptools python3-dev python3-wheel```
 
 на Windows:  
 Устанавливаем Git с [официального сайта](https://git-scm.com/download/win)  
