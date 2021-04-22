@@ -1,6 +1,6 @@
 '''File size conversion'''
 '''
-Copyright 2021 Astroncia
+Copyright (C) 2021 Astroncia
 
     This file is part of Astroncia IPTV.
 
