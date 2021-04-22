@@ -137,7 +137,7 @@ def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
 def show_exception(e):
-    eprint("{}\n\n{}".format(LANG['error2'], str(e)))
+    eprint("\n{}\n\n{}\n".format(LANG['error2'], str(e)))
 
 # Used as a decorator to run things in the background
 def async_function(func):
