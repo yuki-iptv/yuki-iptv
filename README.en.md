@@ -18,7 +18,7 @@ Repository mirrors:
 ## License
 
 Code: GPLv3  
-Icons: CC BY 3.0  
+Icons: CC BY 4.0  
 
 ## Download
 

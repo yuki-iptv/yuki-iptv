@@ -6,7 +6,7 @@
 #
 # Icons by Font Awesome ( https://fontawesome.com/ )
 #
-# The Font Awesome pictograms are licensed under the CC BY 3.0 License - http://creativecommons.org/licenses/by/3.0/
+# The Font Awesome pictograms are licensed under the CC BY 4.0 License - https://creativecommons.org/licenses/by/4.0/
 #
 # == WARNING ==
 # Freezing on large playlists (1000+ channels)
