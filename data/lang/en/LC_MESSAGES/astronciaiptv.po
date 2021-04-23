@@ -1,0 +1,436 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "name"
+msgstr "English"
+
+msgid "m3u_ready"
+msgstr "Ready"
+
+msgid "m3u_m3ueditor"
+msgstr "m3u Editor"
+
+msgid "m3u_noname"
+msgstr "No Name"
+
+msgid "m3u_waschanged"
+msgstr "The document was changed.<br>Do you want to save the changes?"
+
+msgid "m3u_saveconfirm"
+msgstr "Save Confirmation"
+
+msgid "m3u_file"
+msgstr "File"
+
+msgid "m3u_loadm3u"
+msgstr "Load M3U"
+
+msgid "m3u_saveas"
+msgstr "Save as"
+
+msgid "m3u_find"
+msgstr "find"
+
+msgid "m3u_replacewith"
+msgstr "replace with"
+
+msgid "m3u_replaceall"
+msgstr "replace all"
+
+msgid "m3u_deleterow"
+msgstr "delete row"
+
+msgid "m3u_addrow"
+msgstr "add row"
+
+msgid "m3u_movedown"
+msgstr "move down"
+
+msgid "m3u_moveup"
+msgstr "move up"
+
+msgid "m3u_filtergroup"
+msgstr "filter group (press Enter)"
+
+msgid "m3u_searchterm"
+msgstr "insert search term and press enter\n use Selector → to choose column to search"
+
+msgid "m3u_choosecolumn"
+msgstr "choose column to search"
+
+msgid "m3u_openfile"
+msgstr "Open File"
+
+msgid "m3u_playlists"
+msgstr "Playlists (*.m3u)"
+
+msgid "m3u_loaded"
+msgstr "loaded"
+
+msgid "m3u_savefile"
+msgstr "Save File"
+
+msgid "m3u_m3ufiles"
+msgstr "M3U Files (*.m3u)"
+
+msgid "error"
+msgstr "Error"
+
+msgid "playerror"
+msgstr "Playing error"
+
+msgid "error2"
+msgstr "Astroncia IPTV error"
+
+msgid "starting"
+msgstr "starting"
+
+msgid "binarynotfound"
+msgstr "Binary modules not found!"
+
+msgid "nocacheplaylist"
+msgstr "Playlist caching off"
+
+msgid "loadingplaylist"
+msgstr "Loading playlist..."
+
+msgid "playlistloaderror"
+msgstr "Playlist loading error!"
+
+msgid "playlistloaddone"
+msgstr "Playling loading done!"
+
+msgid "cachingplaylist"
+msgstr "Caching playlist..."
+
+msgid "playlistcached"
+msgstr "Playlist cache saved!"
+
+msgid "usingcachedplaylist"
+msgstr "Using cached playlist"
+
+msgid "settings"
+msgstr "Settings"
+
+msgid "help"
+msgstr "Help"
+
+msgid "channelsettings"
+msgstr "Channel settings"
+
+msgid "selectplaylist"
+msgstr "Select m3u playlist"
+
+msgid "selectepg"
+msgstr "Select EPG file (XMLTV or JTV EPG)"
+
+msgid "selectwritefolder"
+msgstr "Select folder for recordings and screenshots"
+
+msgid "deinterlace"
+msgstr "Deinterlace"
+
+msgid "useragent"
+msgstr "User agent"
+
+msgid "empty"
+msgstr "None"
+
+msgid "channel"
+msgstr "Channel"
+
+msgid "savesettings"
+msgstr "Save settings"
+
+msgid "save"
+msgstr "Save"
+
+msgid "m3uplaylist"
+msgstr "M3U playlist"
+
+msgid "updateatboot"
+msgstr "Update\nat launch"
+
+msgid "epgaddress"
+msgstr "TV guide\naddress\n(XMLTV or JTV)"
+
+msgid "udpproxy"
+msgstr "UDP proxy"
+
+msgid "writefolder"
+msgstr "Folder for recordings\nand screenshots"
+
+msgid "orselectyourprovider"
+msgstr "Or select\nprovider"
+
+msgid "resetchannelsettings"
+msgstr "Reset channel settings and sorting"
+
+msgid "notselected"
+msgstr "Not selected"
+
+msgid "close"
+msgstr "Close"
+
+msgid "nochannelselected"
+msgstr "No channel selected"
+
+msgid "pause"
+msgstr "Pause"
+
+msgid "play"
+msgstr "Play"
+
+msgid "exitfullscreen"
+msgstr "To exit fullscreen mode press"
+
+msgid "volume"
+msgstr "Volume"
+
+msgid "volumeoff"
+msgstr "Volume off"
+
+msgid "select"
+msgstr "Select"
+
+msgid "tvguide"
+msgstr "TV guide"
+
+msgid "startrecording"
+msgstr "Start recording"
+
+msgid "loading"
+msgstr "Loading..."
+
+msgid "doingscreenshot"
+msgstr "Doing screenshot..."
+
+msgid "screenshotsaved"
+msgstr "Screenshot saved!"
+
+msgid "screenshotsaveerror"
+msgstr "Screenshot saving error!"
+
+msgid "notvguideforchannel"
+msgstr "No TV guide for channel"
+
+msgid "preparingrecord"
+msgstr "Preparing record"
+
+msgid "nochannelselforrecord"
+msgstr "No channel selected for record"
+
+msgid "stop"
+msgstr "Stop"
+
+msgid "fullscreen"
+msgstr "Fullscreen mode"
+
+msgid "openrecordingsfolder"
+msgstr "Open recordings folder"
+
+msgid "record"
+msgstr "Record"
+
+msgid "screenshot"
+msgstr "Screenshot"
+
+msgid "prevchannel"
+msgstr "Previous channel"
+
+msgid "nextchannel"
+msgstr "Next channel"
+
+msgid "tvguideupdating"
+msgstr "Updating TV guide..."
+
+msgid "tvguideupdatingerror"
+msgstr "TV guide update error!"
+
+msgid "tvguideupdatingdone"
+msgstr "TV guide update done!"
+
+msgid "recordwaiting"
+msgstr "Waiting for record"
+
+msgid "allchannels"
+msgstr "All channels"
+
+msgid "favourite"
+msgstr "Favourites"
+
+msgid "interfacelang"
+msgstr "Interface language"
+
+msgid "tvguideoffset"
+msgstr "TV guide offset"
+
+msgid "hours"
+msgstr "hours"
+
+msgid "hwaccel"
+msgstr "Hardware\nacceleration"
+
+msgid "sort"
+msgstr "Channel\nsort"
+
+msgid "sortitems1"
+msgstr "as in playlist"
+
+msgid "sortitems2"
+msgstr "alphabetical order"
+
+msgid "sortitems3"
+msgstr "reverse alphabetical order"
+
+msgid "sortitems4"
+msgstr "custom"
+
+msgid "donotforgetsort"
+msgstr "Do not forget\nto set custom sort order in settings!"
+
+msgid "moresettings"
+msgstr "More settings"
+
+msgid "lesssettings"
+msgstr "Less settings"
+
+msgid "enabled"
+msgstr "enabled"
+
+msgid "disabled"
+msgstr "disabled"
+
+msgid "seconds"
+msgstr "seconds."
+
+msgid "cache"
+msgstr "Cache"
+
+msgid "chansearch"
+msgstr "Search channel"
+
+msgid "reconnecting"
+msgstr "Reconnecting..."
+
+msgid "group"
+msgstr "Group"
+
+msgid "hide"
+msgstr "Hide channel"
+
+msgid "contrast"
+msgstr "Contrast"
+
+msgid "brightness"
+msgstr "Brightness"
+
+msgid "hue"
+msgstr "Hue"
+
+msgid "saturation"
+msgstr "Saturation"
+
+msgid "gamma"
+msgstr "Gamma"
+
+msgid "timeshift"
+msgstr "Timeshift"
+
+msgid "jtvoffsetrecommendation"
+msgstr "Recommended to set 0 here if JTV"
+
+msgid "tab_main"
+msgstr "Main"
+
+msgid "tab_video"
+msgstr "Video"
+
+msgid "tab_network"
+msgstr "Network"
+
+msgid "tab_other"
+msgstr "Other"
+
+msgid "mpv_options"
+msgstr "mpv options"
+
+msgid "donotupdateepg"
+msgstr "Do not update\nEPG at boot"
+
+msgid "search"
+msgstr "Search"
+
+msgid "tab_gui"
+msgstr "GUI"
+
+msgid "epg_gui"
+msgstr "TV guide\ninterface"
+
+msgid "classic"
+msgstr "Classic"
+
+msgid "simple"
+msgstr "Simple"
+
+msgid "simple_noicons"
+msgstr "Simple (no icons)"
+
+msgid "update"
+msgstr "Update"
+
+msgid "scheduler"
+msgstr "Recording scheduler"
+
+msgid "choosechannel"
+msgstr "Choose channel"
+
+msgid "bitrate1"
+msgstr "bps"
+
+msgid "bitrate2"
+msgstr "kbps"
+
+msgid "bitrate3"
+msgstr "Mbps"
+
+msgid "bitrate4"
+msgstr "Gbps"
+
+msgid "bitrate5"
+msgstr "Tbps"
+
+msgid "starttime"
+msgstr "Start record time"
+
+msgid "endtime"
+msgstr "End record time"
+
+msgid "addrecord"
+msgstr "Add"
+
+msgid "delrecord"
+msgstr "Remove"
+
+msgid "plannedrec"
+msgstr "Planned recordings"
+
+msgid "warningstr"
+msgstr "Recording of two channels simultaneously is not available!"
+
+msgid "status"
+msgstr "Status"
+
+msgid "recnothing"
+msgstr "No planned recordings"
+
+msgid "recwaiting"
+msgstr "Waiting for record"
+
+msgid "recrecording"
+msgstr "Recording"
+
+msgid "helptext"
+msgstr "Astroncia IPTV, version {}    (c) kestral / astroncia\n\nCross-platform IPTV player\n\nSupports TV guide (EPG) only in XMLTV and JTV formats!\n\nChannel not working?\nRight mouse button opens channel settings\n\nHotkeys:\n\nF - fullscreen mode\nM - mute\nQ - quit program\nSpace - pause\nS - stop playing\nH - screenshot\nG - tv guide (EPG)\nR - start/stop record\nP - previous channel\nN - next channel\nT - open/close channels list\nO - show/hide clock\nI - channel sort\nE - timeshift (only on Linux)\nD - record scheduler"
+

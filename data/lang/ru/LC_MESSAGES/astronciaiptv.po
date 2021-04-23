@@ -1,0 +1,436 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "name"
+msgstr "Русский"
+
+msgid "m3u_ready"
+msgstr "Готов"
+
+msgid "m3u_m3ueditor"
+msgstr "Редактор плейлистов m3u"
+
+msgid "m3u_noname"
+msgstr "Нет имени"
+
+msgid "m3u_waschanged"
+msgstr "Плейлист был изменён.<br>Вы хотите сохранить изменения?"
+
+msgid "m3u_saveconfirm"
+msgstr "Подтверждение сохранения"
+
+msgid "m3u_file"
+msgstr "Файл"
+
+msgid "m3u_loadm3u"
+msgstr "Открыть плейлист M3U"
+
+msgid "m3u_saveas"
+msgstr "Сохранить как"
+
+msgid "m3u_find"
+msgstr "найти"
+
+msgid "m3u_replacewith"
+msgstr "заменить"
+
+msgid "m3u_replaceall"
+msgstr "заменить всё"
+
+msgid "m3u_deleterow"
+msgstr "удалить строку"
+
+msgid "m3u_addrow"
+msgstr "добавить строку"
+
+msgid "m3u_movedown"
+msgstr "вниз"
+
+msgid "m3u_moveup"
+msgstr "наверх"
+
+msgid "m3u_filtergroup"
+msgstr "фильтр по группам (нажмите Enter)"
+
+msgid "m3u_searchterm"
+msgstr "введите запрос поиска и нажмите enter\n используйте селектор → чтобы выбрать строку для поиска"
+
+msgid "m3u_choosecolumn"
+msgstr "выберите строку для поиска"
+
+msgid "m3u_openfile"
+msgstr "Открыть файл"
+
+msgid "m3u_playlists"
+msgstr "Плейлисты (*.m3u)"
+
+msgid "m3u_loaded"
+msgstr "загружен"
+
+msgid "m3u_savefile"
+msgstr "Сохранить файл"
+
+msgid "m3u_m3ufiles"
+msgstr "M3U плейлисты (*.m3u)"
+
+msgid "error"
+msgstr "Ошибка"
+
+msgid "playerror"
+msgstr "Ошибка проигрывания"
+
+msgid "error2"
+msgstr "Ошибка Astroncia IPTV"
+
+msgid "starting"
+msgstr "запускается"
+
+msgid "binarynotfound"
+msgstr "Не найдены бинарные модули!"
+
+msgid "nocacheplaylist"
+msgstr "Кэширование плейлиста отключено"
+
+msgid "loadingplaylist"
+msgstr "Идёт загрузка плейлиста..."
+
+msgid "playlistloaderror"
+msgstr "Ошибка загрузки плейлиста!"
+
+msgid "playlistloaddone"
+msgstr "Загрузка плейлиста завершена!"
+
+msgid "cachingplaylist"
+msgstr "Кэширую плейлист..."
+
+msgid "playlistcached"
+msgstr "Кэш плейлиста сохранён!"
+
+msgid "usingcachedplaylist"
+msgstr "Использую кэшированный плейлист"
+
+msgid "settings"
+msgstr "Настройки"
+
+msgid "help"
+msgstr "Помощь"
+
+msgid "channelsettings"
+msgstr "Настройки канала"
+
+msgid "selectplaylist"
+msgstr "Выберите m3u плейлист"
+
+msgid "selectepg"
+msgstr "Выберите файл телепрограммы (XMLTV / JTV EPG)"
+
+msgid "selectwritefolder"
+msgstr "Выберите папку для записи и скриншотов"
+
+msgid "deinterlace"
+msgstr "Деинтерлейс"
+
+msgid "useragent"
+msgstr "User agent"
+
+msgid "empty"
+msgstr "Пустой"
+
+msgid "channel"
+msgstr "Канал"
+
+msgid "savesettings"
+msgstr "Сохранить настройки"
+
+msgid "save"
+msgstr "Сохранить"
+
+msgid "m3uplaylist"
+msgstr "M3U плейлист"
+
+msgid "updateatboot"
+msgstr "Обновлять\nпри запуске"
+
+msgid "epgaddress"
+msgstr "Адрес\nтелепрограммы\n(XMLTV / JTV)"
+
+msgid "udpproxy"
+msgstr "UDP прокси"
+
+msgid "writefolder"
+msgstr "Папка для записей\nи скриншотов"
+
+msgid "orselectyourprovider"
+msgstr "Или выберите\nпровайдера"
+
+msgid "resetchannelsettings"
+msgstr "Сбросить настройки каналов и сортировку"
+
+msgid "notselected"
+msgstr "не выбрано"
+
+msgid "close"
+msgstr "Закрыть"
+
+msgid "nochannelselected"
+msgstr "Не выбран канал"
+
+msgid "pause"
+msgstr "Пауза"
+
+msgid "play"
+msgstr "Воспроизвести"
+
+msgid "exitfullscreen"
+msgstr "Для выхода из полноэкранного режима нажмите клавишу"
+
+msgid "volume"
+msgstr "Громкость"
+
+msgid "volumeoff"
+msgstr "Громкость выкл."
+
+msgid "select"
+msgstr "Выбрать"
+
+msgid "tvguide"
+msgstr "Телепрограмма"
+
+msgid "startrecording"
+msgstr "Начать запись"
+
+msgid "loading"
+msgstr "Загрузка..."
+
+msgid "doingscreenshot"
+msgstr "Делаю скриншот..."
+
+msgid "screenshotsaved"
+msgstr "Скриншот сохранён!"
+
+msgid "screenshotsaveerror"
+msgstr "Ошибка создания скриншота!"
+
+msgid "notvguideforchannel"
+msgstr "Нет телепрограммы для канала"
+
+msgid "preparingrecord"
+msgstr "Подготовка записи"
+
+msgid "nochannelselforrecord"
+msgstr "Не выбран канал для записи"
+
+msgid "stop"
+msgstr "Стоп"
+
+msgid "fullscreen"
+msgstr "Полноэкранный режим"
+
+msgid "openrecordingsfolder"
+msgstr "Открыть папку записей"
+
+msgid "record"
+msgstr "Запись"
+
+msgid "screenshot"
+msgstr "Скриншот"
+
+msgid "prevchannel"
+msgstr "Предыдущий канал"
+
+msgid "nextchannel"
+msgstr "Следующий канал"
+
+msgid "tvguideupdating"
+msgstr "Обновление телепрограммы..."
+
+msgid "tvguideupdatingerror"
+msgstr "Ошибка обновления телепрограммы!"
+
+msgid "tvguideupdatingdone"
+msgstr "Обновление телепрограммы завершено!"
+
+msgid "recordwaiting"
+msgstr "Ожидание записи"
+
+msgid "allchannels"
+msgstr "Все каналы"
+
+msgid "favourite"
+msgstr "Избранное"
+
+msgid "interfacelang"
+msgstr "Язык интерфейса"
+
+msgid "tvguideoffset"
+msgstr "Общая поправка"
+
+msgid "hours"
+msgstr "часов"
+
+msgid "hwaccel"
+msgstr "Аппаратное\nускорение"
+
+msgid "sort"
+msgstr "Сортировка\nканалов"
+
+msgid "sortitems1"
+msgstr "как в плейлисте"
+
+msgid "sortitems2"
+msgstr "по алфавиту"
+
+msgid "sortitems3"
+msgstr "по алфавиту в обратном порядке"
+
+msgid "sortitems4"
+msgstr "пользовательская"
+
+msgid "donotforgetsort"
+msgstr "Не забудьте указать\nпользовательскую сортировку в настройках!"
+
+msgid "moresettings"
+msgstr "Больше настроек!"
+
+msgid "lesssettings"
+msgstr "Меньше настроек!"
+
+msgid "enabled"
+msgstr "включено"
+
+msgid "disabled"
+msgstr "выключено"
+
+msgid "seconds"
+msgstr "секунд."
+
+msgid "cache"
+msgstr "Кэш"
+
+msgid "chansearch"
+msgstr "Поиск по каналам"
+
+msgid "reconnecting"
+msgstr "Переподключение..."
+
+msgid "group"
+msgstr "Группа"
+
+msgid "hide"
+msgstr "Скрыть канал"
+
+msgid "contrast"
+msgstr "Контраст"
+
+msgid "brightness"
+msgstr "Яркость"
+
+msgid "hue"
+msgstr "Оттенок"
+
+msgid "saturation"
+msgstr "Насыщенность"
+
+msgid "gamma"
+msgstr "Гамма"
+
+msgid "timeshift"
+msgstr "Таймшифт"
+
+msgid "jtvoffsetrecommendation"
+msgstr "Рекомендуется указать 0, если JTV"
+
+msgid "tab_main"
+msgstr "Общие"
+
+msgid "tab_video"
+msgstr "Видео"
+
+msgid "tab_network"
+msgstr "Сеть"
+
+msgid "tab_other"
+msgstr "Прочее"
+
+msgid "mpv_options"
+msgstr "mpv опции"
+
+msgid "donotupdateepg"
+msgstr "Не обновлять\nEPG при запуске"
+
+msgid "search"
+msgstr "Поиск"
+
+msgid "tab_gui"
+msgstr "Интерфейс"
+
+msgid "epg_gui"
+msgstr "Вид\nтелепрограммы"
+
+msgid "classic"
+msgstr "Классический"
+
+msgid "simple"
+msgstr "Упрощённый"
+
+msgid "simple_noicons"
+msgstr "Упрощённый (без иконок)"
+
+msgid "update"
+msgstr "Обновить"
+
+msgid "scheduler"
+msgstr "Планировщик записи"
+
+msgid "choosechannel"
+msgstr "Выберите канал"
+
+msgid "bitrate1"
+msgstr "бит/с"
+
+msgid "bitrate2"
+msgstr "Кбит/с"
+
+msgid "bitrate3"
+msgstr "Мбит/с"
+
+msgid "bitrate4"
+msgstr "Гбит/с"
+
+msgid "bitrate5"
+msgstr "Тбит/с"
+
+msgid "starttime"
+msgstr "Начало записи"
+
+msgid "endtime"
+msgstr "Окончание записи"
+
+msgid "addrecord"
+msgstr "Добавить"
+
+msgid "delrecord"
+msgstr "Удалить"
+
+msgid "plannedrec"
+msgstr "Запланированные записи"
+
+msgid "warningstr"
+msgstr "Запись двух каналов одновременно недоступна!"
+
+msgid "status"
+msgstr "Статус"
+
+msgid "recnothing"
+msgstr "Нет запланированных записей"
+
+msgid "recwaiting"
+msgstr "Ожидание записи"
+
+msgid "recrecording"
+msgstr "Идёт запись"
+
+msgid "helptext"
+msgstr "Astroncia IPTV, версия {}    (c) kestral / astroncia\n\nПоддержка:\nhttps://forum.ubuntu.ru/index.php?topic=314803\n\nКроссплатформенный плеер\nдля просмотра интернет-телевидения\n\nПоддерживается телепрограмма (EPG)\nтолько в форматах XMLTV и JTV!\n\nНе работает канал? Правая клавиша мыши открывает настройки канала.\n\nПосле указания группы в настройках переоткройте приложение.\n\nЕсли у Вас плейлист IPTV от вашего интернет-провайдера (не приватный),\nпрошу скинуть мне на эл.почту:\nkestraly (at) gmail.com\nадрес плейлиста, адрес EPG (если есть), название провайдера, город.\nДобавлю в приложение.\n\nГорячие клавиши:\n\nF - полноэкранный режим\nM - выключить звук\nQ - выйти из программы\nПробел/ПКМ - пауза\nS - остановить проигрывание\nH - скриншот\nG - телепрограмма\nR - начать/остановить запись\nP - предыдущий канал\nN - следующий канал\nT - показать/скрыть список каналов\nO - показать/скрыть часы\nI - сортировка каналов\nE - таймшифт (только для Linux)\nD - планировщик записи"
+

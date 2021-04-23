@@ -1,29 +1,7 @@
-'''
-Copyright (C) 2021 Astroncia
-
-    This file is part of Astroncia IPTV.
-
-    Astroncia IPTV is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Astroncia IPTV is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Astroncia IPTV.  If not, see <https://www.gnu.org/licenses/>.
-'''
 import sys
 from PyQt5 import QtWidgets, QtCore
 
 class ReorderableListModel(QtCore.QAbstractListModel):
-    '''
-    ReorderableListModel is a list model which implements reordering of its
-    items via drag-n-drop
-    '''
     dragDropFinished = QtCore.pyqtSignal()
 
     def __init__(self, parent=None):
@@ -39,10 +17,6 @@ class ReorderableListModel(QtCore.QAbstractListModel):
         return self.nodes
 
     def rowForItem(self, text):
-        '''
-        rowForItem method returns the row corresponding to the passed in item
-        or None if no such item exists in the model
-        '''
         try:
             row = self.nodes.index(text)
         except ValueError:
@@ -106,10 +80,6 @@ class ReorderableListModel(QtCore.QAbstractListModel):
         self.endRemoveRows()
 
         if self.pendingRemoveRowsAfterDrop:
-            '''
-            If we got here, it means this call to removeRows is the automatic
-            'cleanup' action after drag-n-drop performed by Qt
-            '''
             self.pendingRemoveRowsAfterDrop = False
             self.dragDropFinished.emit()
 

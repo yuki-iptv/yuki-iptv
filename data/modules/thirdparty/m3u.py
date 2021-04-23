@@ -28,7 +28,7 @@ class M3uParser:
         print("System locale: {}".format(LANG_LOCALE))
         LANG_DEFAULT = LANG_LOCALE if LANG_LOCALE in lang else 'en'
         try:
-            settings_file0 = open(str(Path('local', 'settings.json')), 'r')
+            settings_file0 = open(str(Path('local', 'settings.json')), 'r', encoding="utf8")
             settings_lang0 = json.loads(settings_file0.read())['lang']
             settings_file0.close()
         except:

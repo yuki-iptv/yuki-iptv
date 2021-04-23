@@ -2,7 +2,6 @@ requests
 PyQt5
 Pillow
 pandas
-PyGObject        
-pydbus       
-unidecode       
-emoji
+PyGObject
+pydbus
+unidecode

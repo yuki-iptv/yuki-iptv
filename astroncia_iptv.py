@@ -58,7 +58,7 @@ from data.modules.astroncia.providers import iptv_providers
 from data.modules.astroncia.time import print_with_time
 from data.modules.astroncia.epgurls import EPG_URLS
 from data.modules.astroncia.bitrate import humanbytes
-from data.modules.astroncia.selectionmodel import ReorderableListModel, SelectionModel
+from data.modules.thirdparty.selectionmodel import ReorderableListModel, SelectionModel
 from data.modules.thirdparty.m3u import M3uParser
 from data.modules.thirdparty.m3ueditor import Viewer
 if not os.name == 'nt':
@@ -81,6 +81,7 @@ if not (os.name == 'nt' or os.name == 'posix'):
     print_with_time("Unsupported platform!")
     sys.exit(1)
 
+MAIN_WINDOW_TITLE = 'Astroncia IPTV (! test version !)'
 WINDOW_SIZE = (1200, 600)
 DOCK_WIDGET2_HEIGHT = int(WINDOW_SIZE[1] / 6)
 DOCK_WIDGET_WIDTH = int((WINDOW_SIZE[0] / 2) - 200)
@@ -123,14 +124,14 @@ except: # pylint: disable=bare-except
 print_with_time("System locale: {}".format(LANG_LOCALE))
 LANG_DEFAULT = LANG_LOCALE if LANG_LOCALE in lang else 'en'
 try:
-    settings_file0 = open(str(Path(LOCAL_DIR, 'settings.json')), 'r')
+    settings_file0 = open(str(Path(LOCAL_DIR, 'settings.json')), 'r', encoding="utf8")
     settings_lang0 = json.loads(settings_file0.read())['lang']
     settings_file0.close()
 except: # pylint: disable=bare-except
     settings_lang0 = LANG_DEFAULT
 
 LANG = lang[settings_lang0]['strings'] if settings_lang0 in lang else lang[LANG_DEFAULT]['strings']
-LANG_NAME = lang[settings_lang0]['name'] if settings_lang0 in lang else lang[LANG_DEFAULT]['name']
+LANG_NAME = lang[settings_lang0]['strings']['name'] if settings_lang0 in lang else lang[LANG_DEFAULT]['strings']['name']
 print_with_time("Settings locale: {}\n".format(LANG_NAME))
 
 def eprint(*args, **kwargs):
@@ -189,28 +190,28 @@ if __name__ == '__main__':
         prog_ids = {}
         def save_channel_sets():
             global channel_sets
-            file2 = open(str(Path(LOCAL_DIR, 'channels.json')), 'w')
+            file2 = open(str(Path(LOCAL_DIR, 'channels.json')), 'w', encoding="utf8")
             file2.write(json.dumps(channel_sets))
             file2.close()
 
         if not os.path.isfile(str(Path(LOCAL_DIR, 'channels.json'))):
             save_channel_sets()
         else:
-            file1 = open(str(Path(LOCAL_DIR, 'channels.json')), 'r')
+            file1 = open(str(Path(LOCAL_DIR, 'channels.json')), 'r', encoding="utf8")
             channel_sets = json.loads(file1.read())
             file1.close()
 
         favourite_sets = []
         def save_favourite_sets():
             global favourite_sets
-            file2 = open(str(Path(LOCAL_DIR, 'favourites.json')), 'w')
+            file2 = open(str(Path(LOCAL_DIR, 'favourites.json')), 'w', encoding="utf8")
             file2.write(json.dumps(favourite_sets))
             file2.close()
 
         if not os.path.isfile(str(Path(LOCAL_DIR, 'favourites.json'))):
             save_favourite_sets()
         else:
-            file1 = open(str(Path(LOCAL_DIR, 'favourites.json')), 'r')
+            file1 = open(str(Path(LOCAL_DIR, 'favourites.json')), 'r', encoding="utf8")
             favourite_sets = json.loads(file1.read())
             file1.close()
 
@@ -218,7 +219,7 @@ if __name__ == '__main__':
         DEF_TIMEZONE = tz_offset / 60 / 60 * -1
 
         if os.path.isfile(str(Path(LOCAL_DIR, 'settings.json'))):
-            settings_file = open(str(Path(LOCAL_DIR, 'settings.json')), 'r')
+            settings_file = open(str(Path(LOCAL_DIR, 'settings.json')), 'r', encoding="utf8")
             settings = json.loads(settings_file.read())
             settings_file.close()
         else:
@@ -268,7 +269,7 @@ if __name__ == '__main__':
                 tvguide_c1 = json.loads(codecs.decode(codecs.decode(tvguide_c.read(), 'zlib'), 'utf-8'))["tvguide_url"]
                 tvguide_c.close()
                 if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
-                    cm3uf1 = open(str(Path(LOCAL_DIR, 'playlist.json')), 'r')
+                    cm3uf1 = open(str(Path(LOCAL_DIR, 'playlist.json')), 'r', encoding="utf8")
                     cm3u1 = json.loads(cm3uf1.read())
                     cm3uf1.close()
                     try:
@@ -367,7 +368,7 @@ if __name__ == '__main__':
         if not use_cache:
             print_with_time(LANG['nocacheplaylist'])
         if use_cache and os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
-            pj = open(str(Path(LOCAL_DIR, 'playlist.json')), 'r')
+            pj = open(str(Path(LOCAL_DIR, 'playlist.json')), 'r', encoding="utf8")
             pj1 = json.loads(pj.read())['url']
             pj.close()
             if pj1 != settings['m3u']:
@@ -378,7 +379,7 @@ if __name__ == '__main__':
             print_with_time(LANG['loadingplaylist'])
             if settings['m3u']:
                 if os.path.isfile(settings['m3u']):
-                    file = open(settings['m3u'], 'r')
+                    file = open(settings['m3u'], 'r', encoding="utf8")
                     m3u = file.read()
                     file.close()
                 else:
@@ -427,13 +428,13 @@ if __name__ == '__main__':
                     'm3u': m3u,
                     'epgurl': epg_url
                 })
-                cm3uf = open(str(Path(LOCAL_DIR, 'playlist.json')), 'w')
+                cm3uf = open(str(Path(LOCAL_DIR, 'playlist.json')), 'w', encoding="utf8")
                 cm3uf.write(cm3u)
                 cm3uf.close()
                 print_with_time(LANG['playlistcached'])
         else:
             print_with_time(LANG['usingcachedplaylist'])
-            cm3uf = open(str(Path(LOCAL_DIR, 'playlist.json')), 'r')
+            cm3uf = open(str(Path(LOCAL_DIR, 'playlist.json')), 'r', encoding="utf8")
             cm3u = json.loads(cm3uf.read())
             cm3uf.close()
             array = cm3u['array']
@@ -462,7 +463,7 @@ if __name__ == '__main__':
         groups = [LANG['allchannels'], LANG['favourite']] + groups
 
         if os.path.isfile(str(Path('data', 'channel_icons.json'))):
-            icons_file = open(str(Path('data', 'channel_icons.json')), 'r')
+            icons_file = open(str(Path('data', 'channel_icons.json')), 'r', encoding="utf8")
             icons = json.loads(icons_file.read())
             icons_file.close()
         else:
@@ -508,6 +509,9 @@ if __name__ == '__main__':
             def getLabelHeight(self):
                 return self.label.height()
 
+        def get_current_time():
+            return time.strftime('%d.%m.%y %H:%M', time.localtime())
+
         settings_win = QtWidgets.QMainWindow()
         settings_win.resize(400, 200)
         settings_win.setWindowTitle(LANG['settings'])
@@ -535,6 +539,11 @@ if __name__ == '__main__':
         tvguide_lbl_2 = ScrollLabel(epg_win)
         tvguide_lbl_2.resize(395, 595)
 
+        scheduler_win = QtWidgets.QMainWindow()
+        scheduler_win.resize(800, 600)
+        scheduler_win.setWindowTitle(LANG['scheduler'])
+        scheduler_win.setWindowIcon(main_icon)
+
         time_stop = 0
 
         qr = settings_win.frameGeometry()
@@ -546,11 +555,162 @@ if __name__ == '__main__':
         help_win.move(qr.topLeft())
         sort_win.move(qr.topLeft())
         chan_win.move(qr.topLeft())
+        scheduler_win.move(qr.topLeft())
+
+        def convert_time(times_1):
+            yr = time.strftime('%Y', time.localtime())
+            yr = yr[0] + yr[1]
+            times_1_sp = times_1.split(' ')
+            times_1_sp_0 = times_1_sp[0].split('.')
+            times_1_sp_0[2] = yr + times_1_sp_0[2]
+            times_1_sp[0] = '.'.join(times_1_sp_0)
+            return ' '.join(times_1_sp)
+
+        def programme_clicked(item):
+            times = item.text().split('\n')[0]
+            start_time = convert_time(times.split(' - ')[0])
+            end_time = convert_time(times.split(' - ')[1])
+            starttime_w.setDateTime(QtCore.QDateTime.fromString(start_time, 'd.M.yyyy hh:mm'))
+            endtime_w.setDateTime(QtCore.QDateTime.fromString(end_time, 'd.M.yyyy hh:mm'))
+
+        def addrecord_clicked(): # TODO
+            selected_chan = choosechannel_ch.currentText()
+            start_time_r = starttime_w.dateTime().toPyDateTime().strftime('%d.%m.%y %H:%M')
+            end_time_r = endtime_w.dateTime().toPyDateTime().strftime('%d.%m.%y %H:%M')
+            schedulers.addItem(
+                LANG['channel'] + ': ' + selected_chan + '\n' + \
+                  '{}: '.format(LANG['starttime']) + start_time_r + '\n' + \
+                  '{}: '.format(LANG['endtime']) + end_time_r + '\n'
+            )
+
+        currently_recording = False
+
+        def record_thread():
+            global currently_recording, is_recording
+            status = LANG['recnothing']
+            sch_items = [str(schedulers.item(i1).text()) for i1 in range(schedulers.count())]
+            i3 = -1
+            for sch_item in sch_items:
+                i3 += 1
+                status = LANG['recwaiting']
+                sch_item = [i2.split(': ')[1] for i2 in sch_item.split('\n') if i2]
+                channel_name_rec = sch_item[0]
+                ch_url = array[channel_name_rec]['url']
+                current_time = time.strftime('%d.%m.%y %H:%M', time.localtime())
+                start_time_1 = sch_item[1]
+                end_time_1 = sch_item[2]
+                if start_time_1 == current_time:
+                    if not currently_recording:
+                        currently_recording = True
+                        print_with_time("Starting planned record (start_time='{}' end_time='{}' channel='{}')".format(start_time_1, end_time_1, channel_name_rec))
+                        start_record(channel_name_rec, ch_url)
+                if end_time_1 == current_time:
+                    if currently_recording:
+                        currently_recording = False
+                        schedulers.takeItem(i3)
+                        if is_recording:
+                            print_with_time("Stopping planned record (start_time='{}' end_time='{}' channel='{}')".format(start_time_1, end_time_1, channel_name_rec))
+                            start_record("", "")
+                if not is_recording:
+                    currently_recording = False
+                if currently_recording:
+                    status = LANG['recrecording']
+            statusrec_lbl.setText('{}: {}'.format(LANG['status'], status))
+
+        def delrecord_clicked():
+            global currently_recording
+            schCurrentRow = schedulers.currentRow()
+            if schCurrentRow != -1:
+                schedulers.takeItem(schCurrentRow)
+                if schedulers.count() == 0 and currently_recording:
+                    currently_recording = False
+                    start_record("", "")
+
+        scheduler_widget = QtWidgets.QWidget()
+        scheduler_layout = QtWidgets.QGridLayout()
+        scheduler_clock = QtWidgets.QLabel(get_current_time())
+        myFont4 = QtGui.QFont()
+        myFont4.setPointSize(11)
+        myFont4.setBold(True)
+        scheduler_clock.setFont(myFont4)
+        scheduler_clock.setStyleSheet('color: green')
+        plannedrec_lbl = QtWidgets.QLabel('{}:'.format(LANG['plannedrec']))
+        statusrec_lbl = QtWidgets.QLabel()
+        myFont5 = QtGui.QFont()
+        myFont5.setBold(True)
+        statusrec_lbl.setFont(myFont5)
+        choosechannel_lbl = QtWidgets.QLabel('{}:'.format(LANG['choosechannel']))
+        choosechannel_ch = QtWidgets.QComboBox()
+        tvguide_sch = QtWidgets.QListWidget()
+        tvguide_sch.itemClicked.connect(programme_clicked)
+        addrecord_btn = QtWidgets.QPushButton(LANG['addrecord'])
+        addrecord_btn.clicked.connect(addrecord_clicked)
+        delrecord_btn = QtWidgets.QPushButton(LANG['delrecord'])
+        delrecord_btn.clicked.connect(delrecord_clicked)
+        scheduler_layout.addWidget(scheduler_clock, 0, 0)
+        scheduler_layout.addWidget(choosechannel_lbl, 1, 0)
+        scheduler_layout.addWidget(choosechannel_ch, 2, 0)
+        scheduler_layout.addWidget(tvguide_sch, 3, 0)
+
+        starttime_lbl = QtWidgets.QLabel('{}:'.format(LANG['starttime']))
+        endtime_lbl = QtWidgets.QLabel('{}:'.format(LANG['endtime']))
+        starttime_w = QtWidgets.QDateTimeEdit()
+        starttime_w.setDateTime(QtCore.QDateTime.fromString(time.strftime('%d.%m.%Y %H:%M', time.localtime()), 'd.M.yyyy hh:mm'))
+        endtime_w = QtWidgets.QDateTimeEdit()
+        endtime_w.setDateTime(QtCore.QDateTime.fromString(time.strftime('%d.%m.%Y %H:%M', time.localtime(time.time() + 60)), 'd.M.yyyy hh:mm'))
+
+        schedulers = QtWidgets.QListWidget()
+
+        scheduler_layout_2 = QtWidgets.QGridLayout()
+        scheduler_layout_2.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        scheduler_layout_2.addWidget(starttime_lbl, 0, 0)
+        scheduler_layout_2.addWidget(starttime_w, 1, 0)
+        scheduler_layout_2.addWidget(endtime_lbl, 2, 0)
+        scheduler_layout_2.addWidget(endtime_w, 3, 0)
+        scheduler_layout_2.addWidget(addrecord_btn, 4, 0)
+        scheduler_layout_2.addWidget(delrecord_btn, 5, 0)
+
+        scheduler_layout_3 = QtWidgets.QGridLayout()
+        scheduler_layout_3.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        scheduler_layout_3.addWidget(statusrec_lbl, 0, 0)
+        scheduler_layout_3.addWidget(plannedrec_lbl, 1, 0)
+        scheduler_layout_3.addWidget(schedulers, 2, 0)
+
+        scheduler_layout_main_w = QtWidgets.QWidget()
+        scheduler_layout_main_w.setLayout(scheduler_layout)
+
+        scheduler_layout_main_w2 = QtWidgets.QWidget()
+        scheduler_layout_main_w2.setLayout(scheduler_layout_2)
+
+        scheduler_layout_main_w3 = QtWidgets.QWidget()
+        scheduler_layout_main_w3.setLayout(scheduler_layout_3)
+
+        scheduler_layout_main1 = QtWidgets.QHBoxLayout()
+        scheduler_layout_main1.addWidget(scheduler_layout_main_w)
+        scheduler_layout_main1.addWidget(scheduler_layout_main_w2)
+        scheduler_layout_main1.addWidget(scheduler_layout_main_w3)
+        scheduler_widget.setLayout(scheduler_layout_main1)
+
+        warning_lbl = QtWidgets.QLabel(LANG['warningstr'])
+        myFont5 = QtGui.QFont()
+        myFont5.setPointSize(11)
+        myFont5.setBold(True)
+        warning_lbl.setFont(myFont5)
+        warning_lbl.setStyleSheet('color: red')
+        warning_lbl.setAlignment(QtCore.Qt.AlignCenter)
+
+        scheduler_layout_main = QtWidgets.QVBoxLayout()
+        scheduler_layout_main.addWidget(scheduler_widget)
+        scheduler_layout_main.addWidget(warning_lbl)
+        scheduler_widget_main = QtWidgets.QWidget()
+        scheduler_widget_main.setLayout(scheduler_layout_main)
+
+        scheduler_win.setCentralWidget(scheduler_widget_main)
 
         def save_sort():
             global channel_sort
             channel_sort = model.getNodes()
-            file4 = open(str(Path(LOCAL_DIR, 'sort.json')), 'w')
+            file4 = open(str(Path(LOCAL_DIR, 'sort.json')), 'w', encoding="utf8")
             file4.write(json.dumps(channel_sort))
             file4.close()
             sort_win.hide()
@@ -902,7 +1062,7 @@ if __name__ == '__main__':
                     os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
             lang1 = LANG_DEFAULT
             for lng1 in lang:
-                if lang[lng1]['name'] == slang.currentText():
+                if lang[lng1]['strings']['name'] == slang.currentText():
                     lang1 = lng1
             if lang1 != settings["lang"]:
                 if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
@@ -925,7 +1085,7 @@ if __name__ == '__main__':
                 'donotupdateepg': donot_flag.isChecked(),
                 'gui': gui_choose.currentIndex()
             }
-            settings_file1 = open(str(Path(LOCAL_DIR, 'settings.json')), 'w')
+            settings_file1 = open(str(Path(LOCAL_DIR, 'settings.json')), 'w', encoding="utf8")
             settings_file1.write(json.dumps(settings_arr))
             settings_file1.close()
             settings_win.hide()
@@ -1022,16 +1182,18 @@ if __name__ == '__main__':
         sreset = QtWidgets.QPushButton(LANG['resetchannelsettings'])
         sreset.clicked.connect(reset_channel_settings)
         sort_widget = QtWidgets.QComboBox()
-        for sortI in LANG['sortitems']:
-            sort_widget.addItem(sortI)
+        sort_widget.addItem(LANG['sortitems1'])
+        sort_widget.addItem(LANG['sortitems2'])
+        sort_widget.addItem(LANG['sortitems3'])
+        sort_widget.addItem(LANG['sortitems4'])
         sort_widget.setCurrentIndex(settings['sort'])
         sprov = QtWidgets.QComboBox()
         slang = QtWidgets.QComboBox()
         lng0 = -1
         for lng in lang:
             lng0 += 1
-            slang.addItem(lang[lng]['name'])
-            if lang[lng]['name'] == LANG_NAME:
+            slang.addItem(lang[lng]['strings']['name'])
+            if lang[lng]['strings']['name'] == LANG_NAME:
                 slang.setCurrentIndex(lng0)
         def close_settings():
             settings_win.hide()
@@ -1318,7 +1480,7 @@ if __name__ == '__main__':
                 self.windowHeight = self.height()
                 tvguide_lbl.move(2, 35)
                 if not fullscreen:
-                    lbl2.move(0, 35)
+                    lbl2.move(0, 5)
                     l1.setFixedWidth(self.windowWidth - dockWidget.width() + 58)
                     l1.move(
                         int(((self.windowWidth - l1.width()) / 2) - (dockWidget.width() / 1.7)),
@@ -1350,7 +1512,7 @@ if __name__ == '__main__':
                 QtWidgets.QMainWindow.resizeEvent(self, event)
 
         win = MainWindow()
-        win.setWindowTitle('Astroncia IPTV')
+        win.setWindowTitle(MAIN_WINDOW_TITLE)
         win.setWindowIcon(main_icon)
         win.resize(WINDOW_SIZE[0], WINDOW_SIZE[1])
 
@@ -1391,7 +1553,7 @@ if __name__ == '__main__':
         lbl2.setStyleSheet('color: #e0071a')
         lbl2.setWordWrap(True)
         lbl2.resize(200, 30)
-        lbl2.move(0, 35)
+        lbl2.move(0, 5)
         lbl2.hide()
 
         playing = False
@@ -1720,7 +1882,7 @@ if __name__ == '__main__':
 
         channel_sort = {}
         if os.path.isfile(str(Path(LOCAL_DIR, 'sort.json'))):
-            file3 = open(str(Path(LOCAL_DIR, 'sort.json')), 'r')
+            file3 = open(str(Path(LOCAL_DIR, 'sort.json')), 'r', encoding="utf8")
             channel_sort = json.loads(file3.read())
             file3.close()
 
@@ -2085,7 +2247,7 @@ if __name__ == '__main__':
                 l1.setText2("{}!".format(LANG['nochannelselected']))
                 time_stop = time.time() + 1
 
-        def update_tvguide(chan_1=''):
+        def update_tvguide(chan_1='', do_return=False):
             global item_selected
             if not chan_1:
                 if item_selected:
@@ -2096,8 +2258,11 @@ if __name__ == '__main__':
                 chan_2 = chan_1
             txt = LANG['notvguideforchannel']
             chan_2 = chan_2.lower()
+            newline_symbol = '\n'
+            if do_return:
+                newline_symbol = '!@#$%^^&*('
             if chan_2 in programmes:
-                txt = '\n'
+                txt = newline_symbol
                 prog = programmes[chan_2]
                 for pr in prog:
                     if pr['stop'] > time.time() - 1:
@@ -2109,9 +2274,12 @@ if __name__ == '__main__':
                         ).strftime('%d.%m.%y %H:%M') + '\n'
                         title_2 = pr['title'] if 'title' in pr else ''
                         desc_2 = ('\n' + pr['desc'] + '\n') if 'desc' in pr else ''
-                        txt += start_2 + stop_2 + title_2 + desc_2 + '\n'
+                        txt += start_2 + stop_2 + title_2 + desc_2 + newline_symbol
+            if do_return:
+                return txt
             tvguide_lbl.setText(txt)
             tvguide_lbl_2.setText(txt)
+            return ''
 
         def show_tvguide():
             if settings['gui'] == 0:
@@ -2487,6 +2655,32 @@ if __name__ == '__main__':
                 print(mpris_e)
                 print_with_time("Failed to set up MPRIS!")
 
+        def update_scheduler_programme():
+            channel_list_2 = [chan_name for chan_name in doSort(array)]
+            ch_choosed = choosechannel_ch.currentText()
+            tvguide_sch.clear()
+            if ch_choosed in channel_list_2:
+                tvguide_got = update_tvguide(ch_choosed, True).split('!@#$%^^&*(')[2:]
+                for tvguide_el in tvguide_got:
+                    if tvguide_el:
+                        tvguide_sch.addItem(tvguide_el)
+
+        def show_scheduler():
+            if scheduler_win.isVisible():
+                scheduler_win.hide()
+            else:
+                choosechannel_ch.clear()
+                channel_list = [chan_name for chan_name in doSort(array)]
+                for chan1 in channel_list:
+                    choosechannel_ch.addItem(chan1)
+                if item_selected in channel_list:
+                    choosechannel_ch.setCurrentIndex(channel_list.index(item_selected))
+                choosechannel_ch.currentIndexChanged.connect(update_scheduler_programme)
+                update_scheduler_programme()
+                starttime_w.setDateTime(QtCore.QDateTime.fromString(time.strftime('%d.%m.%Y %H:%M', time.localtime()), 'd.M.yyyy hh:mm'))
+                endtime_w.setDateTime(QtCore.QDateTime.fromString(time.strftime('%d.%m.%Y %H:%M', time.localtime(time.time() + 60)), 'd.M.yyyy hh:mm'))
+                scheduler_win.show()
+
         label3 = QtWidgets.QPushButton()
         label3.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'pause.png'))))
         label3.setToolTip(LANG['pause'])
@@ -2507,6 +2701,10 @@ if __name__ == '__main__':
         label5_1.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'record.png'))))
         label5_1.setToolTip(LANG["record"])
         label5_1.clicked.connect(do_record)
+        label5_2 = QtWidgets.QPushButton()
+        label5_2.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'calendar.png'))))
+        label5_2.setToolTip(LANG["scheduler"])
+        label5_2.clicked.connect(show_scheduler)
         label6 = QtWidgets.QPushButton()
         label6.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'volume.png'))))
         label6.setToolTip(LANG['volume'])
@@ -2585,6 +2783,7 @@ if __name__ == '__main__':
         hlayout2.addWidget(label4)
         hlayout2.addWidget(label5)
         hlayout2.addWidget(label5_1)
+        hlayout2.addWidget(label5_2)
         hlayout2.addWidget(label5_0)
         hlayout2.addWidget(label6)
         hlayout2.addWidget(label7)
@@ -2781,7 +2980,8 @@ if __name__ == '__main__':
             check_connection()
             try:
                 if player.video_bitrate:
-                    video_bitrate = " - " + str(humanbytes(player.video_bitrate, LANG['bitrates']))
+                    bitrate_arr = [LANG['bitrate1'], LANG['bitrate2'], LANG['bitrate3'], LANG['bitrate4'], LANG['bitrate5']]
+                    video_bitrate = " - " + str(humanbytes(player.video_bitrate, bitrate_arr))
                 else:
                     video_bitrate = ""
             except: # pylint: disable=bare-except
@@ -2849,6 +3049,7 @@ if __name__ == '__main__':
         def thread_update_time():
             if label11 and clockOn:
                 label11.setText('  ' + time.strftime('%H:%M:%S', time.localtime()))
+            scheduler_clock.setText(get_current_time())
 
         def key_t():
             if dockWidget.isVisible():
@@ -2895,7 +3096,8 @@ if __name__ == '__main__':
             QtCore.Qt.Key_VolumeUp: my_up_binding,
             QtCore.Qt.Key_VolumeDown: my_down_binding,
             QtCore.Qt.Key_VolumeMute: mpv_mute,
-            QtCore.Qt.Key_E: show_timeshift # e - show timeshift
+            QtCore.Qt.Key_E: show_timeshift, # e - show timeshift
+            QtCore.Qt.Key_D: show_scheduler # d - record scheduler
         }
         for keybind in keybinds:
             QtWidgets.QShortcut(QtGui.QKeySequence(keybind), win).activated.connect(keybinds[keybind])
@@ -2915,7 +3117,8 @@ if __name__ == '__main__':
                 thread_record: 100,
                 thread_check_tvguide_obsolete: 100,
                 thread_tvguide_2: 1000,
-                thread_update_time: 1000
+                thread_update_time: 1000,
+                record_thread: 1000
             }
             for timer in timers:
                 timers_array[timer] = QtCore.QTimer()
