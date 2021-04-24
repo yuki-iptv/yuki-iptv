@@ -2677,8 +2677,8 @@ if __name__ == '__main__':
                     choosechannel_ch.setCurrentIndex(channel_list.index(item_selected))
                 choosechannel_ch.currentIndexChanged.connect(update_scheduler_programme)
                 update_scheduler_programme()
-                starttime_w.setDateTime(QtCore.QDateTime.fromString(time.strftime('%d.%m.%Y %H:%M', time.localtime()), 'd.M.yyyy hh:mm'))
-                endtime_w.setDateTime(QtCore.QDateTime.fromString(time.strftime('%d.%m.%Y %H:%M', time.localtime(time.time() + 60)), 'd.M.yyyy hh:mm'))
+                #starttime_w.setDateTime(QtCore.QDateTime.fromString(time.strftime('%d.%m.%Y %H:%M', time.localtime()), 'd.M.yyyy hh:mm'))
+                #endtime_w.setDateTime(QtCore.QDateTime.fromString(time.strftime('%d.%m.%Y %H:%M', time.localtime(time.time() + 60)), 'd.M.yyyy hh:mm'))
                 scheduler_win.show()
 
         label3 = QtWidgets.QPushButton()
