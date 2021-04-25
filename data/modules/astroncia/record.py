@@ -19,12 +19,15 @@ Copyright (C) 2021 Astroncia
 import os
 import subprocess
 from pathlib import Path
-from data.modules.astroncia.ua import user_agent
+from data.modules.astroncia.ua import get_user_agent_for_channel
+from data.modules.astroncia.time import print_with_time
 
 ffmpeg_proc = None
 
-def record(input_url, out_file):
+def record(input_url, out_file, channel_name):
     global ffmpeg_proc
+    user_agent = get_user_agent_for_channel(channel_name)
+    print_with_time("Using user agent '{}' for record channel '{}'".format(user_agent, channel_name))
     if os.name == 'nt':
         ffmpeg_path = str(Path(os.getcwd(), 'data', 'modules', 'binary', 'ffmpeg.exe'))
     else:

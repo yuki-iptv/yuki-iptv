@@ -2305,6 +2305,7 @@ if __name__ == '__main__':
 
         def start_record(ch1, url3):
             global is_recording, record_file, time_stop, recording_time
+            orig_channel_name = ch1
             if not is_recording:
                 is_recording = True
                 lbl2.show()
@@ -2319,7 +2320,7 @@ if __name__ == '__main__':
                     'recording_-_' + cur_time + '_-_' + ch + '.mkv'
                 ))
                 record_file = out_file
-                record(url3, out_file)
+                record(url3, out_file, orig_channel_name)
             else:
                 is_recording = False
                 recording_time = 0
