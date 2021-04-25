@@ -2751,7 +2751,7 @@ if __name__ == '__main__':
         label9.setToolTip(LANG['help'])
         label9.clicked.connect(show_help)
         label12 = QtWidgets.QLabel('')
-        label10 = QtWidgets.QLabel('(c) kestral / astroncia')
+        label10 = QtWidgets.QLabel('© kestral / astroncia')
         label10.setAlignment(QtCore.Qt.AlignCenter)
         label10.setStyleSheet('color: #a60f46')
         label11 = QtWidgets.QLabel()

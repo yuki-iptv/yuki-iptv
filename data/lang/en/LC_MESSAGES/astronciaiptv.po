@@ -432,5 +432,5 @@ msgid "recrecording"
 msgstr "Recording"
 
 msgid "helptext"
-msgstr "Astroncia IPTV, version {}    (c) kestral / astroncia\n\nCross-platform IPTV player\n\nSupports TV guide (EPG) only in XMLTV and JTV formats!\n\nChannel not working?\nRight mouse button opens channel settings\n\nHotkeys:\n\nF - fullscreen mode\nM - mute\nQ - quit program\nSpace - pause\nS - stop playing\nH - screenshot\nG - tv guide (EPG)\nR - start/stop record\nP - previous channel\nN - next channel\nT - open/close channels list\nO - show/hide clock\nI - channel sort\nE - timeshift (only on Linux)\nD - record scheduler"
+msgstr "Astroncia IPTV, version {}    © kestral / astroncia\n\nCross-platform IPTV player\n\nSupports TV guide (EPG) only in XMLTV and JTV formats!\n\nChannel not working?\nRight mouse button opens channel settings\n\nHotkeys:\n\nF - fullscreen mode\nM - mute\nQ - quit program\nSpace - pause\nS - stop playing\nH - screenshot\nG - tv guide (EPG)\nR - start/stop record\nP - previous channel\nN - next channel\nT - open/close channels list\nO - show/hide clock\nI - channel sort\nE - timeshift (only on Linux)\nD - record scheduler"
 
