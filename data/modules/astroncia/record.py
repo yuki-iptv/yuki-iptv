@@ -65,6 +65,46 @@ def record(input_url, out_file, channel_name):
         startupinfo=startupinfo
     )
 
+def record_return(input_url, out_file, channel_name):
+    user_agent = get_user_agent_for_channel(channel_name)
+    print_with_time("Using user agent '{}' for record channel '{}'".format(user_agent, channel_name))
+    if os.name == 'nt':
+        ffmpeg_path = str(Path(os.getcwd(), 'data', 'modules', 'binary', 'ffmpeg.exe'))
+    else:
+        if os.path.isfile(str(Path(os.getcwd(), 'ffmpeg'))):
+            ffmpeg_path = str(Path(os.getcwd(), 'ffmpeg'))
+        else:
+            ffmpeg_path = 'ffmpeg'
+    if input_url.startswith('http://') or input_url.startswith('https://'):
+        arr = [
+            ffmpeg_path,
+            '-user_agent', user_agent,
+            '-icy', '0',
+            '-i', input_url,
+            '-map', '0',
+            '-map', '-0:s',
+            '-codec', 'copy',
+            out_file
+        ]
+    else:
+        arr = [
+            ffmpeg_path,
+            '-i', input_url,
+            '-map', '0',
+            '-map', '-0:s',
+            '-codec', 'copy',
+            out_file
+        ]
+    startupinfo = None
+    if os.name == 'nt':
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    return subprocess.Popen(
+        arr,
+        shell=False,
+        startupinfo=startupinfo
+    )
+
 def stop_record():
     global ffmpeg_proc
     if ffmpeg_proc:

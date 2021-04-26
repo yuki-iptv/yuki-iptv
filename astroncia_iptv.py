@@ -51,7 +51,7 @@ from PyQt5 import QtGui
 from data.modules.astroncia.lang import lang
 from data.modules.astroncia.ua import user_agent, uas
 from data.modules.astroncia.epg import worker
-from data.modules.astroncia.record import record, stop_record
+from data.modules.astroncia.record import record, record_return, stop_record
 from data.modules.astroncia.format import format_seconds_to_hhmmss
 from data.modules.astroncia.conversion import convert_size
 from data.modules.astroncia.providers import iptv_providers
@@ -540,7 +540,7 @@ if __name__ == '__main__':
         tvguide_lbl_2.resize(395, 595)
 
         scheduler_win = QtWidgets.QMainWindow()
-        scheduler_win.resize(800, 600)
+        scheduler_win.resize(1000, 600)
         scheduler_win.setWindowTitle(LANG['scheduler'])
         scheduler_win.setWindowIcon(main_icon)
 
@@ -573,7 +573,7 @@ if __name__ == '__main__':
             starttime_w.setDateTime(QtCore.QDateTime.fromString(start_time, 'd.M.yyyy hh:mm'))
             endtime_w.setDateTime(QtCore.QDateTime.fromString(end_time, 'd.M.yyyy hh:mm'))
 
-        def addrecord_clicked(): # TODO
+        def addrecord_clicked():
             selected_chan = choosechannel_ch.currentText()
             start_time_r = starttime_w.dateTime().toPyDateTime().strftime('%d.%m.%y %H:%M')
             end_time_r = endtime_w.dateTime().toPyDateTime().strftime('%d.%m.%y %H:%M')
@@ -583,10 +583,45 @@ if __name__ == '__main__':
                   '{}: '.format(LANG['endtime']) + end_time_r + '\n'
             )
 
-        currently_recording = False
+        sch_recordings = {}
+
+        def do_start_record(name1):
+            ch_name = name1.split("_")[0]
+            ch = ch_name.replace(" ", "_")
+            for char in FORBIDDEN_CHARS:
+                ch = ch.replace(char, "")
+            cur_time = datetime.datetime.now().strftime('%d%m%Y_%H%M%S')
+            out_file = str(Path(
+                save_folder,
+                'recordings',
+                'recording_-_' + cur_time + '_-_' + ch + '.mkv'
+            ))
+            record_url = array[ch_name]['url']
+            return [record_return(record_url, out_file, ch_name), time.time(), out_file, ch_name]
+
+        def do_stop_record(name2):
+            if name2 in sch_recordings:
+                ffmpeg_process = sch_recordings[name2][0]
+                if ffmpeg_process:
+                    ffmpeg_process.kill()
+                    ffmpeg_process.wait()
+                    ffmpeg_process = None
+
+        def record_thread_2():
+            activerec_list_value = activerec_list.verticalScrollBar().value()
+            activerec_list.clear()
+            for sch0 in sch_recordings:
+                counted_time0 = format_seconds_to_hhmmss(time.time() - sch_recordings[sch0][1])
+                channel_name0 = sch_recordings[sch0][3]
+                file_name0 = sch_recordings[sch0][2]
+                file_size0 = "WAITING"
+                if os.path.isfile(file_name0):
+                    file_size0 = convert_size(os.path.getsize(file_name0))
+                activerec_list.addItem(channel_name0 + "\n" + counted_time0 + " " + file_size0)
+            activerec_list.verticalScrollBar().setValue(activerec_list_value)
 
         def record_thread():
-            global currently_recording, is_recording
+            global is_recording
             status = LANG['recnothing']
             sch_items = [str(schedulers.item(i1).text()) for i1 in range(schedulers.count())]
             i3 = -1
@@ -595,36 +630,33 @@ if __name__ == '__main__':
                 status = LANG['recwaiting']
                 sch_item = [i2.split(': ')[1] for i2 in sch_item.split('\n') if i2]
                 channel_name_rec = sch_item[0]
-                ch_url = array[channel_name_rec]['url']
+                #ch_url = array[channel_name_rec]['url']
                 current_time = time.strftime('%d.%m.%y %H:%M', time.localtime())
                 start_time_1 = sch_item[1]
                 end_time_1 = sch_item[2]
+                array_name = str(channel_name_rec) + "_" + str(start_time_1) + "_" + str(end_time_1)
                 if start_time_1 == current_time:
-                    if not currently_recording:
-                        currently_recording = True
+                    if array_name not in sch_recordings:
                         print_with_time("Starting planned record (start_time='{}' end_time='{}' channel='{}')".format(start_time_1, end_time_1, channel_name_rec))
-                        start_record(channel_name_rec, ch_url)
+                        sch_recordings[array_name] = do_start_record(array_name)
                 if end_time_1 == current_time:
-                    if currently_recording:
-                        currently_recording = False
+                    if array_name in sch_recordings:
                         schedulers.takeItem(i3)
-                        if is_recording:
-                            print_with_time("Stopping planned record (start_time='{}' end_time='{}' channel='{}')".format(start_time_1, end_time_1, channel_name_rec))
-                            start_record("", "")
-                if not is_recording:
-                    currently_recording = False
-                if currently_recording:
+                        print_with_time("Stopping planned record (start_time='{}' end_time='{}' channel='{}')".format(start_time_1, end_time_1, channel_name_rec))
+                        do_stop_record(array_name)
+                        sch_recordings.pop(array_name)
+                if sch_recordings:
                     status = LANG['recrecording']
             statusrec_lbl.setText('{}: {}'.format(LANG['status'], status))
 
         def delrecord_clicked():
-            global currently_recording
             schCurrentRow = schedulers.currentRow()
             if schCurrentRow != -1:
+                sch_index = '_'.join([xs.split(': ')[1] for xs in schedulers.item(schCurrentRow).text().split('\n') if xs])
                 schedulers.takeItem(schCurrentRow)
-                if schedulers.count() == 0 and currently_recording:
-                    currently_recording = False
-                    start_record("", "")
+                if sch_index in sch_recordings:
+                    do_stop_record(sch_index)
+                    sch_recordings.pop(sch_index)
 
         scheduler_widget = QtWidgets.QWidget()
         scheduler_layout = QtWidgets.QGridLayout()
@@ -635,6 +667,7 @@ if __name__ == '__main__':
         scheduler_clock.setFont(myFont4)
         scheduler_clock.setStyleSheet('color: green')
         plannedrec_lbl = QtWidgets.QLabel('{}:'.format(LANG['plannedrec']))
+        activerec_lbl = QtWidgets.QLabel('{}:'.format(LANG['activerec']))
         statusrec_lbl = QtWidgets.QLabel()
         myFont5 = QtGui.QFont()
         myFont5.setBold(True)
@@ -660,6 +693,7 @@ if __name__ == '__main__':
         endtime_w.setDateTime(QtCore.QDateTime.fromString(time.strftime('%d.%m.%Y %H:%M', time.localtime(time.time() + 60)), 'd.M.yyyy hh:mm'))
 
         schedulers = QtWidgets.QListWidget()
+        activerec_list = QtWidgets.QListWidget()
 
         scheduler_layout_2 = QtWidgets.QGridLayout()
         scheduler_layout_2.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
@@ -676,6 +710,11 @@ if __name__ == '__main__':
         scheduler_layout_3.addWidget(plannedrec_lbl, 1, 0)
         scheduler_layout_3.addWidget(schedulers, 2, 0)
 
+        scheduler_layout_4 = QtWidgets.QGridLayout()
+        scheduler_layout_4.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        scheduler_layout_4.addWidget(activerec_lbl, 0, 0)
+        scheduler_layout_4.addWidget(activerec_list, 1, 0)
+
         scheduler_layout_main_w = QtWidgets.QWidget()
         scheduler_layout_main_w.setLayout(scheduler_layout)
 
@@ -685,10 +724,14 @@ if __name__ == '__main__':
         scheduler_layout_main_w3 = QtWidgets.QWidget()
         scheduler_layout_main_w3.setLayout(scheduler_layout_3)
 
+        scheduler_layout_main_w4 = QtWidgets.QWidget()
+        scheduler_layout_main_w4.setLayout(scheduler_layout_4)
+
         scheduler_layout_main1 = QtWidgets.QHBoxLayout()
         scheduler_layout_main1.addWidget(scheduler_layout_main_w)
         scheduler_layout_main1.addWidget(scheduler_layout_main_w2)
         scheduler_layout_main1.addWidget(scheduler_layout_main_w3)
+        scheduler_layout_main1.addWidget(scheduler_layout_main_w4)
         scheduler_widget.setLayout(scheduler_layout_main1)
 
         warning_lbl = QtWidgets.QLabel(LANG['warningstr'])
@@ -701,7 +744,7 @@ if __name__ == '__main__':
 
         scheduler_layout_main = QtWidgets.QVBoxLayout()
         scheduler_layout_main.addWidget(scheduler_widget)
-        scheduler_layout_main.addWidget(warning_lbl)
+        #scheduler_layout_main.addWidget(warning_lbl)
         scheduler_widget_main = QtWidgets.QWidget()
         scheduler_widget_main.setLayout(scheduler_layout_main)
 
@@ -3119,7 +3162,8 @@ if __name__ == '__main__':
                 thread_check_tvguide_obsolete: 100,
                 thread_tvguide_2: 1000,
                 thread_update_time: 1000,
-                record_thread: 1000
+                record_thread: 1000,
+                record_thread_2: 1000
             }
             for timer in timers:
                 timers_array[timer] = QtCore.QTimer()
