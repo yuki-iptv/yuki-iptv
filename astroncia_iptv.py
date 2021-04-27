@@ -87,6 +87,7 @@ DOCK_WIDGET2_HEIGHT = int(WINDOW_SIZE[1] / 6)
 DOCK_WIDGET_WIDTH = int((WINDOW_SIZE[0] / 2) - 200)
 TVGUIDE_WIDTH = int((WINDOW_SIZE[0] / 5))
 BCOLOR = "#A2A3A3"
+MAX_ON_ONE_PAGE = 100
 
 if DOCK_WIDGET2_HEIGHT < 0:
     DOCK_WIDGET2_HEIGHT = 0
@@ -2077,13 +2078,17 @@ if __name__ == '__main__':
             row0 = win.listWidget.currentRow()
             val0 = win.listWidget.verticalScrollBar().value()
             win.listWidget.clear()
-            for channel_1 in channels_1:
-                filter_txt = channelfilter.text()
-                c_name = channels_1[channel_1][3]
-                # Add QListWidgetItem into QListWidget
-                if filter_txt.lower().strip() in c_name.lower():
-                    win.listWidget.addItem(channels_1[channel_1][0])
-                    win.listWidget.setItemWidget(channels_1[channel_1][0], channels_1[channel_1][1])
+            idx = (page_box.value() - 1) * MAX_ON_ONE_PAGE
+            filter_txt = channelfilter.text()
+            channels_2 = [x13 for x13 in list(channels_1.values()) if filter_txt.lower().strip() in x13[3].lower().strip()]
+            page_box.setMaximum(round(len(channels_2) / MAX_ON_ONE_PAGE) + 1)
+            channels_2 = channels_2[idx:idx+MAX_ON_ONE_PAGE]
+            for channel_1 in channels_2:
+                #chan_3 = channels_1[channel_1]
+                chan_3 = channel_1
+                c_name = chan_3[3]
+                win.listWidget.addItem(chan_3[0])
+                win.listWidget.setItemWidget(chan_3[0], chan_3[1])
             win.listWidget.setCurrentRow(row0)
             win.listWidget.verticalScrollBar().setValue(val0)
 
@@ -2255,6 +2260,11 @@ if __name__ == '__main__':
         page_lbl = QtWidgets.QLabel('{}:'.format(LANG['page']))
         page_box = QtWidgets.QSpinBox()
         page_box.setMinimum(1)
+        page_box.setMaximum(round(len(array) / MAX_ON_ONE_PAGE) + 1)
+        def page_change():
+            win.listWidget.verticalScrollBar().setValue(0)
+            redraw_chans()
+        page_box.valueChanged.connect(page_change)
         layout4.addWidget(page_lbl)
         layout4.addWidget(page_box)
         widget4.setLayout(layout4)
@@ -2264,7 +2274,7 @@ if __name__ == '__main__':
         widget.layout().addWidget(combobox)
         widget.layout().addWidget(widget3)
         widget.layout().addWidget(win.listWidget)
-        #widget.layout().addWidget(widget4)
+        widget.layout().addWidget(widget4)
         widget.layout().addWidget(chan)
         widget.layout().addWidget(loading)
         dockWidget.setFixedWidth(DOCK_WIDGET_WIDTH)
@@ -2395,7 +2405,7 @@ if __name__ == '__main__':
 
         if settings['hwaccel']:
             VIDEO_OUTPUT = 'gpu,vdpau,opengl,direct3d,xv,x11'
-            HWACCEL = 'auto-safe'
+            HWACCEL = 'auto'
         else:
             VIDEO_OUTPUT = 'direct3d,xv,x11'
             HWACCEL = 'no'
