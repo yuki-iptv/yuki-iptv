@@ -2275,6 +2275,7 @@ if __name__ == '__main__':
         layout4.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         page_lbl = QtWidgets.QLabel('{}:'.format(LANG['page']))
         page_box = QtWidgets.QSpinBox()
+        page_box.setSuffix('    ')
         page_box.setMinimum(1)
         page_box.setMaximum(round(len(array) / MAX_ON_ONE_PAGE) + 1)
         def page_change():
