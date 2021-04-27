@@ -4,7 +4,7 @@
 # pylint: disable=c-extension-no-member, too-many-lines, line-too-long, ungrouped-imports
 # pylint: disable=too-many-statements, broad-except, pointless-string-statement
 #
-# Icons by Font Awesome ( https://fontawesome.com/ )
+# Icons by Font Awesome ( https://fontawesome.com/ ) ( https://fontawesome.com/license )
 #
 # The Font Awesome pictograms are licensed under the CC BY 4.0 License - https://creativecommons.org/licenses/by/4.0/
 #
