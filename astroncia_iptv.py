@@ -1968,8 +1968,25 @@ if __name__ == '__main__':
         #noclear = len(array) == len(items1) and len(array) == win.listWidget.count()
 
         def gen_chans(): # pylint: disable=too-many-locals, too-many-branches
-            global ICONS_CACHE, playing_chan, current_group, array
-            ch_array = array
+            global ICONS_CACHE, playing_chan, current_group, array, page_box, channelfilter
+            try:
+                idx = (page_box.value() - 1) * MAX_ON_ONE_PAGE
+            except: # pylint: disable=bare-except
+                idx = 0
+            try:
+                filter_txt = channelfilter.text()
+            except: # pylint: disable=bare-except
+                filter_txt = ""
+            ch_array = {x13: array[x13] for x13 in array if filter_txt.lower().strip() in x13.lower().strip()}
+            ch_array = list(ch_array.values())[idx:idx+MAX_ON_ONE_PAGE]
+            ch_array = dict([(x14['title'], x14) for x14 in ch_array]) # pylint: disable=consider-using-dict-comprehension
+            try:
+                if filter_txt:
+                    page_box.setMaximum(round(len(ch_array) / MAX_ON_ONE_PAGE) + 1)
+                else:
+                    page_box.setMaximum(round(len(array) / MAX_ON_ONE_PAGE) + 1)
+            except: # pylint: disable=bare-except
+                pass
             res = {}
             l = -1
             k = 0
@@ -2082,12 +2099,7 @@ if __name__ == '__main__':
             row0 = win.listWidget.currentRow()
             val0 = win.listWidget.verticalScrollBar().value()
             win.listWidget.clear()
-            idx = (page_box.value() - 1) * MAX_ON_ONE_PAGE
-            filter_txt = channelfilter.text()
-            channels_2 = [x13 for x13 in list(channels_1.values()) if filter_txt.lower().strip() in x13[3].lower().strip()]
-            page_box.setMaximum(round(len(channels_2) / MAX_ON_ONE_PAGE) + 1)
-            channels_2 = channels_2[idx:idx+MAX_ON_ONE_PAGE]
-            for channel_1 in channels_2:
+            for channel_1 in channels_1.values():
                 #chan_3 = channels_1[channel_1]
                 chan_3 = channel_1
                 #c_name = chan_3[3]
@@ -3057,7 +3069,7 @@ if __name__ == '__main__':
             try:
                 audio_codec = player.audio_codec.split(" ")[0]
             except: # pylint: disable=bare-except
-                audio_codec = 'audio'
+                audio_codec = 'no audio'
             try:
                 codec = player.video_codec.split(" ")[0]
                 width = player.width
