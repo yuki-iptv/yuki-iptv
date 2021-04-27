@@ -81,7 +81,7 @@ if not (os.name == 'nt' or os.name == 'posix'):
     print_with_time("Unsupported platform!")
     sys.exit(1)
 
-MAIN_WINDOW_TITLE = 'Astroncia IPTV (! test version !)'
+MAIN_WINDOW_TITLE = 'Astroncia IPTV'
 WINDOW_SIZE = (1200, 600)
 DOCK_WIDGET2_HEIGHT = int(WINDOW_SIZE[1] / 6)
 DOCK_WIDGET_WIDTH = int((WINDOW_SIZE[0] / 2) - 200)
@@ -2249,12 +2249,22 @@ if __name__ == '__main__':
         layout3.addWidget(channelfilter)
         layout3.addWidget(channelfiltersearch)
         widget3.setLayout(layout3)
+        widget4 = QtWidgets.QWidget()
+        layout4 = QtWidgets.QHBoxLayout()
+        layout4.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        page_lbl = QtWidgets.QLabel('{}:'.format(LANG['page']))
+        page_box = QtWidgets.QSpinBox()
+        page_box.setMinimum(1)
+        layout4.addWidget(page_lbl)
+        layout4.addWidget(page_box)
+        widget4.setLayout(layout4)
         layout = QtWidgets.QGridLayout()
         widget = QtWidgets.QWidget()
         widget.setLayout(layout)
         widget.layout().addWidget(combobox)
         widget.layout().addWidget(widget3)
         widget.layout().addWidget(win.listWidget)
+        #widget.layout().addWidget(widget4)
         widget.layout().addWidget(chan)
         widget.layout().addWidget(loading)
         dockWidget.setFixedWidth(DOCK_WIDGET_WIDTH)
@@ -2385,7 +2395,7 @@ if __name__ == '__main__':
 
         if settings['hwaccel']:
             VIDEO_OUTPUT = 'gpu,vdpau,opengl,direct3d,xv,x11'
-            HWACCEL = 'yes'
+            HWACCEL = 'auto-safe'
         else:
             VIDEO_OUTPUT = 'direct3d,xv,x11'
             HWACCEL = 'no'
@@ -2841,7 +2851,7 @@ if __name__ == '__main__':
         hlayout2.addWidget(label8_3)
         hlayout2.addWidget(label8_5)
         hlayout2.addWidget(label9)
-        hlayout2.addStretch(30000)
+        hlayout2.addStretch(100000)
         hlayout2.addWidget(label11)
         hlayout2.addWidget(label12)
 
