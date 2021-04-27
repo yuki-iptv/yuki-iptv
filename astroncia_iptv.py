@@ -2086,7 +2086,7 @@ if __name__ == '__main__':
             for channel_1 in channels_2:
                 #chan_3 = channels_1[channel_1]
                 chan_3 = channel_1
-                c_name = chan_3[3]
+                #c_name = chan_3[3]
                 win.listWidget.addItem(chan_3[0])
                 win.listWidget.setItemWidget(chan_3[0], chan_3[1])
             win.listWidget.setCurrentRow(row0)
