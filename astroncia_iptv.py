@@ -545,6 +545,109 @@ if __name__ == '__main__':
         scheduler_win.setWindowTitle(LANG['scheduler'])
         scheduler_win.setWindowIcon(main_icon)
 
+        providers_win = QtWidgets.QMainWindow()
+        providers_win.resize(400, 500)
+        providers_win.setWindowTitle(LANG['providers'])
+        providers_win.setWindowIcon(main_icon)
+
+        providers_win_edit = QtWidgets.QMainWindow()
+        providers_win_edit.resize(500, 180)
+        providers_win_edit.setWindowTitle(LANG['providers'])
+        providers_win_edit.setWindowIcon(main_icon)
+
+        class providers_data: # pylint: disable=too-few-public-methods
+            pass
+
+        providers_data.oldName = ""
+
+        def providers_win_save():
+            try:
+                providers_list.takeItem(providers_list.row(providers_list.findItems(providers_data.oldName, QtCore.Qt.MatchExactly)[0]))
+                providers_data.providers_used.pop(providers_data.oldName)
+            except: # pylint: disable=bare-except
+                pass
+            channel_text_prov = name_edit_1.text()
+            if channel_text_prov:
+                providers_list.addItem(channel_text_prov)
+                providers_data.providers_used[channel_text_prov] = {
+                    "m3u": m3u_edit_1.text(),
+                    "epg": epg_edit_1.text(),
+                    "offset": soffset_1.value()
+                }
+            providers_save_json()
+            providers_win_edit.hide()
+
+        name_label_1 = QtWidgets.QLabel('{}:'.format(LANG['provname']))
+        m3u_label_1 = QtWidgets.QLabel('{}:'.format(LANG['m3uplaylist']))
+        epg_label_1 = QtWidgets.QLabel('{}:'.format(LANG['epgaddress']))
+        name_edit_1 = QtWidgets.QLineEdit()
+        m3u_edit_1 = QtWidgets.QLineEdit()
+        epg_edit_1 = QtWidgets.QLineEdit()
+        save_btn_1 = QtWidgets.QPushButton(LANG['save'])
+        save_btn_1.setStyleSheet('font-weight: bold; color: green;')
+        save_btn_1.clicked.connect(providers_win_save)
+        set_label_1 = QtWidgets.QLabel(LANG['jtvoffsetrecommendation'])
+        set_label_1.setStyleSheet('color: #666600')
+        soffset_1 = QtWidgets.QDoubleSpinBox()
+        soffset_1.setMinimum(-240)
+        soffset_1.setMaximum(240)
+        soffset_1.setSingleStep(1)
+        soffset_1.setDecimals(1)
+        offset_label_1 = QtWidgets.QLabel('{}:'.format(LANG['tvguideoffset']))
+
+        providers_win_edit_widget = QtWidgets.QWidget()
+        providers_win_edit_layout = QtWidgets.QGridLayout()
+        providers_win_edit_layout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        providers_win_edit_layout.addWidget(name_label_1, 0, 0)
+        providers_win_edit_layout.addWidget(name_edit_1, 0, 1)
+        providers_win_edit_layout.addWidget(m3u_label_1, 1, 0)
+        providers_win_edit_layout.addWidget(m3u_edit_1, 1, 1)
+        providers_win_edit_layout.addWidget(epg_label_1, 2, 0)
+        providers_win_edit_layout.addWidget(epg_edit_1, 2, 1)
+        providers_win_edit_layout.addWidget(offset_label_1, 3, 0)
+        providers_win_edit_layout.addWidget(soffset_1, 3, 1)
+        providers_win_edit_layout.addWidget(set_label_1, 4, 1)
+        providers_win_edit_layout.addWidget(save_btn_1, 5, 1)
+        providers_win_edit_widget.setLayout(providers_win_edit_layout)
+        providers_win_edit.setCentralWidget(providers_win_edit_widget)
+
+        def_provider = 0
+        def_provider_name = list(iptv_providers.keys())[def_provider].replace('[Worldwide] ', '')
+        providers_saved = {}
+        if not os.path.isfile(str(Path(LOCAL_DIR, 'providers.json'))):
+            providers_saved[def_provider_name] = {
+                "m3u": list(iptv_providers.values())[def_provider]['m3u'],
+                "offset": 0
+            }
+            try:
+                providers_saved[def_provider_name]["epg"] = list(iptv_providers.values())[def_provider]['epg']
+            except: # pylint: disable=bare-except
+                providers_saved[def_provider_name]["epg"] = ""
+        else:
+            providers_json = open(str(Path(LOCAL_DIR, 'providers.json')), 'r', encoding="utf8")
+            providers_saved = json.loads(providers_json.read())
+            providers_json.close()
+        providers_list = QtWidgets.QListWidget(providers_win)
+        providers_list.resize(400, 330)
+        providers_list.move(0, 0)
+        providers_select = QtWidgets.QPushButton(LANG['provselect'], providers_win)
+        providers_select.setStyleSheet('font-weight: bold; color: green;')
+        providers_select.move(140, 335)
+        providers_add = QtWidgets.QPushButton(LANG['provadd'], providers_win)
+        providers_add.move(140, 375)
+        providers_edit = QtWidgets.QPushButton(LANG['provedit'], providers_win)
+        providers_edit.move(140, 415)
+        providers_edit.resize(130, 30)
+        providers_delete = QtWidgets.QPushButton(LANG['provdelete'], providers_win)
+        providers_delete.move(140, 455)
+
+        def providers_json_save(providers_save0=None):
+            if not providers_save0:
+                providers_save0 = providers_saved
+            providers_json1 = open(str(Path(LOCAL_DIR, 'providers.json')), 'w', encoding="utf8")
+            providers_json1.write(json.dumps(providers_save0))
+            providers_json1.close()
+
         time_stop = 0
 
         qr = settings_win.frameGeometry()
@@ -557,6 +660,8 @@ if __name__ == '__main__':
         sort_win.move(qr.topLeft())
         chan_win.move(qr.topLeft())
         scheduler_win.move(qr.topLeft())
+        providers_win.move(qr.topLeft())
+        providers_win_edit.move(qr.topLeft())
 
         def convert_time(times_1):
             yr = time.strftime('%Y', time.localtime())
@@ -1507,6 +1612,82 @@ if __name__ == '__main__':
             else:
                 sort_win.hide()
 
+        def show_providers():
+            if not providers_win.isVisible():
+                providers_list.clear()
+                providers_data.providers_used = providers_saved
+                for item2 in providers_data.providers_used:
+                    providers_list.addItem(item2)
+                providers_win.show()
+            else:
+                providers_win.hide()
+
+        def providers_selected():
+            try:
+                prov_data = providers_data.providers_used[providers_list.currentItem().text()]
+                prov_m3u = prov_data['m3u']
+                prov_epg = ''
+                if 'epg' in prov_data:
+                    prov_epg = prov_data['epg']
+                prov_offset = prov_data['offset']
+                sm3u.setText(prov_m3u)
+                sepg.setText(prov_epg)
+                soffset.setValue(prov_offset)
+                sprov.setCurrentIndex(0)
+                providers_save_json()
+                save_settings()
+            except: # pylint: disable=bare-except
+                pass
+
+        def providers_save_json():
+            providers_json_save(providers_data.providers_used)
+
+        def providers_edit_do(ignore0=False):
+            try:
+                currentItem_text = providers_list.currentItem().text()
+            except: # pylint: disable=bare-except
+                currentItem_text = ""
+            if ignore0:
+                name_edit_1.setText("")
+                m3u_edit_1.setText("")
+                epg_edit_1.setText("")
+                soffset_1.setValue(DEF_TIMEZONE)
+                providers_data.oldName = ""
+                providers_win_edit.show()
+            else:
+                if currentItem_text:
+                    item_m3u = providers_data.providers_used[currentItem_text]['m3u']
+                    try:
+                        item_epg = providers_data.providers_used[currentItem_text]['epg']
+                    except: # pylint: disable=bare-except
+                        item_epg = ""
+                    item_offset = providers_data.providers_used[currentItem_text]['offset']
+                    name_edit_1.setText(currentItem_text)
+                    m3u_edit_1.setText(item_m3u)
+                    epg_edit_1.setText(item_epg)
+                    soffset_1.setValue(item_offset)
+                    providers_data.oldName = currentItem_text
+                    providers_win_edit.show()
+
+        def providers_delete_do():
+            try:
+                currentItem_text = providers_list.currentItem().text()
+            except: # pylint: disable=bare-except
+                currentItem_text = ""
+            if currentItem_text:
+                providers_list.takeItem(providers_list.currentRow())
+                providers_data.providers_used.pop(currentItem_text)
+                providers_save_json()
+
+        def providers_add_do():
+            providers_edit_do(True)
+
+        providers_list.itemDoubleClicked.connect(providers_selected)
+        providers_select.clicked.connect(providers_selected)
+        providers_add.clicked.connect(providers_add_do)
+        providers_edit.clicked.connect(providers_edit_do)
+        providers_delete.clicked.connect(providers_delete_do)
+
         # This is necessary since PyQT stomps over the locale settings needed by libmpv.
         # This needs to happen after importing PyQT before creating the first mpv.MPV instance.
         locale.setlocale(locale.LC_NUMERIC, 'C')
@@ -1977,40 +2158,46 @@ if __name__ == '__main__':
                 filter_txt = channelfilter.text()
             except: # pylint: disable=bare-except
                 filter_txt = ""
-            ch_array = {x13: array[x13] for x13 in array if filter_txt.lower().strip() in x13.lower().strip()}
+
+            # Group and favourites filter
+            array_filtered = {}
+            for j1 in array:
+                group1 = array[j1]['tvg-group']
+                if current_group != LANG['allchannels']:
+                    if current_group == LANG['favourite']:
+                        if not j1 in favourite_sets:
+                            continue
+                    else:
+                        if group1 != current_group:
+                            continue
+                array_filtered[j1] = array[j1]
+
+            ch_array = {x13: array_filtered[x13] for x13 in array_filtered if filter_txt.lower().strip() in x13.lower().strip()}
             ch_array = list(ch_array.values())[idx:idx+MAX_ON_ONE_PAGE]
             ch_array = dict([(x14['title'], x14) for x14 in ch_array]) # pylint: disable=consider-using-dict-comprehension
             try:
                 if filter_txt:
                     page_box.setMaximum(round(len(ch_array) / MAX_ON_ONE_PAGE) + 1)
                 else:
-                    page_box.setMaximum(round(len(array) / MAX_ON_ONE_PAGE) + 1)
+                    page_box.setMaximum(round(len(array_filtered) / MAX_ON_ONE_PAGE) + 1)
             except: # pylint: disable=bare-except
                 pass
             res = {}
             l = -1
             k = 0
             for i in doSort(ch_array):
-                group1 = array[i]['tvg-group']
-                if current_group != LANG['allchannels']:
-                    if current_group == LANG['favourite']:
-                        if not i in favourite_sets:
-                            continue
-                    else:
-                        if group1 != current_group:
-                            continue
                 l += 1
                 k += 1
                 prog = ''
                 prog_search = i.lower()
-                if array[i]['tvg-ID']:
-                    if str(array[i]['tvg-ID']) in prog_ids:
-                        prog_search_lst = prog_ids[str(array[i]['tvg-ID'])]
+                if array_filtered[i]['tvg-ID']:
+                    if str(array_filtered[i]['tvg-ID']) in prog_ids:
+                        prog_search_lst = prog_ids[str(array_filtered[i]['tvg-ID'])]
                         if prog_search_lst:
                             prog_search = prog_search_lst[0].lower()
-                if array[i]['tvg-name']:
-                    if str(array[i]['tvg-name']) in programmes:
-                        prog_search = str(array[i]['tvg-name']).lower()
+                if array_filtered[i]['tvg-name']:
+                    if str(array_filtered[i]['tvg-name']) in programmes:
+                        prog_search = str(array_filtered[i]['tvg-name']).lower()
                 if prog_search in programmes:
                     current_prog = {
                         'start': 0,
@@ -2807,6 +2994,10 @@ if __name__ == '__main__':
         label8.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'settings.png'))))
         label8.setToolTip(LANG['settings'])
         label8.clicked.connect(show_settings)
+        label8_0 = QtWidgets.QPushButton()
+        label8_0.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'tv-blue.png'))))
+        label8_0.setToolTip(LANG['providers'])
+        label8_0.clicked.connect(show_providers)
         label8_1 = QtWidgets.QPushButton()
         label8_1.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'tvguide.png'))))
         label8_1.setToolTip(LANG['tvguide'])
@@ -2871,6 +3062,7 @@ if __name__ == '__main__':
         hlayout2.addWidget(label7_1)
         if not os.name == 'nt':
             hlayout2.addWidget(label7_2)
+        hlayout2.addWidget(label8_0)
         hlayout2.addWidget(label8)
         hlayout2.addWidget(label8_4)
         hlayout2.addWidget(label8_1)
