@@ -543,7 +543,7 @@ if __name__ == '__main__':
         scheduler_win.setWindowIcon(main_icon)
 
         providers_win = QtWidgets.QMainWindow()
-        providers_win.resize(400, 500)
+        providers_win.resize(400, 550)
         providers_win.setWindowTitle(LANG['providers'])
         providers_win.setWindowIcon(main_icon)
 
@@ -663,6 +663,9 @@ if __name__ == '__main__':
         providers_edit.resize(130, 30)
         providers_delete = QtWidgets.QPushButton(LANG['provdelete'], providers_win)
         providers_delete.move(140, 455)
+        providers_import = QtWidgets.QPushButton(LANG['importhypnotix'], providers_win)
+        providers_import.move(140, 495)
+        providers_import.resize(230, 30)
 
         def providers_json_save(providers_save0=None):
             if not providers_save0:
@@ -1710,11 +1713,53 @@ if __name__ == '__main__':
         def providers_add_do():
             providers_edit_do(True)
 
+        def providers_import_do():
+            global providers_saved
+            providers_hypnotix = {}
+            print("Fetching playlists from Hypnotix...")
+            try:
+                hypnotix_cmd = "dconf dump /org/x/hypnotix/ 2>/dev/null | grep '^providers=' | sed 's/^providers=/{\"hypnotix\": /g' | sed 's/$/}/g' | sed \"s/'/\\\"/g\""
+                hypnotix_cmd_eval = subprocess.check_output(hypnotix_cmd, shell=True, text=True).strip()
+                if hypnotix_cmd_eval:
+                    hypnotix_cmd_eval = json.loads(hypnotix_cmd_eval)['hypnotix']
+                    for provider_2 in hypnotix_cmd_eval:
+                        provider_2 = provider_2.replace(':' * 9, '^' * 9).split(':::')
+                        provider_2[2] = provider_2[2].split('^' * 9)
+                        provider_2[2][0] = provider_2[2][0].replace('file://', '')
+                        prov_name_2 = provider_2[0]
+                        prov_m3u_2 = provider_2[2][0]
+                        prov_epg_2 = provider_2[2][1]
+                        providers_hypnotix[prov_name_2] = {
+                            "m3u": prov_m3u_2,
+                            "epg": prov_epg_2,
+                            "offset": DEF_TIMEZONE
+                        }
+            except: # pylint: disable=bare-except
+                print("Failed fetching playlists from Hypnotix!")
+            if providers_hypnotix:
+                try:
+                    providers_list.takeItem(providers_list.row(providers_list.findItems(def_provider_name, QtCore.Qt.MatchExactly)[0]))
+                    providers_data.providers_used.pop(def_provider_name)
+                except: # pylint: disable=bare-except
+                    pass
+                providers_data.providers_used = providers_hypnotix
+                providers_saved = providers_hypnotix
+                for prov_name_4 in providers_data.providers_used:
+                    providers_list.addItem(prov_name_4)
+                providers_save_json()
+                print("Successfully imported playlists from Hypnotix!")
+                providers_win.hide()
+                providers_win_edit.hide()
+                save_settings()
+            else:
+                print("No Hypnotix playlists found!")
+
         providers_list.itemDoubleClicked.connect(providers_selected)
         providers_select.clicked.connect(providers_selected)
         providers_add.clicked.connect(providers_add_do)
         providers_edit.clicked.connect(providers_edit_do)
         providers_delete.clicked.connect(providers_delete_do)
+        providers_import.clicked.connect(providers_import_do)
 
         # This is necessary since PyQT stomps over the locale settings needed by libmpv.
         # This needs to happen after importing PyQT before creating the first mpv.MPV instance.
