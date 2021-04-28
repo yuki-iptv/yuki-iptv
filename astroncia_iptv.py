@@ -2183,8 +2183,10 @@ if __name__ == '__main__':
             try:
                 if filter_txt:
                     page_box.setMaximum(round(len(ch_array) / MAX_ON_ONE_PAGE) + 1)
+                    of_lbl.setText('{} {}'.format(LANG['of'], round(len(ch_array) / MAX_ON_ONE_PAGE) + 1))
                 else:
                     page_box.setMaximum(round(len(array_filtered) / MAX_ON_ONE_PAGE) + 1)
+                    of_lbl.setText('{} {}'.format(LANG['of'], round(len(array_filtered) / MAX_ON_ONE_PAGE) + 1))
             except: # pylint: disable=bare-except
                 pass
             res = {}
@@ -2466,16 +2468,19 @@ if __name__ == '__main__':
         layout4 = QtWidgets.QHBoxLayout()
         layout4.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         page_lbl = QtWidgets.QLabel('{}:'.format(LANG['page']))
+        of_lbl = QtWidgets.QLabel('{}'.format(LANG['of']))
         page_box = QtWidgets.QSpinBox()
         page_box.setSuffix('    ')
         page_box.setMinimum(1)
         page_box.setMaximum(round(len(array) / MAX_ON_ONE_PAGE) + 1)
+        of_lbl.setText('{} {}'.format(LANG['of'], round(len(array) / MAX_ON_ONE_PAGE) + 1))
         def page_change():
             win.listWidget.verticalScrollBar().setValue(0)
             redraw_chans()
         page_box.valueChanged.connect(page_change)
         layout4.addWidget(page_lbl)
         layout4.addWidget(page_box)
+        layout4.addWidget(of_lbl)
         widget4.setLayout(layout4)
         layout = QtWidgets.QGridLayout()
         widget = QtWidgets.QWidget()
