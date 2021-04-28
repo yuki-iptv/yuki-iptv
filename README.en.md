@@ -107,5 +107,4 @@ For recordings view recommended [VLC media player](https://www.videolan.org/).
 
 ## Program update
 
-Delete folder local in astroncia_iptv  
 ```git pull```  
