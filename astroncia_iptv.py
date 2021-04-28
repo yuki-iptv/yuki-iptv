@@ -35,6 +35,7 @@ import signal
 import base64
 import argparse
 import subprocess
+#import hashlib
 import codecs
 import ctypes
 import webbrowser
@@ -483,6 +484,7 @@ if __name__ == '__main__':
 
         TV_ICON = QtGui.QIcon(str(Path('data', 'icons', 'tv.png')))
         ICONS_CACHE = {}
+        ICONS_CACHE_FETCHED = {}
 
         class ScrollLabel(QtWidgets.QScrollArea):
             def __init__(self, *args, **kwargs):
@@ -2211,21 +2213,78 @@ if __name__ == '__main__':
                     return arr0
             return arr0
 
-        #def gen_chans_2():
-        #    channels_1 = gen_chans()
-        #    items1 = []
-        #    for channel_1 in channels_1:
-        #        filter_txt = channelfilter.text()
-        #        c_name = channels_1[channel_1][3]
-        #        # Add QListWidgetItem into QListWidget
-        #        if filter_txt.lower().strip() in c_name.lower():
-        #            items1.append(channels_1[channel_1])
-        #    return items1
+        class channel_icons_data: # pylint: disable=too-few-public-methods
+            pass
 
-        #noclear = len(array) == len(items1) and len(array) == win.listWidget.count()
+        class Pickable_QIcon(QtGui.QIcon):
+            def __reduce__(self):
+                return type(self), (), self.__getstate__()
 
+            def __getstate__(self):
+                ba = QtCore.QByteArray()
+                stream = QtCore.QDataStream(ba, QtCore.QIODevice.WriteOnly)
+                stream << self # pylint: disable=pointless-statement
+                return ba
+
+            def __setstate__(self, ba):
+                stream = QtCore.QDataStream(ba, QtCore.QIODevice.ReadOnly)
+                stream >> self # pylint: disable=pointless-statement
+
+        def fetch_remote_channel_icon(chan_name, logo_url, return_dict_2):
+            #base64_enc = base64.b64encode(bytes(chan_name + ":::" + logo_url, 'utf-8')).decode('utf-8')
+            #sha512_hash = str(hashlib.sha512(bytes(base64_enc, 'utf-8')).hexdigest()) + ".cache"
+            #cache_file = str(Path(LOCAL_DIR, 'channel_icons_cache', sha512_hash))
+            #if os.path.isfile(cache_file):
+            #    cache_file_2 = open(cache_file, 'rb')
+            #    cache_file_2_read = cache_file_2.read()
+            #    cache_file_2.close()
+            #    return_dict_2[chan_name] = cache_file_2_read
+            #else:
+            try:
+                time.sleep(1)
+                req_data = requests.get(logo_url, headers={'User-Agent': user_agent}, timeout=3, stream=True).content
+                qp_1 = QtGui.QPixmap()
+                qp_1.loadFromData(req_data)
+                fetched_icon = Pickable_QIcon(qp_1)
+                return_dict_2[chan_name] = [fetched_icon]
+                #cache_file_2 = open(cache_file, 'wb')
+                #cache_file_2.write(req_data)
+                #cache_file_2.close()
+            except: # pylint: disable=bare-except
+                return_dict_2[chan_name] = None
+
+        def channel_icons_thread():
+            try:
+                if channel_icons_data.count != -1:
+                    if channel_icons_data.count == len(channel_icons_data.return_dict) and not channel_icons_data.load_completed:
+                        channel_icons_data.load_completed = True
+                        print("Channel icons load complete! Took {} seconds".format(time.time() - channel_icons_data.load_time))
+                        btn_update.click()
+            except: # pylint: disable=bare-except
+                pass
+
+        def update_channel_icons():
+            print("Loading channel icons...")
+            #if not os.path.isdir(str(Path(LOCAL_DIR, 'channel_icons_cache'))):
+            #    os.mkdir(str(Path(LOCAL_DIR, 'channel_icons_cache')))
+            manager_1 = Manager()
+            channel_icons_data.return_dict = manager_1.dict()
+            channel_icons_data.load_completed = False
+            channel_icons_data.load_time = time.time()
+            channel_icons_data.count = 0
+            for chan_4 in array:
+                chan_4_logo = array[chan_4]['tvg-logo']
+                if chan_4_logo:
+                    channel_icons_data.count += 1
+                    p_1 = Process(target=fetch_remote_channel_icon, args=(chan_4, chan_4_logo, channel_icons_data.return_dict,))
+                    p_1.start()
+
+        first_gen_chans = True
         def gen_chans(): # pylint: disable=too-many-locals, too-many-branches
-            global ICONS_CACHE, playing_chan, current_group, array, page_box, channelfilter
+            global ICONS_CACHE, playing_chan, current_group, array, page_box, channelfilter, first_gen_chans
+            if first_gen_chans:
+                first_gen_chans = False
+                update_channel_icons()
             try:
                 idx = (page_box.value() - 1) * MAX_ON_ONE_PAGE
             except: # pylint: disable=bare-except
@@ -2335,6 +2394,13 @@ if __name__ == '__main__':
                     myQCustomQWidget.setIcon(ICONS_CACHE[icons_l[i_icon]])
                 else:
                     myQCustomQWidget.setIcon(TV_ICON)
+                if i in channel_icons_data.return_dict and channel_icons_data.return_dict[i]:
+                    if i in ICONS_CACHE_FETCHED:
+                        fetched_icon = ICONS_CACHE_FETCHED[i]
+                    else:
+                        fetched_icon = channel_icons_data.return_dict[i][0]
+                        ICONS_CACHE_FETCHED[i] = fetched_icon
+                    myQCustomQWidget.setIcon(fetched_icon)
                 # Create QListWidgetItem
                 myQListWidgetItem = QtWidgets.QListWidgetItem()
                 myQListWidgetItem.setData(QtCore.Qt.UserRole, i)
@@ -3474,7 +3540,8 @@ if __name__ == '__main__':
                 thread_tvguide_2: 1000,
                 thread_update_time: 1000,
                 record_thread: 1000,
-                record_thread_2: 1000
+                record_thread_2: 1000,
+                channel_icons_thread: 500
             }
             for timer in timers:
                 timers_array[timer] = QtCore.QTimer()
