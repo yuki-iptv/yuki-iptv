@@ -1635,6 +1635,7 @@ if __name__ == '__main__':
                 soffset.setValue(prov_offset)
                 sprov.setCurrentIndex(0)
                 providers_save_json()
+                providers_win.hide()
                 providers_win_edit.hide()
                 save_settings()
             except: # pylint: disable=bare-except
