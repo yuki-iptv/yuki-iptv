@@ -107,7 +107,7 @@ For recordings view recommended [VLC media player](https://www.videolan.org/).
 
 ## Program update
 
-```git pull```  
+```git pull https://gitlab.com/astroncia/iptv.git```  
 
 ## Disclaimer
 

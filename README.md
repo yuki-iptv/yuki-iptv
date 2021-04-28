@@ -108,7 +108,7 @@
 
 ## Обновление программы
 
-```git pull```  
+```git pull https://gitlab.com/astroncia/iptv.git```  
 
 ## Отказ от ответственности
 
