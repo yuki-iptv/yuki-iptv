@@ -666,6 +666,9 @@ if __name__ == '__main__':
         providers_import = QtWidgets.QPushButton(LANG['importhypnotix'], providers_win)
         providers_import.move(140, 495)
         providers_import.resize(230, 30)
+        if os.name == 'nt':
+            providers_import.hide()
+            providers_win.resize(400, 500)
 
         def providers_json_save(providers_save0=None):
             if not providers_save0:
