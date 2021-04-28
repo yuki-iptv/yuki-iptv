@@ -1268,7 +1268,10 @@ if __name__ == '__main__':
             if not os.name == 'nt':
                 sys.exit(0)
             else:
-                sys.exit(23)
+                try:
+                    os._exit(23) # pylint: disable=protected-access
+                except: # pylint: disable=bare-except
+                    sys.exit(23)
 
         wid2 = QtWidgets.QWidget()
 
