@@ -61,7 +61,6 @@ class ReorderableListModel(QtCore.QAbstractListModel):
             return False
         if count <= 0:
             return False
-        # inserting 'count' empty rows starting at 'row'
         self.beginInsertRows(QtCore.QModelIndex(), row, row + count - 1)
         for i in range(0, count):
             self.nodes.insert(row + i, '')

@@ -8,9 +8,6 @@
 #
 # The Font Awesome pictograms are licensed under the CC BY 4.0 License - https://creativecommons.org/licenses/by/4.0/
 #
-# == WARNING ==
-# Freezing on large playlists (1000+ channels)
-#
 '''
 Copyright (C) 2021 Astroncia
 
@@ -581,7 +578,7 @@ if __name__ == '__main__':
         m3u_label_1 = QtWidgets.QLabel('{}:'.format(LANG['m3uplaylist']))
         epg_label_1 = QtWidgets.QLabel('{}:'.format(LANG['epgaddress']))
         name_edit_1 = QtWidgets.QLineEdit()
-        m3u_edit_1 = QtWidgets.QLineEdit()
+        m3u_edit_1 = QtWidgets.QLineEdit() # TODO
         epg_edit_1 = QtWidgets.QLineEdit()
         save_btn_1 = QtWidgets.QPushButton(LANG['save'])
         save_btn_1.setStyleSheet('font-weight: bold; color: green;')
