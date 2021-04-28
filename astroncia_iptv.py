@@ -574,12 +574,36 @@ if __name__ == '__main__':
             providers_save_json()
             providers_win_edit.hide()
 
+        def m3u_file_1_clicked():
+            fname_1 = QtWidgets.QFileDialog.getOpenFileName(
+                providers_win_edit,
+                LANG['selectplaylist'],
+                home_folder
+            )[0]
+            if fname_1:
+                m3u_edit_1.setText(fname_1)
+
+        def epg_file_1_clicked():
+            fname_2 = QtWidgets.QFileDialog.getOpenFileName(
+                providers_win_edit,
+                LANG['selectepg'],
+                home_folder
+            )[0]
+            if fname_2:
+                epg_edit_1.setText(fname_2)
+
         name_label_1 = QtWidgets.QLabel('{}:'.format(LANG['provname']))
         m3u_label_1 = QtWidgets.QLabel('{}:'.format(LANG['m3uplaylist']))
         epg_label_1 = QtWidgets.QLabel('{}:'.format(LANG['epgaddress']))
         name_edit_1 = QtWidgets.QLineEdit()
-        m3u_edit_1 = QtWidgets.QLineEdit() # TODO
+        m3u_edit_1 = QtWidgets.QLineEdit()
         epg_edit_1 = QtWidgets.QLineEdit()
+        m3u_file_1 = QtWidgets.QPushButton()
+        m3u_file_1.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'file.png'))))
+        m3u_file_1.clicked.connect(m3u_file_1_clicked)
+        epg_file_1 = QtWidgets.QPushButton()
+        epg_file_1.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'file.png'))))
+        epg_file_1.clicked.connect(epg_file_1_clicked)
         save_btn_1 = QtWidgets.QPushButton(LANG['save'])
         save_btn_1.setStyleSheet('font-weight: bold; color: green;')
         save_btn_1.clicked.connect(providers_win_save)
@@ -599,8 +623,10 @@ if __name__ == '__main__':
         providers_win_edit_layout.addWidget(name_edit_1, 0, 1)
         providers_win_edit_layout.addWidget(m3u_label_1, 1, 0)
         providers_win_edit_layout.addWidget(m3u_edit_1, 1, 1)
+        providers_win_edit_layout.addWidget(m3u_file_1, 1, 2)
         providers_win_edit_layout.addWidget(epg_label_1, 2, 0)
         providers_win_edit_layout.addWidget(epg_edit_1, 2, 1)
+        providers_win_edit_layout.addWidget(epg_file_1, 2, 2)
         providers_win_edit_layout.addWidget(offset_label_1, 3, 0)
         providers_win_edit_layout.addWidget(soffset_1, 3, 1)
         providers_win_edit_layout.addWidget(set_label_1, 4, 1)
