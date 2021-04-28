@@ -108,3 +108,7 @@ For recordings view recommended [VLC media player](https://www.videolan.org/).
 ## Program update
 
 ```git pull```  
+
+## Disclaimer
+
+Astroncia IPTV doesn't provide any playlists or other digital content.  
