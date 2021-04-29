@@ -43,6 +43,14 @@ class M3uParser:
         self.filename = filename
         self.readAllLines()
         self.parseFile()
+        self.epg_array = []
+        for chan_1 in self.files:
+            tvgurl = chan_1['tvg-url']
+            if tvgurl:
+                if not tvgurl in self.epg_array:
+                    self.epg_array.append(tvgurl)
+        if self.epg_array and not self.epg_url:
+            self.epg_url = '^^::MULTIPLE::^^' + ':::^^^:::'.join(self.epg_array)
         return [self.files, self.epg_url]
 
     #Read all file lines
@@ -90,6 +98,11 @@ class M3uParser:
                 logo = m.group(1)
             except AttributeError:
                 logo = ""
+            m = re.search("tvg-url=\"(.*?)\"", lineInfo)
+            try:
+                tvg_url = m.group(1)
+            except AttributeError:
+                tvg_url = ""
             m = re.search("group-title=\"(.*?)\"", lineInfo)
             try:
                 group = m.group(1)
@@ -115,74 +128,7 @@ class M3uParser:
                 "tvg-ID": id,
                 "tvg-logo": logo,
                 "tvg-group": group,
+                "tvg-url": tvg_url,
                 "url": lineLink
             }
             self.files.append(test)
-            
-    def exportJson(self):
-        #TODO
-        print("Not implemented")
-    
-    #Remove files with a certain file extension
-    def filterOutFilesEndingWith(self, extension):
-        self.files = list(filter(lambda file: not file["titleFile"].endswith(extension), self.files))
-    
-    #Select only files with a certain file extension
-    def filterInFilesEndingWith(self, extension):
-        #Use the extension as list
-        if not isinstance(extension, list):
-            extension = [extension]
-        if not len(extension):
-            self.logging.info("No filter in based on extensions")
-            return
-        new = []
-        #Iterate over all files and extensions
-        for file in self.files:    
-            for ext in extension:
-                if file["titleFile"].endswith(ext):
-                    #Allowed extension - go to next file
-                    new.append(file)
-                    break
-        self.logging.info("Filter in based on extension: ["+",".join(extension)+"]")
-        self.files = new
-    
-    #Remove files that contains a certain filterWord
-    def filterOutFilesOfGroupsContaining(self, filterWord):
-        self.files = list(filter(lambda file: filterWord not in file["tvg-group"], self.files))
-
-    #Select only files that contais a certain filterWord
-    def filterInFilesOfGroupsContaining(self, filterWord):
-        #Use the filter words as list
-        if not isinstance(filterWord, list):
-            filterWord = [filterWord]
-        if not len(filterWord):
-            self.logging.info("No filter in based on groups")
-            return
-        new = []
-        for file in self.files:
-            for fw in filterWord:    
-                if fw in file["tvg-group"]:
-                    #Allowed extension - go to next file
-                    new.append(file)
-                    break
-        self.logging.info("Filter in based on groups: ["+",".join(filterWord)+"]")
-        self.files = new
-
-    #Getter for the list
-    def getList(self):
-        return self.files
-        
-    #Return the info assciated to a certain file name
-    def getCustomTitle(self, originalName):
-        result = list(filter(lambda file: file["titleFile"] == originalName, self.files))
-        if len(result):
-            return result
-        else:
-            print("No file corresponding to: "+originalName)
-
-    #Return a random element
-    def getFile(self, randomShuffle):
-        if not len(self.files):
-            self.logging.error("No files in the array, cannot extract anything")
-            return None
-        return self.files.pop()

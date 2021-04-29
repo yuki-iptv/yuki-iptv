@@ -42,11 +42,15 @@ def parse_extgrp(t):
                 tvgname = line.rpartition('tvg-name="')[2].partition('"')[0]
             else:
                 tvgname = ""
+            if 'tvg-url=' in line:
+                tvgurl = line.rpartition('tvg-url="')[2].partition('"')[0]
+            else:
+                tvgurl = ""
             if not "EXTGRP" in nextline:
                 url = nextline
             else:
                 group = nextline.partition('#EXTGRP:')[2]
                 url = tlist[x+2]
-            result.append('#EXTINF:-1 tvg-name="{}" tvg-name-astroncia-iptv="{}" group-title="{}" tvg-logo="{}",{}\n{}'.format(tvgname, name, group, logo, name, url))
+            result.append('#EXTINF:-1 tvg-name="{}" tvg-name-astroncia-iptv="{}" group-title="{}" tvg-logo="{}" tvg-url="{}",{}\n{}'.format(tvgname, name, group, logo, tvgurl, name, url))
 
     return '\n'.join(result).split('\n')

@@ -926,7 +926,7 @@ if __name__ == '__main__':
                 home_folder
             )[0]
             if fname:
-                sepg.setText(fname)
+                sepg.setText(fname if not fname.startswith('^^::MULTIPLE::^^') else '')
 
         def save_folder_select():
             folder_name = QtWidgets.QFileDialog.getExistingDirectory(
@@ -1342,11 +1342,11 @@ if __name__ == '__main__':
         sm3u.setText(settings['m3u'])
         sm3u.textEdited.connect(reset_prov)
         sepg = QtWidgets.QLineEdit()
-        sepg.setText(settings['epg'])
+        sepg.setText(settings['epg'] if not settings['epg'].startswith('^^::MULTIPLE::^^') else '')
         sepg.textEdited.connect(reset_prov)
         sepgcombox = QtWidgets.QComboBox()
         sepgcombox.setLineEdit(sepg)
-        sepgcombox.addItems([settings['epg']] + EPG_URLS)
+        sepgcombox.addItems([settings['epg'] if not settings['epg'].startswith('^^::MULTIPLE::^^') else ''] + EPG_URLS)
         sepgcombox.currentIndexChanged.connect(combo_reset)
         sudp = QtWidgets.QLineEdit()
         sudp.setText(settings['udp_proxy'])
@@ -1389,7 +1389,7 @@ if __name__ == '__main__':
             if prov1 != '--{}--'.format(LANG['notselected']):
                 sm3u.setText(iptv_providers[prov1]['m3u'])
                 if 'epg' in iptv_providers[prov1]:
-                    sepg.setText(iptv_providers[prov1]['epg'])
+                    sepg.setText(iptv_providers[prov1]['epg'] if not iptv_providers[prov1]['epg'].startswith('^^::MULTIPLE::^^') else '')
         sprov.currentIndexChanged.connect(prov_select)
         sprov.addItem('--{}--'.format(LANG['notselected']))
         provs = {}
@@ -1665,7 +1665,7 @@ if __name__ == '__main__':
                     prov_epg = prov_data['epg']
                 prov_offset = prov_data['offset']
                 sm3u.setText(prov_m3u)
-                sepg.setText(prov_epg)
+                sepg.setText(prov_epg if not prov_epg.startswith('^^::MULTIPLE::^^') else '')
                 soffset.setValue(prov_offset)
                 sprov.setCurrentIndex(0)
                 providers_save_json()
@@ -2241,7 +2241,8 @@ if __name__ == '__main__':
             #    return_dict_2[chan_name] = cache_file_2_read
             #else:
             try:
-                time.sleep(1)
+                while not win.isVisible():
+                    time.sleep(1)
                 req_data = requests.get(logo_url, headers={'User-Agent': user_agent}, timeout=3, stream=True).content
                 qp_1 = QtGui.QPixmap()
                 qp_1.loadFromData(req_data)
@@ -2269,7 +2270,10 @@ if __name__ == '__main__':
             #    os.mkdir(str(Path(LOCAL_DIR, 'channel_icons_cache')))
             manager_1 = Manager()
             channel_icons_data.return_dict = manager_1.dict()
-            channel_icons_data.load_completed = False
+            #if os.name == 'nt':
+            #    return
+            return
+            channel_icons_data.load_completed = False # pylint: disable=unreachable
             channel_icons_data.load_time = time.time()
             channel_icons_data.count = 0
             for chan_4 in array:

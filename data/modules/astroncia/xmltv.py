@@ -27,6 +27,7 @@ def parse_as_xmltv(epg, settings):
     try:
         tree = ET.ElementTree(ET.fromstring(epg))
     except ET.ParseError:
+        print_with_time("gzip detected, unpacking...")
         tree = ET.ElementTree(ET.fromstring(gzip.decompress(epg)))
     ids = {}
     programmes_epg = {}
@@ -46,12 +47,18 @@ def parse_as_xmltv(epg, settings):
                 timezone_offset = timezone_offset * -1
         except: # pylint: disable=bare-except
             pass
-        start = datetime.datetime.strptime(
-            programme.attrib['start'].split(" ")[0], '%Y%m%d%H%M%S'
-        ).timestamp()- timezone_offset + (3600 * settings["timezone"])
-        stop = datetime.datetime.strptime(
-            programme.attrib['stop'].split(" ")[0], '%Y%m%d%H%M%S'
-        ).timestamp()- timezone_offset + (3600 * settings["timezone"])
+        try:
+            start = datetime.datetime.strptime(
+                programme.attrib['start'].split(" ")[0], '%Y%m%d%H%M%S'
+            ).timestamp() - timezone_offset + (3600 * settings["timezone"])
+        except: # pylint: disable=bare-except
+            start = 0
+        try:
+            stop = datetime.datetime.strptime(
+                programme.attrib['stop'].split(" ")[0], '%Y%m%d%H%M%S'
+            ).timestamp() - timezone_offset + (3600 * settings["timezone"])
+        except: # pylint: disable=bare-except
+            stop = 0
         chans = ids[programme.attrib['channel']]
         for channel_epg_1 in chans:
             day_start = (
