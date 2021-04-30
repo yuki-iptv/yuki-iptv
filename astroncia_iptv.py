@@ -545,7 +545,7 @@ if __name__ == '__main__':
         scheduler_win.setWindowIcon(main_icon)
 
         providers_win = QtWidgets.QMainWindow()
-        providers_win.resize(400, 550)
+        providers_win.resize(400, 590)
         providers_win.setWindowTitle(LANG['providers'])
         providers_win.setWindowIcon(main_icon)
 
@@ -639,6 +639,17 @@ if __name__ == '__main__':
         def_provider = 0
         def_provider_name = list(iptv_providers.keys())[def_provider].replace('[Worldwide] ', '')
         providers_saved = {}
+
+        providers_saved_default = {}
+        providers_saved_default[def_provider_name] = {
+            "m3u": list(iptv_providers.values())[def_provider]['m3u'],
+            "offset": 0
+        }
+        try:
+            providers_saved_default[def_provider_name]["epg"] = list(iptv_providers.values())[def_provider]['epg']
+        except: # pylint: disable=bare-except
+            providers_saved_default[def_provider_name]["epg"] = ""
+
         if not os.path.isfile(str(Path(LOCAL_DIR, 'providers.json'))):
             providers_saved[def_provider_name] = {
                 "m3u": list(iptv_providers.values())[def_provider]['m3u'],
@@ -665,12 +676,15 @@ if __name__ == '__main__':
         providers_edit.resize(130, 30)
         providers_delete = QtWidgets.QPushButton(LANG['provdelete'], providers_win)
         providers_delete.move(140, 455)
+        providers_reset = QtWidgets.QPushButton(LANG['resetdefproviders'], providers_win)
+        providers_reset.move(140, 495)
+        providers_reset.resize(230, 30)
         providers_import = QtWidgets.QPushButton(LANG['importhypnotix'], providers_win)
-        providers_import.move(140, 495)
+        providers_import.move(140, 535)
         providers_import.resize(230, 30)
         if os.name == 'nt':
             providers_import.hide()
-            providers_win.resize(400, 500)
+            providers_win.resize(400, 540)
 
         def providers_json_save(providers_save0=None):
             if not providers_save0:
@@ -1775,12 +1789,22 @@ if __name__ == '__main__':
             else:
                 print("No Hypnotix playlists found!")
 
+        def providers_reset_do():
+            global providers_saved
+            providers_data.providers_used = providers_saved_default
+            providers_saved = providers_saved_default
+            providers_save_json()
+            providers_win.hide()
+            providers_win_edit.hide()
+            save_settings()
+
         providers_list.itemDoubleClicked.connect(providers_selected)
         providers_select.clicked.connect(providers_selected)
         providers_add.clicked.connect(providers_add_do)
         providers_edit.clicked.connect(providers_edit_do)
         providers_delete.clicked.connect(providers_delete_do)
         providers_import.clicked.connect(providers_import_do)
+        providers_reset.clicked.connect(providers_reset_do)
 
         # This is necessary since PyQT stomps over the locale settings needed by libmpv.
         # This needs to happen after importing PyQT before creating the first mpv.MPV instance.
