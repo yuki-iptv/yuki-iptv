@@ -2283,7 +2283,7 @@ if __name__ == '__main__':
             #    return_dict_2[chan_name] = cache_file_2_read
             #else:
             try:
-                req_data = requests.get(logo_url, headers={'User-Agent': uas[settings['useragent']]}, timeout=3, stream=True).content
+                req_data = requests.get(logo_url, headers={'User-Agent': uas[settings['useragent']]}, timeout=(3, 3), stream=True).content
                 qp_1 = QtGui.QPixmap()
                 qp_1.loadFromData(req_data)
                 qp_1 = qp_1.scaled(64, 64, QtCore.Qt.KeepAspectRatio)
