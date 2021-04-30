@@ -85,7 +85,6 @@ DOCK_WIDGET2_HEIGHT = int(WINDOW_SIZE[1] / 6)
 DOCK_WIDGET_WIDTH = int((WINDOW_SIZE[0] / 2) - 200)
 TVGUIDE_WIDTH = int((WINDOW_SIZE[0] / 5))
 BCOLOR = "#A2A3A3"
-MAX_ON_ONE_PAGE = 100
 
 if DOCK_WIDGET2_HEIGHT < 0:
     DOCK_WIDGET2_HEIGHT = 0
@@ -238,6 +237,7 @@ if __name__ == '__main__':
                 "useragent": 2,
                 "mpv_options": '',
                 'donotupdateepg': False,
+                'channelsonpage': 100,
                 'gui': 0
             }
             m3u = ""
@@ -255,6 +255,8 @@ if __name__ == '__main__':
             settings['mpv_options'] = ''
         if 'donotupdateepg' not in settings:
             settings['donotupdateepg'] = False
+        if 'channelsonpage' not in settings:
+            settings['channelsonpage'] = 100
         if 'gui' not in settings:
             settings['gui'] = 0
         if settings['hwaccel']:
@@ -1263,6 +1265,7 @@ if __name__ == '__main__':
                 "useragent": useragent_choose_2.currentIndex(),
                 "mpv_options": mpv_options.text(),
                 'donotupdateepg': donot_flag.isChecked(),
+                'channelsonpage': channels_box.value(),
                 'gui': gui_choose.currentIndex()
             }
             settings_file1 = open(str(Path(LOCAL_DIR, 'settings.json')), 'w', encoding="utf8")
@@ -1534,6 +1537,12 @@ if __name__ == '__main__':
         donot_flag.setChecked(settings['donotupdateepg'])
 
         gui_label = QtWidgets.QLabel("{}:".format(LANG['epg_gui']))
+        channels_label = QtWidgets.QLabel("{}:".format(LANG['channelsonpage']))
+        channels_box = QtWidgets.QSpinBox()
+        channels_box.setSuffix('    ')
+        channels_box.setMinimum(1)
+        channels_box.setMaximum(100)
+        channels_box.setValue(settings["channelsonpage"])
         gui_choose = QtWidgets.QComboBox()
         gui_choose.addItem(LANG['classic'])
         gui_choose.addItem(LANG['simple'])
@@ -1595,6 +1604,9 @@ if __name__ == '__main__':
         tab5.layout.addWidget(QtWidgets.QLabel(), 1, 2)
         tab5.layout.addWidget(QtWidgets.QLabel(), 1, 3)
         tab5.layout.addWidget(QtWidgets.QLabel(), 1, 4)
+        tab5.layout.addWidget(channels_label, 2, 0)
+        tab5.layout.addWidget(channels_box, 2, 1)
+        tab5.layout.addWidget(QtWidgets.QLabel(), 3, 0)
         tab5.setLayout(tab5.layout)
 
         grid2 = QtWidgets.QVBoxLayout()
@@ -2290,7 +2302,7 @@ if __name__ == '__main__':
                 first_gen_chans = False
                 update_channel_icons()
             try:
-                idx = (page_box.value() - 1) * MAX_ON_ONE_PAGE
+                idx = (page_box.value() - 1) * settings["channelsonpage"]
             except: # pylint: disable=bare-except
                 idx = 0
             try:
@@ -2312,15 +2324,15 @@ if __name__ == '__main__':
                 array_filtered[j1] = array[j1]
 
             ch_array = {x13: array_filtered[x13] for x13 in array_filtered if filter_txt.lower().strip() in x13.lower().strip()}
-            ch_array = list(ch_array.values())[idx:idx+MAX_ON_ONE_PAGE]
+            ch_array = list(ch_array.values())[idx:idx+settings["channelsonpage"]]
             ch_array = dict([(x14['title'], x14) for x14 in ch_array]) # pylint: disable=consider-using-dict-comprehension
             try:
                 if filter_txt:
-                    page_box.setMaximum(round(len(ch_array) / MAX_ON_ONE_PAGE) + 1)
-                    of_lbl.setText('{} {}'.format(LANG['of'], round(len(ch_array) / MAX_ON_ONE_PAGE) + 1))
+                    page_box.setMaximum(round(len(ch_array) / settings["channelsonpage"]) + 1)
+                    of_lbl.setText('{} {}'.format(LANG['of'], round(len(ch_array) / settings["channelsonpage"]) + 1))
                 else:
-                    page_box.setMaximum(round(len(array_filtered) / MAX_ON_ONE_PAGE) + 1)
-                    of_lbl.setText('{} {}'.format(LANG['of'], round(len(array_filtered) / MAX_ON_ONE_PAGE) + 1))
+                    page_box.setMaximum(round(len(array_filtered) / settings["channelsonpage"]) + 1)
+                    of_lbl.setText('{} {}'.format(LANG['of'], round(len(array_filtered) / settings["channelsonpage"]) + 1))
             except: # pylint: disable=bare-except
                 pass
             res = {}
@@ -2613,8 +2625,8 @@ if __name__ == '__main__':
         page_box = QtWidgets.QSpinBox()
         page_box.setSuffix('    ')
         page_box.setMinimum(1)
-        page_box.setMaximum(round(len(array) / MAX_ON_ONE_PAGE) + 1)
-        of_lbl.setText('{} {}'.format(LANG['of'], round(len(array) / MAX_ON_ONE_PAGE) + 1))
+        page_box.setMaximum(round(len(array) / settings["channelsonpage"]) + 1)
+        of_lbl.setText('{} {}'.format(LANG['of'], round(len(array) / settings["channelsonpage"]) + 1))
         def page_change():
             win.listWidget.verticalScrollBar().setValue(0)
             redraw_chans()
