@@ -40,14 +40,14 @@ import codecs
 import ctypes
 import webbrowser
 import threading
-from multiprocessing import Process, Manager, freeze_support
+from multiprocessing import Process, Manager, freeze_support, active_children
 freeze_support()
 import requests
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 from PyQt5 import QtGui
 from data.modules.astroncia.lang import lang
-from data.modules.astroncia.ua import user_agent, uas
+from data.modules.astroncia.ua import user_agent, uas, ua_names
 from data.modules.astroncia.epg import worker
 from data.modules.astroncia.record import record, record_return, stop_record
 from data.modules.astroncia.format import format_seconds_to_hhmmss
@@ -146,8 +146,6 @@ def async_function(func):
         thread.start()
         return thread
     return wrapper
-
-# @async_function
 
 if os.name == 'nt':
     a0 = sys.executable
@@ -957,10 +955,8 @@ if __name__ == '__main__':
         hidden_chk = QtWidgets.QCheckBox()
         useragent_choose = QtWidgets.QComboBox()
         useragent_choose.addItem(LANG['empty'])
-        useragent_choose.addItem('Windows Browser')
-        useragent_choose.addItem('Android')
-        useragent_choose.addItem('iPhone')
-        useragent_choose.addItem('Linux Browser')
+        for ua_name in ua_names[1::]:
+            useragent_choose.addItem(ua_name)
 
         contrast_lbl = QtWidgets.QLabel("{}:".format(LANG['contrast']))
         brightness_lbl = QtWidgets.QLabel("{}:".format(LANG['brightness']))
@@ -1282,8 +1278,18 @@ if __name__ == '__main__':
                     epg_thread_2.kill()
                 except: # pylint: disable=bare-except
                     epg_thread_2.terminate()
+            for process_3 in active_children():
+                try:
+                    process_3.kill()
+                except: # pylint: disable=bare-except
+                    process_3.terminate()
             if manager:
                 manager.shutdown()
+            try:
+                if channel_icons_data.manager_1:
+                    channel_icons_data.manager_1.shutdown()
+            except: # pylint: disable=bare-except
+                pass
             win.close()
             settings_win.close()
             help_win.close()
@@ -1523,10 +1529,8 @@ if __name__ == '__main__':
         useragent_lbl_2 = QtWidgets.QLabel("{}:".format(LANG['useragent']))
         useragent_choose_2 = QtWidgets.QComboBox()
         useragent_choose_2.addItem(LANG['empty'])
-        useragent_choose_2.addItem('Windows Browser')
-        useragent_choose_2.addItem('Android')
-        useragent_choose_2.addItem('iPhone')
-        useragent_choose_2.addItem('Linux Browser')
+        for ua_name_2 in ua_names[1::]:
+            useragent_choose_2.addItem(ua_name_2)
         useragent_choose_2.setCurrentIndex(settings['useragent'])
 
         mpv_label = QtWidgets.QLabel("{}:".format(LANG['mpv_options']))
@@ -2228,6 +2232,8 @@ if __name__ == '__main__':
         class channel_icons_data: # pylint: disable=too-few-public-methods
             pass
 
+        channel_icons_data.manager_1 = None
+
         class Pickable_QIcon(QtGui.QIcon):
             def __reduce__(self):
                 return type(self), (), self.__getstate__()
@@ -2253,11 +2259,10 @@ if __name__ == '__main__':
             #    return_dict_2[chan_name] = cache_file_2_read
             #else:
             try:
-                while not win.isVisible():
-                    time.sleep(1)
-                req_data = requests.get(logo_url, headers={'User-Agent': user_agent}, timeout=3, stream=True).content
+                req_data = requests.get(logo_url, headers={'User-Agent': uas[settings['useragent']]}, timeout=3, stream=True).content
                 qp_1 = QtGui.QPixmap()
                 qp_1.loadFromData(req_data)
+                qp_1 = qp_1.scaled(64, 64, QtCore.Qt.KeepAspectRatio)
                 fetched_icon = Pickable_QIcon(qp_1)
                 return_dict_2[chan_name] = [fetched_icon]
                 #cache_file_2 = open(cache_file, 'wb')
@@ -2266,41 +2271,63 @@ if __name__ == '__main__':
             except: # pylint: disable=bare-except
                 return_dict_2[chan_name] = None
 
+        channel_icons_data.load_completed = False
+        channel_icons_data.do_next_update = False
+
         def channel_icons_thread():
+            if channel_icons_data.do_next_update:
+                channel_icons_data.do_next_update = False
+                btn_update.click()
+                print("Channel icons updated")
             try:
-                if channel_icons_data.count != -1:
-                    if channel_icons_data.count == len(channel_icons_data.return_dict) and not channel_icons_data.load_completed:
+                if len(channel_icons_data.return_dict) != channel_icons_data.total:
+                    print("Channel icons loaded: {}/{}".format(len(channel_icons_data.return_dict), channel_icons_data.total))
+                    btn_update.click()
+                else:
+                    if not channel_icons_data.load_completed:
                         channel_icons_data.load_completed = True
-                        print("Channel icons load complete! Took {} seconds".format(time.time() - channel_icons_data.load_time))
-                        btn_update.click()
+                        channel_icons_data.do_next_update = True
+                        print("Channel icons loaded, took {} seconds".format(time.time() - channel_icons_data.load_time))
             except: # pylint: disable=bare-except
                 pass
 
+        @async_function
         def update_channel_icons():
+            while not win.isVisible():
+                time.sleep(1)
             print("Loading channel icons...")
             #if not os.path.isdir(str(Path(LOCAL_DIR, 'channel_icons_cache'))):
             #    os.mkdir(str(Path(LOCAL_DIR, 'channel_icons_cache')))
-            manager_1 = Manager()
-            channel_icons_data.return_dict = manager_1.dict()
-            #if os.name == 'nt':
-            #    return
-            return
-            channel_icons_data.load_completed = False # pylint: disable=unreachable
             channel_icons_data.load_time = time.time()
-            channel_icons_data.count = 0
+            channel_icons_data.total = 0
+
             for chan_4 in array:
                 chan_4_logo = array[chan_4]['tvg-logo']
                 if chan_4_logo:
-                    channel_icons_data.count += 1
+                    channel_icons_data.total += 1
+
+            for chan_4 in array:
+                chan_4_logo = array[chan_4]['tvg-logo']
+                if chan_4_logo:
+                    #print("Fetching channel icon from URL '{}' for channel '{}'".format(chan_4_logo, chan_4))
                     p_1 = Process(target=fetch_remote_channel_icon, args=(chan_4, chan_4_logo, channel_icons_data.return_dict,))
                     p_1.start()
+                    while True:
+                        if not p_1.is_alive():
+                            break
+                        time.sleep(0.1)
 
         first_gen_chans = True
         def gen_chans(): # pylint: disable=too-many-locals, too-many-branches
             global ICONS_CACHE, playing_chan, current_group, array, page_box, channelfilter, first_gen_chans
             if first_gen_chans:
                 first_gen_chans = False
-                update_channel_icons()
+                channel_icons_data.manager_1 = Manager()
+                channel_icons_data.return_dict = channel_icons_data.manager_1.dict()
+                if not os.name == 'nt':
+                    update_channel_icons()
+                else:
+                    channel_icons_data.load_completed = True
             try:
                 idx = (page_box.value() - 1) * settings["channelsonpage"]
             except: # pylint: disable=bare-except
@@ -3306,8 +3333,18 @@ if __name__ == '__main__':
                     epg_thread_2.kill()
                 except: # pylint: disable=bare-except
                     epg_thread_2.terminate()
+            for process_3 in active_children():
+                try:
+                    process_3.kill()
+                except: # pylint: disable=bare-except
+                    process_3.terminate()
             if manager:
                 manager.shutdown()
+            try:
+                if channel_icons_data.manager_1:
+                    channel_icons_data.manager_1.shutdown()
+            except: # pylint: disable=bare-except
+                pass
             stop_record()
 
         first_boot = False
@@ -3363,7 +3400,8 @@ if __name__ == '__main__':
             ic += 0.1 # pylint: disable=undefined-variable
             if ic > 14.9: # redraw every 15 seconds
                 ic = 0
-                btn_update.click()
+                if channel_icons_data.load_completed:
+                    btn_update.click()
 
         def thread_record():
             global time_stop, gl_is_static, static_text, recording_time, ic1
@@ -3557,7 +3595,7 @@ if __name__ == '__main__':
                 thread_update_time: 1000,
                 record_thread: 1000,
                 record_thread_2: 1000,
-                channel_icons_thread: 500
+                channel_icons_thread: 2000
             }
             for timer in timers:
                 timers_array[timer] = QtCore.QTimer()
