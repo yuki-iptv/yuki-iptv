@@ -25,7 +25,7 @@ Icons: CC BY 4.0
 [deb package](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv.deb)  
 
 For Ubuntu **recommended** install from [Launchpad PPA - ppa:astroncia/iptv](https://launchpad.net/~astroncia/+archive/ubuntu/iptv):  
-```sudo add-apt-repository ppa:astroncia/iptv```  
+```sudo add-apt-repository ppa:astroncia/iptv -y```  
 ```sudo apt-get update```  
 ```sudo apt-get install astroncia-iptv```  
 
