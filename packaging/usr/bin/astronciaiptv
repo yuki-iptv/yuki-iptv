@@ -1,4 +1,9 @@
 #!/bin/sh
+#
+# Folder structure (for maintainers):
+# astroncia_iptv.py => usr/share/AstronciaIPTV/astroncia_iptv.py
+# data => usr/share/AstronciaIPTV/data
+#
 cd /usr/share/AstronciaIPTV
 /usr/share/AstronciaIPTV/astroncia_iptv.py "$@"
 exit_code="$?"
