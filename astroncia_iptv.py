@@ -231,7 +231,7 @@ if __name__ == '__main__':
                 "timezone": DEF_TIMEZONE,
                 "hwaccel": True,
                 "sort": 0,
-                "cache_secs": 1,
+                "cache_secs": 0,
                 "useragent": 2,
                 "mpv_options": '',
                 'donotupdateepg': False,
@@ -244,7 +244,7 @@ if __name__ == '__main__':
         if 'sort' not in settings:
             settings['sort'] = 0
         if 'cache_secs' not in settings:
-            settings['cache_secs'] = 1
+            settings['cache_secs'] = 0
         if 'timezone' not in settings:
             settings['timezone'] = DEF_TIMEZONE
         if 'useragent' not in settings:
@@ -1342,7 +1342,7 @@ if __name__ == '__main__':
         offset_label = QtWidgets.QLabel('{}:'.format(LANG['tvguideoffset']))
         set_label = QtWidgets.QLabel(LANG['jtvoffsetrecommendation'])
         set_label.setStyleSheet('color: #666600')
-        fastview_label = QtWidgets.QLabel(LANG['stableview'])
+        fastview_label = QtWidgets.QLabel(LANG['fasterview'])
         fastview_label.setStyleSheet('color: #1D877C')
         hours_label = QtWidgets.QLabel(LANG['hours'])
 
