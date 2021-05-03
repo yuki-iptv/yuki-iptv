@@ -518,9 +518,14 @@ if __name__ == '__main__':
         settings_win.setWindowIcon(main_icon)
 
         help_win = QtWidgets.QMainWindow()
-        help_win.resize(400, 430)
+        help_win.resize(400, 460)
         help_win.setWindowTitle(LANG['help'])
         help_win.setWindowIcon(main_icon)
+
+        license_win = QtWidgets.QMainWindow()
+        license_win.resize(500, 500)
+        license_win.setWindowTitle(LANG['license'])
+        license_win.setWindowIcon(main_icon)
 
         sort_win = QtWidgets.QMainWindow()
         sort_win.resize(400, 500)
@@ -702,6 +707,7 @@ if __name__ == '__main__':
         settings_win_l.setY(origY)
         settings_win.move(settings_win_l)
         help_win.move(qr.topLeft())
+        license_win.move(qr.topLeft())
         sort_win.move(qr.topLeft())
         chan_win.move(qr.topLeft())
         scheduler_win.move(qr.topLeft())
@@ -1307,6 +1313,7 @@ if __name__ == '__main__':
             win.close()
             settings_win.close()
             help_win.close()
+            license_win.close()
             time.sleep(0.1)
             if not os.name == 'nt':
                 if args1.python:
@@ -1646,12 +1653,38 @@ if __name__ == '__main__':
         wid2.setLayout(layout2)
         settings_win.setCentralWidget(wid2)
 
+        def show_license():
+            if not license_win.isVisible():
+                license_win.show()
+            else:
+                license_win.hide()
+
+        license_str = "GPLv3"
+        if os.path.isfile(str(Path('data', 'modules', 'astroncia', 'license.txt'))):
+            license_file = open(str(Path('data', 'modules', 'astroncia', 'license.txt')), 'r', encoding="utf8")
+            license_str = license_file.read()
+            license_file.close()
+
+        licensebox = QtWidgets.QPlainTextEdit(license_win)
+        licensebox.resize(500, 470)
+        licensebox.setReadOnly(True)
+        licensebox.setPlainText(license_str)
+
+        licensebox_close_btn = QtWidgets.QPushButton(license_win)
+        licensebox_close_btn.move(180, 470)
+        licensebox_close_btn.setText(LANG['close'])
+        licensebox_close_btn.clicked.connect(license_win.close)
+
         textbox = QtWidgets.QPlainTextEdit(help_win)
         textbox.resize(390, 400)
         textbox.setReadOnly(True)
         textbox.setPlainText(LANG['helptext'].format(APP_VERSION))
+        license_btn = QtWidgets.QPushButton(help_win)
+        license_btn.move(140, 400)
+        license_btn.setText(LANG['license'])
+        license_btn.clicked.connect(show_license)
         close_btn = QtWidgets.QPushButton(help_win)
-        close_btn.move(140, 400)
+        close_btn.move(140, 430)
         close_btn.setText(LANG['close'])
         close_btn.clicked.connect(help_win.close)
 
