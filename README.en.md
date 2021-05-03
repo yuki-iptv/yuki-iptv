@@ -85,7 +85,11 @@ Install Python 3 from [official website](https://www.python.org/downloads/window
 
 **Installing Python modules:**  
 
+on GNU/Linux:  
 ```python3 -m pip install -r requirements.txt```  
+
+on Windows:  
+```python -m pip install -r requirements.txt```  
 
 **Installing binary dependenices (only for Windows):**
 

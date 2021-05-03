@@ -85,7 +85,11 @@
 
 **Устанавливаем Python модули:**  
 
+на GNU/Linux:  
 ```python3 -m pip install -r requirements.txt```  
+
+на Windows:  
+```python -m pip install -r requirements.txt```  
 
 **Устанавливаем бинарные зависимости (только для Windows):**
 
