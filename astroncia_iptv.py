@@ -1315,7 +1315,7 @@ if __name__ == '__main__':
             help_win.close()
             license_win.close()
             time.sleep(0.1)
-            if not os.name == 'nt':
+            if not (os.name == 'nt' or os.path.isfile('appimage')):
                 if args1.python:
                     os.execv(args1.python, ['python'] + sys.argv)
                 else:
@@ -1326,13 +1326,13 @@ if __name__ == '__main__':
                     else:
                         os.execv(sys_executable, ['python'] + sys.argv + ['--python', sys_executable])
             stop_record()
-            if not os.name == 'nt':
-                sys.exit(0)
-            else:
+            if os.name == 'nt' or os.path.isfile('appimage'):
                 try:
                     os._exit(23) # pylint: disable=protected-access
                 except: # pylint: disable=bare-except
                     sys.exit(23)
+            else:
+                sys.exit(0)
 
         wid2 = QtWidgets.QWidget()
 
