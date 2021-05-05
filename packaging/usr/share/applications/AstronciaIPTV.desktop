@@ -5,4 +5,5 @@ Comment=IPTV player
 Comment[ru]=IPTV плеер
 Exec=astronciaiptv
 Icon=astroncia-iptv
-Categories=AudioVideo;Player;Recorder;
+Categories=AudioVideo;Video;Player;Recorder;TV;
+Keywords=Television;Stream;
