@@ -5,6 +5,7 @@ from PyQt5.QtCore import Qt, QDir, QAbstractTableModel, QModelIndex, QVariant, Q
 from PyQt5.QtWidgets import (QMainWindow, QTableView, QApplication, QLineEdit, QComboBox,
                              QFileDialog, QAbstractItemView, QMessageBox, QToolButton)
 from PyQt5.QtGui import QStandardItem, QIcon, QKeySequence
+from data.modules.astroncia.extgrp import parse_extgrp
 
 home_folder = ""
 try:
@@ -97,7 +98,8 @@ class Viewer(QMainWindow):
       self.lb.setFocus()
 
     def convert_to_csv(self):
-        mylist = [line.strip() for line in open(self.m3u_file, 'r').read().splitlines() if not (line.strip().startswith('#EXTGRP:') or line.strip().startswith('#EXTVLCOPT:'))]
+        mylist = [line.strip() for line in open(self.m3u_file, 'r').read().splitlines() if not line.strip().startswith('#EXTVLCOPT:')]
+        mylist = parse_extgrp(mylist)
 
         headers = ['tvg-name', 'group-title', 'tvg-logo', 'tvg-id', 'url']
         group = ""
@@ -112,7 +114,9 @@ class Viewer(QMainWindow):
             line = mylist[x]
             nextline = mylist[x+1]
             if line.startswith("#EXTINF") and not "**********" in line:
-                if 'tvg-name="' in line:
+                if 'tvg-name-astroncia-iptv="' in line:
+                    ch = line.partition('tvg-name-astroncia-iptv="')[2].partition('"')[0]
+                elif 'tvg-name="' in line:
                     ch = line.partition('tvg-name="')[2].partition('"')[0]
                 elif 'tvg-name=' in line:
                     ch = line.partition('tvg-name=')[2].partition(' tvg')[0]
