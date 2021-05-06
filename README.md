@@ -18,6 +18,10 @@
 Код: GPLv3  
 Иконки: CC BY 4.0  
 
+## Локализация
+
+Мы используем Crowdin для перевода Astroncia IPTV. Присоединяйтесь к нашему проекту здесь: https://crwd.in/astroncia-iptv  
+
 ## Скачать
 
 **[Версия для Windows](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/Astroncia_IPTV_setup.exe)**  
