@@ -153,11 +153,11 @@ if os.name == 'nt':
     os.environ["QT_QPA_PLATFORM_PLUGIN_PATH"] = str(Path(os.path.dirname(a0), 'Lib', 'site-packages', 'PyQt5', 'Qt5', 'plugins'))
 
 if __name__ == '__main__':
-    app = QtWidgets.QApplication(sys.argv)
     try:
         os.environ['GDK_BACKEND'] = 'x11'
     except: # pylint: disable=bare-except
         pass
+    app = QtWidgets.QApplication(sys.argv)
     try:
         print_with_time("Astroncia IPTV {}...".format(LANG['starting']))
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
