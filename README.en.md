@@ -18,10 +18,6 @@ Repository mirrors:
 Code: GPLv3  
 Icons: CC BY 4.0  
 
-## Translations
-
-We use Crowdin to translate Astroncia IPTV. Join our project here: https://crwd.in/astroncia-iptv  
-
 ## Download
 
 **[Version for Windows](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/Astroncia_IPTV_setup.exe)**  
