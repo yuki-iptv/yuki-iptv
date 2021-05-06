@@ -46,6 +46,12 @@ def parse_extgrp(t):
                 tvgurl = line.rpartition('tvg-url="')[2].partition('"')[0]
             else:
                 tvgurl = ""
+            if 'url-tvg=' in line:
+                urltvg = line.rpartition('url-tvg="')[2].partition('"')[0]
+            else:
+                urltvg = ""
+            if not tvgurl and urltvg:
+                tvgurl = urltvg
             if not "EXTGRP" in nextline:
                 url = nextline
             else:
