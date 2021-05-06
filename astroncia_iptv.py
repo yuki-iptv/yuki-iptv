@@ -229,7 +229,7 @@ if __name__ == '__main__':
                 "nocache": True,
                 "lang": LANG_DEFAULT,
                 "timezone": DEF_TIMEZONE,
-                "hwaccel": True,
+                "hwaccel": False,
                 "sort": 0,
                 "cache_secs": 0,
                 "useragent": 2,
@@ -240,7 +240,7 @@ if __name__ == '__main__':
             }
             m3u = ""
         if 'hwaccel' not in settings:
-            settings['hwaccel'] = True
+            settings['hwaccel'] = False
         if 'sort' not in settings:
             settings['sort'] = 0
         if 'cache_secs' not in settings:
