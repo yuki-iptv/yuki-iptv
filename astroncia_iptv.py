@@ -133,7 +133,7 @@ LANG_NAME = lang[settings_lang0]['strings']['name'] if settings_lang0 in lang el
 print_with_time("Settings locale: {}\n".format(LANG_NAME))
 
 def show_exception(e):
-    message="{}\n\n{}".format(LANG['error2'], str(e))
+    message = "{}\n\n{}".format(LANG['error2'], str(e))
     msg = QtWidgets.QMessageBox(2, LANG['error'], message, QtWidgets.QMessageBox.Ok)
     msg.exec()
 
