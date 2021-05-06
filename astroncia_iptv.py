@@ -132,11 +132,10 @@ LANG = lang[settings_lang0]['strings'] if settings_lang0 in lang else lang[LANG_
 LANG_NAME = lang[settings_lang0]['strings']['name'] if settings_lang0 in lang else lang[LANG_DEFAULT]['strings']['name']
 print_with_time("Settings locale: {}\n".format(LANG_NAME))
 
-def eprint(*args, **kwargs):
-    print(*args, file=sys.stderr, **kwargs)
-
 def show_exception(e):
-    eprint("\n{}\n\n{}\n".format(LANG['error2'], str(e)))
+    message="{}\n\n{}".format(LANG['error2'], str(e))
+    msg = QtWidgets.QMessageBox(2, LANG['error'], message, QtWidgets.QMessageBox.Ok)
+    msg.exec()
 
 # Used as a decorator to run things in the background
 def async_function(func):
@@ -154,6 +153,7 @@ if os.name == 'nt':
     os.environ["QT_QPA_PLATFORM_PLUGIN_PATH"] = str(Path(os.path.dirname(a0), 'Lib', 'site-packages', 'PyQt5', 'Qt5', 'plugins'))
 
 if __name__ == '__main__':
+    app = QtWidgets.QApplication(sys.argv)
     try:
         os.environ['GDK_BACKEND'] = 'x11'
     except: # pylint: disable=bare-except
@@ -334,7 +334,6 @@ if __name__ == '__main__':
         if not is_program_actual(tvguide_sets):
             use_local_tvguide = False
 
-        app = QtWidgets.QApplication(sys.argv)
         main_icon = QtGui.QIcon(str(Path(os.path.dirname(__file__), 'data', 'icons', 'tv.png')))
         channels = {}
         programmes = {}
