@@ -2381,10 +2381,10 @@ if __name__ == '__main__':
                 first_gen_chans = False
                 channel_icons_data.manager_1 = Manager()
                 channel_icons_data.return_dict = channel_icons_data.manager_1.dict()
-                if not os.name == 'nt':
-                    update_channel_icons()
-                else:
+                if os.name == 'nt' or os.path.isfile('appimage'):
                     channel_icons_data.load_completed = True
+                else:
+                    update_channel_icons()
             try:
                 idx = (page_box.value() - 1) * settings["channelsonpage"]
             except: # pylint: disable=bare-except
