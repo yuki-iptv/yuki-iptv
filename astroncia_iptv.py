@@ -1852,11 +1852,25 @@ if __name__ == '__main__':
                 self.windowHeight = self.height()
                 self.main_widget = None
                 self.listWidget = None
+                self.latestWidth = 0
+                self.latestHeight = 0
+            def updateWindowSize(self):
+                if self.width() != self.latestWidth or self.height() != self.latestHeight:
+                    self.latestWidth = self.width()
+                    self.latestHeight = self.height()
+                    window_size = {'w': self.width(), 'h': self.height()}
+                    try:
+                        ws_file = open(str(Path(LOCAL_DIR, 'windowsize.json')), 'w', encoding="utf8")
+                        ws_file.write(json.dumps(window_size))
+                        ws_file.close()
+                    except: # pylint: disable=bare-except
+                        pass
             def update(self):
                 global l1, tvguide_lbl, fullscreen
 
                 self.windowWidth = self.width()
                 self.windowHeight = self.height()
+                self.updateWindowSize()
                 tvguide_lbl.move(2, 35)
                 if not fullscreen:
                     lbl2.move(0, 5)
@@ -1893,7 +1907,13 @@ if __name__ == '__main__':
         win = MainWindow()
         win.setWindowTitle(MAIN_WINDOW_TITLE)
         win.setWindowIcon(main_icon)
-        win.resize(WINDOW_SIZE[0], WINDOW_SIZE[1])
+        if os.path.isfile(str(Path(LOCAL_DIR, 'windowsize.json'))):
+            ws_file_1 = open(str(Path(LOCAL_DIR, 'windowsize.json')), 'r', encoding="utf8")
+            ws_file_1_out = json.loads(ws_file_1.read())
+            ws_file_1.close()
+            win.resize(ws_file_1_out['w'], ws_file_1_out['h'])
+        else:
+            win.resize(WINDOW_SIZE[0], WINDOW_SIZE[1])
 
         qr = win.frameGeometry()
         qr.moveCenter(QtWidgets.QDesktopWidget().availableGeometry().center())
