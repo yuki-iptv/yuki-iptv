@@ -2726,9 +2726,29 @@ if __name__ == '__main__':
         page_lbl = QtWidgets.QLabel('{}:'.format(LANG['page']))
         of_lbl = QtWidgets.QLabel('{}'.format(LANG['of']))
         page_box = QtWidgets.QSpinBox()
-        page_box.setSuffix('    ')
+        page_box.setSuffix('        ')
         page_box.setMinimum(1)
         page_box.setMaximum(round(len(array) / settings["channelsonpage"]) + 1)
+        page_box.setStyleSheet('''
+            QSpinBox::down-button  {
+              subcontrol-origin: margin;
+              subcontrol-position: center left;
+              left: 1px;
+              image: url(''' + str(Path('data', 'icons', 'leftarrow.png')) + ''');
+              height: 24px;
+              width: 24px;
+            }
+
+            QSpinBox::up-button  {
+              subcontrol-origin: margin;
+              subcontrol-position: center right;
+              right: 1px;
+              image: url(''' + str(Path('data', 'icons', 'rightarrow.png')) + ''');
+              height: 24px;
+              width: 24px;
+            }
+        ''')
+        page_box.setAlignment(QtCore.Qt.AlignCenter)
         of_lbl.setText('{} {}'.format(LANG['of'], round(len(array) / settings["channelsonpage"]) + 1))
         def page_change():
             win.listWidget.verticalScrollBar().setValue(0)
