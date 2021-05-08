@@ -1314,7 +1314,7 @@ if __name__ == '__main__':
             help_win.close()
             license_win.close()
             time.sleep(0.1)
-            if not (os.name == 'nt' or os.path.isfile('appimage')):
+            if not os.name == 'nt':
                 if args1.python:
                     os.execv(args1.python, ['python'] + sys.argv)
                 else:
@@ -1325,7 +1325,7 @@ if __name__ == '__main__':
                     else:
                         os.execv(sys_executable, ['python'] + sys.argv + ['--python', sys_executable])
             stop_record()
-            if os.name == 'nt' or os.path.isfile('appimage'):
+            if os.name == 'nt':
                 try:
                     os._exit(23) # pylint: disable=protected-access
                 except: # pylint: disable=bare-except
@@ -2400,7 +2400,7 @@ if __name__ == '__main__':
                 first_gen_chans = False
                 channel_icons_data.manager_1 = Manager()
                 channel_icons_data.return_dict = channel_icons_data.manager_1.dict()
-                if os.name == 'nt' or os.path.isfile('appimage'):
+                if os.name == 'nt':
                     channel_icons_data.load_completed = True
                 else:
                     update_channel_icons()
