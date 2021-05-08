@@ -1,7 +1,7 @@
 # Maintainer: Astroncia
 
 pkgname=astronciaiptv
-pkgver=0.0.28
+pkgver=0.0.29
 pkgrel=1
 pkgdesc="IPTV player"
 arch=('any')
