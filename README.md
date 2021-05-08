@@ -21,7 +21,6 @@
 ## Скачать
 
 **[Версия для Windows](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/Astroncia_IPTV_setup.exe)**  
-[AppImage](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv-appimage-x86_64.AppImage)  
 [deb-пакет](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv.deb)  
 
 Для Ubuntu **рекомендуется** установка из [Launchpad PPA - ppa:astroncia/iptv](https://launchpad.net/~astroncia/+archive/ubuntu/iptv):  
