@@ -5,6 +5,7 @@
 # data => usr/share/AstronciaIPTV/data
 #
 cd /usr/share/AstronciaIPTV
+export LD_LIBRARY_PATH="$(./data/modules/astroncia/pfs.py)"
 ./astroncia_iptv.py "$@"
 exit_code="$?"
 reset || true
