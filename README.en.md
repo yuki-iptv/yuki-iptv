@@ -21,6 +21,7 @@ Icons: CC BY 4.0
 ## Download
 
 **[Version for Windows](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/Astroncia_IPTV_setup.exe)**  
+[PKGBUILD](https://gitlab.com/astroncia/iptv/-/raw/master/PKGBUILD)  
 [deb package](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv.deb)  
 
 For Ubuntu **recommended** install from [Launchpad PPA - ppa:astroncia/iptv](https://launchpad.net/~astroncia/+archive/ubuntu/iptv):  
