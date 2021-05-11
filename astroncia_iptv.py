@@ -236,6 +236,7 @@ if __name__ == '__main__':
                 "mpv_options": '',
                 'donotupdateepg': False,
                 'channelsonpage': 100,
+                'openprevchan': False,
                 'gui': 0
             }
             m3u = ""
@@ -255,6 +256,8 @@ if __name__ == '__main__':
             settings['donotupdateepg'] = False
         if 'channelsonpage' not in settings:
             settings['channelsonpage'] = 100
+        if 'openprevchan' not in settings:
+            settings['openprevchan'] = False
         if 'gui' not in settings:
             settings['gui'] = 0
         if settings['hwaccel']:
@@ -1281,6 +1284,7 @@ if __name__ == '__main__':
                 "mpv_options": mpv_options.text(),
                 'donotupdateepg': donot_flag.isChecked(),
                 'channelsonpage': channels_box.value(),
+                'openprevchan': openprevchan_flag.isChecked(),
                 'gui': gui_choose.currentIndex()
             }
             settings_file1 = open(str(Path(LOCAL_DIR, 'settings.json')), 'w', encoding="utf8")
@@ -1561,6 +1565,7 @@ if __name__ == '__main__':
         donot_flag.setChecked(settings['donotupdateepg'])
 
         gui_label = QtWidgets.QLabel("{}:".format(LANG['epg_gui']))
+        openprevchan_label = QtWidgets.QLabel("{}:".format(LANG['openprevchan']))
         channels_label = QtWidgets.QLabel("{}:".format(LANG['channelsonpage']))
         channels_box = QtWidgets.QSpinBox()
         channels_box.setSuffix('    ')
@@ -1572,6 +1577,9 @@ if __name__ == '__main__':
         gui_choose.addItem(LANG['simple'])
         gui_choose.addItem(LANG['simple_noicons'])
         gui_choose.setCurrentIndex(settings['gui'])
+
+        openprevchan_flag = QtWidgets.QCheckBox()
+        openprevchan_flag.setChecked(settings['openprevchan'])
 
         tabs = QtWidgets.QTabWidget()
 
@@ -1631,6 +1639,9 @@ if __name__ == '__main__':
         tab5.layout.addWidget(channels_label, 2, 0)
         tab5.layout.addWidget(channels_box, 2, 1)
         tab5.layout.addWidget(QtWidgets.QLabel(), 3, 0)
+        tab5.layout.addWidget(openprevchan_label, 4, 0)
+        tab5.layout.addWidget(openprevchan_flag, 4, 1)
+        tab5.layout.addWidget(QtWidgets.QLabel(), 5, 0)
         tab5.setLayout(tab5.layout)
 
         grid2 = QtWidgets.QVBoxLayout()
@@ -1985,7 +1996,10 @@ if __name__ == '__main__':
 
         def itemClicked_event(item): # pylint: disable=too-many-branches
             global playing, playing_chan, item_selected, playing_url
-            j = item.data(QtCore.Qt.UserRole)
+            try:
+                j = item.data(QtCore.Qt.UserRole)
+            except: # pylint: disable=bare-except
+                j = item
             playing_chan = j
             item_selected = j
             play_url = array[j]['url']
@@ -2893,6 +2907,19 @@ if __name__ == '__main__':
         def my_log(loglevel, component, message):
             print_with_time('[{}] {}: {}'.format(loglevel, component, message))
 
+        def playLastChannel():
+            global playing_url, playing_chan
+            if os.path.isfile(str(Path(LOCAL_DIR, 'lastchannels.json'))) and settings['openprevchan']:
+                try:
+                    lastfile_1 = open(str(Path(LOCAL_DIR, 'lastchannels.json')), 'r', encoding="utf8")
+                    lastfile_1_dat = json.loads(lastfile_1.read())
+                    lastfile_1.close()
+                    player.user_agent = lastfile_1_dat[2]
+                    itemClicked_event(lastfile_1_dat[0])
+                except: # pylint: disable=bare-except
+                    if os.path.isfile(str(Path(LOCAL_DIR, 'lastchannels.json'))):
+                        os.remove(str(Path(LOCAL_DIR, 'lastchannels.json')))
+
         if settings['hwaccel']:
             VIDEO_OUTPUT = 'gpu,vdpau,opengl,direct3d,xv,x11'
             HWACCEL = 'auto'
@@ -3414,6 +3441,15 @@ if __name__ == '__main__':
         l1.setStatic2 = set_text_static
         l1.hide()
 
+        def saveLastChannel():
+            if playing_url:
+                lastfile = open(str(Path(LOCAL_DIR, 'lastchannels.json')), 'w', encoding="utf8")
+                lastfile.write(json.dumps([playing_chan, playing_url, player.user_agent]))
+                lastfile.close()
+            else:
+                if os.path.isfile(str(Path(LOCAL_DIR, 'lastchannels.json'))):
+                    os.remove(str(Path(LOCAL_DIR, 'lastchannels.json')))
+
         def myExitHandler():
             global stopped, epg_thread, epg_thread_2, mpris_loop
             if mpris_loop:
@@ -3442,6 +3478,7 @@ if __name__ == '__main__':
             except: # pylint: disable=bare-except
                 pass
             stop_record()
+            saveLastChannel()
 
         first_boot = False
         first_boot_1 = True
@@ -3674,6 +3711,7 @@ if __name__ == '__main__':
             QtWidgets.QShortcut(QtGui.QKeySequence(keybind), win).activated.connect(keybinds[keybind])
 
         app.aboutToQuit.connect(myExitHandler)
+        playLastChannel()
 
         if settings['m3u'] and m3u:
             win.show()
