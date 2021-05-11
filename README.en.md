@@ -17,8 +17,9 @@ Repository mirrors:
 
 ## License
 
-Code: GPLv3  
-Icons: CC BY 4.0  
+Code: [GPLv3](https://gitlab.com/astroncia/iptv/-/blob/master/COPYING)  
+Icons: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)  
+  
 *Icons by [Font Awesome](https://fontawesome.com/)*  
 
 ## Download

@@ -17,8 +17,9 @@
 
 ## Лицензия
 
-Код: GPLv3  
-Иконки: CC BY 4.0  
+Код: [GPLv3](https://gitlab.com/astroncia/iptv/-/blob/master/COPYING)  
+Иконки: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)  
+  
 *Иконки от [Font Awesome](https://fontawesome.com/)*  
 
 ## Скачать
