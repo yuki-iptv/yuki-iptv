@@ -778,6 +778,13 @@ if __name__ == '__main__':
                     file_size0 = convert_size(os.path.getsize(file_name0))
                 activerec_list.addItem(channel_name0 + "\n" + counted_time0 + " " + file_size0)
             activerec_list.verticalScrollBar().setValue(activerec_list_value)
+            pl_text = "REC / " + LANG['smscheduler']
+            if activerec_list.count() != 0:
+                lbl2.setText(pl_text)
+                lbl2.show()
+            else:
+                if lbl2.text() == pl_text:
+                    lbl2.hide()
 
         def record_thread():
             global is_recording
@@ -1831,6 +1838,7 @@ if __name__ == '__main__':
                 save_settings()
             else:
                 print("No Hypnotix playlists found!")
+                QtWidgets.QMessageBox(1, MAIN_WINDOW_TITLE, LANG['nohypnotixpf'], QtWidgets.QMessageBox.Ok).exec()
 
         def providers_reset_do():
             global providers_saved
