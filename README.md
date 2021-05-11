@@ -19,7 +19,7 @@
 
 Код: GPLv3  
 Иконки: CC BY 4.0  
-Иконки от [Font Awesome](https://fontawesome.com/)  
+*Иконки от [Font Awesome](https://fontawesome.com/)*  
 
 ## Скачать
 
