@@ -5,6 +5,7 @@ from PyQt5.QtCore import Qt, QDir, QAbstractTableModel, QModelIndex, QVariant, Q
 from PyQt5.QtWidgets import (QMainWindow, QTableView, QApplication, QLineEdit, QComboBox,
                              QFileDialog, QAbstractItemView, QMessageBox, QToolButton)
 from PyQt5.QtGui import QStandardItem, QIcon, QKeySequence
+from pathlib import Path
 from data.modules.astroncia.extgrp import parse_extgrp
 
 home_folder = ""
@@ -199,7 +200,7 @@ class Viewer(QMainWindow):
         tb.addSeparator()
 
         del_btn = QToolButton()
-        del_btn.setIcon(QIcon.fromTheme("edit-delete"))
+        del_btn.setIcon(QIcon(str(Path('data', 'icons', 'trash.png'))))
         del_btn.setToolTip(self.LANG['m3u_deleterow'])
         del_btn.clicked.connect(self.del_row)
         tb.addWidget(del_btn)
@@ -207,19 +208,19 @@ class Viewer(QMainWindow):
         tb.addSeparator()
 
         add_btn = QToolButton()
-        add_btn.setIcon(QIcon.fromTheme("add"))
+        add_btn.setIcon(QIcon(str(Path('data', 'icons', 'plus.png'))))
         add_btn.setToolTip(self.LANG['m3u_addrow'])
         add_btn.clicked.connect(self.add_row)
         tb.addWidget(add_btn)
 
         move_down_btn = QToolButton()
-        move_down_btn.setIcon(QIcon.fromTheme("down"))
+        move_down_btn.setIcon(QIcon(str(Path('data', 'icons', 'arrow-down.png'))))
         move_down_btn.setToolTip(self.LANG['m3u_movedown'])
         move_down_btn.clicked.connect(self.move_down)
         tb.addWidget(move_down_btn)
 
         move_up_up = QToolButton()
-        move_up_up.setIcon(QIcon.fromTheme("up"))
+        move_up_up.setIcon(QIcon(str(Path('data', 'icons', 'arrow-up.png'))))
         move_up_up.setToolTip(self.LANG['m3u_moveup'])
         move_up_up.clicked.connect(self.move_up)
         tb.addWidget(move_up_up)
