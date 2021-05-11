@@ -1,7 +1,7 @@
 # Astroncia IPTV
 ### Cross-platform IPTV player
 
-![GUI](https://gitlab.com/astroncia/iptv/-/raw/master/screenshots/astroncia-iptv-en-screenshot.png)  
+[![GUI](https://gitlab.com/astroncia/iptv/-/raw/master/screenshots/astroncia-iptv-en-screenshot-thumb.png)](https://gitlab.com/astroncia/iptv/-/raw/master/screenshots/astroncia-iptv-en-screenshot.png)  
 
 ## Information
 

@@ -1,7 +1,7 @@
 # Astroncia IPTV
 ### Кроссплатформенный плеер для просмотра интернет-телевидения
 
-![Интерфейс](https://gitlab.com/astroncia/iptv/-/raw/master/screenshots/astroncia-iptv-screenshot.png)  
+[![Интерфейс](https://gitlab.com/astroncia/iptv/-/raw/master/screenshots/astroncia-iptv-screenshot-thumb.png)](https://gitlab.com/astroncia/iptv/-/raw/master/screenshots/astroncia-iptv-screenshot.png)  
 
 ## Информация
 
