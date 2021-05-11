@@ -474,7 +474,7 @@ msgid "license"
 msgstr "Лицензия"
 
 msgid "openprevchan"
-msgstr "Открывать предыдущий канал при запуске"
+msgstr "Открывать предыдущий\nканал при запуске"
 
 msgid "smscheduler"
 msgstr "Планировщик"

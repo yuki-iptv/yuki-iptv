@@ -474,7 +474,7 @@ msgid "license"
 msgstr "License"
 
 msgid "openprevchan"
-msgstr "Open previous channel at startup"
+msgstr "Open previous channel\nat startup"
 
 msgid "smscheduler"
 msgstr "Scheduler"
