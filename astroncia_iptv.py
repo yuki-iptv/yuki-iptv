@@ -81,7 +81,10 @@ if not (os.name == 'nt' or os.name == 'posix'):
 
 MAIN_WINDOW_TITLE = 'Astroncia IPTV'
 WINDOW_SIZE = (1200, 600)
-DOCK_WIDGET2_HEIGHT = int(WINDOW_SIZE[1] / 6)
+DOCK_WIDGET2_HEIGHT = int(WINDOW_SIZE[1] / 8)
+DOCK_WIDGET2_HEIGHT_OFFSET = 10
+DOCK_WIDGET2_HEIGHT_HIGH = DOCK_WIDGET2_HEIGHT + DOCK_WIDGET2_HEIGHT_OFFSET
+DOCK_WIDGET2_HEIGHT_LOW = DOCK_WIDGET2_HEIGHT_HIGH - (DOCK_WIDGET2_HEIGHT_OFFSET + 10)
 DOCK_WIDGET_WIDTH = int((WINDOW_SIZE[0] / 2) - 200)
 TVGUIDE_WIDTH = int((WINDOW_SIZE[0] / 5))
 BCOLOR = "#A2A3A3"
@@ -2023,7 +2026,7 @@ if __name__ == '__main__':
                         current_prog = pr
                         break
             show_progress(current_prog)
-            dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT + 20)
+            dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
             playing = True
             win.update()
             playing_url = play_url
@@ -2098,7 +2101,7 @@ if __name__ == '__main__':
             progress.hide()
             start_label.hide()
             stop_label.hide()
-            dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT - 10)
+            dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
             win.update()
 
         def esc_handler():
@@ -2119,7 +2122,7 @@ if __name__ == '__main__':
                 #start_label.hide()
                 #stop_label.hide()
                 dockWidget2.hide()
-                dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT - 10)
+                dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
                 win.update()
                 win.showFullScreen()
             else:
@@ -2133,7 +2136,7 @@ if __name__ == '__main__':
                     progress.show()
                     start_label.show()
                     stop_label.show()
-                    dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT + 20)
+                    dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
                 dockWidget2.show()
                 dockWidget.show()
                 chan.show()
@@ -2203,10 +2206,12 @@ if __name__ == '__main__':
                 self.textDownQLabel = QtWidgets.QLabel()         # QtWidgets
                 self.textQVBoxLayout.addWidget(self.textUpQLabel)
                 self.textQVBoxLayout.addWidget(self.textDownQLabel)
+                self.textQVBoxLayout.setSpacing(5)
                 self.allQHBoxLayout = QtWidgets.QGridLayout()      # QtWidgets
                 self.iconQLabel = QtWidgets.QLabel()         # QtWidgets
                 self.progressLabel = QtWidgets.QLabel()
                 self.progressBar = QtWidgets.QProgressBar()
+                self.progressBar.setFixedHeight(15)
                 self.endLabel = QtWidgets.QLabel()
                 self.op = QtWidgets.QGraphicsOpacityEffect()
                 self.op.setOpacity(100)
@@ -2781,8 +2786,13 @@ if __name__ == '__main__':
         layout4.addWidget(of_lbl)
         widget4.setLayout(layout4)
         layout = QtWidgets.QGridLayout()
+        layout.setVerticalSpacing(0)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setAlignment(QtCore.Qt.AlignTop)
+        layout.setSpacing(0)
         widget = QtWidgets.QWidget()
         widget.setLayout(layout)
+        widget.layout().addWidget(QtWidgets.QLabel())
         widget.layout().addWidget(combobox)
         widget.layout().addWidget(widget3)
         widget.layout().addWidget(win.listWidget)
@@ -2790,6 +2800,7 @@ if __name__ == '__main__':
         widget.layout().addWidget(chan)
         widget.layout().addWidget(loading)
         dockWidget.setFixedWidth(DOCK_WIDGET_WIDTH)
+        dockWidget.setTitleBarWidget(QtWidgets.QWidget())
         dockWidget.setWidget(widget)
         dockWidget.setFloating(False)
         dockWidget.setFeatures(QtWidgets.QDockWidget.NoDockWidgetFeatures)
@@ -3365,35 +3376,26 @@ if __name__ == '__main__':
         hlayout1 = QtWidgets.QHBoxLayout()
         hlayout2 = QtWidgets.QHBoxLayout()
         hlayout3 = QtWidgets.QHBoxLayout()
-        widget2 = QtWidgets.QWidget()
-        widget2.setLayout(vlayout3)
 
         hlayout1.addWidget(start_label)
         hlayout1.addWidget(progress)
         hlayout1.addWidget(stop_label)
 
-        hlayout2.addWidget(label3)
-        hlayout2.addWidget(label4)
-        hlayout2.addWidget(label5)
-        hlayout2.addWidget(label5_1)
-        hlayout2.addWidget(label5_2)
-        hlayout2.addWidget(label5_0)
-        hlayout2.addWidget(label6)
-        hlayout2.addWidget(label7)
-        hlayout2.addWidget(label7_1)
+        hlayout2_btns_1 = [label3, label4, label5, label5_1, label5_2, label5_0, label6, label7, label7_1]
+        hlayout2_btns_2 = [label8_0, label8, label8_4, label8_1, label8_2, label8_3, label8_5, label9]
+        hlayout2_btns_3 = [label11, label12]
+        hlayout2_all_btns = hlayout2_btns_1 + hlayout2_btns_2 + hlayout2_btns_3 + [label7_2]
+        #for hlayout2_btn_3 in hlayout2_all_btns:
+        #    hlayout2_btn_3.setFixedHeight(20)
+        for hlayout2_btn in hlayout2_btns_1:
+            hlayout2.addWidget(hlayout2_btn)
         if not os.name == 'nt':
             hlayout2.addWidget(label7_2)
-        hlayout2.addWidget(label8_0)
-        hlayout2.addWidget(label8)
-        hlayout2.addWidget(label8_4)
-        hlayout2.addWidget(label8_1)
-        hlayout2.addWidget(label8_2)
-        hlayout2.addWidget(label8_3)
-        hlayout2.addWidget(label8_5)
-        hlayout2.addWidget(label9)
+        for hlayout2_btn_1 in hlayout2_btns_2:
+            hlayout2.addWidget(hlayout2_btn_1)
         hlayout2.addStretch(100000)
-        hlayout2.addWidget(label11)
-        hlayout2.addWidget(label12)
+        for hlayout2_btn_2 in hlayout2_btns_3:
+            hlayout2.addWidget(hlayout2_btn_2)
 
         hlayout3.addWidget(label10)
 
@@ -3406,16 +3408,19 @@ if __name__ == '__main__':
         hlayout2.addStretch(1)
         vlayout3.addLayout(hlayout3)
 
+        widget2 = QtWidgets.QWidget()
+        widget2.setLayout(vlayout3)
+        dockWidget2.setTitleBarWidget(QtWidgets.QWidget())
         dockWidget2.setWidget(widget2)
         dockWidget2.setFloating(False)
-        dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT + 20)
+        dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
         dockWidget2.setFeatures(QtWidgets.QDockWidget.NoDockWidgetFeatures)
         win.addDockWidget(QtCore.Qt.BottomDockWidgetArea, dockWidget2)
 
         progress.hide()
         start_label.hide()
         stop_label.hide()
-        dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT - 10)
+        dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
 
         l1 = QtWidgets.QLabel(win)
         myFont1 = QtGui.QFont()
