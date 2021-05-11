@@ -19,6 +19,7 @@ Repository mirrors:
 
 Code: GPLv3  
 Icons: CC BY 4.0  
+Icons by [Font Awesome](https://fontawesome.com/)  
 
 ## Download
 
