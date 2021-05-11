@@ -5,6 +5,18 @@
 
 [![GUI](https://gitlab.com/astroncia/iptv/-/raw/master/screenshots/astroncia-iptv-en-screenshot-thumb.png)](https://gitlab.com/astroncia/iptv/-/raw/master/screenshots/astroncia-iptv-en-screenshot.png)  
 
+## Download
+
+**[Version for Windows](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/Astroncia_IPTV_setup.exe)**
+[deb package](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv.deb)
+
+For Ubuntu **recommended** install from [Launchpad PPA - ppa:astroncia/iptv](https://launchpad.net/~astroncia/+archive/ubuntu/iptv):
+```sudo add-apt-repository ppa:astroncia/iptv -y```
+```sudo apt-get update```
+```sudo apt-get install astroncia-iptv```
+
+[Arch Linux (AUR)](https://aur.archlinux.org/packages/astronciaiptv/)
+
 ## Information
 
 **32-bit Windows not supported!**  
@@ -21,18 +33,6 @@ Code: [GPLv3](https://gitlab.com/astroncia/iptv/-/blob/master/COPYING)
 Icons: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)  
   
 *Icons by [Font Awesome](https://fontawesome.com/)*  
-
-## Download
-
-**[Version for Windows](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/Astroncia_IPTV_setup.exe)**  
-[deb package](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv.deb)  
-
-For Ubuntu **recommended** install from [Launchpad PPA - ppa:astroncia/iptv](https://launchpad.net/~astroncia/+archive/ubuntu/iptv):  
-```sudo add-apt-repository ppa:astroncia/iptv -y```  
-```sudo apt-get update```  
-```sudo apt-get install astroncia-iptv```  
-
-[Arch Linux (AUR)](https://aur.archlinux.org/packages/astronciaiptv/)  
 
 ## Capabilities
 
