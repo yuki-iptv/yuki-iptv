@@ -480,13 +480,19 @@ msgid "smscheduler"
 msgstr "Планировщик"
 
 msgid "praction"
-msgstr "Действие по окончанию записи"
+msgstr "Действие по\nокончанию записи"
 
 msgid "nothingtodo"
 msgstr "Ничего не делать"
 
+msgid "stoppress"
+msgstr "Нажать на Стоп"
+
 msgid "turnoffpc"
 msgstr "Выключить ПК"
+
+msgid "exitprogram"
+msgstr "Выйти из программы"
 
 msgid "nohypnotixpf"
 msgstr "Плейлисты Hypnotix не найдены!"

@@ -480,13 +480,19 @@ msgid "smscheduler"
 msgstr "Scheduler"
 
 msgid "praction"
-msgstr "Post-recording action"
+msgstr "Post-recording\naction"
 
 msgid "nothingtodo"
 msgstr "Nothing to do"
 
+msgid "stoppress"
+msgstr "Press Stop"
+
 msgid "turnoffpc"
 msgstr "Turn off PC"
+
+msgid "exitprogram"
+msgstr "Quit the program"
 
 msgid "nohypnotixpf"
 msgstr "No Hypnotix playlists found!"

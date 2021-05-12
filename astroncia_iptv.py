@@ -769,7 +769,10 @@ if __name__ == '__main__':
                     ffmpeg_process.wait()
                     ffmpeg_process = None
 
+        recViaScheduler = False
+
         def record_thread_2():
+            global recViaScheduler
             activerec_list_value = activerec_list.verticalScrollBar().value()
             activerec_list.clear()
             for sch0 in sch_recordings:
@@ -783,9 +786,18 @@ if __name__ == '__main__':
             activerec_list.verticalScrollBar().setValue(activerec_list_value)
             pl_text = "REC / " + LANG['smscheduler']
             if activerec_list.count() != 0:
+                recViaScheduler = True
                 lbl2.setText(pl_text)
                 lbl2.show()
             else:
+                if recViaScheduler:
+                    print_with_time("Record via scheduler ended, executing post-action...")
+                    # 0 - nothing to do
+                    if praction_choose.currentIndex() == 1: # 1 - Press Stop
+                        mpv_stop()
+                    if praction_choose.currentIndex() == 2: # 2 - Quit program
+                        key_quit()
+                recViaScheduler = False
                 if lbl2.text() == pl_text:
                     lbl2.hide()
 
@@ -861,6 +873,12 @@ if __name__ == '__main__':
         endtime_w = QtWidgets.QDateTimeEdit()
         endtime_w.setDateTime(QtCore.QDateTime.fromString(time.strftime('%d.%m.%Y %H:%M', time.localtime(time.time() + 60)), 'd.M.yyyy hh:mm'))
 
+        praction_lbl = QtWidgets.QLabel('{}:'.format(LANG['praction']))
+        praction_choose = QtWidgets.QComboBox()
+        praction_choose.addItem(LANG['nothingtodo'])
+        praction_choose.addItem(LANG['stoppress'])
+        praction_choose.addItem(LANG['exitprogram'])
+
         schedulers = QtWidgets.QListWidget()
         activerec_list = QtWidgets.QListWidget()
 
@@ -872,6 +890,9 @@ if __name__ == '__main__':
         scheduler_layout_2.addWidget(endtime_w, 3, 0)
         scheduler_layout_2.addWidget(addrecord_btn, 4, 0)
         scheduler_layout_2.addWidget(delrecord_btn, 5, 0)
+        scheduler_layout_2.addWidget(QtWidgets.QLabel(), 6, 0)
+        scheduler_layout_2.addWidget(praction_lbl, 7, 0)
+        scheduler_layout_2.addWidget(praction_choose, 8, 0)
 
         scheduler_layout_3 = QtWidgets.QGridLayout()
         scheduler_layout_3.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
@@ -3681,6 +3702,9 @@ if __name__ == '__main__':
         def key_quit():
             settings_win.close()
             win.close()
+            help_win.close()
+            license_win.close()
+            app.quit()
 
         def show_clock():
             global clockOn
