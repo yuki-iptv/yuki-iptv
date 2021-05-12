@@ -2296,7 +2296,7 @@ if __name__ == '__main__':
                 pass
 
             def setIcon(self, image):
-                self.iconQLabel.setPixmap(image.pixmap(QtCore.QSize(32, 32)))
+                self.iconQLabel.setPixmap(image.pixmap(QtCore.QSize(32, 20)))
 
             def setProgress(self, progress_val):
                 pass
