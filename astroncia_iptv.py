@@ -2968,7 +2968,8 @@ if __name__ == '__main__':
             HWACCEL = 'no'
         options = {
             'vo': '' if os.name == 'nt' else VIDEO_OUTPUT,
-            'hwdec': HWACCEL
+            'hwdec': HWACCEL,
+            'cursor-autohide': 1000
         }
         try:
             mpv_options_1 = settings['mpv_options']
