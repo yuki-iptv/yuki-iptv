@@ -3488,6 +3488,8 @@ if __name__ == '__main__':
         def myExitHandler():
             global stopped, epg_thread, epg_thread_2, mpris_loop
             stop_record()
+            for rec_1 in sch_recordings:
+                do_stop_record(rec_1)
             if mpris_loop:
                 mpris_loop.quit()
             stopped = True
