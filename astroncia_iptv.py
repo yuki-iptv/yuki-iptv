@@ -3487,6 +3487,7 @@ if __name__ == '__main__':
 
         def myExitHandler():
             global stopped, epg_thread, epg_thread_2, mpris_loop
+            stop_record()
             if mpris_loop:
                 mpris_loop.quit()
             stopped = True
@@ -3512,7 +3513,6 @@ if __name__ == '__main__':
                     channel_icons_data.manager_1.shutdown()
             except: # pylint: disable=bare-except
                 pass
-            stop_record()
             saveLastChannel()
 
         first_boot = False
@@ -3705,6 +3705,7 @@ if __name__ == '__main__':
             win.close()
             help_win.close()
             license_win.close()
+            myExitHandler()
             app.quit()
 
         def show_clock():
