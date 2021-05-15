@@ -41,8 +41,6 @@ def record(input_url, out_file, channel_name):
             '-user_agent', user_agent,
             '-icy', '0',
             '-i', input_url,
-            '-map', '0',
-            '-map', '-0:s',
             '-vcodec', 'copy',
             out_file
         ]
@@ -50,8 +48,6 @@ def record(input_url, out_file, channel_name):
         arr = [
             ffmpeg_path,
             '-i', input_url,
-            '-map', '0',
-            '-map', '-0:s',
             '-vcodec', 'copy',
             out_file
         ]
@@ -81,8 +77,6 @@ def record_return(input_url, out_file, channel_name):
             '-user_agent', user_agent,
             '-icy', '0',
             '-i', input_url,
-            '-map', '0',
-            '-map', '-0:s',
             '-vcodec', 'copy',
             out_file
         ]
@@ -90,8 +84,6 @@ def record_return(input_url, out_file, channel_name):
         arr = [
             ffmpeg_path,
             '-i', input_url,
-            '-map', '0',
-            '-map', '-0:s',
             '-vcodec', 'copy',
             out_file
         ]
