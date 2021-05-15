@@ -393,6 +393,7 @@ if __name__ == '__main__':
                     except: # pylint: disable=bare-except
                         m3u = ""
 
+            doSaveSettings = False
             m3u_parser = M3uParser(settings['udp_proxy'])
             epg_url = ""
             if m3u:
@@ -402,6 +403,7 @@ if __name__ == '__main__':
                     epg_url = m3u_data0[1]
                     if epg_url and not settings["epg"]:
                         settings["epg"] = epg_url
+                        doSaveSettings = True
                     for m3u_line in m3u_data:
                         array[m3u_line['title']] = m3u_line
                         if not m3u_line['tvg-group'] in groups:
@@ -3768,6 +3770,9 @@ if __name__ == '__main__':
 
         app.aboutToQuit.connect(myExitHandler)
         playLastChannel()
+
+        if doSaveSettings:
+            save_settings()
 
         if settings['m3u'] and m3u:
             win.show()
