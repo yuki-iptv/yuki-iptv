@@ -2110,7 +2110,7 @@ if __name__ == '__main__':
 
         def mpv_stop():
             global playing, playing_chan, playing_url
-            player.osc = False
+            #player.osc = False
             playing_chan = ''
             playing_url = ''
             hideLoading()
@@ -2989,6 +2989,8 @@ if __name__ == '__main__':
             player = mpv.MPV(
                 **options,
                 wid=str(int(win.main_widget.winId())),
+                osc=True,
+                script_opts='osc-barmargin=50,osc-deadzonesize=0,osc-minmousemove=3',
                 ytdl=False,
                 log_handler=my_log,
                 loglevel='info' # debug
@@ -2997,11 +2999,13 @@ if __name__ == '__main__':
             player = mpv.MPV(
                 **options,
                 wid=str(int(win.main_widget.winId())),
+                osc=True,
+                script_opts='osc-barmargin=50,osc-deadzonesize=0,osc-minmousemove=3',
                 log_handler=my_log,
                 loglevel='info' # debug
             )
-        player.osc = False
-        player.script_opts = 'osc-visibility=always,osc-barmargin=50'
+        #player.osc = False
+        #player.script_opts = 'osc-visibility=always,osc-barmargin=50'
         if not settings['hwaccel']:
             try:
                 player['x11-bypass-compositor'] = 'yes'
@@ -3410,13 +3414,13 @@ if __name__ == '__main__':
         hlayout2_btns_1 = [label3, label4, label5, label5_1, label5_2, label5_0, label6, label7, label7_1]
         hlayout2_btns_2 = [label8_0, label8, label8_4, label8_1, label8_2, label8_3, label8_5, label9]
         hlayout2_btns_3 = [label11, label12]
-        hlayout2_all_btns = hlayout2_btns_1 + hlayout2_btns_2 + hlayout2_btns_3 + [label7_2]
+        hlayout2_all_btns = hlayout2_btns_1 + hlayout2_btns_2 + hlayout2_btns_3 #+ [label7_2]
         #for hlayout2_btn_3 in hlayout2_all_btns:
         #    hlayout2_btn_3.setFixedHeight(20)
         for hlayout2_btn in hlayout2_btns_1:
             hlayout2.addWidget(hlayout2_btn)
-        if not os.name == 'nt':
-            hlayout2.addWidget(label7_2)
+        #if not os.name == 'nt':
+        #    hlayout2.addWidget(label7_2)
         for hlayout2_btn_1 in hlayout2_btns_2:
             hlayout2.addWidget(hlayout2_btn_1)
         hlayout2.addStretch(100000)
@@ -3699,6 +3703,13 @@ if __name__ == '__main__':
                 label11.setText('  ' + time.strftime('%H:%M:%S', time.localtime()))
             scheduler_clock.setText(get_current_time())
 
+        def thread_osc():
+            global playing_url
+            if playing_url:
+                player.osc = True
+            else:
+                player.osc = False
+
         def key_t():
             if dockWidget.isVisible():
                 dockWidget.hide()
@@ -3769,6 +3780,7 @@ if __name__ == '__main__':
             timers = {
                 thread_tvguide: 100,
                 thread_record: 100,
+                thread_osc: 100,
                 thread_check_tvguide_obsolete: 100,
                 thread_tvguide_2: 1000,
                 thread_update_time: 1000,
