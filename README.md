@@ -9,6 +9,7 @@
 
 **[Версия для Windows](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/Astroncia_IPTV_setup.exe)**  
 [deb-пакет](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv.deb)  
+[rpm-пакет](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv.rpm) (**требует ручной установки зависимостей**)  
   
 Для Ubuntu **рекомендуется** установка из [Launchpad PPA - ppa:astroncia/iptv](https://launchpad.net/~astroncia/+archive/ubuntu/iptv):  
 ```sudo add-apt-repository ppa:astroncia/iptv -y```  
