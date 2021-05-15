@@ -35,6 +35,7 @@ import signal
 import base64
 import argparse
 import subprocess
+import re
 #import hashlib
 import codecs
 import ctypes
@@ -2881,9 +2882,11 @@ if __name__ == '__main__':
                         ).strftime('%d.%m.%y %H:%M') + '\n'
                         title_2 = pr['title'] if 'title' in pr else ''
                         desc_2 = ('\n' + pr['desc'] + '\n') if 'desc' in pr else ''
-                        txt += start_2 + stop_2 + title_2 + desc_2 + newline_symbol
+                        txt += '<span style="color: green;">' + start_2 + stop_2 + '</span><b>' + title_2 + '</b>' + desc_2 + newline_symbol
             if do_return:
                 return txt
+            txt = txt.replace('\n', '<br>').replace('<br>', '', 1)
+            txt = txt.replace('<span style="color: green;">', '<span style="color: red;">', 1)
             tvguide_lbl.setText(txt)
             tvguide_lbl_2.setText(txt)
             return ''
@@ -3283,7 +3286,7 @@ if __name__ == '__main__':
             ch_choosed = choosechannel_ch.currentText()
             tvguide_sch.clear()
             if ch_choosed in channel_list_2:
-                tvguide_got = update_tvguide(ch_choosed, True).split('!@#$%^^&*(')[2:]
+                tvguide_got = re.sub('<[^<]+?>', '', update_tvguide(ch_choosed, True)).split('!@#$%^^&*(')[2:]
                 for tvguide_el in tvguide_got:
                     if tvguide_el:
                         tvguide_sch.addItem(tvguide_el)
