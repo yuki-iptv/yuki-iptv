@@ -41,14 +41,22 @@ def record(input_url, out_file, channel_name):
             '-user_agent', user_agent,
             '-icy', '0',
             '-i', input_url,
-            '-vcodec', 'copy',
+            '-map', '0:0',
+            '-map', '0:1',
+            '-codec', 'copy',
+            '-acodec', 'aac',
+            '-max_muxing_queue_size', '4096',
             out_file
         ]
     else:
         arr = [
             ffmpeg_path,
             '-i', input_url,
-            '-vcodec', 'copy',
+            '-map', '0:0',
+            '-map', '0:1',
+            '-codec', 'copy',
+            '-acodec', 'aac',
+            '-max_muxing_queue_size', '4096',
             out_file
         ]
     startupinfo = None
@@ -77,14 +85,22 @@ def record_return(input_url, out_file, channel_name):
             '-user_agent', user_agent,
             '-icy', '0',
             '-i', input_url,
-            '-vcodec', 'copy',
+            '-map', '0:0',
+            '-map', '0:1',
+            '-codec', 'copy',
+            '-acodec', 'aac',
+            '-max_muxing_queue_size', '4096',
             out_file
         ]
     else:
         arr = [
             ffmpeg_path,
             '-i', input_url,
-            '-vcodec', 'copy',
+            '-map', '0:0',
+            '-map', '0:1',
+            '-codec', 'copy',
+            '-acodec', 'aac',
+            '-max_muxing_queue_size', '4096',
             out_file
         ]
     startupinfo = None
