@@ -43,7 +43,7 @@ def record(input_url, out_file, channel_name):
             '-i', input_url,
             '-map', '0',
             '-map', '-0:s',
-            '-codec', 'copy',
+            '-vcodec', 'copy',
             out_file
         ]
     else:
@@ -52,7 +52,7 @@ def record(input_url, out_file, channel_name):
             '-i', input_url,
             '-map', '0',
             '-map', '-0:s',
-            '-codec', 'copy',
+            '-vcodec', 'copy',
             out_file
         ]
     startupinfo = None
@@ -83,7 +83,7 @@ def record_return(input_url, out_file, channel_name):
             '-i', input_url,
             '-map', '0',
             '-map', '-0:s',
-            '-codec', 'copy',
+            '-vcodec', 'copy',
             out_file
         ]
     else:
@@ -92,7 +92,7 @@ def record_return(input_url, out_file, channel_name):
             '-i', input_url,
             '-map', '0',
             '-map', '-0:s',
-            '-codec', 'copy',
+            '-vcodec', 'copy',
             out_file
         ]
     startupinfo = None
