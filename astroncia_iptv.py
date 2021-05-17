@@ -241,6 +241,7 @@ if __name__ == '__main__':
                 'donotupdateepg': False,
                 'channelsonpage': 100,
                 'openprevchan': False,
+                'themecompat': False,
                 'gui': 0
             }
             m3u = ""
@@ -262,6 +263,8 @@ if __name__ == '__main__':
             settings['channelsonpage'] = 100
         if 'openprevchan' not in settings:
             settings['openprevchan'] = False
+        if 'themecompat' not in settings:
+            settings['themecompat'] = False
         if 'gui' not in settings:
             settings['gui'] = 0
         if settings['hwaccel']:
@@ -499,13 +502,16 @@ if __name__ == '__main__':
                 QtWidgets.QScrollArea.__init__(self, *args, **kwargs)
                 self.setWidgetResizable(True)
                 content = QtWidgets.QWidget(self)
-                content.setStyleSheet('background-color: white')
+                bcolor_scrollabel = 'white'
+                if settings['themecompat']:
+                    bcolor_scrollabel = 'black'
+                content.setStyleSheet('background-color: ' + bcolor_scrollabel)
                 self.setWidget(content)
                 lay = QtWidgets.QVBoxLayout(content)
                 self.label = QtWidgets.QLabel(content)
                 self.label.setAlignment(QtCore.Qt.AlignCenter)
                 self.label.setWordWrap(True)
-                self.label.setStyleSheet('background-color: white')
+                self.label.setStyleSheet('background-color: ' + bcolor_scrollabel)
                 lay.addWidget(self.label)
 
             def setText(self, text):
@@ -1319,6 +1325,7 @@ if __name__ == '__main__':
                 'donotupdateepg': donot_flag.isChecked(),
                 'channelsonpage': channels_box.value(),
                 'openprevchan': openprevchan_flag.isChecked(),
+                'themecompat': themecompat_flag.isChecked(),
                 'gui': gui_choose.currentIndex()
             }
             settings_file1 = open(str(Path(LOCAL_DIR, 'settings.json')), 'w', encoding="utf8")
@@ -1615,6 +1622,10 @@ if __name__ == '__main__':
         openprevchan_flag = QtWidgets.QCheckBox()
         openprevchan_flag.setChecked(settings['openprevchan'])
 
+        themecompat_label = QtWidgets.QLabel("{}:".format(LANG['themecompat']))
+        themecompat_flag = QtWidgets.QCheckBox()
+        themecompat_flag.setChecked(settings['themecompat'])
+
         tabs = QtWidgets.QTabWidget()
 
         tab1 = QtWidgets.QWidget()
@@ -1662,6 +1673,8 @@ if __name__ == '__main__':
         tab4.layout.addWidget(mpv_options, 0, 1)
         tab4.layout.addWidget(donot_label, 1, 0)
         tab4.layout.addWidget(donot_flag, 1, 1)
+        tab4.layout.addWidget(themecompat_label, 2, 0)
+        tab4.layout.addWidget(themecompat_flag, 2, 1)
         tab4.setLayout(tab4.layout)
 
         tab5.layout = QtWidgets.QGridLayout()
@@ -2884,7 +2897,12 @@ if __name__ == '__main__':
                         ).strftime('%d.%m.%y %H:%M') + '\n'
                         title_2 = pr['title'] if 'title' in pr else ''
                         desc_2 = ('\n' + pr['desc'] + '\n') if 'desc' in pr else ''
-                        txt += '<span style="color: green;">' + start_2 + stop_2 + '</span><b>' + title_2 + '</b>' + desc_2 + newline_symbol
+                        start_symbl = ''
+                        stop_symbl = ''
+                        if settings["themecompat"]:
+                            start_symbl = '<span style="color: white;">'
+                            stop_symbl = '</span>'
+                        txt += '<span style="color: green;">' + start_2 + stop_2 + '</span>' + start_symbl + '<b>' + title_2 + '</b>' + desc_2 + stop_symbl + newline_symbol
             if do_return:
                 return txt
             txt = txt.replace('\n', '<br>').replace('<br>', '', 1)
