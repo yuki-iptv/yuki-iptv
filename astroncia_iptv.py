@@ -3026,6 +3026,10 @@ if __name__ == '__main__':
             )
         #player.osc = False
         #player.script_opts = 'osc-visibility=always,osc-barmargin=50'
+        try:
+            player['force-seekable'] = True
+        except: # pylint: disable=bare-except
+            pass
         if not settings['hwaccel']:
             try:
                 player['x11-bypass-compositor'] = 'yes'
@@ -3730,10 +3734,25 @@ if __name__ == '__main__':
             else:
                 player.osc = False
 
+        def thread_mouse():
+            global fullscreen, key_t_visible
+            if fullscreen and not key_t_visible:
+                cursor_x = win.main_widget.mapFromGlobal(QtGui.QCursor.pos()).x()
+                win_width = win.width()
+                is_cursor_x = cursor_x > win_width - (DOCK_WIDGET_WIDTH + 10)
+                if is_cursor_x and cursor_x < win_width:
+                    dockWidget.show()
+                else:
+                    dockWidget.hide()
+
+        key_t_visible = False
         def key_t():
+            global key_t_visible
             if dockWidget.isVisible():
+                key_t_visible = False
                 dockWidget.hide()
             else:
+                key_t_visible = True
                 dockWidget.show()
 
         # Key bindings
@@ -3801,6 +3820,7 @@ if __name__ == '__main__':
             ic, ic1, ic2 = 0, 0, 0
             timers_array = {}
             timers = {
+                thread_mouse: 50,
                 thread_tvguide: 100,
                 thread_record: 100,
                 thread_osc: 100,
