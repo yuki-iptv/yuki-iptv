@@ -3010,7 +3010,7 @@ if __name__ == '__main__':
                 **options,
                 wid=str(int(win.main_widget.winId())),
                 osc=True,
-                script_opts='osc-barmargin=50,osc-deadzonesize=0,osc-minmousemove=3',
+                script_opts='osc-layout=box,osc-seekbarstyle=bar,osc-barmargin=50,osc-deadzonesize=0,osc-minmousemove=3',
                 ytdl=False,
                 log_handler=my_log,
                 loglevel='info' # debug
@@ -3020,7 +3020,7 @@ if __name__ == '__main__':
                 **options,
                 wid=str(int(win.main_widget.winId())),
                 osc=True,
-                script_opts='osc-barmargin=50,osc-deadzonesize=0,osc-minmousemove=3',
+                script_opts='osc-layout=box,osc-seekbarstyle=bar,osc-barmargin=50,osc-deadzonesize=0,osc-minmousemove=3',
                 log_handler=my_log,
                 loglevel='info' # debug
             )
