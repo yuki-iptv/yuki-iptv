@@ -551,6 +551,11 @@ if __name__ == '__main__':
         chan_win.setWindowTitle(LANG['channelsettings'])
         chan_win.setWindowIcon(main_icon)
 
+        ext_win = QtWidgets.QMainWindow()
+        ext_win.resize(300, 60)
+        ext_win.setWindowTitle(LANG['openexternal'])
+        ext_win.setWindowIcon(main_icon)
+
         epg_win = QtWidgets.QMainWindow()
         epg_win.resize(400, 600)
         epg_win.setWindowTitle(LANG['tvguide'])
@@ -654,6 +659,31 @@ if __name__ == '__main__':
         providers_win_edit_layout.addWidget(save_btn_1, 5, 1)
         providers_win_edit_widget.setLayout(providers_win_edit_layout)
         providers_win_edit.setCentralWidget(providers_win_edit_widget)
+
+        def ext_open_btn_clicked():
+            ext_player_file_1 = open(str(Path(LOCAL_DIR, 'extplayer.json')), 'w', encoding="utf8")
+            ext_player_file_1.write(json.dumps({"player": ext_player_txt.text()}))
+            ext_player_file_1.close()
+            subprocess.Popen(ext_player_txt.text().split(' ') + [array[item_selected]['url']])
+
+        ext_player_txt = QtWidgets.QLineEdit()
+        player_ext = "mpv"
+        if os.path.isfile(str(Path(LOCAL_DIR, 'extplayer.json'))):
+            ext_player_file = open(str(Path(LOCAL_DIR, 'extplayer.json')), 'r', encoding="utf8")
+            ext_player_file_out = json.loads(ext_player_file.read())
+            ext_player_file.close()
+            player_ext = ext_player_file_out["player"]
+        ext_player_txt.setText(player_ext)
+        ext_open_btn = QtWidgets.QPushButton()
+        ext_open_btn.clicked.connect(ext_open_btn_clicked)
+        ext_open_btn.setText(LANG['open'])
+        ext_widget = QtWidgets.QWidget()
+        ext_layout = QtWidgets.QGridLayout()
+        ext_layout.addWidget(ext_player_txt, 0, 0)
+        ext_layout.addWidget(ext_open_btn, 0, 1)
+        ext_layout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        ext_widget.setLayout(ext_layout)
+        ext_win.setCentralWidget(ext_widget)
 
         def_provider = 0
         def_provider_name = list(iptv_providers.keys())[def_provider].replace('[Worldwide] ', '')
@@ -2832,6 +2862,9 @@ if __name__ == '__main__':
             save_favourite_sets()
             btn_update.click()
 
+        def open_external_player():
+            ext_win.show()
+
         def tvguide_start_record():
             url2 = array[item_selected]['url']
             if is_recording:
@@ -2848,6 +2881,7 @@ if __name__ == '__main__':
             menu.addSeparator()
             menu.addAction(LANG['tvguide'], tvguide_context_menu)
             menu.addAction(LANG['favourite'], tvguide_favourites_add)
+            menu.addAction(LANG['openexternal'], open_external_player)
             menu.addAction(LANG['startrecording'], tvguide_start_record)
             menu.addAction(LANG['channelsettings'], settings_context_menu)
             menu.exec_(self.mapToGlobal(pos))
