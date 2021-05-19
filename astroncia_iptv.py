@@ -1025,6 +1025,7 @@ if __name__ == '__main__':
         hue_lbl = QtWidgets.QLabel("{}:".format(LANG['hue']))
         saturation_lbl = QtWidgets.QLabel("{}:".format(LANG['saturation']))
         gamma_lbl = QtWidgets.QLabel("{}:".format(LANG['gamma']))
+        videoaspect_lbl = QtWidgets.QLabel("{}:".format(LANG['videoaspect']))
 
         contrast_choose = QtWidgets.QSpinBox()
         contrast_choose.setMinimum(-100)
@@ -1041,6 +1042,22 @@ if __name__ == '__main__':
         gamma_choose = QtWidgets.QSpinBox()
         gamma_choose.setMinimum(-100)
         gamma_choose.setMaximum(100)
+        videoaspect_vars = {
+            LANG['default']: -1,
+            '16:9': '16:9',
+            '16:10': '16:10',
+            '1.85:1': '1.85:1',
+            '2.21:1': '2.21:1',
+            '2.35:1': '2.35:1',
+            '2.39:1': '2.39:1',
+            '4:3': '4:3',
+            '5:4': '5:4',
+            '5:3': '5:3',
+            '1:1': '1:1'
+        }
+        videoaspect_choose = QtWidgets.QComboBox()
+        for videoaspect_var in videoaspect_vars:
+            videoaspect_choose.addItem(videoaspect_var)
 
         def_user_agent = uas[settings['useragent']]
         print_with_time("Default user agent: {}".format(def_user_agent))
@@ -1130,6 +1147,25 @@ if __name__ == '__main__':
                 player.loop = True
                 mpv_override_play(str(Path('data', 'icons', 'main.png')))
 
+        def setVideoAspect(va):
+            if va == 0:
+                va = -1
+            try:
+                player.video_aspect_override = va
+            except: # pylint: disable=bare-except
+                pass
+            try:
+                player.video_aspect = va
+            except: # pylint: disable=bare-except
+                pass
+
+        def getVideoAspect():
+            try:
+                va1 = player.video_aspect_override
+            except: # pylint: disable=bare-except
+                va1 = player.video_aspect
+            return va1
+
         def doPlay(play_url1, ua_ch=def_user_agent):
             loading.setText(LANG['loading'])
             loading.setStyleSheet('color: #778a30')
@@ -1165,6 +1201,7 @@ if __name__ == '__main__':
             print_with_time("Hue: {}".format(player.hue))
             print_with_time("Saturation: {}".format(player.saturation))
             print_with_time("Gamma: {}".format(player.gamma))
+            print_with_time("Video aspect: {}".format(getVideoAspect()))
             player.user_agent = ua_ch if isinstance(ua_ch, str) else uas[ua_ch]
             player.loop = True
             mpv_override_stop()
@@ -1181,7 +1218,8 @@ if __name__ == '__main__':
                 "brightness": brightness_choose.value(),
                 "hue": hue_choose.value(),
                 "saturation": saturation_choose.value(),
-                "gamma": gamma_choose.value()
+                "gamma": gamma_choose.value(),
+                "videoaspect": videoaspect_choose.currentIndex(),
             }
             save_channel_sets()
             if playing_chan == chan_3:
@@ -1191,6 +1229,7 @@ if __name__ == '__main__':
                 player.hue = hue_choose.value()
                 player.saturation = saturation_choose.value()
                 player.gamma = gamma_choose.value()
+                setVideoAspect(videoaspect_vars[list(videoaspect_vars)[videoaspect_choose.currentIndex()]])
                 stopPlayer()
                 doPlay(playing_url, uas[useragent_choose.currentIndex()])
             chan_win.close()
@@ -1264,6 +1303,13 @@ if __name__ == '__main__':
         horizontalLayout2_8.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_8.setAlignment(QtCore.Qt.AlignCenter)
 
+        horizontalLayout2_9 = QtWidgets.QHBoxLayout()
+        horizontalLayout2_9.addWidget(QtWidgets.QLabel("\n"))
+        horizontalLayout2_9.addWidget(videoaspect_lbl)
+        horizontalLayout2_9.addWidget(videoaspect_choose)
+        horizontalLayout2_9.addWidget(QtWidgets.QLabel("\n"))
+        horizontalLayout2_9.setAlignment(QtCore.Qt.AlignCenter)
+
         horizontalLayout3 = QtWidgets.QHBoxLayout()
         horizontalLayout3.addWidget(save_btn)
 
@@ -1278,6 +1324,7 @@ if __name__ == '__main__':
         verticalLayout.addLayout(horizontalLayout2_6)
         verticalLayout.addLayout(horizontalLayout2_7)
         verticalLayout.addLayout(horizontalLayout2_8)
+        verticalLayout.addLayout(horizontalLayout2_9)
         verticalLayout.addLayout(horizontalLayout3)
         verticalLayout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
 
@@ -2097,9 +2144,19 @@ if __name__ == '__main__':
                     player.gamma = d['gamma']
                 else:
                     player.gamma = 0
+                if 'videoaspect' in d:
+                    setVideoAspect(videoaspect_vars[list(videoaspect_vars)[d['videoaspect']]])
+                else:
+                    setVideoAspect(0)
                 ua_choose = d['useragent']
             else:
                 player.deinterlace = settings['deinterlace']
+                setVideoAspect(0)
+                player.gamma = 0
+                player.saturation = 0
+                player.hue = 0
+                player.brightness = 0
+                player.contrast = 0
             doPlay(play_url, ua_choose)
 
         item_selected = ''
@@ -2707,6 +2764,10 @@ if __name__ == '__main__':
                     gamma_choose.setValue(channel_sets[item_selected]['gamma'])
                 except: # pylint: disable=bare-except
                     gamma_choose.setValue(0)
+                try:
+                    videoaspect_choose.setCurrentIndex(channel_sets[item_selected]['videoaspect'])
+                except: # pylint: disable=bare-except
+                    videoaspect_choose.setCurrentIndex(0)
             else:
                 deinterlace_chk.setChecked(True)
                 hidden_chk.setChecked(False)
@@ -2715,6 +2776,7 @@ if __name__ == '__main__':
                 hue_choose.setValue(0)
                 saturation_choose.setValue(0)
                 gamma_choose.setValue(0)
+                videoaspect_choose.setCurrentIndex(0)
                 useragent_choose.setCurrentIndex(settings['useragent'])
                 group_text.setText('')
             chan_win.show()
