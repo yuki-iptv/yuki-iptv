@@ -242,6 +242,7 @@ if __name__ == '__main__':
                 'channelsonpage': 100,
                 'openprevchan': False,
                 'themecompat': False,
+                'referer': '',
                 'gui': 0
             }
             m3u = ""
@@ -267,6 +268,8 @@ if __name__ == '__main__':
             settings['themecompat'] = False
         if 'gui' not in settings:
             settings['gui'] = 0
+        if 'referer' not in settings:
+            settings['referer'] = ''
         if settings['hwaccel']:
             print_with_time("{} {}".format(LANG['hwaccel'].replace('\n', ' '), LANG['enabled']))
         else:
@@ -369,6 +372,8 @@ if __name__ == '__main__':
 
         array = {}
         groups = []
+
+        doSaveSettings = False
 
         use_cache = settings['m3u'].startswith('http://') or settings['m3u'].startswith('https://')
         if settings['nocache']:
@@ -800,7 +805,7 @@ if __name__ == '__main__':
                 'recording_-_' + cur_time + '_-_' + ch + '.mkv'
             ))
             record_url = array[ch_name]['url']
-            return [record_return(record_url, out_file, ch_name), time.time(), out_file, ch_name]
+            return [record_return(record_url, out_file, ch_name, "Referer: {}".format(settings["referer"])), time.time(), out_file, ch_name]
 
         def do_stop_record(name2):
             if name2 in sch_recordings:
@@ -1147,6 +1152,7 @@ if __name__ == '__main__':
             global event_handler
             #print_with_time("mpv_override_stop called")
             player.command('stop')
+            player.play(str(Path('data', 'icons', 'main.png')))
             if (not os.name == 'nt') and event_handler:
                 try:
                     event_handler.on_title()
@@ -1438,6 +1444,7 @@ if __name__ == '__main__':
                 'channelsonpage': channels_box.value(),
                 'openprevchan': openprevchan_flag.isChecked(),
                 'themecompat': themecompat_flag.isChecked(),
+                'referer': referer_choose.text(),
                 'gui': gui_choose.currentIndex()
             }
             settings_file1 = open(str(Path(LOCAL_DIR, 'settings.json')), 'w', encoding="utf8")
@@ -1704,6 +1711,9 @@ if __name__ == '__main__':
         grid.addWidget(sframe7, 10, 3)
 
         useragent_lbl_2 = QtWidgets.QLabel("{}:".format(LANG['useragent']))
+        referer_lbl = QtWidgets.QLabel("HTTP Referer:")
+        referer_choose = QtWidgets.QLineEdit()
+        referer_choose.setText(settings["referer"])
         useragent_choose_2 = QtWidgets.QComboBox()
         useragent_choose_2.addItem(LANG['empty'])
         for ua_name_2 in ua_names[1::]:
@@ -1778,6 +1788,8 @@ if __name__ == '__main__':
         tab3.layout.addWidget(scache, 1, 2)
         tab3.layout.addWidget(useragent_lbl_2, 2, 0)
         tab3.layout.addWidget(useragent_choose_2, 2, 1)
+        tab3.layout.addWidget(referer_lbl, 3, 0)
+        tab3.layout.addWidget(referer_choose, 3, 1)
         tab3.setLayout(tab3.layout)
 
         tab4.layout = QtWidgets.QGridLayout()
@@ -3091,7 +3103,7 @@ if __name__ == '__main__':
                     'recording_-_' + cur_time + '_-_' + ch + '.mkv'
                 ))
                 record_file = out_file
-                record(url3, out_file, orig_channel_name)
+                record(url3, out_file, orig_channel_name, "Referer: {}".format(settings["referer"]))
             else:
                 is_recording = False
                 recording_time = 0
@@ -3195,6 +3207,11 @@ if __name__ == '__main__':
         else:
             print_with_time("Using default cache settings")
         player.user_agent = def_user_agent
+        if settings["referer"]:
+            player.http_header_fields = "Referer: {}".format(settings["referer"])
+            print_with_time("HTTP referer: '{}'".format(settings["referer"]))
+        else:
+            print_with_time("No HTTP referer set up")
         mpv_override_volume(100)
         player.loop = True
         mpv_override_play(str(Path('data', 'icons', 'main.png')))

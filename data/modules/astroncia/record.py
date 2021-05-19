@@ -24,10 +24,13 @@ from data.modules.astroncia.time import print_with_time
 
 ffmpeg_proc = None
 
-def record(input_url, out_file, channel_name):
+def record(input_url, out_file, channel_name, http_referer):
     global ffmpeg_proc
+    if http_referer == 'Referer: ':
+        http_referer = ''
     user_agent = get_user_agent_for_channel(channel_name)
     print_with_time("Using user agent '{}' for record channel '{}'".format(user_agent, channel_name))
+    print_with_time("HTTP headers: '{}'".format(http_referer))
     if os.name == 'nt':
         ffmpeg_path = str(Path(os.getcwd(), 'data', 'modules', 'binary', 'ffmpeg.exe'))
     else:
@@ -39,6 +42,7 @@ def record(input_url, out_file, channel_name):
         arr = [
             ffmpeg_path,
             '-user_agent', user_agent,
+            '-headers', http_referer,
             '-icy', '0',
             '-i', input_url,
             '-map', '0:0',
@@ -71,9 +75,12 @@ def record(input_url, out_file, channel_name):
         startupinfo=startupinfo
     )
 
-def record_return(input_url, out_file, channel_name):
+def record_return(input_url, out_file, channel_name, http_referer):
+    if http_referer == 'Referer: ':
+        http_referer = ''
     user_agent = get_user_agent_for_channel(channel_name)
     print_with_time("Using user agent '{}' for record channel '{}'".format(user_agent, channel_name))
+    print_with_time("HTTP headers: '{}'".format(http_referer))
     if os.name == 'nt':
         ffmpeg_path = str(Path(os.getcwd(), 'data', 'modules', 'binary', 'ffmpeg.exe'))
     else:
@@ -85,6 +92,7 @@ def record_return(input_url, out_file, channel_name):
         arr = [
             ffmpeg_path,
             '-user_agent', user_agent,
+            '-headers', http_referer,
             '-icy', '0',
             '-i', input_url,
             '-map', '0:0',
