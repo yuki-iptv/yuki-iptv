@@ -754,6 +754,7 @@ if __name__ == '__main__':
         license_win.move(qr.topLeft())
         sort_win.move(qr.topLeft())
         chan_win.move(qr.topLeft())
+        ext_win.move(qr.topLeft())
         scheduler_win.move(qr.topLeft())
         providers_win.move(qr.topLeft())
         providers_win_edit.move(qr.topLeft())
