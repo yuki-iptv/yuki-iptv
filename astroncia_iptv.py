@@ -665,6 +665,7 @@ if __name__ == '__main__':
             ext_player_file_1.write(json.dumps({"player": ext_player_txt.text()}))
             ext_player_file_1.close()
             subprocess.Popen(ext_player_txt.text().split(' ') + [array[item_selected]['url']])
+            ext_win.close()
 
         ext_player_txt = QtWidgets.QLineEdit()
         player_ext = "mpv"
