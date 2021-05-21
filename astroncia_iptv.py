@@ -242,6 +242,7 @@ if __name__ == '__main__':
                 'channelsonpage': 100,
                 'openprevchan': False,
                 'remembervol': False,
+                'hidempv': False,
                 'themecompat': False,
                 'referer': '',
                 'gui': 0
@@ -267,6 +268,8 @@ if __name__ == '__main__':
             settings['openprevchan'] = False
         if 'remembervol' not in settings:
             settings['remembervol'] = False
+        if 'hidempv' not in settings:
+            settings['hidempv'] = False
         if 'themecompat' not in settings:
             settings['themecompat'] = False
         if 'gui' not in settings:
@@ -1453,6 +1456,7 @@ if __name__ == '__main__':
                 'channelsonpage': channels_box.value(),
                 'openprevchan': openprevchan_flag.isChecked(),
                 'remembervol': remembervol_flag.isChecked(),
+                'hidempv': hidempv_flag.isChecked(),
                 'themecompat': themecompat_flag.isChecked(),
                 'referer': referer_choose.text(),
                 'gui': gui_choose.currentIndex()
@@ -1740,6 +1744,7 @@ if __name__ == '__main__':
         gui_label = QtWidgets.QLabel("{}:".format(LANG['epg_gui']))
         openprevchan_label = QtWidgets.QLabel("{}:".format(LANG['openprevchan']))
         remembervol_label = QtWidgets.QLabel("{}:".format(LANG['remembervol']))
+        hidempv_label = QtWidgets.QLabel("{}:".format(LANG['hidempv']))
         channels_label = QtWidgets.QLabel("{}:".format(LANG['channelsonpage']))
         channels_box = QtWidgets.QSpinBox()
         channels_box.setSuffix('    ')
@@ -1757,6 +1762,9 @@ if __name__ == '__main__':
 
         remembervol_flag = QtWidgets.QCheckBox()
         remembervol_flag.setChecked(settings['remembervol'])
+
+        hidempv_flag = QtWidgets.QCheckBox()
+        hidempv_flag.setChecked(settings['hidempv'])
 
         themecompat_label = QtWidgets.QLabel("{}:".format(LANG['themecompat']))
         themecompat_flag = QtWidgets.QCheckBox()
@@ -1813,6 +1821,8 @@ if __name__ == '__main__':
         tab4.layout.addWidget(donot_flag, 1, 1)
         tab4.layout.addWidget(themecompat_label, 2, 0)
         tab4.layout.addWidget(themecompat_flag, 2, 1)
+        tab4.layout.addWidget(hidempv_label, 3, 0)
+        tab4.layout.addWidget(hidempv_flag, 3, 1)
         tab4.setLayout(tab4.layout)
 
         tab5.layout = QtWidgets.QGridLayout()
@@ -3195,6 +3205,8 @@ if __name__ == '__main__':
             )
         #player.osc = False
         #player.script_opts = 'osc-visibility=always,osc-barmargin=50'
+        if settings["hidempv"]:
+            player.osc = False
         try:
             player['force-seekable'] = True
         except: # pylint: disable=bare-except
@@ -3313,7 +3325,8 @@ if __name__ == '__main__':
                 if player.osc:
                     player.osc = False
                 else:
-                    player.osc = True
+                    if not settings["hidempv"]:
+                        player.osc = True
             else:
                 player.osc = False
 
@@ -3904,7 +3917,8 @@ if __name__ == '__main__':
         def thread_osc():
             global playing_url
             if playing_url:
-                player.osc = True
+                if not settings["hidempv"]:
+                    player.osc = True
             else:
                 player.osc = False
 
