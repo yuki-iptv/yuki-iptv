@@ -241,6 +241,7 @@ if __name__ == '__main__':
                 'donotupdateepg': False,
                 'channelsonpage': 100,
                 'openprevchan': False,
+                'remembervol': False,
                 'themecompat': False,
                 'referer': '',
                 'gui': 0
@@ -264,6 +265,8 @@ if __name__ == '__main__':
             settings['channelsonpage'] = 100
         if 'openprevchan' not in settings:
             settings['openprevchan'] = False
+        if 'remembervol' not in settings:
+            settings['remembervol'] = False
         if 'themecompat' not in settings:
             settings['themecompat'] = False
         if 'gui' not in settings:
@@ -1167,10 +1170,16 @@ if __name__ == '__main__':
                 except: # pylint: disable=bare-except
                     pass
 
+        firstVolRun = True
+
         def mpv_override_volume(volume_val):
-            global event_handler
+            global event_handler, firstVolRun
             #print_with_time("mpv_override_volume called")
             player.volume = volume_val
+            if settings["remembervol"] and not firstVolRun:
+                volfile = open(str(Path(LOCAL_DIR, 'volume.json')), 'w', encoding="utf8")
+                volfile.write(json.dumps({"volume": player.volume}))
+                volfile.close()
             if (not os.name == 'nt') and event_handler:
                 try:
                     event_handler.on_volume()
@@ -1443,6 +1452,7 @@ if __name__ == '__main__':
                 'donotupdateepg': donot_flag.isChecked(),
                 'channelsonpage': channels_box.value(),
                 'openprevchan': openprevchan_flag.isChecked(),
+                'remembervol': remembervol_flag.isChecked(),
                 'themecompat': themecompat_flag.isChecked(),
                 'referer': referer_choose.text(),
                 'gui': gui_choose.currentIndex()
@@ -1729,6 +1739,7 @@ if __name__ == '__main__':
 
         gui_label = QtWidgets.QLabel("{}:".format(LANG['epg_gui']))
         openprevchan_label = QtWidgets.QLabel("{}:".format(LANG['openprevchan']))
+        remembervol_label = QtWidgets.QLabel("{}:".format(LANG['remembervol']))
         channels_label = QtWidgets.QLabel("{}:".format(LANG['channelsonpage']))
         channels_box = QtWidgets.QSpinBox()
         channels_box.setSuffix('    ')
@@ -1743,6 +1754,9 @@ if __name__ == '__main__':
 
         openprevchan_flag = QtWidgets.QCheckBox()
         openprevchan_flag.setChecked(settings['openprevchan'])
+
+        remembervol_flag = QtWidgets.QCheckBox()
+        remembervol_flag.setChecked(settings['remembervol'])
 
         themecompat_label = QtWidgets.QLabel("{}:".format(LANG['themecompat']))
         themecompat_flag = QtWidgets.QCheckBox()
@@ -1812,7 +1826,9 @@ if __name__ == '__main__':
         tab5.layout.addWidget(QtWidgets.QLabel(), 3, 0)
         tab5.layout.addWidget(openprevchan_label, 4, 0)
         tab5.layout.addWidget(openprevchan_flag, 4, 1)
-        tab5.layout.addWidget(QtWidgets.QLabel(), 5, 0)
+        tab5.layout.addWidget(remembervol_label, 5, 0)
+        tab5.layout.addWidget(remembervol_flag, 5, 1)
+        tab5.layout.addWidget(QtWidgets.QLabel(), 6, 0)
         tab5.setLayout(tab5.layout)
 
         grid2 = QtWidgets.QVBoxLayout()
@@ -3163,7 +3179,7 @@ if __name__ == '__main__':
                 **options,
                 wid=str(int(win.main_widget.winId())),
                 osc=True,
-                script_opts='osc-layout=box,osc-seekbarstyle=bar,osc-barmargin=50,osc-deadzonesize=0,osc-minmousemove=3',
+                script_opts='osc-layout=box,osc-seekbarstyle=bar,osc-deadzonesize=0,osc-minmousemove=3',
                 ytdl=False,
                 log_handler=my_log,
                 loglevel='info' # debug
@@ -3173,7 +3189,7 @@ if __name__ == '__main__':
                 **options,
                 wid=str(int(win.main_widget.winId())),
                 osc=True,
-                script_opts='osc-layout=box,osc-seekbarstyle=bar,osc-barmargin=50,osc-deadzonesize=0,osc-minmousemove=3',
+                script_opts='osc-layout=box,osc-seekbarstyle=bar,osc-deadzonesize=0,osc-minmousemove=3',
                 log_handler=my_log,
                 loglevel='info' # debug
             )
@@ -3965,6 +3981,18 @@ if __name__ == '__main__':
 
         app.aboutToQuit.connect(myExitHandler)
         playLastChannel()
+
+        if settings["remembervol"] and os.path.isfile(str(Path(LOCAL_DIR, 'volume.json'))):
+            try:
+                volfile_1 = open(str(Path(LOCAL_DIR, 'volume.json')), 'r', encoding="utf8")
+                volfile_1_out = json.loads(volfile_1.read())["volume"]
+                volfile_1.close()
+            except: # pylint: disable=bare-except
+                volfile_1_out = 100
+            print("Set volume to {}".format(volfile_1_out))
+            label7.setValue(volfile_1_out)
+            mpv_volume_set()
+        firstVolRun = False
 
         if doSaveSettings:
             save_settings()
