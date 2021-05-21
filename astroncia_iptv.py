@@ -3908,16 +3908,34 @@ if __name__ == '__main__':
             else:
                 player.osc = False
 
+        dockWidgetVisible = False
+
         def thread_mouse():
-            global fullscreen, key_t_visible
+            global fullscreen, key_t_visible, dockWidgetVisible
             if fullscreen and not key_t_visible:
                 cursor_x = win.main_widget.mapFromGlobal(QtGui.QCursor.pos()).x()
                 win_width = win.width()
                 is_cursor_x = cursor_x > win_width - (DOCK_WIDGET_WIDTH + 10)
                 if is_cursor_x and cursor_x < win_width:
-                    dockWidget.show()
+                    if not dockWidgetVisible:
+                        dockWidgetVisible = True
+                        dockWidget.setFloating(True)
+                        dockWidget.move(win.width() - dockWidget.width(), 0)
+                        dockWidget.resize(dockWidget.width(), win.height() - 150)
+                        dockWidget.setWindowOpacity(0.8)
+                        dockWidget.show()
+                        dockWidget.setWindowOpacity(0.8)
+                        dockWidget.move(win.width() - dockWidget.width(), 0)
                 else:
+                    dockWidgetVisible = False
+                    dockWidget.setWindowOpacity(1)
                     dockWidget.hide()
+                    dockWidget.setFloating(False)
+                    dockWidget.hide()
+            if not fullscreen:
+                dockWidgetVisible = False
+                dockWidget.setWindowOpacity(1)
+                dockWidget.setFloating(False)
 
         key_t_visible = False
         def key_t():
