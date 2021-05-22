@@ -2324,6 +2324,17 @@ if __name__ == '__main__':
         def mpv_fullscreen():
             global fullscreen, l1, time_stop
             if not fullscreen:
+                # dockWidget staying window workaround
+                # == START ==
+                dockWidget2.setWindowOpacity(1)
+                dockWidget2.hide()
+                dockWidget2.setFloating(False)
+                dockWidget2.hide()
+                dockWidget.setWindowOpacity(1)
+                dockWidget.hide()
+                dockWidget.setFloating(False)
+                dockWidget.hide()
+                # == END ==
                 #l1.show()
                 #l1.setText2("{} F".format(LANG['exitfullscreen']))
                 #time_stop = time.time() + 3
