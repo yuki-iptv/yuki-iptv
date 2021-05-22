@@ -3969,7 +3969,7 @@ if __name__ == '__main__':
                     else:
                         dockWidget2Visible = False
                         dockWidget2.hide()
-            if not fullscreen and fcActive:
+            if (not fullscreen) and fcActive:
                 fcActive = False
                 # Playlist
                 dockWidgetVisible = False
