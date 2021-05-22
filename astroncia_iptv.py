@@ -3965,9 +3965,19 @@ if __name__ == '__main__':
                     if is_cursor_y and cursor_y < win_height:
                         if not dockWidget2Visible:
                             dockWidget2Visible = True
+                            dockWidget2.setFloating(True)
+                            dockWidget2.move(0, win.height() - dockWidget2.height())
+                            dockWidget2.resize(win.width(), DOCK_WIDGET2_HEIGHT_HIGH)
+                            dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
+                            dockWidget2.setWindowOpacity(0.8)
                             dockWidget2.show()
+                            dockWidget2.setWindowOpacity(0.8)
+                            dockWidget2.move(0, win.height() - dockWidget2.height())
                     else:
                         dockWidget2Visible = False
+                        dockWidget2.setWindowOpacity(1)
+                        dockWidget2.hide()
+                        dockWidget2.setFloating(False)
                         dockWidget2.hide()
             if (not fullscreen) and fcActive:
                 fcActive = False
