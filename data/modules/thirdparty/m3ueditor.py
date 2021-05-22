@@ -70,8 +70,9 @@ class PandasModel(QAbstractTableModel):
         self.layoutChanged.emit()
 
 class Viewer(QMainWindow):
-    def __init__(self, parent=None, lang=None):
+    def __init__(self, parent=None, lang=None, iconsFolder=None):
       super(Viewer, self).__init__(parent)
+      self.iconsFolder = iconsFolder
       self.LANG = lang
       self.df = None
       self.filename = ""
@@ -200,7 +201,7 @@ class Viewer(QMainWindow):
         tb.addSeparator()
 
         del_btn = QToolButton()
-        del_btn.setIcon(QIcon(str(Path('data', 'icons', 'trash.png'))))
+        del_btn.setIcon(QIcon(str(Path('data', self.iconsFolder, 'trash.png'))))
         del_btn.setToolTip(self.LANG['m3u_deleterow'])
         del_btn.clicked.connect(self.del_row)
         tb.addWidget(del_btn)
@@ -208,19 +209,19 @@ class Viewer(QMainWindow):
         tb.addSeparator()
 
         add_btn = QToolButton()
-        add_btn.setIcon(QIcon(str(Path('data', 'icons', 'plus.png'))))
+        add_btn.setIcon(QIcon(str(Path('data', self.iconsFolder, 'plus.png'))))
         add_btn.setToolTip(self.LANG['m3u_addrow'])
         add_btn.clicked.connect(self.add_row)
         tb.addWidget(add_btn)
 
         move_down_btn = QToolButton()
-        move_down_btn.setIcon(QIcon(str(Path('data', 'icons', 'arrow-down.png'))))
+        move_down_btn.setIcon(QIcon(str(Path('data', self.iconsFolder, 'arrow-down.png'))))
         move_down_btn.setToolTip(self.LANG['m3u_movedown'])
         move_down_btn.clicked.connect(self.move_down)
         tb.addWidget(move_down_btn)
 
         move_up_up = QToolButton()
-        move_up_up.setIcon(QIcon(str(Path('data', 'icons', 'arrow-up.png'))))
+        move_up_up.setIcon(QIcon(str(Path('data', self.iconsFolder, 'arrow-up.png'))))
         move_up_up.setToolTip(self.LANG['m3u_moveup'])
         move_up_up.clicked.connect(self.move_up)
         tb.addWidget(move_up_up)

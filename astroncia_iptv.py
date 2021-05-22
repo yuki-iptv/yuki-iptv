@@ -362,7 +362,7 @@ if __name__ == '__main__':
         channels = {}
         programmes = {}
 
-        m3u_editor = Viewer(lang=LANG)
+        m3u_editor = Viewer(lang=LANG, iconsFolder=ICONS_FOLDER)
 
         def show_m3u_editor():
             if m3u_editor.isVisible():
@@ -4062,7 +4062,7 @@ if __name__ == '__main__':
         if settings["remembervol"] and os.path.isfile(str(Path(LOCAL_DIR, 'volume.json'))):
             try:
                 volfile_1 = open(str(Path(LOCAL_DIR, 'volume.json')), 'r', encoding="utf8")
-                volfile_1_out = json.loads(volfile_1.read())["volume"]
+                volfile_1_out = int(json.loads(volfile_1.read())["volume"])
                 volfile_1.close()
             except: # pylint: disable=bare-except
                 volfile_1_out = 100
