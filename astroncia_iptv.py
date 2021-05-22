@@ -634,7 +634,9 @@ if __name__ == '__main__':
         epg_label_1 = QtWidgets.QLabel('{}:'.format(LANG['epgaddress']))
         name_edit_1 = QtWidgets.QLineEdit()
         m3u_edit_1 = QtWidgets.QLineEdit()
+        m3u_edit_1.setPlaceholderText(LANG['filepath'])
         epg_edit_1 = QtWidgets.QLineEdit()
+        epg_edit_1.setPlaceholderText(LANG['filepath'])
         m3u_file_1 = QtWidgets.QPushButton()
         m3u_file_1.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'file.png'))))
         m3u_file_1.clicked.connect(m3u_file_1_clicked)
@@ -1246,6 +1248,7 @@ if __name__ == '__main__':
             stopPlayer()
             if play_url1.startswith("udp://") or play_url1.startswith("rtp://"):
                 try:
+                    # For low latency on multicast
                     print_with_time("Using multicast optimized settings")
                     player.cache = 'no'
                     player.untimed = True
@@ -1546,9 +1549,11 @@ if __name__ == '__main__':
                 reset_prov()
 
         sm3u = QtWidgets.QLineEdit()
+        sm3u.setPlaceholderText(LANG['filepath'])
         sm3u.setText(settings['m3u'])
         sm3u.textEdited.connect(reset_prov)
         sepg = QtWidgets.QLineEdit()
+        sepg.setPlaceholderText(LANG['filepath'])
         sepg.setText(settings['epg'] if not settings['epg'].startswith('^^::MULTIPLE::^^') else '')
         sepg.textEdited.connect(reset_prov)
         sepgcombox = QtWidgets.QComboBox()
@@ -3923,10 +3928,16 @@ if __name__ == '__main__':
                 player.osc = False
 
         dockWidgetVisible = False
+        dockWidget2Visible = False
+
+        fcActive = True
 
         def thread_mouse():
-            global fullscreen, key_t_visible, dockWidgetVisible
+            global fullscreen, key_t_visible, dockWidgetVisible, dockWidget2Visible, fcActive
+            if fullscreen:
+                fcActive = True
             if fullscreen and not key_t_visible:
+                # Playlist
                 cursor_x = win.main_widget.mapFromGlobal(QtGui.QCursor.pos()).x()
                 win_width = win.width()
                 is_cursor_x = cursor_x > win_width - (DOCK_WIDGET_WIDTH + 10)
@@ -3946,10 +3957,29 @@ if __name__ == '__main__':
                     dockWidget.hide()
                     dockWidget.setFloating(False)
                     dockWidget.hide()
-            if not fullscreen:
+                # Control panel
+                if settings["hidempv"]:
+                    cursor_y = win.main_widget.mapFromGlobal(QtGui.QCursor.pos()).y()
+                    win_height = win.height()
+                    is_cursor_y = cursor_y > win_height - (dockWidget2.height() + 10)
+                    if is_cursor_y and cursor_y < win_height:
+                        if not dockWidget2Visible:
+                            dockWidget2Visible = True
+                            dockWidget2.show()
+                    else:
+                        dockWidget2Visible = False
+                        dockWidget2.hide()
+            if not fullscreen and fcActive:
+                fcActive = False
+                # Playlist
                 dockWidgetVisible = False
                 dockWidget.setWindowOpacity(1)
                 dockWidget.setFloating(False)
+                # Control panel
+                if settings["hidempv"]:
+                    dockWidget2Visible = False
+                    dockWidget2.setWindowOpacity(1)
+                    dockWidget2.setFloating(False)
 
         key_t_visible = False
         def key_t():
