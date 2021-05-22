@@ -2321,20 +2321,9 @@ if __name__ == '__main__':
             if fullscreen:
                 mpv_fullscreen()
 
-        def mpv_fullscreen():
+        def dockWidget_out_clicked():
             global fullscreen, l1, time_stop
             if not fullscreen:
-                # dockWidget staying window workaround
-                # == START ==
-                dockWidget2.setWindowOpacity(1)
-                dockWidget2.hide()
-                dockWidget2.setFloating(False)
-                dockWidget2.hide()
-                dockWidget.setWindowOpacity(1)
-                dockWidget.hide()
-                dockWidget.setFloating(False)
-                dockWidget.hide()
-                # == END ==
                 #l1.show()
                 #l1.setText2("{} F".format(LANG['exitfullscreen']))
                 #time_stop = time.time() + 3
@@ -2365,6 +2354,12 @@ if __name__ == '__main__':
                 chan.show()
                 win.update()
                 win.showNormal()
+
+        dockWidget_out = QtWidgets.QPushButton()
+        dockWidget_out.clicked.connect(dockWidget_out_clicked)
+
+        def mpv_fullscreen():
+            dockWidget_out.click()
 
         old_value = 100
 
@@ -3949,63 +3944,7 @@ if __name__ == '__main__':
         fcActive = True
 
         def thread_mouse():
-            global fullscreen, key_t_visible, dockWidgetVisible, dockWidget2Visible, fcActive
-            if fullscreen:
-                fcActive = True
-            if fullscreen and not key_t_visible:
-                # Playlist
-                cursor_x = win.main_widget.mapFromGlobal(QtGui.QCursor.pos()).x()
-                win_width = win.width()
-                is_cursor_x = cursor_x > win_width - (DOCK_WIDGET_WIDTH + 10)
-                if is_cursor_x and cursor_x < win_width:
-                    if not dockWidgetVisible:
-                        dockWidgetVisible = True
-                        dockWidget.setFloating(True)
-                        dockWidget.move(win.width() - dockWidget.width(), 0)
-                        dockWidget.resize(dockWidget.width(), win.height() - 150)
-                        dockWidget.setWindowOpacity(0.8)
-                        dockWidget.show()
-                        dockWidget.setWindowOpacity(0.8)
-                        dockWidget.move(win.width() - dockWidget.width(), 0)
-                else:
-                    dockWidgetVisible = False
-                    dockWidget.setWindowOpacity(1)
-                    dockWidget.hide()
-                    dockWidget.setFloating(False)
-                    dockWidget.hide()
-                # Control panel
-                if settings["hidempv"]:
-                    cursor_y = win.main_widget.mapFromGlobal(QtGui.QCursor.pos()).y()
-                    win_height = win.height()
-                    is_cursor_y = cursor_y > win_height - (dockWidget2.height() + 150)
-                    if is_cursor_y and cursor_y < win_height:
-                        if not dockWidget2Visible:
-                            dockWidget2Visible = True
-                            dockWidget2.setFloating(True)
-                            dockWidget2.move(0, win.height() - dockWidget2.height())
-                            dockWidget2.resize(win.width(), DOCK_WIDGET2_HEIGHT_HIGH)
-                            dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
-                            dockWidget2.setWindowOpacity(0.8)
-                            dockWidget2.show()
-                            dockWidget2.setWindowOpacity(0.8)
-                            dockWidget2.move(0, win.height() - dockWidget2.height())
-                    else:
-                        dockWidget2Visible = False
-                        dockWidget2.setWindowOpacity(1)
-                        dockWidget2.hide()
-                        dockWidget2.setFloating(False)
-                        dockWidget2.hide()
-            if (not fullscreen) and fcActive:
-                fcActive = False
-                # Playlist
-                dockWidgetVisible = False
-                dockWidget.setWindowOpacity(1)
-                dockWidget.setFloating(False)
-                # Control panel
-                if settings["hidempv"]:
-                    dockWidget2Visible = False
-                    dockWidget2.setWindowOpacity(1)
-                    dockWidget2.setFloating(False)
+            pass
 
         key_t_visible = False
         def key_t():
