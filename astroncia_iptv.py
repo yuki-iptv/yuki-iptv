@@ -353,7 +353,12 @@ if __name__ == '__main__':
         if not is_program_actual(tvguide_sets):
             use_local_tvguide = False
 
-        main_icon = QtGui.QIcon(str(Path(os.path.dirname(__file__), 'data', 'icons', 'tv.png')))
+        if settings["themecompat"]:
+            ICONS_FOLDER = 'icons_dark'
+        else:
+            ICONS_FOLDER = 'icons'
+
+        main_icon = QtGui.QIcon(str(Path(os.path.dirname(__file__), 'data', ICONS_FOLDER, 'tv.png')))
         channels = {}
         programmes = {}
 
@@ -504,7 +509,7 @@ if __name__ == '__main__':
         timer.start(500)
         timer.timeout.connect(lambda: None)
 
-        TV_ICON = QtGui.QIcon(str(Path('data', 'icons', 'tv.png')))
+        TV_ICON = QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'tv.png')))
         ICONS_CACHE = {}
         ICONS_CACHE_FETCHED = {}
 
@@ -638,10 +643,10 @@ if __name__ == '__main__':
         epg_edit_1 = QtWidgets.QLineEdit()
         epg_edit_1.setPlaceholderText(LANG['filepath'])
         m3u_file_1 = QtWidgets.QPushButton()
-        m3u_file_1.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'file.png'))))
+        m3u_file_1.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'file.png'))))
         m3u_file_1.clicked.connect(m3u_file_1_clicked)
         epg_file_1 = QtWidgets.QPushButton()
-        epg_file_1.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'file.png'))))
+        epg_file_1.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'file.png'))))
         epg_file_1.clicked.connect(epg_file_1_clicked)
         save_btn_1 = QtWidgets.QPushButton(LANG['save'])
         save_btn_1.setStyleSheet('font-weight: bold; color: green;')
@@ -1160,7 +1165,7 @@ if __name__ == '__main__':
             global event_handler
             #print_with_time("mpv_override_stop called")
             player.command('stop')
-            player.play(str(Path('data', 'icons', 'main.png')))
+            player.play(str(Path('data', ICONS_FOLDER, 'main.png')))
             if (not os.name == 'nt') and event_handler:
                 try:
                     event_handler.on_title()
@@ -1216,7 +1221,7 @@ if __name__ == '__main__':
                 mpv_override_stop()
             except: # pylint: disable=bare-except
                 player.loop = True
-                mpv_override_play(str(Path('data', 'icons', 'main.png')))
+                mpv_override_play(str(Path('data', ICONS_FOLDER, 'main.png')))
 
         def setVideoAspect(va):
             if va == 0:
@@ -1634,23 +1639,23 @@ if __name__ == '__main__':
             save_settings()
 
         sm3ufile = QtWidgets.QPushButton(settings_win)
-        sm3ufile.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'file.png'))))
+        sm3ufile.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'file.png'))))
         sm3ufile.clicked.connect(m3u_select)
         sm3uupd = QtWidgets.QPushButton(settings_win)
-        sm3uupd.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'update.png'))))
+        sm3uupd.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'update.png'))))
         sm3uupd.clicked.connect(update_m3u)
         sm3uupd.setToolTip(LANG['update'])
 
         sepgfile = QtWidgets.QPushButton(settings_win)
-        sepgfile.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'file.png'))))
+        sepgfile.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'file.png'))))
         sepgfile.clicked.connect(epg_select)
         sepgupd = QtWidgets.QPushButton(settings_win)
-        sepgupd.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'update.png'))))
+        sepgupd.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'update.png'))))
         sepgupd.clicked.connect(force_update_epg)
         sepgupd.setToolTip(LANG['update'])
 
         sfolder = QtWidgets.QPushButton(settings_win)
-        sfolder.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'file.png'))))
+        sfolder.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'file.png'))))
         sfolder.clicked.connect(save_folder_select)
 
         soffset = QtWidgets.QDoubleSpinBox()
@@ -2153,7 +2158,7 @@ if __name__ == '__main__':
         chan.resize(200, 30)
 
         loading1 = QtWidgets.QLabel(win)
-        loading_movie = QtGui.QMovie(str(Path('data', 'icons', 'loading.gif')))
+        loading_movie = QtGui.QMovie(str(Path('data', ICONS_FOLDER, 'loading.gif')))
         loading1.setMovie(loading_movie)
         loading1.setStyleSheet('background-color: white;')
         loading1.resize(32, 32)
@@ -2285,11 +2290,11 @@ if __name__ == '__main__':
 
         def mpv_play():
             if player.pause:
-                label3.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'pause.png'))))
+                label3.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'pause.png'))))
                 label3.setToolTip(LANG['pause'])
                 mpv_override_pause(False)
             else:
-                label3.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'play.png'))))
+                label3.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'play.png'))))
                 label3.setToolTip(LANG['play'])
                 mpv_override_pause(True)
 
@@ -2303,7 +2308,7 @@ if __name__ == '__main__':
             playing = False
             stopPlayer()
             player.loop = True
-            mpv_override_play(str(Path('data', 'icons', 'main.png')))
+            mpv_override_play(str(Path('data', ICONS_FOLDER, 'main.png')))
             chan.setText(LANG['nochannelselected'])
             progress.hide()
             start_label.hide()
@@ -2358,14 +2363,14 @@ if __name__ == '__main__':
             l1.show()
             if player.mute:
                 if old_value > 50:
-                    label6.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'volume.png'))))
+                    label6.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'volume.png'))))
                 else:
-                    label6.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'volume-low.png'))))
+                    label6.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'volume-low.png'))))
                 mpv_override_mute(False)
                 label7.setValue(old_value)
                 l1.setText2("{}: {}%".format(LANG['volume'], int(old_value)))
             else:
-                label6.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'mute.png'))))
+                label6.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'mute.png'))))
                 mpv_override_mute(True)
                 old_value = label7.value()
                 label7.setValue(0)
@@ -2386,13 +2391,13 @@ if __name__ == '__main__':
             mpv_override_volume(vol)
             if vol == 0:
                 mpv_override_mute(True)
-                label6.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'mute.png'))))
+                label6.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'mute.png'))))
             else:
                 mpv_override_mute(False)
                 if vol > 50:
-                    label6.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'volume.png'))))
+                    label6.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'volume.png'))))
                 else:
-                    label6.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'volume-low.png'))))
+                    label6.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'volume-low.png'))))
 
         dockWidget = QtWidgets.QDockWidget(win)
         win.listWidget = QtWidgets.QListWidget()
@@ -2982,7 +2987,7 @@ if __name__ == '__main__':
               subcontrol-origin: margin;
               subcontrol-position: center left;
               left: 1px;
-              image: url(''' + str(Path('data', 'icons', 'leftarrow.png')) + ''');
+              image: url(''' + str(Path('data', ICONS_FOLDER, 'leftarrow.png')) + ''');
               height: 24px;
               width: 24px;
             }
@@ -2991,7 +2996,7 @@ if __name__ == '__main__':
               subcontrol-origin: margin;
               subcontrol-position: center right;
               right: 1px;
-              image: url(''' + str(Path('data', 'icons', 'rightarrow.png')) + ''');
+              image: url(''' + str(Path('data', ICONS_FOLDER, 'rightarrow.png')) + ''');
               height: 24px;
               width: 24px;
             }
@@ -3247,7 +3252,7 @@ if __name__ == '__main__':
             print_with_time("No HTTP referer set up")
         mpv_override_volume(100)
         player.loop = True
-        mpv_override_play(str(Path('data', 'icons', 'main.png')))
+        mpv_override_play(str(Path('data', ICONS_FOLDER, 'main.png')))
 
         @player.event_callback('end_file')
         def ready_handler_2(event): # pylint: disable=unused-argument
@@ -3528,31 +3533,31 @@ if __name__ == '__main__':
                 scheduler_win.show()
 
         label3 = QtWidgets.QPushButton()
-        label3.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'pause.png'))))
+        label3.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'pause.png'))))
         label3.setToolTip(LANG['pause'] + ' (Space)')
         label3.clicked.connect(mpv_play)
         label4 = QtWidgets.QPushButton()
-        label4.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'stop.png'))))
+        label4.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'stop.png'))))
         label4.setToolTip(LANG['stop'] + ' (S)')
         label4.clicked.connect(mpv_stop)
         label5 = QtWidgets.QPushButton()
-        label5.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'fullscreen.png'))))
+        label5.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'fullscreen.png'))))
         label5.setToolTip(LANG['fullscreen'] + ' (F)')
         label5.clicked.connect(mpv_fullscreen)
         label5_0 = QtWidgets.QPushButton()
-        label5_0.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'folder.png'))))
+        label5_0.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'folder.png'))))
         label5_0.setToolTip(LANG['openrecordingsfolder'])
         label5_0.clicked.connect(open_recording_folder)
         label5_1 = QtWidgets.QPushButton()
-        label5_1.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'record.png'))))
+        label5_1.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'record.png'))))
         label5_1.setToolTip(LANG["record"] + ' (R)')
         label5_1.clicked.connect(do_record)
         label5_2 = QtWidgets.QPushButton()
-        label5_2.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'calendar.png'))))
+        label5_2.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'calendar.png'))))
         label5_2.setToolTip(LANG["scheduler"] + ' (D)')
         label5_2.clicked.connect(show_scheduler)
         label6 = QtWidgets.QPushButton()
-        label6.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'volume.png'))))
+        label6.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'volume.png'))))
         label6.setToolTip(LANG['volume'] + ' (M)')
         label6.clicked.connect(mpv_mute)
         label7 = QtWidgets.QSlider(QtCore.Qt.Horizontal)
@@ -3561,43 +3566,43 @@ if __name__ == '__main__':
         label7.valueChanged.connect(mpv_volume_set)
         label7.setValue(100)
         label7_1 = QtWidgets.QPushButton()
-        label7_1.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'screenshot.png'))))
+        label7_1.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'screenshot.png'))))
         label7_1.setToolTip(LANG['screenshot'] + ' (H)')
         label7_1.clicked.connect(do_screenshot)
         label7_2 = QtWidgets.QPushButton()
-        label7_2.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'timeshift.png'))))
+        label7_2.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'timeshift.png'))))
         label7_2.setToolTip(LANG['timeshift'] + ' (E)')
         label7_2.clicked.connect(show_timeshift)
         label8 = QtWidgets.QPushButton()
-        label8.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'settings.png'))))
+        label8.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'settings.png'))))
         label8.setToolTip(LANG['settings'])
         label8.clicked.connect(show_settings)
         label8_0 = QtWidgets.QPushButton()
-        label8_0.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'tv-blue.png'))))
+        label8_0.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'tv-blue.png'))))
         label8_0.setToolTip(LANG['providers'])
         label8_0.clicked.connect(show_providers)
         label8_1 = QtWidgets.QPushButton()
-        label8_1.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'tvguide.png'))))
+        label8_1.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'tvguide.png'))))
         label8_1.setToolTip(LANG['tvguide'] + ' (G)')
         label8_1.clicked.connect(show_tvguide)
         label8_4 = QtWidgets.QPushButton()
-        label8_4.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'sort.png'))))
+        label8_4.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'sort.png'))))
         label8_4.setToolTip(LANG['sort'].replace('\n', ' ') + ' (I)')
         label8_4.clicked.connect(show_sort)
         label8_2 = QtWidgets.QPushButton()
-        label8_2.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'prev.png'))))
+        label8_2.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'prev.png'))))
         label8_2.setToolTip(LANG['prevchannel'] + ' (P)')
         label8_2.clicked.connect(prev_channel)
         label8_3 = QtWidgets.QPushButton()
-        label8_3.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'next.png'))))
+        label8_3.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'next.png'))))
         label8_3.setToolTip(LANG['nextchannel'] + ' (N)')
         label8_3.clicked.connect(next_channel)
         label8_5 = QtWidgets.QPushButton()
-        label8_5.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'edit.png'))))
+        label8_5.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'edit.png'))))
         label8_5.setToolTip(LANG['m3u_m3ueditor'])
         label8_5.clicked.connect(show_m3u_editor)
         label9 = QtWidgets.QPushButton()
-        label9.setIcon(QtGui.QIcon(str(Path('data', 'icons', 'help.png'))))
+        label9.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'help.png'))))
         label9.setToolTip(LANG['help'])
         label9.clicked.connect(show_help)
         label12 = QtWidgets.QLabel('')
