@@ -3260,6 +3260,16 @@ if __name__ == '__main__':
         player.loop = True
         mpv_override_play(str(Path('data', ICONS_FOLDER, 'main.png')))
 
+        def main_channel_settings():
+            global item_selected
+            item_selected = playing_chan
+            settings_context_menu()
+
+        right_click_menu = QtWidgets.QMenu()
+        right_click_menu.addAction(LANG['pause'], mpv_play)
+        right_click_menu.addSeparator()
+        right_click_menu.addAction(LANG['channelsettings'], main_channel_settings)
+
         @player.event_callback('end_file')
         def ready_handler_2(event): # pylint: disable=unused-argument
             if event['event']['error'] != 0:
@@ -3273,7 +3283,7 @@ if __name__ == '__main__':
         @player.on_key_press('MBTN_RIGHT')
         def my_mouse_right():
             if playing_chan:
-                mpv_play()
+                right_click_menu.exec_(QtGui.QCursor.pos())
 
         @player.on_key_press('MBTN_LEFT_DBL')
         def my_leftdbl_binding():
