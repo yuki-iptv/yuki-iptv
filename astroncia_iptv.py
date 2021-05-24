@@ -3711,10 +3711,17 @@ if __name__ == '__main__':
         l1.setStatic2 = set_text_static
         l1.hide()
 
+        def getUserAgent():
+            try:
+                userAgent2 = player.user_agent
+            except: # pylint: disable=bare-except
+                userAgent2 = def_user_agent
+            return userAgent2
+
         def saveLastChannel():
             if playing_url:
                 lastfile = open(str(Path(LOCAL_DIR, 'lastchannels.json')), 'w', encoding="utf8")
-                lastfile.write(json.dumps([playing_chan, playing_url, player.user_agent]))
+                lastfile.write(json.dumps([playing_chan, playing_url, getUserAgent()]))
                 lastfile.close()
             else:
                 if os.path.isfile(str(Path(LOCAL_DIR, 'lastchannels.json'))):
@@ -3722,6 +3729,7 @@ if __name__ == '__main__':
 
         def myExitHandler():
             global stopped, epg_thread, epg_thread_2, mpris_loop
+            saveLastChannel()
             stop_record()
             for rec_1 in sch_recordings:
                 do_stop_record(rec_1)
@@ -3750,7 +3758,6 @@ if __name__ == '__main__':
                     channel_icons_data.manager_1.shutdown()
             except: # pylint: disable=bare-except
                 pass
-            saveLastChannel()
 
         first_boot = False
         first_boot_1 = True
