@@ -3301,8 +3301,8 @@ if __name__ == '__main__':
         def my_up_binding():
             global l1, time_stop
             volume = int(player.volume + 1)
-            if volume > 100:
-                volume = 100
+            if volume > 200:
+                volume = 200
             label7.setValue(volume)
             mpv_volume_set()
 
@@ -3578,7 +3578,7 @@ if __name__ == '__main__':
         label6.clicked.connect(mpv_mute)
         label7 = QtWidgets.QSlider(QtCore.Qt.Horizontal)
         label7.setMinimum(0)
-        label7.setMaximum(100)
+        label7.setMaximum(200)
         label7.valueChanged.connect(mpv_volume_set)
         label7.setValue(100)
         label7_1 = QtWidgets.QPushButton()
