@@ -4030,7 +4030,7 @@ if __name__ == '__main__':
         dockWidgetVisible = False
         dockWidget2Visible = False
 
-        def thread_mouse():
+        def thread_mouse(): # pylint: disable=too-many-branches
             global fullscreen, key_t_visible, dockWidgetVisible, dockWidget2Visible
             if fullscreen:
                 dockWidget.setFixedWidth(settings['exp2'])
