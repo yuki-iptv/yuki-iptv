@@ -527,6 +527,9 @@ msgstr "Скрыть панель mpv"
 msgid "filepath"
 msgstr "Путь к файлу или ссылка"
 
+msgid "panscan"
+msgstr "Пансканирование"
+
 msgid "helptext"
 msgstr "Astroncia IPTV, версия {}\n© kestral / astroncia < kestraly (at) gmail.com >\nhttps://gitlab.com/astroncia\n\nПоддержка:\nhttps://forum.ubuntu.name/index.php?topic=314803\n\nКроссплатформенный плеер\nдля просмотра интернет-телевидения\n\nПоддерживается телепрограмма (EPG)\nтолько в форматах XMLTV и JTV!\n\nНе работает канал? Правая клавиша мыши открывает настройки канала.\n\nПосле указания группы в настройках переоткройте приложение.\n\nГорячие клавиши:\n\nF / F11 - полноэкранный режим\nM - выключить звук\nQ - выйти из программы\nПробел - пауза\nS - остановить проигрывание\nH - скриншот\nG - телепрограмма\nR - начать/остановить запись\nP - предыдущий канал\nN - следующий канал\nT - показать/скрыть список каналов\nO - показать/скрыть часы\nI - сортировка каналов\nD - планировщик записи\n\nИконки от Font Awesome ( https://fontawesome.com/ )\nЛицензия иконок - CC BY 4.0 License\n( https://creativecommons.org/licenses/by/4.0/ )"
 

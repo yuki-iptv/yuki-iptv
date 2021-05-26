@@ -1077,6 +1077,7 @@ if __name__ == '__main__':
         gamma_lbl = QtWidgets.QLabel("{}:".format(LANG['gamma']))
         videoaspect_lbl = QtWidgets.QLabel("{}:".format(LANG['videoaspect']))
         zoom_lbl = QtWidgets.QLabel("{}:".format(LANG['zoom']))
+        panscan_lbl = QtWidgets.QLabel("{}:".format(LANG['panscan']))
 
         contrast_choose = QtWidgets.QSpinBox()
         contrast_choose.setMinimum(-100)
@@ -1127,6 +1128,12 @@ if __name__ == '__main__':
         }
         for zoom_var in zoom_vars:
             zoom_choose.addItem(zoom_var)
+
+        panscan_choose = QtWidgets.QDoubleSpinBox()
+        panscan_choose.setMinimum(0)
+        panscan_choose.setMaximum(1)
+        panscan_choose.setSingleStep(0.1)
+        panscan_choose.setDecimals(1)
 
         def_user_agent = uas[settings['useragent']]
         print_with_time("Default user agent: {}".format(def_user_agent))
@@ -1238,6 +1245,9 @@ if __name__ == '__main__':
         def setZoom(zm):
             player.video_zoom = zm
 
+        def setPanscan(ps):
+            player.panscan = ps
+
         def getVideoAspect():
             try:
                 va1 = player.video_aspect_override
@@ -1283,6 +1293,7 @@ if __name__ == '__main__':
             print_with_time("Gamma: {}".format(player.gamma))
             print_with_time("Video aspect: {}".format(getVideoAspect()))
             print_with_time("Zoom: {}".format(player.video_zoom))
+            print_with_time("Panscan: {}".format(player.panscan))
             player.user_agent = ua_ch if isinstance(ua_ch, str) else uas[ua_ch]
             player.loop = True
             mpv_override_stop()
@@ -1301,7 +1312,8 @@ if __name__ == '__main__':
                 "saturation": saturation_choose.value(),
                 "gamma": gamma_choose.value(),
                 "videoaspect": videoaspect_choose.currentIndex(),
-                "zoom": zoom_choose.currentIndex()
+                "zoom": zoom_choose.currentIndex(),
+                "panscan": panscan_choose.value()
             }
             save_channel_sets()
             if playing_chan == chan_3:
@@ -1312,6 +1324,7 @@ if __name__ == '__main__':
                 player.saturation = saturation_choose.value()
                 player.gamma = gamma_choose.value()
                 player.video_zoom = zoom_vars[list(zoom_vars)[zoom_choose.currentIndex()]]
+                player.panscan = panscan_choose.value()
                 setVideoAspect(videoaspect_vars[list(videoaspect_vars)[videoaspect_choose.currentIndex()]])
                 stopPlayer()
                 doPlay(playing_url, uas[useragent_choose.currentIndex()])
@@ -1400,6 +1413,13 @@ if __name__ == '__main__':
         horizontalLayout2_10.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_10.setAlignment(QtCore.Qt.AlignCenter)
 
+        horizontalLayout2_11 = QtWidgets.QHBoxLayout()
+        horizontalLayout2_11.addWidget(QtWidgets.QLabel("\n"))
+        horizontalLayout2_11.addWidget(panscan_lbl)
+        horizontalLayout2_11.addWidget(panscan_choose)
+        horizontalLayout2_11.addWidget(QtWidgets.QLabel("\n"))
+        horizontalLayout2_11.setAlignment(QtCore.Qt.AlignCenter)
+
         horizontalLayout3 = QtWidgets.QHBoxLayout()
         horizontalLayout3.addWidget(save_btn)
 
@@ -1416,6 +1436,7 @@ if __name__ == '__main__':
         verticalLayout.addLayout(horizontalLayout2_8)
         verticalLayout.addLayout(horizontalLayout2_9)
         verticalLayout.addLayout(horizontalLayout2_10)
+        verticalLayout.addLayout(horizontalLayout2_11)
         verticalLayout.addLayout(horizontalLayout3)
         verticalLayout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
 
@@ -2265,11 +2286,16 @@ if __name__ == '__main__':
                     setZoom(zoom_vars[list(zoom_vars)[d['zoom']]])
                 else:
                     setZoom(0)
+                if 'panscan' in d:
+                    setPanscan(d['panscan'])
+                else:
+                    setPanscan(0)
                 ua_choose = d['useragent']
             else:
                 player.deinterlace = settings['deinterlace']
                 setVideoAspect(0)
                 setZoom(0)
+                setPanscan(0)
                 player.gamma = 0
                 player.saturation = 0
                 player.hue = 0
@@ -2896,6 +2922,10 @@ if __name__ == '__main__':
                     zoom_choose.setCurrentIndex(channel_sets[item_selected]['zoom'])
                 except: # pylint: disable=bare-except
                     zoom_choose.setCurrentIndex(0)
+                try:
+                    panscan_choose.setValue(channel_sets[item_selected]['panscan'])
+                except: # pylint: disable=bare-except
+                    panscan_choose.setValue(0)
             else:
                 deinterlace_chk.setChecked(True)
                 hidden_chk.setChecked(False)
@@ -2906,6 +2936,7 @@ if __name__ == '__main__':
                 gamma_choose.setValue(0)
                 videoaspect_choose.setCurrentIndex(0)
                 zoom_choose.setCurrentIndex(0)
+                panscan_choose.setValue(0)
                 useragent_choose.setCurrentIndex(settings['useragent'])
                 group_text.setText('')
             chan_win.show()
