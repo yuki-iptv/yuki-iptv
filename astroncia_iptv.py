@@ -244,6 +244,8 @@ if __name__ == '__main__':
                 'remembervol': False,
                 'hidempv': False,
                 'themecompat': False,
+                'exp1': False,
+                'exp2': DOCK_WIDGET_WIDTH,
                 'referer': '',
                 'gui': 0
             }
@@ -272,6 +274,10 @@ if __name__ == '__main__':
             settings['hidempv'] = False
         if 'themecompat' not in settings:
             settings['themecompat'] = False
+        if 'exp1' not in settings:
+            settings['exp1'] = False
+        if 'exp2' not in settings:
+            settings['exp2'] = DOCK_WIDGET_WIDTH
         if 'gui' not in settings:
             settings['gui'] = 0
         if 'referer' not in settings:
@@ -1487,6 +1493,8 @@ if __name__ == '__main__':
                 'remembervol': remembervol_flag.isChecked(),
                 'hidempv': hidempv_flag.isChecked(),
                 'themecompat': themecompat_flag.isChecked(),
+                'exp1': exp1_flag.isChecked(),
+                'exp2': exp2_input.value(),
                 'referer': referer_choose.text(),
                 'gui': gui_choose.currentIndex()
             }
@@ -1801,6 +1809,16 @@ if __name__ == '__main__':
         themecompat_flag = QtWidgets.QCheckBox()
         themecompat_flag.setChecked(settings['themecompat'])
 
+        exp_warning = QtWidgets.QLabel(LANG['expwarning'])
+        exp_warning.setStyleSheet('color:red')
+        exp1_label = QtWidgets.QLabel("{}:".format(LANG['exp1']))
+        exp2_label = QtWidgets.QLabel("{}:".format(LANG['exp2']))
+        exp1_flag = QtWidgets.QCheckBox()
+        exp1_flag.setChecked(settings['exp1'])
+        exp2_input = QtWidgets.QSpinBox()
+        exp2_input.setMaximum(9999)
+        exp2_input.setValue(settings['exp2'])
+
         tabs = QtWidgets.QTabWidget()
 
         tab1 = QtWidgets.QWidget()
@@ -1808,11 +1826,13 @@ if __name__ == '__main__':
         tab3 = QtWidgets.QWidget()
         tab4 = QtWidgets.QWidget()
         tab5 = QtWidgets.QWidget()
+        tab6 = QtWidgets.QWidget()
         tabs.addTab(tab1, LANG['tab_main'])
         tabs.addTab(tab2, LANG['tab_video'])
         tabs.addTab(tab3, LANG['tab_network'])
         tabs.addTab(tab5, LANG['tab_gui'])
         tabs.addTab(tab4, LANG['tab_other'])
+        tabs.addTab(tab6, LANG['tab_exp'])
         tab1.layout = QtWidgets.QGridLayout()
         tab1.layout.addWidget(lang_label, 0, 0)
         tab1.layout.addWidget(slang, 0, 1)
@@ -1871,6 +1891,17 @@ if __name__ == '__main__':
         tab5.layout.addWidget(remembervol_flag, 5, 1)
         tab5.layout.addWidget(QtWidgets.QLabel(), 6, 0)
         tab5.setLayout(tab5.layout)
+
+        tab6.layout = QtWidgets.QGridLayout()
+        tab6.layout.addWidget(exp_warning, 0, 0)
+        tab6.layout.addWidget(QtWidgets.QLabel(), 1, 0)
+        tab6.layout.addWidget(exp1_label, 2, 0)
+        tab6.layout.addWidget(exp1_flag, 2, 1)
+        tab6.layout.addWidget(exp2_label, 3, 0)
+        tab6.layout.addWidget(exp2_input, 3, 1)
+        tab6.layout.addWidget(QtWidgets.QLabel(), 3, 2)
+        tab6.layout.addWidget(QtWidgets.QLabel(), 4, 0)
+        tab6.setLayout(tab6.layout)
 
         grid2 = QtWidgets.QVBoxLayout()
         grid2.addWidget(tabs)
@@ -2364,6 +2395,16 @@ if __name__ == '__main__':
                 win.update()
                 win.showFullScreen()
             else:
+                dockWidget.setWindowOpacity(1)
+                dockWidget.hide()
+                if settings['exp1']:
+                    dockWidget.setFloating(False)
+                dockWidget.hide()
+                dockWidget2.setWindowOpacity(1)
+                dockWidget2.hide()
+                if settings['exp1']:
+                    dockWidget2.setFloating(False)
+                dockWidget2.hide()
                 fullscreen = False
                 if l1.text().endswith('{} F'.format(LANG['exitfullscreen'])):
                     l1.setText2('')
@@ -3991,26 +4032,34 @@ if __name__ == '__main__':
 
         def thread_mouse():
             global fullscreen, key_t_visible, dockWidgetVisible, dockWidget2Visible
+            if fullscreen:
+                dockWidget.setFixedWidth(settings['exp2'])
+            else:
+                dockWidget.setFixedWidth(DOCK_WIDGET_WIDTH)
             if fullscreen and not key_t_visible:
                 # Playlist
                 cursor_x = win.main_widget.mapFromGlobal(QtGui.QCursor.pos()).x()
                 win_width = win.width()
-                is_cursor_x = cursor_x > win_width - (DOCK_WIDGET_WIDTH + 10)
+                is_cursor_x = cursor_x > win_width - (settings['exp2'] + 10)
                 if is_cursor_x and cursor_x < win_width:
                     if not dockWidgetVisible:
                         dockWidgetVisible = True
-                        #dockWidget.setFloating(True)
-                        dockWidget.move(win.width() - dockWidget.width(), 0)
+                        of1 = 0
+                        if settings['exp1']:
+                            of1 = 50
+                            dockWidget.setFloating(True)
+                        dockWidget.move(win.width() - dockWidget.width(), of1)
                         dockWidget.resize(dockWidget.width(), win.height() - 150)
-                        dockWidget.setWindowOpacity(0.8)
+                        dockWidget.setWindowOpacity(0.7)
                         dockWidget.show()
-                        dockWidget.setWindowOpacity(0.8)
-                        dockWidget.move(win.width() - dockWidget.width(), 0)
+                        dockWidget.setWindowOpacity(0.7)
+                        dockWidget.move(win.width() - dockWidget.width(), of1)
                 else:
                     dockWidgetVisible = False
                     dockWidget.setWindowOpacity(1)
                     dockWidget.hide()
-                    #dockWidget.setFloating(False)
+                    if settings['exp1']:
+                        dockWidget.setFloating(False)
                     dockWidget.hide()
                 # Control panel
                 if settings["hidempv"]:
@@ -4020,19 +4069,21 @@ if __name__ == '__main__':
                     if is_cursor_y and cursor_y < win_height:
                         if not dockWidget2Visible:
                             dockWidget2Visible = True
-                            #dockWidget2.setFloating(True)
+                            if settings['exp1']:
+                                dockWidget2.setFloating(True)
                             dockWidget2.move(0, win.height() - dockWidget2.height())
                             dockWidget2.resize(win.width(), DOCK_WIDGET2_HEIGHT_HIGH)
                             dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
-                            dockWidget2.setWindowOpacity(0.8)
+                            dockWidget2.setWindowOpacity(0.7)
                             dockWidget2.show()
-                            dockWidget2.setWindowOpacity(0.8)
+                            dockWidget2.setWindowOpacity(0.7)
                             dockWidget2.move(0, win.height() - dockWidget2.height())
                     else:
                         dockWidget2Visible = False
                         dockWidget2.setWindowOpacity(1)
                         dockWidget2.hide()
-                        #dockWidget2.setFloating(False)
+                        if settings['exp1']:
+                            dockWidget2.setFloating(False)
                         dockWidget2.hide()
 
         key_t_visible = False
