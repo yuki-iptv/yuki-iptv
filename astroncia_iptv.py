@@ -3354,6 +3354,10 @@ if __name__ == '__main__':
         player.loop = True
         mpv_override_play(str(Path('data', ICONS_FOLDER, 'main.png')))
 
+        print_with_time("")
+        print_with_time("M3U: '{}' EPG: '{}'".format(settings["m3u"], settings["epg"]))
+        print_with_time("")
+
         def main_channel_settings():
             global item_selected
             item_selected = playing_chan
