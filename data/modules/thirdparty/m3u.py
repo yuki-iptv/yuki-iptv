@@ -60,10 +60,22 @@ class M3uParser:
             self.lines.pop()
         if self.lines[0].startswith('#EXTM3U'):
             self.epg_url = ""
-            try:
-                self.epg_url = re.findall('url-tvg="(.*?)"', self.lines[0])[0]
-            except: # pylint: disable=bare-except
-                pass
+            if 'x-tvg-url="' in self.lines[0]:
+                try:
+                    self.epg_url = re.findall('x-tvg-url="(.*?)"', self.lines[0])[0]
+                except: # pylint: disable=bare-except
+                    pass
+            else:
+                if 'tvg-url="' in self.lines[0]:
+                    try:
+                        self.epg_url = re.findall('tvg-url="(.*?)"', self.lines[0])[0]
+                    except: # pylint: disable=bare-except
+                        pass
+                else:
+                    try:
+                        self.epg_url = re.findall('url-tvg="(.*?)"', self.lines[0])[0]
+                    except: # pylint: disable=bare-except
+                        pass
             # No dead URLs, please
             self.epg_url = self.epg_url if self.epg_url != 'http://server/jtv.zip' else ''
             self.lines.pop(0)
