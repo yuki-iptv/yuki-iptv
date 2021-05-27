@@ -246,6 +246,7 @@ if __name__ == '__main__':
                 'themecompat': False,
                 'exp1': False,
                 'exp2': DOCK_WIDGET_WIDTH,
+                'mouseswitchchannels': False,
                 'referer': '',
                 'gui': 0
             }
@@ -278,6 +279,8 @@ if __name__ == '__main__':
             settings['exp1'] = False
         if 'exp2' not in settings:
             settings['exp2'] = DOCK_WIDGET_WIDTH
+        if 'mouseswitchchannels' not in settings:
+            settings['mouseswitchchannels'] = False
         if 'gui' not in settings:
             settings['gui'] = 0
         if 'referer' not in settings:
@@ -1495,6 +1498,7 @@ if __name__ == '__main__':
                 'themecompat': themecompat_flag.isChecked(),
                 'exp1': exp1_flag.isChecked(),
                 'exp2': exp2_input.value(),
+                'mouseswitchchannels': mouseswitchchannels_flag.isChecked(),
                 'referer': referer_choose.text(),
                 'gui': gui_choose.currentIndex()
             }
@@ -1819,6 +1823,12 @@ if __name__ == '__main__':
         exp2_input.setMaximum(9999)
         exp2_input.setValue(settings['exp2'])
 
+        mouseswitchchannels_label = QtWidgets.QLabel("{}:".format(LANG['mouseswitchchannels']))
+        defaultchangevol_label = QtWidgets.QLabel("({})".format(LANG['defaultchangevol']))
+        defaultchangevol_label.setStyleSheet('color:blue')
+        mouseswitchchannels_flag = QtWidgets.QCheckBox()
+        mouseswitchchannels_flag.setChecked(settings['mouseswitchchannels'])
+
         tabs = QtWidgets.QTabWidget()
 
         tab1 = QtWidgets.QWidget()
@@ -1827,10 +1837,12 @@ if __name__ == '__main__':
         tab4 = QtWidgets.QWidget()
         tab5 = QtWidgets.QWidget()
         tab6 = QtWidgets.QWidget()
+        tab7 = QtWidgets.QWidget()
         tabs.addTab(tab1, LANG['tab_main'])
         tabs.addTab(tab2, LANG['tab_video'])
         tabs.addTab(tab3, LANG['tab_network'])
         tabs.addTab(tab5, LANG['tab_gui'])
+        tabs.addTab(tab7, LANG['actions'])
         tabs.addTab(tab4, LANG['tab_other'])
         tabs.addTab(tab6, LANG['tab_exp'])
         tab1.layout = QtWidgets.QGridLayout()
@@ -1902,6 +1914,16 @@ if __name__ == '__main__':
         tab6.layout.addWidget(QtWidgets.QLabel(), 3, 2)
         tab6.layout.addWidget(QtWidgets.QLabel(), 4, 0)
         tab6.setLayout(tab6.layout)
+
+        tab7.layout = QtWidgets.QGridLayout()
+        tab7.layout.addWidget(mouseswitchchannels_label, 0, 0)
+        tab7.layout.addWidget(mouseswitchchannels_flag, 0, 1)
+        tab7.layout.addWidget(QtWidgets.QLabel(), 0, 2)
+        tab7.layout.addWidget(QtWidgets.QLabel(), 0, 3)
+        tab7.layout.addWidget(defaultchangevol_label, 1, 0)
+        tab7.layout.addWidget(QtWidgets.QLabel(), 2, 0)
+        tab7.layout.addWidget(QtWidgets.QLabel(), 3, 0)
+        tab7.setLayout(tab7.layout)
 
         grid2 = QtWidgets.QVBoxLayout()
         grid2.addWidget(tabs)
@@ -3372,23 +3394,29 @@ if __name__ == '__main__':
         @player.on_key_press('WHEEL_UP')
         def my_up_binding():
             global l1, time_stop
-            volume = int(player.volume + 1)
-            if volume > 200:
-                volume = 200
-            label7.setValue(volume)
-            mpv_volume_set()
+            if settings["mouseswitchchannels"]:
+                next_channel()
+            else:
+                volume = int(player.volume + 1)
+                if volume > 200:
+                    volume = 200
+                label7.setValue(volume)
+                mpv_volume_set()
 
         @player.on_key_press('WHEEL_DOWN')
         def my_down_binding():
             global l1, time_stop
-            volume = int(player.volume - 1)
-            if volume < 0:
-                volume = 0
-            time_stop = time.time() + 3
-            l1.show()
-            l1.setText2("{}: {}%".format(LANG['volume'], volume))
-            label7.setValue(volume)
-            mpv_volume_set()
+            if settings["mouseswitchchannels"]:
+                prev_channel()
+            else:
+                volume = int(player.volume - 1)
+                if volume < 0:
+                    volume = 0
+                time_stop = time.time() + 3
+                l1.show()
+                l1.setText2("{}: {}%".format(LANG['volume'], volume))
+                label7.setValue(volume)
+                mpv_volume_set()
 
         dockWidget2 = QtWidgets.QDockWidget(win)
 
