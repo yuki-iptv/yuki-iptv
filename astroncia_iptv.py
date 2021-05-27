@@ -164,6 +164,10 @@ if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     try:
         print_with_time("Astroncia IPTV {}...".format(LANG['starting']))
+        try:
+            subprocess.Popen(['notify-send', '-t', '2000', "Astroncia IPTV {}...".format(LANG['starting'])])
+        except: # pylint: disable=bare-except
+            pass
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
         modules_path = str(Path(os.path.dirname(__file__), 'data', 'modules', 'binary'))
         if os.name == 'nt':
