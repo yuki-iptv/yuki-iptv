@@ -165,6 +165,7 @@ if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     try:
         print_with_time("Astroncia IPTV {}...".format(LANG['starting']))
+        print_with_time("Copyright (C) Astroncia")
         print_with_time("")
         print_with_time(LANG['foundproblem'] + ": " + EMAIL_ADDRESS)
         print_with_time("")

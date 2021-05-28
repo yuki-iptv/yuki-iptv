@@ -39,5 +39,5 @@ for language in languages:
         if string_literal in po_contents:
             lang[language]['strings'][string_literal] = t.gettext(string_literal)
         else:
-            print("[TRANSLATION] Literal '{}' not found in language '{}'".format(string_literal, language))
+            #print("[TRANSLATION] Literal '{}' not found in language '{}'".format(string_literal, language))
             lang[language]['strings'][string_literal] = en.gettext(string_literal)
