@@ -89,6 +89,7 @@ DOCK_WIDGET2_HEIGHT_LOW = DOCK_WIDGET2_HEIGHT_HIGH - (DOCK_WIDGET2_HEIGHT_OFFSET
 DOCK_WIDGET_WIDTH = int((WINDOW_SIZE[0] / 2) - 200)
 TVGUIDE_WIDTH = int((WINDOW_SIZE[0] / 5))
 BCOLOR = "#A2A3A3"
+EMAIL_ADDRESS = "kestraly (at) gmail.com"
 
 if DOCK_WIDGET2_HEIGHT < 0:
     DOCK_WIDGET2_HEIGHT = 0
@@ -138,7 +139,7 @@ print_with_time("Settings locale: {}\n".format(LANG_NAME))
 
 def show_exception(e):
     message = "{}\n\n{}".format(LANG['error2'], str(e))
-    msg = QtWidgets.QMessageBox(2, LANG['error'], message, QtWidgets.QMessageBox.Ok)
+    msg = QtWidgets.QMessageBox(2, LANG['error'], message + '\n\n' + LANG['foundproblem'] + ':\n' + EMAIL_ADDRESS, QtWidgets.QMessageBox.Ok)
     msg.exec()
 
 # Used as a decorator to run things in the background
@@ -164,6 +165,9 @@ if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     try:
         print_with_time("Astroncia IPTV {}...".format(LANG['starting']))
+        print_with_time("")
+        print_with_time(LANG['foundproblem'] + ": " + EMAIL_ADDRESS)
+        print_with_time("")
         #try:
         #    subprocess.Popen(['notify-send', '-t', '2000', "Astroncia IPTV {}...".format(LANG['starting'])])
         #except: # pylint: disable=bare-except
