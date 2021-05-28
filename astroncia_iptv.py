@@ -4106,7 +4106,7 @@ if __name__ == '__main__':
                 if settings["hidempv"]:
                     cursor_y = win.main_widget.mapFromGlobal(QtGui.QCursor.pos()).y()
                     win_height = win.height()
-                    is_cursor_y = cursor_y > win_height - (dockWidget2.height() + 150)
+                    is_cursor_y = cursor_y > win_height - (dockWidget2.height() + 250)
                     if is_cursor_y and cursor_y < win_height:
                         if not dockWidget2Visible:
                             dockWidget2Visible = True
