@@ -27,6 +27,7 @@ Software provided **as is**, no guarantees.
 Repository mirrors:  
 [GitLab](https://gitlab.com/astroncia/iptv)  
 [Bitbucket](https://bitbucket.org/astroncia/astroncia-iptv/src/master/)  
+[Codeberg](https://codeberg.org/astroncia/iptv)  
 
 ## License
 
