@@ -2535,18 +2535,19 @@ if __name__ == '__main__':
                 label7.setValue(0)
                 l1.setText2(LANG['volumeoff'])
 
-        def mpv_volume_set():
+        def mpv_volume_set(showdata=True):
             global time_stop, l1
             time_stop = time.time() + 3
             vol = int(label7.value())
-            try:
-                l1.show()
-                if vol == 0:
-                    l1.setText2(LANG['volumeoff'])
-                else:
-                    l1.setText2("{}: {}%".format(LANG['volume'], vol))
-            except NameError:
-                pass
+            if showdata:
+                try:
+                    l1.show()
+                    if vol == 0:
+                        l1.setText2(LANG['volumeoff'])
+                    else:
+                        l1.setText2("{}: {}%".format(LANG['volume'], vol))
+                except NameError:
+                    pass
             mpv_override_volume(vol)
             if vol == 0:
                 mpv_override_mute(True)
@@ -3716,6 +3717,9 @@ if __name__ == '__main__':
                 #endtime_w.setDateTime(QtCore.QDateTime.fromString(time.strftime('%d.%m.%Y %H:%M', time.localtime(time.time() + 60)), 'd.M.yyyy hh:mm'))
                 scheduler_win.show()
 
+        def mpv_volume_set_custom():
+            mpv_volume_set(showdata=False)
+
         label3 = QtWidgets.QPushButton()
         label3.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'pause.png'))))
         label3.setToolTip(LANG['pause'] + ' (Space)')
@@ -3747,7 +3751,7 @@ if __name__ == '__main__':
         label7 = QtWidgets.QSlider(QtCore.Qt.Horizontal)
         label7.setMinimum(0)
         label7.setMaximum(200)
-        label7.valueChanged.connect(mpv_volume_set)
+        label7.valueChanged.connect(mpv_volume_set_custom)
         label7.setValue(100)
         label7_1 = QtWidgets.QPushButton()
         label7_1.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'screenshot.png'))))
@@ -4138,7 +4142,6 @@ if __name__ == '__main__':
                     label10.hide()
                     label11.hide()
                     label12.hide()
-                    label13.hide()
                     progress.hide()
                     start_label.hide()
                     stop_label.hide()
@@ -4148,7 +4151,6 @@ if __name__ == '__main__':
                     label10.show()
                     label11.show()
                     label12.show()
-                    label13.show()
                     if start_label.text() or stop_label.text():
                         progress.show()
                         start_label.show()
