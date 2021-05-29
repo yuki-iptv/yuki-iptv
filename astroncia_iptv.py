@@ -4091,9 +4091,9 @@ if __name__ == '__main__':
                             dockWidget.setFloating(True)
                         dockWidget.move(win.width() - dockWidget.width(), of1)
                         dockWidget.resize(dockWidget.width(), win.height() - 150)
-                        dockWidget.setWindowOpacity(0.7)
+                        dockWidget.setWindowOpacity(0.65)
                         dockWidget.show()
-                        dockWidget.setWindowOpacity(0.7)
+                        dockWidget.setWindowOpacity(0.65)
                         dockWidget.move(win.width() - dockWidget.width(), of1)
                 else:
                     dockWidgetVisible = False
@@ -4114,9 +4114,9 @@ if __name__ == '__main__':
                         dockWidget2.move(0, win.height() - dockWidget2.height())
                         dockWidget2.resize(win.width(), DOCK_WIDGET2_HEIGHT_HIGH)
                         dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
-                        dockWidget2.setWindowOpacity(0.7)
+                        dockWidget2.setWindowOpacity(0.65)
                         dockWidget2.show()
-                        dockWidget2.setWindowOpacity(0.7)
+                        dockWidget2.setWindowOpacity(0.65)
                         dockWidget2.move(0, win.height() - dockWidget2.height())
                 else:
                     dockWidget2Visible = False
