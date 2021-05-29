@@ -3800,7 +3800,11 @@ if __name__ == '__main__':
         label11.setFont(myFont3)
         myFont4 = QtGui.QFont()
         myFont4.setPointSize(12)
+        label13 = QtWidgets.QLabel('')
         label12.setFont(myFont4)
+        myFont5 = QtGui.QFont()
+        myFont5.setPointSize(12)
+        label13.setFont(myFont5)
 
         progress = QtWidgets.QProgressBar()
         progress.setValue(0)
@@ -3818,7 +3822,7 @@ if __name__ == '__main__':
 
         hlayout2_btns_1 = [label3, label4, label5, label5_1, label5_2, label5_0, label6, label7, label7_1]
         hlayout2_btns_2 = [label8_0, label8, label8_4, label8_1, label8_2, label8_3, label8_5, label9]
-        hlayout2_btns_3 = [label11, label12]
+        hlayout2_btns_3 = [label11, label12, label13]
         hlayout2_all_btns = hlayout2_btns_1 + hlayout2_btns_2 + hlayout2_btns_3 #+ [label7_2]
         #for hlayout2_btn_3 in hlayout2_all_btns:
         #    hlayout2_btn_3.setFixedHeight(20)
@@ -4063,7 +4067,7 @@ if __name__ == '__main__':
                 width = 800
                 height = 600
             if (not (codec == 'png' and width == 800 and height == 600)) and (width and height):
-                label12.setText('  {}x{}{} - {} / {}'.format(width, height, video_bitrate, codec, audio_codec))
+                label12.setText('  {}x{}{} - {} / {} |'.format(width, height, video_bitrate, codec, audio_codec))
                 if loading.text() == LANG['loading']:
                     hideLoading()
             else:
@@ -4128,6 +4132,7 @@ if __name__ == '__main__':
 
         def thread_mouse(): # pylint: disable=too-many-branches
             global fullscreen, key_t_visible, dockWidgetVisible, dockWidget2Visible
+            label13.setText("Vol: {}%".format(int(player.volume)))
             if fullscreen:
                 if settings['exp1']:
                     label10.hide()
