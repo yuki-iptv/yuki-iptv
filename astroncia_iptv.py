@@ -4138,6 +4138,7 @@ if __name__ == '__main__':
                     label10.hide()
                     label11.hide()
                     label12.hide()
+                    label13.hide()
                     progress.hide()
                     start_label.hide()
                     stop_label.hide()
@@ -4147,6 +4148,7 @@ if __name__ == '__main__':
                     label10.show()
                     label11.show()
                     label12.show()
+                    label13.show()
                     if start_label.text() or stop_label.text():
                         progress.show()
                         start_label.show()
