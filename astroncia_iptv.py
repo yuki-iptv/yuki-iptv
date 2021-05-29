@@ -4074,8 +4074,23 @@ if __name__ == '__main__':
         def thread_mouse(): # pylint: disable=too-many-branches
             global fullscreen, key_t_visible, dockWidgetVisible, dockWidget2Visible
             if fullscreen:
+                if settings['exp1']:
+                    label10.hide()
+                    label11.hide()
+                    label12.hide()
+                    progress.hide()
+                    start_label.hide()
+                    stop_label.hide()
                 dockWidget.setFixedWidth(settings['exp2'])
             else:
+                if settings['exp1']:
+                    label10.show()
+                    label11.show()
+                    label12.show()
+                    if start_label.text() or stop_label.text():
+                        progress.show()
+                        start_label.show()
+                        stop_label.show()
                 dockWidget.setFixedWidth(DOCK_WIDGET_WIDTH)
             if fullscreen and not key_t_visible:
                 # Playlist
@@ -4111,13 +4126,22 @@ if __name__ == '__main__':
                         dockWidget2Visible = True
                         if settings['exp1']:
                             dockWidget2.setFloating(True)
-                        dockWidget2.move(0, win.height() - dockWidget2.height())
-                        dockWidget2.resize(win.width(), DOCK_WIDGET2_HEIGHT_HIGH)
-                        dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
-                        dockWidget2.setWindowOpacity(0.65)
-                        dockWidget2.show()
-                        dockWidget2.setWindowOpacity(0.65)
-                        dockWidget2.move(0, win.height() - dockWidget2.height())
+                        if not settings['exp1']:
+                            dockWidget2.move(0, win.height() - dockWidget2.height())
+                            dockWidget2.resize(win.width(), DOCK_WIDGET2_HEIGHT_HIGH)
+                            dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
+                            dockWidget2.setWindowOpacity(0.65)
+                            dockWidget2.show()
+                            dockWidget2.setWindowOpacity(0.65)
+                            dockWidget2.move(0, win.height() - dockWidget2.height())
+                        else:
+                            dockWidget2.move(0, win.height() - dockWidget2.height())
+                            dockWidget2.resize(win.width() / 2, DOCK_WIDGET2_HEIGHT_LOW)
+                            dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
+                            dockWidget2.setWindowOpacity(0.65)
+                            dockWidget2.show()
+                            dockWidget2.setWindowOpacity(0.65)
+                            dockWidget2.move(0, win.height() - dockWidget2.height())
                 else:
                     dockWidget2Visible = False
                     dockWidget2.setWindowOpacity(1)

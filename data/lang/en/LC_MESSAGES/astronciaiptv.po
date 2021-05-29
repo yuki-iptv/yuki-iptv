@@ -539,6 +539,9 @@ msgstr "Playlist over video\nin full screen mode"
 msgid "exp2"
 msgstr "Playlist width\nin full screen mode"
 
+msgid "exp3"
+msgstr "Playlist height\nin full screen mode"
+
 msgid "expwarning"
 msgstr "The settings here\nmay be unstable!"
 
