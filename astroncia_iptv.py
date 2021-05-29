@@ -2409,9 +2409,15 @@ if __name__ == '__main__':
             if fullscreen:
                 mpv_fullscreen()
 
+        currentWidthHeight = [win.width(), win.height()]
+        currentMaximized = win.isMaximized()
+
         def dockWidget_out_clicked():
-            global fullscreen, l1, time_stop
+            global fullscreen, l1, time_stop, currentWidthHeight, currentMaximized
             if not fullscreen:
+                # Entering fullscreen
+                currentWidthHeight = [win.width(), win.height()]
+                currentMaximized = win.isMaximized()
                 #l1.show()
                 #l1.setText2("{} F".format(LANG['exitfullscreen']))
                 #time_stop = time.time() + 3
@@ -2426,6 +2432,7 @@ if __name__ == '__main__':
                 win.update()
                 win.showFullScreen()
             else:
+                # Leaving fullscreen
                 dockWidget.setWindowOpacity(1)
                 dockWidget.hide()
                 if settings['exp1']:
@@ -2451,7 +2458,14 @@ if __name__ == '__main__':
                 dockWidget.show()
                 chan.show()
                 win.update()
-                win.showNormal()
+                if not currentMaximized:
+                    win.showNormal()
+                else:
+                    win.showMaximized()
+                win.resize(currentWidthHeight[0], currentWidthHeight[1])
+                qr2 = win.frameGeometry()
+                qr2.moveCenter(QtWidgets.QDesktopWidget().availableGeometry().center())
+                win.move(qr2.topLeft())
 
         dockWidget_out = QtWidgets.QPushButton()
         dockWidget_out.clicked.connect(dockWidget_out_clicked)
