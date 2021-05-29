@@ -4103,29 +4103,28 @@ if __name__ == '__main__':
                         dockWidget.setFloating(False)
                     dockWidget.hide()
                 # Control panel
-                if settings["hidempv"]:
-                    cursor_y = win.main_widget.mapFromGlobal(QtGui.QCursor.pos()).y()
-                    win_height = win.height()
-                    is_cursor_y = cursor_y > win_height - (dockWidget2.height() + 250)
-                    if is_cursor_y and cursor_y < win_height:
-                        if not dockWidget2Visible:
-                            dockWidget2Visible = True
-                            if settings['exp1']:
-                                dockWidget2.setFloating(True)
-                            dockWidget2.move(0, win.height() - dockWidget2.height())
-                            dockWidget2.resize(win.width(), DOCK_WIDGET2_HEIGHT_HIGH)
-                            dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
-                            dockWidget2.setWindowOpacity(0.7)
-                            dockWidget2.show()
-                            dockWidget2.setWindowOpacity(0.7)
-                            dockWidget2.move(0, win.height() - dockWidget2.height())
-                    else:
-                        dockWidget2Visible = False
-                        dockWidget2.setWindowOpacity(1)
-                        dockWidget2.hide()
+                cursor_y = win.main_widget.mapFromGlobal(QtGui.QCursor.pos()).y()
+                win_height = win.height()
+                is_cursor_y = cursor_y > win_height - (dockWidget2.height() + 250)
+                if is_cursor_y and cursor_y < win_height:
+                    if not dockWidget2Visible:
+                        dockWidget2Visible = True
                         if settings['exp1']:
-                            dockWidget2.setFloating(False)
-                        dockWidget2.hide()
+                            dockWidget2.setFloating(True)
+                        dockWidget2.move(0, win.height() - dockWidget2.height())
+                        dockWidget2.resize(win.width(), DOCK_WIDGET2_HEIGHT_HIGH)
+                        dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
+                        dockWidget2.setWindowOpacity(0.7)
+                        dockWidget2.show()
+                        dockWidget2.setWindowOpacity(0.7)
+                        dockWidget2.move(0, win.height() - dockWidget2.height())
+                else:
+                    dockWidget2Visible = False
+                    dockWidget2.setWindowOpacity(1)
+                    dockWidget2.hide()
+                    if settings['exp1']:
+                        dockWidget2.setFloating(False)
+                    dockWidget2.hide()
 
         key_t_visible = False
         def key_t():
