@@ -256,6 +256,9 @@ if __name__ == '__main__':
                 'exp1': False,
                 'exp2': DOCK_WIDGET_WIDTH,
                 'mouseswitchchannels': False,
+                'videoaspect': 0,
+                'zoom': 0,
+                'panscan': 0.0,
                 'referer': '',
                 'gui': 0
             }
@@ -290,6 +293,12 @@ if __name__ == '__main__':
             settings['exp2'] = DOCK_WIDGET_WIDTH
         if 'mouseswitchchannels' not in settings:
             settings['mouseswitchchannels'] = False
+        if 'videoaspect' not in settings:
+            settings['videoaspect'] = 0
+        if 'zoom' not in settings:
+            settings['zoom'] = 0
+        if 'panscan' not in settings:
+            settings['panscan'] = 0.0
         if 'gui' not in settings:
             settings['gui'] = 0
         if 'referer' not in settings:
@@ -1508,6 +1517,9 @@ if __name__ == '__main__':
                 'exp1': exp1_flag.isChecked(),
                 'exp2': exp2_input.value(),
                 'mouseswitchchannels': mouseswitchchannels_flag.isChecked(),
+                'videoaspect': videoaspect_def_choose.currentIndex(),
+                'zoom': zoom_def_choose.currentIndex(),
+                'panscan': panscan_def_choose.value(),
                 'referer': referer_choose.text(),
                 'gui': gui_choose.currentIndex()
             }
@@ -1838,6 +1850,28 @@ if __name__ == '__main__':
         mouseswitchchannels_flag = QtWidgets.QCheckBox()
         mouseswitchchannels_flag.setChecked(settings['mouseswitchchannels'])
 
+        videoaspectdef_label = QtWidgets.QLabel("{}:".format(LANG['videoaspectdef']))
+        zoomdef_label = QtWidgets.QLabel("{}:".format(LANG['zoomdef']))
+        panscan_def_label = QtWidgets.QLabel("{}:".format(LANG['panscandef']))
+
+        videoaspect_def_choose = QtWidgets.QComboBox()
+        for videoaspect_var_1 in videoaspect_vars:
+            videoaspect_def_choose.addItem(videoaspect_var_1)
+
+        zoom_def_choose = QtWidgets.QComboBox()
+        for zoom_var_1 in zoom_vars:
+            zoom_def_choose.addItem(zoom_var_1)
+
+        panscan_def_choose = QtWidgets.QDoubleSpinBox()
+        panscan_def_choose.setMinimum(0)
+        panscan_def_choose.setMaximum(1)
+        panscan_def_choose.setSingleStep(0.1)
+        panscan_def_choose.setDecimals(1)
+
+        videoaspect_def_choose.setCurrentIndex(settings['videoaspect'])
+        zoom_def_choose.setCurrentIndex(settings['zoom'])
+        panscan_def_choose.setValue(settings['panscan'])
+
         tabs = QtWidgets.QTabWidget()
 
         tab1 = QtWidgets.QWidget()
@@ -1872,6 +1906,13 @@ if __name__ == '__main__':
         tab2.layout.addWidget(QtWidgets.QLabel(), 1, 2)
         tab2.layout.addWidget(QtWidgets.QLabel(), 1, 3)
         tab2.layout.addWidget(QtWidgets.QLabel(), 1, 4)
+        tab2.layout.addWidget(videoaspectdef_label, 2, 0)
+        tab2.layout.addWidget(videoaspect_def_choose, 2, 1)
+        tab2.layout.addWidget(zoomdef_label, 3, 0)
+        tab2.layout.addWidget(zoom_def_choose, 3, 1)
+        tab2.layout.addWidget(panscan_def_label, 4, 0)
+        tab2.layout.addWidget(panscan_def_choose, 4, 1)
+        tab2.layout.addWidget(QtWidgets.QLabel(), 5, 0)
         tab2.setLayout(tab2.layout)
 
         tab3.layout = QtWidgets.QGridLayout()
@@ -2343,21 +2384,21 @@ if __name__ == '__main__':
                 if 'videoaspect' in d:
                     setVideoAspect(videoaspect_vars[list(videoaspect_vars)[d['videoaspect']]])
                 else:
-                    setVideoAspect(0)
+                    setVideoAspect(videoaspect_vars[videoaspect_def_choose.itemText(settings['videoaspect'])])
                 if 'zoom' in d:
                     setZoom(zoom_vars[list(zoom_vars)[d['zoom']]])
                 else:
-                    setZoom(0)
+                    setZoom(zoom_vars[zoom_def_choose.itemText(settings['zoom'])])
                 if 'panscan' in d:
                     setPanscan(d['panscan'])
                 else:
-                    setPanscan(0)
+                    setPanscan(settings['panscan'])
                 ua_choose = d['useragent']
             else:
                 player.deinterlace = settings['deinterlace']
-                setVideoAspect(0)
-                setZoom(0)
-                setPanscan(0)
+                setVideoAspect(videoaspect_vars[videoaspect_def_choose.itemText(settings['videoaspect'])])
+                setZoom(zoom_vars[zoom_def_choose.itemText(settings['zoom'])])
+                setPanscan(settings['panscan'])
                 player.gamma = 0
                 player.saturation = 0
                 player.hue = 0
