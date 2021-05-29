@@ -4139,6 +4139,8 @@ if __name__ == '__main__':
             label13.setText("Vol: {}%".format(int(player.volume)))
             if fullscreen:
                 if settings['exp1']:
+                    for btns_3 in hlayout2_btns_1 + hlayout2_btns_2:
+                        btns_3.setMinimumSize(QtCore.QSize(32, 32))
                     label10.hide()
                     label11.hide()
                     label12.hide()
@@ -4148,6 +4150,8 @@ if __name__ == '__main__':
                 dockWidget.setFixedWidth(settings['exp2'])
             else:
                 if settings['exp1']:
+                    for btns_3 in hlayout2_btns_1 + hlayout2_btns_2:
+                        btns_3.setMinimumSize(QtCore.QSize(20, 20))
                     label10.show()
                     label11.show()
                     label12.show()
