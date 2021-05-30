@@ -21,13 +21,6 @@
   
 [Arch Linux (AUR)](https://aur.archlinux.org/packages/astronciaiptv/)  
 
-## Иконки телеканалов (несвободные)
-
-[deb](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv-channel-icons.deb) | [rpm](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv-channel-icons.rpm)  
-
-или выполните следующую команду, чтобы установить:  
-```curl -L --output - 'https://gitlab.com/astroncia/channel-icons/-/archive/master/channel-icons-master.tar.gz' | sudo tar -C /usr/share/AstronciaIPTV/ -zxvf - && sudo mv /usr/share/AstronciaIPTV/channel-icons-master/* /usr/share/AstronciaIPTV/data/ && sudo rmdir /usr/share/AstronciaIPTV/channel-icons-master```  
-
 ## Информация
 
 **32-битная Windows не поддерживается!**  
@@ -134,3 +127,10 @@
 ## Отказ от ответственности
 
 Astroncia IPTV не предоставляет плейлисты или другой цифровой контент.  
+
+## Иконки телеканалов (несвободные)
+
+[deb](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv-channel-icons.deb) | [rpm](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv-channel-icons.rpm)  
+
+или выполните следующую команду, чтобы установить:  
+```curl -L --output - 'https://gitlab.com/astroncia/channel-icons/-/archive/master/channel-icons-master.tar.gz' | sudo tar -C /usr/share/AstronciaIPTV/ -zxvf - && sudo mv /usr/share/AstronciaIPTV/channel-icons-master/* /usr/share/AstronciaIPTV/data/ && sudo rmdir /usr/share/AstronciaIPTV/channel-icons-master```  
