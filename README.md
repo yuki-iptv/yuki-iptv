@@ -18,6 +18,12 @@
   
 [Arch Linux (AUR)](https://aur.archlinux.org/packages/astronciaiptv/)  
 
+## Иконки телеканалов (несвободные)
+
+[deb](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv-channel-icons.deb) | [rpm](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv-channel-icons.rpm)  
+
+или поместите контент [этого репозитория](https://gitlab.com/astroncia/channel-icons) в директорию **/usr/share/AstronciaIPTV/data**  
+
 ## Информация
 
 **32-битная Windows не поддерживается!**  

@@ -18,6 +18,12 @@ For Ubuntu **recommended** install from [Launchpad PPA - ppa:astroncia/iptv](htt
   
 [Arch Linux (AUR)](https://aur.archlinux.org/packages/astronciaiptv/)  
 
+## Channel icons (nonfree)
+
+[deb](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv-channel-icons.deb) | [rpm](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv-channel-icons.rpm)  
+
+or put contents of [this repository](https://gitlab.com/astroncia/channel-icons) to **/usr/share/AstronciaIPTV/data**  
+
 ## Information
 
 **32-bit Windows not supported!**  
