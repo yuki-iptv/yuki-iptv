@@ -23,7 +23,7 @@ For Ubuntu **recommended** install from [Launchpad PPA - ppa:astroncia/iptv](htt
 [deb](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv-channel-icons.deb) | [rpm](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv-channel-icons.rpm)  
 
 or execute this command to install:  
-```curl -L --output - 'https://gitlab.com/astroncia/channel-icons/-/archive/master/channel-icons-master.tar.gz' | sudo tar -C /usr/share/AstronciaIPTV/ -zxvf - && sudo mv /usr/share/AstronciaIPTV/channel-icons-master/* /usr/share/AstronciaIPTV/data && sudo rmdir /usr/share/AstronciaIPTV/channel-icons-master```  
+```curl -L --output - 'https://gitlab.com/astroncia/channel-icons/-/archive/master/channel-icons-master.tar.gz' | sudo tar -C /usr/share/AstronciaIPTV/ -zxvf - && sudo mv /usr/share/AstronciaIPTV/channel-icons-master/* /usr/share/AstronciaIPTV/data/ && sudo rmdir /usr/share/AstronciaIPTV/channel-icons-master```  
 
 ## Information
 
