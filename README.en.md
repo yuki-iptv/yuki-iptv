@@ -10,7 +10,9 @@
 **[Version for Windows](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/Astroncia_IPTV_setup.exe)**  
 [deb package](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv.deb)  
 [rpm package](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv.rpm)  
+  
 [rpm package for OpenSUSE](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv-opensuse.rpm)  
+[rpm package without dependencies](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv-nodeps.rpm)  
   
 For Ubuntu **recommended** install from [Launchpad PPA - ppa:astroncia/iptv](https://launchpad.net/~astroncia/+archive/ubuntu/iptv):  
 ```sudo add-apt-repository ppa:astroncia/iptv -y```  
