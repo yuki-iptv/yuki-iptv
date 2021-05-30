@@ -1,12 +1,15 @@
 #!/bin/sh
 #
 # Folder structure (for maintainers):
-# astroncia_iptv.py => usr/share/AstronciaIPTV/astroncia_iptv.py
-# data => usr/share/AstronciaIPTV/data
+# astroncia_iptv.py => usr/lib/astronciaiptv/astroncia_iptv.py
+# data => usr/lib/astronciaiptv/data
 #
-cd /usr/share/AstronciaIPTV
-export LD_LIBRARY_PATH="$(./data/modules/astroncia/pfs.py)"
+cd /usr/lib/astronciaiptv || exit 1
+LD_LIBRARY_PATH="$(./data/modules/astroncia/pfs.py)"
+export LD_LIBRARY_PATH
 ./astroncia_iptv.py "$@"
 exit_code="$?"
+if [ "${exit_code}" = "0" ]; then
 reset || true
+fi
 exit "${exit_code}"

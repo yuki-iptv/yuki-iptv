@@ -14,7 +14,7 @@
 [rpm package for OpenSUSE](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv-opensuse.rpm)  
 [rpm package without dependencies](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv-nodeps.rpm)  
   
-For Ubuntu **recommended** install from [Launchpad PPA - ppa:astroncia/iptv](https://launchpad.net/~astroncia/+archive/ubuntu/iptv):  
+For Ubuntu / Linux Mint **recommended** install from [Launchpad PPA - ppa:astroncia/iptv](https://launchpad.net/~astroncia/+archive/ubuntu/iptv):  
 ```sudo add-apt-repository ppa:astroncia/iptv -y```  
 ```sudo apt-get update```  
 ```sudo apt-get install astroncia-iptv```  
@@ -132,5 +132,5 @@ Astroncia IPTV doesn't provide any playlists or other digital content.
 [deb](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv-channel-icons.deb) | [rpm](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv-channel-icons.rpm)  
 
 or execute this command to install:  
-```curl -L --output - 'https://gitlab.com/astroncia/channel-icons/-/archive/master/channel-icons-master.tar.gz' | sudo tar -C /usr/share/AstronciaIPTV/ -zxvf - && sudo mv /usr/share/AstronciaIPTV/channel-icons-master/* /usr/share/AstronciaIPTV/data/ && sudo rmdir /usr/share/AstronciaIPTV/channel-icons-master```  
+```curl -L --output - 'https://gitlab.com/astroncia/channel-icons/-/archive/master/channel-icons-master.tar.gz' | sudo tar -C /usr/lib/astronciaiptv/ -zxvf - && sudo mv /usr/lib/astronciaiptv/channel-icons-master/* /usr/lib/astronciaiptv/data/ && sudo rmdir /usr/lib/astronciaiptv/channel-icons-master```  
 
