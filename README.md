@@ -2,6 +2,7 @@
 ### Кроссплатформенный плеер для просмотра интернет-телевидения
 
 [![license](https://img.shields.io/badge/license-GPL%20v.3-green.svg)](https://gitlab.com/astroncia/iptv/-/blob/master/COPYING) [![PPA](https://img.shields.io/badge/PPA-available-green.svg)](https://launchpad.net/~astroncia/+archive/ubuntu/iptv) [![AUR](https://img.shields.io/aur/version/astronciaiptv)](https://aur.archlinux.org/packages/astronciaiptv/)  
+  
 [![Packaging status](https://repology.org/badge/vertical-allrepos/astronciaiptv.svg)](https://repology.org/project/astronciaiptv/versions)  
 
 [![Интерфейс](https://gitlab.com/astroncia/iptv/-/raw/master/screenshots/astroncia-iptv-screenshot-thumb.png)](https://gitlab.com/astroncia/iptv/-/raw/master/screenshots/astroncia-iptv-screenshot.png)  
