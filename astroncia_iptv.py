@@ -256,6 +256,8 @@ if __name__ == '__main__':
                 'exp1': False,
                 'exp2': DOCK_WIDGET_WIDTH,
                 'mouseswitchchannels': False,
+                'showplaylistmouse': True,
+                'showcontrolsmouse': True,
                 'videoaspect': 0,
                 'zoom': 0,
                 'panscan': 0.0,
@@ -293,6 +295,10 @@ if __name__ == '__main__':
             settings['exp2'] = DOCK_WIDGET_WIDTH
         if 'mouseswitchchannels' not in settings:
             settings['mouseswitchchannels'] = False
+        if 'showplaylistmouse' not in settings:
+            settings['showplaylistmouse'] = True
+        if 'showcontrolsmouse' not in settings:
+            settings['showcontrolsmouse'] = True
         if 'videoaspect' not in settings:
             settings['videoaspect'] = 0
         if 'zoom' not in settings:
@@ -1517,6 +1523,8 @@ if __name__ == '__main__':
                 'exp1': exp1_flag.isChecked(),
                 'exp2': exp2_input.value(),
                 'mouseswitchchannels': mouseswitchchannels_flag.isChecked(),
+                'showplaylistmouse': showplaylistmouse_flag.isChecked(),
+                'showcontrolsmouse': showcontrolsmouse_flag.isChecked(),
                 'videoaspect': videoaspect_def_choose.currentIndex(),
                 'zoom': zoom_def_choose.currentIndex(),
                 'panscan': panscan_def_choose.value(),
@@ -1850,6 +1858,13 @@ if __name__ == '__main__':
         mouseswitchchannels_flag = QtWidgets.QCheckBox()
         mouseswitchchannels_flag.setChecked(settings['mouseswitchchannels'])
 
+        showplaylistmouse_label = QtWidgets.QLabel("{}:".format(LANG['showplaylistmouse']))
+        showplaylistmouse_flag = QtWidgets.QCheckBox()
+        showplaylistmouse_flag.setChecked(settings['showplaylistmouse'])
+        showcontrolsmouse_label = QtWidgets.QLabel("{}:".format(LANG['showcontrolsmouse']))
+        showcontrolsmouse_flag = QtWidgets.QCheckBox()
+        showcontrolsmouse_flag.setChecked(settings['showcontrolsmouse'])
+
         videoaspectdef_label = QtWidgets.QLabel("{}:".format(LANG['videoaspectdef']))
         zoomdef_label = QtWidgets.QLabel("{}:".format(LANG['zoomdef']))
         panscan_def_label = QtWidgets.QLabel("{}:".format(LANG['panscandef']))
@@ -1972,7 +1987,10 @@ if __name__ == '__main__':
         tab7.layout.addWidget(QtWidgets.QLabel(), 0, 3)
         tab7.layout.addWidget(defaultchangevol_label, 1, 0)
         tab7.layout.addWidget(QtWidgets.QLabel(), 2, 0)
-        tab7.layout.addWidget(QtWidgets.QLabel(), 3, 0)
+        tab7.layout.addWidget(showplaylistmouse_label, 3, 0)
+        tab7.layout.addWidget(showplaylistmouse_flag, 3, 1)
+        tab7.layout.addWidget(showcontrolsmouse_label, 4, 0)
+        tab7.layout.addWidget(showcontrolsmouse_flag, 4, 1)
         tab7.setLayout(tab7.layout)
 
         grid2 = QtWidgets.QVBoxLayout()
@@ -4162,61 +4180,63 @@ if __name__ == '__main__':
                 dockWidget.setFixedWidth(DOCK_WIDGET_WIDTH)
             if fullscreen and not key_t_visible:
                 # Playlist
-                cursor_x = win.main_widget.mapFromGlobal(QtGui.QCursor.pos()).x()
-                win_width = win.width()
-                is_cursor_x = cursor_x > win_width - (settings['exp2'] + 10)
-                if is_cursor_x and cursor_x < win_width:
-                    if not dockWidgetVisible:
-                        dockWidgetVisible = True
-                        of1 = 0
+                if settings['showplaylistmouse']:
+                    cursor_x = win.main_widget.mapFromGlobal(QtGui.QCursor.pos()).x()
+                    win_width = win.width()
+                    is_cursor_x = cursor_x > win_width - (settings['exp2'] + 10)
+                    if is_cursor_x and cursor_x < win_width:
+                        if not dockWidgetVisible:
+                            dockWidgetVisible = True
+                            of1 = 0
+                            if settings['exp1']:
+                                of1 = 50
+                                dockWidget.setFloating(True)
+                            dockWidget.move(win.width() - dockWidget.width(), of1)
+                            dockWidget.resize(dockWidget.width(), win.height() - 150)
+                            dockWidget.setWindowOpacity(0.65)
+                            dockWidget.show()
+                            dockWidget.setWindowOpacity(0.65)
+                            dockWidget.move(win.width() - dockWidget.width(), of1)
+                    else:
+                        dockWidgetVisible = False
+                        dockWidget.setWindowOpacity(1)
+                        dockWidget.hide()
                         if settings['exp1']:
-                            of1 = 50
-                            dockWidget.setFloating(True)
-                        dockWidget.move(win.width() - dockWidget.width(), of1)
-                        dockWidget.resize(dockWidget.width(), win.height() - 150)
-                        dockWidget.setWindowOpacity(0.65)
-                        dockWidget.show()
-                        dockWidget.setWindowOpacity(0.65)
-                        dockWidget.move(win.width() - dockWidget.width(), of1)
-                else:
-                    dockWidgetVisible = False
-                    dockWidget.setWindowOpacity(1)
-                    dockWidget.hide()
-                    if settings['exp1']:
-                        dockWidget.setFloating(False)
-                    dockWidget.hide()
+                            dockWidget.setFloating(False)
+                        dockWidget.hide()
                 # Control panel
-                cursor_y = win.main_widget.mapFromGlobal(QtGui.QCursor.pos()).y()
-                win_height = win.height()
-                is_cursor_y = cursor_y > win_height - (dockWidget2.height() + 250)
-                if is_cursor_y and cursor_y < win_height:
-                    if not dockWidget2Visible:
-                        dockWidget2Visible = True
+                if settings['showcontrolsmouse']:
+                    cursor_y = win.main_widget.mapFromGlobal(QtGui.QCursor.pos()).y()
+                    win_height = win.height()
+                    is_cursor_y = cursor_y > win_height - (dockWidget2.height() + 250)
+                    if is_cursor_y and cursor_y < win_height:
+                        if not dockWidget2Visible:
+                            dockWidget2Visible = True
+                            if settings['exp1']:
+                                dockWidget2.setFloating(True)
+                            if not settings['exp1']:
+                                dockWidget2.move(0, win.height() - dockWidget2.height())
+                                dockWidget2.resize(win.width(), DOCK_WIDGET2_HEIGHT_HIGH)
+                                dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
+                                dockWidget2.setWindowOpacity(0.65)
+                                dockWidget2.show()
+                                dockWidget2.setWindowOpacity(0.65)
+                                dockWidget2.move(0, win.height() - dockWidget2.height())
+                            else:
+                                dockWidget2.move(0, win.height() - dockWidget2.height())
+                                dockWidget2.resize((win.width() / 2) - 100, DOCK_WIDGET2_HEIGHT_LOW)
+                                dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
+                                dockWidget2.setWindowOpacity(0.65)
+                                dockWidget2.show()
+                                dockWidget2.setWindowOpacity(0.65)
+                                dockWidget2.move(0, win.height() - dockWidget2.height())
+                    else:
+                        dockWidget2Visible = False
+                        dockWidget2.setWindowOpacity(1)
+                        dockWidget2.hide()
                         if settings['exp1']:
-                            dockWidget2.setFloating(True)
-                        if not settings['exp1']:
-                            dockWidget2.move(0, win.height() - dockWidget2.height())
-                            dockWidget2.resize(win.width(), DOCK_WIDGET2_HEIGHT_HIGH)
-                            dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
-                            dockWidget2.setWindowOpacity(0.65)
-                            dockWidget2.show()
-                            dockWidget2.setWindowOpacity(0.65)
-                            dockWidget2.move(0, win.height() - dockWidget2.height())
-                        else:
-                            dockWidget2.move(0, win.height() - dockWidget2.height())
-                            dockWidget2.resize((win.width() / 2) - 100, DOCK_WIDGET2_HEIGHT_LOW)
-                            dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
-                            dockWidget2.setWindowOpacity(0.65)
-                            dockWidget2.show()
-                            dockWidget2.setWindowOpacity(0.65)
-                            dockWidget2.move(0, win.height() - dockWidget2.height())
-                else:
-                    dockWidget2Visible = False
-                    dockWidget2.setWindowOpacity(1)
-                    dockWidget2.hide()
-                    if settings['exp1']:
-                        dockWidget2.setFloating(False)
-                    dockWidget2.hide()
+                            dockWidget2.setFloating(False)
+                        dockWidget2.hide()
 
         key_t_visible = False
         def key_t():
