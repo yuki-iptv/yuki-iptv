@@ -88,7 +88,7 @@ Install Python 3 from [official website](https://www.python.org/downloads/window
 ```git clone --depth=1 https://gitlab.com/astroncia/iptv.git astroncia_iptv```  
 ```cd astroncia_iptv```  
 
-**Installing channel icons:**  
+**Installing channel logos:**  
 
 ```git clone --depth=1 https://gitlab.com/astroncia/channel-icons.git```  
 ```cp -R channel-icons/* data/```  
@@ -127,7 +127,7 @@ For recordings view recommended [VLC media player](https://www.videolan.org/).
 
 Astroncia IPTV doesn't provide any playlists or other digital content.  
 
-## Channel icons (nonfree)
+## Channel logos (nonfree)
 
 [deb](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv-channel-icons.deb) | [rpm](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv-channel-icons.rpm)  
 

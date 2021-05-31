@@ -88,7 +88,7 @@
 ```git clone --depth=1 https://gitlab.com/astroncia/iptv.git astroncia_iptv```  
 ```cd astroncia_iptv```  
 
-**Устанавливаем иконки для телеканалов:**  
+**Устанавливаем логотипы телеканалов:**  
 
 ```git clone --depth=1 https://gitlab.com/astroncia/channel-icons.git```  
 ```cp -R channel-icons/* data/```  
@@ -128,7 +128,7 @@
 
 Astroncia IPTV не предоставляет плейлисты или другой цифровой контент.  
 
-## Иконки телеканалов (несвободные)
+## Логотипы телеканалов (несвободные)
 
 [deb](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv-channel-icons.deb) | [rpm](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv-channel-icons.rpm)  
 
