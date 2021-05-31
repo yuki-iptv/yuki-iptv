@@ -134,3 +134,4 @@ Astroncia IPTV doesn't provide any playlists or other digital content.
 or execute this command to install:  
 ```curl -L --output - 'https://gitlab.com/astroncia/channel-icons/-/archive/master/channel-icons-master.tar.gz' | sudo tar -C /usr/lib/astronciaiptv/ -zxvf - && sudo mv /usr/lib/astronciaiptv/channel-icons-master/* /usr/lib/astronciaiptv/data/ && sudo rmdir /usr/lib/astronciaiptv/channel-icons-master```  
 
+*All rights to the logos of TV channels belong to their copyright holders.*  

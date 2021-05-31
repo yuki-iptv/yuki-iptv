@@ -134,3 +134,5 @@ Astroncia IPTV не предоставляет плейлисты или дру�
 
 или выполните следующую команду, чтобы установить:  
 ```curl -L --output - 'https://gitlab.com/astroncia/channel-icons/-/archive/master/channel-icons-master.tar.gz' | sudo tar -C /usr/lib/astronciaiptv/ -zxvf - && sudo mv /usr/lib/astronciaiptv/channel-icons-master/* /usr/lib/astronciaiptv/data/ && sudo rmdir /usr/lib/astronciaiptv/channel-icons-master```  
+
+*Все права на логотипы телеканалов принадлежат их правообладателям.*  
