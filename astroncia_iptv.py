@@ -1359,8 +1359,8 @@ if __name__ == '__main__':
                 player.video_zoom = zoom_vars[list(zoom_vars)[zoom_choose.currentIndex()]]
                 player.panscan = panscan_choose.value()
                 setVideoAspect(videoaspect_vars[list(videoaspect_vars)[videoaspect_choose.currentIndex()]])
-                stopPlayer()
-                doPlay(playing_url, uas[useragent_choose.currentIndex()])
+                #stopPlayer()
+                #doPlay(playing_url, uas[useragent_choose.currentIndex()])
             chan_win.close()
 
         save_btn = QtWidgets.QPushButton(LANG['savesettings'])
