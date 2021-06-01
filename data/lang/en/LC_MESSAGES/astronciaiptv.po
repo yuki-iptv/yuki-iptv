@@ -225,7 +225,7 @@ msgid "stop"
 msgstr "Stop"
 
 msgid "fullscreen"
-msgstr "Fullscreen mode"
+msgstr "Fullscreen"
 
 msgid "openrecordingsfolder"
 msgstr "Open recordings folder"
@@ -534,7 +534,7 @@ msgid "tab_exp"
 msgstr "Experimental"
 
 msgid "exp1"
-msgstr "Playlist over video\nin full screen mode"
+msgstr "Side floating\npanel adjustment"
 
 msgid "exp2"
 msgstr "Playlist width\nin full screen mode"
@@ -556,15 +556,6 @@ msgstr "by default:\nchange volume"
 
 msgid "foundproblem"
 msgstr "Found problem? Email me to address"
-
-msgid "videoaspectdef"
-msgstr "Default video aspect"
-
-msgid "zoomdef"
-msgstr "Default zoom"
-
-msgid "panscandef"
-msgstr "Default pan and scan"
 
 msgid "showplaylistmouse"
 msgstr "Show playlist\non mouse move"

@@ -225,7 +225,7 @@ msgid "stop"
 msgstr "Стоп"
 
 msgid "fullscreen"
-msgstr "Полноэкранный режим"
+msgstr "Полный экран"
 
 msgid "openrecordingsfolder"
 msgstr "Открыть папку записей"
@@ -534,7 +534,7 @@ msgid "tab_exp"
 msgstr "Экспериментальное"
 
 msgid "exp1"
-msgstr "Плейлист поверх видео\nв полноэкранном режиме"
+msgstr "Регулировка боковой\nплавающей панели"
 
 msgid "exp2"
 msgstr "Ширина плейлиста\nв полноэкранном режиме"
@@ -556,15 +556,6 @@ msgstr "по умолчанию:\nизменение громкости"
 
 msgid "foundproblem"
 msgstr "Нашли проблему? Напишите мне по e-mail"
-
-msgid "videoaspectdef"
-msgstr "Соотношение сторон по умолчанию"
-
-msgid "zoomdef"
-msgstr "Зум по умолчанию"
-
-msgid "panscandef"
-msgstr "Пансканирование по умолчанию"
 
 msgid "showplaylistmouse"
 msgstr "Показывать плейлист\nпри движении мыши"

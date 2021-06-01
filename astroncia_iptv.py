@@ -1865,9 +1865,9 @@ if __name__ == '__main__':
         showcontrolsmouse_flag = QtWidgets.QCheckBox()
         showcontrolsmouse_flag.setChecked(settings['showcontrolsmouse'])
 
-        videoaspectdef_label = QtWidgets.QLabel("{}:".format(LANG['videoaspectdef']))
-        zoomdef_label = QtWidgets.QLabel("{}:".format(LANG['zoomdef']))
-        panscan_def_label = QtWidgets.QLabel("{}:".format(LANG['panscandef']))
+        videoaspectdef_label = QtWidgets.QLabel("{}:".format(LANG['videoaspect']))
+        zoomdef_label = QtWidgets.QLabel("{}:".format(LANG['zoom']))
+        panscan_def_label = QtWidgets.QLabel("{}:".format(LANG['panscan']))
 
         videoaspect_def_choose = QtWidgets.QComboBox()
         for videoaspect_var_1 in videoaspect_vars:
