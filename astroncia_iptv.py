@@ -2344,6 +2344,14 @@ if __name__ == '__main__':
 
         playing_url = ''
 
+        def setChanText(chanText):
+            chTextStrip = chanText.strip()
+            if chTextStrip:
+                win.setWindowTitle(chTextStrip + ' - ' + MAIN_WINDOW_TITLE)
+            else:
+                win.setWindowTitle(MAIN_WINDOW_TITLE)
+            chan.setText(chanText)
+
         def itemClicked_event(item): # pylint: disable=too-many-branches
             global playing, playing_chan, item_selected, playing_url
             try:
@@ -2357,7 +2365,7 @@ if __name__ == '__main__':
             channel_name = j
             if len(channel_name) > MAX_CHAN_SIZE:
                 channel_name = channel_name[:MAX_CHAN_SIZE - 3] + '...'
-            chan.setText('  ' + channel_name)
+            setChanText('  ' + channel_name)
             current_prog = None
             if settings['epg'] and j.lower() in programmes:
                 for pr in programmes[j.lower()]:
@@ -2451,7 +2459,7 @@ if __name__ == '__main__':
             playing_chan = ''
             playing_url = ''
             hideLoading()
-            chan.setText('')
+            setChanText('')
             playing = False
             stopPlayer()
             player.loop = True
