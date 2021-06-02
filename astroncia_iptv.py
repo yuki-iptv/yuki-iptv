@@ -2204,6 +2204,15 @@ if __name__ == '__main__':
         locale.setlocale(locale.LC_NUMERIC, 'C')
 
         fullscreen = False
+        newdockWidgetHeight = False
+
+        try:
+            if os.path.isfile(str(Path(LOCAL_DIR, 'expheight.json'))):
+                expheight_file_0 = open(str(Path(LOCAL_DIR, 'expheight.json')), 'r', encoding="utf8")
+                newdockWidgetHeight = json.loads(expheight_file_0.read())["expplaylistheight"]
+                expheight_file_0.close()
+        except: # pylint: disable=bare-except
+            pass
 
         class MainWindow(QtWidgets.QMainWindow):
             def __init__(self):
@@ -2215,6 +2224,18 @@ if __name__ == '__main__':
                 self.listWidget = None
                 self.latestWidth = 0
                 self.latestHeight = 0
+            def eventFilter(self, source, event):
+                global fullscreen, newdockWidgetHeight
+                if settings['exp1']:
+                    if (event.type() == QtCore.QEvent.Resize and fullscreen) and not dockWidget.height() == win.height() - 150:
+                        newdockWidgetHeight = dockWidget.height()
+                        try:
+                            expheight_file = open(str(Path(LOCAL_DIR, 'expheight.json')), 'w', encoding="utf8")
+                            expheight_file.write(json.dumps({"expplaylistheight": newdockWidgetHeight}))
+                            expheight_file.close()
+                        except: # pylint: disable=bare-except
+                            pass
+                return super(MainWindow, self).eventFilter(source, event)
             def updateWindowSize(self):
                 if self.width() != self.latestWidth or self.height() != self.latestHeight:
                     self.latestWidth = self.width()
@@ -4162,8 +4183,10 @@ if __name__ == '__main__':
 
         hide_lbls_fullscreen = [label5_0, label5_2, label8, label8_0, label8_4, label8_5, label9]
 
+        dockWidget.installEventFilter(win)
+
         def thread_mouse(): # pylint: disable=too-many-branches
-            global fullscreen, key_t_visible, dockWidgetVisible, dockWidget2Visible
+            global fullscreen, key_t_visible, dockWidgetVisible, dockWidget2Visible, newdockWidgetHeight
             label13.setText("Vol: {}%".format(int(player.volume)))
             if settings['exp1']:
                 if fullscreen:
@@ -4209,7 +4232,10 @@ if __name__ == '__main__':
                                 of1 = 50
                                 dockWidget.setFloating(True)
                             dockWidget.move(win.width() - dockWidget.width(), of1)
-                            dockWidget.resize(dockWidget.width(), win.height() - 150)
+                            if not newdockWidgetHeight:
+                                dockWidget.resize(dockWidget.width(), win.height() - 150)
+                            else:
+                                dockWidget.resize(dockWidget.width(), newdockWidgetHeight)
                             dockWidget.setWindowOpacity(0.6)
                             dockWidget.show()
                             dockWidget.setWindowOpacity(0.6)
