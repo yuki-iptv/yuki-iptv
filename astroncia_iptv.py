@@ -2489,6 +2489,8 @@ if __name__ == '__main__':
             progress.hide()
             start_label.hide()
             stop_label.hide()
+            start_label.setText('')
+            stop_label.setText('')
             dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
             win.update()
 
