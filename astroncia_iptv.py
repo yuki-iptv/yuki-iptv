@@ -4240,13 +4240,13 @@ if __name__ == '__main__':
                                 dockWidget2.setWindowOpacity(0.6)
                                 dockWidget2.move(0, win.height() - dockWidget2.height())
                             else:
-                                dockWidget2.move(0, win.height() - dockWidget2.height())
+                                dockWidget2.move(int(win.width() / 3) - 150, win.height() - dockWidget2.height())
                                 dockWidget2.resize(int(win.width() / 2) - 100, DOCK_WIDGET2_HEIGHT_LOW)
                                 dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
                                 dockWidget2.setWindowOpacity(0.6)
                                 dockWidget2.show()
                                 dockWidget2.setWindowOpacity(0.6)
-                                dockWidget2.move(0, win.height() - dockWidget2.height())
+                                dockWidget2.move(int(win.width() / 3) - 150, win.height() - dockWidget2.height())
                     else:
                         dockWidget2Visible = False
                         dockWidget2.setWindowOpacity(1)
