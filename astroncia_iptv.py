@@ -4160,9 +4160,18 @@ if __name__ == '__main__':
         dockWidgetVisible = False
         dockWidget2Visible = False
 
+        hide_lbls_fullscreen = [label5_0, label5_2, label8, label8_0, label8_4, label8_5, label9]
+
         def thread_mouse(): # pylint: disable=too-many-branches
             global fullscreen, key_t_visible, dockWidgetVisible, dockWidget2Visible
             label13.setText("Vol: {}%".format(int(player.volume)))
+            if settings['exp1']:
+                if fullscreen:
+                    for hide_lbl_fullscreen in hide_lbls_fullscreen:
+                        hide_lbl_fullscreen.hide()
+                else:
+                    for hide_lbl_fullscreen in hide_lbls_fullscreen:
+                        hide_lbl_fullscreen.show()
             if fullscreen:
                 if settings['exp1']:
                     for btns_3 in hlayout2_btns_1 + hlayout2_btns_2:
