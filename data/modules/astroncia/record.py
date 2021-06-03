@@ -26,6 +26,10 @@ ffmpeg_proc = None
 
 def record(input_url, out_file, channel_name, http_referer):
     global ffmpeg_proc
+    try:
+        from subprocess import DEVNULL
+    except ImportError:
+        DEVNULL = open(os.devnull, 'wb')
     if http_referer == 'Referer: ':
         http_referer = ''
     user_agent = get_user_agent_for_channel(channel_name)
@@ -72,10 +76,16 @@ def record(input_url, out_file, channel_name, http_referer):
     ffmpeg_proc = subprocess.Popen(
         arr,
         shell=False,
-        startupinfo=startupinfo
+        startupinfo=startupinfo,
+        stdout=DEVNULL,
+        stderr=subprocess.STDOUT
     )
 
 def record_return(input_url, out_file, channel_name, http_referer):
+    try:
+        from subprocess import DEVNULL
+    except ImportError:
+        DEVNULL = open(os.devnull, 'wb')
     if http_referer == 'Referer: ':
         http_referer = ''
     user_agent = get_user_agent_for_channel(channel_name)
@@ -122,7 +132,9 @@ def record_return(input_url, out_file, channel_name, http_referer):
     return subprocess.Popen(
         arr,
         shell=False,
-        startupinfo=startupinfo
+        startupinfo=startupinfo,
+        stdout=DEVNULL,
+        stderr=subprocess.STDOUT
     )
 
 def stop_record():
