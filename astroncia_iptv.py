@@ -137,6 +137,18 @@ LANG = lang[settings_lang0]['strings'] if settings_lang0 in lang else lang[LANG_
 LANG_NAME = lang[settings_lang0]['strings']['name'] if settings_lang0 in lang else lang[LANG_DEFAULT]['strings']['name']
 print_with_time("Settings locale: {}\n".format(LANG_NAME))
 
+DEF_DEINTERLACE = True
+
+try:
+    if os.path.isfile('/proc/cpuinfo'):
+        cpuinfo_file = open('/proc/cpuinfo', 'r')
+        cpuinfo_file_contents = cpuinfo_file.read()
+        cpuinfo_file.close()
+        if 'Raspberry' in cpuinfo_file_contents:
+            DEF_DEINTERLACE = False
+except: # pylint: disable=bare-except
+    pass
+
 def show_exception(e):
     message = "{}\n\n{}".format(LANG['error2'], str(e))
     msg = QtWidgets.QMessageBox(2, LANG['error'], message + '\n\n' + LANG['foundproblem'] + ':\n' + EMAIL_ADDRESS, QtWidgets.QMessageBox.Ok)
@@ -235,7 +247,7 @@ if __name__ == '__main__':
             settings = {
                 "m3u": "",
                 "epg": "",
-                "deinterlace": True,
+                "deinterlace": DEF_DEINTERLACE,
                 "udp_proxy": "",
                 "save_folder": SAVE_FOLDER_DEFAULT,
                 "provider": "",
