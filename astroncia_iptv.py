@@ -262,7 +262,7 @@ if __name__ == '__main__':
                 'donotupdateepg': False,
                 'channelsonpage': 100,
                 'openprevchan': False,
-                'remembervol': False,
+                'remembervol': True,
                 'hidempv': False,
                 'themecompat': False,
                 'exp1': False,
@@ -296,7 +296,7 @@ if __name__ == '__main__':
         if 'openprevchan' not in settings:
             settings['openprevchan'] = False
         if 'remembervol' not in settings:
-            settings['remembervol'] = False
+            settings['remembervol'] = True
         if 'hidempv' not in settings:
             settings['hidempv'] = False
         if 'themecompat' not in settings:
