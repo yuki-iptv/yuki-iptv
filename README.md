@@ -87,7 +87,7 @@
 ```git clone --depth=1 https://gitlab.com/astroncia/iptv.git astroncia_iptv```  
 ```cd astroncia_iptv```  
 
-**Устанавливаем логотипы телеканалов:**  
+**Устанавливаем логотипы телеканалов (необязательно):**  
 
 ```git clone --depth=1 https://gitlab.com/astroncia/channel-icons.git```  
 ```cp -R channel-icons/* data/```  
