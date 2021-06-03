@@ -564,7 +564,7 @@ msgid "showcontrolsmouse"
 msgstr "Показывать панель управления\nпри движении мыши"
 
 msgid "volumeshort"
-msgstr "Грмк"
+msgstr "Звук"
 
 msgid "hidetvguide"
 msgstr "Скрыть телепрограмму"
