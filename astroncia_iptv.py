@@ -404,6 +404,8 @@ if __name__ == '__main__':
             ICONS_FOLDER = 'icons'
 
         main_icon = QtGui.QIcon(str(Path(os.path.dirname(__file__), 'data', ICONS_FOLDER, 'tv.png')))
+        if os.path.isfile(str(Path(os.path.dirname(__file__), 'data', 'customicon.png'))):
+            main_icon = QtGui.QIcon(str(Path(os.path.dirname(__file__), 'data', 'customicon.png')))
         channels = {}
         programmes = {}
 
