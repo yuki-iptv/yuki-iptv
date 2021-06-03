@@ -3104,7 +3104,7 @@ if __name__ == '__main__':
                 except: # pylint: disable=bare-except
                     panscan_choose.setValue(0)
             else:
-                deinterlace_chk.setChecked(True)
+                deinterlace_chk.setChecked(settings['deinterlace'])
                 hidden_chk.setChecked(False)
                 contrast_choose.setValue(0)
                 brightness_choose.setValue(0)
