@@ -3149,6 +3149,16 @@ if __name__ == '__main__':
                 start_record("", "")
             start_record(item_selected, url2)
 
+        def tvguide_hide():
+            if settings['gui'] == 0:
+                tvguide_lbl.setText('')
+                tvguide_lbl_2.setText('')
+                tvguide_lbl.hide()
+            else:
+                tvguide_lbl.setText('')
+                tvguide_lbl_2.setText('')
+                epg_win.hide()
+
         def show_context_menu(pos):
             global sel_item
             self = win.listWidget
@@ -3158,6 +3168,7 @@ if __name__ == '__main__':
             menu.addAction(LANG['select'], select_context_menu)
             menu.addSeparator()
             menu.addAction(LANG['tvguide'], tvguide_context_menu)
+            menu.addAction(LANG['hidetvguide'], tvguide_hide)
             menu.addAction(LANG['favourite'], tvguide_favourites_add)
             menu.addAction(LANG['openexternal'], open_external_player)
             menu.addAction(LANG['startrecording'], tvguide_start_record)
