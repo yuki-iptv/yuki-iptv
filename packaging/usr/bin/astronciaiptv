@@ -7,9 +7,5 @@
 cd /usr/lib/astronciaiptv || exit 1
 LD_LIBRARY_PATH="$(./data/modules/astroncia/pfs.py)"
 export LD_LIBRARY_PATH
-./astroncia_iptv.py "$@"
-exit_code="$?"
-if [ "${exit_code}" = "0" ]; then
-reset || true
-fi
-exit "${exit_code}"
+exec ./astroncia_iptv.py "$@"
+exit "$?"
