@@ -1215,11 +1215,13 @@ if __name__ == '__main__':
                 except: # pylint: disable=bare-except
                     pass
 
-        def mpv_override_stop():
+        def mpv_override_stop(ignore=False):
             global event_handler
             #print_with_time("mpv_override_stop called")
             player.command('stop')
-            player.deinterlace = False
+            if not ignore:
+                print_with_time("Disabling deinterlace for main.png")
+                player.deinterlace = False
             player.play(str(Path('data', ICONS_FOLDER, 'main.png')))
             if (not os.name == 'nt') and event_handler:
                 try:
@@ -1271,9 +1273,9 @@ if __name__ == '__main__':
                 except: # pylint: disable=bare-except
                     pass
 
-        def stopPlayer():
+        def stopPlayer(ignore=False):
             try:
-                mpv_override_stop()
+                mpv_override_stop(ignore)
             except: # pylint: disable=bare-except
                 player.loop = True
                 mpv_override_play(str(Path('data', ICONS_FOLDER, 'main.png')))
@@ -1308,7 +1310,7 @@ if __name__ == '__main__':
             loading.setStyleSheet('color: #778a30')
             showLoading()
             player.loop = False
-            stopPlayer()
+            stopPlayer(ignore=True)
             if play_url1.startswith("udp://") or play_url1.startswith("rtp://"):
                 try:
                     # For low latency on multicast
@@ -1344,7 +1346,7 @@ if __name__ == '__main__':
             print_with_time("Panscan: {}".format(player.panscan))
             player.user_agent = ua_ch if isinstance(ua_ch, str) else uas[ua_ch]
             player.loop = True
-            mpv_override_stop()
+            mpv_override_stop(ignore=True)
             mpv_override_play(play_url1)
 
         def chan_set_save():
