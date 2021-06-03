@@ -1217,7 +1217,7 @@ if __name__ == '__main__':
             global event_handler
             #print_with_time("mpv_override_stop called")
             player.command('stop')
-            player.play(str(Path('data', ICONS_FOLDER, 'main.png')))
+            #player.play(str(Path('data', ICONS_FOLDER, 'main.png')))
             if (not os.name == 'nt') and event_handler:
                 try:
                     event_handler.on_title()
@@ -2495,8 +2495,8 @@ if __name__ == '__main__':
             setChanText('')
             playing = False
             stopPlayer()
-            player.loop = True
-            mpv_override_play(str(Path('data', ICONS_FOLDER, 'main.png')))
+            #player.loop = True
+            #mpv_override_play(str(Path('data', ICONS_FOLDER, 'main.png')))
             chan.setText(LANG['nochannelselected'])
             progress.hide()
             start_label.hide()
