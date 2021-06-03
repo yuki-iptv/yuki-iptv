@@ -3401,7 +3401,7 @@ if __name__ == '__main__':
             print_with_time('[{}] {}: {}'.format(loglevel, component, message))
 
         def playLastChannel():
-            global playing_url, playing_chan
+            global playing_url, playing_chan, combobox
             if os.path.isfile(str(Path(LOCAL_DIR, 'lastchannels.json'))) and settings['openprevchan']:
                 try:
                     lastfile_1 = open(str(Path(LOCAL_DIR, 'lastchannels.json')), 'r', encoding="utf8")
@@ -3409,6 +3409,10 @@ if __name__ == '__main__':
                     lastfile_1.close()
                     player.user_agent = lastfile_1_dat[2]
                     itemClicked_event(lastfile_1_dat[0])
+                    try:
+                        combobox.setCurrentIndex(lastfile_1_dat[3])
+                    except: # pylint: disable=bare-except
+                        pass
                 except: # pylint: disable=bare-except
                     if os.path.isfile(str(Path(LOCAL_DIR, 'lastchannels.json'))):
                         os.remove(str(Path(LOCAL_DIR, 'lastchannels.json')))
@@ -3982,8 +3986,13 @@ if __name__ == '__main__':
 
         def saveLastChannel():
             if playing_url:
+                current_group_0 = 0
+                try:
+                    current_group_0 = groups.index(array[playing_chan]['tvg-group'])
+                except: # pylint: disable=bare-except
+                    pass
                 lastfile = open(str(Path(LOCAL_DIR, 'lastchannels.json')), 'w', encoding="utf8")
-                lastfile.write(json.dumps([playing_chan, playing_url, getUserAgent()]))
+                lastfile.write(json.dumps([playing_chan, playing_url, getUserAgent(), current_group_0]))
                 lastfile.close()
             else:
                 if os.path.isfile(str(Path(LOCAL_DIR, 'lastchannels.json'))):
