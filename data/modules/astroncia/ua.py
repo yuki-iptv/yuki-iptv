@@ -40,15 +40,11 @@ ua_names = [
 ]
 
 if 'HOME' in os.environ and os.path.isdir(os.environ['HOME']):
-    LOCAL_DIR = str(Path(os.environ['HOME'], '.AstronciaIPTV'))
-    SAVE_FOLDER_DEFAULT = str(Path(os.environ['HOME'], '.AstronciaIPTV', 'saves'))
+    LOCAL_DIR = str(Path(os.environ['HOME'], '.config', 'astronciaiptv'))
     if not os.path.isdir(LOCAL_DIR):
         os.mkdir(LOCAL_DIR)
-    if not os.path.isdir(SAVE_FOLDER_DEFAULT):
-        os.mkdir(SAVE_FOLDER_DEFAULT)
 else:
     LOCAL_DIR = 'local'
-    SAVE_FOLDER_DEFAULT = str(Path(os.path.dirname(os.path.abspath(__file__)), 'AstronciaIPTV_saves'))
 
 def get_default_user_agent():
     if os.path.isfile(str(Path(LOCAL_DIR, 'settings.json'))):

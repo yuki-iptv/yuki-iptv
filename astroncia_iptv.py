@@ -102,8 +102,18 @@ parser.add_argument('--python')
 args1 = parser.parse_args()
 
 if 'HOME' in os.environ and os.path.isdir(os.environ['HOME']):
-    LOCAL_DIR = str(Path(os.environ['HOME'], '.AstronciaIPTV'))
-    SAVE_FOLDER_DEFAULT = str(Path(os.environ['HOME'], '.AstronciaIPTV', 'saves'))
+    try:
+        if not os.path.isdir(str(Path(os.environ['HOME'], '.config'))):
+            os.mkdir(str(Path(os.environ['HOME'], '.config')))
+    except: # pylint: disable=bare-except
+        pass
+    try:
+        if os.path.isdir(str(Path(os.environ['HOME'], '.AstronciaIPTV'))):
+            os.rename(str(Path(os.environ['HOME'], '.AstronciaIPTV')), str(Path(os.environ['HOME'], '.config', 'astronciaiptv')))
+    except: # pylint: disable=bare-except
+        pass
+    LOCAL_DIR = str(Path(os.environ['HOME'], '.config', 'astronciaiptv'))
+    SAVE_FOLDER_DEFAULT = str(Path(os.environ['HOME'], '.config', 'astronciaiptv', 'saves'))
     if not os.path.isdir(LOCAL_DIR):
         os.mkdir(LOCAL_DIR)
     if not os.path.isdir(SAVE_FOLDER_DEFAULT):
@@ -418,6 +428,16 @@ if __name__ == '__main__':
                 m3u_editor.show()
 
         save_folder = settings['save_folder']
+
+        try:
+            if save_folder.startswith(str(Path(os.environ['HOME'], '.AstronciaIPTV'))) and not os.path.isdir(str(Path(save_folder))):
+                save_folder = SAVE_FOLDER_DEFAULT
+                settings['save_folder'] = SAVE_FOLDER_DEFAULT
+                settings_file3 = open(str(Path(LOCAL_DIR, 'settings.json')), 'w', encoding="utf8")
+                settings_file3.write(json.dumps(settings))
+                settings_file3.close()
+        except: # pylint: disable=bare-except
+            pass
 
         if not os.path.isdir(str(Path(save_folder))):
             os.mkdir(str(Path(save_folder)))
