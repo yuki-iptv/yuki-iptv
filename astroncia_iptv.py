@@ -4245,6 +4245,12 @@ if __name__ == '__main__':
 
         dockWidget.installEventFilter(win)
 
+        def thread_mouse_2():
+            if (fullscreen and not key_t_visible) and settings['exp1']:
+                dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
+                dockWidget.move(win.width() - dockWidget.width(), 50)
+                dockWidget2.move(int(win.width() / 3) - 150, win.height() - dockWidget2.height())
+
         def thread_mouse(): # pylint: disable=too-many-branches
             global fullscreen, key_t_visible, dockWidgetVisible, dockWidget2Visible, newdockWidgetHeight
             label13.setText("{}: {}%".format(LANG['volumeshort'], int(player.volume)))
@@ -4429,6 +4435,7 @@ if __name__ == '__main__':
             timers_array = {}
             timers = {
                 thread_mouse: 50,
+                thread_mouse_2: 50,
                 thread_tvguide: 100,
                 thread_record: 100,
                 thread_osc: 100,
