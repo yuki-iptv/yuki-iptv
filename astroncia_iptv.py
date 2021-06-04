@@ -4247,6 +4247,11 @@ if __name__ == '__main__':
 
         def thread_mouse_2():
             global newdockWidgetHeight, fullscreen, key_t_visible
+            try:
+                player['cursor-autohide'] = 1000
+                player['force-window'] = True
+            except: # pylint: disable=bare-except
+                pass
             if fullscreen:
                 try:
                     win.main_widget.setCursor(QtCore.Qt.BlankCursor)
