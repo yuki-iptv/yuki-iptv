@@ -125,7 +125,7 @@ Astroncia IPTV doesn't provide any playlists or other digital content.
 
 ## Channel logos (nonfree)
 
-[deb](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv-channel-icons.deb) | [rpm](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/astroncia-iptv-channel-icons.rpm)  
+[deb](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/chanicons/astroncia-iptv-channel-icons-0.0.4.deb) | [rpm](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/chanicons/astroncia-iptv-channel-icons-0.0.4-1.noarch.rpm)  
 
 or execute this command to install:  
 ```curl -L --output - 'https://gitlab.com/astroncia/channel-icons/-/archive/master/channel-icons-master.tar.gz' | sudo tar -C /usr/lib/astronciaiptv/ -zxvf - && sudo mv /usr/lib/astronciaiptv/channel-icons-master/* /usr/lib/astronciaiptv/data/ && sudo rmdir /usr/lib/astronciaiptv/channel-icons-master```  
