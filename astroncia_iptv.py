@@ -3448,7 +3448,7 @@ if __name__ == '__main__':
         options = {
             'vo': '' if os.name == 'nt' else VIDEO_OUTPUT,
             'hwdec': HWACCEL,
-            'cursor-autohide': False,
+            'cursor-autohide': 1000,
             'force-window': True
         }
         try:
