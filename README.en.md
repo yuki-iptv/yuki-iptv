@@ -123,7 +123,7 @@ For recordings view recommended [VLC media player](https://www.videolan.org/).
 Program not starting after setting wrong mpv options  
   
 Solution - reset settings:  
-```rm -f "$HOME/.config/astronciaiptv/settings.json"``  
+```rm -f "$HOME/.config/astronciaiptv/settings.json"```  
 
 ## Disclaimer
 
