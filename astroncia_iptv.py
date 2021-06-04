@@ -277,7 +277,6 @@ if __name__ == '__main__':
                 'themecompat': False,
                 'exp1': False,
                 'exp2': DOCK_WIDGET_WIDTH,
-                'exp3': -1,
                 'mouseswitchchannels': False,
                 'showplaylistmouse': True,
                 'showcontrolsmouse': True,
@@ -316,8 +315,6 @@ if __name__ == '__main__':
             settings['exp1'] = False
         if 'exp2' not in settings:
             settings['exp2'] = DOCK_WIDGET_WIDTH
-        if 'exp3' not in settings:
-            settings['exp3'] = -1
         if 'mouseswitchchannels' not in settings:
             settings['mouseswitchchannels'] = False
         if 'showplaylistmouse' not in settings:
@@ -1568,7 +1565,6 @@ if __name__ == '__main__':
                 'themecompat': themecompat_flag.isChecked(),
                 'exp1': exp1_flag.isChecked(),
                 'exp2': exp2_input.value(),
-                'exp3': exp3_input.value(),
                 'mouseswitchchannels': mouseswitchchannels_flag.isChecked(),
                 'showplaylistmouse': showplaylistmouse_flag.isChecked(),
                 'showcontrolsmouse': showcontrolsmouse_flag.isChecked(),
@@ -1893,16 +1889,11 @@ if __name__ == '__main__':
         exp_warning.setStyleSheet('color:red')
         exp1_label = QtWidgets.QLabel("{}:".format(LANG['exp1']))
         exp2_label = QtWidgets.QLabel("{}:".format(LANG['exp2']))
-        exp3_label = QtWidgets.QLabel("{}:".format(LANG['voffsetbpanel']))
         exp1_flag = QtWidgets.QCheckBox()
         exp1_flag.setChecked(settings['exp1'])
         exp2_input = QtWidgets.QSpinBox()
-        exp2_input.setMaximum(99999)
+        exp2_input.setMaximum(9999)
         exp2_input.setValue(settings['exp2'])
-        exp3_input = QtWidgets.QSpinBox()
-        exp3_input.setMinimum(-1)
-        exp3_input.setMaximum(99999)
-        exp3_input.setValue(settings['exp3'])
 
         mouseswitchchannels_label = QtWidgets.QLabel("{}:".format(LANG['mouseswitchchannels']))
         defaultchangevol_label = QtWidgets.QLabel("({})".format(LANG['defaultchangevol']))
@@ -2029,9 +2020,7 @@ if __name__ == '__main__':
         tab6.layout.addWidget(exp2_label, 3, 0)
         tab6.layout.addWidget(exp2_input, 3, 1)
         tab6.layout.addWidget(QtWidgets.QLabel(), 3, 2)
-        tab6.layout.addWidget(exp3_label, 4, 0)
-        tab6.layout.addWidget(exp3_input, 4, 1)
-        tab6.layout.addWidget(QtWidgets.QLabel(), 5, 0)
+        tab6.layout.addWidget(QtWidgets.QLabel(), 4, 0)
         tab6.setLayout(tab6.layout)
 
         tab7.layout = QtWidgets.QGridLayout()
@@ -4287,9 +4276,6 @@ if __name__ == '__main__':
         def thread_mouse_2():
             try:
                 global newdockWidgetHeight, fullscreen, key_t_visible
-                DOCKWIDGET2_OFFSET_0 = win.height() - dockWidget2.height()
-                if settings['exp3'] != -1:
-                    DOCKWIDGET2_OFFSET_0 = settings['exp3']
                 try:
                     player['cursor-autohide'] = 1000
                     player['force-window'] = True
@@ -4308,7 +4294,7 @@ if __name__ == '__main__':
                 if (fullscreen and not key_t_visible) and settings['exp1']:
                     dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
                     dockWidget.move(win.width() - dockWidget.width(), 50)
-                    dockWidget2.move(int(win.width() / 3) - 150, DOCKWIDGET2_OFFSET_0)
+                    dockWidget2.move(int(win.width() / 3) - 150, win.height() - dockWidget2.height())
                     if not newdockWidgetHeight:
                         dockWidget.resize(dockWidget.width(), win.height() - 150)
                     else:
@@ -4385,29 +4371,26 @@ if __name__ == '__main__':
                         win_height = win.height()
                         is_cursor_y = cursor_y > win_height - (dockWidget2.height() + 250)
                         if is_cursor_y and cursor_y < win_height:
-                            DOCKWIDGET2_OFFSET = win.height() - dockWidget2.height()
-                            if settings['exp3'] != -1:
-                                DOCKWIDGET2_OFFSET = settings['exp3']
                             if not dockWidget2Visible:
                                 dockWidget2Visible = True
                                 if settings['exp1']:
                                     dockWidget2.setFloating(True)
                                 if not settings['exp1']:
-                                    dockWidget2.move(0, DOCKWIDGET2_OFFSET)
+                                    dockWidget2.move(0, win.height() - dockWidget2.height())
                                     dockWidget2.resize(win.width(), DOCK_WIDGET2_HEIGHT_HIGH)
                                     dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
                                     dockWidget2.setWindowOpacity(0.6)
                                     dockWidget2.show()
                                     dockWidget2.setWindowOpacity(0.6)
-                                    dockWidget2.move(0, DOCKWIDGET2_OFFSET)
+                                    dockWidget2.move(0, win.height() - dockWidget2.height())
                                 else:
-                                    dockWidget2.move(int(win.width() / 3) - 150, DOCKWIDGET2_OFFSET)
+                                    dockWidget2.move(int(win.width() / 3) - 150, win.height() - dockWidget2.height())
                                     dockWidget2.resize(int(win.width() / 2) - 100, DOCK_WIDGET2_HEIGHT_LOW)
                                     dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
                                     dockWidget2.setWindowOpacity(0.6)
                                     dockWidget2.show()
                                     dockWidget2.setWindowOpacity(0.6)
-                                    dockWidget2.move(int(win.width() / 3) - 150, DOCKWIDGET2_OFFSET)
+                                    dockWidget2.move(int(win.width() / 3) - 150, win.height() - dockWidget2.height())
                         else:
                             dockWidget2Visible = False
                             dockWidget2.setWindowOpacity(1)
