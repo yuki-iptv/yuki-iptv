@@ -4246,7 +4246,7 @@ if __name__ == '__main__':
         dockWidget.installEventFilter(win)
 
         def thread_mouse_2():
-            global newdockWidgetHeight
+            global newdockWidgetHeight, fullscreen, key_t_visible
             if (fullscreen and not key_t_visible) and settings['exp1']:
                 dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
                 dockWidget.move(win.width() - dockWidget.width(), 50)
