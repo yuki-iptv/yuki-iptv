@@ -4246,10 +4246,15 @@ if __name__ == '__main__':
         dockWidget.installEventFilter(win)
 
         def thread_mouse_2():
+            global newdockWidgetHeight
             if (fullscreen and not key_t_visible) and settings['exp1']:
                 dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
                 dockWidget.move(win.width() - dockWidget.width(), 50)
                 dockWidget2.move(int(win.width() / 3) - 150, win.height() - dockWidget2.height())
+                if not newdockWidgetHeight:
+                    dockWidget.resize(dockWidget.width(), win.height() - 150)
+                else:
+                    dockWidget.resize(dockWidget.width(), newdockWidgetHeight)
 
         def thread_mouse(): # pylint: disable=too-many-branches
             global fullscreen, key_t_visible, dockWidgetVisible, dockWidget2Visible, newdockWidgetHeight
