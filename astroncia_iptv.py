@@ -3448,7 +3448,7 @@ if __name__ == '__main__':
         options = {
             'vo': '' if os.name == 'nt' else VIDEO_OUTPUT,
             'hwdec': HWACCEL,
-            'cursor-autohide': 1000,
+            'cursor-autohide': False,
             'force-window': True
         }
         try:
@@ -4247,6 +4247,16 @@ if __name__ == '__main__':
 
         def thread_mouse_2():
             global newdockWidgetHeight, fullscreen, key_t_visible
+            if fullscreen:
+                try:
+                    win.main_widget.setCursor(QtCore.Qt.BlankCursor)
+                except: # pylint: disable=bare-except
+                    pass
+            else:
+                try:
+                    win.main_widget.unsetCursor()
+                except: # pylint: disable=bare-except
+                    pass
             if (fullscreen and not key_t_visible) and settings['exp1']:
                 dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
                 dockWidget.move(win.width() - dockWidget.width(), 50)
