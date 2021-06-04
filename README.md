@@ -119,6 +119,13 @@ deb и rpm пакеты доступны в [Releases](https://gitlab.com/astron
 
 ```git pull https://gitlab.com/astroncia/iptv.git```  
 
+## Известные проблемы и решения
+
+Программа не запускается после установки неправильных опций mpv  
+  
+Решение - сбросить настройки:  
+```rm -f "$HOME/.config/astronciaiptv/settings.json"```  
+
 ## Отказ от ответственности
 
 Astroncia IPTV не предоставляет плейлисты или другой цифровой контент.  

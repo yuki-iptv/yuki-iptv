@@ -118,6 +118,13 @@ For recordings view recommended [VLC media player](https://www.videolan.org/).
 
 ```git pull https://gitlab.com/astroncia/iptv.git```  
 
+## Known problems and solutions
+
+Program not starting after setting wrong mpv options  
+  
+Solution - reset settings:  
+```rm -f "$HOME/.config/astronciaiptv/settings.json"``  
+
 ## Disclaimer
 
 Astroncia IPTV doesn't provide any playlists or other digital content.  
