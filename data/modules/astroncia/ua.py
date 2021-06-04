@@ -41,6 +41,8 @@ ua_names = [
 
 if 'HOME' in os.environ and os.path.isdir(os.environ['HOME']):
     LOCAL_DIR = str(Path(os.environ['HOME'], '.config', 'astronciaiptv'))
+    if not os.path.isdir(str(Path(os.environ['HOME'], '.config'))):
+        os.mkdir(str(Path(os.environ['HOME'], '.config')))
     if not os.path.isdir(LOCAL_DIR):
         os.mkdir(LOCAL_DIR)
 else:
