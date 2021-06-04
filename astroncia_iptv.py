@@ -3460,6 +3460,8 @@ if __name__ == '__main__':
             'cursor-autohide': 1000,
             'force-window': True
         }
+        options_orig = options.copy()
+        options_2 = {}
         try:
             mpv_options_1 = settings['mpv_options']
             if "=" in mpv_options_1:
@@ -3467,9 +3469,17 @@ if __name__ == '__main__':
                 for pair in pairs:
                     key, value = pair.split("=")
                     options[key.replace('--', '')] = value
+                    options_2[key.replace('--', '')] = value
         except Exception as e1:
             print("Could not parse MPV options!")
             print(e1)
+        print_with_time("Testing mpv options...")
+        try:
+            test_options = mpv.MPV(**options_2)
+            print_with_time("mpv options OK")
+        except: # pylint: disable=bare-except
+            print_with_time("mpv options test failed, ignoring they")
+            options = options_orig
         try:
             player = mpv.MPV(
                 **options,
