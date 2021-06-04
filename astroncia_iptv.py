@@ -898,63 +898,69 @@ if __name__ == '__main__':
         recViaScheduler = False
 
         def record_thread_2():
-            global recViaScheduler
-            activerec_list_value = activerec_list.verticalScrollBar().value()
-            activerec_list.clear()
-            for sch0 in sch_recordings:
-                counted_time0 = format_seconds_to_hhmmss(time.time() - sch_recordings[sch0][1])
-                channel_name0 = sch_recordings[sch0][3]
-                file_name0 = sch_recordings[sch0][2]
-                file_size0 = "WAITING"
-                if os.path.isfile(file_name0):
-                    file_size0 = convert_size(os.path.getsize(file_name0))
-                activerec_list.addItem(channel_name0 + "\n" + counted_time0 + " " + file_size0)
-            activerec_list.verticalScrollBar().setValue(activerec_list_value)
-            pl_text = "REC / " + LANG['smscheduler']
-            if activerec_list.count() != 0:
-                recViaScheduler = True
-                lbl2.setText(pl_text)
-                lbl2.show()
-            else:
-                if recViaScheduler:
-                    print_with_time("Record via scheduler ended, executing post-action...")
-                    # 0 - nothing to do
-                    if praction_choose.currentIndex() == 1: # 1 - Press Stop
-                        mpv_stop()
-                    if praction_choose.currentIndex() == 2: # 2 - Quit program
-                        key_quit()
-                recViaScheduler = False
-                if lbl2.text() == pl_text:
-                    lbl2.hide()
+            try:
+                global recViaScheduler
+                activerec_list_value = activerec_list.verticalScrollBar().value()
+                activerec_list.clear()
+                for sch0 in sch_recordings:
+                    counted_time0 = format_seconds_to_hhmmss(time.time() - sch_recordings[sch0][1])
+                    channel_name0 = sch_recordings[sch0][3]
+                    file_name0 = sch_recordings[sch0][2]
+                    file_size0 = "WAITING"
+                    if os.path.isfile(file_name0):
+                        file_size0 = convert_size(os.path.getsize(file_name0))
+                    activerec_list.addItem(channel_name0 + "\n" + counted_time0 + " " + file_size0)
+                activerec_list.verticalScrollBar().setValue(activerec_list_value)
+                pl_text = "REC / " + LANG['smscheduler']
+                if activerec_list.count() != 0:
+                    recViaScheduler = True
+                    lbl2.setText(pl_text)
+                    lbl2.show()
+                else:
+                    if recViaScheduler:
+                        print_with_time("Record via scheduler ended, executing post-action...")
+                        # 0 - nothing to do
+                        if praction_choose.currentIndex() == 1: # 1 - Press Stop
+                            mpv_stop()
+                        if praction_choose.currentIndex() == 2: # 2 - Quit program
+                            key_quit()
+                    recViaScheduler = False
+                    if lbl2.text() == pl_text:
+                        lbl2.hide()
+            except: # pylint: disable=bare-except
+                pass
 
         def record_thread():
-            global is_recording
-            status = LANG['recnothing']
-            sch_items = [str(schedulers.item(i1).text()) for i1 in range(schedulers.count())]
-            i3 = -1
-            for sch_item in sch_items:
-                i3 += 1
-                status = LANG['recwaiting']
-                sch_item = [i2.split(': ')[1] for i2 in sch_item.split('\n') if i2]
-                channel_name_rec = sch_item[0]
-                #ch_url = array[channel_name_rec]['url']
-                current_time = time.strftime('%d.%m.%y %H:%M', time.localtime())
-                start_time_1 = sch_item[1]
-                end_time_1 = sch_item[2]
-                array_name = str(channel_name_rec) + "_" + str(start_time_1) + "_" + str(end_time_1)
-                if start_time_1 == current_time:
-                    if array_name not in sch_recordings:
-                        print_with_time("Starting planned record (start_time='{}' end_time='{}' channel='{}')".format(start_time_1, end_time_1, channel_name_rec))
-                        sch_recordings[array_name] = do_start_record(array_name)
-                if end_time_1 == current_time:
-                    if array_name in sch_recordings:
-                        schedulers.takeItem(i3)
-                        print_with_time("Stopping planned record (start_time='{}' end_time='{}' channel='{}')".format(start_time_1, end_time_1, channel_name_rec))
-                        do_stop_record(array_name)
-                        sch_recordings.pop(array_name)
-                if sch_recordings:
-                    status = LANG['recrecording']
-            statusrec_lbl.setText('{}: {}'.format(LANG['status'], status))
+            try:
+                global is_recording
+                status = LANG['recnothing']
+                sch_items = [str(schedulers.item(i1).text()) for i1 in range(schedulers.count())]
+                i3 = -1
+                for sch_item in sch_items:
+                    i3 += 1
+                    status = LANG['recwaiting']
+                    sch_item = [i2.split(': ')[1] for i2 in sch_item.split('\n') if i2]
+                    channel_name_rec = sch_item[0]
+                    #ch_url = array[channel_name_rec]['url']
+                    current_time = time.strftime('%d.%m.%y %H:%M', time.localtime())
+                    start_time_1 = sch_item[1]
+                    end_time_1 = sch_item[2]
+                    array_name = str(channel_name_rec) + "_" + str(start_time_1) + "_" + str(end_time_1)
+                    if start_time_1 == current_time:
+                        if array_name not in sch_recordings:
+                            print_with_time("Starting planned record (start_time='{}' end_time='{}' channel='{}')".format(start_time_1, end_time_1, channel_name_rec))
+                            sch_recordings[array_name] = do_start_record(array_name)
+                    if end_time_1 == current_time:
+                        if array_name in sch_recordings:
+                            schedulers.takeItem(i3)
+                            print_with_time("Stopping planned record (start_time='{}' end_time='{}' channel='{}')".format(start_time_1, end_time_1, channel_name_rec))
+                            do_stop_record(array_name)
+                            sch_recordings.pop(array_name)
+                    if sch_recordings:
+                        status = LANG['recrecording']
+                statusrec_lbl.setText('{}: {}'.format(LANG['status'], status))
+            except: # pylint: disable=bare-except
+                pass
 
         def delrecord_clicked():
             schCurrentRow = schedulers.currentRow()
@@ -2837,19 +2843,22 @@ if __name__ == '__main__':
         channel_icons_data.do_next_update = False
 
         def channel_icons_thread():
-            if channel_icons_data.do_next_update:
-                channel_icons_data.do_next_update = False
-                btn_update.click()
-                print("Channel icons updated")
             try:
-                if len(channel_icons_data.return_dict) != channel_icons_data.total:
-                    print("Channel icons loaded: {}/{}".format(len(channel_icons_data.return_dict), channel_icons_data.total))
+                if channel_icons_data.do_next_update:
+                    channel_icons_data.do_next_update = False
                     btn_update.click()
-                else:
-                    if not channel_icons_data.load_completed:
-                        channel_icons_data.load_completed = True
-                        channel_icons_data.do_next_update = True
-                        print("Channel icons loaded, took {} seconds".format(time.time() - channel_icons_data.load_time))
+                    print("Channel icons updated")
+                try:
+                    if len(channel_icons_data.return_dict) != channel_icons_data.total:
+                        print("Channel icons loaded: {}/{}".format(len(channel_icons_data.return_dict), channel_icons_data.total))
+                        btn_update.click()
+                    else:
+                        if not channel_icons_data.load_completed:
+                            channel_icons_data.load_completed = True
+                            channel_icons_data.do_next_update = True
+                            print("Channel icons loaded, took {} seconds".format(time.time() - channel_icons_data.load_time))
+                except: # pylint: disable=bare-except
+                    pass
             except: # pylint: disable=bare-except
                 pass
 
@@ -4051,6 +4060,7 @@ if __name__ == '__main__':
                     channel_icons_data.manager_1.shutdown()
             except: # pylint: disable=bare-except
                 pass
+            print_with_time("Stopped")
 
         first_boot = False
         first_boot_1 = True
@@ -4063,44 +4073,47 @@ if __name__ == '__main__':
         epg_failed = False
 
         def thread_tvguide():
-            global stopped, time_stop, first_boot, programmes, btn_update, \
-            epg_thread, static_text, manager, tvguide_sets, epg_updating, ic, \
-            return_dict, waiting_for_epg, epg_failed, first_boot_1
-            if not first_boot:
-                first_boot = True
-                if settings['epg'] and settings['epg'] != 'http://' and not epg_failed:
-                    if not use_local_tvguide:
-                        update_epg = not settings['donotupdateepg']
-                        if not first_boot_1:
-                            update_epg = True
-                        if update_epg:
-                            epg_updating = True
-                            l1.setStatic2(True)
-                            l1.show()
-                            static_text = LANG['tvguideupdating']
-                            l1.setText2("")
-                            time_stop = time.time() + 3
-                            try:
-                                manager = Manager()
-                                return_dict = manager.dict()
-                                p = Process(target=worker, args=(0, settings, return_dict))
-                                epg_thread = p
-                                p.start()
-                                waiting_for_epg = True
-                            except Exception as e1:
-                                epg_failed = True
-                                print_with_time("[TV guide, part 1] Caught exception: " + str(e1))
-                                l1.setStatic2(False)
+            try: # pylint: disable=too-many-nested-blocks
+                global stopped, time_stop, first_boot, programmes, btn_update, \
+                epg_thread, static_text, manager, tvguide_sets, epg_updating, ic, \
+                return_dict, waiting_for_epg, epg_failed, first_boot_1
+                if not first_boot:
+                    first_boot = True
+                    if settings['epg'] and settings['epg'] != 'http://' and not epg_failed:
+                        if not use_local_tvguide:
+                            update_epg = not settings['donotupdateepg']
+                            if not first_boot_1:
+                                update_epg = True
+                            if update_epg:
+                                epg_updating = True
+                                l1.setStatic2(True)
                                 l1.show()
-                                l1.setText2(LANG['tvguideupdatingerror'])
+                                static_text = LANG['tvguideupdating']
+                                l1.setText2("")
                                 time_stop = time.time() + 3
-                                epg_updating = False
+                                try:
+                                    manager = Manager()
+                                    return_dict = manager.dict()
+                                    p = Process(target=worker, args=(0, settings, return_dict))
+                                    epg_thread = p
+                                    p.start()
+                                    waiting_for_epg = True
+                                except Exception as e1:
+                                    epg_failed = True
+                                    print_with_time("[TV guide, part 1] Caught exception: " + str(e1))
+                                    l1.setStatic2(False)
+                                    l1.show()
+                                    l1.setText2(LANG['tvguideupdatingerror'])
+                                    time_stop = time.time() + 3
+                                    epg_updating = False
+                            else:
+                                print_with_time("EPG update at boot disabled")
+                            first_boot_1 = False
                         else:
-                            print_with_time("EPG update at boot disabled")
-                        first_boot_1 = False
-                    else:
-                        programmes = {prog0.lower(): tvguide_sets[prog0] for prog0 in tvguide_sets}
-                        btn_update.click() # start update in main thread
+                            programmes = {prog0.lower(): tvguide_sets[prog0] for prog0 in tvguide_sets}
+                            btn_update.click() # start update in main thread
+            except: # pylint: disable=bare-except
+                pass
 
             ic += 0.1 # pylint: disable=undefined-variable
             if ic > 14.9: # redraw every 15 seconds
@@ -4109,29 +4122,32 @@ if __name__ == '__main__':
                     btn_update.click()
 
         def thread_record():
-            global time_stop, gl_is_static, static_text, recording_time, ic1
-            ic1 += 0.1  # pylint: disable=undefined-variable
-            if ic1 > 0.9:
-                ic1 = 0
-                # executing every second
-                if is_recording:
-                    if not recording_time:
-                        recording_time = time.time()
-                    record_time = format_seconds_to_hhmmss(time.time() - recording_time)
-                    if os.path.isfile(record_file):
-                        record_size = convert_size(os.path.getsize(record_file))
-                        lbl2.setText("REC " + record_time + " - " + record_size)
+            try:
+                global time_stop, gl_is_static, static_text, recording_time, ic1
+                ic1 += 0.1  # pylint: disable=undefined-variable
+                if ic1 > 0.9:
+                    ic1 = 0
+                    # executing every second
+                    if is_recording:
+                        if not recording_time:
+                            recording_time = time.time()
+                        record_time = format_seconds_to_hhmmss(time.time() - recording_time)
+                        if os.path.isfile(record_file):
+                            record_size = convert_size(os.path.getsize(record_file))
+                            lbl2.setText("REC " + record_time + " - " + record_size)
+                        else:
+                            recording_time = time.time()
+                            lbl2.setText(LANG['recordwaiting'])
+                win.update()
+                if(time.time() > time_stop) and time_stop != 0:
+                    time_stop = 0
+                    if not gl_is_static:
+                        l1.hide()
+                        win.update()
                     else:
-                        recording_time = time.time()
-                        lbl2.setText(LANG['recordwaiting'])
-            win.update()
-            if(time.time() > time_stop) and time_stop != 0:
-                time_stop = 0
-                if not gl_is_static:
-                    l1.hide()
-                    win.update()
-                else:
-                    l1.setText2("")
+                        l1.setText2("")
+            except: # pylint: disable=bare-except
+                pass
 
         x_conn = None
 
@@ -4155,88 +4171,100 @@ if __name__ == '__main__':
                 print_with_time("Failed to set connection loss detector!")
 
         def thread_check_tvguide_obsolete():
-            global first_boot, ic2
-            check_connection()
             try:
-                if player.video_bitrate:
-                    bitrate_arr = [LANG['bitrate1'], LANG['bitrate2'], LANG['bitrate3'], LANG['bitrate4'], LANG['bitrate5']]
-                    video_bitrate = " - " + str(humanbytes(player.video_bitrate, bitrate_arr))
-                else:
+                global first_boot, ic2
+                check_connection()
+                try:
+                    if player.video_bitrate:
+                        bitrate_arr = [LANG['bitrate1'], LANG['bitrate2'], LANG['bitrate3'], LANG['bitrate4'], LANG['bitrate5']]
+                        video_bitrate = " - " + str(humanbytes(player.video_bitrate, bitrate_arr))
+                    else:
+                        video_bitrate = ""
+                except: # pylint: disable=bare-except
                     video_bitrate = ""
+                try:
+                    audio_codec = player.audio_codec.split(" ")[0]
+                except: # pylint: disable=bare-except
+                    audio_codec = 'no audio'
+                try:
+                    codec = player.video_codec.split(" ")[0]
+                    width = player.width
+                    height = player.height
+                except: # pylint: disable=bare-except
+                    codec = 'png'
+                    width = 800
+                    height = 600
+                if (not (codec == 'png' and width == 800 and height == 600)) and (width and height):
+                    label12.setText('  {}x{}{} - {} / {} |'.format(width, height, video_bitrate, codec, audio_codec))
+                    if loading.text() == LANG['loading']:
+                        hideLoading()
+                else:
+                    label12.setText('')
+                ic2 += 0.1  # pylint: disable=undefined-variable
+                if ic2 > 9.9:
+                    ic2 = 0
+                    if not epg_updating:
+                        if not is_program_actual(programmes):
+                            force_update_epg()
             except: # pylint: disable=bare-except
-                video_bitrate = ""
-            try:
-                audio_codec = player.audio_codec.split(" ")[0]
-            except: # pylint: disable=bare-except
-                audio_codec = 'no audio'
-            try:
-                codec = player.video_codec.split(" ")[0]
-                width = player.width
-                height = player.height
-            except: # pylint: disable=bare-except
-                codec = 'png'
-                width = 800
-                height = 600
-            if (not (codec == 'png' and width == 800 and height == 600)) and (width and height):
-                label12.setText('  {}x{}{} - {} / {} |'.format(width, height, video_bitrate, codec, audio_codec))
-                if loading.text() == LANG['loading']:
-                    hideLoading()
-            else:
-                label12.setText('')
-            ic2 += 0.1  # pylint: disable=undefined-variable
-            if ic2 > 9.9:
-                ic2 = 0
-                if not epg_updating:
-                    if not is_program_actual(programmes):
-                        force_update_epg()
+                pass
 
         thread_4_lock = False
 
         def thread_tvguide_2():
-            global stopped, time_stop, first_boot, programmes, btn_update, \
-            epg_thread, static_text, manager, tvguide_sets, epg_updating, ic, \
-            return_dict, waiting_for_epg, thread_4_lock, epg_failed, prog_ids
-            if not thread_4_lock:
-                thread_4_lock = True
-                if waiting_for_epg and return_dict and len(return_dict) == 6:
-                    try:
-                        if not return_dict[3]:
-                            raise return_dict[4]
-                        l1.setStatic2(False)
-                        l1.show()
-                        l1.setText2(LANG['tvguideupdatingdone'])
-                        time_stop = time.time() + 3
-                        values = return_dict.values()
-                        programmes = {prog0.lower(): values[1][prog0] for prog0 in values[1]}
-                        if not is_program_actual(programmes):
-                            raise Exception("Programme not actual")
-                        prog_ids = return_dict[5]
-                        tvguide_sets = programmes
-                        save_tvguide_sets()
-                        btn_update.click() # start update in main thread
-                    except Exception as e2:
-                        epg_failed = True
-                        print_with_time("[TV guide, part 2] Caught exception: " + str(e2))
-                        l1.setStatic2(False)
-                        l1.show()
-                        l1.setText2(LANG['tvguideupdatingerror'])
-                        time_stop = time.time() + 3
-                    epg_updating = False
-                    waiting_for_epg = False
-                thread_4_lock = False
+            try:
+                global stopped, time_stop, first_boot, programmes, btn_update, \
+                epg_thread, static_text, manager, tvguide_sets, epg_updating, ic, \
+                return_dict, waiting_for_epg, thread_4_lock, epg_failed, prog_ids
+                if not thread_4_lock:
+                    thread_4_lock = True
+                    if waiting_for_epg and return_dict and len(return_dict) == 6:
+                        try:
+                            if not return_dict[3]:
+                                raise return_dict[4]
+                            l1.setStatic2(False)
+                            l1.show()
+                            l1.setText2(LANG['tvguideupdatingdone'])
+                            time_stop = time.time() + 3
+                            values = return_dict.values()
+                            programmes = {prog0.lower(): values[1][prog0] for prog0 in values[1]}
+                            if not is_program_actual(programmes):
+                                raise Exception("Programme not actual")
+                            prog_ids = return_dict[5]
+                            tvguide_sets = programmes
+                            save_tvguide_sets()
+                            btn_update.click() # start update in main thread
+                        except Exception as e2:
+                            epg_failed = True
+                            print_with_time("[TV guide, part 2] Caught exception: " + str(e2))
+                            l1.setStatic2(False)
+                            l1.show()
+                            l1.setText2(LANG['tvguideupdatingerror'])
+                            time_stop = time.time() + 3
+                        epg_updating = False
+                        waiting_for_epg = False
+                    thread_4_lock = False
+            except: # pylint: disable=bare-except
+                pass
 
         def thread_update_time():
-            if label11 and clockOn:
-                label11.setText('  ' + time.strftime('%H:%M:%S', time.localtime()))
-            scheduler_clock.setText(get_current_time())
+            try:
+                if label11 and clockOn:
+                    label11.setText('  ' + time.strftime('%H:%M:%S', time.localtime()))
+                scheduler_clock.setText(get_current_time())
+            except: # pylint: disable=bare-except
+                pass
 
         def thread_osc():
-            global playing_url
-            if playing_url:
-                if not settings["hidempv"]:
-                    player.osc = True
-            else:
-                player.osc = False
+            try:
+                global playing_url
+                if playing_url:
+                    if not settings["hidempv"]:
+                        player.osc = True
+                else:
+                    player.osc = False
+            except: # pylint: disable=bare-except
+                pass
 
         dockWidgetVisible = False
         dockWidget2Visible = False
@@ -4246,126 +4274,132 @@ if __name__ == '__main__':
         dockWidget.installEventFilter(win)
 
         def thread_mouse_2():
-            global newdockWidgetHeight, fullscreen, key_t_visible
             try:
-                player['cursor-autohide'] = 1000
-                player['force-window'] = True
+                global newdockWidgetHeight, fullscreen, key_t_visible
+                try:
+                    player['cursor-autohide'] = 1000
+                    player['force-window'] = True
+                except: # pylint: disable=bare-except
+                    pass
+                if fullscreen:
+                    try:
+                        win.main_widget.setCursor(QtCore.Qt.BlankCursor)
+                    except: # pylint: disable=bare-except
+                        pass
+                else:
+                    try:
+                        win.main_widget.unsetCursor()
+                    except: # pylint: disable=bare-except
+                        pass
+                if (fullscreen and not key_t_visible) and settings['exp1']:
+                    dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
+                    dockWidget.move(win.width() - dockWidget.width(), 50)
+                    dockWidget2.move(int(win.width() / 3) - 150, win.height() - dockWidget2.height())
+                    if not newdockWidgetHeight:
+                        dockWidget.resize(dockWidget.width(), win.height() - 150)
+                    else:
+                        dockWidget.resize(dockWidget.width(), newdockWidgetHeight)
             except: # pylint: disable=bare-except
                 pass
-            if fullscreen:
-                try:
-                    win.main_widget.setCursor(QtCore.Qt.BlankCursor)
-                except: # pylint: disable=bare-except
-                    pass
-            else:
-                try:
-                    win.main_widget.unsetCursor()
-                except: # pylint: disable=bare-except
-                    pass
-            if (fullscreen and not key_t_visible) and settings['exp1']:
-                dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
-                dockWidget.move(win.width() - dockWidget.width(), 50)
-                dockWidget2.move(int(win.width() / 3) - 150, win.height() - dockWidget2.height())
-                if not newdockWidgetHeight:
-                    dockWidget.resize(dockWidget.width(), win.height() - 150)
-                else:
-                    dockWidget.resize(dockWidget.width(), newdockWidgetHeight)
 
         def thread_mouse(): # pylint: disable=too-many-branches
-            global fullscreen, key_t_visible, dockWidgetVisible, dockWidget2Visible, newdockWidgetHeight
-            label13.setText("{}: {}%".format(LANG['volumeshort'], int(player.volume)))
-            if settings['exp1']:
+            try: # pylint: disable=too-many-nested-blocks
+                global fullscreen, key_t_visible, dockWidgetVisible, dockWidget2Visible, newdockWidgetHeight
+                label13.setText("{}: {}%".format(LANG['volumeshort'], int(player.volume)))
+                if settings['exp1']:
+                    if fullscreen:
+                        for hide_lbl_fullscreen in hide_lbls_fullscreen:
+                            hide_lbl_fullscreen.hide()
+                    else:
+                        for hide_lbl_fullscreen in hide_lbls_fullscreen:
+                            hide_lbl_fullscreen.show()
                 if fullscreen:
-                    for hide_lbl_fullscreen in hide_lbls_fullscreen:
-                        hide_lbl_fullscreen.hide()
+                    if settings['exp1']:
+                        for btns_3 in hlayout2_btns_1 + hlayout2_btns_2:
+                            btns_3.setMinimumSize(QtCore.QSize(32, 32))
+                        label10.hide()
+                        label11.hide()
+                        label12.hide()
+                        progress.hide()
+                        start_label.hide()
+                        stop_label.hide()
+                    dockWidget.setFixedWidth(settings['exp2'])
                 else:
-                    for hide_lbl_fullscreen in hide_lbls_fullscreen:
-                        hide_lbl_fullscreen.show()
-            if fullscreen:
-                if settings['exp1']:
-                    for btns_3 in hlayout2_btns_1 + hlayout2_btns_2:
-                        btns_3.setMinimumSize(QtCore.QSize(32, 32))
-                    label10.hide()
-                    label11.hide()
-                    label12.hide()
-                    progress.hide()
-                    start_label.hide()
-                    stop_label.hide()
-                dockWidget.setFixedWidth(settings['exp2'])
-            else:
-                if settings['exp1']:
-                    for btns_3 in hlayout2_btns_1 + hlayout2_btns_2:
-                        btns_3.setMinimumSize(QtCore.QSize(20, 20))
-                    label10.show()
-                    label11.show()
-                    label12.show()
-                    if start_label.text() or stop_label.text():
-                        progress.show()
-                        start_label.show()
-                        stop_label.show()
-                dockWidget.setFixedWidth(DOCK_WIDGET_WIDTH)
-            if fullscreen and not key_t_visible:
-                # Playlist
-                if settings['showplaylistmouse']:
-                    cursor_x = win.main_widget.mapFromGlobal(QtGui.QCursor.pos()).x()
-                    win_width = win.width()
-                    is_cursor_x = cursor_x > win_width - (settings['exp2'] + 10)
-                    if is_cursor_x and cursor_x < win_width:
-                        if not dockWidgetVisible:
-                            dockWidgetVisible = True
-                            of1 = 0
+                    if settings['exp1']:
+                        for btns_3 in hlayout2_btns_1 + hlayout2_btns_2:
+                            btns_3.setMinimumSize(QtCore.QSize(20, 20))
+                        label10.show()
+                        label11.show()
+                        label12.show()
+                        if start_label.text() or stop_label.text():
+                            progress.show()
+                            start_label.show()
+                            stop_label.show()
+                    dockWidget.setFixedWidth(DOCK_WIDGET_WIDTH)
+                if fullscreen and not key_t_visible:
+                    # Playlist
+                    if settings['showplaylistmouse']:
+                        cursor_x = win.main_widget.mapFromGlobal(QtGui.QCursor.pos()).x()
+                        win_width = win.width()
+                        is_cursor_x = cursor_x > win_width - (settings['exp2'] + 10)
+                        if is_cursor_x and cursor_x < win_width:
+                            if not dockWidgetVisible:
+                                dockWidgetVisible = True
+                                of1 = 0
+                                if settings['exp1']:
+                                    of1 = 50
+                                    dockWidget.setFloating(True)
+                                dockWidget.move(win.width() - dockWidget.width(), of1)
+                                if not newdockWidgetHeight:
+                                    dockWidget.resize(dockWidget.width(), win.height() - 150)
+                                else:
+                                    dockWidget.resize(dockWidget.width(), newdockWidgetHeight)
+                                dockWidget.setWindowOpacity(0.6)
+                                dockWidget.show()
+                                dockWidget.setWindowOpacity(0.6)
+                                dockWidget.move(win.width() - dockWidget.width(), of1)
+                        else:
+                            dockWidgetVisible = False
+                            dockWidget.setWindowOpacity(1)
+                            dockWidget.hide()
                             if settings['exp1']:
-                                of1 = 50
-                                dockWidget.setFloating(True)
-                            dockWidget.move(win.width() - dockWidget.width(), of1)
-                            if not newdockWidgetHeight:
-                                dockWidget.resize(dockWidget.width(), win.height() - 150)
-                            else:
-                                dockWidget.resize(dockWidget.width(), newdockWidgetHeight)
-                            dockWidget.setWindowOpacity(0.6)
-                            dockWidget.show()
-                            dockWidget.setWindowOpacity(0.6)
-                            dockWidget.move(win.width() - dockWidget.width(), of1)
-                    else:
-                        dockWidgetVisible = False
-                        dockWidget.setWindowOpacity(1)
-                        dockWidget.hide()
-                        if settings['exp1']:
-                            dockWidget.setFloating(False)
-                        dockWidget.hide()
-                # Control panel
-                if settings['showcontrolsmouse']:
-                    cursor_y = win.main_widget.mapFromGlobal(QtGui.QCursor.pos()).y()
-                    win_height = win.height()
-                    is_cursor_y = cursor_y > win_height - (dockWidget2.height() + 250)
-                    if is_cursor_y and cursor_y < win_height:
-                        if not dockWidget2Visible:
-                            dockWidget2Visible = True
+                                dockWidget.setFloating(False)
+                            dockWidget.hide()
+                    # Control panel
+                    if settings['showcontrolsmouse']:
+                        cursor_y = win.main_widget.mapFromGlobal(QtGui.QCursor.pos()).y()
+                        win_height = win.height()
+                        is_cursor_y = cursor_y > win_height - (dockWidget2.height() + 250)
+                        if is_cursor_y and cursor_y < win_height:
+                            if not dockWidget2Visible:
+                                dockWidget2Visible = True
+                                if settings['exp1']:
+                                    dockWidget2.setFloating(True)
+                                if not settings['exp1']:
+                                    dockWidget2.move(0, win.height() - dockWidget2.height())
+                                    dockWidget2.resize(win.width(), DOCK_WIDGET2_HEIGHT_HIGH)
+                                    dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
+                                    dockWidget2.setWindowOpacity(0.6)
+                                    dockWidget2.show()
+                                    dockWidget2.setWindowOpacity(0.6)
+                                    dockWidget2.move(0, win.height() - dockWidget2.height())
+                                else:
+                                    dockWidget2.move(int(win.width() / 3) - 150, win.height() - dockWidget2.height())
+                                    dockWidget2.resize(int(win.width() / 2) - 100, DOCK_WIDGET2_HEIGHT_LOW)
+                                    dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
+                                    dockWidget2.setWindowOpacity(0.6)
+                                    dockWidget2.show()
+                                    dockWidget2.setWindowOpacity(0.6)
+                                    dockWidget2.move(int(win.width() / 3) - 150, win.height() - dockWidget2.height())
+                        else:
+                            dockWidget2Visible = False
+                            dockWidget2.setWindowOpacity(1)
+                            dockWidget2.hide()
                             if settings['exp1']:
-                                dockWidget2.setFloating(True)
-                            if not settings['exp1']:
-                                dockWidget2.move(0, win.height() - dockWidget2.height())
-                                dockWidget2.resize(win.width(), DOCK_WIDGET2_HEIGHT_HIGH)
-                                dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
-                                dockWidget2.setWindowOpacity(0.6)
-                                dockWidget2.show()
-                                dockWidget2.setWindowOpacity(0.6)
-                                dockWidget2.move(0, win.height() - dockWidget2.height())
-                            else:
-                                dockWidget2.move(int(win.width() / 3) - 150, win.height() - dockWidget2.height())
-                                dockWidget2.resize(int(win.width() / 2) - 100, DOCK_WIDGET2_HEIGHT_LOW)
-                                dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
-                                dockWidget2.setWindowOpacity(0.6)
-                                dockWidget2.show()
-                                dockWidget2.setWindowOpacity(0.6)
-                                dockWidget2.move(int(win.width() / 3) - 150, win.height() - dockWidget2.height())
-                    else:
-                        dockWidget2Visible = False
-                        dockWidget2.setWindowOpacity(1)
-                        dockWidget2.hide()
-                        if settings['exp1']:
-                            dockWidget2.setFloating(False)
-                        dockWidget2.hide()
+                                dockWidget2.setFloating(False)
+                            dockWidget2.hide()
+            except: # pylint: disable=bare-except
+                pass
 
         key_t_visible = False
         def key_t():
