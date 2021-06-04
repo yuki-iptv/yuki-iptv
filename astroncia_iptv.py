@@ -50,7 +50,7 @@ from PyQt5 import QtGui
 from data.modules.astroncia.lang import lang
 from data.modules.astroncia.ua import user_agent, uas, ua_names
 from data.modules.astroncia.epg import worker
-from data.modules.astroncia.record import record, record_return, stop_record
+from data.modules.astroncia.record import record, record_return, stop_record, async_wait_process
 from data.modules.astroncia.format import format_seconds_to_hhmmss
 from data.modules.astroncia.conversion import convert_size
 from data.modules.astroncia.providers import iptv_providers
@@ -891,8 +891,11 @@ if __name__ == '__main__':
             if name2 in sch_recordings:
                 ffmpeg_process = sch_recordings[name2][0]
                 if ffmpeg_process:
-                    ffmpeg_process.kill()
-                    ffmpeg_process.wait()
+                    ffmpeg_process.terminate()
+                    try:
+                        async_wait_process(ffmpeg_process)
+                    except: # pylint: disable=bare-except
+                        pass
                     ffmpeg_process = None
 
         recViaScheduler = False

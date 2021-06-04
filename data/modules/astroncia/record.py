@@ -18,6 +18,7 @@ Copyright (C) 2021 Astroncia
 '''
 import os
 import subprocess
+import threading
 from pathlib import Path
 from data.modules.astroncia.ua import get_user_agent_for_channel
 from data.modules.astroncia.time import print_with_time
@@ -26,10 +27,6 @@ ffmpeg_proc = None
 
 def record(input_url, out_file, channel_name, http_referer):
     global ffmpeg_proc
-    try:
-        from subprocess import DEVNULL
-    except ImportError:
-        DEVNULL = open(os.devnull, 'wb')
     if http_referer == 'Referer: ':
         http_referer = ''
     user_agent = get_user_agent_for_channel(channel_name)
@@ -76,16 +73,10 @@ def record(input_url, out_file, channel_name, http_referer):
     ffmpeg_proc = subprocess.Popen(
         arr,
         shell=False,
-        startupinfo=startupinfo,
-        stdout=DEVNULL,
-        stderr=subprocess.STDOUT
+        startupinfo=startupinfo
     )
 
 def record_return(input_url, out_file, channel_name, http_referer):
-    try:
-        from subprocess import DEVNULL
-    except ImportError:
-        DEVNULL = open(os.devnull, 'wb')
     if http_referer == 'Referer: ':
         http_referer = ''
     user_agent = get_user_agent_for_channel(channel_name)
@@ -132,14 +123,28 @@ def record_return(input_url, out_file, channel_name, http_referer):
     return subprocess.Popen(
         arr,
         shell=False,
-        startupinfo=startupinfo,
-        stdout=DEVNULL,
-        stderr=subprocess.STDOUT
+        startupinfo=startupinfo
     )
+
+# Used as a decorator to run things in the background
+def async_function(func):
+    def wrapper(*args, **kwargs):
+        thread = threading.Thread(target=func, args=args, kwargs=kwargs)
+        thread.daemon = True
+        thread.start()
+        return thread
+    return wrapper
+
+@async_function
+def async_wait_process(proc):
+    proc.wait()
 
 def stop_record():
     global ffmpeg_proc
     if ffmpeg_proc:
-        ffmpeg_proc.kill()
-        ffmpeg_proc.wait()
+        ffmpeg_proc.terminate()
+        try:
+            async_wait_process(ffmpeg_proc)
+        except: # pylint: disable=bare-except
+            pass
         ffmpeg_proc = None
