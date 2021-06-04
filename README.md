@@ -8,7 +8,6 @@
 ## Скачать
 
 **[Версия для Windows](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/Astroncia_IPTV_setup.exe)**  
-
 deb и rpm пакеты доступны в [Releases](https://gitlab.com/astroncia/iptv/-/releases)  
   
 Для Ubuntu / Linux Mint **рекомендуется** установка из [Launchpad PPA - ppa:astroncia/iptv](https://launchpad.net/~astroncia/+archive/ubuntu/iptv):  
