@@ -336,7 +336,7 @@ msgid "gamma"
 msgstr "Гамма"
 
 msgid "timeshift"
-msgstr "Сдвиг во времени"
+msgstr "Архив"
 
 msgid "jtvoffsetrecommendation"
 msgstr "Рекомендуется указать 0, если JTV"
