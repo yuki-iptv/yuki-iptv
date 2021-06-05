@@ -61,7 +61,7 @@ M3U playlist editor
 - Pillow (python3-pil)
 - pandas (python3-pandas)
 - PyGObject (python3-gi)
-- Python D-Bus (python3-pydbus)
+- python3-pydbus
 - python3-unidecode
 - python3-requests
 - ffmpeg

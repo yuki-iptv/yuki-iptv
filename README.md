@@ -61,7 +61,7 @@ deb и rpm пакеты доступны в [Releases](https://gitlab.com/astron
 - Pillow (python3-pil)
 - pandas (python3-pandas)
 - PyGObject (python3-gi)
-- Python D-Bus (python3-pydbus)
+- python3-pydbus
 - python3-unidecode
 - python3-requests
 - ffmpeg
