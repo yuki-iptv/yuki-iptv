@@ -651,6 +651,11 @@ if __name__ == '__main__':
         scheduler_win.setWindowTitle(LANG['scheduler'])
         scheduler_win.setWindowIcon(main_icon)
 
+        archive_win = QtWidgets.QMainWindow()
+        archive_win.resize(800, 600)
+        archive_win.setWindowTitle(LANG['timeshift'])
+        archive_win.setWindowIcon(main_icon)
+
         providers_win = QtWidgets.QMainWindow()
         providers_win.resize(400, 590)
         providers_win.setWindowTitle(LANG['providers'])
@@ -842,6 +847,7 @@ if __name__ == '__main__':
         chan_win.move(qr.topLeft())
         ext_win.move(qr.topLeft())
         scheduler_win.move(qr.topLeft())
+        archive_win.move(qr.topLeft())
         providers_win.move(qr.topLeft())
         providers_win_edit.move(qr.topLeft())
 
@@ -1074,6 +1080,20 @@ if __name__ == '__main__':
         scheduler_widget_main.setLayout(scheduler_layout_main)
 
         scheduler_win.setCentralWidget(scheduler_widget_main)
+
+        archive_all = QtWidgets.QListWidget()
+        archive_font = QtGui.QFont()
+        archive_font.setBold(True)
+        archive_channel = QtWidgets.QLabel()
+        archive_channel.setFont(archive_font)
+
+        archive_layout_main = QtWidgets.QVBoxLayout()
+        archive_layout_main.addWidget(archive_channel)
+        archive_layout_main.addWidget(archive_all)
+
+        archive_widget_main = QtWidgets.QWidget()
+        archive_widget_main.setLayout(archive_layout_main)
+        archive_win.setCentralWidget(archive_widget_main)
 
         def save_sort():
             global channel_sort
@@ -2387,7 +2407,8 @@ if __name__ == '__main__':
         playing_chan = ''
 
         def show_progress(prog):
-            if prog:
+            global playing_archive
+            if prog and not playing_archive:
                 prog_percentage = round(
                     (time.time() - prog['start']) / (prog['stop'] - prog['start']) * 100
                 )
@@ -2419,8 +2440,11 @@ if __name__ == '__main__':
                 win.setWindowTitle(MAIN_WINDOW_TITLE)
             chan.setText(chanText)
 
-        def itemClicked_event(item): # pylint: disable=too-many-branches
-            global playing, playing_chan, item_selected, playing_url
+        playing_archive = False
+
+        def itemClicked_event(item, custom_url="", archived=False): # pylint: disable=too-many-branches
+            global playing, playing_chan, item_selected, playing_url, playing_archive
+            playing_archive = archived
             try:
                 j = item.data(QtCore.Qt.UserRole)
             except: # pylint: disable=bare-except
@@ -2497,7 +2521,10 @@ if __name__ == '__main__':
                 player.hue = 0
                 player.brightness = 0
                 player.contrast = 0
-            doPlay(play_url, ua_choose)
+            if not custom_url:
+                doPlay(play_url, ua_choose)
+            else:
+                doPlay(custom_url, ua_choose)
 
         item_selected = ''
 
@@ -3334,7 +3361,7 @@ if __name__ == '__main__':
                 l1.setText2("{}!".format(LANG['nochannelselected']))
                 time_stop = time.time() + 1
 
-        def update_tvguide(chan_1='', do_return=False):
+        def update_tvguide(chan_1='', do_return=False, show_all_guides=False):
             global item_selected
             if not chan_1:
                 if item_selected:
@@ -3352,7 +3379,12 @@ if __name__ == '__main__':
                 txt = newline_symbol
                 prog = programmes[chan_2]
                 for pr in prog:
-                    if pr['stop'] > time.time() - 1:
+                    override_this = False
+                    if show_all_guides:
+                        override_this = pr['start'] < time.time() + 1
+                    else:
+                        override_this = pr['stop'] > time.time() - 1
+                    if override_this:
                         start_2 = datetime.datetime.fromtimestamp(
                             pr['start']
                         ).strftime('%d.%m.%y %H:%M') + ' - '
@@ -3442,9 +3474,15 @@ if __name__ == '__main__':
                     lastfile_1_dat = json.loads(lastfile_1.read())
                     lastfile_1.close()
                     player.user_agent = lastfile_1_dat[2]
+                    setChanText('  ' + lastfile_1_dat[0])
                     itemClicked_event(lastfile_1_dat[0])
+                    setChanText('  ' + lastfile_1_dat[0])
                     try:
                         combobox.setCurrentIndex(lastfile_1_dat[3])
+                    except: # pylint: disable=bare-except
+                        pass
+                    try:
+                        win.listWidget.setCurrentRow(lastfile_1_dat[4])
                     except: # pylint: disable=bare-except
                         pass
                 except: # pylint: disable=bare-except
@@ -3477,6 +3515,7 @@ if __name__ == '__main__':
             print("Could not parse MPV options!")
             print(e1)
         print_with_time("Testing mpv options...")
+        print(options_2)
         try:
             test_options = mpv.MPV(**options_2)
             print_with_time("mpv options OK")
@@ -3543,9 +3582,9 @@ if __name__ == '__main__':
         player.loop = True
         mpv_override_play(str(Path('data', ICONS_FOLDER, 'main.png')))
 
-        print_with_time("")
-        print_with_time("M3U: '{}' EPG: '{}'".format(settings["m3u"], settings["epg"]))
-        print_with_time("")
+        #print_with_time("")
+        #print_with_time("M3U: '{}' EPG: '{}'".format(settings["m3u"], settings["epg"]))
+        #print_with_time("")
 
         def main_channel_settings():
             global item_selected
@@ -3639,15 +3678,67 @@ if __name__ == '__main__':
         def next_channel():
             go_channel(1)
 
-        def show_timeshift():
-            if playing_chan:
-                if player.osc:
-                    player.osc = False
-                else:
-                    if not settings["hidempv"]:
-                        player.osc = True
+        def archive_all_clicked():
+            chan_url = array[archive_channel.text()]['url']
+            orig_time = archive_all.currentItem().text().split(' - ')[0]
+            print_with_time("orig time: {}".format(orig_time))
+            orig_timestamp = time.mktime(time.strptime(orig_time, '%d.%m.%y %H:%M'))
+            orig_timestamp_1 = datetime.datetime.fromtimestamp(orig_timestamp).strftime('%Y-%m-%d-%H-%M-%S')
+            print_with_time("orig timestamp: {}".format(orig_timestamp))
+            print_with_time("orig timestamp 1: {}".format(orig_timestamp_1))
+            ts1 = time.time()
+            utc_offset = (datetime.datetime.fromtimestamp(ts1) - datetime.datetime.utcfromtimestamp(ts1)).total_seconds()
+            print_with_time("calculated utc offset: {}".format(utc_offset))
+            utc_timestamp = int(datetime.datetime.fromtimestamp(orig_timestamp).timestamp() - utc_offset - 30)
+            print_with_time("utc timestamp: {}".format(utc_timestamp))
+            utc_converted = datetime.datetime.fromtimestamp(utc_timestamp).strftime('%d.%m.%y %H:%M')
+            print_with_time("utc converted time: {}".format(utc_converted))
+            current_utc = int(datetime.datetime.strftime(datetime.datetime.utcnow(), "%s"))
+            print_with_time("current utc timestamp: {}".format(current_utc))
+            current_utc_date = datetime.datetime.fromtimestamp(current_utc).strftime('%d.%m.%y %H:%M')
+            print_with_time("current utc timestamp (human-readable): {}".format(current_utc_date))
+            utc_string = "?utc={}&lutc={}&t={}".format(utc_timestamp, current_utc, orig_timestamp_1)
+            print_with_time("utc string: {}".format(utc_string))
+            play_url = chan_url + utc_string
+            itemClicked_event(archive_channel.text(), play_url, True)
+            progress.hide()
+            start_label.setText('')
+            start_label.hide()
+            stop_label.setText('')
+            stop_label.hide()
+
+        archive_all.itemDoubleClicked.connect(archive_all_clicked)
+
+        def update_timeshift_programme():
+            global playing_chan, item_selected, archive_all
+            #if playing_chan:
+            #    cur_name = playing_chan
+            #else:
+            if item_selected:
+                cur_name = item_selected
             else:
-                player.osc = False
+                cur_name = list(array)[0]
+            archive_channel.setText(cur_name)
+            archive_all.clear()
+            tvguide_got_1 = re.sub('<[^<]+?>', '', update_tvguide(cur_name, True, True)).split('!@#$%^^&*(')[2:]
+            for tvguide_el_1 in tvguide_got_1:
+                if tvguide_el_1:
+                    archive_all.addItem(tvguide_el_1)
+
+        def show_timeshift():
+            update_timeshift_programme()
+            if archive_win.isVisible():
+                archive_win.hide()
+            else:
+                archive_win.show()
+            #if playing_chan:
+            #    if player.osc:
+            #        player.osc = False
+            #    else:
+            #        if not settings["hidempv"]:
+            #            player.osc = True
+            #else:
+            #    player.osc = False
 
         stopped = False
 
@@ -3951,13 +4042,13 @@ if __name__ == '__main__':
         hlayout2_btns_1 = [label3, label4, label5, label5_1, label5_2, label5_0, label6, label7, label7_1]
         hlayout2_btns_2 = [label8_0, label8, label8_4, label8_1, label8_2, label8_3, label8_5, label9]
         hlayout2_btns_3 = [label11, label12, label13]
-        hlayout2_all_btns = hlayout2_btns_1 + hlayout2_btns_2 + hlayout2_btns_3 #+ [label7_2]
+        hlayout2_all_btns = hlayout2_btns_1 + hlayout2_btns_2 + hlayout2_btns_3 + [label7_2]
         #for hlayout2_btn_3 in hlayout2_all_btns:
         #    hlayout2_btn_3.setFixedHeight(20)
         for hlayout2_btn in hlayout2_btns_1:
             hlayout2.addWidget(hlayout2_btn)
         #if not os.name == 'nt':
-        #    hlayout2.addWidget(label7_2)
+        hlayout2.addWidget(label7_2)
         for hlayout2_btn_1 in hlayout2_btns_2:
             hlayout2.addWidget(hlayout2_btn_1)
         hlayout2.addStretch(100000)
@@ -4031,12 +4122,18 @@ if __name__ == '__main__':
         def saveLastChannel():
             if playing_url:
                 current_group_0 = 0
+                if combobox.currentIndex() != 0:
+                    try:
+                        current_group_0 = groups.index(array[playing_chan]['tvg-group'])
+                    except: # pylint: disable=bare-except
+                        pass
+                current_channel_0 = 0
                 try:
-                    current_group_0 = groups.index(array[playing_chan]['tvg-group'])
+                    current_channel_0 = win.listWidget.currentRow()
                 except: # pylint: disable=bare-except
                     pass
                 lastfile = open(str(Path(LOCAL_DIR, 'lastchannels.json')), 'w', encoding="utf8")
-                lastfile.write(json.dumps([playing_chan, playing_url, getUserAgent(), current_group_0]))
+                lastfile.write(json.dumps([playing_chan, playing_url, getUserAgent(), current_group_0, current_channel_0]))
                 lastfile.close()
             else:
                 if os.path.isfile(str(Path(LOCAL_DIR, 'lastchannels.json'))):
@@ -4282,7 +4379,7 @@ if __name__ == '__main__':
         dockWidgetVisible = False
         dockWidget2Visible = False
 
-        hide_lbls_fullscreen = [label5_0, label5_2, label8, label8_0, label8_4, label8_5, label9]
+        hide_lbls_fullscreen = [label5_0, label5_2, label7_2, label8, label8_0, label8_4, label8_5, label9]
 
         dockWidget.installEventFilter(win)
 
