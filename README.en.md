@@ -51,6 +51,7 @@ Sorting channels
 Video settings for each channel - contrast, brightness, hue, saturation, gamma  
 Change user agent for each channel  
 M3U playlist editor  
+TV archive  
 
 ## Dependencies
 
