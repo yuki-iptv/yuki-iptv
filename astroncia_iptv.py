@@ -413,7 +413,7 @@ if __name__ == '__main__':
         else:
             ICONS_FOLDER = 'icons'
 
-        main_icon = QtGui.QIcon(str(Path(os.path.dirname(__file__), 'data', ICONS_FOLDER, 'tv.png')))
+        main_icon = QtGui.QIcon(str(Path(os.path.dirname(__file__), 'data', ICONS_FOLDER, 'tv-blue.png')))
         if os.path.isfile(str(Path(LOCAL_DIR, 'customicon.png'))):
             main_icon = QtGui.QIcon(str(Path(LOCAL_DIR, 'customicon.png')))
         channels = {}
