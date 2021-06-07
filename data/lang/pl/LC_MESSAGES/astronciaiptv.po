@@ -3,7 +3,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 
 msgid "name"
-msgstr "Polski (INCOMPLETE)"
+msgstr "Polski"
 
 msgid "m3u_ready"
 msgstr "Gotowy"
@@ -153,7 +153,7 @@ msgid "updateatboot"
 msgstr "Aktualizuj\nprzy uruchomieniu"
 
 msgid "epgaddress"
-msgstr "Przewodnik telewizyjny\nadres\n(XMLTV lub JTV)"
+msgstr "Przewodnik telewizyjny\nadres(XMLTV lub JTV)"
 
 msgid "udpproxy"
 msgstr "UDP proxy"
@@ -165,7 +165,7 @@ msgid "orselectyourprovider"
 msgstr "Lub wybierz dostawcę"
 
 msgid "resetchannelsettings"
-msgstr "Zresetuj ustawienia kanałów i sortowanie"
+msgstr "Zresetuj sortowanie i ustawienia kanałów "
 
 msgid "notselected"
 msgstr "Nie zaznaczono"
@@ -264,16 +264,16 @@ msgid "interfacelang"
 msgstr "Język interfejsu"
 
 msgid "tvguideoffset"
-msgstr "Przesunięcie przewodnika telewizyjnego"
+msgstr "Przesunięcie czasowe przewodnika\ntelewizyjnego"
 
 msgid "hours"
 msgstr "godziny"
 
 msgid "hwaccel"
-msgstr "Sprzęt\nakceleracja"
+msgstr "Sprzętowa\nakceleracja"
 
 msgid "sort"
-msgstr "Kanał\nsortuj"
+msgstr "Sortuj\nkanały"
 
 msgid "sortitems1"
 msgstr "jak na liście odtwarzania"
@@ -282,13 +282,13 @@ msgid "sortitems2"
 msgstr "w porządku alfabetycznym"
 
 msgid "sortitems3"
-msgstr "odwrotność kolejności alfabetycznej"
+msgstr "w odwrotnej kolejności alfabetycznej"
 
 msgid "sortitems4"
-msgstr "dostosuj"
+msgstr "niestandardowe"
 
 msgid "donotforgetsort"
-msgstr "Nie zapomnij\nustawić niestandardowej kolejności sortowania w ustawieniach!"
+msgstr "Nie zapomnij ustawić niestandardowej\nkolejności sortowania w ustawieniach!"
 
 msgid "moresettings"
 msgstr "Więcej ustawień"
@@ -357,7 +357,7 @@ msgid "mpv_options"
 msgstr "Opcje mpv"
 
 msgid "donotupdateepg"
-msgstr "Nie aktualizuj\nEPG podczas startu programu"
+msgstr "Nie aktualizuj EPG\npodczas startu programu"
 
 msgid "search"
 msgstr "Szukaj"
@@ -438,7 +438,7 @@ msgid "page"
 msgstr "Strona"
 
 msgid "fasterview"
-msgstr "Aby przyspieszyć ładowanie kanału, ustaw pamięć podręczną\nna co najmniej 1 sekundę w ustawieniach sieci"
+msgstr "Aby przyspieszyć ładowanie kanału, ustaw pamięć podręczną\nna co najmniej 1 sekundę w ustawieniach sieci."
 
 msgid "providers"
 msgstr "Dostawcy"
@@ -546,25 +546,29 @@ msgid "expwarning"
 msgstr "Ustawienia tutaj\nmogą być niestabilne!"
 
 msgid "mouseswitchchannels"
-msgstr "Przełącz kanały\nkółkiem myszy"
+msgstr "Przełączaj kanały\nkółkiem myszy"
 
 msgid "actions"
 msgstr "Działanie"
 
 msgid "defaultchangevol"
-msgstr "domyślnie:\nustaw głośność"
+msgstr "domyślnie:\nustawianie głośność"
 
 msgid "foundproblem"
 msgstr "Znalazłeś problem? Napisz do mnie na adres"
 
-msgid "videoaspectdef"
-msgstr "Default video aspect"
+msgid "showplaylistmouse"
+msgstr "Pokaż listę odtwarzania\nprzy ruchu myszki"
 
-msgid "zoomdef"
-msgstr "Domyślne powiększenie obrazu wideo"
+msgid "showcontrolsmouse"
+msgstr "Pokaż panel kontrolny\nprzy ruchu myszki"
 
-msgid "panscandef"
-msgstr "Domyślny format obrazu"
+msgid "volumeshort"
+msgstr "Głośność"
+
+msgid "hidetvguide"
+msgstr "Ukryj przewodnik telewizyjny"
 
 msgid "helptext"
 msgstr "Astroncia IPTV, wersja {}\n© kestral / astroncia < kestraly (at) gmail.com >\nhttps://gitlab.com/astroncia\n\nCross-platform Odtwarzacz IPTV\n\nObsługuje przewodnik telewizyjny (EPG) tylko w formacie XMLTV i JTV\n\nKanał nie działa?\nPrawy przycisk myszy otwiera ustawienia kanału\n\nIkony według Font Awesome ( https://fontawesome.com/ )\nIkony na licencji CC BY 4.0\n( https: //creativecommons.org/licenses/by/4.0/ )\n\nSkróty klawiszowe:\n\nF / F11 — tryb pełnoekranowy\nM — wyciszenie\nQ — zamknięcie programu\nSpacja — wstrzymanie\nS — zatrzymanie odtwarzania\nH — zrzut ekranu\nG — przewodnik telewizyjny (EPG)\nR — rozpoczęcie/zatrzymanie nagrywania\nP — poprzedni kanał\nN — następny kanał\nT — otwieranie/zamykanie listy kanałów\nO — wyświetlanie/ukrywanie zegara\nI — sortowanie kanałów\nD — harmonogram nagrywania"
+
