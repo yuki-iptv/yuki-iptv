@@ -4396,6 +4396,39 @@ if __name__ == '__main__':
 
         dockWidget.installEventFilter(win)
 
+        prev_cursor = QtGui.QCursor.pos()
+        last_cursor_moved = 0
+        last_cursor_time = 0
+
+        def thread_cursor():
+            global fullscreen, prev_cursor, last_cursor_moved, last_cursor_time
+            show_cursor = False
+            cursor_offset = QtGui.QCursor.pos().x() - prev_cursor.x() + QtGui.QCursor.pos().y() - prev_cursor.y()
+            if cursor_offset < 0:
+                cursor_offset = cursor_offset * -1
+            if cursor_offset > 5:
+                prev_cursor = QtGui.QCursor.pos()
+                if (time.time() - last_cursor_moved) > 0.3:
+                    last_cursor_moved = time.time()
+                    last_cursor_time = time.time() + 1
+                    show_cursor = True
+            show_cursor_really = True
+            if not show_cursor:
+                show_cursor_really = time.time() < last_cursor_time
+            if fullscreen:
+                try:
+                    if show_cursor_really:
+                        win.main_widget.unsetCursor()
+                    else:
+                        win.main_widget.setCursor(QtCore.Qt.BlankCursor)
+                except: # pylint: disable=bare-except
+                    pass
+            else:
+                try:
+                    win.main_widget.unsetCursor()
+                except: # pylint: disable=bare-except
+                    pass
+
         def thread_mouse_2():
             try:
                 global newdockWidgetHeight, fullscreen, key_t_visible
@@ -4404,16 +4437,6 @@ if __name__ == '__main__':
                     player['force-window'] = True
                 except: # pylint: disable=bare-except
                     pass
-                if fullscreen:
-                    try:
-                        win.main_widget.setCursor(QtCore.Qt.BlankCursor)
-                    except: # pylint: disable=bare-except
-                        pass
-                else:
-                    try:
-                        win.main_widget.unsetCursor()
-                    except: # pylint: disable=bare-except
-                        pass
                 if (fullscreen and not key_t_visible) and settings['exp1']:
                     dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
                     dockWidget.move(win.width() - dockWidget.width(), 50)
@@ -4612,6 +4635,7 @@ if __name__ == '__main__':
             timers_array = {}
             timers = {
                 thread_mouse: 50,
+                thread_cursor: 50,
                 thread_mouse_2: 50,
                 thread_tvguide: 100,
                 thread_record: 100,
