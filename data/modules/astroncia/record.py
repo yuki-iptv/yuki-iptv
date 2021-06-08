@@ -148,3 +148,57 @@ def stop_record():
         except: # pylint: disable=bare-except
             pass
         ffmpeg_proc = None
+
+def make_ffmpeg_screenshot(input_url, out_file, channel_name, http_referer):
+    if http_referer == 'Referer: ':
+        http_referer = ''
+    user_agent = get_user_agent_for_channel(channel_name)
+    print_with_time("Using user agent '{}' for screenshot channel '{}'".format(user_agent, channel_name))
+    print_with_time("HTTP headers: '{}'".format(http_referer))
+    if os.name == 'nt':
+        ffmpeg_path = str(Path(os.getcwd(), 'data', 'modules', 'binary', 'ffmpeg.exe'))
+    else:
+        if os.path.isfile(str(Path(os.getcwd(), 'ffmpeg'))):
+            ffmpeg_path = str(Path(os.getcwd(), 'ffmpeg'))
+        else:
+            ffmpeg_path = 'ffmpeg'
+    if input_url.startswith('http://') or input_url.startswith('https://'):
+        arr = [
+            ffmpeg_path,
+            '-user_agent', user_agent,
+            '-headers', http_referer,
+            '-icy', '0',
+            '-i', input_url,
+            '-map', '0:0',
+            '-map', '0:1',
+            '-map', '-0:s',
+            '-an',
+            '-frames:v', '1',
+            '-max_muxing_queue_size', '4096',
+            out_file
+        ]
+    else:
+        arr = [
+            ffmpeg_path,
+            '-i', input_url,
+            '-map', '0:0',
+            '-map', '0:1',
+            '-map', '-0:s',
+            '-an',
+            '-frames:v', '1',
+            '-max_muxing_queue_size', '4096',
+            out_file
+        ]
+    startupinfo = None
+    if os.name == 'nt':
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    ffmpeg_proc_screenshot = subprocess.Popen(
+        arr,
+        shell=False,
+        startupinfo=startupinfo
+    )
+    try:
+        async_wait_process(ffmpeg_proc_screenshot)
+    except: # pylint: disable=bare-except
+        pass

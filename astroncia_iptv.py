@@ -50,7 +50,7 @@ from PyQt5 import QtGui
 from data.modules.astroncia.lang import lang
 from data.modules.astroncia.ua import user_agent, uas, ua_names
 from data.modules.astroncia.epg import worker
-from data.modules.astroncia.record import record, record_return, stop_record, async_wait_process
+from data.modules.astroncia.record import record, record_return, stop_record, async_wait_process, make_ffmpeg_screenshot
 from data.modules.astroncia.format import format_seconds_to_hhmmss
 from data.modules.astroncia.conversion import convert_size
 from data.modules.astroncia.providers import iptv_providers
@@ -3361,8 +3361,9 @@ if __name__ == '__main__':
                 file_name = 'screenshot_-_' + cur_time + '_-_' + ch + '.png'
                 file_path = str(Path(save_folder, 'screenshots', file_name))
                 try:
-                    pillow_img = player.screenshot_raw()
-                    pillow_img.save(file_path)
+                    #pillow_img = player.screenshot_raw()
+                    #pillow_img.save(file_path)
+                    make_ffmpeg_screenshot(playing_url, file_path, playing_chan, "Referer: {}".format(settings["referer"]))
                     l1.show()
                     l1.setText2(LANG['screenshotsaved'])
                 except: # pylint: disable=bare-except
