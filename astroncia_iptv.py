@@ -1565,12 +1565,25 @@ if __name__ == '__main__':
             if lang1 != settings["lang"]:
                 if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
                     os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
+            sfld_text = sfld.text()
+            HOME_SYMBOL = '~'
+            try:
+                if 'HOME' in os.environ:
+                    HOME_SYMBOL = os.environ['HOME']
+            except: # pylint: disable=bare-except
+                pass
+            try:
+                if sfld_text:
+                    if sfld_text[0] == '~':
+                        sfld_text = sfld_text.replace('~', HOME_SYMBOL, 1)
+            except: # pylint: disable=bare-except
+                pass
             settings_arr = {
                 "m3u": sm3u.text(),
                 "epg": sepg.text(),
                 "deinterlace": sdei.isChecked(),
                 "udp_proxy": udp_proxy_text,
-                "save_folder": sfld.text(),
+                "save_folder": sfld_text,
                 "provider": sprov.currentText() if sprov.currentText() != '--{}--'.format(LANG['notselected']) else '',
                 "nocache": supdate.isChecked(),
                 "lang": lang1,
