@@ -569,6 +569,9 @@ msgstr "Vol"
 msgid "hidetvguide"
 msgstr "Hide TV guide"
 
+msgid "flpopacity"
+msgstr "Floating panels opacity"
+
 msgid "helptext"
 msgstr "Astroncia IPTV, version {}\n© kestral / astroncia < kestraly (at) gmail.com >\nhttps://gitlab.com/astroncia\n\nCross-platform IPTV player\n\nSupports TV guide (EPG) only in XMLTV and JTV formats!\n\nChannel not working?\nRight mouse button opens channel settings\n\nIcons by Font Awesome ( https://fontawesome.com/ )\nIcons licensed under the CC BY 4.0 License\n( https://creativecommons.org/licenses/by/4.0/ )\n\nHotkeys:\n\nF / F11 - fullscreen mode\nM - mute\nQ - quit program\nSpace - pause\nS - stop playing\nH - screenshot\nG - tv guide (EPG)\nR - start/stop record\nP - previous channel\nN - next channel\nT - open/close channels list\nO - show/hide clock\nI - channel sort\nD - record scheduler"
 

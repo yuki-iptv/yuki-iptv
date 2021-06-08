@@ -280,6 +280,7 @@ if __name__ == '__main__':
                 'mouseswitchchannels': False,
                 'showplaylistmouse': True,
                 'showcontrolsmouse': True,
+                'flpopacity': 0.7,
                 'videoaspect': 0,
                 'zoom': 0,
                 'panscan': 0.0,
@@ -321,6 +322,8 @@ if __name__ == '__main__':
             settings['showplaylistmouse'] = True
         if 'showcontrolsmouse' not in settings:
             settings['showcontrolsmouse'] = True
+        if 'flpopacity' not in settings:
+            settings['flpopacity'] = 0.7
         if 'videoaspect' not in settings:
             settings['videoaspect'] = 0
         if 'zoom' not in settings:
@@ -1604,6 +1607,7 @@ if __name__ == '__main__':
                 'mouseswitchchannels': mouseswitchchannels_flag.isChecked(),
                 'showplaylistmouse': showplaylistmouse_flag.isChecked(),
                 'showcontrolsmouse': showcontrolsmouse_flag.isChecked(),
+                'flpopacity': flpopacity_input.value(),
                 'videoaspect': videoaspect_def_choose.currentIndex(),
                 'zoom': zoom_def_choose.currentIndex(),
                 'panscan': panscan_def_choose.value(),
@@ -1931,6 +1935,14 @@ if __name__ == '__main__':
         exp2_input.setMaximum(9999)
         exp2_input.setValue(settings['exp2'])
 
+        flpopacity_label = QtWidgets.QLabel("{}:".format(LANG['flpopacity']))
+        flpopacity_input = QtWidgets.QDoubleSpinBox()
+        flpopacity_input.setMinimum(0.01)
+        flpopacity_input.setMaximum(1)
+        flpopacity_input.setSingleStep(0.1)
+        flpopacity_input.setDecimals(2)
+        flpopacity_input.setValue(settings['flpopacity'])
+
         mouseswitchchannels_label = QtWidgets.QLabel("{}:".format(LANG['mouseswitchchannels']))
         defaultchangevol_label = QtWidgets.QLabel("({})".format(LANG['defaultchangevol']))
         defaultchangevol_label.setStyleSheet('color:blue')
@@ -2056,7 +2068,9 @@ if __name__ == '__main__':
         tab6.layout.addWidget(exp2_label, 3, 0)
         tab6.layout.addWidget(exp2_input, 3, 1)
         tab6.layout.addWidget(QtWidgets.QLabel(), 3, 2)
-        tab6.layout.addWidget(QtWidgets.QLabel(), 4, 0)
+        tab6.layout.addWidget(flpopacity_label, 4, 0)
+        tab6.layout.addWidget(flpopacity_input, 4, 1)
+        tab6.layout.addWidget(QtWidgets.QLabel(), 5, 0)
         tab6.setLayout(tab6.layout)
 
         tab7.layout = QtWidgets.QGridLayout()
@@ -4501,9 +4515,9 @@ if __name__ == '__main__':
                                     dockWidget.resize(dockWidget.width(), win.height() - 150)
                                 else:
                                     dockWidget.resize(dockWidget.width(), newdockWidgetHeight)
-                                dockWidget.setWindowOpacity(0.6)
+                                dockWidget.setWindowOpacity(settings['flpopacity'])
                                 dockWidget.show()
-                                dockWidget.setWindowOpacity(0.6)
+                                dockWidget.setWindowOpacity(settings['flpopacity'])
                                 dockWidget.move(win.width() - dockWidget.width(), of1)
                         else:
                             dockWidgetVisible = False
@@ -4526,17 +4540,17 @@ if __name__ == '__main__':
                                     dockWidget2.move(0, win.height() - dockWidget2.height())
                                     dockWidget2.resize(win.width(), DOCK_WIDGET2_HEIGHT_HIGH)
                                     dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
-                                    dockWidget2.setWindowOpacity(0.6)
+                                    dockWidget2.setWindowOpacity(settings['flpopacity'])
                                     dockWidget2.show()
-                                    dockWidget2.setWindowOpacity(0.6)
+                                    dockWidget2.setWindowOpacity(settings['flpopacity'])
                                     dockWidget2.move(0, win.height() - dockWidget2.height())
                                 else:
                                     dockWidget2.move(int(win.width() / 3) - 150, win.height() - dockWidget2.height())
                                     dockWidget2.resize(int(win.width() / 2) - 100, DOCK_WIDGET2_HEIGHT_LOW)
                                     dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
-                                    dockWidget2.setWindowOpacity(0.6)
+                                    dockWidget2.setWindowOpacity(settings['flpopacity'])
                                     dockWidget2.show()
-                                    dockWidget2.setWindowOpacity(0.6)
+                                    dockWidget2.setWindowOpacity(settings['flpopacity'])
                                     dockWidget2.move(int(win.width() / 3) - 150, win.height() - dockWidget2.height())
                         else:
                             dockWidget2Visible = False
