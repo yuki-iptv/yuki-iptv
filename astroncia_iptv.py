@@ -837,6 +837,7 @@ if __name__ == '__main__':
             providers_json1.close()
 
         time_stop = 0
+        autoclosemenu_time = -1
 
         qr = settings_win.frameGeometry()
         qr.moveCenter(QtWidgets.QDesktopWidget().availableGeometry().center())
@@ -2565,6 +2566,8 @@ if __name__ == '__main__':
                 pass
 
         def mpv_play():
+            global autoclosemenu_time
+            autoclosemenu_time = -1
             if player.pause:
                 label3.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'pause.png'))))
                 label3.setToolTip(LANG['pause'])
@@ -3615,7 +3618,8 @@ if __name__ == '__main__':
         #print_with_time("")
 
         def main_channel_settings():
-            global item_selected
+            global item_selected, autoclosemenu_time
+            autoclosemenu_time = -1
             item_selected = playing_chan
             settings_context_menu()
 
@@ -3636,7 +3640,9 @@ if __name__ == '__main__':
 
         @player.on_key_press('MBTN_RIGHT')
         def my_mouse_right():
+            global autoclosemenu_time
             if playing_chan:
+                autoclosemenu_time = time.time()
                 right_click_menu.exec_(QtGui.QCursor.pos())
 
         @player.on_key_press('MBTN_LEFT_DBL')
@@ -4444,6 +4450,14 @@ if __name__ == '__main__':
                 except: # pylint: disable=bare-except
                     pass
 
+        def thread_autoclosemenu():
+            global autoclosemenu_time
+            if autoclosemenu_time != -1:
+                if time.time() - autoclosemenu_time > 3:
+                    if right_click_menu.isVisible():
+                        right_click_menu.hide()
+                    autoclosemenu_time = -1
+
         def thread_mouse_2():
             try:
                 global newdockWidgetHeight, fullscreen, key_t_visible
@@ -4652,6 +4666,7 @@ if __name__ == '__main__':
                 thread_mouse: 50,
                 thread_cursor: 50,
                 thread_mouse_2: 50,
+                thread_autoclosemenu: 50,
                 thread_tvguide: 100,
                 thread_record: 100,
                 thread_osc: 100,
