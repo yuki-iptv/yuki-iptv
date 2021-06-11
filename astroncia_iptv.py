@@ -4619,7 +4619,7 @@ if __name__ == '__main__':
             QtCore.Qt.Key_Escape: esc_handler, # escape key
             QtCore.Qt.Key_F: mpv_fullscreen, # f - fullscreen
             QtCore.Qt.Key_F11: mpv_fullscreen,
-            QtCore.Qt.Key_M: mpv_mute, # m - mute
+            QtCore.Qt.Key_V: mpv_mute, # v - mute
             QtCore.Qt.Key_Q: key_quit, # q - quit
             QtCore.Qt.Key_Space: mpv_play, # space - pause
             QtCore.Qt.Key_MediaTogglePlayPause: mpv_play,
