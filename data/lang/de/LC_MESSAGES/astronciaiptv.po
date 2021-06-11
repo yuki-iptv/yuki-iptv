@@ -432,7 +432,7 @@ msgid "recrecording"
 msgstr "Aufnahme"
 
 msgid "helptext"
-msgstr "Astroncia IPTV, Version {}\n© kestral / astroncia < kestraly (at) gmail.com >\nhttps://gitlab.com/astroncia\n\nPlattformübergreifender IPTV-Player\n\nUnterstützt TV-Guide (EPG) nur im XMLTV und JTV Format!\n\nKanal funktioniert nicht?\nDie rechte Maustaste öffnet die Kanaleinstellungen\n\nTAstaturkürzel:\n\nF - Vollbildmodus\nV - stumm\nQ - Programm beenden\nSpace - Pause\nS - Wiedergabe stoppen\nH - Bildschirmfoto\nG - TV-Programm (EPG)\nR - starte / stoppe Aufzeichnung\nP - vorheriger Kanal\nN - nächster Kanal\nT - Kanalliste öffnen / schließen\nO - Uhr zeigen / verbergen\nI - Kanäle sortieren\nD - Aufnahmeplaner"
+msgstr "Astroncia IPTV, Version {}\n© kestral / astroncia < kestraly (at) gmail.com >\nhttps://gitlab.com/astroncia\n\nPlattformübergreifender IPTV-Player\n\nUnterstützt TV-Guide (EPG) nur im XMLTV und JTV Format!\n\nKanal funktioniert nicht?\nDie rechte Maustaste öffnet die Kanaleinstellungen\n\nTAstaturkürzel:\n\nF - Vollbildmodus\nV - stumm\nQ - Programm beenden\nSpace - Pause\nS - Wiedergabe stoppen\nH - Bildschirmfoto\nG - TV-Programm (EPG)\nR - starte / stoppe Aufzeichnung\nM - vorheriger Kanal\nN - nächster Kanal\nT - Kanalliste öffnen / schließen\nO - Uhr zeigen / verbergen\nI - Kanäle sortieren\nD - Aufnahmeplaner"
 
 
 

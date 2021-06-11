@@ -4633,7 +4633,7 @@ if __name__ == '__main__':
             QtCore.Qt.Key_G: show_tvguide, # g - tv guide
             QtCore.Qt.Key_R: do_record, # r - record
             QtCore.Qt.Key_MediaRecord: do_record,
-            QtCore.Qt.Key_P: prev_channel, # p - prev channel
+            QtCore.Qt.Key_M: prev_channel, # m - prev channel
             QtCore.Qt.Key_MediaPrevious: prev_channel,
             QtCore.Qt.Key_N: next_channel, # n - next channel
             QtCore.Qt.Key_MediaNext: next_channel,
