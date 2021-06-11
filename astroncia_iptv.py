@@ -4578,12 +4578,12 @@ if __name__ == '__main__':
 
         key_t_visible = False
         def key_t():
-            global key_t_visible
+            #global key_t_visible
             if dockWidget.isVisible():
-                key_t_visible = False
+                #key_t_visible = False
                 dockWidget.hide()
             else:
-                key_t_visible = True
+                #key_t_visible = True
                 dockWidget.show()
 
         # Key bindings
