@@ -3618,10 +3618,14 @@ if __name__ == '__main__':
         #print_with_time("")
 
         def main_channel_settings():
-            global item_selected, autoclosemenu_time
-            autoclosemenu_time = -1
-            item_selected = playing_chan
-            settings_context_menu()
+            global item_selected, autoclosemenu_time, playing_chan
+            if playing_chan:
+                autoclosemenu_time = -1
+                item_selected = playing_chan
+                settings_context_menu()
+            else:
+                msg = QtWidgets.QMessageBox(2, 'Astroncia IPTV', LANG['nochannelselected'], QtWidgets.QMessageBox.Ok)
+                msg.exec()
 
         right_click_menu = QtWidgets.QMenu()
         right_click_menu.addAction(LANG['pause'], mpv_play)
@@ -3641,9 +3645,9 @@ if __name__ == '__main__':
         @player.on_key_press('MBTN_RIGHT')
         def my_mouse_right():
             global autoclosemenu_time
-            if playing_chan:
-                autoclosemenu_time = time.time()
-                right_click_menu.exec_(QtGui.QCursor.pos())
+            #if playing_chan:
+            autoclosemenu_time = time.time()
+            right_click_menu.exec_(QtGui.QCursor.pos())
 
         @player.on_key_press('MBTN_LEFT_DBL')
         def my_leftdbl_binding():
