@@ -3627,9 +3627,16 @@ if __name__ == '__main__':
                 msg = QtWidgets.QMessageBox(2, 'Astroncia IPTV', LANG['nochannelselected'], QtWidgets.QMessageBox.Ok)
                 msg.exec()
 
+        def showhideplaylist():
+            try:
+                key_t()
+            except: # pylint: disable=bare-except
+                pass
+
         right_click_menu = QtWidgets.QMenu()
         right_click_menu.addAction(LANG['pause'], mpv_play)
         right_click_menu.addSeparator()
+        right_click_menu.addAction(LANG['showhideplaylist'], showhideplaylist)
         right_click_menu.addAction(LANG['channelsettings'], main_channel_settings)
 
         @player.event_callback('end_file')
