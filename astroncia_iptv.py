@@ -3639,11 +3639,16 @@ if __name__ == '__main__':
             except: # pylint: disable=bare-except
                 pass
 
+        def showhideeverything():
+            showhideplaylist()
+            lowpanel_ch_1()
+
         right_click_menu = QtWidgets.QMenu()
         right_click_menu.addAction(LANG['pause'], mpv_play)
         right_click_menu.addSeparator()
         right_click_menu.addAction(LANG['showhideplaylist'], showhideplaylist)
         right_click_menu.addAction(LANG['showhidectrlpanel'], lowpanel_ch_1)
+        right_click_menu.addAction(LANG['showhideeverything'], showhideeverything)
         right_click_menu.addAction(LANG['channelsettings'], main_channel_settings)
 
         @player.event_callback('end_file')
