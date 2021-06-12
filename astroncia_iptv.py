@@ -3633,10 +3633,17 @@ if __name__ == '__main__':
             except: # pylint: disable=bare-except
                 pass
 
+        def lowpanel_ch_1():
+            try:
+                lowpanel_ch()
+            except: # pylint: disable=bare-except
+                pass
+
         right_click_menu = QtWidgets.QMenu()
         right_click_menu.addAction(LANG['pause'], mpv_play)
         right_click_menu.addSeparator()
         right_click_menu.addAction(LANG['showhideplaylist'], showhideplaylist)
+        right_click_menu.addAction(LANG['showhidectrlpanel'], lowpanel_ch_1)
         right_click_menu.addAction(LANG['channelsettings'], main_channel_settings)
 
         @player.event_callback('end_file')
@@ -4596,6 +4603,12 @@ if __name__ == '__main__':
             else:
                 #key_t_visible = True
                 dockWidget.show()
+
+        def lowpanel_ch():
+            if dockWidget2.isVisible():
+                dockWidget2.hide()
+            else:
+                dockWidget2.show()
 
         # Key bindings
         def key_quit():
