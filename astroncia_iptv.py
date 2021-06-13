@@ -3640,15 +3640,19 @@ if __name__ == '__main__':
                 pass
 
         def showhideeverything():
-            showhideplaylist()
-            lowpanel_ch_1()
+            if dockWidget.isVisible():
+                dockWidget.hide()
+                dockWidget2.hide()
+            else:
+                dockWidget.show()
+                dockWidget2.show()
 
         right_click_menu = QtWidgets.QMenu()
         right_click_menu.addAction(LANG['pause'], mpv_play)
         right_click_menu.addSeparator()
         right_click_menu.addAction(LANG['showhideplaylist'], showhideplaylist)
         right_click_menu.addAction(LANG['showhidectrlpanel'], lowpanel_ch_1)
-        right_click_menu.addAction(LANG['showhideeverything'], showhideeverything)
+        right_click_menu.addAction(LANG['mininterface'], showhideeverything)
         right_click_menu.addAction(LANG['channelsettings'], main_channel_settings)
 
         @player.event_callback('end_file')
