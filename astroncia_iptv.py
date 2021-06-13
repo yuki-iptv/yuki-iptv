@@ -1276,6 +1276,7 @@ if __name__ == '__main__':
                         kodi_referer = kodi_str.replace('Referer=', '', 1)
                         print_with_time("Kodi-style Referer found: {}".format(kodi_referer))
                         player.http_header_fields = "Referer: {}".format(kodi_referer)
+                arg_override_play = arg_override_play.split('|')[0]
             #print_with_time("mpv_override_play called")
             player.play(arg_override_play)
             if (not os.name == 'nt') and event_handler:
