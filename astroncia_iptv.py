@@ -1250,8 +1250,32 @@ if __name__ == '__main__':
 
         event_handler = None
 
-        def mpv_override_play(arg_override_play):
+        def mpv_override_play(arg_override_play, ua1=''):
             global event_handler
+            # Parsing User-Agent and Referer in Kodi-like style
+            player.user_agent = ua1
+            if settings["referer"]:
+                player.http_header_fields = "Referer: {}".format(settings["referer"])
+            else:
+                player.http_header_fields = ""
+            if '|' in arg_override_play:
+                print_with_time("Found Kodi-style arguments, parsing")
+                split_kodi = arg_override_play.split('|')[1]
+                if '&' in split_kodi:
+                    print_with_time("Multiple")
+                    split_kodi = split_kodi.split('&')
+                else:
+                    print_with_time("Single")
+                    split_kodi = [split_kodi]
+                for kodi_str in split_kodi:
+                    if kodi_str.startswith('User-Agent='):
+                        kodi_user_agent = kodi_str.replace('User-Agent=', '', 1)
+                        print_with_time("Kodi-style User-Agent found: {}".format(kodi_user_agent))
+                        player.user_agent = kodi_user_agent
+                    if kodi_str.startswith('Referer='):
+                        kodi_referer = kodi_str.replace('Referer=', '', 1)
+                        print_with_time("Kodi-style Referer found: {}".format(kodi_referer))
+                        player.http_header_fields = "Referer: {}".format(kodi_referer)
             #print_with_time("mpv_override_play called")
             player.play(arg_override_play)
             if (not os.name == 'nt') and event_handler:
@@ -1400,7 +1424,7 @@ if __name__ == '__main__':
             player.user_agent = ua_ch if isinstance(ua_ch, str) else uas[ua_ch]
             player.loop = True
             mpv_override_stop(ignore=True)
-            mpv_override_play(play_url1)
+            mpv_override_play(play_url1, ua_ch if isinstance(ua_ch, str) else uas[ua_ch])
 
         def chan_set_save():
             chan_3 = title.text().replace("{}: ".format(LANG['channel']), "")
