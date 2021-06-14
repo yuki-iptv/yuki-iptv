@@ -282,6 +282,7 @@ if __name__ == '__main__':
                 'showcontrolsmouse': True,
                 'flpopacity': 0.7,
                 'panelposition': 0,
+                'playlistsep': False,
                 'screenshot': 0,
                 'videoaspect': 0,
                 'zoom': 0,
@@ -328,6 +329,8 @@ if __name__ == '__main__':
             settings['flpopacity'] = 0.7
         if 'panelposition' not in settings:
             settings['panelposition'] = 0
+        if 'playlistsep' not in settings:
+            settings['playlistsep'] = False
         if 'screenshot' not in settings:
             settings['screenshot'] = 0
         if 'videoaspect' not in settings:
@@ -1641,6 +1644,7 @@ if __name__ == '__main__':
                 'showcontrolsmouse': showcontrolsmouse_flag.isChecked(),
                 'flpopacity': flpopacity_input.value(),
                 'panelposition': panelposition_choose.currentIndex(),
+                'playlistsep': playlistsep_flag.isChecked(),
                 'screenshot': screenshot_choose.currentIndex(),
                 'videoaspect': videoaspect_def_choose.currentIndex(),
                 'zoom': zoom_def_choose.currentIndex(),
@@ -1983,6 +1987,10 @@ if __name__ == '__main__':
         panelposition_choose.addItem(LANG['left'])
         panelposition_choose.setCurrentIndex(settings['panelposition'])
 
+        playlistsep_label = QtWidgets.QLabel("{}:".format(LANG['playlistsep']))
+        playlistsep_flag = QtWidgets.QCheckBox()
+        playlistsep_flag.setChecked(settings['playlistsep'])
+
         screenshot_label = QtWidgets.QLabel("{}:".format(LANG['doscreenshotsvia']))
         screenshot_choose = QtWidgets.QComboBox()
         screenshot_choose.addItem(LANG['default'])
@@ -2093,19 +2101,21 @@ if __name__ == '__main__':
         tab5.layout = QtWidgets.QGridLayout()
         tab5.layout.addWidget(gui_label, 0, 0)
         tab5.layout.addWidget(gui_choose, 0, 1)
-        tab5.layout.addWidget(QtWidgets.QLabel(), 1, 2)
-        tab5.layout.addWidget(QtWidgets.QLabel(), 1, 3)
-        tab5.layout.addWidget(QtWidgets.QLabel(), 1, 4)
-        tab5.layout.addWidget(channels_label, 2, 0)
-        tab5.layout.addWidget(channels_box, 2, 1)
-        tab5.layout.addWidget(QtWidgets.QLabel(), 3, 0)
-        tab5.layout.addWidget(openprevchan_label, 4, 0)
-        tab5.layout.addWidget(openprevchan_flag, 4, 1)
-        tab5.layout.addWidget(remembervol_label, 5, 0)
-        tab5.layout.addWidget(remembervol_flag, 5, 1)
-        tab5.layout.addWidget(panelposition_label, 6, 0)
-        tab5.layout.addWidget(panelposition_choose, 6, 1)
-        tab5.layout.addWidget(QtWidgets.QLabel(), 7, 0)
+        tab5.layout.addWidget(QtWidgets.QLabel(), 0, 2)
+        tab5.layout.addWidget(QtWidgets.QLabel(), 0, 3)
+        tab5.layout.addWidget(QtWidgets.QLabel(), 0, 4)
+        tab5.layout.addWidget(channels_label, 1, 0)
+        tab5.layout.addWidget(channels_box, 1, 1)
+        #tab5.layout.addWidget(QtWidgets.QLabel(), 3, 0)
+        tab5.layout.addWidget(openprevchan_label, 2, 0)
+        tab5.layout.addWidget(openprevchan_flag, 2, 1)
+        tab5.layout.addWidget(remembervol_label, 3, 0)
+        tab5.layout.addWidget(remembervol_flag, 3, 1)
+        tab5.layout.addWidget(panelposition_label, 4, 0)
+        tab5.layout.addWidget(panelposition_choose, 4, 1)
+        tab5.layout.addWidget(playlistsep_label, 5, 0)
+        tab5.layout.addWidget(playlistsep_flag, 5, 1)
+        #tab5.layout.addWidget(QtWidgets.QLabel(), 8, 0)
         tab5.setLayout(tab5.layout)
 
         tab6.layout = QtWidgets.QGridLayout()
@@ -2120,7 +2130,7 @@ if __name__ == '__main__':
         tab6.layout.addWidget(flpopacity_input, 4, 1)
         tab6.layout.addWidget(screenshot_label, 5, 0)
         tab6.layout.addWidget(screenshot_choose, 5, 1)
-        tab6.layout.addWidget(QtWidgets.QLabel(), 6, 0)
+        tab6.layout.addWidget(QtWidgets.QLabel(), 7, 0)
         tab6.setLayout(tab6.layout)
 
         tab7.layout = QtWidgets.QGridLayout()
@@ -3407,14 +3417,22 @@ if __name__ == '__main__':
         widget.layout().addWidget(chan)
         widget.layout().addWidget(loading)
         dockWidget.setFixedWidth(DOCK_WIDGET_WIDTH)
-        dockWidget.setTitleBarWidget(QtWidgets.QWidget())
+        if not settings['playlistsep']:
+            dockWidget.setTitleBarWidget(QtWidgets.QWidget())
         dockWidget.setWidget(widget)
-        dockWidget.setFloating(False)
-        dockWidget.setFeatures(QtWidgets.QDockWidget.NoDockWidgetFeatures)
-        if settings['panelposition'] == 0:
-            win.addDockWidget(QtCore.Qt.RightDockWidgetArea, dockWidget)
+        if not settings['playlistsep']:
+            dockWidget.setFloating(False)
+            dockWidget.setFeatures(QtWidgets.QDockWidget.NoDockWidgetFeatures)
+            if settings['panelposition'] == 0:
+                win.addDockWidget(QtCore.Qt.RightDockWidgetArea, dockWidget)
+            else:
+                win.addDockWidget(QtCore.Qt.LeftDockWidgetArea, dockWidget)
         else:
-            win.addDockWidget(QtCore.Qt.LeftDockWidgetArea, dockWidget)
+            dockWidget.setFloating(True)
+            dockWidget.move(win.pos().x() + win.width() + 30, win.pos().y())
+            dockWidget.resize(dockWidget.width(), win.height())
+            dockWidget.setFeatures(QtWidgets.QDockWidget.NoDockWidgetFeatures)
+            dockWidget.setAllowedAreas(QtCore.Qt.NoDockWidgetArea)
 
         FORBIDDEN_CHARS = ('"', '*', ':', '<', '>', '?', '\\', '/', '|', '[', ']')
 
@@ -3774,6 +3792,9 @@ if __name__ == '__main__':
                 mpv_volume_set()
 
         dockWidget2 = QtWidgets.QDockWidget(win)
+
+        dockWidget.setObjectName("dockWidget")
+        dockWidget2.setObjectName("dockWidget2")
 
         def open_recording_folder():
             absolute_path = Path(save_folder).absolute()
