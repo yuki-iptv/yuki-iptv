@@ -2406,7 +2406,10 @@ if __name__ == '__main__':
                 self.windowWidth = self.width()
                 self.windowHeight = self.height()
                 self.updateWindowSize()
-                tvguide_lbl.move(2, 35)
+                if settings['panelposition'] == 0:
+                    tvguide_lbl.move(2, 35)
+                else:
+                    tvguide_lbl.move(win.width() - tvguide_lbl.width(), 35)
                 if not fullscreen:
                     lbl2.move(0, 5)
                     l1.setFixedWidth(self.windowWidth - dockWidget.width() + 58)
