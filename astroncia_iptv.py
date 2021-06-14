@@ -3680,6 +3680,11 @@ if __name__ == '__main__':
         right_click_menu.addAction(LANG['mininterface'], showhideeverything)
         right_click_menu.addAction(LANG['channelsettings'], main_channel_settings)
 
+        right_click_menu_fullscreen = QtWidgets.QMenu()
+        right_click_menu_fullscreen.addAction(LANG['pause'], mpv_play)
+        right_click_menu_fullscreen.addSeparator()
+        right_click_menu_fullscreen.addAction(LANG['channelsettings'], main_channel_settings)
+
         @player.event_callback('end_file')
         def ready_handler_2(event): # pylint: disable=unused-argument
             if event['event']['error'] != 0:
@@ -3692,10 +3697,13 @@ if __name__ == '__main__':
 
         @player.on_key_press('MBTN_RIGHT')
         def my_mouse_right():
-            global autoclosemenu_time
+            global autoclosemenu_time, fullscreen
             #if playing_chan:
             autoclosemenu_time = time.time()
-            right_click_menu.exec_(QtGui.QCursor.pos())
+            if not fullscreen:
+                right_click_menu.exec_(QtGui.QCursor.pos())
+            else:
+                right_click_menu_fullscreen.exec_(QtGui.QCursor.pos())
 
         @player.on_key_press('MBTN_LEFT_DBL')
         def my_leftdbl_binding():
@@ -4508,6 +4516,8 @@ if __name__ == '__main__':
                 if time.time() - autoclosemenu_time > 3:
                     if right_click_menu.isVisible():
                         right_click_menu.hide()
+                    if right_click_menu_fullscreen.isVisible():
+                        right_click_menu_fullscreen.hide()
                     autoclosemenu_time = -1
 
         def thread_mouse_2():
