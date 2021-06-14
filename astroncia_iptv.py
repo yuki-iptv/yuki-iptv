@@ -4580,6 +4580,7 @@ if __name__ == '__main__':
                     pass
                 if (fullscreen and not key_t_visible) and settings['exp1']:
                     dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
+                    dockWidget.setWindowOpacity(settings['flpopacity'])
                     if settings['panelposition'] == 0:
                         dockWidget.move(win.width() - dockWidget.width(), 50)
                     else:
