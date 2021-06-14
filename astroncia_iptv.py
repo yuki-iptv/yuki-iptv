@@ -281,6 +281,7 @@ if __name__ == '__main__':
                 'showplaylistmouse': True,
                 'showcontrolsmouse': True,
                 'flpopacity': 0.7,
+                'panelposition': 0,
                 'videoaspect': 0,
                 'zoom': 0,
                 'panscan': 0.0,
@@ -324,6 +325,8 @@ if __name__ == '__main__':
             settings['showcontrolsmouse'] = True
         if 'flpopacity' not in settings:
             settings['flpopacity'] = 0.7
+        if 'panelposition' not in settings:
+            settings['panelposition'] = 0
         if 'videoaspect' not in settings:
             settings['videoaspect'] = 0
         if 'zoom' not in settings:
@@ -1634,6 +1637,7 @@ if __name__ == '__main__':
                 'showplaylistmouse': showplaylistmouse_flag.isChecked(),
                 'showcontrolsmouse': showcontrolsmouse_flag.isChecked(),
                 'flpopacity': flpopacity_input.value(),
+                'panelposition': panelposition_choose.currentIndex(),
                 'videoaspect': videoaspect_def_choose.currentIndex(),
                 'zoom': zoom_def_choose.currentIndex(),
                 'panscan': panscan_def_choose.value(),
@@ -1969,6 +1973,12 @@ if __name__ == '__main__':
         flpopacity_input.setDecimals(2)
         flpopacity_input.setValue(settings['flpopacity'])
 
+        panelposition_label = QtWidgets.QLabel("{}:".format(LANG['panelposition']))
+        panelposition_choose = QtWidgets.QComboBox()
+        panelposition_choose.addItem(LANG['right'])
+        panelposition_choose.addItem(LANG['left'])
+        panelposition_choose.setCurrentIndex(settings['panelposition'])
+
         mouseswitchchannels_label = QtWidgets.QLabel("{}:".format(LANG['mouseswitchchannels']))
         defaultchangevol_label = QtWidgets.QLabel("({})".format(LANG['defaultchangevol']))
         defaultchangevol_label.setStyleSheet('color:blue')
@@ -2083,7 +2093,9 @@ if __name__ == '__main__':
         tab5.layout.addWidget(openprevchan_flag, 4, 1)
         tab5.layout.addWidget(remembervol_label, 5, 0)
         tab5.layout.addWidget(remembervol_flag, 5, 1)
-        tab5.layout.addWidget(QtWidgets.QLabel(), 6, 0)
+        tab5.layout.addWidget(panelposition_label, 6, 0)
+        tab5.layout.addWidget(panelposition_choose, 6, 1)
+        tab5.layout.addWidget(QtWidgets.QLabel(), 7, 0)
         tab5.setLayout(tab5.layout)
 
         tab6.layout = QtWidgets.QGridLayout()
@@ -3385,9 +3397,12 @@ if __name__ == '__main__':
         dockWidget.setFixedWidth(DOCK_WIDGET_WIDTH)
         dockWidget.setTitleBarWidget(QtWidgets.QWidget())
         dockWidget.setWidget(widget)
-        dockWidget.setFloating(False)
+        dockWidget.setFloating(False) # TODO
         dockWidget.setFeatures(QtWidgets.QDockWidget.NoDockWidgetFeatures)
-        win.addDockWidget(QtCore.Qt.RightDockWidgetArea, dockWidget)
+        if settings['panelposition'] == 0:
+            win.addDockWidget(QtCore.Qt.RightDockWidgetArea, dockWidget)
+        else:
+            win.addDockWidget(QtCore.Qt.LeftDockWidgetArea, dockWidget)
 
         FORBIDDEN_CHARS = ('"', '*', ':', '<', '>', '?', '\\', '/', '|', '[', ']')
 
@@ -4530,7 +4545,10 @@ if __name__ == '__main__':
                     pass
                 if (fullscreen and not key_t_visible) and settings['exp1']:
                     dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
-                    dockWidget.move(win.width() - dockWidget.width(), 50)
+                    if settings['panelposition'] == 0:
+                        dockWidget.move(win.width() - dockWidget.width(), 50)
+                    else:
+                        dockWidget.move(0, 50)
                     dockWidget2.move(int(win.width() / 3) - 150, win.height() - dockWidget2.height())
                     if not newdockWidgetHeight:
                         dockWidget.resize(dockWidget.width(), win.height() - 150)
@@ -4578,7 +4596,10 @@ if __name__ == '__main__':
                     if settings['showplaylistmouse']:
                         cursor_x = win.main_widget.mapFromGlobal(QtGui.QCursor.pos()).x()
                         win_width = win.width()
-                        is_cursor_x = cursor_x > win_width - (settings['exp2'] + 10)
+                        if settings['panelposition'] == 0:
+                            is_cursor_x = cursor_x > win_width - (settings['exp2'] + 10)
+                        else:
+                            is_cursor_x = cursor_x < (settings['exp2'] + 10)
                         if is_cursor_x and cursor_x < win_width:
                             if not dockWidgetVisible:
                                 dockWidgetVisible = True
@@ -4586,7 +4607,10 @@ if __name__ == '__main__':
                                 if settings['exp1']:
                                     of1 = 50
                                     dockWidget.setFloating(True)
-                                dockWidget.move(win.width() - dockWidget.width(), of1)
+                                if settings['panelposition'] == 0:
+                                    dockWidget.move(win.width() - dockWidget.width(), of1)
+                                else:
+                                    dockWidget.move(0, of1)
                                 if not newdockWidgetHeight:
                                     dockWidget.resize(dockWidget.width(), win.height() - 150)
                                 else:
@@ -4594,7 +4618,10 @@ if __name__ == '__main__':
                                 dockWidget.setWindowOpacity(settings['flpopacity'])
                                 dockWidget.show()
                                 dockWidget.setWindowOpacity(settings['flpopacity'])
-                                dockWidget.move(win.width() - dockWidget.width(), of1)
+                                if settings['panelposition'] == 0:
+                                    dockWidget.move(win.width() - dockWidget.width(), of1)
+                                else:
+                                    dockWidget.move(0, of1)
                         else:
                             dockWidgetVisible = False
                             dockWidget.setWindowOpacity(1)
