@@ -282,6 +282,7 @@ if __name__ == '__main__':
                 'showcontrolsmouse': True,
                 'flpopacity': 0.7,
                 'panelposition': 0,
+                'screenshot': 0,
                 'videoaspect': 0,
                 'zoom': 0,
                 'panscan': 0.0,
@@ -327,6 +328,8 @@ if __name__ == '__main__':
             settings['flpopacity'] = 0.7
         if 'panelposition' not in settings:
             settings['panelposition'] = 0
+        if 'screenshot' not in settings:
+            settings['screenshot'] = 0
         if 'videoaspect' not in settings:
             settings['videoaspect'] = 0
         if 'zoom' not in settings:
@@ -1638,6 +1641,7 @@ if __name__ == '__main__':
                 'showcontrolsmouse': showcontrolsmouse_flag.isChecked(),
                 'flpopacity': flpopacity_input.value(),
                 'panelposition': panelposition_choose.currentIndex(),
+                'screenshot': screenshot_choose.currentIndex(),
                 'videoaspect': videoaspect_def_choose.currentIndex(),
                 'zoom': zoom_def_choose.currentIndex(),
                 'panscan': panscan_def_choose.value(),
@@ -1979,6 +1983,12 @@ if __name__ == '__main__':
         panelposition_choose.addItem(LANG['left'])
         panelposition_choose.setCurrentIndex(settings['panelposition'])
 
+        screenshot_label = QtWidgets.QLabel("{}:".format(LANG['doscreenshotsvia']))
+        screenshot_choose = QtWidgets.QComboBox()
+        screenshot_choose.addItem(LANG['default'])
+        screenshot_choose.addItem('ffmpeg')
+        screenshot_choose.setCurrentIndex(settings['screenshot'])
+
         mouseswitchchannels_label = QtWidgets.QLabel("{}:".format(LANG['mouseswitchchannels']))
         defaultchangevol_label = QtWidgets.QLabel("({})".format(LANG['defaultchangevol']))
         defaultchangevol_label.setStyleSheet('color:blue')
@@ -2108,7 +2118,9 @@ if __name__ == '__main__':
         tab6.layout.addWidget(QtWidgets.QLabel(), 3, 2)
         tab6.layout.addWidget(flpopacity_label, 4, 0)
         tab6.layout.addWidget(flpopacity_input, 4, 1)
-        tab6.layout.addWidget(QtWidgets.QLabel(), 5, 0)
+        tab6.layout.addWidget(screenshot_label, 5, 0)
+        tab6.layout.addWidget(screenshot_choose, 5, 1)
+        tab6.layout.addWidget(QtWidgets.QLabel(), 6, 0)
         tab6.setLayout(tab6.layout)
 
         tab7.layout = QtWidgets.QGridLayout()
@@ -3397,7 +3409,7 @@ if __name__ == '__main__':
         dockWidget.setFixedWidth(DOCK_WIDGET_WIDTH)
         dockWidget.setTitleBarWidget(QtWidgets.QWidget())
         dockWidget.setWidget(widget)
-        dockWidget.setFloating(False) # TODO
+        dockWidget.setFloating(False)
         dockWidget.setFeatures(QtWidgets.QDockWidget.NoDockWidgetFeatures)
         if settings['panelposition'] == 0:
             win.addDockWidget(QtCore.Qt.RightDockWidgetArea, dockWidget)
@@ -3418,9 +3430,11 @@ if __name__ == '__main__':
                 file_name = 'screenshot_-_' + cur_time + '_-_' + ch + '.png'
                 file_path = str(Path(save_folder, 'screenshots', file_name))
                 try:
-                    #pillow_img = player.screenshot_raw()
-                    #pillow_img.save(file_path)
-                    make_ffmpeg_screenshot(playing_url, file_path, playing_chan, "Referer: {}".format(settings["referer"]))
+                    if settings['screenshot'] == 0:
+                        pillow_img = player.screenshot_raw()
+                        pillow_img.save(file_path)
+                    else:
+                        make_ffmpeg_screenshot(playing_url, file_path, playing_chan, "Referer: {}".format(settings["referer"]))
                     l1.show()
                     l1.setText2(LANG['screenshotsaved'])
                 except: # pylint: disable=bare-except
