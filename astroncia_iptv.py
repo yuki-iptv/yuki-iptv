@@ -2126,11 +2126,11 @@ if __name__ == '__main__':
         tab6.layout.addWidget(exp2_label, 3, 0)
         tab6.layout.addWidget(exp2_input, 3, 1)
         tab6.layout.addWidget(QtWidgets.QLabel(), 3, 2)
-        tab6.layout.addWidget(flpopacity_label, 4, 0)
-        tab6.layout.addWidget(flpopacity_input, 4, 1)
-        tab6.layout.addWidget(screenshot_label, 5, 0)
-        tab6.layout.addWidget(screenshot_choose, 5, 1)
-        tab6.layout.addWidget(QtWidgets.QLabel(), 7, 0)
+        #tab6.layout.addWidget(flpopacity_label, 4, 0)
+        #tab6.layout.addWidget(flpopacity_input, 4, 1)
+        tab6.layout.addWidget(screenshot_label, 4, 0)
+        tab6.layout.addWidget(screenshot_choose, 4, 1)
+        tab6.layout.addWidget(QtWidgets.QLabel(), 5, 0)
         tab6.setLayout(tab6.layout)
 
         tab7.layout = QtWidgets.QGridLayout()
@@ -4583,7 +4583,7 @@ if __name__ == '__main__':
                     pass
                 if (fullscreen and not key_t_visible) and settings['exp1']:
                     dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
-                    dockWidget.setWindowOpacity(settings['flpopacity'])
+                    dockWidget.setWindowOpacity(0.55)
                     if settings['panelposition'] == 0:
                         dockWidget.move(win.width() - dockWidget.width(), 50)
                     else:
@@ -4654,9 +4654,9 @@ if __name__ == '__main__':
                                     dockWidget.resize(dockWidget.width(), win.height() - 150)
                                 else:
                                     dockWidget.resize(dockWidget.width(), newdockWidgetHeight)
-                                dockWidget.setWindowOpacity(settings['flpopacity'])
+                                dockWidget.setWindowOpacity(0.55)
                                 dockWidget.show()
-                                dockWidget.setWindowOpacity(settings['flpopacity'])
+                                dockWidget.setWindowOpacity(0.55)
                                 if settings['panelposition'] == 0:
                                     dockWidget.move(win.width() - dockWidget.width(), of1)
                                 else:
@@ -4682,17 +4682,17 @@ if __name__ == '__main__':
                                     dockWidget2.move(0, win.height() - dockWidget2.height())
                                     dockWidget2.resize(win.width(), DOCK_WIDGET2_HEIGHT_HIGH)
                                     dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
-                                    dockWidget2.setWindowOpacity(settings['flpopacity'])
+                                    dockWidget2.setWindowOpacity(0.55)
                                     dockWidget2.show()
-                                    dockWidget2.setWindowOpacity(settings['flpopacity'])
+                                    dockWidget2.setWindowOpacity(0.55)
                                     dockWidget2.move(0, win.height() - dockWidget2.height())
                                 else:
                                     dockWidget2.move(int(win.width() / 3) - 150, win.height() - dockWidget2.height())
                                     dockWidget2.resize(int(win.width() / 2) - 100, DOCK_WIDGET2_HEIGHT_LOW)
                                     dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
-                                    dockWidget2.setWindowOpacity(settings['flpopacity'])
+                                    dockWidget2.setWindowOpacity(0.55)
                                     dockWidget2.show()
-                                    dockWidget2.setWindowOpacity(settings['flpopacity'])
+                                    dockWidget2.setWindowOpacity(0.55)
                                     dockWidget2.move(int(win.width() / 3) - 150, win.height() - dockWidget2.height())
                         else:
                             dockWidget2Visible = False
