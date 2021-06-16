@@ -569,17 +569,30 @@ msgstr "Dźwięk"
 msgid "hidetvguide"
 msgstr "Ukryj przewodnik telewizyjny"
 
-msgid "flpopacity"
-msgstr "Przezroczystość panelu\npływającego"
-
 msgid "showhideplaylist"
 msgstr "Pokaż/ukryj playlistę"
 
 msgid "showhidectrlpanel"
 msgstr "Pokaż/ukryj panel sterowania"
 
-msgid "showhideeverything"
-msgstr "Pokaż/ukryj wszystko"
+msgid "mininterface"
+msgstr "Minimalny interfejs"
+
+msgid "panelposition"
+msgstr "Panel pływający\npozycja"
+
+msgid "left"
+msgstr "Po lewej"
+
+msgid "right"
+msgstr "Po prawej"
+
+msgid "doscreenshotsvia"
+msgstr "Zrób zrzuty ekranu przez"
+
+msgid "playlistsep"
+msgstr "Playlista w osobnym oknie"
+
 
 msgid "helptext"
 msgstr "Astroncia IPTV, wersja {}\n© kestral / astroncia < kestraly (at) gmail.com >\nhttps://gitlab.com/astroncia\n\nCross-platform Odtwarzacz IPTV\n\nObsługuje przewodnik telewizyjny (EPG) tylko w formacie XMLTV i JTV\n\nKanał nie działa?\nPrawy przycisk myszy otwiera ustawienia kanału\n\nIkony według Font Awesome ( https://fontawesome.com/ )\nIkony na licencji CC BY 4.0\n( https: //creativecommons.org/licenses/by/4.0/ )\n\nSkróty klawiszowe:\n\nF / F11 — tryb pełnoekranowy\nM — wyciszenie\nQ — zamknięcie programu\nSpacja — wstrzymanie\nS — zatrzymanie odtwarzania\nH — zrzut ekranu\nG — przewodnik telewizyjny (EPG)\nR — rozpoczęcie/zatrzymanie nagrywania\nP — poprzedni kanał\nN — następny kanał\nT — otwieranie/zamykanie listy kanałów\nO — wyświetlanie/ukrywanie zegara\nI — sortowanie kanałów\nD — harmonogram nagrywania"
