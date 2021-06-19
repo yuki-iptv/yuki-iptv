@@ -3497,7 +3497,10 @@ if __name__ == '__main__':
                         stop_2 = datetime.datetime.fromtimestamp(
                             pr['stop']
                         ).strftime('%d.%m.%y %H:%M') + '\n'
-                        title_2 = pr['title'] if 'title' in pr else ''
+                        try:
+                            title_2 = pr['title'] if 'title' in pr else ''
+                        except: # pylint: disable=bare-except
+                            title_2 = ''
                         try:
                             desc_2 = ('\n' + pr['desc'] + '\n') if 'desc' in pr else ''
                         except: # pylint: disable=bare-except
