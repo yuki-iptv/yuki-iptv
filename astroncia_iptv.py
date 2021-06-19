@@ -3498,7 +3498,10 @@ if __name__ == '__main__':
                             pr['stop']
                         ).strftime('%d.%m.%y %H:%M') + '\n'
                         title_2 = pr['title'] if 'title' in pr else ''
-                        desc_2 = ('\n' + pr['desc'] + '\n') if 'desc' in pr else ''
+                        try:
+                            desc_2 = ('\n' + pr['desc'] + '\n') if 'desc' in pr else ''
+                        except: # pylint: disable=bare-except
+                            desc_2 = ''
                         start_symbl = ''
                         stop_symbl = ''
                         if settings["themecompat"]:
