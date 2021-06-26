@@ -4195,9 +4195,9 @@ if __name__ == '__main__':
         hlayout1.addWidget(progress)
         hlayout1.addWidget(stop_label)
 
-        hlayout2_btns_1 = [label3, label4, label5, label5_1, label5_2, label5_0, label6, label7, label7_1]
+        hlayout2_btns_1 = [label3, label4, label5, label5_1, label5_2, label5_0, label6, label7, label13, label7_1]
         hlayout2_btns_2 = [label8_0, label8, label8_4, label8_1, label8_2, label8_3, label8_5, label9]
-        hlayout2_btns_3 = [label11, label12, label13]
+        hlayout2_btns_3 = [label11, label12]
         hlayout2_all_btns = hlayout2_btns_1 + hlayout2_btns_2 + hlayout2_btns_3 + [label7_2]
         #for hlayout2_btn_3 in hlayout2_all_btns:
         #    hlayout2_btn_3.setFixedHeight(20)
@@ -4608,7 +4608,8 @@ if __name__ == '__main__':
         def thread_mouse(): # pylint: disable=too-many-branches
             try: # pylint: disable=too-many-nested-blocks
                 global fullscreen, key_t_visible, dockWidgetVisible, dockWidget2Visible, newdockWidgetHeight
-                label13.setText("{}: {}%".format(LANG['volumeshort'], int(player.volume)))
+                #label13.setText("{}: {}%".format(LANG['volumeshort'], int(player.volume)))
+                label13.setText("{}%".format(int(player.volume)))
                 if settings['exp1']:
                     if fullscreen:
                         for hide_lbl_fullscreen in hide_lbls_fullscreen:
