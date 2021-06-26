@@ -4147,11 +4147,11 @@ if __name__ == '__main__':
         label8_4.clicked.connect(show_sort)
         label8_2 = QtWidgets.QPushButton()
         label8_2.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'prev.png'))))
-        label8_2.setToolTip(LANG['prevchannel'] + ' (P)')
+        label8_2.setToolTip(LANG['prevchannel'] + ' (N)')
         label8_2.clicked.connect(prev_channel)
         label8_3 = QtWidgets.QPushButton()
         label8_3.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'next.png'))))
-        label8_3.setToolTip(LANG['nextchannel'] + ' (N)')
+        label8_3.setToolTip(LANG['nextchannel'] + ' (M)')
         label8_3.clicked.connect(next_channel)
         label8_5 = QtWidgets.QPushButton()
         label8_5.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'edit.png'))))
@@ -4762,9 +4762,9 @@ if __name__ == '__main__':
             QtCore.Qt.Key_G: show_tvguide, # g - tv guide
             QtCore.Qt.Key_R: do_record, # r - record
             QtCore.Qt.Key_MediaRecord: do_record,
-            QtCore.Qt.Key_M: prev_channel, # m - prev channel
+            QtCore.Qt.Key_N: prev_channel, # n - prev channel
             QtCore.Qt.Key_MediaPrevious: prev_channel,
-            QtCore.Qt.Key_N: next_channel, # n - next channel
+            QtCore.Qt.Key_M: next_channel, # m - next channel
             QtCore.Qt.Key_MediaNext: next_channel,
             QtCore.Qt.Key_O: show_clock, # o - show/hide clock
             QtCore.Qt.Key_VolumeUp: my_up_binding,
