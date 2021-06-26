@@ -2751,9 +2751,11 @@ if __name__ == '__main__':
                 l1.setText2(LANG['volumeoff'])
 
         def mpv_volume_set(showdata=True):
-            global time_stop, l1
+            global time_stop, l1, fullscreen
             time_stop = time.time() + 3
             vol = int(label7.value())
+            if not fullscreen:
+                showdata = False
             if showdata:
                 try:
                     l1.show()
@@ -3467,7 +3469,7 @@ if __name__ == '__main__':
                 l1.setText2("{}!".format(LANG['nochannelselected']))
                 time_stop = time.time() + 1
 
-        def update_tvguide(chan_1='', do_return=False, show_all_guides=False):
+        def update_tvguide(chan_1='', do_return=False, show_all_guides=False): # pylint: disable=too-many-branches
             global item_selected
             if not chan_1:
                 if item_selected:
@@ -3787,7 +3789,7 @@ if __name__ == '__main__':
 
         @player.on_key_press('WHEEL_DOWN')
         def my_down_binding():
-            global l1, time_stop
+            global l1, time_stop, fullscreen
             if settings["mouseswitchchannels"]:
                 prev_channel()
             else:
@@ -3795,8 +3797,9 @@ if __name__ == '__main__':
                 if volume < 0:
                     volume = 0
                 time_stop = time.time() + 3
-                l1.show()
-                l1.setText2("{}: {}%".format(LANG['volume'], volume))
+                if not fullscreen:
+                    l1.show()
+                    l1.setText2("{}: {}%".format(LANG['volume'], volume))
                 label7.setValue(volume)
                 mpv_volume_set()
 
