@@ -4461,7 +4461,7 @@ if __name__ == '__main__':
                     width = 800
                     height = 600
                 if (not (codec == 'png' and width == 800 and height == 600)) and (width and height):
-                    label12.setText('  {}x{}{} - {} / {} |'.format(width, height, video_bitrate, codec, audio_codec))
+                    label12.setText('  {}x{}{} - {} / {}'.format(width, height, video_bitrate, codec, audio_codec))
                     if loading.text() == LANG['loading']:
                         hideLoading()
                 else:
