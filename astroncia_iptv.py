@@ -70,7 +70,7 @@ if not os.name == 'nt':
     except: # pylint: disable=bare-except
         print("Failed to init MPRIS libraries!")
 
-APP_VERSION = '0.0.46'
+APP_VERSION = '0.0.47'
 
 if not sys.version_info >= (3, 4, 0):
     print_with_time("Incompatible Python version! Required >= 3.4")
