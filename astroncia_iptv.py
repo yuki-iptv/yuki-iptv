@@ -275,6 +275,7 @@ if __name__ == '__main__':
                 'openprevchan': False,
                 'remembervol': True,
                 'hidempv': False,
+                'volumechangestep': 1,
                 'themecompat': False,
                 'exp1': False,
                 'exp2': DOCK_WIDGET_WIDTH,
@@ -314,6 +315,8 @@ if __name__ == '__main__':
             settings['remembervol'] = True
         if 'hidempv' not in settings:
             settings['hidempv'] = False
+        if 'volumechangestep' not in settings:
+            settings['volumechangestep'] = 1
         if 'themecompat' not in settings:
             settings['themecompat'] = False
         if 'exp1' not in settings:
@@ -1637,6 +1640,7 @@ if __name__ == '__main__':
                 'openprevchan': openprevchan_flag.isChecked(),
                 'remembervol': remembervol_flag.isChecked(),
                 'hidempv': hidempv_flag.isChecked(),
+                'volumechangestep': volumechangestep_choose.value(),
                 'themecompat': themecompat_flag.isChecked(),
                 'exp1': exp1_flag.isChecked(),
                 'exp2': exp2_input.value(),
@@ -1939,6 +1943,7 @@ if __name__ == '__main__':
         openprevchan_label = QtWidgets.QLabel("{}:".format(LANG['openprevchan']))
         remembervol_label = QtWidgets.QLabel("{}:".format(LANG['remembervol']))
         hidempv_label = QtWidgets.QLabel("{}:".format(LANG['hidempv']))
+        volumechangestep_label = QtWidgets.QLabel("{}:".format(LANG['volumechangestep']))
         channels_label = QtWidgets.QLabel("{}:".format(LANG['channelsonpage']))
         channels_box = QtWidgets.QSpinBox()
         channels_box.setSuffix('    ')
@@ -1973,6 +1978,11 @@ if __name__ == '__main__':
         exp2_input = QtWidgets.QSpinBox()
         exp2_input.setMaximum(9999)
         exp2_input.setValue(settings['exp2'])
+
+        volumechangestep_choose = QtWidgets.QSpinBox()
+        volumechangestep_choose.setMinimum(1)
+        volumechangestep_choose.setMaximum(50)
+        volumechangestep_choose.setValue(settings['volumechangestep'])
 
         flpopacity_label = QtWidgets.QLabel("{}:".format(LANG['flpopacity']))
         flpopacity_input = QtWidgets.QDoubleSpinBox()
@@ -2097,6 +2107,8 @@ if __name__ == '__main__':
         tab4.layout.addWidget(themecompat_flag, 2, 1)
         tab4.layout.addWidget(hidempv_label, 3, 0)
         tab4.layout.addWidget(hidempv_flag, 3, 1)
+        tab4.layout.addWidget(volumechangestep_label, 4, 0)
+        tab4.layout.addWidget(volumechangestep_choose, 4, 1)
         tab4.setLayout(tab4.layout)
 
         tab5.layout = QtWidgets.QGridLayout()
@@ -3833,7 +3845,7 @@ if __name__ == '__main__':
             if settings["mouseswitchchannels"]:
                 next_channel()
             else:
-                volume = int(player.volume + 1)
+                volume = int(player.volume + settings['volumechangestep'])
                 if volume > 200:
                     volume = 200
                 label7.setValue(volume)
@@ -3845,7 +3857,7 @@ if __name__ == '__main__':
             if settings["mouseswitchchannels"]:
                 prev_channel()
             else:
-                volume = int(player.volume - 1)
+                volume = int(player.volume - settings['volumechangestep'])
                 if volume < 0:
                     volume = 0
                 time_stop = time.time() + 3
