@@ -2616,6 +2616,7 @@ if __name__ == '__main__':
                 doPlay(play_url, ua_choose)
             else:
                 doPlay(custom_url, ua_choose)
+            btn_update.click()
 
         item_selected = ''
 
@@ -3126,7 +3127,11 @@ if __name__ == '__main__':
                 chan_name = i
                 if len(chan_name) > MAX_SIZE_CHAN:
                     chan_name = chan_name[0:MAX_SIZE_CHAN] + "..."
-                myQCustomQWidget.setTextUp(str(k) + ". " + chan_name)
+                unicode_play_symbol = chr(9654) + " "
+                append_symbol = ""
+                if playing_chan == chan_name:
+                    append_symbol = unicode_play_symbol
+                myQCustomQWidget.setTextUp(append_symbol + str(k) + ". " + chan_name)
                 MAX_SIZE = 28
                 orig_prog = prog
                 if len(prog) > MAX_SIZE:
