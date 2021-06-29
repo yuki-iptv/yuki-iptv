@@ -3800,7 +3800,7 @@ if __name__ == '__main__':
             if settings["mouseswitchchannels"]:
                 next_channel()
             else:
-                volume = int(player.volume + 5)
+                volume = int(player.volume + 1)
                 if volume > 200:
                     volume = 200
                 label7.setValue(volume)
@@ -3812,7 +3812,7 @@ if __name__ == '__main__':
             if settings["mouseswitchchannels"]:
                 prev_channel()
             else:
-                volume = int(player.volume - 5)
+                volume = int(player.volume - 1)
                 if volume < 0:
                     volume = 0
                 time_stop = time.time() + 3
