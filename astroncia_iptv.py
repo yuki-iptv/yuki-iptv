@@ -4117,7 +4117,7 @@ if __name__ == '__main__':
         label5_2.clicked.connect(show_scheduler)
         label6 = QtWidgets.QPushButton()
         label6.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'volume.png'))))
-        label6.setToolTip(LANG['volume'] + ' (M)')
+        label6.setToolTip(LANG['volume'] + ' (V)')
         label6.clicked.connect(mpv_mute)
         label7 = QtWidgets.QSlider(QtCore.Qt.Horizontal)
         label7.setMinimum(0)
