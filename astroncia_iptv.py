@@ -36,6 +36,7 @@ import base64
 import argparse
 import subprocess
 import re
+import textwrap
 #import hashlib
 import codecs
 import ctypes
@@ -2834,7 +2835,11 @@ if __name__ == '__main__':
             def setTextUp(self, text):
                 self.textUpQLabel.setText(text)
 
-            def setTextDown(self, text):
+            def setTextDown(self, text, tooltip):
+                progTooltip = tooltip
+                self.textUpQLabel.setToolTip(progTooltip)
+                self.textDownQLabel.setToolTip(progTooltip)
+                self.progressBar.setToolTip(progTooltip)
                 self.textDownQLabel.setText(text)
 
             def setTextProgress(self, text):
@@ -2875,7 +2880,7 @@ if __name__ == '__main__':
             def setTextUp(self, text):
                 self.textUpQLabel.setText(text)
 
-            def setTextDown(self, text):
+            def setTextDown(self, text, tooltip):
                 pass
 
             def setTextProgress(self, text):
@@ -3098,12 +3103,20 @@ if __name__ == '__main__':
                             ) * 100
                         )
                         prog = str(percentage) + '% ' + current_prog['title']
+                        try:
+                            if current_prog['desc']:
+                                prog_desc = '\n\n' + textwrap.fill(current_prog['desc'], 100)
+                            else:
+                                prog_desc = ''
+                        except: # pylint: disable=bare-except
+                            prog_desc = ''
                     else:
                         start_time = ''
                         stop_time = ''
                         t_t = time.time()
                         percentage = 0
                         prog = ''
+                        prog_desc = ''
                 # Create QCustomQWidget
                 if settings['gui'] == 0:
                     myQCustomQWidget = QCustomQWidget()
@@ -3115,10 +3128,11 @@ if __name__ == '__main__':
                     chan_name = chan_name[0:MAX_SIZE_CHAN] + "..."
                 myQCustomQWidget.setTextUp(str(k) + ". " + chan_name)
                 MAX_SIZE = 28
+                orig_prog = prog
                 if len(prog) > MAX_SIZE:
                     prog = prog[0:MAX_SIZE] + "..."
                 if prog_search in programmes:
-                    myQCustomQWidget.setTextDown(prog)
+                    myQCustomQWidget.setTextDown(prog, orig_prog + prog_desc)
                     myQCustomQWidget.setTextProgress(start_time)
                     myQCustomQWidget.setTextEnd(stop_time)
                     myQCustomQWidget.setProgress(int(percentage))
