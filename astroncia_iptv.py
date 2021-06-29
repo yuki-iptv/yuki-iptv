@@ -2781,10 +2781,26 @@ if __name__ == '__main__':
         dockWidget = QtWidgets.QDockWidget(win)
         win.listWidget = QtWidgets.QListWidget()
 
+        class ClickableLabel(QtWidgets.QLabel): # pylint: disable=too-few-public-methods
+            def __init__(self, whenClicked, parent=None): # pylint: disable=unused-argument
+                QtWidgets.QLabel.__init__(self, win)
+                self._whenClicked = whenClicked
+
+            def mouseReleaseEvent(self, event):
+                self._whenClicked(event)
+
+        def tvguide_close_lbl_func(arg): # pylint: disable=unused-argument
+            hide_tvguide()
+
+        tvguide_close_lbl = ClickableLabel(tvguide_close_lbl_func)
+        tvguide_close_lbl.setText("      " + LANG['close'])
+        tvguide_close_lbl.move(0, 4)
+        tvguide_close_lbl.hide()
         tvguide_lbl = ScrollLabel(win)
         tvguide_lbl.move(0, 35)
         tvguide_lbl.setFixedWidth(TVGUIDE_WIDTH)
         tvguide_lbl.hide()
+        tvguide_close_lbl.hide()
 
         class QCustomQWidget(QtWidgets.QWidget): # pylint: disable=too-many-instance-attributes
             def __init__(self, parent=None):
@@ -3242,6 +3258,7 @@ if __name__ == '__main__':
         def tvguide_context_menu():
             update_tvguide()
             tvguide_lbl.show()
+            tvguide_close_lbl.show()
 
         def settings_context_menu(): # pylint: disable=too-many-branches
             if chan_win.isVisible():
@@ -3330,6 +3347,7 @@ if __name__ == '__main__':
                 tvguide_lbl.setText('')
                 tvguide_lbl_2.setText('')
                 tvguide_lbl.hide()
+                tvguide_close_lbl.hide()
             else:
                 tvguide_lbl.setText('')
                 tvguide_lbl_2.setText('')
@@ -3546,9 +3564,11 @@ if __name__ == '__main__':
                     tvguide_lbl.setText('')
                     tvguide_lbl_2.setText('')
                     tvguide_lbl.hide()
+                    tvguide_close_lbl.hide()
                 else:
                     update_tvguide()
                     tvguide_lbl.show()
+                    tvguide_close_lbl.show()
             else:
                 if epg_win.isVisible():
                     tvguide_lbl.setText('')
@@ -3557,6 +3577,19 @@ if __name__ == '__main__':
                 else:
                     update_tvguide()
                     epg_win.show()
+
+        def hide_tvguide():
+            if settings['gui'] == 0:
+                if tvguide_lbl.isVisible():
+                    tvguide_lbl.setText('')
+                    tvguide_lbl_2.setText('')
+                    tvguide_lbl.hide()
+                    tvguide_close_lbl.hide()
+            else:
+                if epg_win.isVisible():
+                    tvguide_lbl.setText('')
+                    tvguide_lbl_2.setText('')
+                    epg_win.hide()
 
         is_recording = False
         recording_time = 0
