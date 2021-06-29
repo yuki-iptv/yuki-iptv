@@ -275,6 +275,7 @@ if __name__ == '__main__':
                 'openprevchan': False,
                 'remembervol': True,
                 'hidempv': False,
+                'hideepgpercentage': False,
                 'volumechangestep': 1,
                 'themecompat': False,
                 'exp1': False,
@@ -315,6 +316,8 @@ if __name__ == '__main__':
             settings['remembervol'] = True
         if 'hidempv' not in settings:
             settings['hidempv'] = False
+        if 'hideepgpercentage' not in settings:
+            settings['hideepgpercentage'] = False
         if 'volumechangestep' not in settings:
             settings['volumechangestep'] = 1
         if 'themecompat' not in settings:
@@ -1640,6 +1643,7 @@ if __name__ == '__main__':
                 'openprevchan': openprevchan_flag.isChecked(),
                 'remembervol': remembervol_flag.isChecked(),
                 'hidempv': hidempv_flag.isChecked(),
+                'hideepgpercentage': hideepgpercentage_flag.isChecked(),
                 'volumechangestep': volumechangestep_choose.value(),
                 'themecompat': themecompat_flag.isChecked(),
                 'exp1': exp1_flag.isChecked(),
@@ -1943,6 +1947,7 @@ if __name__ == '__main__':
         openprevchan_label = QtWidgets.QLabel("{}:".format(LANG['openprevchan']))
         remembervol_label = QtWidgets.QLabel("{}:".format(LANG['remembervol']))
         hidempv_label = QtWidgets.QLabel("{}:".format(LANG['hidempv']))
+        hideepgpercentage_label = QtWidgets.QLabel("{}:".format(LANG['hideepgpercentage']))
         volumechangestep_label = QtWidgets.QLabel("{}:".format(LANG['volumechangestep']))
         channels_label = QtWidgets.QLabel("{}:".format(LANG['channelsonpage']))
         channels_box = QtWidgets.QSpinBox()
@@ -1964,6 +1969,9 @@ if __name__ == '__main__':
 
         hidempv_flag = QtWidgets.QCheckBox()
         hidempv_flag.setChecked(settings['hidempv'])
+
+        hideepgpercentage_flag = QtWidgets.QCheckBox()
+        hideepgpercentage_flag.setChecked(settings['hideepgpercentage'])
 
         themecompat_label = QtWidgets.QLabel("{}:".format(LANG['themecompat']))
         themecompat_flag = QtWidgets.QCheckBox()
@@ -2143,7 +2151,9 @@ if __name__ == '__main__':
         #tab6.layout.addWidget(flpopacity_input, 4, 1)
         tab6.layout.addWidget(screenshot_label, 4, 0)
         tab6.layout.addWidget(screenshot_choose, 4, 1)
-        tab6.layout.addWidget(QtWidgets.QLabel(), 5, 0)
+        tab6.layout.addWidget(hideepgpercentage_label, 5, 0)
+        tab6.layout.addWidget(hideepgpercentage_flag, 5, 1)
+        tab6.layout.addWidget(QtWidgets.QLabel(), 6, 0)
         tab6.setLayout(tab6.layout)
 
         tab7.layout = QtWidgets.QGridLayout()
@@ -3131,7 +3141,10 @@ if __name__ == '__main__':
                                 current_prog['stop'] - current_prog['start']
                             ) * 100
                         )
-                        prog = str(percentage) + '% ' + current_prog['title']
+                        if settings['hideepgpercentage']:
+                            prog = current_prog['title']
+                        else:
+                            prog = str(percentage) + '% ' + current_prog['title']
                         try:
                             if current_prog['desc']:
                                 prog_desc = '\n\n' + textwrap.fill(current_prog['desc'], 100)
