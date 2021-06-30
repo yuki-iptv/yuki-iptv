@@ -57,6 +57,7 @@ def fetch_epg(settings):
     exc = None
     epg_failures = []
     epg_exceptions = []
+    epg_icons = {}
     epg_settings_url = [settings['epg']]
     if epg_settings_url[0].startswith('^^::MULTIPLE::^^'):
         epg_settings_url = epg_settings_url[0].replace('^^::MULTIPLE::^^', '').split(':::^^^:::')
@@ -69,6 +70,10 @@ def fetch_epg(settings):
                 prog_ids = pr_xmltv[1]
             except: # pylint: disable=bare-except
                 programmes_epg = merge_two_dicts(programmes_epg, parse_jtv(epg, settings))
+            try:
+                epg_icons = pr_xmltv[2]
+            except: # pylint: disable=bare-except
+                pass
             epg_failures.append(False)
             print_with_time("Parsing done!")
             print_with_time("Parsing EPG...")
@@ -80,7 +85,7 @@ def fetch_epg(settings):
         epg_ok = False
         exc = epg_exceptions[0]
     print_with_time("Parsing EPG done!")
-    return [{}, programmes_epg, epg_ok, exc, prog_ids]
+    return [{}, programmes_epg, epg_ok, exc, prog_ids, epg_icons]
 
 def worker(procnum, sys_settings, return_dict1): # pylint: disable=unused-argument
     '''Worker running from multiprocess'''
@@ -91,3 +96,4 @@ def worker(procnum, sys_settings, return_dict1): # pylint: disable=unused-argume
     return_dict1[3] = epg[2]
     return_dict1[4] = epg[3]
     return_dict1[5] = epg[4]
+    return_dict1[6] = epg[5]

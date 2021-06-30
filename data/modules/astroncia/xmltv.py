@@ -31,11 +31,20 @@ def parse_as_xmltv(epg, settings):
         tree = ET.ElementTree(ET.fromstring(gzip.decompress(epg)))
     ids = {}
     programmes_epg = {}
+    icons = {}
     for channel_epg in tree.findall('./channel'):
         for display_name in channel_epg.findall('./display-name'):
             if not channel_epg.attrib['id'] in ids:
                 ids[channel_epg.attrib['id']] = []
             ids[channel_epg.attrib['id']].append(display_name.text)
+            try:
+                for icon in channel_epg.findall('./icon'):
+                    try:
+                        icons[display_name.text] = icon.attrib['src']
+                    except: # pylint: disable=bare-except
+                        pass
+            except: # pylint: disable=bare-except
+                pass
     for programme in tree.findall('./programme'):
         timezone_offset = 0
         try:
@@ -84,4 +93,4 @@ def parse_as_xmltv(epg, settings):
                     "title": prog_title,
                     "desc": prog_desc
                 })
-    return [programmes_epg, ids]
+    return [programmes_epg, ids, icons]

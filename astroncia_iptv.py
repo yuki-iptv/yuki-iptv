@@ -220,6 +220,7 @@ if __name__ == '__main__':
 
         channel_sets = {}
         prog_ids = {}
+        epg_icons = {}
         def save_channel_sets():
             global channel_sets
             file2 = open(str(Path(LOCAL_DIR, 'channels.json')), 'w', encoding="utf8")
@@ -275,6 +276,7 @@ if __name__ == '__main__':
                 'openprevchan': False,
                 'remembervol': True,
                 'hidempv': False,
+                'chaniconsfromepg': True,
                 'hideepgpercentage': False,
                 'volumechangestep': 1,
                 'themecompat': False,
@@ -316,6 +318,8 @@ if __name__ == '__main__':
             settings['remembervol'] = True
         if 'hidempv' not in settings:
             settings['hidempv'] = False
+        if 'chaniconsfromepg' not in settings:
+            settings['chaniconsfromepg'] = True
         if 'hideepgpercentage' not in settings:
             settings['hideepgpercentage'] = False
         if 'volumechangestep' not in settings:
@@ -380,7 +384,7 @@ if __name__ == '__main__':
             global tvguide_sets
             if tvguide_sets:
                 file2 = open(str(Path(LOCAL_DIR, 'tvguide.dat')), 'wb')
-                file2.write(codecs.encode(bytes(json.dumps({"tvguide_sets": clean_programme(), "tvguide_url": str(settings["epg"]), "prog_ids": prog_ids}), 'utf-8'), 'zlib'))
+                file2.write(codecs.encode(bytes(json.dumps({"tvguide_sets": clean_programme(), "tvguide_url": str(settings["epg"]), "prog_ids": prog_ids, "epg_icons": epg_icons}), 'utf-8'), 'zlib'))
                 file2.close()
 
         epg_thread_2 = None
@@ -401,6 +405,10 @@ if __name__ == '__main__':
             tvguide_sets = tvguide_json["tvguide_sets"]
             try:
                 prog_ids = tvguide_json["prog_ids"]
+            except: # pylint: disable=bare-except
+                pass
+            try:
+                epg_icons = tvguide_json["epg_icons"]
             except: # pylint: disable=bare-except
                 pass
             file1.close()
@@ -598,6 +606,7 @@ if __name__ == '__main__':
         TV_ICON = QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'tv.png')))
         ICONS_CACHE = {}
         ICONS_CACHE_FETCHED = {}
+        ICONS_CACHE_FETCHED_EPG = {}
 
         class ScrollLabel(QtWidgets.QScrollArea):
             def __init__(self, *args, **kwargs):
@@ -1643,6 +1652,7 @@ if __name__ == '__main__':
                 'openprevchan': openprevchan_flag.isChecked(),
                 'remembervol': remembervol_flag.isChecked(),
                 'hidempv': hidempv_flag.isChecked(),
+                'chaniconsfromepg': chaniconsfromepg_flag.isChecked(),
                 'hideepgpercentage': hideepgpercentage_flag.isChecked(),
                 'volumechangestep': volumechangestep_choose.value(),
                 'themecompat': themecompat_flag.isChecked(),
@@ -1685,6 +1695,11 @@ if __name__ == '__main__':
             try:
                 if channel_icons_data.manager_1:
                     channel_icons_data.manager_1.shutdown()
+            except: # pylint: disable=bare-except
+                pass
+            try:
+                if channel_icons_data_epg.manager_1:
+                    channel_icons_data_epg.manager_1.shutdown()
             except: # pylint: disable=bare-except
                 pass
             win.close()
@@ -1947,6 +1962,7 @@ if __name__ == '__main__':
         openprevchan_label = QtWidgets.QLabel("{}:".format(LANG['openprevchan']))
         remembervol_label = QtWidgets.QLabel("{}:".format(LANG['remembervol']))
         hidempv_label = QtWidgets.QLabel("{}:".format(LANG['hidempv']))
+        chaniconsfromepg_label = QtWidgets.QLabel("{}:".format(LANG['chaniconsfromepg']))
         hideepgpercentage_label = QtWidgets.QLabel("{}:".format(LANG['hideepgpercentage']))
         volumechangestep_label = QtWidgets.QLabel("{}:".format(LANG['volumechangestep']))
         channels_label = QtWidgets.QLabel("{}:".format(LANG['channelsonpage']))
@@ -1969,6 +1985,9 @@ if __name__ == '__main__':
 
         hidempv_flag = QtWidgets.QCheckBox()
         hidempv_flag.setChecked(settings['hidempv'])
+
+        chaniconsfromepg_flag = QtWidgets.QCheckBox()
+        chaniconsfromepg_flag.setChecked(settings['chaniconsfromepg'])
 
         hideepgpercentage_flag = QtWidgets.QCheckBox()
         hideepgpercentage_flag.setChecked(settings['hideepgpercentage'])
@@ -2115,8 +2134,10 @@ if __name__ == '__main__':
         tab4.layout.addWidget(themecompat_flag, 2, 1)
         tab4.layout.addWidget(hidempv_label, 3, 0)
         tab4.layout.addWidget(hidempv_flag, 3, 1)
-        tab4.layout.addWidget(volumechangestep_label, 4, 0)
-        tab4.layout.addWidget(volumechangestep_choose, 4, 1)
+        tab4.layout.addWidget(chaniconsfromepg_label, 4, 0)
+        tab4.layout.addWidget(chaniconsfromepg_flag, 4, 1)
+        tab4.layout.addWidget(volumechangestep_label, 5, 0)
+        tab4.layout.addWidget(volumechangestep_choose, 5, 1)
         tab4.setLayout(tab4.layout)
 
         tab5.layout = QtWidgets.QGridLayout()
@@ -2970,6 +2991,11 @@ if __name__ == '__main__':
 
         channel_icons_data.manager_1 = None
 
+        class channel_icons_data_epg: # pylint: disable=too-few-public-methods
+            pass
+
+        channel_icons_data_epg.manager_1 = None
+
         class Pickable_QIcon(QtGui.QIcon):
             def __reduce__(self):
                 return type(self), (), self.__getstate__()
@@ -3010,6 +3036,9 @@ if __name__ == '__main__':
         channel_icons_data.load_completed = False
         channel_icons_data.do_next_update = False
 
+        channel_icons_data_epg.load_completed = False
+        channel_icons_data_epg.do_next_update = False
+
         def channel_icons_thread():
             try:
                 if channel_icons_data.do_next_update:
@@ -3024,11 +3053,54 @@ if __name__ == '__main__':
                         if not channel_icons_data.load_completed:
                             channel_icons_data.load_completed = True
                             channel_icons_data.do_next_update = True
-                            print("Channel icons loaded, took {} seconds".format(time.time() - channel_icons_data.load_time))
+                            print("Channel icons loaded ({}/{}), took {} seconds".format(
+                                len(channel_icons_data.return_dict),
+                                channel_icons_data.total,
+                                time.time() - channel_icons_data.load_time
+                            ))
                 except: # pylint: disable=bare-except
                     pass
             except: # pylint: disable=bare-except
                 pass
+
+        def channel_icons_thread_epg():
+            try:
+                if channel_icons_data_epg.do_next_update:
+                    channel_icons_data_epg.do_next_update = False
+                    btn_update.click()
+                    print("Channel icons (EPG) updated")
+                try:
+                    if len(channel_icons_data_epg.return_dict) != channel_icons_data_epg.total:
+                        print("Channel icons (EPG) loaded: {}/{}".format(len(channel_icons_data_epg.return_dict), channel_icons_data_epg.total))
+                        btn_update.click()
+                    else:
+                        if not channel_icons_data_epg.load_completed:
+                            channel_icons_data_epg.load_completed = True
+                            channel_icons_data_epg.do_next_update = True
+                            print("Channel icons (EPG) loaded ({}/{}), took {} seconds".format(
+                                len(channel_icons_data_epg.return_dict),
+                                channel_icons_data_epg.total,
+                                time.time() - channel_icons_data_epg.load_time
+                            ))
+                except: # pylint: disable=bare-except
+                    pass
+            except: # pylint: disable=bare-except
+                pass
+
+        epg_icons_found = False
+        epg_icons_aldisabled = False
+
+        def epg_channel_icons_thread():
+            global epg_icons, epg_icons_found, epg_icons_aldisabled
+            if settings['chaniconsfromepg']:
+                if not epg_icons_found:
+                    if epg_icons:
+                        epg_icons_found = True
+                        print_with_time("EPG icons ready")
+            else:
+                if not epg_icons_aldisabled:
+                    epg_icons_aldisabled = True
+                    print_with_time("EPG icons disabled")
 
         @async_function
         def update_channel_icons():
@@ -3056,6 +3128,35 @@ if __name__ == '__main__':
                             break
                         time.sleep(0.1)
 
+        @async_function
+        def update_channel_icons_epg():
+            global epg_icons_found
+            while not win.isVisible():
+                time.sleep(1)
+            while not epg_icons_found:
+                time.sleep(1)
+            print("Loading channel icons (EPG)...")
+            #if not os.path.isdir(str(Path(LOCAL_DIR, 'channel_icons_cache'))):
+            #    os.mkdir(str(Path(LOCAL_DIR, 'channel_icons_cache')))
+            channel_icons_data_epg.load_time = time.time()
+            channel_icons_data_epg.total = 0
+
+            for chan_5 in epg_icons:
+                chan_5_logo = epg_icons[chan_5]
+                if chan_5_logo:
+                    channel_icons_data_epg.total += 1
+
+            for chan_5 in epg_icons:
+                chan_5_logo = epg_icons[chan_5]
+                if chan_5_logo:
+                    #print("Fetching channel icon from URL '{}' for channel '{}'".format(chan_5_logo, chan_5))
+                    p_2 = Process(target=fetch_remote_channel_icon, args=(chan_5, chan_5_logo, channel_icons_data_epg.return_dict,))
+                    p_2.start()
+                    while True:
+                        if not p_2.is_alive():
+                            break
+                        time.sleep(0.1)
+
         first_gen_chans = True
         def gen_chans(): # pylint: disable=too-many-locals, too-many-branches
             global ICONS_CACHE, playing_chan, current_group, array, page_box, channelfilter, first_gen_chans
@@ -3063,10 +3164,14 @@ if __name__ == '__main__':
                 first_gen_chans = False
                 channel_icons_data.manager_1 = Manager()
                 channel_icons_data.return_dict = channel_icons_data.manager_1.dict()
+                channel_icons_data_epg.manager_1 = Manager()
+                channel_icons_data_epg.return_dict = channel_icons_data_epg.manager_1.dict()
                 if os.name == 'nt':
                     channel_icons_data.load_completed = True
+                    channel_icons_data_epg.load_completed = True
                 else:
                     update_channel_icons()
+                    update_channel_icons_epg()
             try:
                 idx = (page_box.value() - 1) * settings["channelsonpage"]
             except: # pylint: disable=bare-except
@@ -3192,6 +3297,8 @@ if __name__ == '__main__':
                     myQCustomQWidget.setIcon(ICONS_CACHE[icons_l[i_icon]])
                 else:
                     myQCustomQWidget.setIcon(TV_ICON)
+
+                # Icon from playlist
                 if i in channel_icons_data.return_dict and channel_icons_data.return_dict[i]:
                     if i in ICONS_CACHE_FETCHED:
                         fetched_icon = ICONS_CACHE_FETCHED[i]
@@ -3199,6 +3306,16 @@ if __name__ == '__main__':
                         fetched_icon = channel_icons_data.return_dict[i][0]
                         ICONS_CACHE_FETCHED[i] = fetched_icon
                     myQCustomQWidget.setIcon(fetched_icon)
+
+                # Icon from EPG
+                if i in channel_icons_data_epg.return_dict and channel_icons_data_epg.return_dict[i]:
+                    if i in ICONS_CACHE_FETCHED_EPG:
+                        fetched_icon_epg = ICONS_CACHE_FETCHED_EPG[i]
+                    else:
+                        fetched_icon_epg = channel_icons_data_epg.return_dict[i][0]
+                        ICONS_CACHE_FETCHED_EPG[i] = fetched_icon_epg
+                    myQCustomQWidget.setIcon(fetched_icon_epg)
+
                 # Create QListWidgetItem
                 myQListWidgetItem = QtWidgets.QListWidgetItem()
                 myQListWidgetItem.setData(QtCore.Qt.UserRole, i)
@@ -4372,7 +4489,7 @@ if __name__ == '__main__':
                 if os.path.isfile(str(Path(LOCAL_DIR, 'lastchannels.json'))):
                     os.remove(str(Path(LOCAL_DIR, 'lastchannels.json')))
 
-        def myExitHandler():
+        def myExitHandler(): # pylint: disable=too-many-branches
             global stopped, epg_thread, epg_thread_2, mpris_loop
             saveLastChannel()
             stop_record()
@@ -4401,6 +4518,11 @@ if __name__ == '__main__':
             try:
                 if channel_icons_data.manager_1:
                     channel_icons_data.manager_1.shutdown()
+            except: # pylint: disable=bare-except
+                pass
+            try:
+                if channel_icons_data_epg.manager_1:
+                    channel_icons_data_epg.manager_1.shutdown()
             except: # pylint: disable=bare-except
                 pass
             print_with_time("Stopped")
@@ -4462,6 +4584,8 @@ if __name__ == '__main__':
             if ic > 14.9: # redraw every 15 seconds
                 ic = 0
                 if channel_icons_data.load_completed:
+                    btn_update.click()
+                if channel_icons_data_epg.load_completed:
                     btn_update.click()
 
         def thread_record():
@@ -4558,10 +4682,10 @@ if __name__ == '__main__':
             try:
                 global stopped, time_stop, first_boot, programmes, btn_update, \
                 epg_thread, static_text, manager, tvguide_sets, epg_updating, ic, \
-                return_dict, waiting_for_epg, thread_4_lock, epg_failed, prog_ids
+                return_dict, waiting_for_epg, thread_4_lock, epg_failed, prog_ids, epg_icons
                 if not thread_4_lock:
                     thread_4_lock = True
-                    if waiting_for_epg and return_dict and len(return_dict) == 6:
+                    if waiting_for_epg and return_dict and len(return_dict) == 7:
                         try:
                             if not return_dict[3]:
                                 raise return_dict[4]
@@ -4574,6 +4698,7 @@ if __name__ == '__main__':
                             if not is_program_actual(programmes):
                                 raise Exception("Programme not actual")
                             prog_ids = return_dict[5]
+                            epg_icons = return_dict[6]
                             tvguide_sets = programmes
                             save_tvguide_sets()
                             btn_update.click() # start update in main thread
@@ -4896,7 +5021,9 @@ if __name__ == '__main__':
                 thread_update_time: 1000,
                 record_thread: 1000,
                 record_thread_2: 1000,
-                channel_icons_thread: 2000
+                channel_icons_thread: 2000,
+                channel_icons_thread_epg: 2000,
+                epg_channel_icons_thread: 50
             }
             for timer in timers:
                 timers_array[timer] = QtCore.QTimer()
