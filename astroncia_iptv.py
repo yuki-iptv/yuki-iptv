@@ -37,7 +37,8 @@ import argparse
 import subprocess
 import re
 import textwrap
-#import hashlib
+import hashlib
+import pickle
 import codecs
 import ctypes
 import webbrowser
@@ -58,9 +59,11 @@ from data.modules.astroncia.providers import iptv_providers
 from data.modules.astroncia.time import print_with_time
 from data.modules.astroncia.epgurls import EPG_URLS
 from data.modules.astroncia.bitrate import humanbytes
+from data.modules.astroncia.xtreamtom3u import convert_xtream_to_m3u
 from data.modules.thirdparty.selectionmodel import ReorderableListModel, SelectionModel
 from data.modules.thirdparty.m3u import M3uParser
 from data.modules.thirdparty.m3ueditor import Viewer
+from data.modules.thirdparty.xtream import XTream
 if not os.name == 'nt':
     try:
         from gi.repository import GLib
@@ -496,15 +499,40 @@ if __name__ == '__main__':
         if not os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
             print_with_time(LANG['loadingplaylist'])
             if settings['m3u']:
-                if os.path.isfile(settings['m3u']):
-                    file = open(settings['m3u'], 'r', encoding="utf8")
-                    m3u = file.read()
-                    file.close()
+                # Parsing m3u
+                if settings['m3u'].startswith('XTREAM::::::::::::::'):
+                    # XTREAM::::::::::::::username::::::::::::::password::::::::::::::url
+                    print_with_time("Using XTream API")
+                    xtream_sha512 = hashlib.sha512(settings['m3u'].encode('utf-8')).hexdigest()
+                    xtream_split = settings['m3u'].split('::::::::::::::')
+                    xtream_username = xtream_split[1]
+                    xtream_password = xtream_split[2]
+                    xtream_url = xtream_split[3]
+                    if not os.path.isdir(str(Path(LOCAL_DIR, 'xtream'))):
+                        os.mkdir(str(Path(LOCAL_DIR, 'xtream')))
+                    xt = XTream(xtream_sha512, xtream_username, xtream_password, xtream_url, str(Path(LOCAL_DIR, 'xtream')))
+                    if xt.auth_data != {}:
+                        xt.load_iptv()
+                        try:
+                            m3u = convert_xtream_to_m3u(xt.channels)
+                        except Exception as e3: # pylint: disable=bare-except
+                            message2 = "{}\n\n{}".format(LANG['error2'], str("XTream API: {}\n\n{}".format(LANG['procerror'], str(e3))))
+                            msg2 = QtWidgets.QMessageBox(2, LANG['error'], message2, QtWidgets.QMessageBox.Ok)
+                            msg2.exec()
+                    else:
+                        message1 = "{}\n\n{}".format(LANG['error2'], str("XTream API: {}".format(LANG['xtreamnoconn'])))
+                        msg1 = QtWidgets.QMessageBox(2, LANG['error'], message1, QtWidgets.QMessageBox.Ok)
+                        msg1.exec()
                 else:
-                    try:
-                        m3u = requests.get(settings['m3u'], headers={'User-Agent': user_agent}, timeout=3).text
-                    except: # pylint: disable=bare-except
-                        m3u = ""
+                    if os.path.isfile(settings['m3u']):
+                        file = open(settings['m3u'], 'r', encoding="utf8")
+                        m3u = file.read()
+                        file.close()
+                    else:
+                        try:
+                            m3u = requests.get(settings['m3u'], headers={'User-Agent': user_agent}, timeout=3).text
+                        except: # pylint: disable=bare-except
+                            m3u = ""
 
             doSaveSettings = False
             m3u_parser = M3uParser(settings['udp_proxy'])
@@ -3011,27 +3039,27 @@ if __name__ == '__main__':
                 stream >> self # pylint: disable=pointless-statement
 
         def fetch_remote_channel_icon(chan_name, logo_url, return_dict_2):
-            #base64_enc = base64.b64encode(bytes(chan_name + ":::" + logo_url, 'utf-8')).decode('utf-8')
-            #sha512_hash = str(hashlib.sha512(bytes(base64_enc, 'utf-8')).hexdigest()) + ".cache"
-            #cache_file = str(Path(LOCAL_DIR, 'channel_icons_cache', sha512_hash))
-            #if os.path.isfile(cache_file):
-            #    cache_file_2 = open(cache_file, 'rb')
-            #    cache_file_2_read = cache_file_2.read()
-            #    cache_file_2.close()
-            #    return_dict_2[chan_name] = cache_file_2_read
-            #else:
-            try:
-                req_data = requests.get(logo_url, headers={'User-Agent': uas[settings['useragent']]}, timeout=(3, 3), stream=True).content
-                qp_1 = QtGui.QPixmap()
-                qp_1.loadFromData(req_data)
-                qp_1 = qp_1.scaled(64, 64, QtCore.Qt.KeepAspectRatio)
-                fetched_icon = Pickable_QIcon(qp_1)
-                return_dict_2[chan_name] = [fetched_icon]
-                #cache_file_2 = open(cache_file, 'wb')
-                #cache_file_2.write(req_data)
-                #cache_file_2.close()
-            except: # pylint: disable=bare-except
-                return_dict_2[chan_name] = None
+            base64_enc = base64.b64encode(bytes(chan_name + ":::" + logo_url, 'utf-8')).decode('utf-8')
+            sha512_hash = str(hashlib.sha512(bytes(base64_enc, 'utf-8')).hexdigest()) + ".cache"
+            cache_file = str(Path(LOCAL_DIR, 'channel_icons_cache', sha512_hash))
+            if os.path.isfile(cache_file):
+                cache_file_2 = open(cache_file, 'rb')
+                cache_file_2_read = cache_file_2.read()
+                cache_file_2.close()
+                return_dict_2[chan_name] = [pickle.loads(cache_file_2_read)]
+            else:
+                try:
+                    req_data = requests.get(logo_url, headers={'User-Agent': uas[settings['useragent']]}, timeout=(3, 3), stream=True).content
+                    qp_1 = QtGui.QPixmap()
+                    qp_1.loadFromData(req_data)
+                    qp_1 = qp_1.scaled(64, 64, QtCore.Qt.KeepAspectRatio)
+                    fetched_icon = Pickable_QIcon(qp_1)
+                    return_dict_2[chan_name] = [fetched_icon]
+                    cache_file_2 = open(cache_file, 'wb')
+                    cache_file_2.write(pickle.dumps(fetched_icon))
+                    cache_file_2.close()
+                except: # pylint: disable=bare-except
+                    return_dict_2[chan_name] = None
 
         channel_icons_data.load_completed = False
         channel_icons_data.do_next_update = False
@@ -3107,8 +3135,8 @@ if __name__ == '__main__':
             while not win.isVisible():
                 time.sleep(1)
             print("Loading channel icons...")
-            #if not os.path.isdir(str(Path(LOCAL_DIR, 'channel_icons_cache'))):
-            #    os.mkdir(str(Path(LOCAL_DIR, 'channel_icons_cache')))
+            if not os.path.isdir(str(Path(LOCAL_DIR, 'channel_icons_cache'))):
+                os.mkdir(str(Path(LOCAL_DIR, 'channel_icons_cache')))
             channel_icons_data.load_time = time.time()
             channel_icons_data.total = 0
 
@@ -3126,7 +3154,7 @@ if __name__ == '__main__':
                     while True:
                         if not p_1.is_alive():
                             break
-                        time.sleep(0.1)
+                        time.sleep(0.01)
 
         @async_function
         def update_channel_icons_epg():
@@ -3136,8 +3164,8 @@ if __name__ == '__main__':
             while not epg_icons_found:
                 time.sleep(1)
             print("Loading channel icons (EPG)...")
-            #if not os.path.isdir(str(Path(LOCAL_DIR, 'channel_icons_cache'))):
-            #    os.mkdir(str(Path(LOCAL_DIR, 'channel_icons_cache')))
+            if not os.path.isdir(str(Path(LOCAL_DIR, 'channel_icons_cache'))):
+                os.mkdir(str(Path(LOCAL_DIR, 'channel_icons_cache')))
             channel_icons_data_epg.load_time = time.time()
             channel_icons_data_epg.total = 0
 
@@ -3155,7 +3183,7 @@ if __name__ == '__main__':
                     while True:
                         if not p_2.is_alive():
                             break
-                        time.sleep(0.1)
+                        time.sleep(0.01)
 
         first_gen_chans = True
         def gen_chans(): # pylint: disable=too-many-locals, too-many-branches
