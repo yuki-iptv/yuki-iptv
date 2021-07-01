@@ -702,6 +702,16 @@ if __name__ == '__main__':
         tvguide_lbl_2 = ScrollLabel(epg_win)
         tvguide_lbl_2.resize(395, 595)
 
+        xtream_win = QtWidgets.QMainWindow()
+        xtream_win.resize(400, 140)
+        xtream_win.setWindowTitle("XTream")
+        xtream_win.setWindowIcon(main_icon)
+
+        xtream_win_2 = QtWidgets.QMainWindow()
+        xtream_win_2.resize(400, 140)
+        xtream_win_2.setWindowTitle("XTream")
+        xtream_win_2.setWindowIcon(main_icon)
+
         scheduler_win = QtWidgets.QMainWindow()
         scheduler_win.resize(1000, 600)
         scheduler_win.setWindowTitle(LANG['scheduler'])
@@ -788,6 +798,12 @@ if __name__ == '__main__':
         soffset_1.setDecimals(1)
         offset_label_1 = QtWidgets.QLabel('{}:'.format(LANG['tvguideoffset']))
 
+        def lo_xtream_select_1():
+            xtream_select_1()
+
+        xtream_btn_1 = QtWidgets.QPushButton("XTream")
+        xtream_btn_1.clicked.connect(lo_xtream_select_1)
+
         providers_win_edit_widget = QtWidgets.QWidget()
         providers_win_edit_layout = QtWidgets.QGridLayout()
         providers_win_edit_layout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
@@ -796,13 +812,14 @@ if __name__ == '__main__':
         providers_win_edit_layout.addWidget(m3u_label_1, 1, 0)
         providers_win_edit_layout.addWidget(m3u_edit_1, 1, 1)
         providers_win_edit_layout.addWidget(m3u_file_1, 1, 2)
-        providers_win_edit_layout.addWidget(epg_label_1, 2, 0)
-        providers_win_edit_layout.addWidget(epg_edit_1, 2, 1)
-        providers_win_edit_layout.addWidget(epg_file_1, 2, 2)
-        providers_win_edit_layout.addWidget(offset_label_1, 3, 0)
-        providers_win_edit_layout.addWidget(soffset_1, 3, 1)
-        providers_win_edit_layout.addWidget(set_label_1, 4, 1)
-        providers_win_edit_layout.addWidget(save_btn_1, 5, 1)
+        providers_win_edit_layout.addWidget(xtream_btn_1, 2, 0)
+        providers_win_edit_layout.addWidget(epg_label_1, 3, 0)
+        providers_win_edit_layout.addWidget(epg_edit_1, 3, 1)
+        providers_win_edit_layout.addWidget(epg_file_1, 3, 2)
+        providers_win_edit_layout.addWidget(offset_label_1, 4, 0)
+        providers_win_edit_layout.addWidget(soffset_1, 4, 1)
+        providers_win_edit_layout.addWidget(set_label_1, 5, 1)
+        providers_win_edit_layout.addWidget(save_btn_1, 6, 1)
         providers_win_edit_widget.setLayout(providers_win_edit_layout)
         providers_win_edit.setCentralWidget(providers_win_edit_widget)
 
@@ -904,6 +921,8 @@ if __name__ == '__main__':
         chan_win.move(qr.topLeft())
         ext_win.move(qr.topLeft())
         scheduler_win.move(qr.topLeft())
+        xtream_win.move(qr.topLeft())
+        xtream_win_2.move(qr.topLeft())
         archive_win.move(qr.topLeft())
         providers_win.move(qr.topLeft())
         providers_win_edit.move(qr.topLeft())
@@ -1932,8 +1951,31 @@ if __name__ == '__main__':
         scache1.setMaximum(120)
         scache1.setValue(settings["cache_secs"])
 
+        def xtream_select():
+            sm3u_text = sm3u.text()
+            if sm3u_text.startswith('XTREAM::::::::::::::'):
+                sm3u_text_sp = sm3u_text.split('::::::::::::::')
+                xtr_username_input.setText(sm3u_text_sp[1])
+                xtr_password_input.setText(sm3u_text_sp[2])
+                xtr_url_input.setText(sm3u_text_sp[3])
+                reset_prov()
+            xtream_win.show()
+
+        def xtream_select_1():
+            m3u_edit_1_text = m3u_edit_1.text()
+            if m3u_edit_1_text.startswith('XTREAM::::::::::::::'):
+                m3u_edit_1_text_sp = m3u_edit_1_text.split('::::::::::::::')
+                xtr_username_input_2.setText(m3u_edit_1_text_sp[1])
+                xtr_password_input_2.setText(m3u_edit_1_text_sp[2])
+                xtr_url_input_2.setText(m3u_edit_1_text_sp[3])
+                reset_prov()
+            xtream_win_2.show()
+
         grid = QtWidgets.QGridLayout()
         grid.setSpacing(10)
+
+        xtream_btn = QtWidgets.QPushButton("XTream")
+        xtream_btn.clicked.connect(xtream_select)
 
         grid.addWidget(m3u_label, 1, 0)
         grid.addWidget(sm3u, 1, 1)
@@ -1942,6 +1984,7 @@ if __name__ == '__main__':
 
         grid.addWidget(update_label, 2, 0)
         grid.addWidget(supdate, 2, 1)
+        grid.addWidget(xtream_btn, 2, 3)
 
         grid.addWidget(sframe, 3, 0)
         grid.addWidget(sframe1, 3, 1)
@@ -2236,6 +2279,60 @@ if __name__ == '__main__':
 
         wid2.setLayout(layout2)
         settings_win.setCentralWidget(wid2)
+
+        def xtream_save_btn_action():
+            if xtr_username_input.text() and xtr_password_input.text() and xtr_url_input.text():
+                xtream_gen_url = 'XTREAM::::::::::::::' + '::::::::::::::'.join([xtr_username_input.text(), xtr_password_input.text(), xtr_url_input.text()])
+                sm3u.setText(xtream_gen_url)
+                reset_prov()
+            xtream_win.hide()
+
+        def xtream_save_btn_action_2():
+            if xtr_username_input_2.text() and xtr_password_input_2.text() and xtr_url_input_2.text():
+                xtream_gen_url_2 = 'XTREAM::::::::::::::' + '::::::::::::::'.join([xtr_username_input_2.text(), xtr_password_input_2.text(), xtr_url_input_2.text()])
+                m3u_edit_1.setText(xtream_gen_url_2)
+                reset_prov()
+            xtream_win_2.hide()
+
+        wid3 = QtWidgets.QWidget()
+        wid4 = QtWidgets.QWidget()
+
+        save_btn_xtream = QtWidgets.QPushButton(LANG['save'])
+        save_btn_xtream.setStyleSheet('font-weight: bold; color: green;')
+        save_btn_xtream.clicked.connect(xtream_save_btn_action)
+        xtr_username_input = QtWidgets.QLineEdit()
+        xtr_password_input = QtWidgets.QLineEdit()
+        xtr_url_input = QtWidgets.QLineEdit()
+
+        layout34 = QtWidgets.QGridLayout()
+        layout34.addWidget(QtWidgets.QLabel("{}:".format(LANG['username'])), 0, 0)
+        layout34.addWidget(xtr_username_input, 0, 1)
+        layout34.addWidget(QtWidgets.QLabel("{}:".format(LANG['password'])), 1, 0)
+        layout34.addWidget(xtr_password_input, 1, 1)
+        layout34.addWidget(QtWidgets.QLabel("{}:".format(LANG['url'])), 2, 0)
+        layout34.addWidget(xtr_url_input, 2, 1)
+        layout34.addWidget(save_btn_xtream, 3, 1)
+        wid3.setLayout(layout34)
+
+        save_btn_xtream_2 = QtWidgets.QPushButton(LANG['save'])
+        save_btn_xtream_2.setStyleSheet('font-weight: bold; color: green;')
+        save_btn_xtream_2.clicked.connect(xtream_save_btn_action_2)
+        xtr_username_input_2 = QtWidgets.QLineEdit()
+        xtr_password_input_2 = QtWidgets.QLineEdit()
+        xtr_url_input_2 = QtWidgets.QLineEdit()
+
+        layout35 = QtWidgets.QGridLayout()
+        layout35.addWidget(QtWidgets.QLabel("{}:".format(LANG['username'])), 0, 0)
+        layout35.addWidget(xtr_username_input_2, 0, 1)
+        layout35.addWidget(QtWidgets.QLabel("{}:".format(LANG['password'])), 1, 0)
+        layout35.addWidget(xtr_password_input_2, 1, 1)
+        layout35.addWidget(QtWidgets.QLabel("{}:".format(LANG['url'])), 2, 0)
+        layout35.addWidget(xtr_url_input_2, 2, 1)
+        layout35.addWidget(save_btn_xtream_2, 3, 1)
+        wid4.setLayout(layout35)
+
+        xtream_win.setCentralWidget(wid3)
+        xtream_win_2.setCentralWidget(wid4)
 
         def show_license():
             if not license_win.isVisible():
