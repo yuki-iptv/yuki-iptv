@@ -38,7 +38,6 @@ import subprocess
 import re
 import textwrap
 import hashlib
-import pickle
 import codecs
 import ctypes
 import webbrowser
@@ -3137,26 +3136,29 @@ if __name__ == '__main__':
 
         def fetch_remote_channel_icon(chan_name, logo_url, return_dict_2):
             base64_enc = base64.b64encode(bytes(chan_name + ":::" + logo_url, 'utf-8')).decode('utf-8')
-            sha512_hash = str(hashlib.sha512(bytes(base64_enc, 'utf-8')).hexdigest()) + ".cache"
+            sha512_hash = str(hashlib.sha512(bytes(base64_enc, 'utf-8')).hexdigest()) + ".cacheimg"
             cache_file = str(Path(LOCAL_DIR, 'channel_icons_cache', sha512_hash))
             if os.path.isfile(cache_file):
                 cache_file_2 = open(cache_file, 'rb')
                 cache_file_2_read = cache_file_2.read()
                 cache_file_2.close()
-                return_dict_2[chan_name] = [pickle.loads(cache_file_2_read)]
+                req_data = cache_file_2_read
             else:
                 try:
                     req_data = requests.get(logo_url, headers={'User-Agent': uas[settings['useragent']]}, timeout=(3, 3), stream=True).content
-                    qp_1 = QtGui.QPixmap()
-                    qp_1.loadFromData(req_data)
-                    qp_1 = qp_1.scaled(64, 64, QtCore.Qt.KeepAspectRatio)
-                    fetched_icon = Pickable_QIcon(qp_1)
-                    return_dict_2[chan_name] = [fetched_icon]
                     cache_file_2 = open(cache_file, 'wb')
-                    cache_file_2.write(pickle.dumps(fetched_icon))
+                    cache_file_2.write(req_data)
                     cache_file_2.close()
                 except: # pylint: disable=bare-except
-                    return_dict_2[chan_name] = None
+                    req_data = None
+            try:
+                qp_1 = QtGui.QPixmap()
+                qp_1.loadFromData(req_data)
+                qp_1 = qp_1.scaled(64, 64, QtCore.Qt.KeepAspectRatio)
+                fetched_icon = Pickable_QIcon(qp_1)
+                return_dict_2[chan_name] = [fetched_icon]
+            except: # pylint: disable=bare-except
+                return_dict_2[chan_name] = None
 
         channel_icons_data.load_completed = False
         channel_icons_data.do_next_update = False
