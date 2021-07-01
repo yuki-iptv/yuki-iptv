@@ -620,6 +620,9 @@ msgstr "Password"
 msgid "url"
 msgstr "URL"
 
+msgid "multipleplnote"
+msgstr "You can specify multiple playlists by clicking\nthe Providers button (after saving the settings)"
+
 msgid "helptext"
 msgstr "Astroncia IPTV, version {}\n© kestral / astroncia < kestraly (at) gmail.com >\nhttps://gitlab.com/astroncia\n\nCross-platform IPTV player\n\nSupports TV guide (EPG) only in XMLTV and JTV formats!\n\nChannel not working?\nRight mouse button opens channel settings\n\nIcons by Font Awesome ( https://fontawesome.com/ )\nIcons licensed under the CC BY 4.0 License\n( https://creativecommons.org/licenses/by/4.0/ )\n\nHotkeys:\n\nF / F11 - fullscreen mode\nV - mute\nQ - quit program\nSpace - pause\nS - stop playing\nH - screenshot\nG - tv guide (EPG)\nR - start/stop record\nN - previous channel\nM - next channel\nT - open/close channels list\nO - show/hide clock\nI - channel sort\nD - record scheduler"
 

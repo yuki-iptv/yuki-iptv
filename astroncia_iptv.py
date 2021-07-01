@@ -911,7 +911,7 @@ if __name__ == '__main__':
         qr = settings_win.frameGeometry()
         qr.moveCenter(QtWidgets.QDesktopWidget().availableGeometry().center())
         settings_win_l = qr.topLeft()
-        origY = settings_win_l.y() - 100
+        origY = settings_win_l.y() - 150
         settings_win_l.setY(origY)
         settings_win.move(settings_win_l)
         help_win.move(qr.topLeft())
@@ -1789,6 +1789,8 @@ if __name__ == '__main__':
         set_label.setStyleSheet('color: #666600')
         fastview_label = QtWidgets.QLabel(LANG['fasterview'])
         fastview_label.setStyleSheet('color: #1D877C')
+        multipleplnote_label = QtWidgets.QLabel(LANG['multipleplnote'])
+        multipleplnote_label.setStyleSheet('color: #b35900')
         hours_label = QtWidgets.QLabel(LANG['hours'])
 
         def reset_channel_settings():
@@ -2002,14 +2004,15 @@ if __name__ == '__main__':
         grid.addWidget(set_label, 6, 1)
 
         grid.addWidget(fastview_label, 7, 1)
+        grid.addWidget(multipleplnote_label, 8, 1)
 
-        grid.addWidget(sselect, 8, 1)
-        grid.addWidget(sprov, 9, 1)
+        grid.addWidget(sselect, 9, 1)
+        grid.addWidget(sprov, 10, 1)
 
-        grid.addWidget(sframe4, 10, 0)
-        grid.addWidget(sframe5, 10, 1)
-        grid.addWidget(sframe6, 10, 2)
-        grid.addWidget(sframe7, 10, 3)
+        grid.addWidget(sframe4, 11, 0)
+        grid.addWidget(sframe5, 11, 1)
+        grid.addWidget(sframe6, 11, 2)
+        grid.addWidget(sframe7, 11, 3)
 
         useragent_lbl_2 = QtWidgets.QLabel("{}:".format(LANG['useragent']))
         referer_lbl = QtWidgets.QLabel("HTTP Referer:")
