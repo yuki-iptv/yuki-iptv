@@ -220,6 +220,11 @@ if __name__ == '__main__':
         if not os.path.isdir(LOCAL_DIR):
             os.mkdir(LOCAL_DIR)
 
+        if not os.path.isfile(str(Path(LOCAL_DIR, 'playlist_separate.m3u'))):
+            file01 = open(str(Path(LOCAL_DIR, 'playlist_separate.m3u')), 'w', encoding="utf8")
+            file01.write('#EXTM3U\n#EXTINF:-1,{}\nhttp://255.255.255.255\n'.format('-'))
+            file01.close()
+
         channel_sets = {}
         prog_ids = {}
         epg_icons = {}
@@ -888,6 +893,17 @@ if __name__ == '__main__':
         providers_edit.resize(130, 30)
         providers_delete = QtWidgets.QPushButton(LANG['provdelete'], providers_win)
         providers_delete.move(140, 455)
+        providers_favourites = QtWidgets.QPushButton(LANG['favourite'] + '+', providers_win)
+        providers_favourites.move(250, 455)
+
+        def providers_favourites_do():
+            providers_win.close()
+            reset_prov()
+            sm3u.setText(str(Path(LOCAL_DIR, 'playlist_separate.m3u')))
+            sepg.setText("")
+            save_settings()
+
+        providers_favourites.clicked.connect(providers_favourites_do)
         providers_reset = QtWidgets.QPushButton(LANG['resetdefproviders'], providers_win)
         providers_reset.move(140, 495)
         providers_reset.resize(230, 30)
@@ -3625,6 +3641,40 @@ if __name__ == '__main__':
                 tvguide_lbl_2.setText('')
                 epg_win.hide()
 
+        def favoritesplaylistsep_add():
+            ps_data = array[item_selected]
+            str1 = "#EXTINF:-1"
+            if ps_data['tvg-name']:
+                str1 += " tvg-name=\"{}\"".format(ps_data['tvg-name'])
+            if ps_data['tvg-ID']:
+                str1 += " tvg-id=\"{}\"".format(ps_data['tvg-ID'])
+            if ps_data['tvg-logo']:
+                str1 += " tvg-logo=\"{}\"".format(ps_data['tvg-logo'])
+            if ps_data['tvg-url']:
+                str1 += " tvg-url=\"{}\"".format(ps_data['tvg-url'])
+            else:
+                str1 += " tvg-url=\"{}\"".format(settings['epg'])
+            str1 += ",{}\n{}\n".format(item_selected, ps_data['url'])
+            file03 = open(str(Path(LOCAL_DIR, 'playlist_separate.m3u')), 'r', encoding="utf8")
+            file03_contents = file03.read()
+            file03.close()
+            if file03_contents == '#EXTM3U\n#EXTINF:-1,{}\nhttp://255.255.255.255\n'.format('-'):
+                file04 = open(str(Path(LOCAL_DIR, 'playlist_separate.m3u')), 'w', encoding="utf8")
+                file04.write('#EXTM3U\n' + str1)
+                file04.close()
+            else:
+                if str1 in file03_contents:
+                    new_data = file03_contents.replace(str1, '')
+                    if new_data == '#EXTM3U\n':
+                        new_data = '#EXTM3U\n#EXTINF:-1,{}\nhttp://255.255.255.255\n'.format('-')
+                    file05 = open(str(Path(LOCAL_DIR, 'playlist_separate.m3u')), 'w', encoding="utf8")
+                    file05.write(new_data)
+                    file05.close()
+                else:
+                    file02 = open(str(Path(LOCAL_DIR, 'playlist_separate.m3u')), 'w', encoding="utf8")
+                    file02.write(file03_contents + str1)
+                    file02.close()
+
         def show_context_menu(pos):
             global sel_item
             self = win.listWidget
@@ -3636,6 +3686,7 @@ if __name__ == '__main__':
             menu.addAction(LANG['tvguide'], tvguide_context_menu)
             menu.addAction(LANG['hidetvguide'], tvguide_hide)
             menu.addAction(LANG['favourite'], tvguide_favourites_add)
+            menu.addAction(LANG['favoritesplaylistsep'], favoritesplaylistsep_add)
             menu.addAction(LANG['openexternal'], open_external_player)
             menu.addAction(LANG['startrecording'], tvguide_start_record)
             menu.addAction(LANG['channelsettings'], settings_context_menu)
@@ -5127,8 +5178,8 @@ if __name__ == '__main__':
             mpv_volume_set()
         firstVolRun = False
 
-        if doSaveSettings:
-            save_settings()
+        #if doSaveSettings:
+        #    save_settings()
 
         if settings['m3u'] and m3u:
             win.show()

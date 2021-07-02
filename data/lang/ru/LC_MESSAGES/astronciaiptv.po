@@ -623,5 +623,11 @@ msgstr "URL адрес"
 msgid "multipleplnote"
 msgstr "Вы можете указать несколько плейлистов по\nкнопке Провайдеры (после сохранения настроек)"
 
+msgid "favoritesplaylistsep"
+msgstr "Избранное (отдельный плейлист)"
+
+msgid "nochannels"
+msgstr "Нет каналов"
+
 msgid "helptext"
 msgstr "Astroncia IPTV, версия {}\n© kestral / astroncia < kestraly (at) gmail.com >\nhttps://gitlab.com/astroncia\n\nПоддержка:\nhttps://unixforum.org/viewtopic.php?f=3&t=151801\n\nСделать пожертвование: https://qiwi.com/n/ASTRONCIA\n\nКроссплатформенный плеер\nдля просмотра интернет-телевидения\n\nПоддерживается телепрограмма (EPG)\nтолько в форматах XMLTV и JTV!\n\nНе работает канал? Правая клавиша мыши открывает настройки канала.\n\nПосле указания группы канала в настройках переоткройте приложение.\n\nГорячие клавиши:\n\nF / F11 - полноэкранный режим\nV - выключить звук\nQ - выйти из программы\nПробел - пауза\nS - остановить проигрывание\nH - скриншот\nG - телепрограмма\nR - начать/остановить запись\nN - предыдущий канал\nM - следующий канал\nT - показать/скрыть боковую панель плейлиста\nO - показать/скрыть часы\nI - сортировка каналов\nD - планировщик записи\n\nЗначки от Font Awesome ( https://fontawesome.com/ )\nЛицензия значков - CC BY 4.0 License\n( https://creativecommons.org/licenses/by/4.0/ )"
