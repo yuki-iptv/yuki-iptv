@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 '''Astroncia IPTV - Cross platform IPTV player'''
 # pylint: disable=invalid-name, global-statement, missing-docstring, wrong-import-position
-# pylint: disable=c-extension-no-member, too-many-lines, line-too-long, ungrouped-imports
+# pylint: disable=c-extension-no-member, too-many-lines, ungrouped-imports
 # pylint: disable=too-many-statements, broad-except, pointless-string-statement
 #
 # Icons by Font Awesome ( https://fontawesome.com/ ) ( https://fontawesome.com/license )
 #
-# The Font Awesome pictograms are licensed under the CC BY 4.0 License - https://creativecommons.org/licenses/by/4.0/
+# The Font Awesome pictograms are licensed under the CC BY 4.0 License
+# https://creativecommons.org/licenses/by/4.0/
 #
 '''
 Copyright (C) 2021 Astroncia
@@ -51,7 +52,8 @@ from PyQt5 import QtGui
 from data.modules.astroncia.lang import lang
 from data.modules.astroncia.ua import user_agent, uas, ua_names
 from data.modules.astroncia.epg import worker
-from data.modules.astroncia.record import record, record_return, stop_record, async_wait_process, make_ffmpeg_screenshot
+from data.modules.astroncia.record import record, record_return, stop_record, \
+    async_wait_process, make_ffmpeg_screenshot
 from data.modules.astroncia.format import format_seconds_to_hhmmss
 from data.modules.astroncia.conversion import convert_size
 from data.modules.astroncia.providers import iptv_providers
@@ -112,7 +114,10 @@ if 'HOME' in os.environ and os.path.isdir(os.environ['HOME']):
         pass
     try:
         if os.path.isdir(str(Path(os.environ['HOME'], '.AstronciaIPTV'))):
-            os.rename(str(Path(os.environ['HOME'], '.AstronciaIPTV')), str(Path(os.environ['HOME'], '.config', 'astronciaiptv')))
+            os.rename(
+                str(Path(os.environ['HOME'], '.AstronciaIPTV')),
+                str(Path(os.environ['HOME'], '.config', 'astronciaiptv'))
+            )
     except: # pylint: disable=bare-except
         pass
     LOCAL_DIR = str(Path(os.environ['HOME'], '.config', 'astronciaiptv'))
@@ -123,7 +128,9 @@ if 'HOME' in os.environ and os.path.isdir(os.environ['HOME']):
         os.mkdir(SAVE_FOLDER_DEFAULT)
 else:
     LOCAL_DIR = 'local'
-    SAVE_FOLDER_DEFAULT = str(Path(os.path.dirname(os.path.abspath(__file__)), 'AstronciaIPTV_saves'))
+    SAVE_FOLDER_DEFAULT = str(
+        Path(os.path.dirname(os.path.abspath(__file__)), 'AstronciaIPTV_saves')
+    )
 
 LANG_LOCALE = '?'
 try:
@@ -147,7 +154,8 @@ except: # pylint: disable=bare-except
     settings_lang0 = LANG_DEFAULT
 
 LANG = lang[settings_lang0]['strings'] if settings_lang0 in lang else lang[LANG_DEFAULT]['strings']
-LANG_NAME = lang[settings_lang0]['strings']['name'] if settings_lang0 in lang else lang[LANG_DEFAULT]['strings']['name']
+LANG_NAME = lang[settings_lang0]['strings']['name'] if settings_lang0 in lang \
+    else lang[LANG_DEFAULT]['strings']['name']
 print_with_time("Settings locale: {}\n".format(LANG_NAME))
 
 DEF_DEINTERLACE = True
@@ -164,7 +172,8 @@ except: # pylint: disable=bare-except
 
 def show_exception(e):
     message = "{}\n\n{}".format(LANG['error2'], str(e))
-    msg = QtWidgets.QMessageBox(2, LANG['error'], message + '\n\n' + LANG['foundproblem'] + ':\n' + EMAIL_ADDRESS, QtWidgets.QMessageBox.Ok)
+    msg = QtWidgets.QMessageBox(2, LANG['error'], message + '\n\n' + \
+        LANG['foundproblem'] + ':\n' + EMAIL_ADDRESS, QtWidgets.QMessageBox.Ok)
     msg.exec()
 
 # Used as a decorator to run things in the background
@@ -180,7 +189,8 @@ if os.name == 'nt':
     a0 = sys.executable
     if args1.python:
         a0 = args1.python
-    os.environ["QT_QPA_PLATFORM_PLUGIN_PATH"] = str(Path(os.path.dirname(a0), 'Lib', 'site-packages', 'PyQt5', 'Qt5', 'plugins'))
+    os.environ["QT_QPA_PLATFORM_PLUGIN_PATH"] = \
+        str(Path(os.path.dirname(a0), 'Lib', 'site-packages', 'PyQt5', 'Qt5', 'plugins'))
 
 if __name__ == '__main__':
     try:
@@ -194,10 +204,6 @@ if __name__ == '__main__':
         print_with_time("")
         print_with_time(LANG['foundproblem'] + ": " + EMAIL_ADDRESS)
         print_with_time("")
-        #try:
-        #    subprocess.Popen(['notify-send', '-t', '2000', "Astroncia IPTV {}...".format(LANG['starting'])])
-        #except: # pylint: disable=bare-except
-        #    pass
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
         modules_path = str(Path(os.path.dirname(__file__), 'data', 'modules', 'binary'))
         if os.name == 'nt':
@@ -207,7 +213,8 @@ if __name__ == '__main__':
         clockOn = False
 
         if os.name == 'nt':
-            if not (os.path.isfile(str(Path(modules_path, 'ffmpeg.exe'))) and os.path.isfile(str(Path(modules_path, 'mpv-1.dll')))):
+            if not (os.path.isfile(str(Path(modules_path, 'ffmpeg.exe'))) and \
+                os.path.isfile(str(Path(modules_path, 'mpv-1.dll')))):
                 show_exception(LANG['binarynotfound'])
                 sys.exit(1)
 
@@ -369,7 +376,9 @@ if __name__ == '__main__':
         if os.path.isfile(str(Path(LOCAL_DIR, 'tvguide.dat'))):
             try:
                 tvguide_c = open(str(Path(LOCAL_DIR, 'tvguide.dat')), 'rb')
-                tvguide_c1 = json.loads(codecs.decode(codecs.decode(tvguide_c.read(), 'zlib'), 'utf-8'))["tvguide_url"]
+                tvguide_c1 = json.loads(
+                    codecs.decode(codecs.decode(tvguide_c.read(), 'zlib'), 'utf-8')
+                )["tvguide_url"]
                 tvguide_c.close()
                 if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
                     cm3uf1 = open(str(Path(LOCAL_DIR, 'playlist.json')), 'r', encoding="utf8")
@@ -391,7 +400,14 @@ if __name__ == '__main__':
             global tvguide_sets
             if tvguide_sets:
                 file2 = open(str(Path(LOCAL_DIR, 'tvguide.dat')), 'wb')
-                file2.write(codecs.encode(bytes(json.dumps({"tvguide_sets": clean_programme(), "tvguide_url": str(settings["epg"]), "prog_ids": prog_ids, "epg_icons": epg_icons}), 'utf-8'), 'zlib'))
+                file2.write(codecs.encode(bytes(json.dumps(
+                    {
+                        "tvguide_sets": clean_programme(),
+                        "tvguide_url": str(settings["epg"]),
+                        "prog_ids": prog_ids,
+                        "epg_icons": epg_icons
+                    }
+                ), 'utf-8'), 'zlib'))
                 file2.close()
 
         epg_thread_2 = None
@@ -424,7 +440,9 @@ if __name__ == '__main__':
             sets1 = tvguide_sets.copy()
             if sets1:
                 for prog2 in sets1:
-                    sets1[prog2] = [x12 for x12 in sets1[prog2] if time.time() + 172800 > x12['start'] and time.time() - 172800 < x12['stop']]
+                    sets1[prog2] = [x12 for x12 in sets1[prog2] if \
+                        time.time() + 172800 > x12['start'] and \
+                            time.time() - 172800 < x12['stop']]
             return sets1
 
         def is_program_actual(sets0):
@@ -447,7 +465,9 @@ if __name__ == '__main__':
         else:
             ICONS_FOLDER = 'icons'
 
-        main_icon = QtGui.QIcon(str(Path(os.path.dirname(__file__), 'data', ICONS_FOLDER, 'tv-blue.png')))
+        main_icon = QtGui.QIcon(str(
+            Path(os.path.dirname(__file__), 'data', ICONS_FOLDER, 'tv-blue.png')
+        ))
         if os.path.isfile(str(Path(LOCAL_DIR, 'customicon.png'))):
             main_icon = QtGui.QIcon(str(Path(LOCAL_DIR, 'customicon.png')))
         channels = {}
@@ -464,7 +484,9 @@ if __name__ == '__main__':
         save_folder = settings['save_folder']
 
         try:
-            if save_folder.startswith(str(Path(os.environ['HOME'], '.AstronciaIPTV'))) and not os.path.isdir(str(Path(save_folder))):
+            if save_folder.startswith(
+                    str(Path(os.environ['HOME'], '.AstronciaIPTV'))
+            ) and not os.path.isdir(str(Path(save_folder))):
                 save_folder = SAVE_FOLDER_DEFAULT
                 settings['save_folder'] = SAVE_FOLDER_DEFAULT
                 settings_file3 = open(str(Path(LOCAL_DIR, 'settings.json')), 'w', encoding="utf8")
@@ -514,18 +536,40 @@ if __name__ == '__main__':
                     xtream_url = xtream_split[3]
                     if not os.path.isdir(str(Path(LOCAL_DIR, 'xtream'))):
                         os.mkdir(str(Path(LOCAL_DIR, 'xtream')))
-                    xt = XTream(xtream_sha512, xtream_username, xtream_password, xtream_url, str(Path(LOCAL_DIR, 'xtream')))
+                    xt = XTream(
+                        xtream_sha512,
+                        xtream_username,
+                        xtream_password,
+                        xtream_url,
+                        str(Path(LOCAL_DIR, 'xtream'))
+                    )
                     if xt.auth_data != {}:
                         xt.load_iptv()
                         try:
                             m3u = convert_xtream_to_m3u(xt.channels)
                         except Exception as e3: # pylint: disable=bare-except
-                            message2 = "{}\n\n{}".format(LANG['error2'], str("XTream API: {}\n\n{}".format(LANG['procerror'], str(e3))))
-                            msg2 = QtWidgets.QMessageBox(2, LANG['error'], message2, QtWidgets.QMessageBox.Ok)
+                            message2 = "{}\n\n{}".format(
+                                LANG['error2'],
+                                str("XTream API: {}\n\n{}".format(LANG['procerror'], str(e3)))
+                            )
+                            msg2 = QtWidgets.QMessageBox(
+                                2,
+                                LANG['error'],
+                                message2,
+                                QtWidgets.QMessageBox.Ok
+                            )
                             msg2.exec()
                     else:
-                        message1 = "{}\n\n{}".format(LANG['error2'], str("XTream API: {}".format(LANG['xtreamnoconn'])))
-                        msg1 = QtWidgets.QMessageBox(2, LANG['error'], message1, QtWidgets.QMessageBox.Ok)
+                        message1 = "{}\n\n{}".format(
+                            LANG['error2'],
+                            str("XTream API: {}".format(LANG['xtreamnoconn']))
+                        )
+                        msg1 = QtWidgets.QMessageBox(
+                            2,
+                            LANG['error'],
+                            message1,
+                            QtWidgets.QMessageBox.Ok
+                        )
                         msg1.exec()
                 else:
                     if os.path.isfile(settings['m3u']):
@@ -534,7 +578,11 @@ if __name__ == '__main__':
                         file.close()
                     else:
                         try:
-                            m3u = requests.get(settings['m3u'], headers={'User-Agent': user_agent}, timeout=3).text
+                            m3u = requests.get(
+                                settings['m3u'],
+                                headers={'User-Agent': user_agent},
+                                timeout=3
+                            ).text
                         except: # pylint: disable=bare-except
                             m3u = ""
 
@@ -568,7 +616,8 @@ if __name__ == '__main__':
                     ch2['tvg-name'] = ch2['tvg-name'] if 'tvg-name' in ch2 else ''
                     ch2['tvg-ID'] = ch2['tvg-ID'] if 'tvg-ID' in ch2 else ''
                     ch2['tvg-logo'] = ch2['tvg-logo'] if 'tvg-logo' in ch2 else ''
-                    ch2['tvg-group'] = ch2['tvg-group'] if 'tvg-group' in ch2 else LANG['allchannels']
+                    ch2['tvg-group'] = ch2['tvg-group'] if 'tvg-group' in \
+                        ch2 else LANG['allchannels']
                     array[ch2['title']] = ch2
             print_with_time(LANG['playlistloaddone'])
             if use_cache:
@@ -743,7 +792,11 @@ if __name__ == '__main__':
 
         def providers_win_save():
             try:
-                providers_list.takeItem(providers_list.row(providers_list.findItems(providers_data.oldName, QtCore.Qt.MatchExactly)[0]))
+                providers_list.takeItem(
+                    providers_list.row(
+                        providers_list.findItems(providers_data.oldName, QtCore.Qt.MatchExactly)[0]
+                    )
+                )
                 providers_data.providers_used.pop(providers_data.oldName)
             except: # pylint: disable=bare-except
                 pass
@@ -863,7 +916,8 @@ if __name__ == '__main__':
             "offset": 0
         }
         try:
-            providers_saved_default[def_provider_name]["epg"] = list(iptv_providers.values())[def_provider]['epg']
+            providers_saved_default[def_provider_name]["epg"] = \
+                list(iptv_providers.values())[def_provider]['epg']
         except: # pylint: disable=bare-except
             providers_saved_default[def_provider_name]["epg"] = ""
 
@@ -873,7 +927,8 @@ if __name__ == '__main__':
                 "offset": 0
             }
             try:
-                providers_saved[def_provider_name]["epg"] = list(iptv_providers.values())[def_provider]['epg']
+                providers_saved[def_provider_name]["epg"] = \
+                    list(iptv_providers.values())[def_provider]['epg']
             except: # pylint: disable=bare-except
                 providers_saved[def_provider_name]["epg"] = ""
         else:
@@ -982,7 +1037,13 @@ if __name__ == '__main__':
                 'recording_-_' + cur_time + '_-_' + ch + '.mkv'
             ))
             record_url = array[ch_name]['url']
-            return [record_return(record_url, out_file, ch_name, "Referer: {}".format(settings["referer"])), time.time(), out_file, ch_name]
+            return [
+                record_return(
+                    record_url, out_file,
+                    ch_name, "Referer: {}".format(settings["referer"])
+                ),
+                time.time(), out_file, ch_name
+            ]
 
         def do_stop_record(name2):
             if name2 in sch_recordings:
@@ -1045,15 +1106,26 @@ if __name__ == '__main__':
                     current_time = time.strftime('%d.%m.%y %H:%M', time.localtime())
                     start_time_1 = sch_item[1]
                     end_time_1 = sch_item[2]
-                    array_name = str(channel_name_rec) + "_" + str(start_time_1) + "_" + str(end_time_1)
+                    array_name = str(channel_name_rec) + "_" + \
+                        str(start_time_1) + "_" + str(end_time_1)
                     if start_time_1 == current_time:
                         if array_name not in sch_recordings:
-                            print_with_time("Starting planned record (start_time='{}' end_time='{}' channel='{}')".format(start_time_1, end_time_1, channel_name_rec))
+                            st_planned = \
+                                "Starting planned record" + \
+                                    " (start_time='{}' end_time='{}' channel='{}')"
+                            print_with_time(
+                                st_planned.format(start_time_1, end_time_1, channel_name_rec)
+                            )
                             sch_recordings[array_name] = do_start_record(array_name)
                     if end_time_1 == current_time:
                         if array_name in sch_recordings:
                             schedulers.takeItem(i3)
-                            print_with_time("Stopping planned record (start_time='{}' end_time='{}' channel='{}')".format(start_time_1, end_time_1, channel_name_rec))
+                            stop_planned = \
+                                "Stopping planned record" + \
+                                    " (start_time='{}' end_time='{}' channel='{}')"
+                            print_with_time(
+                                stop_planned.format(start_time_1, end_time_1, channel_name_rec)
+                            )
                             do_stop_record(array_name)
                             sch_recordings.pop(array_name)
                     if sch_recordings:
@@ -1065,7 +1137,8 @@ if __name__ == '__main__':
         def delrecord_clicked():
             schCurrentRow = schedulers.currentRow()
             if schCurrentRow != -1:
-                sch_index = '_'.join([xs.split(': ')[1] for xs in schedulers.item(schCurrentRow).text().split('\n') if xs])
+                sch_index = '_'.join([xs.split(': ')[1] for xs in \
+                    schedulers.item(schCurrentRow).text().split('\n') if xs])
                 schedulers.takeItem(schCurrentRow)
                 if sch_index in sch_recordings:
                     do_stop_record(sch_index)
@@ -1101,9 +1174,18 @@ if __name__ == '__main__':
         starttime_lbl = QtWidgets.QLabel('{}:'.format(LANG['starttime']))
         endtime_lbl = QtWidgets.QLabel('{}:'.format(LANG['endtime']))
         starttime_w = QtWidgets.QDateTimeEdit()
-        starttime_w.setDateTime(QtCore.QDateTime.fromString(time.strftime('%d.%m.%Y %H:%M', time.localtime()), 'd.M.yyyy hh:mm'))
+        starttime_w.setDateTime(
+            QtCore.QDateTime.fromString(
+                time.strftime('%d.%m.%Y %H:%M', time.localtime()), 'd.M.yyyy hh:mm'
+            )
+        )
         endtime_w = QtWidgets.QDateTimeEdit()
-        endtime_w.setDateTime(QtCore.QDateTime.fromString(time.strftime('%d.%m.%Y %H:%M', time.localtime(time.time() + 60)), 'd.M.yyyy hh:mm'))
+        endtime_w.setDateTime(
+            QtCore.QDateTime.fromString(
+                time.strftime('%d.%m.%Y %H:%M', time.localtime(time.time() + 60)),
+                'd.M.yyyy hh:mm'
+            )
+        )
 
         praction_lbl = QtWidgets.QLabel('{}:'.format(LANG['praction']))
         praction_choose = QtWidgets.QComboBox()
@@ -1493,10 +1575,13 @@ if __name__ == '__main__':
                 except: # pylint: disable=bare-except
                     print_with_time("Failed to set multicast optimized settings!")
             try:
-                player.stream_lavf_o = '-reconnect=1 -reconnect_at_eof=1 -reconnect_streamed=1 -reconnect_delay_max=2'
+                player.stream_lavf_o = \
+                    '-reconnect=1 -reconnect_at_eof=1 -reconnect_streamed=1 -reconnect_delay_max=2'
             except: # pylint: disable=bare-except
                 pass
-            print_with_time("Using user-agent: {}".format(ua_ch if isinstance(ua_ch, str) else uas[ua_ch]))
+            print_with_time("Using user-agent: {}".format(
+                ua_ch if isinstance(ua_ch, str) else uas[ua_ch]
+            ))
             if player.deinterlace:
                 print_with_time("Deinterlace: enabled")
             else:
@@ -1540,7 +1625,9 @@ if __name__ == '__main__':
                 player.gamma = gamma_choose.value()
                 player.video_zoom = zoom_vars[list(zoom_vars)[zoom_choose.currentIndex()]]
                 player.panscan = panscan_choose.value()
-                setVideoAspect(videoaspect_vars[list(videoaspect_vars)[videoaspect_choose.currentIndex()]])
+                setVideoAspect(
+                    videoaspect_vars[list(videoaspect_vars)[videoaspect_choose.currentIndex()]]
+                )
                 #stopPlayer()
                 #doPlay(playing_url, uas[useragent_choose.currentIndex()])
             chan_win.close()
@@ -1662,7 +1749,8 @@ if __name__ == '__main__':
         def save_settings(): # pylint: disable=too-many-branches
             global epg_thread, epg_thread_2, manager
             udp_proxy_text = sudp.text()
-            udp_proxy_starts = udp_proxy_text.startswith('http://') or udp_proxy_text.startswith('https://')
+            udp_proxy_starts = udp_proxy_text.startswith('http://') or \
+                udp_proxy_text.startswith('https://')
             if udp_proxy_text and not udp_proxy_starts:
                 udp_proxy_text = 'http://' + udp_proxy_text
             if udp_proxy_text:
@@ -1700,7 +1788,8 @@ if __name__ == '__main__':
                 "deinterlace": sdei.isChecked(),
                 "udp_proxy": udp_proxy_text,
                 "save_folder": sfld_text,
-                "provider": sprov.currentText() if sprov.currentText() != '--{}--'.format(LANG['notselected']) else '',
+                "provider": sprov.currentText() if \
+                    sprov.currentText() != '--{}--'.format(LANG['notselected']) else '',
                 "nocache": supdate.isChecked(),
                 "lang": lang1,
                 "timezone": soffset.value(),
@@ -1775,10 +1864,15 @@ if __name__ == '__main__':
                 else:
                     sys_executable = sys.executable
                     if not os.path.isfile(sys_executable):
-                        sys_executable = str(Path(os.path.dirname(os.path.abspath(__file__)), 'astroncia_iptv'))
+                        sys_executable = str(
+                            Path(os.path.dirname(os.path.abspath(__file__)), 'astroncia_iptv')
+                        )
                         os.execv(sys_executable, sys.argv)
                     else:
-                        os.execv(sys_executable, ['python'] + sys.argv + ['--python', sys_executable])
+                        os.execv(
+                            sys_executable,
+                            ['python'] + sys.argv + ['--python', sys_executable]
+                        )
             stop_record()
             if os.name == 'nt':
                 try:
@@ -1834,7 +1928,10 @@ if __name__ == '__main__':
         sepg.textEdited.connect(reset_prov)
         sepgcombox = QtWidgets.QComboBox()
         sepgcombox.setLineEdit(sepg)
-        sepgcombox.addItems([settings['epg'] if not settings['epg'].startswith('^^::MULTIPLE::^^') else ''] + EPG_URLS)
+        sepgcombox.addItems(
+            [settings['epg'] if not \
+                settings['epg'].startswith('^^::MULTIPLE::^^') else ''] + EPG_URLS
+        )
         sepgcombox.currentIndexChanged.connect(combo_reset)
         sudp = QtWidgets.QLineEdit()
         sudp.setText(settings['udp_proxy'])
@@ -1877,7 +1974,8 @@ if __name__ == '__main__':
             if prov1 != '--{}--'.format(LANG['notselected']):
                 sm3u.setText(iptv_providers[prov1]['m3u'])
                 if 'epg' in iptv_providers[prov1]:
-                    sepg.setText(iptv_providers[prov1]['epg'] if not iptv_providers[prov1]['epg'].startswith('^^::MULTIPLE::^^') else '')
+                    sepg.setText(iptv_providers[prov1]['epg'] if not \
+                        iptv_providers[prov1]['epg'].startswith('^^::MULTIPLE::^^') else '')
         sprov.currentIndexChanged.connect(prov_select)
         sprov.addItem('--{}--'.format(LANG['notselected']))
         provs = {}
@@ -2300,14 +2398,23 @@ if __name__ == '__main__':
 
         def xtream_save_btn_action():
             if xtr_username_input.text() and xtr_password_input.text() and xtr_url_input.text():
-                xtream_gen_url = 'XTREAM::::::::::::::' + '::::::::::::::'.join([xtr_username_input.text(), xtr_password_input.text(), xtr_url_input.text()])
+                xtream_gen_url = 'XTREAM::::::::::::::' + '::::::::::::::'.join(
+                    [xtr_username_input.text(), xtr_password_input.text(), xtr_url_input.text()]
+                )
                 sm3u.setText(xtream_gen_url)
                 reset_prov()
             xtream_win.hide()
 
         def xtream_save_btn_action_2():
-            if xtr_username_input_2.text() and xtr_password_input_2.text() and xtr_url_input_2.text():
-                xtream_gen_url_2 = 'XTREAM::::::::::::::' + '::::::::::::::'.join([xtr_username_input_2.text(), xtr_password_input_2.text(), xtr_url_input_2.text()])
+            if xtr_username_input_2.text() and \
+                xtr_password_input_2.text() and xtr_url_input_2.text():
+                xtream_gen_url_2 = 'XTREAM::::::::::::::' + '::::::::::::::'.join(
+                    [
+                        xtr_username_input_2.text(),
+                        xtr_password_input_2.text(),
+                        xtr_url_input_2.text()
+                    ]
+                )
                 m3u_edit_1.setText(xtream_gen_url_2)
                 reset_prov()
             xtream_win_2.hide()
@@ -2360,7 +2467,9 @@ if __name__ == '__main__':
 
         license_str = "GPLv3"
         if os.path.isfile(str(Path('data', 'modules', 'astroncia', 'license.txt'))):
-            license_file = open(str(Path('data', 'modules', 'astroncia', 'license.txt')), 'r', encoding="utf8")
+            license_file = open(
+                str(Path('data', 'modules', 'astroncia', 'license.txt')), 'r', encoding="utf8"
+            )
             license_str = license_file.read()
             license_file.close()
 
@@ -2485,8 +2594,12 @@ if __name__ == '__main__':
             providers_hypnotix = {}
             print("Fetching playlists from Hypnotix...")
             try:
-                hypnotix_cmd = "dconf dump /org/x/hypnotix/ 2>/dev/null | grep '^providers=' | sed 's/^providers=/{\"hypnotix\": /g' | sed 's/$/}/g' | sed \"s/'/\\\"/g\""
-                hypnotix_cmd_eval = subprocess.check_output(hypnotix_cmd, shell=True, text=True).strip()
+                hypnotix_cmd = "dconf dump /org/x/hypnotix/ 2>/dev/null | grep" + \
+                    " '^providers=' | sed 's/^providers=/{\"hypnotix\": /g'" + \
+                    " | sed 's/$/}/g' | sed \"s/'/\\\"/g\""
+                hypnotix_cmd_eval = subprocess.check_output(
+                    hypnotix_cmd, shell=True, text=True
+                ).strip()
                 if hypnotix_cmd_eval:
                     hypnotix_cmd_eval = json.loads(hypnotix_cmd_eval)['hypnotix']
                     for provider_2 in hypnotix_cmd_eval:
@@ -2505,7 +2618,11 @@ if __name__ == '__main__':
                 print("Failed fetching playlists from Hypnotix!")
             if providers_hypnotix:
                 try:
-                    providers_list.takeItem(providers_list.row(providers_list.findItems(def_provider_name, QtCore.Qt.MatchExactly)[0]))
+                    providers_list.takeItem(
+                        providers_list.row(
+                            providers_list.findItems(def_provider_name, QtCore.Qt.MatchExactly)[0]
+                        )
+                    )
                     providers_data.providers_used.pop(def_provider_name)
                 except: # pylint: disable=bare-except
                     pass
@@ -2520,7 +2637,9 @@ if __name__ == '__main__':
                 save_settings()
             else:
                 print("No Hypnotix playlists found!")
-                QtWidgets.QMessageBox(1, MAIN_WINDOW_TITLE, LANG['nohypnotixpf'], QtWidgets.QMessageBox.Ok).exec()
+                QtWidgets.QMessageBox(
+                    1, MAIN_WINDOW_TITLE, LANG['nohypnotixpf'], QtWidgets.QMessageBox.Ok
+                ).exec()
 
         def providers_reset_do():
             global providers_saved
@@ -2548,7 +2667,9 @@ if __name__ == '__main__':
 
         try:
             if os.path.isfile(str(Path(LOCAL_DIR, 'expheight.json'))):
-                expheight_file_0 = open(str(Path(LOCAL_DIR, 'expheight.json')), 'r', encoding="utf8")
+                expheight_file_0 = open(
+                    str(Path(LOCAL_DIR, 'expheight.json')), 'r', encoding="utf8"
+                )
                 newdockWidgetHeight = json.loads(expheight_file_0.read())["expplaylistheight"]
                 expheight_file_0.close()
         except: # pylint: disable=bare-except
@@ -2567,11 +2688,16 @@ if __name__ == '__main__':
             def eventFilter(self, source, event):
                 global fullscreen, newdockWidgetHeight
                 if settings['exp1']:
-                    if (event.type() == QtCore.QEvent.Resize and fullscreen) and not dockWidget.height() == win.height() - 150:
+                    if (event.type() == QtCore.QEvent.Resize and fullscreen) and not \
+                        dockWidget.height() == win.height() - 150:
                         newdockWidgetHeight = dockWidget.height()
                         try:
-                            expheight_file = open(str(Path(LOCAL_DIR, 'expheight.json')), 'w', encoding="utf8")
-                            expheight_file.write(json.dumps({"expplaylistheight": newdockWidgetHeight}))
+                            expheight_file = open(
+                                str(Path(LOCAL_DIR, 'expheight.json')), 'w', encoding="utf8"
+                            )
+                            expheight_file.write(
+                                json.dumps({"expplaylistheight": newdockWidgetHeight})
+                            )
                             expheight_file.close()
                         except: # pylint: disable=bare-except
                             pass
@@ -2582,7 +2708,9 @@ if __name__ == '__main__':
                     self.latestHeight = self.height()
                     window_size = {'w': self.width(), 'h': self.height()}
                     try:
-                        ws_file = open(str(Path(LOCAL_DIR, 'windowsize.json')), 'w', encoding="utf8")
+                        ws_file = open(
+                            str(Path(LOCAL_DIR, 'windowsize.json')), 'w', encoding="utf8"
+                        )
                         ws_file.write(json.dumps(window_size))
                         ws_file.close()
                     except: # pylint: disable=bare-except
@@ -2778,7 +2906,9 @@ if __name__ == '__main__':
                 if 'videoaspect' in d:
                     setVideoAspect(videoaspect_vars[list(videoaspect_vars)[d['videoaspect']]])
                 else:
-                    setVideoAspect(videoaspect_vars[videoaspect_def_choose.itemText(settings['videoaspect'])])
+                    setVideoAspect(
+                        videoaspect_vars[videoaspect_def_choose.itemText(settings['videoaspect'])]
+                    )
                 if 'zoom' in d:
                     setZoom(zoom_vars[list(zoom_vars)[d['zoom']]])
                 else:
@@ -2790,7 +2920,9 @@ if __name__ == '__main__':
                 ua_choose = d['useragent']
             else:
                 player.deinterlace = settings['deinterlace']
-                setVideoAspect(videoaspect_vars[videoaspect_def_choose.itemText(settings['videoaspect'])])
+                setVideoAspect(
+                    videoaspect_vars[videoaspect_def_choose.itemText(settings['videoaspect'])]
+                )
                 setZoom(zoom_vars[zoom_def_choose.itemText(settings['zoom'])])
                 setPanscan(settings['panscan'])
                 player.gamma = 0
@@ -3154,7 +3286,9 @@ if __name__ == '__main__':
                 stream >> self # pylint: disable=pointless-statement
 
         def fetch_remote_channel_icon(chan_name, logo_url, return_dict_2):
-            base64_enc = base64.b64encode(bytes(chan_name + ":::" + logo_url, 'utf-8')).decode('utf-8')
+            base64_enc = base64.b64encode(
+                bytes(chan_name + ":::" + logo_url, 'utf-8')
+            ).decode('utf-8')
             sha512_hash = str(hashlib.sha512(bytes(base64_enc, 'utf-8')).hexdigest()) + ".cacheimg"
             cache_file = str(Path(LOCAL_DIR, 'channel_icons_cache', sha512_hash))
             if os.path.isfile(cache_file):
@@ -3164,7 +3298,12 @@ if __name__ == '__main__':
                 req_data = cache_file_2_read
             else:
                 try:
-                    req_data = requests.get(logo_url, headers={'User-Agent': uas[settings['useragent']]}, timeout=(3, 3), stream=True).content
+                    req_data = requests.get(
+                        logo_url,
+                        headers={'User-Agent': uas[settings['useragent']]},
+                        timeout=(3, 3),
+                        stream=True
+                    ).content
                     cache_file_2 = open(cache_file, 'wb')
                     cache_file_2.write(req_data)
                     cache_file_2.close()
@@ -3193,7 +3332,9 @@ if __name__ == '__main__':
                     print("Channel icons updated")
                 try:
                     if len(channel_icons_data.return_dict) != channel_icons_data.total:
-                        print("Channel icons loaded: {}/{}".format(len(channel_icons_data.return_dict), channel_icons_data.total))
+                        print("Channel icons loaded: {}/{}".format(
+                            len(channel_icons_data.return_dict), channel_icons_data.total
+                        ))
                         btn_update.click()
                     else:
                         if not channel_icons_data.load_completed:
@@ -3217,7 +3358,9 @@ if __name__ == '__main__':
                     print("Channel icons (EPG) updated")
                 try:
                     if len(channel_icons_data_epg.return_dict) != channel_icons_data_epg.total:
-                        print("Channel icons (EPG) loaded: {}/{}".format(len(channel_icons_data_epg.return_dict), channel_icons_data_epg.total))
+                        print("Channel icons (EPG) loaded: {}/{}".format(
+                            len(channel_icons_data_epg.return_dict), channel_icons_data_epg.total
+                        ))
                         btn_update.click()
                     else:
                         if not channel_icons_data_epg.load_completed:
@@ -3266,8 +3409,12 @@ if __name__ == '__main__':
             for chan_4 in array:
                 chan_4_logo = array[chan_4]['tvg-logo']
                 if chan_4_logo:
-                    #print("Fetching channel icon from URL '{}' for channel '{}'".format(chan_4_logo, chan_4))
-                    p_1 = Process(target=fetch_remote_channel_icon, args=(chan_4, chan_4_logo, channel_icons_data.return_dict,))
+                    #fetching_str = "Fetching channel icon from URL '{}' for channel '{}'"
+                    #print(fetching_str.format(chan_4_logo, chan_4))
+                    p_1 = Process(
+                        target=fetch_remote_channel_icon,
+                        args=(chan_4, chan_4_logo, channel_icons_data.return_dict,)
+                    )
                     p_1.start()
                     while True:
                         if not p_1.is_alive():
@@ -3295,8 +3442,12 @@ if __name__ == '__main__':
             for chan_5 in epg_icons:
                 chan_5_logo = epg_icons[chan_5]
                 if chan_5_logo:
-                    #print("Fetching channel icon from URL '{}' for channel '{}'".format(chan_5_logo, chan_5))
-                    p_2 = Process(target=fetch_remote_channel_icon, args=(chan_5, chan_5_logo, channel_icons_data_epg.return_dict,))
+                    #fetching_str_2 = "Fetching channel icon from URL '{}' for channel '{}'"
+                    #print(fetching_str_2.format(chan_5_logo, chan_5))
+                    p_2 = Process(
+                        target=fetch_remote_channel_icon,
+                        args=(chan_5, chan_5_logo, channel_icons_data_epg.return_dict,)
+                    )
                     p_2.start()
                     while True:
                         if not p_2.is_alive():
@@ -3305,7 +3456,8 @@ if __name__ == '__main__':
 
         first_gen_chans = True
         def gen_chans(): # pylint: disable=too-many-locals, too-many-branches
-            global ICONS_CACHE, playing_chan, current_group, array, page_box, channelfilter, first_gen_chans
+            global ICONS_CACHE, playing_chan, current_group, \
+            array, page_box, channelfilter, first_gen_chans
             if first_gen_chans:
                 first_gen_chans = False
                 channel_icons_data.manager_1 = Manager()
@@ -3340,16 +3492,19 @@ if __name__ == '__main__':
                             continue
                 array_filtered[j1] = array[j1]
 
-            ch_array = {x13: array_filtered[x13] for x13 in array_filtered if filter_txt.lower().strip() in x13.lower().strip()}
+            ch_array = {x13: array_filtered[x13] for x13 in array_filtered if \
+                filter_txt.lower().strip() in x13.lower().strip()}
             ch_array = list(ch_array.values())[idx:idx+settings["channelsonpage"]]
             ch_array = dict([(x14['title'], x14) for x14 in ch_array]) # pylint: disable=consider-using-dict-comprehension
             try:
                 if filter_txt:
                     page_box.setMaximum(round(len(ch_array) / settings["channelsonpage"]) + 1)
-                    of_lbl.setText('{} {}'.format(LANG['of'], round(len(ch_array) / settings["channelsonpage"]) + 1))
+                    of_lbl.setText('{} {}'.format(LANG['of'], \
+                        round(len(ch_array) / settings["channelsonpage"]) + 1))
                 else:
                     page_box.setMaximum(round(len(array_filtered) / settings["channelsonpage"]) + 1)
-                    of_lbl.setText('{} {}'.format(LANG['of'], round(len(array_filtered) / settings["channelsonpage"]) + 1))
+                    of_lbl.setText('{} {}'.format(LANG['of'], \
+                        round(len(array_filtered) / settings["channelsonpage"]) + 1))
             except: # pylint: disable=bare-except
                 pass
             res = {}
@@ -3439,7 +3594,8 @@ if __name__ == '__main__':
                 icons_l = {picon.lower(): icons[picon] for picon in icons}
                 if i_icon in icons_l:
                     if not icons_l[i_icon] in ICONS_CACHE:
-                        ICONS_CACHE[icons_l[i_icon]] = QtGui.QIcon(str(Path('data', 'channel_icons', icons_l[i_icon])))
+                        ICONS_CACHE[icons_l[i_icon]] = \
+                            QtGui.QIcon(str(Path('data', 'channel_icons', icons_l[i_icon])))
                     myQCustomQWidget.setIcon(ICONS_CACHE[icons_l[i_icon]])
                 else:
                     myQCustomQWidget.setIcon(TV_ICON)
@@ -3454,7 +3610,8 @@ if __name__ == '__main__':
                     myQCustomQWidget.setIcon(fetched_icon)
 
                 # Icon from EPG
-                if i in channel_icons_data_epg.return_dict and channel_icons_data_epg.return_dict[i]:
+                if i in channel_icons_data_epg.return_dict and \
+                channel_icons_data_epg.return_dict[i]:
                     if i in ICONS_CACHE_FETCHED_EPG:
                         fetched_icon_epg = ICONS_CACHE_FETCHED_EPG[i]
                     else:
@@ -3667,11 +3824,15 @@ if __name__ == '__main__':
                     new_data = file03_contents.replace(str1, '')
                     if new_data == '#EXTM3U\n':
                         new_data = '#EXTM3U\n#EXTINF:-1,{}\nhttp://255.255.255.255\n'.format('-')
-                    file05 = open(str(Path(LOCAL_DIR, 'playlist_separate.m3u')), 'w', encoding="utf8")
+                    file05 = open(
+                        str(Path(LOCAL_DIR, 'playlist_separate.m3u')), 'w', encoding="utf8"
+                    )
                     file05.write(new_data)
                     file05.close()
                 else:
-                    file02 = open(str(Path(LOCAL_DIR, 'playlist_separate.m3u')), 'w', encoding="utf8")
+                    file02 = open(
+                        str(Path(LOCAL_DIR, 'playlist_separate.m3u')), 'w', encoding="utf8"
+                    )
                     file02.write(file03_contents + str1)
                     file02.close()
 
@@ -3758,7 +3919,8 @@ if __name__ == '__main__':
             }
         ''')
         page_box.setAlignment(QtCore.Qt.AlignCenter)
-        of_lbl.setText('{} {}'.format(LANG['of'], round(len(array) / settings["channelsonpage"]) + 1))
+        of_lbl.setText('{} {}'.format(LANG['of'], \
+            round(len(array) / settings["channelsonpage"]) + 1))
         def page_change():
             win.listWidget.verticalScrollBar().setValue(0)
             redraw_chans()
@@ -3817,7 +3979,10 @@ if __name__ == '__main__':
                         pillow_img = player.screenshot_raw()
                         pillow_img.save(file_path)
                     else:
-                        make_ffmpeg_screenshot(playing_url, file_path, playing_chan, "Referer: {}".format(settings["referer"]))
+                        make_ffmpeg_screenshot(
+                            playing_url, file_path,
+                            playing_chan, "Referer: {}".format(settings["referer"])
+                        )
                     l1.show()
                     l1.setText2(LANG['screenshotsaved'])
                 except: # pylint: disable=bare-except
@@ -3872,7 +4037,9 @@ if __name__ == '__main__':
                         if settings["themecompat"]:
                             start_symbl = '<span style="color: white;">'
                             stop_symbl = '</span>'
-                        txt += '<span style="color: green;">' + start_2 + stop_2 + '</span>' + start_symbl + '<b>' + title_2 + '</b>' + desc_2 + stop_symbl + newline_symbol
+                        txt += '<span style="color: green;">' + start_2 + stop_2 + '</span>' + \
+                            start_symbl + '<b>' + title_2 + '</b>' + \
+                                desc_2 + stop_symbl + newline_symbol
             if do_return:
                 return txt
             txt = txt.replace('\n', '<br>').replace('<br>', '', 1)
@@ -3957,9 +4124,12 @@ if __name__ == '__main__':
 
         def playLastChannel():
             global playing_url, playing_chan, combobox
-            if os.path.isfile(str(Path(LOCAL_DIR, 'lastchannels.json'))) and settings['openprevchan']:
+            if os.path.isfile(str(Path(LOCAL_DIR, 'lastchannels.json'))) and \
+            settings['openprevchan']:
                 try:
-                    lastfile_1 = open(str(Path(LOCAL_DIR, 'lastchannels.json')), 'r', encoding="utf8")
+                    lastfile_1 = open(
+                        str(Path(LOCAL_DIR, 'lastchannels.json')), 'r', encoding="utf8"
+                    )
                     lastfile_1_dat = json.loads(lastfile_1.read())
                     lastfile_1.close()
                     player.user_agent = lastfile_1_dat[2]
@@ -4016,7 +4186,8 @@ if __name__ == '__main__':
                 **options,
                 wid=str(int(win.main_widget.winId())),
                 osc=True,
-                script_opts='osc-layout=box,osc-seekbarstyle=bar,osc-deadzonesize=0,osc-minmousemove=3',
+                script_opts='osc-layout=box,osc-seekbarstyle=bar,' + \
+                    'osc-deadzonesize=0,osc-minmousemove=3',
                 ytdl=False,
                 log_handler=my_log,
                 loglevel='info' # debug
@@ -4026,7 +4197,8 @@ if __name__ == '__main__':
                 **options,
                 wid=str(int(win.main_widget.winId())),
                 osc=True,
-                script_opts='osc-layout=box,osc-seekbarstyle=bar,osc-deadzonesize=0,osc-minmousemove=3',
+                script_opts='osc-layout=box,osc-seekbarstyle=bar,' + \
+                    'osc-deadzonesize=0,osc-minmousemove=3',
                 log_handler=my_log,
                 loglevel='info' # debug
             )
@@ -4082,7 +4254,12 @@ if __name__ == '__main__':
                 item_selected = playing_chan
                 settings_context_menu()
             else:
-                msg = QtWidgets.QMessageBox(2, 'Astroncia IPTV', LANG['nochannelselected'], QtWidgets.QMessageBox.Ok)
+                msg = QtWidgets.QMessageBox(
+                    2,
+                    'Astroncia IPTV',
+                    LANG['nochannelselected'],
+                    QtWidgets.QMessageBox.Ok
+                )
                 msg.exec()
 
         def showhideplaylist():
@@ -4214,19 +4391,29 @@ if __name__ == '__main__':
             orig_time = archive_all.currentItem().text().split(' - ')[0]
             print_with_time("orig time: {}".format(orig_time))
             orig_timestamp = time.mktime(time.strptime(orig_time, '%d.%m.%y %H:%M'))
-            orig_timestamp_1 = datetime.datetime.fromtimestamp(orig_timestamp).strftime('%Y-%m-%d-%H-%M-%S')
+            orig_timestamp_1 = datetime.datetime.fromtimestamp(
+                orig_timestamp
+            ).strftime('%Y-%m-%d-%H-%M-%S')
             print_with_time("orig timestamp: {}".format(orig_timestamp))
             print_with_time("orig timestamp 1: {}".format(orig_timestamp_1))
             ts1 = time.time()
-            utc_offset = (datetime.datetime.fromtimestamp(ts1) - datetime.datetime.utcfromtimestamp(ts1)).total_seconds()
+            utc_offset = (
+                datetime.datetime.fromtimestamp(ts1) - datetime.datetime.utcfromtimestamp(ts1)
+            ).total_seconds()
             print_with_time("calculated utc offset: {}".format(utc_offset))
-            utc_timestamp = int(datetime.datetime.fromtimestamp(orig_timestamp).timestamp() - utc_offset - 30)
+            utc_timestamp = int(
+                datetime.datetime.fromtimestamp(orig_timestamp).timestamp() - utc_offset - 30
+            )
             print_with_time("utc timestamp: {}".format(utc_timestamp))
-            utc_converted = datetime.datetime.fromtimestamp(utc_timestamp).strftime('%d.%m.%y %H:%M')
+            utc_converted = datetime.datetime.fromtimestamp(
+                utc_timestamp
+            ).strftime('%d.%m.%y %H:%M')
             print_with_time("utc converted time: {}".format(utc_converted))
             current_utc = int(datetime.datetime.strftime(datetime.datetime.utcnow(), "%s"))
             print_with_time("current utc timestamp: {}".format(current_utc))
-            current_utc_date = datetime.datetime.fromtimestamp(current_utc).strftime('%d.%m.%y %H:%M')
+            current_utc_date = datetime.datetime.fromtimestamp(
+                current_utc
+            ).strftime('%d.%m.%y %H:%M')
             print_with_time("current utc timestamp (human-readable): {}".format(current_utc_date))
             utc_string = "?utc={}&lutc={}&t={}".format(utc_timestamp, current_utc, orig_timestamp_1)
             print_with_time("utc string: {}".format(utc_string))
@@ -4251,7 +4438,9 @@ if __name__ == '__main__':
                 cur_name = list(array)[0]
             archive_channel.setText(cur_name)
             archive_all.clear()
-            tvguide_got_1 = re.sub('<[^<]+?>', '', update_tvguide(cur_name, True, True)).split('!@#$%^^&*(')[2:]
+            tvguide_got_1 = re.sub(
+                '<[^<]+?>', '', update_tvguide(cur_name, True, True)
+            ).split('!@#$%^^&*(')[2:]
             for tvguide_el_1 in tvguide_got_1:
                 if tvguide_el_1:
                     archive_all.addItem(tvguide_el_1)
@@ -4281,7 +4470,9 @@ if __name__ == '__main__':
                     def metadata(self) -> dict:
                         channel_keys = list(array.keys())
                         metadata = {
-                            "mpris:trackid": "/org/astroncia/iptv/playlist/" + str(channel_keys.index(playing_chan) + 1 if playing_chan in channel_keys else 0),
+                            "mpris:trackid": "/org/astroncia/iptv/playlist/" + \
+                                str(channel_keys.index(playing_chan) + 1 if \
+                                    playing_chan in channel_keys else 0),
                             "xesam:url": playing_url,
                             "xesam:title": playing_chan
                         }
@@ -4442,7 +4633,9 @@ if __name__ == '__main__':
             ch_choosed = choosechannel_ch.currentText()
             tvguide_sch.clear()
             if ch_choosed in channel_list_2:
-                tvguide_got = re.sub('<[^<]+?>', '', update_tvguide(ch_choosed, True)).split('!@#$%^^&*(')[2:]
+                tvguide_got = re.sub(
+                    '<[^<]+?>', '', update_tvguide(ch_choosed, True)
+                ).split('!@#$%^^&*(')[2:]
                 for tvguide_el in tvguide_got:
                     if tvguide_el:
                         tvguide_sch.addItem(tvguide_el)
@@ -4459,8 +4652,20 @@ if __name__ == '__main__':
                     choosechannel_ch.setCurrentIndex(channel_list.index(item_selected))
                 choosechannel_ch.currentIndexChanged.connect(update_scheduler_programme)
                 update_scheduler_programme()
-                #starttime_w.setDateTime(QtCore.QDateTime.fromString(time.strftime('%d.%m.%Y %H:%M', time.localtime()), 'd.M.yyyy hh:mm'))
-                #endtime_w.setDateTime(QtCore.QDateTime.fromString(time.strftime('%d.%m.%Y %H:%M', time.localtime(time.time() + 60)), 'd.M.yyyy hh:mm'))
+                #starttime_w.setDateTime(
+                #    QtCore.QDateTime.fromString(
+                #        time.strftime(
+                #            '%d.%m.%Y %H:%M', time.localtime()
+                #        ), 'd.M.yyyy hh:mm'
+                #    )
+                #)
+                #endtime_w.setDateTime(
+                #    QtCore.QDateTime.fromString(
+                #        time.strftime(
+                #            '%d.%m.%Y %H:%M', time.localtime(time.time() + 60)
+                #        ), 'd.M.yyyy hh:mm'
+                #    )
+                #)
                 scheduler_win.show()
 
         def mpv_volume_set_custom():
@@ -4570,8 +4775,15 @@ if __name__ == '__main__':
         hlayout1.addWidget(progress)
         hlayout1.addWidget(stop_label)
 
-        hlayout2_btns_1 = [label3, label4, label5, label5_1, label5_2, label5_0, label6, label7, label13, label7_1]
-        hlayout2_btns_2 = [label8_0, label8, label8_4, label8_1, label8_2, label8_3, label8_5, label9]
+        hlayout2_btns_1 = [
+            label3, label4, label5, label5_1,
+            label5_2, label5_0, label6,
+            label7, label13, label7_1
+        ]
+        hlayout2_btns_2 = [
+            label8_0, label8, label8_4, label8_1,
+            label8_2, label8_3, label8_5, label9
+        ]
         hlayout2_btns_3 = [label11, label12]
         hlayout2_all_btns = hlayout2_btns_1 + hlayout2_btns_2 + hlayout2_btns_3 + [label7_2]
         #for hlayout2_btn_3 in hlayout2_all_btns:
@@ -4664,7 +4876,9 @@ if __name__ == '__main__':
                 except: # pylint: disable=bare-except
                     pass
                 lastfile = open(str(Path(LOCAL_DIR, 'lastchannels.json')), 'w', encoding="utf8")
-                lastfile.write(json.dumps([playing_chan, playing_url, getUserAgent(), current_group_0, current_channel_0]))
+                lastfile.write(json.dumps(
+                    [playing_chan, playing_url, getUserAgent(), current_group_0, current_channel_0]
+                ))
                 lastfile.close()
             else:
                 if os.path.isfile(str(Path(LOCAL_DIR, 'lastchannels.json'))):
@@ -4746,7 +4960,9 @@ if __name__ == '__main__':
                                     waiting_for_epg = True
                                 except Exception as e1:
                                     epg_failed = True
-                                    print_with_time("[TV guide, part 1] Caught exception: " + str(e1))
+                                    print_with_time(
+                                        "[TV guide, part 1] Caught exception: " + str(e1)
+                                    )
                                     l1.setStatic2(False)
                                     l1.show()
                                     l1.setText2(LANG['tvguideupdatingerror'])
@@ -4756,7 +4972,9 @@ if __name__ == '__main__':
                                 print_with_time("EPG update at boot disabled")
                             first_boot_1 = False
                         else:
-                            programmes = {prog0.lower(): tvguide_sets[prog0] for prog0 in tvguide_sets}
+                            programmes = {
+                                prog0.lower(): tvguide_sets[prog0] for prog0 in tvguide_sets
+                            }
                             btn_update.click() # start update in main thread
             except: # pylint: disable=bare-except
                 pass
@@ -4809,7 +5027,8 @@ if __name__ == '__main__':
         def check_connection():
             global x_conn
             try:
-                if (playing_chan and not loading.isVisible()) and (player.cache_buffering_state == 0):
+                if (playing_chan and not loading.isVisible()) and \
+                (player.cache_buffering_state == 0):
                     if not x_conn:
                         print_with_time("Connection to stream lost, waiting 5 secs...")
                         x_conn = QtCore.QTimer()
@@ -4824,7 +5043,10 @@ if __name__ == '__main__':
                 check_connection()
                 try:
                     if player.video_bitrate:
-                        bitrate_arr = [LANG['bitrate1'], LANG['bitrate2'], LANG['bitrate3'], LANG['bitrate4'], LANG['bitrate5']]
+                        bitrate_arr = [
+                            LANG['bitrate1'], LANG['bitrate2'],
+                            LANG['bitrate3'], LANG['bitrate4'], LANG['bitrate5']
+                        ]
                         video_bitrate = " - " + str(humanbytes(player.video_bitrate, bitrate_arr))
                     else:
                         video_bitrate = ""
@@ -4843,7 +5065,10 @@ if __name__ == '__main__':
                     width = 800
                     height = 600
                 if (not (codec == 'png' and width == 800 and height == 600)) and (width and height):
-                    label12.setText('  {}x{}{} - {} / {}'.format(width, height, video_bitrate, codec, audio_codec))
+                    label12.setText('  {}x{}{} - {} / {}'.format(
+                        width, height, video_bitrate,
+                        codec, audio_codec
+                    ))
                     if loading.text() == LANG['loading']:
                         hideLoading()
                 else:
@@ -4918,7 +5143,10 @@ if __name__ == '__main__':
         dockWidgetVisible = False
         dockWidget2Visible = False
 
-        hide_lbls_fullscreen = [label5_0, label5_2, label7_2, label8, label8_0, label8_4, label8_5, label9]
+        hide_lbls_fullscreen = [
+            label5_0, label5_2, label7_2, label8,
+            label8_0, label8_4, label8_5, label9
+        ]
 
         dockWidget.installEventFilter(win)
 
@@ -4929,7 +5157,8 @@ if __name__ == '__main__':
         def thread_cursor():
             global fullscreen, prev_cursor, last_cursor_moved, last_cursor_time
             show_cursor = False
-            cursor_offset = QtGui.QCursor.pos().x() - prev_cursor.x() + QtGui.QCursor.pos().y() - prev_cursor.y()
+            cursor_offset = QtGui.QCursor.pos().x() - prev_cursor.x() + \
+                QtGui.QCursor.pos().y() - prev_cursor.y()
             if cursor_offset < 0:
                 cursor_offset = cursor_offset * -1
             if cursor_offset > 5:
@@ -4980,7 +5209,9 @@ if __name__ == '__main__':
                         dockWidget.move(win.width() - dockWidget.width(), 50)
                     else:
                         dockWidget.move(0, 50)
-                    dockWidget2.move(int(win.width() / 3) - 150, win.height() - dockWidget2.height())
+                    dockWidget2.move(
+                        int(win.width() / 3) - 150, win.height() - dockWidget2.height()
+                    )
                     if not newdockWidgetHeight:
                         dockWidget.resize(dockWidget.width(), win.height() - 150)
                     else:
@@ -4990,7 +5221,8 @@ if __name__ == '__main__':
 
         def thread_mouse(): # pylint: disable=too-many-branches
             try: # pylint: disable=too-many-nested-blocks
-                global fullscreen, key_t_visible, dockWidgetVisible, dockWidget2Visible, newdockWidgetHeight
+                global fullscreen, key_t_visible, dockWidgetVisible, \
+                dockWidget2Visible, newdockWidgetHeight
                 #label13.setText("{}: {}%".format(LANG['volumeshort'], int(player.volume)))
                 label13.setText("{}%".format(int(player.volume)))
                 if settings['exp1']:
@@ -5080,13 +5312,22 @@ if __name__ == '__main__':
                                     dockWidget2.setWindowOpacity(0.55)
                                     dockWidget2.move(0, win.height() - dockWidget2.height())
                                 else:
-                                    dockWidget2.move(int(win.width() / 3) - 150, win.height() - dockWidget2.height())
-                                    dockWidget2.resize(int(win.width() / 2) - 100, DOCK_WIDGET2_HEIGHT_LOW)
+                                    dockWidget2.move(
+                                        int(win.width() / 3) - 150,
+                                        win.height() - dockWidget2.height()
+                                    )
+                                    dockWidget2.resize(
+                                        int(win.width() / 2) - 100,
+                                        DOCK_WIDGET2_HEIGHT_LOW
+                                    )
                                     dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
                                     dockWidget2.setWindowOpacity(0.55)
                                     dockWidget2.show()
                                     dockWidget2.setWindowOpacity(0.55)
-                                    dockWidget2.move(int(win.width() / 3) - 150, win.height() - dockWidget2.height())
+                                    dockWidget2.move(
+                                        int(win.width() / 3) - 150,
+                                        win.height() - dockWidget2.height()
+                                    )
                         else:
                             dockWidget2Visible = False
                             dockWidget2.setWindowOpacity(1)
@@ -5161,7 +5402,9 @@ if __name__ == '__main__':
             QtCore.Qt.Key_D: show_scheduler # d - record scheduler
         }
         for keybind in keybinds:
-            QtWidgets.QShortcut(QtGui.QKeySequence(keybind), win).activated.connect(keybinds[keybind])
+            QtWidgets.QShortcut(
+                QtGui.QKeySequence(keybind), win
+            ).activated.connect(keybinds[keybind])
 
         app.aboutToQuit.connect(myExitHandler)
         playLastChannel()
