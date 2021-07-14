@@ -20,7 +20,7 @@ import os
 import gettext
 from pathlib import Path
 lang_folder = str(Path(os.getcwd(), 'data', 'lang'))
-languages = os.listdir(lang_folder)
+languages = [y for y in os.listdir(lang_folder) if y != 'astronciaiptv.pot' and y != 'update_translations.sh']
 lang = {}
 
 po_filename_en = str(Path(lang_folder, 'en', 'LC_MESSAGES', 'astronciaiptv.po'))
