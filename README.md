@@ -104,6 +104,10 @@ TV архив
 [mpv-1.dll](https://gitlab.com/astroncia/iptv-binary-deps/-/raw/master/mpv-1.dll)  
 и поместите их в папку **astroncia_iptv\data\modules\binary**
 
+***Создание файлов переводов (для Windows придётся генерировать mo файлы вручную):***  
+  
+```make```  
+
 **Запускаем:**
 
 на Windows: запускайте файл ```start_windows.vbs```  

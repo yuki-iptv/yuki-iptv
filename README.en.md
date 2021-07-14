@@ -104,6 +104,10 @@ Download files
 [mpv-1.dll](https://gitlab.com/astroncia/iptv-binary-deps/-/raw/master/mpv-1.dll)  
 and put to folder **astroncia_iptv\data\modules\binary**  
 
+**Create translation files (for Windows you will have to generate mo files manually):**  
+  
+```make```  
+
 **Starting:**
 
 on Windows: open file ```start_windows.vbs```  
