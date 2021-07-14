@@ -1,0 +1,640 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "name"
+msgstr ""
+
+msgid "m3u_ready"
+msgstr ""
+
+msgid "m3u_m3ueditor"
+msgstr ""
+
+msgid "m3u_noname"
+msgstr ""
+
+msgid "m3u_waschanged"
+msgstr ""
+
+msgid "m3u_saveconfirm"
+msgstr ""
+
+msgid "m3u_file"
+msgstr ""
+
+msgid "m3u_loadm3u"
+msgstr ""
+
+msgid "m3u_saveas"
+msgstr ""
+
+msgid "m3u_find"
+msgstr ""
+
+msgid "m3u_replacewith"
+msgstr ""
+
+msgid "m3u_replaceall"
+msgstr ""
+
+msgid "m3u_deleterow"
+msgstr ""
+
+msgid "m3u_addrow"
+msgstr ""
+
+msgid "m3u_movedown"
+msgstr ""
+
+msgid "m3u_moveup"
+msgstr ""
+
+msgid "m3u_filtergroup"
+msgstr ""
+
+msgid "m3u_searchterm"
+msgstr ""
+
+msgid "m3u_choosecolumn"
+msgstr ""
+
+msgid "m3u_openfile"
+msgstr ""
+
+msgid "m3u_playlists"
+msgstr ""
+
+msgid "m3u_loaded"
+msgstr ""
+
+msgid "m3u_savefile"
+msgstr ""
+
+msgid "m3u_m3ufiles"
+msgstr ""
+
+msgid "error"
+msgstr ""
+
+msgid "playerror"
+msgstr ""
+
+msgid "error2"
+msgstr ""
+
+msgid "starting"
+msgstr ""
+
+msgid "binarynotfound"
+msgstr ""
+
+msgid "nocacheplaylist"
+msgstr ""
+
+msgid "loadingplaylist"
+msgstr ""
+
+msgid "playlistloaderror"
+msgstr ""
+
+msgid "playlistloaddone"
+msgstr ""
+
+msgid "cachingplaylist"
+msgstr ""
+
+msgid "playlistcached"
+msgstr ""
+
+msgid "usingcachedplaylist"
+msgstr ""
+
+msgid "settings"
+msgstr ""
+
+msgid "help"
+msgstr ""
+
+msgid "channelsettings"
+msgstr ""
+
+msgid "selectplaylist"
+msgstr ""
+
+msgid "selectepg"
+msgstr ""
+
+msgid "selectwritefolder"
+msgstr ""
+
+msgid "deinterlace"
+msgstr ""
+
+msgid "useragent"
+msgstr ""
+
+msgid "empty"
+msgstr ""
+
+msgid "channel"
+msgstr ""
+
+msgid "savesettings"
+msgstr ""
+
+msgid "save"
+msgstr ""
+
+msgid "m3uplaylist"
+msgstr ""
+
+msgid "updateatboot"
+msgstr ""
+
+msgid "epgaddress"
+msgstr ""
+
+msgid "udpproxy"
+msgstr ""
+
+msgid "writefolder"
+msgstr ""
+
+msgid "orselectyourprovider"
+msgstr ""
+
+msgid "resetchannelsettings"
+msgstr ""
+
+msgid "notselected"
+msgstr ""
+
+msgid "close"
+msgstr ""
+
+msgid "nochannelselected"
+msgstr ""
+
+msgid "pause"
+msgstr ""
+
+msgid "play"
+msgstr ""
+
+msgid "exitfullscreen"
+msgstr ""
+
+msgid "volume"
+msgstr ""
+
+msgid "volumeoff"
+msgstr ""
+
+msgid "select"
+msgstr ""
+
+msgid "tvguide"
+msgstr ""
+
+msgid "startrecording"
+msgstr ""
+
+msgid "loading"
+msgstr ""
+
+msgid "doingscreenshot"
+msgstr ""
+
+msgid "screenshotsaved"
+msgstr ""
+
+msgid "screenshotsaveerror"
+msgstr ""
+
+msgid "notvguideforchannel"
+msgstr ""
+
+msgid "preparingrecord"
+msgstr ""
+
+msgid "nochannelselforrecord"
+msgstr ""
+
+msgid "stop"
+msgstr ""
+
+msgid "fullscreen"
+msgstr ""
+
+msgid "openrecordingsfolder"
+msgstr ""
+
+msgid "record"
+msgstr ""
+
+msgid "screenshot"
+msgstr ""
+
+msgid "prevchannel"
+msgstr ""
+
+msgid "nextchannel"
+msgstr ""
+
+msgid "tvguideupdating"
+msgstr ""
+
+msgid "tvguideupdatingerror"
+msgstr ""
+
+msgid "tvguideupdatingdone"
+msgstr ""
+
+msgid "recordwaiting"
+msgstr ""
+
+msgid "allchannels"
+msgstr ""
+
+msgid "favourite"
+msgstr ""
+
+msgid "interfacelang"
+msgstr ""
+
+msgid "tvguideoffset"
+msgstr ""
+
+msgid "hours"
+msgstr ""
+
+msgid "hwaccel"
+msgstr ""
+
+msgid "sort"
+msgstr ""
+
+msgid "sortitems1"
+msgstr ""
+
+msgid "sortitems2"
+msgstr ""
+
+msgid "sortitems3"
+msgstr ""
+
+msgid "sortitems4"
+msgstr ""
+
+msgid "donotforgetsort"
+msgstr ""
+
+msgid "moresettings"
+msgstr ""
+
+msgid "lesssettings"
+msgstr ""
+
+msgid "enabled"
+msgstr ""
+
+msgid "disabled"
+msgstr ""
+
+msgid "seconds"
+msgstr ""
+
+msgid "cache"
+msgstr ""
+
+msgid "chansearch"
+msgstr ""
+
+msgid "reconnecting"
+msgstr ""
+
+msgid "group"
+msgstr ""
+
+msgid "hide"
+msgstr ""
+
+msgid "contrast"
+msgstr ""
+
+msgid "brightness"
+msgstr ""
+
+msgid "hue"
+msgstr ""
+
+msgid "saturation"
+msgstr ""
+
+msgid "gamma"
+msgstr ""
+
+msgid "timeshift"
+msgstr ""
+
+msgid "jtvoffsetrecommendation"
+msgstr ""
+
+msgid "tab_main"
+msgstr ""
+
+msgid "tab_video"
+msgstr ""
+
+msgid "tab_network"
+msgstr ""
+
+msgid "tab_other"
+msgstr ""
+
+msgid "mpv_options"
+msgstr ""
+
+msgid "donotupdateepg"
+msgstr ""
+
+msgid "search"
+msgstr ""
+
+msgid "tab_gui"
+msgstr ""
+
+msgid "epg_gui"
+msgstr ""
+
+msgid "classic"
+msgstr ""
+
+msgid "simple"
+msgstr ""
+
+msgid "simple_noicons"
+msgstr ""
+
+msgid "update"
+msgstr ""
+
+msgid "scheduler"
+msgstr ""
+
+msgid "choosechannel"
+msgstr ""
+
+msgid "bitrate1"
+msgstr ""
+
+msgid "bitrate2"
+msgstr ""
+
+msgid "bitrate3"
+msgstr ""
+
+msgid "bitrate4"
+msgstr ""
+
+msgid "bitrate5"
+msgstr ""
+
+msgid "starttime"
+msgstr ""
+
+msgid "endtime"
+msgstr ""
+
+msgid "addrecord"
+msgstr ""
+
+msgid "delrecord"
+msgstr ""
+
+msgid "plannedrec"
+msgstr ""
+
+msgid "warningstr"
+msgstr ""
+
+msgid "status"
+msgstr ""
+
+msgid "recnothing"
+msgstr ""
+
+msgid "recwaiting"
+msgstr ""
+
+msgid "recrecording"
+msgstr ""
+
+msgid "activerec"
+msgstr ""
+
+msgid "page"
+msgstr ""
+
+msgid "fasterview"
+msgstr ""
+
+msgid "providers"
+msgstr ""
+
+msgid "provselect"
+msgstr ""
+
+msgid "provadd"
+msgstr ""
+
+msgid "provedit"
+msgstr ""
+
+msgid "provdelete"
+msgstr ""
+
+msgid "provname"
+msgstr ""
+
+msgid "of"
+msgstr ""
+
+msgid "importhypnotix"
+msgstr ""
+
+msgid "channelsonpage"
+msgstr ""
+
+msgid "resetdefproviders"
+msgstr ""
+
+msgid "license"
+msgstr ""
+
+msgid "openprevchan"
+msgstr ""
+
+msgid "smscheduler"
+msgstr ""
+
+msgid "praction"
+msgstr ""
+
+msgid "nothingtodo"
+msgstr ""
+
+msgid "stoppress"
+msgstr ""
+
+msgid "turnoffpc"
+msgstr ""
+
+msgid "exitprogram"
+msgstr ""
+
+msgid "nohypnotixpf"
+msgstr ""
+
+msgid "theme"
+msgstr ""
+
+msgid "themecompat"
+msgstr ""
+
+msgid "videoaspect"
+msgstr ""
+
+msgid "default"
+msgstr ""
+
+msgid "zoom"
+msgstr ""
+
+msgid "openexternal"
+msgstr ""
+
+msgid "open"
+msgstr ""
+
+msgid "remembervol"
+msgstr ""
+
+msgid "hidempv"
+msgstr ""
+
+msgid "filepath"
+msgstr ""
+
+msgid "panscan"
+msgstr ""
+
+msgid "tab_exp"
+msgstr ""
+
+msgid "exp1"
+msgstr ""
+
+msgid "exp2"
+msgstr ""
+
+msgid "exp3"
+msgstr ""
+
+msgid "expwarning"
+msgstr ""
+
+msgid "mouseswitchchannels"
+msgstr ""
+
+msgid "actions"
+msgstr ""
+
+msgid "defaultchangevol"
+msgstr ""
+
+msgid "foundproblem"
+msgstr ""
+
+msgid "showplaylistmouse"
+msgstr ""
+
+msgid "showcontrolsmouse"
+msgstr ""
+
+msgid "volumeshort"
+msgstr ""
+
+msgid "hidetvguide"
+msgstr ""
+
+msgid "flpopacity"
+msgstr ""
+
+msgid "showhideplaylist"
+msgstr ""
+
+msgid "showhidectrlpanel"
+msgstr ""
+
+msgid "mininterface"
+msgstr ""
+
+msgid "panelposition"
+msgstr ""
+
+msgid "left"
+msgstr ""
+
+msgid "right"
+msgstr ""
+
+msgid "doscreenshotsvia"
+msgstr ""
+
+msgid "playlistsep"
+msgstr ""
+
+msgid "volumechangestep"
+msgstr ""
+
+msgid "hideepgpercentage"
+msgstr ""
+
+msgid "chaniconsfromepg"
+msgstr ""
+
+msgid "xtreamnoconn"
+msgstr ""
+
+msgid "procerror"
+msgstr ""
+
+msgid "username"
+msgstr ""
+
+msgid "password"
+msgstr ""
+
+msgid "url"
+msgstr ""
+
+msgid "multipleplnote"
+msgstr ""
+
+msgid "favoritesplaylistsep"
+msgstr ""
+
+msgid "nochannels"
+msgstr ""
+
+msgid "epgname"
+msgstr ""
+
+msgid "epgid"
+msgstr ""
+
+msgid "helptext"
+msgstr ""
+
