@@ -1,0 +1,669 @@
+# Serhii Kuznietsov <serhiy_k@meta.ua>, 2021.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Serhii Kuznietsov <serhiy_k@meta.ua>\n"
+"PO-Revision-Date: 2021-07-16 01:31+0300\n"
+"Project-Id-Version: \n"
+"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
+"Language: uk_UA\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<"
+"=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 20.12.3\n"
+
+msgid "name"
+msgstr "Українська"
+
+msgid "m3u_ready"
+msgstr "Готовий"
+
+msgid "m3u_m3ueditor"
+msgstr "Редактор плейлистів m3u"
+
+msgid "m3u_noname"
+msgstr "Без імені"
+
+msgid "m3u_waschanged"
+msgstr "Плейлист був змінений.<br>Ви хочете зберегти зміни?"
+
+msgid "m3u_saveconfirm"
+msgstr "Підтвердити збереження"
+
+msgid "m3u_file"
+msgstr "Файл"
+
+msgid "m3u_loadm3u"
+msgstr "Відкрити плейлист M3U"
+
+msgid "m3u_saveas"
+msgstr "Зберегти як"
+
+msgid "m3u_find"
+msgstr "знайти"
+
+msgid "m3u_replacewith"
+msgstr "замінити"
+
+msgid "m3u_replaceall"
+msgstr "замінити все"
+
+msgid "m3u_deleterow"
+msgstr "видалити рядок"
+
+msgid "m3u_addrow"
+msgstr "додати рядок"
+
+msgid "m3u_movedown"
+msgstr "вниз"
+
+msgid "m3u_moveup"
+msgstr "вгору"
+
+msgid "m3u_filtergroup"
+msgstr "фільтр по групах (натисніть Enter)"
+
+msgid "m3u_searchterm"
+msgstr ""
+"введіть пошуковий запит і натисніть Enter\nправоруч оберіть групу для пошуку"
+
+msgid "m3u_choosecolumn"
+msgstr "оберіть стовпчик для пошуку"
+
+msgid "m3u_openfile"
+msgstr "Відкрити файл"
+
+msgid "m3u_playlists"
+msgstr "Плейлисти (*.m3u)"
+
+msgid "m3u_loaded"
+msgstr "завантажено"
+
+msgid "m3u_savefile"
+msgstr "Зберегти файл"
+
+msgid "m3u_m3ufiles"
+msgstr "M3U плейлисти (*.m3u)"
+
+msgid "error"
+msgstr "Помилка"
+
+msgid "playerror"
+msgstr "Помилка відтворення"
+
+msgid "error2"
+msgstr "Помилка Astroncia IPTV"
+
+msgid "starting"
+msgstr "запускається"
+
+msgid "binarynotfound"
+msgstr "Не знайдено бінарних модулів!"
+
+msgid "nocacheplaylist"
+msgstr "Кешування плейлиста відключене"
+
+msgid "loadingplaylist"
+msgstr "Йде завантаження плейлиста..."
+
+msgid "playlistloaderror"
+msgstr "Помилка завантаження плейлиста!"
+
+msgid "playlistloaddone"
+msgstr "Завантаження плейлиста завершено!"
+
+msgid "cachingplaylist"
+msgstr "Кешую плейлист..."
+
+msgid "playlistcached"
+msgstr "Кеш плейлиста збережено!"
+
+msgid "usingcachedplaylist"
+msgstr "Використовую кешований плейлист"
+
+msgid "settings"
+msgstr "Налаштування"
+
+msgid "help"
+msgstr "Допомога"
+
+msgid "channelsettings"
+msgstr "Налаштування каналу"
+
+msgid "selectplaylist"
+msgstr "Оберіть m3u плейлист"
+
+msgid "selectepg"
+msgstr "Оберіть файл телепрограми (XMLTV / JTV EPG)"
+
+msgid "selectwritefolder"
+msgstr "Оберіть папку для запису і знімків екрану"
+
+msgid "deinterlace"
+msgstr "Деінтерлейсинг"
+
+msgid "useragent"
+msgstr "User agent"
+
+msgid "empty"
+msgstr "Порожній"
+
+msgid "channel"
+msgstr "Канал"
+
+msgid "savesettings"
+msgstr "Зберегти налаштування"
+
+msgid "save"
+msgstr "Зберегти"
+
+msgid "m3uplaylist"
+msgstr "M3U плейлист"
+
+msgid "updateatboot"
+msgstr "Оновлювати\nпри запуску"
+
+msgid "epgaddress"
+msgstr "Адреса\nтелепрограми\n(XMLTV / JTV)"
+
+msgid "udpproxy"
+msgstr "UDP проксі"
+
+msgid "writefolder"
+msgstr "Папка для записів\nта знімків екрану"
+
+msgid "orselectyourprovider"
+msgstr "Або оберіть провайдера"
+
+msgid "resetchannelsettings"
+msgstr "Скинути налаштування каналів і сортування"
+
+msgid "notselected"
+msgstr "не обрано"
+
+msgid "close"
+msgstr "Закрити"
+
+msgid "nochannelselected"
+msgstr "Не обрано канал"
+
+msgid "pause"
+msgstr "Пауза"
+
+msgid "play"
+msgstr "Відтворити"
+
+msgid "exitfullscreen"
+msgstr "Для виходу з повноекранного режиму натисніть клавішу"
+
+msgid "volume"
+msgstr "Гучність"
+
+msgid "volumeoff"
+msgstr "Гучність вимк."
+
+msgid "select"
+msgstr "Обрати"
+
+msgid "tvguide"
+msgstr "Телепрограма"
+
+msgid "startrecording"
+msgstr "Почати запис"
+
+msgid "loading"
+msgstr "Завантаження..."
+
+msgid "doingscreenshot"
+msgstr "Роблю знімок екрану..."
+
+msgid "screenshotsaved"
+msgstr "Знімок екрану збережено!"
+
+msgid "screenshotsaveerror"
+msgstr "Помилка створення знімку екрану!"
+
+msgid "notvguideforchannel"
+msgstr "Нема телепрограми для каналу"
+
+msgid "preparingrecord"
+msgstr "Підготовка запису"
+
+msgid "nochannelselforrecord"
+msgstr "Не обрано канал для запису"
+
+msgid "stop"
+msgstr "Стоп"
+
+msgid "fullscreen"
+msgstr "Повний екран"
+
+msgid "openrecordingsfolder"
+msgstr "Відкрити папку записів"
+
+msgid "record"
+msgstr "Запис"
+
+msgid "screenshot"
+msgstr "Знімок екрану"
+
+msgid "prevchannel"
+msgstr "Попередній канал"
+
+msgid "nextchannel"
+msgstr "Наступний канал"
+
+msgid "tvguideupdating"
+msgstr "Оновлення телепрограми..."
+
+msgid "tvguideupdatingerror"
+msgstr "Помилка оновлення телепрограми!"
+
+msgid "tvguideupdatingdone"
+msgstr "Оновлення телепрограми завершено!"
+
+msgid "recordwaiting"
+msgstr "Очікування запису"
+
+msgid "allchannels"
+msgstr "Усі канали"
+
+msgid "favourite"
+msgstr "Обране"
+
+msgid "interfacelang"
+msgstr "Мова програми"
+
+msgid "tvguideoffset"
+msgstr "Поправка часу"
+
+msgid "hours"
+msgstr "годин"
+
+msgid "hwaccel"
+msgstr "Апаратне\nприскорення"
+
+msgid "sort"
+msgstr "Сортування\nканалів"
+
+msgid "sortitems1"
+msgstr "як в плейлисті"
+
+msgid "sortitems2"
+msgstr "за алфавітом"
+
+msgid "sortitems3"
+msgstr "за алфавітом у зворотньому порядку"
+
+msgid "sortitems4"
+msgstr "власне"
+
+msgid "donotforgetsort"
+msgstr "Не забудьте вказати\nвласне сортування в налаштуваннях!"
+
+msgid "moresettings"
+msgstr "Більше налаштувань!"
+
+msgid "lesssettings"
+msgstr "Менше налаштувань!"
+
+msgid "enabled"
+msgstr "увімкнено"
+
+msgid "disabled"
+msgstr "вимкнено"
+
+msgid "seconds"
+msgstr "секунд."
+
+msgid "cache"
+msgstr "Кеш"
+
+msgid "chansearch"
+msgstr "Пошук по каналах"
+
+msgid "reconnecting"
+msgstr "Повторне підключення..."
+
+msgid "group"
+msgstr "Група"
+
+msgid "hide"
+msgstr "Сховати канал"
+
+msgid "contrast"
+msgstr "Контраст"
+
+msgid "brightness"
+msgstr "Яскравість"
+
+msgid "hue"
+msgstr "Відтінок"
+
+msgid "saturation"
+msgstr "Насиченість"
+
+msgid "gamma"
+msgstr "Гамма"
+
+msgid "timeshift"
+msgstr "Архів"
+
+msgid "jtvoffsetrecommendation"
+msgstr "Рекомендується вказати 0, якщо JTV"
+
+msgid "tab_main"
+msgstr "Загальні"
+
+msgid "tab_video"
+msgstr "Відео"
+
+msgid "tab_network"
+msgstr "Мережа"
+
+msgid "tab_other"
+msgstr "Інше"
+
+msgid "mpv_options"
+msgstr "mpv опції"
+
+msgid "donotupdateepg"
+msgstr "Не оновлювати\nEPG під час запуску"
+
+msgid "search"
+msgstr "Пошук"
+
+msgid "tab_gui"
+msgstr "Інтерфейс"
+
+msgid "epg_gui"
+msgstr "Вид\nтелепрограми"
+
+msgid "classic"
+msgstr "Класичний"
+
+msgid "simple"
+msgstr "Спрощений"
+
+msgid "simple_noicons"
+msgstr "Спрощений (без логотипів)"
+
+msgid "update"
+msgstr "Оновити"
+
+msgid "scheduler"
+msgstr "Планувальник запису"
+
+msgid "choosechannel"
+msgstr "Оберіть канал"
+
+msgid "bitrate1"
+msgstr "біт/с"
+
+msgid "bitrate2"
+msgstr "Кбіт/с"
+
+msgid "bitrate3"
+msgstr "Мбіт/с"
+
+msgid "bitrate4"
+msgstr "Гбіт/с"
+
+msgid "bitrate5"
+msgstr "Тбіт/с"
+
+msgid "starttime"
+msgstr "Початок запису"
+
+msgid "endtime"
+msgstr "Завершення запису"
+
+msgid "addrecord"
+msgstr "Додати"
+
+msgid "delrecord"
+msgstr "Видалити"
+
+msgid "plannedrec"
+msgstr "Заплановані записи"
+
+msgid "warningstr"
+msgstr "Одночасний запис двох каналів недоступний!"
+
+msgid "status"
+msgstr "Статус"
+
+msgid "recnothing"
+msgstr "Нема запланованих записів"
+
+msgid "recwaiting"
+msgstr "Очікування початку запису"
+
+msgid "recrecording"
+msgstr "Йде запис"
+
+msgid "activerec"
+msgstr "Активні записи"
+
+msgid "page"
+msgstr "Сторінка"
+
+msgid "fasterview"
+msgstr ""
+"Для швидшого завантаження каналів встановіть\nкеш 1 або більше секунд в"
+" налаштуваннях мережі"
+
+msgid "providers"
+msgstr "Провайдери"
+
+msgid "provselect"
+msgstr "Обрати"
+
+msgid "provadd"
+msgstr "Додати"
+
+msgid "provedit"
+msgstr "Редагувати"
+
+msgid "provdelete"
+msgstr "Видалити"
+
+msgid "provname"
+msgstr "Назва"
+
+msgid "of"
+msgstr "з"
+
+msgid "importhypnotix"
+msgstr "Імпортувати з Hypnotix"
+
+msgid "channelsonpage"
+msgstr "Каналів на\nсторінку"
+
+msgid "resetdefproviders"
+msgstr "Повернути типові"
+
+msgid "license"
+msgstr "Ліцензія"
+
+msgid "openprevchan"
+msgstr "Під час запуску вмикати\nпопередній канал"
+
+msgid "smscheduler"
+msgstr "Планувальник"
+
+msgid "praction"
+msgstr "Після закінчення\nзапису зробити:"
+
+msgid "nothingtodo"
+msgstr "нічого не робити"
+
+msgid "stoppress"
+msgstr "натиснути на Стоп"
+
+msgid "turnoffpc"
+msgstr "вимкнути ПК"
+
+msgid "exitprogram"
+msgstr "вийти з програми"
+
+msgid "nohypnotixpf"
+msgstr "Плейлисти Hypnotix не знайдені!"
+
+msgid "theme"
+msgstr "Тема"
+
+msgid "themecompat"
+msgstr "Сумісність\nз темною темою"
+
+msgid "videoaspect"
+msgstr "Співвідношення сторін"
+
+msgid "default"
+msgstr "Типово"
+
+msgid "zoom"
+msgstr "Зум"
+
+msgid "openexternal"
+msgstr "Відкрити в іншому програвачі"
+
+msgid "open"
+msgstr "Відкрити"
+
+msgid "remembervol"
+msgstr "Запам'ятовувати гучність"
+
+msgid "hidempv"
+msgstr "Приховати панелі mpv"
+
+msgid "filepath"
+msgstr "Шлях до файла або посилання"
+
+msgid "panscan"
+msgstr "Панорамування\nта сканування"
+
+msgid "tab_exp"
+msgstr "Експериментальні"
+
+msgid "exp1"
+msgstr "Регулювання бокової\nплаваючої панелі"
+
+msgid "exp2"
+msgstr "Ширина плейлиста\nв повноекранному режимі"
+
+msgid "exp3"
+msgstr "Висота плейлиста\nв повноекранному режимі"
+
+msgid "expwarning"
+msgstr "Ці налаштування\nможуть бути нестабільними!"
+
+msgid "mouseswitchchannels"
+msgstr "Перемикати канали\nколіщатком миші"
+
+msgid "actions"
+msgstr "Дії"
+
+msgid "defaultchangevol"
+msgstr "типово:\nзміна гучності"
+
+msgid "foundproblem"
+msgstr "Знайшли проблему? Напишіть мені по e-mail"
+
+msgid "showplaylistmouse"
+msgstr "Показувати плейлист\nпід час руху миші"
+
+msgid "showcontrolsmouse"
+msgstr "Показувати панель керування\nпід час руху миші"
+
+msgid "volumeshort"
+msgstr "Звук"
+
+msgid "hidetvguide"
+msgstr "Приховати телепрограму"
+
+msgid "flpopacity"
+msgstr "Прозорість плаваючих панелей"
+
+msgid "showhideplaylist"
+msgstr "Показати/сховати плейлист"
+
+msgid "showhidectrlpanel"
+msgstr "Показати/сховати панель керування"
+
+msgid "mininterface"
+msgstr "Мінімальний інтерфейс"
+
+msgid "panelposition"
+msgstr "Розташування\nплаваючої панелі"
+
+msgid "left"
+msgstr "Ліворуч"
+
+msgid "right"
+msgstr "Праворуч"
+
+msgid "doscreenshotsvia"
+msgstr "Програма для знімків екрану"
+
+msgid "playlistsep"
+msgstr "Плейлист в окремому вікні"
+
+msgid "volumechangestep"
+msgstr "Крок регулювання гучності"
+
+msgid "hideepgpercentage"
+msgstr "Приховати проценти телепрограми"
+
+msgid "chaniconsfromepg"
+msgstr "Завантажувати логотипи каналів з EPG"
+
+msgid "xtreamnoconn"
+msgstr "Неможливо під'єднатися"
+
+msgid "procerror"
+msgstr "Помилка обробки"
+
+msgid "username"
+msgstr "Логін"
+
+msgid "password"
+msgstr "Пароль"
+
+msgid "url"
+msgstr "URL адреса"
+
+msgid "multipleplnote"
+msgstr ""
+"Ви можете додати декілька плейлистів\nкнопкою Провайдери (після збереження"
+" налаштувань)"
+
+msgid "favoritesplaylistsep"
+msgstr "Обране (окремий плейлист)"
+
+msgid "nochannels"
+msgstr "Нема каналів"
+
+msgid "epgname"
+msgstr "EPG назва"
+
+msgid "epgid"
+msgstr "EPG id"
+
+msgid "helptext"
+msgstr ""
+"Astroncia IPTV, версія {}\n© kestral / astroncia < kestraly (at) gmail.com "
+">\nhttps://gitlab.com/astroncia\n\nПідтримка:\nhttps://unixforum.org/viewtopic"
+".php?f=3&t=151801\n\nЗробити пожертвування:"
+" https://qiwi.com/n/ASTRONCIA\n\nБагатоплатформовий плеєр\nдля перегляду"
+" інтернет-телебачення\n\nПідтримується телепрограма (EPG)\nтільки в форматах"
+" XMLTV и JTV!\n\nНе працює канал? Права кнопка миші відкриває налаштування"
+" каналу.\n\nКоли вказали групу каналу в налаштуваннях, перезапустіть"
+" програму.\n\nГарячі клавіші:\n\nF / F11 - повноекранний режим\nV - вимкнути"
+" звук\nQ - вийти з програми\nПропуск - пауза\nS - зупинити відтворення\nH -"
+" знімок екрану\nG - телепрограма\nR - почати/зупинити запис\nN - попередній"
+" канал\nM - наступний канал\nT - показати/сховати бічну панель плейлиста\nO -"
+" показати/сховати годинник\nI - сортування каналів\nD - планувальник"
+" запису\n\nЗначки від Font Awesome ( https://fontawesome.com/ )\nЛіцензія"
+" значків - CC BY 4.0 License\n( https://creativecommons.org/licenses/by/4.0/ )"
