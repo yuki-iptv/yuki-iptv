@@ -67,6 +67,7 @@ from data.modules.thirdparty.selectionmodel import ReorderableListModel, Selecti
 from data.modules.thirdparty.m3u import M3uParser
 from data.modules.thirdparty.m3ueditor import Viewer
 from data.modules.thirdparty.xtream import XTream
+from data.modules.thirdparty.levenshtein import damerau_levenshtein
 if not os.name == 'nt':
     try:
         from gi.repository import GLib
@@ -3944,6 +3945,23 @@ if __name__ == '__main__':
                     file02.write(file03_contents + str1)
                     file02.close()
 
+        # Fix this, make async
+        def iaepgmatch():
+            prog_ids_1 = []
+            for x2 in prog_ids:
+                for x3 in prog_ids[x2]:
+                    if not x3 in prog_ids_1:
+                        prog_ids_1.append(x3)
+            for x4_chan in [x3 for x3 in array]:
+                if x4_chan.lower() not in programmes:
+                    print("Parsing channel '{}'...".format(x4_chan))
+                    matches = {}
+                    for x4 in prog_ids_1:
+                        x5 = x4.strip().lower()
+                        x5_chan = x4_chan.strip().lower()
+                        matches[(x4_chan, x4)] = damerau_levenshtein(x5_chan, x5)
+                    print(sorted(matches.items(), key=lambda x6: x6[1])[0][0][1])
+
         def show_context_menu(pos):
             global sel_item
             self = win.listWidget
@@ -3959,6 +3977,7 @@ if __name__ == '__main__':
             menu.addAction(LANG['openexternal'], open_external_player)
             menu.addAction(LANG['startrecording'], tvguide_start_record)
             menu.addAction(LANG['channelsettings'], settings_context_menu)
+            #menu.addAction(LANG['iaepgmatch'], iaepgmatch)
             menu.exec_(self.mapToGlobal(pos))
 
         win.listWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
