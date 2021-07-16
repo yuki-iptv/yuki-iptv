@@ -4300,7 +4300,7 @@ if __name__ == '__main__':
                 osc=True,
                 script_opts='osc-layout=box,osc-seekbarstyle=bar,' + \
                     'osc-deadzonesize=0,osc-minmousemove=3',
-                ytdl=False,
+                ytdl=True,
                 log_handler=my_log,
                 loglevel='info' # debug
             )
