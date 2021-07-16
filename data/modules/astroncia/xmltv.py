@@ -68,29 +68,32 @@ def parse_as_xmltv(epg, settings):
             ).timestamp() - timezone_offset + (3600 * settings["timezone"])
         except: # pylint: disable=bare-except
             stop = 0
-        chans = ids[programme.attrib['channel']]
-        for channel_epg_1 in chans:
-            day_start = (
-                datetime.datetime.now() - datetime.timedelta(days=1)
-            ).replace(hour=0, minute=0, second=0).timestamp()- timezone_offset + (3600 * settings["timezone"])
-            day_end = (
-                datetime.datetime.now() + datetime.timedelta(days=1)
-            ).replace(hour=23, minute=59, second=59).timestamp()- timezone_offset + (3600 * settings["timezone"])
-            if not channel_epg_1 in programmes_epg:
-                programmes_epg[channel_epg_1] = []
-            if start > day_start and stop < day_end:
-                try:
-                    prog_title = programme.find('./title').text
-                except: # pylint: disable=bare-except
-                    prog_title = ""
-                try:
-                    prog_desc = programme.find('./desc').text
-                except: # pylint: disable=bare-except
-                    prog_desc = ""
-                programmes_epg[channel_epg_1].append({
-                    "start": start,
-                    "stop": stop,
-                    "title": prog_title,
-                    "desc": prog_desc
-                })
+        try:
+            chans = ids[programme.attrib['channel']]
+            for channel_epg_1 in chans:
+                day_start = (
+                    datetime.datetime.now() - datetime.timedelta(days=1)
+                ).replace(hour=0, minute=0, second=0).timestamp()- timezone_offset + (3600 * settings["timezone"])
+                day_end = (
+                    datetime.datetime.now() + datetime.timedelta(days=1)
+                ).replace(hour=23, minute=59, second=59).timestamp()- timezone_offset + (3600 * settings["timezone"])
+                if not channel_epg_1 in programmes_epg:
+                    programmes_epg[channel_epg_1] = []
+                if start > day_start and stop < day_end:
+                    try:
+                        prog_title = programme.find('./title').text
+                    except: # pylint: disable=bare-except
+                        prog_title = ""
+                    try:
+                        prog_desc = programme.find('./desc').text
+                    except: # pylint: disable=bare-except
+                        prog_desc = ""
+                    programmes_epg[channel_epg_1].append({
+                        "start": start,
+                        "stop": stop,
+                        "title": prog_title,
+                        "desc": prog_desc
+                    })
+        except: # pylint: disable=bare-except
+            pass
     return [programmes_epg, ids, icons]
