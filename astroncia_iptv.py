@@ -25,6 +25,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
+#
 from pathlib import Path
 import sys
 import os
@@ -36,6 +37,7 @@ import signal
 import base64
 import argparse
 import subprocess
+import copy
 import re
 import textwrap
 import hashlib
@@ -785,6 +787,11 @@ if __name__ == '__main__':
         providers_win_edit.setWindowTitle(LANG['providers'])
         providers_win_edit.setWindowIcon(main_icon)
 
+        epg_select_win = QtWidgets.QMainWindow()
+        epg_select_win.resize(400, 500)
+        epg_select_win.setWindowTitle(LANG['tvguide'])
+        epg_select_win.setWindowIcon(main_icon)
+
         class providers_data: # pylint: disable=too-few-public-methods
             pass
 
@@ -879,6 +886,35 @@ if __name__ == '__main__':
         providers_win_edit_layout.addWidget(save_btn_1, 6, 1)
         providers_win_edit_widget.setLayout(providers_win_edit_layout)
         providers_win_edit.setCentralWidget(providers_win_edit_widget)
+
+        def esw_input_edit():
+            esw_input_text = esw_input.text().lower()
+            for est_w in range(0, esw_select.count()):
+                if esw_select.item(est_w).text().lower().startswith(esw_input_text):
+                    esw_select.item(est_w).setHidden(False)
+                else:
+                    esw_select.item(est_w).setHidden(True)
+
+        def esw_select_clicked(item1):
+            epg_select_win.hide()
+            if item1.text():
+                epgname_lbl.setText(item1.text())
+            else:
+                epgname_lbl.setText(LANG['default'])
+
+        esw_input = QtWidgets.QLineEdit()
+        esw_input.setPlaceholderText(LANG['search'])
+        esw_input.textEdited.connect(esw_input_edit)
+        esw_select = QtWidgets.QListWidget()
+        esw_select.itemDoubleClicked.connect(esw_select_clicked)
+
+        epg_select_win_widget = QtWidgets.QWidget()
+        epg_select_win_layout = QtWidgets.QVBoxLayout()
+        epg_select_win_layout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        epg_select_win_layout.addWidget(esw_input, 0)
+        epg_select_win_layout.addWidget(esw_select, 1)
+        epg_select_win_widget.setLayout(epg_select_win_layout)
+        epg_select_win.setCentralWidget(epg_select_win_widget)
 
         def ext_open_btn_clicked():
             ext_player_file_1 = open(str(Path(LOCAL_DIR, 'extplayer.json')), 'w', encoding="utf8")
@@ -996,6 +1032,7 @@ if __name__ == '__main__':
         archive_win.move(qr.topLeft())
         providers_win.move(qr.topLeft())
         providers_win_edit.move(qr.topLeft())
+        epg_select_win.move(qr.topLeft())
 
         def convert_time(times_1):
             yr = time.strftime('%Y', time.localtime())
@@ -1339,6 +1376,19 @@ if __name__ == '__main__':
         for ua_name in ua_names[1::]:
             useragent_choose.addItem(ua_name)
 
+        def epgname_btn_action():
+            prog_ids_0 = []
+            for x0 in prog_ids:
+                for x1 in prog_ids[x0]:
+                    if not x1 in prog_ids_0:
+                        prog_ids_0.append(x1)
+            esw_select.clear()
+            esw_select.addItem('')
+            for prog_ids_0_dat in prog_ids_0:
+                esw_select.addItem(prog_ids_0_dat)
+            esw_input_edit()
+            epg_select_win.show()
+
         contrast_lbl = QtWidgets.QLabel("{}:".format(LANG['contrast']))
         brightness_lbl = QtWidgets.QLabel("{}:".format(LANG['brightness']))
         hue_lbl = QtWidgets.QLabel("{}:".format(LANG['hue']))
@@ -1347,6 +1397,10 @@ if __name__ == '__main__':
         videoaspect_lbl = QtWidgets.QLabel("{}:".format(LANG['videoaspect']))
         zoom_lbl = QtWidgets.QLabel("{}:".format(LANG['zoom']))
         panscan_lbl = QtWidgets.QLabel("{}:".format(LANG['panscan']))
+        epgname_btn = QtWidgets.QPushButton(LANG['epgname'])
+        epgname_btn.clicked.connect(epgname_btn_action)
+
+        epgname_lbl = QtWidgets.QLabel()
 
         contrast_choose = QtWidgets.QSpinBox()
         contrast_choose.setMinimum(-100)
@@ -1613,7 +1667,8 @@ if __name__ == '__main__':
                 "gamma": gamma_choose.value(),
                 "videoaspect": videoaspect_choose.currentIndex(),
                 "zoom": zoom_choose.currentIndex(),
-                "panscan": panscan_choose.value()
+                "panscan": panscan_choose.value(),
+                "epgname": epgname_lbl.text() if epgname_lbl.text() != LANG['default'] else ''
             }
             save_channel_sets()
             if playing_chan == chan_3:
@@ -1630,6 +1685,7 @@ if __name__ == '__main__':
                 )
                 #stopPlayer()
                 #doPlay(playing_url, uas[useragent_choose.currentIndex()])
+            btn_update.click()
             chan_win.close()
 
         save_btn = QtWidgets.QPushButton(LANG['savesettings'])
@@ -1722,6 +1778,13 @@ if __name__ == '__main__':
         horizontalLayout2_11.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_11.setAlignment(QtCore.Qt.AlignCenter)
 
+        horizontalLayout2_12 = QtWidgets.QHBoxLayout()
+        horizontalLayout2_12.addWidget(QtWidgets.QLabel("\n"))
+        horizontalLayout2_12.addWidget(epgname_btn)
+        horizontalLayout2_12.addWidget(epgname_lbl)
+        horizontalLayout2_12.addWidget(QtWidgets.QLabel("\n"))
+        horizontalLayout2_12.setAlignment(QtCore.Qt.AlignCenter)
+
         horizontalLayout3 = QtWidgets.QHBoxLayout()
         horizontalLayout3.addWidget(save_btn)
 
@@ -1739,6 +1802,7 @@ if __name__ == '__main__':
         verticalLayout.addLayout(horizontalLayout2_9)
         verticalLayout.addLayout(horizontalLayout2_10)
         verticalLayout.addLayout(horizontalLayout2_11)
+        verticalLayout.addLayout(horizontalLayout2_12)
         verticalLayout.addLayout(horizontalLayout3)
         verticalLayout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
 
@@ -2832,7 +2896,9 @@ if __name__ == '__main__':
                 stop_label.show()
             else:
                 progress.hide()
+                start_label.setText('')
                 start_label.hide()
+                stop_label.setText('')
                 stop_label.hide()
 
         playing_url = ''
@@ -2863,13 +2929,21 @@ if __name__ == '__main__':
                 channel_name = channel_name[:MAX_CHAN_SIZE - 3] + '...'
             setChanText('  ' + channel_name)
             current_prog = None
-            if settings['epg'] and j.lower() in programmes:
-                for pr in programmes[j.lower()]:
+            jlower = j.lower()
+            try:
+                jlower = prog_match_arr[jlower]
+            except: # pylint: disable=bare-except
+                pass
+            if settings['epg'] and jlower in programmes:
+                for pr in programmes[jlower]:
                     if time.time() > pr['start'] and time.time() < pr['stop']:
                         current_prog = pr
                         break
             show_progress(current_prog)
-            dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
+            if start_label.isVisible():
+                dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
+            else:
+                dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
             playing = True
             win.update()
             playing_url = play_url
@@ -3454,10 +3528,13 @@ if __name__ == '__main__':
                             break
                         time.sleep(0.01)
 
+        array_copy = copy.deepcopy(array)
+        prog_match_arr = {}
+
         first_gen_chans = True
         def gen_chans(): # pylint: disable=too-many-locals, too-many-branches
             global ICONS_CACHE, playing_chan, current_group, \
-            array, page_box, channelfilter, first_gen_chans
+            array, page_box, channelfilter, first_gen_chans, prog_match_arr
             if first_gen_chans:
                 first_gen_chans = False
                 channel_icons_data.manager_1 = Manager()
@@ -3520,9 +3597,20 @@ if __name__ == '__main__':
                         prog_search_lst = prog_ids[str(array_filtered[i]['tvg-ID'])]
                         if prog_search_lst:
                             prog_search = prog_search_lst[0].lower()
+
+                # EPG name override for channel settings
+                orig_tvg_name = array_copy[i]['tvg-name']
+                if i in channel_sets:
+                    if 'epgname' in channel_sets[i]:
+                        if channel_sets[i]['epgname']:
+                            array_filtered[i]['tvg-name'] = channel_sets[i]['epgname']
+                        else:
+                            array_filtered[i]['tvg-name'] = orig_tvg_name
+
                 if array_filtered[i]['tvg-name']:
-                    if str(array_filtered[i]['tvg-name']) in programmes:
+                    if str(array_filtered[i]['tvg-name']).lower() in programmes:
                         prog_search = str(array_filtered[i]['tvg-name']).lower()
+                prog_match_arr[i.lower()] = prog_search
                 if prog_search in programmes:
                     current_prog = {
                         'start': 0,
@@ -3626,6 +3714,10 @@ if __name__ == '__main__':
                 myQListWidgetItem.setSizeHint(myQCustomQWidget.sizeHint())
                 res[l] = [myQListWidgetItem, myQCustomQWidget, l, i]
             j1 = playing_chan.lower()
+            try:
+                j1 = prog_match_arr[j1]
+            except: # pylint: disable=bare-except
+                pass
             if j1:
                 current_chan = None
                 try:
@@ -3755,6 +3847,13 @@ if __name__ == '__main__':
                     panscan_choose.setValue(channel_sets[item_selected]['panscan'])
                 except: # pylint: disable=bare-except
                     panscan_choose.setValue(0)
+                try:
+                    epgname_saved = channel_sets[item_selected]['epgname']
+                    if not epgname_saved:
+                        epgname_saved = LANG['default']
+                    epgname_lbl.setText(epgname_saved)
+                except: # pylint: disable=bare-except
+                    epgname_lbl.setText(LANG['default'])
             else:
                 deinterlace_chk.setChecked(settings['deinterlace'])
                 hidden_chk.setChecked(False)
@@ -3768,6 +3867,7 @@ if __name__ == '__main__':
                 panscan_choose.setValue(0)
                 useragent_choose.setCurrentIndex(settings['useragent'])
                 group_text.setText('')
+                epgname_lbl.setText(LANG['default'])
             chan_win.show()
 
         def tvguide_favourites_add():
@@ -3994,7 +4094,7 @@ if __name__ == '__main__':
                 l1.setText2("{}!".format(LANG['nochannelselected']))
                 time_stop = time.time() + 1
 
-        def update_tvguide(chan_1='', do_return=False, show_all_guides=False): # pylint: disable=too-many-branches
+        def update_tvguide(chan_1='', do_return=False, show_all_guides=False): # pylint: disable=too-many-branches, too-many-locals
             global item_selected
             if not chan_1:
                 if item_selected:
@@ -4008,9 +4108,13 @@ if __name__ == '__main__':
             newline_symbol = '\n'
             if do_return:
                 newline_symbol = '!@#$%^^&*('
-            if chan_2 in programmes:
+            try:
+                chan_3 = prog_match_arr[chan_2]
+            except: # pylint: disable=bare-except
+                chan_3 = chan_2
+            if chan_3 in programmes:
                 txt = newline_symbol
-                prog = programmes[chan_2]
+                prog = programmes[chan_3]
                 for pr in prog:
                     override_this = False
                     if show_all_guides:
