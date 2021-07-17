@@ -5501,6 +5501,17 @@ if __name__ == '__main__':
             if not clockOn:
                 label11.setText('')
 
+        def dockwidget_resize_thread():
+            try:
+                if start_label.text() and start_label.isVisible():
+                    if dockWidget2.height() != DOCK_WIDGET2_HEIGHT_HIGH:
+                        dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
+                else:
+                    if dockWidget2.height() != DOCK_WIDGET2_HEIGHT_LOW:
+                        dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
+            except: # pylint: disable=bare-except
+                pass
+
         keybinds = {
             QtCore.Qt.Key_I: show_sort, # i - sort channels
             QtCore.Qt.Key_T: key_t,
@@ -5578,7 +5589,8 @@ if __name__ == '__main__':
                 record_thread_2: 1000,
                 channel_icons_thread: 2000,
                 channel_icons_thread_epg: 2000,
-                epg_channel_icons_thread: 50
+                epg_channel_icons_thread: 50,
+                dockwidget_resize_thread: 50
             }
             for timer in timers:
                 timers_array[timer] = QtCore.QTimer()
