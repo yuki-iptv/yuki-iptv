@@ -3264,9 +3264,7 @@ if __name__ == '__main__':
             def setTextDown(self, text, tooltip):
                 progTooltip = tooltip
                 self.tooltip = progTooltip
-                self.textUpQLabel.setToolTip(progTooltip)
-                self.textDownQLabel.setToolTip(progTooltip)
-                self.progressBar.setToolTip(progTooltip)
+                self.setToolTip(progTooltip)
                 self.textDownQLabel.setText(text)
 
             def setTextProgress(self, text):
