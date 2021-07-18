@@ -3264,7 +3264,9 @@ if __name__ == '__main__':
             def setTextDown(self, text, tooltip):
                 progTooltip = tooltip
                 self.tooltip = progTooltip
-                self.setToolTip(progTooltip)
+                self.textUpQLabel.setToolTip(progTooltip)
+                self.textDownQLabel.setToolTip(progTooltip)
+                self.progressBar.setToolTip(progTooltip)
                 self.textDownQLabel.setText(text)
 
             def setTextProgress(self, text):
@@ -3690,7 +3692,10 @@ if __name__ == '__main__':
                 if prog_search in programmes:
                     myQCustomQWidget.setTextDown(
                         prog,
-                        ("<b>" + orig_prog + "</b>" + prog_desc).replace('\n', '<br>')
+                        (
+                            "<b>{}</b>".format(i) + "<br><br>" + \
+                            "<i>" + orig_prog + "</i>" + prog_desc
+                        ).replace('\n', '<br>')
                     )
                     myQCustomQWidget.setTextProgress(start_time)
                     myQCustomQWidget.setTextEnd(stop_time)
