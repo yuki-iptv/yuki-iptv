@@ -90,7 +90,7 @@ if not (os.name == 'nt' or os.name == 'posix'):
 
 MAIN_WINDOW_TITLE = 'Astroncia IPTV'
 WINDOW_SIZE = (1200, 600)
-DOCK_WIDGET2_HEIGHT = int(WINDOW_SIZE[1] / 8)
+DOCK_WIDGET2_HEIGHT = int(WINDOW_SIZE[1] / 10)
 DOCK_WIDGET2_HEIGHT_OFFSET = 10
 DOCK_WIDGET2_HEIGHT_HIGH = DOCK_WIDGET2_HEIGHT + DOCK_WIDGET2_HEIGHT_OFFSET
 DOCK_WIDGET2_HEIGHT_LOW = DOCK_WIDGET2_HEIGHT_HIGH - (DOCK_WIDGET2_HEIGHT_OFFSET + 10)
@@ -3688,7 +3688,10 @@ if __name__ == '__main__':
                 if len(prog) > MAX_SIZE:
                     prog = prog[0:MAX_SIZE] + "..."
                 if prog_search in programmes:
-                    myQCustomQWidget.setTextDown(prog, ("<b>" + orig_prog + "</b>" + prog_desc).replace('\n', '<br>'))
+                    myQCustomQWidget.setTextDown(
+                        prog,
+                        ("<b>" + orig_prog + "</b>" + prog_desc).replace('\n', '<br>')
+                    )
                     myQCustomQWidget.setTextProgress(start_time)
                     myQCustomQWidget.setTextEnd(stop_time)
                     myQCustomQWidget.setProgress(int(percentage))
@@ -4883,9 +4886,9 @@ if __name__ == '__main__':
         label9.setToolTip(LANG['help'])
         label9.clicked.connect(show_help)
         label12 = QtWidgets.QLabel('')
-        label10 = QtWidgets.QLabel('© kestral / astroncia')
-        label10.setAlignment(QtCore.Qt.AlignCenter)
-        label10.setStyleSheet('color: #a60f46')
+        #label10 = QtWidgets.QLabel('© kestral / astroncia')
+        #label10.setAlignment(QtCore.Qt.AlignCenter)
+        #label10.setStyleSheet('color: #a60f46')
         label11 = QtWidgets.QLabel()
         myFont3 = QtGui.QFont()
         myFont3.setPointSize(11)
@@ -4907,7 +4910,7 @@ if __name__ == '__main__':
         vlayout3 = QtWidgets.QVBoxLayout()
         hlayout1 = QtWidgets.QHBoxLayout()
         hlayout2 = QtWidgets.QHBoxLayout()
-        hlayout3 = QtWidgets.QHBoxLayout()
+        #hlayout3 = QtWidgets.QHBoxLayout()
 
         hlayout1.addWidget(start_label)
         hlayout1.addWidget(progress)
@@ -4936,7 +4939,7 @@ if __name__ == '__main__':
         for hlayout2_btn_2 in hlayout2_btns_3:
             hlayout2.addWidget(hlayout2_btn_2)
 
-        hlayout3.addWidget(label10)
+        #hlayout3.addWidget(label10)
 
         #hlayout1.addStretch(1)
         vlayout3.addLayout(hlayout2)
@@ -4944,8 +4947,8 @@ if __name__ == '__main__':
         hlayout2.addStretch(1)
         vlayout3.addLayout(hlayout1)
 
-        hlayout2.addStretch(1)
-        vlayout3.addLayout(hlayout3)
+        #hlayout2.addStretch(1)
+        #vlayout3.addLayout(hlayout3)
 
         widget2 = QtWidgets.QWidget()
         widget2.setLayout(vlayout3)
@@ -5374,7 +5377,7 @@ if __name__ == '__main__':
                     if settings['exp1']:
                         for btns_3 in hlayout2_btns_1 + hlayout2_btns_2:
                             btns_3.setMinimumSize(QtCore.QSize(32, 32))
-                        label10.hide()
+                        #label10.hide()
                         label11.hide()
                         label12.hide()
                         progress.hide()
@@ -5385,7 +5388,7 @@ if __name__ == '__main__':
                     if settings['exp1']:
                         for btns_3 in hlayout2_btns_1 + hlayout2_btns_2:
                             btns_3.setMinimumSize(QtCore.QSize(20, 20))
-                        label10.show()
+                        #label10.show()
                         label11.show()
                         label12.show()
                         if start_label.text() or stop_label.text():
