@@ -3206,6 +3206,7 @@ if __name__ == '__main__':
         class QCustomQWidget(QtWidgets.QWidget): # pylint: disable=too-many-instance-attributes
             def __init__(self, parent=None):
                 super(QCustomQWidget, self).__init__(parent)
+                self.tooltip = ""
                 self.textQVBoxLayout = QtWidgets.QVBoxLayout()      # QtWidgets
                 self.textUpQLabel = QtWidgets.QLabel()         # QtWidgets
                 myFont = QtGui.QFont()
@@ -3250,14 +3251,20 @@ if __name__ == '__main__':
                   }
                 ''')
 
+            #def enterEvent(self, event):
+            #    print("hovered", self.tooltip)
+            #    QtWidgets.QToolTip.showText(QtGui.QCursor.pos(), self.tooltip, win.main_widget)
+
+            #def leaveEvent(self, event):
+            #    print("left")
+
             def setTextUp(self, text):
                 self.textUpQLabel.setText(text)
 
             def setTextDown(self, text, tooltip):
                 progTooltip = tooltip
-                self.textUpQLabel.setToolTip(progTooltip)
-                self.textDownQLabel.setToolTip(progTooltip)
-                self.progressBar.setToolTip(progTooltip)
+                self.tooltip = progTooltip
+                self.setToolTip(progTooltip)
                 self.textDownQLabel.setText(text)
 
             def setTextProgress(self, text):
@@ -3681,7 +3688,7 @@ if __name__ == '__main__':
                 if len(prog) > MAX_SIZE:
                     prog = prog[0:MAX_SIZE] + "..."
                 if prog_search in programmes:
-                    myQCustomQWidget.setTextDown(prog, orig_prog + prog_desc)
+                    myQCustomQWidget.setTextDown(prog, ("<b>" + orig_prog + "</b>" + prog_desc).replace('\n', '<br>'))
                     myQCustomQWidget.setTextProgress(start_time)
                     myQCustomQWidget.setTextEnd(stop_time)
                     myQCustomQWidget.setProgress(int(percentage))
