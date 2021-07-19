@@ -4471,8 +4471,7 @@ if __name__ == '__main__':
         def my_back_binding():
             prev_channel()
 
-        @player.on_key_press('WHEEL_UP')
-        def my_up_binding():
+        def my_up_binding_execute():
             global l1, time_stop
             if settings["mouseswitchchannels"]:
                 next_channel()
@@ -4483,8 +4482,7 @@ if __name__ == '__main__':
                 label7.setValue(volume)
                 mpv_volume_set()
 
-        @player.on_key_press('WHEEL_DOWN')
-        def my_down_binding():
+        def my_down_binding_execute():
             global l1, time_stop, fullscreen
             if settings["mouseswitchchannels"]:
                 prev_channel()
@@ -4498,6 +4496,19 @@ if __name__ == '__main__':
                     l1.setText2("{}: {}%".format(LANG['volume'], volume))
                 label7.setValue(volume)
                 mpv_volume_set()
+
+        my_up_binding_btn = QtWidgets.QPushButton()
+        my_up_binding_btn.clicked.connect(my_up_binding_execute)
+        my_down_binding_btn = QtWidgets.QPushButton()
+        my_down_binding_btn.clicked.connect(my_down_binding_execute)
+
+        @player.on_key_press('WHEEL_UP')
+        def my_up_binding():
+            my_up_binding_btn.click()
+
+        @player.on_key_press('WHEEL_DOWN')
+        def my_down_binding():
+            my_down_binding_btn.click()
 
         dockWidget2 = QtWidgets.QDockWidget(win)
 
