@@ -1968,12 +1968,26 @@ if __name__ == '__main__':
         fld_label = QtWidgets.QLabel('{}:'.format(LANG['writefolder']))
         lang_label = QtWidgets.QLabel('{}:'.format(LANG['interfacelang']))
         offset_label = QtWidgets.QLabel('{}:'.format(LANG['tvguideoffset']))
-        set_label = QtWidgets.QLabel(LANG['jtvoffsetrecommendation'])
-        set_label.setStyleSheet('color: #666600')
-        fastview_label = QtWidgets.QLabel(LANG['fasterview'])
-        fastview_label.setStyleSheet('color: #1D877C')
-        multipleplnote_label = QtWidgets.QLabel(LANG['multipleplnote'])
-        multipleplnote_label.setStyleSheet('color: #b35900')
+        #set_label = QtWidgets.QLabel(LANG['jtvoffsetrecommendation'])
+        #set_label.setStyleSheet('color: #666600')
+        fastview_label = QtWidgets.QLabel()
+        fastview_label.setTextFormat(QtCore.Qt.RichText)
+        fastview_label.setSizePolicy(
+            QtWidgets.QSizePolicy.Preferred,
+            QtWidgets.QSizePolicy.Minimum
+        )
+        fastview_label.setWordWrap(True)
+        fastview_label.setText(
+            '<span style="color:#666600;">' + \
+            LANG['jtvoffsetrecommendation'] + '</span><br>' + \
+            '<span style="color:#1D877C;">' + \
+            LANG['fasterview'] + '</span><br>' + \
+            '<span style="color:#b35900;">' + \
+            LANG['multipleplnote'] + '</span>'
+        )
+        #fastview_label.setStyleSheet('color: #1D877C')
+        #multipleplnote_label = QtWidgets.QLabel(LANG['multipleplnote'])
+        #multipleplnote_label.setStyleSheet('color: #b35900')
         hours_label = QtWidgets.QLabel(LANG['hours'])
 
         def reset_channel_settings():
@@ -2107,18 +2121,18 @@ if __name__ == '__main__':
         soffset.setDecimals(1)
         soffset.setValue(settings["timezone"])
 
-        sframe = QtWidgets.QFrame()
-        sframe.setFrameShape(QtWidgets.QFrame.HLine)
-        sframe.setFrameShadow(QtWidgets.QFrame.Raised)
-        sframe1 = QtWidgets.QFrame()
-        sframe1.setFrameShape(QtWidgets.QFrame.HLine)
-        sframe1.setFrameShadow(QtWidgets.QFrame.Raised)
-        sframe2 = QtWidgets.QFrame()
-        sframe2.setFrameShape(QtWidgets.QFrame.HLine)
-        sframe2.setFrameShadow(QtWidgets.QFrame.Raised)
-        sframe3 = QtWidgets.QFrame()
-        sframe3.setFrameShape(QtWidgets.QFrame.HLine)
-        sframe3.setFrameShadow(QtWidgets.QFrame.Raised)
+        #sframe = QtWidgets.QFrame()
+        #sframe.setFrameShape(QtWidgets.QFrame.HLine)
+        #sframe.setFrameShadow(QtWidgets.QFrame.Raised)
+        #sframe1 = QtWidgets.QFrame()
+        #sframe1.setFrameShape(QtWidgets.QFrame.HLine)
+        #sframe1.setFrameShadow(QtWidgets.QFrame.Raised)
+        #sframe2 = QtWidgets.QFrame()
+        #sframe2.setFrameShape(QtWidgets.QFrame.HLine)
+        #sframe2.setFrameShadow(QtWidgets.QFrame.Raised)
+        #sframe3 = QtWidgets.QFrame()
+        #sframe3.setFrameShape(QtWidgets.QFrame.HLine)
+        #sframe3.setFrameShadow(QtWidgets.QFrame.Raised)
         sframe4 = QtWidgets.QFrame()
         sframe4.setFrameShape(QtWidgets.QFrame.HLine)
         sframe4.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -2174,32 +2188,32 @@ if __name__ == '__main__':
         grid.addWidget(supdate, 2, 1)
         grid.addWidget(xtream_btn, 2, 3)
 
-        grid.addWidget(sframe, 3, 0)
-        grid.addWidget(sframe1, 3, 1)
-        grid.addWidget(sframe2, 3, 2)
-        grid.addWidget(sframe3, 3, 3)
+        #grid.addWidget(sframe, 3, 0)
+        #grid.addWidget(sframe1, 3, 1)
+        #grid.addWidget(sframe2, 3, 2)
+        #grid.addWidget(sframe3, 3, 3)
 
-        grid.addWidget(epg_label, 4, 0)
-        grid.addWidget(sepgcombox, 4, 1)
-        grid.addWidget(sepgfile, 4, 2)
-        grid.addWidget(sepgupd, 4, 3)
+        grid.addWidget(epg_label, 3, 0)
+        grid.addWidget(sepgcombox, 3, 1)
+        grid.addWidget(sepgfile, 3, 2)
+        grid.addWidget(sepgupd, 3, 3)
 
-        grid.addWidget(offset_label, 5, 0)
-        grid.addWidget(soffset, 5, 1)
-        grid.addWidget(hours_label, 5, 2)
+        grid.addWidget(offset_label, 4, 0)
+        grid.addWidget(soffset, 4, 1)
+        grid.addWidget(hours_label, 4, 2)
 
-        grid.addWidget(set_label, 6, 1)
+        #grid.addWidget(set_label, 6, 1)
 
-        grid.addWidget(fastview_label, 7, 1)
-        grid.addWidget(multipleplnote_label, 8, 1)
+        grid.addWidget(fastview_label, 5, 1)
+        #grid.addWidget(multipleplnote_label, 8, 1)
 
-        grid.addWidget(sselect, 9, 1)
-        grid.addWidget(sprov, 10, 1)
+        grid.addWidget(sselect, 6, 1)
+        grid.addWidget(sprov, 7, 1)
 
-        grid.addWidget(sframe4, 11, 0)
-        grid.addWidget(sframe5, 11, 1)
-        grid.addWidget(sframe6, 11, 2)
-        grid.addWidget(sframe7, 11, 3)
+        grid.addWidget(sframe4, 8, 0)
+        grid.addWidget(sframe5, 8, 1)
+        grid.addWidget(sframe6, 8, 2)
+        grid.addWidget(sframe7, 8, 3)
 
         useragent_lbl_2 = QtWidgets.QLabel("{}:".format(LANG['useragent']))
         referer_lbl = QtWidgets.QLabel("HTTP Referer:")
