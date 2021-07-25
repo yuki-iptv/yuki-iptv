@@ -5090,6 +5090,12 @@ if __name__ == '__main__':
             except: # pylint: disable=bare-except
                 pass
             print_with_time("Stopped")
+            # Stopping all childs
+            current_pid = os.getpid()
+            if not os.name == 'nt':
+                os.killpg(os.getpgid(current_pid), signal.SIGKILL)
+            else:
+                os.kill(current_pid, signal.SIGTERM)
 
         first_boot = False
         first_boot_1 = True
