@@ -725,8 +725,20 @@ if __name__ == '__main__':
         def get_current_time():
             return time.strftime('%d.%m.%y %H:%M', time.localtime())
 
-        settings_win = QtWidgets.QMainWindow()
-        settings_win.resize(400, 200)
+        class settings_scrollable_window(QtWidgets.QMainWindow): # pylint: disable=too-few-public-methods
+            def __init__(self):
+                super().__init__()
+                self.initScroll()
+
+            def initScroll(self):
+                self.scroll = QtWidgets.QScrollArea()
+                self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+                self.scroll.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+                self.scroll.setWidgetResizable(True)
+                self.setCentralWidget(self.scroll)
+
+        settings_win = settings_scrollable_window()
+        settings_win.resize(690, 720)
         settings_win.setWindowTitle(LANG['settings'])
         settings_win.setWindowIcon(main_icon)
 
@@ -1033,7 +1045,8 @@ if __name__ == '__main__':
         settings_win_l = qr.topLeft()
         origY = settings_win_l.y() - 150
         settings_win_l.setY(origY)
-        settings_win.move(settings_win_l)
+        #settings_win.move(settings_win_l)
+        settings_win.move(qr.topLeft())
         help_win.move(qr.topLeft())
         license_win.move(qr.topLeft())
         sort_win.move(qr.topLeft())
@@ -2485,7 +2498,8 @@ if __name__ == '__main__':
         layout2.addLayout(grid3)
 
         wid2.setLayout(layout2)
-        settings_win.setCentralWidget(wid2)
+        #settings_win.setCentralWidget(wid2)
+        settings_win.scroll.setWidget(wid2)
 
         def xtream_save_btn_action():
             if xtr_username_input.text() and xtr_password_input.text() and xtr_url_input.text():
