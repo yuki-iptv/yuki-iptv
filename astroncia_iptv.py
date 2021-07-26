@@ -197,6 +197,10 @@ if os.name == 'nt':
 
 if __name__ == '__main__':
     try:
+        os.setpgrp()
+    except: # pylint: disable=bare-except
+        pass
+    try:
         os.environ['GDK_BACKEND'] = 'x11'
     except: # pylint: disable=bare-except
         pass
@@ -5093,7 +5097,7 @@ if __name__ == '__main__':
             # Stopping all childs
             current_pid = os.getpid()
             if not os.name == 'nt':
-                os.killpg(os.getpgid(current_pid), signal.SIGKILL)
+                os.killpg(0, signal.SIGKILL)
             else:
                 os.kill(current_pid, signal.SIGTERM)
 
