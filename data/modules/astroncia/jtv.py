@@ -94,12 +94,16 @@ def parse_jtv(c, settings):
             dt = array[chan]['schedules'][ic]
             try:
                 dt2 = array[chan]['schedules'][ic+1]
+                try:
+                    title = bytes(title, 'cp1251').decode('utf-8')
+                except: # pylint: disable=bare-except
+                    pass
                 array_out[chan].append({
                     'start': dt,
                     'stop': dt2,
                     'title': title,
                     'desc': ' '
                 })
-            except: # pylint: bare-except
+            except: # pylint: disable=bare-except
                 pass
     return array_out
