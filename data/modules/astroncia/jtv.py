@@ -75,7 +75,11 @@ def parse_jtv(c, settings):
             n = fn[0:-4].replace('_', ' ')
             if not n in array:
                 array[n] = {}
-            array[n]['titles'] = parse_titles(zf.read(fileinfo))
+            try:
+                array[n]['titles'] = parse_titles(zf.read(fileinfo))
+            except: # pylint: disable=bare-except
+                # Support UTF-8 encoding
+                array[n]['titles'] = parse_titles(zf.read(fileinfo), 'utf-8')
         if fn.endswith('.ndx'):
             n = fn[0:-4].replace('_', ' ')
             if not n in array:
