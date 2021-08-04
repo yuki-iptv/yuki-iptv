@@ -50,6 +50,7 @@ freeze_support()
 import requests
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
+from PyQt5 import Qt
 from PyQt5 import QtGui
 from data.modules.astroncia.lang import lang
 from data.modules.astroncia.ua import user_agent, uas, ua_names
@@ -210,6 +211,17 @@ if __name__ == '__main__':
         print_with_time("Copyright (C) Astroncia")
         print_with_time("")
         print_with_time(LANG['foundproblem'] + ": " + EMAIL_ADDRESS)
+        print_with_time("")
+        # Version debugging
+        print_with_time("Using Python {}".format(sys.version.replace('\n', '')))
+        try:
+            print_with_time("Qt version: {}".format(QtCore.QT_VERSION_STR))
+        except: # pylint: disable=bare-except
+            print_with_time("Qt version: UNKNOWN")
+        try:
+            print_with_time("PyQt version: {}".format(Qt.PYQT_VERSION_STR))
+        except: # pylint: disable=bare-except
+            print_with_time("PyQt5 version: UNKNOWN")
         print_with_time("")
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
         modules_path = str(Path(os.path.dirname(__file__), 'data', 'modules', 'binary'))
