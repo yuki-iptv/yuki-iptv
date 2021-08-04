@@ -4045,7 +4045,7 @@ if __name__ == '__main__':
         def enterPressed():
             itemClicked_event(win.listWidget.currentItem())
         QtWidgets.QShortcut(
-            QtCore.Qt.Key_Return,
+            QtGui.QKeySequence(QtCore.Qt.Key_Return),
             win.listWidget,
             context=QtCore.Qt.WidgetShortcut,
             activated=enterPressed
