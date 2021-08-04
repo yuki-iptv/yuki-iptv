@@ -50,7 +50,6 @@ freeze_support()
 import requests
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
-from PyQt5 import Qt
 from PyQt5 import QtGui
 from data.modules.astroncia.lang import lang
 from data.modules.astroncia.ua import user_agent, uas, ua_names
@@ -189,6 +188,15 @@ def async_function(func):
         return thread
     return wrapper
 
+def qt_version_pt1():
+    print_with_time("Qt version: {}".format(QtCore.QT_VERSION_STR))
+
+def qt_version_pt2():
+    try:
+        print_with_time("Qt version: {}".format(QtCore.qVersion()))
+    except: # pylint: disable=bare-except
+        print_with_time("Qt version: UNKNOWN")
+
 if os.name == 'nt':
     a0 = sys.executable
     if args1.python:
@@ -215,13 +223,9 @@ if __name__ == '__main__':
         # Version debugging
         print_with_time("Using Python {}".format(sys.version.replace('\n', '')))
         try:
-            print_with_time("Qt version: {}".format(QtCore.QT_VERSION_STR))
+            qt_version_pt1()
         except: # pylint: disable=bare-except
-            print_with_time("Qt version: UNKNOWN")
-        try:
-            print_with_time("PyQt version: {}".format(Qt.PYQT_VERSION_STR))
-        except: # pylint: disable=bare-except
-            print_with_time("PyQt5 version: UNKNOWN")
+            qt_version_pt2()
         print_with_time("")
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
         modules_path = str(Path(os.path.dirname(__file__), 'data', 'modules', 'binary'))
