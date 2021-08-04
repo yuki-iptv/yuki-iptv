@@ -24,7 +24,7 @@ deb и rpm пакеты доступны в [Releases](https://gitlab.com/astron
 Программа предоставляется **как есть**, никаких гарантий.  
 
 Зеркала репозитория:  
-[GitLab](https://gitlab.com/astroncia/iptv)  
+[GitLab](https://gitlab.com/astroncia/iptv) (**основной репозиторий**)  
 [Bitbucket](https://bitbucket.org/astroncia/astroncia-iptv/src/master/)  
 [Codeberg](https://codeberg.org/astroncia/iptv)  
 

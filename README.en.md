@@ -24,7 +24,7 @@ For Ubuntu / Linux Mint **recommended** install from [Launchpad PPA - ppa:astron
 Software provided **as is**, no guarantees.  
 
 Repository mirrors:  
-[GitLab](https://gitlab.com/astroncia/iptv)  
+[GitLab](https://gitlab.com/astroncia/iptv) (**main repository**)  
 [Bitbucket](https://bitbucket.org/astroncia/astroncia-iptv/src/master/)  
 [Codeberg](https://codeberg.org/astroncia/iptv)  
 
