@@ -2972,7 +2972,8 @@ if __name__ == '__main__':
 
         def itemClicked_event(item, custom_url="", archived=False): # pylint: disable=too-many-branches
             global playing, playing_chan, item_selected, playing_url, playing_archive
-            mpv_override_stop()
+            player.stop()
+            player.wait_for_playback()
             playing_archive = archived
             try:
                 j = item.data(QtCore.Qt.UserRole)
