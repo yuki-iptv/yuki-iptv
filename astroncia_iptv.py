@@ -68,7 +68,7 @@ from data.modules.thirdparty.levenshtein import damerau_levenshtein
 
 qt_backend, QtWidgets, QtCore, QtGui, QShortcut = get_qt_backend()
 if qt_backend == 'none' or not QtWidgets:
-    print_with_time("ERROR: No Qt backend found!")
+    print_with_time("ERROR: No Qt library found!")
     sys.exit(1)
 
 if qt_backend == 'PyQt5':
@@ -246,7 +246,7 @@ if __name__ == '__main__':
             qt_version = qt_version_pt2()
         print_with_time("Qt version: {}".format(qt_version))
         # Qt backend debugging
-        print_with_time("Qt backend: {}".format(qt_backend))
+        print_with_time("Qt library: {}".format(qt_backend))
         print_with_time("")
 
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -2657,7 +2657,7 @@ if __name__ == '__main__':
         textbox.resize(390, 400)
         textbox.setReadOnly(True)
         textbox.setPlainText(
-            "Qt version: {} | Qt backend: {}\nhttps://www.qt.io\n\n".format(
+            "Qt version: {} | Qt library: {}\nhttps://www.qt.io\n\n".format(
                 qt_version, qt_backend
             ) + \
             LANG['helptext'].format(APP_VERSION)
