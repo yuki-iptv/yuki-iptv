@@ -73,6 +73,7 @@ def record(input_url, out_file, channel_name, http_referer):
     ffmpeg_proc = subprocess.Popen(
         arr,
         shell=False,
+        start_new_session=True,
         startupinfo=startupinfo
     )
 
@@ -123,6 +124,7 @@ def record_return(input_url, out_file, channel_name, http_referer):
     return subprocess.Popen(
         arr,
         shell=False,
+        start_new_session=True,
         startupinfo=startupinfo
     )
 
@@ -196,6 +198,7 @@ def make_ffmpeg_screenshot(input_url, out_file, channel_name, http_referer):
     ffmpeg_proc_screenshot = subprocess.Popen(
         arr,
         shell=False,
+        start_new_session=True,
         startupinfo=startupinfo
     )
     try:

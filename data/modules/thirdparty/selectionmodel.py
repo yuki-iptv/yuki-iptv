@@ -1,11 +1,15 @@
 import sys
-from PyQt5 import QtWidgets, QtCore
+from data.modules.astroncia.qt import get_qt_backend
+qt_backend, QtWidgets, QtCore, QtGui, QShortcut = get_qt_backend()
 
 class ReorderableListModel(QtCore.QAbstractListModel):
-    dragDropFinished = QtCore.pyqtSignal()
+    if qt_backend == 'PyQt5':
+        dragDropFinished = QtCore.pyqtSignal()
+    else:
+        dragDropFinished = QtCore.Signal()
 
     def __init__(self, parent=None):
-        QtCore.QAbstractItemModel.__init__(self, parent)
+        super().__init__(parent)
         self.nodes = []
         self.lastDroppedItems = []
         self.pendingRemoveRowsAfterDrop = False

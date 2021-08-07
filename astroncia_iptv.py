@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 '''Astroncia IPTV - Cross platform IPTV player'''
 # pylint: disable=invalid-name, global-statement, missing-docstring, wrong-import-position
-# pylint: disable=c-extension-no-member, too-many-lines, ungrouped-imports
-# pylint: disable=too-many-statements, broad-except
+# pylint: disable=too-many-lines, ungrouped-imports, too-many-statements, broad-except
 #
 # Icons by Font Awesome ( https://fontawesome.com/ ) ( https://fontawesome.com/license )
 #
@@ -48,9 +47,7 @@ import threading
 from multiprocessing import Process, Manager, freeze_support, active_children
 freeze_support()
 import requests
-from PyQt5 import QtWidgets
-from PyQt5 import QtCore
-from PyQt5 import QtGui
+from data.modules.astroncia.qt import get_qt_backend
 from data.modules.astroncia.lang import lang
 from data.modules.astroncia.ua import user_agent, uas, ua_names
 from data.modules.astroncia.epg import worker
@@ -68,6 +65,21 @@ from data.modules.thirdparty.m3u import M3uParser
 from data.modules.thirdparty.m3ueditor import Viewer
 from data.modules.thirdparty.xtream import XTream
 from data.modules.thirdparty.levenshtein import damerau_levenshtein
+
+qt_backend, QtWidgets, QtCore, QtGui, QShortcut = get_qt_backend()
+if qt_backend == 'none' or not QtWidgets:
+    print_with_time("ERROR: No Qt backend found!")
+    sys.exit(1)
+
+if qt_backend == 'PyQt5':
+    qt_icon_critical = 3
+    qt_icon_warning = 2
+    qt_icon_information = 1
+else:
+    qt_icon_critical = QtWidgets.QMessageBox.Icon.Critical
+    qt_icon_warning = QtWidgets.QMessageBox.Icon.Warning
+    qt_icon_information = QtWidgets.QMessageBox.Icon.Information
+
 if not os.name == 'nt':
     try:
         from gi.repository import GLib
@@ -99,14 +111,16 @@ TVGUIDE_WIDTH = int((WINDOW_SIZE[0] / 5))
 BCOLOR = "#A2A3A3"
 EMAIL_ADDRESS = "kestraly (at) gmail.com"
 
-if DOCK_WIDGET2_HEIGHT < 0:
-    DOCK_WIDGET2_HEIGHT = 0
-
-if DOCK_WIDGET_WIDTH < 0:
-    DOCK_WIDGET_WIDTH = 0
+DOCK_WIDGET2_HEIGHT = max(DOCK_WIDGET2_HEIGHT, 0)
+DOCK_WIDGET_WIDTH = max(DOCK_WIDGET_WIDTH, 0)
 
 parser = argparse.ArgumentParser(description='Astroncia IPTV')
 parser.add_argument('--python')
+parser.add_argument(
+    '--disable-qt6',
+    action='store_true',
+    help='Force use Qt 5'
+)
 args1 = parser.parse_args()
 
 if 'HOME' in os.environ and os.path.isdir(os.environ['HOME']):
@@ -175,8 +189,11 @@ except: # pylint: disable=bare-except
 
 def show_exception(e):
     message = "{}\n\n{}".format(LANG['error2'], str(e))
-    msg = QtWidgets.QMessageBox(2, LANG['error'], message + '\n\n' + \
-        LANG['foundproblem'] + ':\n' + EMAIL_ADDRESS, QtWidgets.QMessageBox.Ok)
+    msg = QtWidgets.QMessageBox(
+        qt_icon_critical,
+        LANG['error'], message + '\n\n' + \
+        LANG['foundproblem'] + ':\n' + EMAIL_ADDRESS, QtWidgets.QMessageBox.Ok
+    )
     msg.exec()
 
 # Used as a decorator to run things in the background
@@ -189,13 +206,14 @@ def async_function(func):
     return wrapper
 
 def qt_version_pt1():
-    print_with_time("Qt version: {}".format(QtCore.QT_VERSION_STR))
+    return QtCore.QT_VERSION_STR
 
 def qt_version_pt2():
     try:
-        print_with_time("Qt version: {}".format(QtCore.qVersion()))
+        qt_version_1 = QtCore.qVersion()
     except: # pylint: disable=bare-except
-        print_with_time("Qt version: UNKNOWN")
+        qt_version_1 = "UNKNOWN"
+    return qt_version_1
 
 if os.name == 'nt':
     a0 = sys.executable
@@ -223,10 +241,14 @@ if __name__ == '__main__':
         # Version debugging
         print_with_time("Using Python {}".format(sys.version.replace('\n', '')))
         try:
-            qt_version_pt1()
+            qt_version = qt_version_pt1()
         except: # pylint: disable=bare-except
-            qt_version_pt2()
+            qt_version = qt_version_pt2()
+        print_with_time("Qt version: {}".format(qt_version))
+        # Qt backend debugging
+        print_with_time("Qt backend: {}".format(qt_backend))
         print_with_time("")
+
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
         modules_path = str(Path(os.path.dirname(__file__), 'data', 'modules', 'binary'))
         if os.name == 'nt':
@@ -254,6 +276,27 @@ if __name__ == '__main__':
             file01 = open(str(Path(LOCAL_DIR, 'playlist_separate.m3u')), 'w', encoding="utf8")
             file01.write('#EXTM3U\n#EXTINF:-1,{}\nhttp://255.255.255.255\n'.format('-'))
             file01.close()
+
+        # Warning about experimental Qt 6 / PySide6 version
+        if qt_backend == 'PySide6':
+            if not os.path.isfile(str(Path(LOCAL_DIR, 'qt6_experimental.flag'))):
+                qt6_file = open(str(Path(LOCAL_DIR, 'qt6_experimental.flag')), 'w', encoding="utf8")
+                qt6_file.write('')
+                qt6_file.close()
+                exp_qt6 = QtWidgets.QMessageBox(
+                    qt_icon_information,
+                    MAIN_WINDOW_TITLE,
+                    'You are using experimental Qt 6 (PySide6)\nversion of Astroncia IPTV.\n' + \
+                    '\nExecute astronciaiptv --disable-qt6\nif you experience problems.\n' + \
+                    '\nThis message will no longer appear.\n\n---\n\n' + \
+                    'Вы используете экспериментальную\n' + \
+                    'версию Astroncia IPTV, основанную на\n' + \
+                    'Qt 6 (PySide6).\n\nЗапустите astronciaiptv ' + \
+                    '--disable-qt6\n, если у вас возникли проблемы.\n\n' + \
+                    'Это сообщение больше не появится.',
+                    QtWidgets.QMessageBox.Ok
+                )
+                exp_qt6.exec()
 
         channel_sets = {}
         prog_ids = {}
@@ -576,7 +619,7 @@ if __name__ == '__main__':
                                 str("XTream API: {}\n\n{}".format(LANG['procerror'], str(e3)))
                             )
                             msg2 = QtWidgets.QMessageBox(
-                                2,
+                                qt_icon_warning,
                                 LANG['error'],
                                 message2,
                                 QtWidgets.QMessageBox.Ok
@@ -588,7 +631,7 @@ if __name__ == '__main__':
                             str("XTream API: {}".format(LANG['xtreamnoconn']))
                         )
                         msg1 = QtWidgets.QMessageBox(
-                            2,
+                            qt_icon_warning,
                             LANG['error'],
                             message1,
                             QtWidgets.QMessageBox.Ok
@@ -1057,7 +1100,9 @@ if __name__ == '__main__':
         autoclosemenu_time = -1
 
         qr = settings_win.frameGeometry()
-        qr.moveCenter(QtWidgets.QDesktopWidget().availableGeometry().center())
+        qr.moveCenter(
+            QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
+        )
         settings_win_l = qr.topLeft()
         origY = settings_win_l.y() - 150
         settings_win_l.setY(origY)
@@ -1094,8 +1139,12 @@ if __name__ == '__main__':
 
         def addrecord_clicked():
             selected_chan = choosechannel_ch.currentText()
-            start_time_r = starttime_w.dateTime().toPyDateTime().strftime('%d.%m.%y %H:%M')
-            end_time_r = endtime_w.dateTime().toPyDateTime().strftime('%d.%m.%y %H:%M')
+            if qt_backend == 'PySide6':
+                start_time_r = starttime_w.dateTime().toPython().strftime('%d.%m.%y %H:%M')
+                end_time_r = endtime_w.dateTime().toPython().strftime('%d.%m.%y %H:%M')
+            else:
+                start_time_r = starttime_w.dateTime().toPyDateTime().strftime('%d.%m.%y %H:%M')
+                end_time_r = endtime_w.dateTime().toPyDateTime().strftime('%d.%m.%y %H:%M')
             schedulers.addItem(
                 LANG['channel'] + ': ' + selected_chan + '\n' + \
                   '{}: '.format(LANG['starttime']) + start_time_r + '\n' + \
@@ -2607,7 +2656,12 @@ if __name__ == '__main__':
         textbox = QtWidgets.QPlainTextEdit(help_win)
         textbox.resize(390, 400)
         textbox.setReadOnly(True)
-        textbox.setPlainText(LANG['helptext'].format(APP_VERSION))
+        textbox.setPlainText(
+            "Qt version: {} | Qt backend: {}\nhttps://www.qt.io\n\n".format(
+                qt_version, qt_backend
+            ) + \
+            LANG['helptext'].format(APP_VERSION)
+        )
         license_btn = QtWidgets.QPushButton(help_win)
         license_btn.move(140, 400)
         license_btn.setText(LANG['license'])
@@ -2758,9 +2812,13 @@ if __name__ == '__main__':
                 save_settings()
             else:
                 print("No Hypnotix playlists found!")
-                QtWidgets.QMessageBox(
-                    1, MAIN_WINDOW_TITLE, LANG['nohypnotixpf'], QtWidgets.QMessageBox.Ok
-                ).exec()
+                hypnotix_msg = QtWidgets.QMessageBox(
+                    qt_icon_information,
+                    MAIN_WINDOW_TITLE,
+                    LANG['nohypnotixpf'],
+                    QtWidgets.QMessageBox.Ok
+                )
+                hypnotix_msg.exec()
 
         def providers_reset_do():
             global providers_saved
@@ -2890,7 +2948,9 @@ if __name__ == '__main__':
             win.resize(WINDOW_SIZE[0], WINDOW_SIZE[1])
 
         qr = win.frameGeometry()
-        qr.moveCenter(QtWidgets.QDesktopWidget().availableGeometry().center())
+        qr.moveCenter(
+            QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
+        )
         win.move(qr.topLeft())
 
         win.main_widget = QtWidgets.QWidget(win)
@@ -3173,7 +3233,9 @@ if __name__ == '__main__':
                     win.showMaximized()
                 win.resize(currentWidthHeight[0], currentWidthHeight[1])
                 qr2 = win.frameGeometry()
-                qr2.moveCenter(QtWidgets.QDesktopWidget().availableGeometry().center())
+                qr2.moveCenter(
+                    QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
+                )
                 win.move(qr2.topLeft())
 
         dockWidget_out = QtWidgets.QPushButton()
@@ -4041,7 +4103,10 @@ if __name__ == '__main__':
             menu.addAction(LANG['startrecording'], tvguide_start_record)
             menu.addAction(LANG['channelsettings'], settings_context_menu)
             #menu.addAction(LANG['iaepgmatch'], iaepgmatch)
-            menu.exec_(self.mapToGlobal(pos))
+            if qt_backend == 'PySide6':
+                menu.exec(self.mapToGlobal(pos))
+            else:
+                menu.exec_(self.mapToGlobal(pos))
 
         win.listWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         win.listWidget.customContextMenuRequested.connect(show_context_menu)
@@ -4050,7 +4115,7 @@ if __name__ == '__main__':
         win.listWidget.itemDoubleClicked.connect(itemClicked_event)
         def enterPressed():
             itemClicked_event(win.listWidget.currentItem())
-        QtWidgets.QShortcut(
+        QShortcut(
             QtGui.QKeySequence(QtCore.Qt.Key_Return),
             win.listWidget,
             context=QtCore.Qt.WidgetShortcut,
@@ -4449,7 +4514,7 @@ if __name__ == '__main__':
                 settings_context_menu()
             else:
                 msg = QtWidgets.QMessageBox(
-                    2,
+                    qt_icon_warning,
                     'Astroncia IPTV',
                     LANG['nochannelselected'],
                     QtWidgets.QMessageBox.Ok
@@ -4505,9 +4570,15 @@ if __name__ == '__main__':
             #if playing_chan:
             autoclosemenu_time = time.time()
             if not fullscreen:
-                right_click_menu.exec_(QtGui.QCursor.pos())
+                if qt_backend == 'PySide6':
+                    right_click_menu.exec(QtGui.QCursor.pos())
+                else:
+                    right_click_menu.exec_(QtGui.QCursor.pos())
             else:
-                right_click_menu_fullscreen.exec_(QtGui.QCursor.pos())
+                if qt_backend == 'PySide6':
+                    right_click_menu_fullscreen.exec(QtGui.QCursor.pos())
+                else:
+                    right_click_menu_fullscreen.exec_(QtGui.QCursor.pos())
 
         @player.on_key_press('MBTN_LEFT_DBL')
         def my_leftdbl_binding():
@@ -4527,8 +4598,7 @@ if __name__ == '__main__':
                 next_channel()
             else:
                 volume = int(player.volume + settings['volumechangestep'])
-                if volume > 200:
-                    volume = 200
+                volume = min(volume, 200)
                 label7.setValue(volume)
                 mpv_volume_set()
 
@@ -4538,8 +4608,7 @@ if __name__ == '__main__':
                 prev_channel()
             else:
                 volume = int(player.volume - settings['volumechangestep'])
-                if volume < 0:
-                    volume = 0
+                volume = max(volume, 0)
                 time_stop = time.time() + 3
                 if not fullscreen:
                     l1.show()
@@ -4578,10 +4647,8 @@ if __name__ == '__main__':
             if row == -1:
                 row = row0
             next_row = row + i1
-            if next_row < 0:
-                next_row = 0
-            if next_row > win.listWidget.count() - 1:
-                next_row = win.listWidget.count() - 1
+            next_row = max(next_row, 0)
+            next_row = min(next_row, win.listWidget.count() - 1)
             win.listWidget.setCurrentRow(next_row)
             itemClicked_event(win.listWidget.currentItem())
 
@@ -5624,7 +5691,7 @@ if __name__ == '__main__':
             QtCore.Qt.Key_D: show_scheduler # d - record scheduler
         }
         for keybind in keybinds:
-            QtWidgets.QShortcut(
+            QShortcut(
                 QtGui.QKeySequence(keybind), win
             ).activated.connect(keybinds[keybind])
 
@@ -5682,7 +5749,10 @@ if __name__ == '__main__':
             settings_win.setFocus(QtCore.Qt.PopupFocusReason)
             settings_win.activateWindow()
 
-        sys.exit(app.exec_())
+        if qt_backend == 'PySide6':
+            sys.exit(app.exec())
+        else:
+            sys.exit(app.exec_())
     except Exception as e3:
         show_exception(e3)
         sys.exit(1)

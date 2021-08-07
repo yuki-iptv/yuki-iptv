@@ -1,10 +1,8 @@
 import sys
 import os
 import pandas as pd
-from PyQt5.QtCore import Qt, QDir, QAbstractTableModel, QModelIndex, QVariant, QSize
-from PyQt5.QtWidgets import (QMainWindow, QTableView, QApplication, QLineEdit, QComboBox,
-                             QFileDialog, QAbstractItemView, QMessageBox, QToolButton)
-from PyQt5.QtGui import QStandardItem, QIcon, QKeySequence
+from data.modules.astroncia.qt import get_qt_backend
+qt_backend, QtWidgets, QtCore, QtGui, QShortcut = get_qt_backend()
 from pathlib import Path
 from data.modules.astroncia.extgrp import parse_extgrp
 
@@ -14,9 +12,9 @@ try:
 except: # pylint: disable=bare-except
     pass
 
-class PandasModel(QAbstractTableModel):
+class PandasModel(QtCore.QAbstractTableModel):
     def __init__(self, df = pd.DataFrame(), parent=None):
-        QAbstractTableModel.__init__(self, parent=None)
+        QtCore.QAbstractTableModel.__init__(self, parent=None)
         self._df = df
         self.setChanged = False
         self.dataChanged.connect(self.setModified)
@@ -24,28 +22,28 @@ class PandasModel(QAbstractTableModel):
     def setModified(self):
         self.setChanged = True
 
-    def headerData(self, section, orientation, role=Qt.DisplayRole):
-        if role != Qt.DisplayRole:
-            return QVariant()
-        if orientation == Qt.Horizontal:
+    def headerData(self, section, orientation, role=QtCore.Qt.DisplayRole):
+        if role != QtCore.Qt.DisplayRole:
+            return None
+        if orientation == QtCore.Qt.Horizontal:
             try:
                 return self._df.columns.tolist()[section]
             except (IndexError, ):
-                return QVariant()
-        elif orientation == Qt.Vertical:
+                return None
+        elif orientation == QtCore.Qt.Vertical:
             try:
                 return self._df.index.tolist()[section]
             except (IndexError, ):
-                return QVariant()
+                return None
 
     def flags(self, index):
-        return Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsEditable
+        return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEditable
 
-    def data(self, index, role=Qt.DisplayRole):
+    def data(self, index, role=QtCore.Qt.DisplayRole):
         if index.isValid():
-            if (role == Qt.EditRole):
+            if (role == QtCore.Qt.EditRole):
                 return self._df.values[index.row()][index.column()]
-            elif (role == Qt.DisplayRole):
+            elif (role == QtCore.Qt.DisplayRole):
                 return self._df.values[index.row()][index.column()]
         return None
 
@@ -56,20 +54,20 @@ class PandasModel(QAbstractTableModel):
         self.dataChanged.emit(index, index)
         return True
 
-    def rowCount(self, parent=QModelIndex()):
+    def rowCount(self, parent=QtCore.QModelIndex()):
         return len(self._df.index)
 
-    def columnCount(self, parent=QModelIndex()):
+    def columnCount(self, parent=QtCore.QModelIndex()):
         return len(self._df.columns)
 
     def sort(self, column, order):
         colname = self._df.columns.tolist()[column]
         self.layoutAboutToBeChanged.emit()
-        self._df.sort_values(colname, ascending= order == Qt.AscendingOrder, inplace=True)
+        self._df.sort_values(colname, ascending= order == QtCore.Qt.AscendingOrder, inplace=True)
         self._df.reset_index(inplace=True, drop=True)
         self.layoutChanged.emit()
 
-class Viewer(QMainWindow):
+class Viewer(QtWidgets.QMainWindow):
     def __init__(self, parent=None, lang=None, iconsFolder=None):
       super(Viewer, self).__init__(parent)
       self.iconsFolder = iconsFolder
@@ -80,11 +78,11 @@ class Viewer(QMainWindow):
       self.csv_file = ""
       self.m3u_file = ""
       self.setGeometry(0, 0, 1000, 600)
-      self.lb = QTableView()
+      self.lb = QtWidgets.QTableView()
       self.lb.horizontalHeader().hide()
       self.model =  PandasModel()
       self.lb.setModel(self.model)
-      self.lb.setEditTriggers(QAbstractItemView.DoubleClicked)
+      self.lb.setEditTriggers(QtWidgets.QAbstractItemView.DoubleClicked)
       self.lb.setSelectionBehavior(self.lb.SelectRows)
       self.lb.setSelectionMode(self.lb.SingleSelection)
       self.lb.setDragDropMode(self.lb.InternalMove)
@@ -94,7 +92,7 @@ class Viewer(QMainWindow):
       self.setContentsMargins(10, 10, 10, 10)
       self.statusBar().showMessage(self.LANG['m3u_ready'], 0)
       self.setWindowTitle(self.LANG['m3u_m3ueditor'])
-      self.setWindowIcon(QIcon.fromTheme("multimedia-playlist"))
+      self.setWindowIcon(QtGui.QIcon.fromTheme("multimedia-playlist"))
       self.createMenuBar()
       self.createToolBar()
       self.lb.setFocus()
@@ -161,9 +159,9 @@ class Viewer(QMainWindow):
     def closeEvent(self, event):
         if  self.model.setChanged == True:
             quit_msg = "<b>{}</b>".format(self.LANG['m3u_waschanged'])
-            reply = QMessageBox.question(self, self.LANG['m3u_saveconfirm'],
-                     quit_msg, QMessageBox.Yes, QMessageBox.No)
-            if reply == QMessageBox.Yes:
+            reply = QtWidgets.QMessageBox.question(self, self.LANG['m3u_saveconfirm'],
+                     quit_msg, QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
+            if reply == QtWidgets.QMessageBox.Yes:
                 event.accept()
                 self.writeCSV()
 
@@ -171,28 +169,28 @@ class Viewer(QMainWindow):
         bar=self.menuBar()
         self.filemenu=bar.addMenu(self.LANG['m3u_file'])
         self.separatorAct = self.filemenu.addSeparator()
-        self.filemenu.addAction(QIcon.fromTheme("document-open"), self.LANG['m3u_loadm3u'],  self.loadM3U, QKeySequence.Open)
-        self.filemenu.addAction(QIcon.fromTheme("document-save-as"), "{} ...".format(self.LANG['m3u_saveas']),  self.writeCSV, QKeySequence.SaveAs)
+        self.filemenu.addAction(QtGui.QIcon.fromTheme("document-open"), self.LANG['m3u_loadm3u'],  self.loadM3U, QtGui.QKeySequence.Open)
+        self.filemenu.addAction(QtGui.QIcon.fromTheme("document-save-as"), "{} ...".format(self.LANG['m3u_saveas']),  self.writeCSV, QtGui.QKeySequence.SaveAs)
 
     def createToolBar(self):
         tb = self.addToolBar("Tools")
-        tb.setIconSize(QSize(16, 16))
+        tb.setIconSize(QtCore.QSize(16, 16))
 
-        self.findfield = QLineEdit(placeholderText = "{} ...".format(self.LANG['m3u_find']))
+        self.findfield = QtWidgets.QLineEdit(placeholderText = "{} ...".format(self.LANG['m3u_find']))
         self.findfield.setClearButtonEnabled(True)
         self.findfield.setFixedWidth(200)
         tb.addWidget(self.findfield)
 
         tb.addSeparator()
 
-        self.replacefield = QLineEdit(placeholderText = "{} ...".format(self.LANG['m3u_replacewith']))
+        self.replacefield = QtWidgets.QLineEdit(placeholderText = "{} ...".format(self.LANG['m3u_replacewith']))
         self.replacefield.setClearButtonEnabled(True)
         self.replacefield.setFixedWidth(200)
         tb.addWidget(self.replacefield)
 
         tb.addSeparator()
 
-        btn = QToolButton()
+        btn = QtWidgets.QToolButton()
         btn.setText(self.LANG['m3u_replaceall'])
         btn.setToolTip(self.LANG['m3u_replaceall'])
         btn.clicked.connect(self.replace_in_table)
@@ -200,35 +198,35 @@ class Viewer(QMainWindow):
 
         tb.addSeparator()
 
-        del_btn = QToolButton()
-        del_btn.setIcon(QIcon(str(Path('data', self.iconsFolder, 'trash.png'))))
+        del_btn = QtWidgets.QToolButton()
+        del_btn.setIcon(QtGui.QIcon(str(Path('data', self.iconsFolder, 'trash.png'))))
         del_btn.setToolTip(self.LANG['m3u_deleterow'])
         del_btn.clicked.connect(self.del_row)
         tb.addWidget(del_btn)
 
         tb.addSeparator()
 
-        add_btn = QToolButton()
-        add_btn.setIcon(QIcon(str(Path('data', self.iconsFolder, 'plus.png'))))
+        add_btn = QtWidgets.QToolButton()
+        add_btn.setIcon(QtGui.QIcon(str(Path('data', self.iconsFolder, 'plus.png'))))
         add_btn.setToolTip(self.LANG['m3u_addrow'])
         add_btn.clicked.connect(self.add_row)
         tb.addWidget(add_btn)
 
-        move_down_btn = QToolButton()
-        move_down_btn.setIcon(QIcon(str(Path('data', self.iconsFolder, 'arrow-down.png'))))
+        move_down_btn = QtWidgets.QToolButton()
+        move_down_btn.setIcon(QtGui.QIcon(str(Path('data', self.iconsFolder, 'arrow-down.png'))))
         move_down_btn.setToolTip(self.LANG['m3u_movedown'])
         move_down_btn.clicked.connect(self.move_down)
         tb.addWidget(move_down_btn)
 
-        move_up_up = QToolButton()
-        move_up_up.setIcon(QIcon(str(Path('data', self.iconsFolder, 'arrow-up.png'))))
+        move_up_up = QtWidgets.QToolButton()
+        move_up_up.setIcon(QtGui.QIcon(str(Path('data', self.iconsFolder, 'arrow-up.png'))))
         move_up_up.setToolTip(self.LANG['m3u_moveup'])
         move_up_up.clicked.connect(self.move_up)
         tb.addWidget(move_up_up)
 
         tb.addSeparator()
 
-        self.filter_field = QLineEdit(placeholderText = self.LANG['m3u_filtergroup'])
+        self.filter_field = QtWidgets.QLineEdit(placeholderText = self.LANG['m3u_filtergroup'])
         self.filter_field.setClearButtonEnabled(True)
         self.filter_field.setToolTip(self.LANG['m3u_searchterm'])
         self.filter_field.setFixedWidth(200)
@@ -236,7 +234,7 @@ class Viewer(QMainWindow):
         self.filter_field.textChanged.connect(self.update_filter)
         tb.addWidget(self.filter_field)
 
-        self.filter_combo = QComboBox()
+        self.filter_combo = QtWidgets.QComboBox()
         self.filter_combo.setToolTip(self.LANG['m3u_choosecolumn'])
         self.filter_combo.setFixedWidth(100)
         self.filter_combo.addItems(['tvg-name', 'group-title', 'tvg-logo', 'tvg-id', 'url'])
@@ -284,16 +282,16 @@ class Viewer(QMainWindow):
         self.lb.selectRow(self.model.rowCount() - 1)
 
     def openFile(self, path=None):
-        path, _ = QFileDialog.getOpenFileName(self, self.LANG['m3u_openfile'], home_folder,self.LANG['m3u_playlists'])
+        path, _ = QtWidgets.QFileDialog.getOpenFileName(self, self.LANG['m3u_openfile'], home_folder,self.LANG['m3u_playlists'])
         if path:
             return path
 
     def loadM3U(self):
         if self.model.setChanged == True:
             save_msg = "<b>{}</b>".format(self.LANG['m3u_waschanged'])
-            reply = QMessageBox.question(self, self.LANG['m3u_saveconfirm'],
-                     save_msg, QMessageBox.Yes, QMessageBox.No)
-            if reply == QMessageBox.Yes:
+            reply = QtWidgets.QMessageBox.question(self, self.LANG['m3u_saveconfirm'],
+                     save_msg, QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
+            if reply == QtWidgets.QMessageBox.Yes:
                 self.writeCSV()
                 self.open_m3u()
             else:
@@ -322,7 +320,7 @@ class Viewer(QMainWindow):
 
 
     def writeCSV(self):
-        fileName, _ = QFileDialog.getSaveFileName(self, self.LANG['m3u_savefile'], self.fname.replace(".csv", ".m3u"),self.LANG['m3u_m3ufiles'], home_folder)
+        fileName, _ = QtWidgets.QFileDialog.getSaveFileName(self, self.LANG['m3u_savefile'], self.fname.replace(".csv", ".m3u"),self.LANG['m3u_m3ufiles'], home_folder)
         if fileName:
             # save temporary csv
             f = open(self.csv_file, 'w')
@@ -444,7 +442,7 @@ def stylesheet(self):
     """
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     main = Viewer()
     main.show()
     sys.exit(app.exec_())
