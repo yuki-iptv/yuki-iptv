@@ -5551,6 +5551,11 @@ if __name__ == '__main__':
                 dockWidget2.hide()
 
         def thread_mouse(): # pylint: disable=too-many-branches
+            try:
+                player['cursor-autohide'] = 1000
+                player['force-window'] = True
+            except: # pylint: disable=bare-except
+                pass
             try: # pylint: disable=too-many-nested-blocks
                 global fullscreen, key_t_visible, dockWidgetVisible, \
                 dockWidget2Visible
