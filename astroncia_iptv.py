@@ -71,6 +71,8 @@ if qt_backend == 'none' or not QtWidgets:
     print_with_time("ERROR: No Qt library found!")
     sys.exit(1)
 
+from data.modules.thirdparty.resizablewindow import ResizableWindow
+
 if qt_backend == 'PyQt5':
     qt_icon_critical = 3
     qt_icon_warning = 2
@@ -2864,23 +2866,6 @@ if __name__ == '__main__':
                 self.listWidget = None
                 self.latestWidth = 0
                 self.latestHeight = 0
-            def eventFilter(self, source, event):
-                global fullscreen, newdockWidgetHeight
-                if settings['exp1']:
-                    if (event.type() == QtCore.QEvent.Resize and fullscreen) and not \
-                        dockWidget.height() == win.height() - 150:
-                        newdockWidgetHeight = dockWidget.height()
-                        try:
-                            expheight_file = open(
-                                str(Path(LOCAL_DIR, 'expheight.json')), 'w', encoding="utf8"
-                            )
-                            expheight_file.write(
-                                json.dumps({"expplaylistheight": newdockWidgetHeight})
-                            )
-                            expheight_file.close()
-                        except: # pylint: disable=bare-except
-                            pass
-                return super(MainWindow, self).eventFilter(source, event)
             def updateWindowSize(self):
                 if self.width() != self.latestWidth or self.height() != self.latestHeight:
                     self.latestWidth = self.width()
@@ -2993,7 +2978,7 @@ if __name__ == '__main__':
         playing_chan = ''
 
         def show_progress(prog):
-            global playing_archive
+            global playing_archive, fullscreen
             if prog and not playing_archive:
                 prog_percentage = round(
                     (time.time() - prog['start']) / (prog['stop'] - prog['start']) * 100
@@ -3008,9 +2993,10 @@ if __name__ == '__main__':
                 progress.setAlignment(QtCore.Qt.AlignLeft)
                 start_label.setText(prog_start_time)
                 stop_label.setText(prog_stop_time)
-                progress.show()
-                start_label.show()
-                stop_label.show()
+                if not fullscreen:
+                    progress.show()
+                    start_label.show()
+                    stop_label.show()
             else:
                 progress.hide()
                 start_label.setText('')
@@ -3185,32 +3171,33 @@ if __name__ == '__main__':
             global fullscreen, l1, time_stop, currentWidthHeight, currentMaximized
             if not fullscreen:
                 # Entering fullscreen
+                fullscreen = True
                 currentWidthHeight = [win.width(), win.height()]
                 currentMaximized = win.isMaximized()
                 #l1.show()
                 #l1.setText2("{} F".format(LANG['exitfullscreen']))
                 #time_stop = time.time() + 3
-                fullscreen = True
                 dockWidget.hide()
                 chan.hide()
                 #progress.hide()
                 #start_label.hide()
                 #stop_label.hide()
+                for hide_lbl_fullscreen in hide_lbls_fullscreen:
+                    hide_lbl_fullscreen.hide()
+                progress.hide()
+                start_label.hide()
+                stop_label.hide()
                 dockWidget2.hide()
                 dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
                 win.update()
                 win.showFullScreen()
             else:
                 # Leaving fullscreen
+                hide_playlist()
+                hide_controlpanel()
                 dockWidget.setWindowOpacity(1)
                 dockWidget.hide()
-                if settings['exp1']:
-                    dockWidget.setFloating(False)
-                dockWidget.hide()
                 dockWidget2.setWindowOpacity(1)
-                dockWidget2.hide()
-                if settings['exp1']:
-                    dockWidget2.setFloating(False)
                 dockWidget2.hide()
                 fullscreen = False
                 if l1.text().endswith('{} F'.format(LANG['exitfullscreen'])):
@@ -3223,6 +3210,8 @@ if __name__ == '__main__':
                     start_label.show()
                     stop_label.show()
                     dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
+                for hide_lbl_fullscreen in hide_lbls_fullscreen:
+                    hide_lbl_fullscreen.show()
                 dockWidget2.show()
                 dockWidget.show()
                 chan.show()
@@ -5423,7 +5412,8 @@ if __name__ == '__main__':
 
         hide_lbls_fullscreen = [
             label5_0, label5_2, label7_2, label8,
-            label8_0, label8_4, label8_5, label9
+            label8_0, label8_4, label8_5, label9,
+            label11, label12
         ]
 
         dockWidget.installEventFilter(win)
@@ -5472,66 +5462,103 @@ if __name__ == '__main__':
                         right_click_menu_fullscreen.hide()
                     autoclosemenu_time = -1
 
-        def thread_mouse_2():
-            try:
-                global newdockWidgetHeight, fullscreen, key_t_visible
+        def resizeCallback(cal_width):
+            global fullscreen, newdockWidgetHeight
+            if settings['exp1'] and fullscreen:
+                newdockWidgetHeight = cal_width
                 try:
-                    player['cursor-autohide'] = 1000
-                    player['force-window'] = True
+                    expheight_file = open(
+                        str(Path(LOCAL_DIR, 'expheight.json')), 'w', encoding="utf8"
+                    )
+                    expheight_file.write(
+                        json.dumps({"expplaylistheight": newdockWidgetHeight})
+                    )
+                    expheight_file.close()
                 except: # pylint: disable=bare-except
                     pass
-                if (fullscreen and not key_t_visible) and settings['exp1']:
-                    dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
-                    dockWidget.setWindowOpacity(0.55)
-                    if settings['panelposition'] == 0:
-                        dockWidget.move(win.width() - dockWidget.width(), 50)
-                    else:
-                        dockWidget.move(0, 50)
-                    dockWidget2.move(
-                        int(win.width() / 3) - 150, win.height() - dockWidget2.height()
-                    )
-                    if not newdockWidgetHeight:
-                        dockWidget.resize(dockWidget.width(), win.height() - 150)
-                    else:
-                        dockWidget.resize(dockWidget.width(), newdockWidgetHeight)
-            except: # pylint: disable=bare-except
-                pass
+
+        playlist_widget = ResizableWindow()
+        playlist_widget.callback = resizeCallback
+        playlist_widget_orig = QtWidgets.QWidget(playlist_widget)
+        playlist_widget.setCentralWidget(playlist_widget_orig)
+        pl_layout = QtWidgets.QGridLayout()
+        pl_layout.setVerticalSpacing(0)
+        pl_layout.setContentsMargins(0, 0, 0, 0)
+        pl_layout.setAlignment(QtCore.Qt.AlignTop)
+        pl_layout.setSpacing(0)
+        playlist_widget_orig.setLayout(pl_layout)
+        playlist_widget.hide()
+
+        controlpanel_widget = QtWidgets.QWidget()
+        cp_layout = QtWidgets.QVBoxLayout()
+        controlpanel_widget.setLayout(cp_layout)
+        controlpanel_widget.hide()
+
+        def show_playlist():
+            if settings["exp1"]:
+                playlist_widget.move(win.width() - dockWidget.width(), 0)
+                playlist_widget.setFixedWidth(dockWidget.width())
+                if newdockWidgetHeight:
+                    playlist_widget_height = newdockWidgetHeight
+                else:
+                    playlist_widget_height = win.height() - 50
+                playlist_widget.resize(
+                    playlist_widget.width(),
+                    playlist_widget_height
+                )
+                playlist_widget.setWindowOpacity(0.55)
+                playlist_widget.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+                pl_layout.addWidget(widget)
+                playlist_widget.show()
+            else:
+                dockWidget.show()
+
+        def hide_playlist():
+            if settings["exp1"]:
+                pl_layout.removeWidget(widget)
+                dockWidget.setWidget(widget)
+                playlist_widget.hide()
+            else:
+                dockWidget.hide()
+
+        def show_controlpanel():
+            if settings["exp1"]:
+                controlpanel_widget.setFixedWidth(
+                    #int(win.width() / 3) - 100
+                    500
+                )
+                controlpanel_widget.setWindowOpacity(0.55)
+                controlpanel_widget.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+                cp_layout.addWidget(widget2)
+                p_3 = win.main_widget.frameGeometry().center() - QtCore.QRect(
+                    QtCore.QPoint(), controlpanel_widget.sizeHint()
+                ).center()
+                controlpanel_widget.move(
+                    #int(win.width() / 2) - controlpanel_widget.width(),
+                    p_3.x() - 100,
+                    win.height() - 100
+                )
+                controlpanel_widget.show()
+            else:
+                dockWidget2.show()
+
+        def hide_controlpanel():
+            if settings["exp1"]:
+                cp_layout.removeWidget(widget2)
+                dockWidget2.setWidget(widget2)
+                controlpanel_widget.hide()
+            else:
+                dockWidget2.hide()
 
         def thread_mouse(): # pylint: disable=too-many-branches
             try: # pylint: disable=too-many-nested-blocks
                 global fullscreen, key_t_visible, dockWidgetVisible, \
-                dockWidget2Visible, newdockWidgetHeight
+                dockWidget2Visible
                 #label13.setText("{}: {}%".format(LANG['volumeshort'], int(player.volume)))
                 label13.setText("{}%".format(int(player.volume)))
-                if settings['exp1']:
-                    if fullscreen:
-                        for hide_lbl_fullscreen in hide_lbls_fullscreen:
-                            hide_lbl_fullscreen.hide()
-                    else:
-                        for hide_lbl_fullscreen in hide_lbls_fullscreen:
-                            hide_lbl_fullscreen.show()
                 if fullscreen:
-                    if settings['exp1']:
-                        for btns_3 in hlayout2_btns_1 + hlayout2_btns_2:
-                            btns_3.setMinimumSize(QtCore.QSize(32, 32))
-                        #label10.hide()
-                        label11.hide()
-                        label12.hide()
-                        progress.hide()
-                        start_label.hide()
-                        stop_label.hide()
                     dockWidget.setFixedWidth(settings['exp2'])
                 else:
-                    if settings['exp1']:
-                        for btns_3 in hlayout2_btns_1 + hlayout2_btns_2:
-                            btns_3.setMinimumSize(QtCore.QSize(20, 20))
-                        #label10.show()
-                        label11.show()
-                        label12.show()
-                        if start_label.text() or stop_label.text():
-                            progress.show()
-                            start_label.show()
-                            stop_label.show()
                     dockWidget.setFixedWidth(DOCK_WIDGET_WIDTH)
                 if fullscreen and not key_t_visible:
                     # Playlist
@@ -5545,32 +5572,10 @@ if __name__ == '__main__':
                         if is_cursor_x and cursor_x < win_width:
                             if not dockWidgetVisible:
                                 dockWidgetVisible = True
-                                of1 = 0
-                                if settings['exp1']:
-                                    of1 = 50
-                                    dockWidget.setFloating(True)
-                                if settings['panelposition'] == 0:
-                                    dockWidget.move(win.width() - dockWidget.width(), of1)
-                                else:
-                                    dockWidget.move(0, of1)
-                                if not newdockWidgetHeight:
-                                    dockWidget.resize(dockWidget.width(), win.height() - 150)
-                                else:
-                                    dockWidget.resize(dockWidget.width(), newdockWidgetHeight)
-                                dockWidget.setWindowOpacity(0.55)
-                                dockWidget.show()
-                                dockWidget.setWindowOpacity(0.55)
-                                if settings['panelposition'] == 0:
-                                    dockWidget.move(win.width() - dockWidget.width(), of1)
-                                else:
-                                    dockWidget.move(0, of1)
+                                show_playlist()
                         else:
                             dockWidgetVisible = False
-                            dockWidget.setWindowOpacity(1)
-                            dockWidget.hide()
-                            if settings['exp1']:
-                                dockWidget.setFloating(False)
-                            dockWidget.hide()
+                            hide_playlist()
                     # Control panel
                     if settings['showcontrolsmouse']:
                         cursor_y = win.main_widget.mapFromGlobal(QtGui.QCursor.pos()).y()
@@ -5579,40 +5584,10 @@ if __name__ == '__main__':
                         if is_cursor_y and cursor_y < win_height:
                             if not dockWidget2Visible:
                                 dockWidget2Visible = True
-                                if settings['exp1']:
-                                    dockWidget2.setFloating(True)
-                                if not settings['exp1']:
-                                    dockWidget2.move(0, win.height() - dockWidget2.height())
-                                    dockWidget2.resize(win.width(), DOCK_WIDGET2_HEIGHT_HIGH)
-                                    dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
-                                    dockWidget2.setWindowOpacity(0.55)
-                                    dockWidget2.show()
-                                    dockWidget2.setWindowOpacity(0.55)
-                                    dockWidget2.move(0, win.height() - dockWidget2.height())
-                                else:
-                                    dockWidget2.move(
-                                        int(win.width() / 3) - 150,
-                                        win.height() - dockWidget2.height()
-                                    )
-                                    dockWidget2.resize(
-                                        int(win.width() / 2) - 100,
-                                        DOCK_WIDGET2_HEIGHT_LOW
-                                    )
-                                    dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
-                                    dockWidget2.setWindowOpacity(0.55)
-                                    dockWidget2.show()
-                                    dockWidget2.setWindowOpacity(0.55)
-                                    dockWidget2.move(
-                                        int(win.width() / 3) - 150,
-                                        win.height() - dockWidget2.height()
-                                    )
+                                show_controlpanel()
                         else:
                             dockWidget2Visible = False
-                            dockWidget2.setWindowOpacity(1)
-                            dockWidget2.hide()
-                            if settings['exp1']:
-                                dockWidget2.setFloating(False)
-                            dockWidget2.hide()
+                            hide_controlpanel()
             except: # pylint: disable=bare-except
                 pass
 
@@ -5691,9 +5666,22 @@ if __name__ == '__main__':
             QtCore.Qt.Key_D: show_scheduler # d - record scheduler
         }
         for keybind in keybinds:
+            # Main window
             QShortcut(
-                QtGui.QKeySequence(keybind), win
+                QtGui.QKeySequence(keybind),
+                win
             ).activated.connect(keybinds[keybind])
+            if settings["exp1"]:
+                # Control panel widget (settings["exp1"])
+                QShortcut(
+                    QtGui.QKeySequence(keybind),
+                    controlpanel_widget
+                ).activated.connect(keybinds[keybind])
+                # Playlist widget (settings["exp1"])
+                QShortcut(
+                    QtGui.QKeySequence(keybind),
+                    playlist_widget
+                ).activated.connect(keybinds[keybind])
 
         app.aboutToQuit.connect(myExitHandler)
         playLastChannel()
@@ -5724,7 +5712,6 @@ if __name__ == '__main__':
             timers = {
                 thread_mouse: 50,
                 thread_cursor: 50,
-                thread_mouse_2: 50,
                 thread_autoclosemenu: 50,
                 thread_tvguide: 100,
                 thread_record: 100,
