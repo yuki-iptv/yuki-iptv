@@ -161,7 +161,10 @@ class SelectionModel(QtCore.QItemSelectionModel):
         QtCore.QItemSelectionModel.__init__(self, parent)
 
     def onModelItemsReordered(self):
-        new_selection = QtCore.QItemSelection()
+        if qt_backend == 'PySide6':
+            new_selection = QtCore.QItemSelection(QtCore.QModelIndex(), QtCore.QModelIndex())
+        else:
+            new_selection = QtCore.QItemSelection()
         new_index = QtCore.QModelIndex()
         for item in self.model().lastDroppedItems:
             row = self.model().rowForItem(item)
