@@ -47,6 +47,7 @@ import threading
 from multiprocessing import Process, Manager, freeze_support, active_children
 freeze_support()
 import requests
+from unidecode import unidecode
 from data.modules.astroncia.qt import get_qt_backend
 from data.modules.astroncia.lang import lang
 from data.modules.astroncia.ua import user_agent, uas, ua_names
@@ -3680,7 +3681,7 @@ if __name__ == '__main__':
                 array_filtered[j1] = array[j1]
 
             ch_array = {x13: array_filtered[x13] for x13 in array_filtered if \
-                filter_txt.lower().strip() in x13.lower().strip()}
+                unidecode(filter_txt).lower().strip() in unidecode(x13).lower().strip()}
             ch_array = list(ch_array.values())[idx:idx+settings["channelsonpage"]]
             ch_array = dict([(x14['title'], x14) for x14 in ch_array]) # pylint: disable=consider-using-dict-comprehension
             try:
