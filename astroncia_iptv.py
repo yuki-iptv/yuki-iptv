@@ -2655,12 +2655,6 @@ if __name__ == '__main__':
         textbox = QtWidgets.QPlainTextEdit(help_win)
         textbox.resize(390, 400)
         textbox.setReadOnly(True)
-        textbox.setPlainText(
-            "Qt version: {} | Qt library: {}\nhttps://www.qt.io\n\n".format(
-                qt_version, qt_backend
-            ) + \
-            LANG['helptext'].format(APP_VERSION)
-        )
         license_btn = QtWidgets.QPushButton(help_win)
         license_btn.move(140, 400)
         license_btn.setText(LANG['license'])
@@ -4494,6 +4488,22 @@ if __name__ == '__main__':
             player['network-timeout'] = 5
         except: # pylint: disable=bare-except
             pass
+
+        try:
+            mpv_version = player.mpv_version
+            if not mpv_version.startswith('mpv '):
+                mpv_version = 'mpv ' + mpv_version
+        except: # pylint: disable=bare-except
+            mpv_version = "unknown mpv version"
+
+        print_with_time("Using {}".format(mpv_version))
+
+        textbox.setPlainText(
+            "Qt version: {} | Qt library: {} | {}\nhttps://www.qt.io\n\n".format(
+                qt_version, qt_backend, mpv_version
+            ) + \
+            LANG['helptext'].format(APP_VERSION)
+        )
 
         if settings["cache_secs"] != 0:
             try:
