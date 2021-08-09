@@ -40,22 +40,9 @@ def get_qt_backend():
         QShortcut = QtGui.QShortcut
         qt_backend = "PySide6"
     except: # pylint: disable=bare-except
-        try:
-            # Do not use PySide2
-            # ===
-            # data/modules/thirdparty/selectionmodel.py", line 140, in dropMimeData
-            #     text = bytes(text).decode('utf-8')
-            # TypeError: 'bytes' object cannot be interpreted as an integer
-            # ===
-            from PySide2_FAIL import QtWidgets
-            from PySide2_FAIL import QtCore
-            from PySide2_FAIL import QtGui
-            QShortcut = QtWidgets.QShortcut
-            qt_backend = "PySide2"
-        except: # pylint: disable=bare-except
-            from PyQt5 import QtWidgets
-            from PyQt5 import QtCore
-            from PyQt5 import QtGui
-            QShortcut = QtWidgets.QShortcut
-            qt_backend = "PyQt5"
+        from PyQt5 import QtWidgets
+        from PyQt5 import QtCore
+        from PyQt5 import QtGui
+        QShortcut = QtWidgets.QShortcut
+        qt_backend = "PyQt5"
     return qt_backend, QtWidgets, QtCore, QtGui, QShortcut

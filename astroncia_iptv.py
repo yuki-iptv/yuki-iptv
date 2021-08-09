@@ -801,7 +801,7 @@ if __name__ == '__main__':
         settings_win.setWindowIcon(main_icon)
 
         help_win = QtWidgets.QMainWindow()
-        help_win.resize(400, 460)
+        help_win.resize(400, 500)
         help_win.setWindowTitle(LANG['help'])
         help_win.setWindowIcon(main_icon)
 
@@ -2652,15 +2652,16 @@ if __name__ == '__main__':
         licensebox_close_btn.setText(LANG['close'])
         licensebox_close_btn.clicked.connect(license_win.close)
 
-        textbox = QtWidgets.QPlainTextEdit(help_win)
-        textbox.resize(390, 400)
+        textbox = QtWidgets.QTextBrowser(help_win)
+        textbox.resize(390, 440)
+        textbox.setOpenExternalLinks(True)
         textbox.setReadOnly(True)
         license_btn = QtWidgets.QPushButton(help_win)
-        license_btn.move(140, 400)
+        license_btn.move(140, 440)
         license_btn.setText(LANG['license'])
         license_btn.clicked.connect(show_license)
         close_btn = QtWidgets.QPushButton(help_win)
-        close_btn.move(140, 430)
+        close_btn.move(140, 470)
         close_btn.setText(LANG['close'])
         close_btn.clicked.connect(help_win.close)
 
@@ -4498,11 +4499,32 @@ if __name__ == '__main__':
 
         print_with_time("Using {}".format(mpv_version))
 
-        textbox.setPlainText(
-            "Qt version: {} | Qt library: {} | {}\nhttps://www.qt.io\n\n".format(
-                qt_version, qt_backend, mpv_version
-            ) + \
-            LANG['helptext'].format(APP_VERSION)
+        QT_URL = "<a href='https://www.qt.io/'>https://www.qt.io/</a>"
+        CLICKABLE_LINKS = [
+            'https://gitlab.com/astroncia',
+            'https://unixforum.org/viewtopic.php?f=3&t=151801',
+            'https://qiwi.com/n/ASTRONCIA',
+            'https://fontawesome.com/',
+            'https://creativecommons.org/licenses/by/4.0/'
+        ]
+
+        def format_about_text(about_txt):
+            about_txt = about_txt.replace('\n', '<br>')
+            for clickable_link in CLICKABLE_LINKS:
+                about_txt = about_txt.replace(
+                    clickable_link,
+                    "<a href='{lnk}'>{lnk}</a>".format(lnk=clickable_link)
+                )
+            return about_txt
+
+        textbox.setText(
+            format_about_text(
+                "{} Qt {} ({}) {}\n{} {}\n\n".format(
+                    LANG['using'], qt_version, qt_backend, QT_URL,
+                    LANG['using'], mpv_version
+                ) + \
+                LANG['helptext'].format(APP_VERSION)
+            )
         )
 
         if settings["cache_secs"] != 0:
