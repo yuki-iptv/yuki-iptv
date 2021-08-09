@@ -53,14 +53,11 @@ from data.modules.astroncia.ua import user_agent, uas, ua_names
 from data.modules.astroncia.epg import worker
 from data.modules.astroncia.record import record, record_return, stop_record, \
     async_wait_process, make_ffmpeg_screenshot
-from data.modules.astroncia.format import format_seconds_to_hhmmss
-from data.modules.astroncia.conversion import convert_size
 from data.modules.astroncia.providers import iptv_providers
 from data.modules.astroncia.time import print_with_time
 from data.modules.astroncia.epgurls import EPG_URLS
-from data.modules.astroncia.bitrate import humanbytes
 from data.modules.astroncia.xtreamtom3u import convert_xtream_to_m3u
-from data.modules.thirdparty.selectionmodel import ReorderableListModel, SelectionModel
+from data.modules.thirdparty.conversion import convert_size, humanbytes, format_seconds_to_hhmmss
 from data.modules.thirdparty.m3u import M3uParser
 from data.modules.thirdparty.m3ueditor import Viewer
 from data.modules.thirdparty.xtream import XTream
@@ -1400,7 +1397,7 @@ if __name__ == '__main__':
 
         def save_sort():
             global channel_sort
-            channel_sort = model.getNodes()
+            channel_sort = [sort_list.item(z0).text() for z0 in range(sort_list.count())]
             file4 = open(str(Path(LOCAL_DIR, 'sort.json')), 'w', encoding="utf8")
             file4.write(json.dumps(channel_sort))
             file4.close()
@@ -3893,23 +3890,52 @@ if __name__ == '__main__':
             win.listWidget.addItem(channels[channel][0])
             win.listWidget.setItemWidget(channels[channel][0], channels[channel][1])
 
-        model = ReorderableListModel()
-        if not channel_sort:
-            model.setNodes(modelA)
-        else:
-            model.setNodes(channel_sort)
-        selectionModel = SelectionModel(model)
-        model.dragDropFinished.connect(selectionModel.onModelItemsReordered)
         sort_label = QtWidgets.QLabel(LANG['donotforgetsort'], sort_win)
         sort_label.resize(400, 50)
         sort_label.setAlignment(QtCore.Qt.AlignCenter)
-        sort_list = QtWidgets.QListView(sort_win)
-        sort_list.resize(400, 370)
-        sort_list.move(0, 50)
-        sort_list.setModel(model)
-        sort_list.setSelectionModel(selectionModel)
-        sort_list.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
-        sort_list.setDragDropOverwriteMode(False)
+
+        def sort_upbtn_clicked():
+            curIndex = sort_list.currentRow()
+            if curIndex != -1 and curIndex > 0:
+                curItem = sort_list.takeItem(curIndex)
+                sort_list.insertItem(curIndex-1, curItem)
+                sort_list.setCurrentRow(curIndex-1)
+
+        def sort_downbtn_clicked():
+            curIndex1 = sort_list.currentRow()
+            if curIndex1 != -1 and curIndex1 < sort_list.count()-1:
+                curItem1 = sort_list.takeItem(curIndex1)
+                sort_list.insertItem(curIndex1+1, curItem1)
+                sort_list.setCurrentRow(curIndex1+1)
+
+        sort_upbtn = QtWidgets.QPushButton()
+        sort_upbtn.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'arrow-up.png'))))
+        sort_upbtn.clicked.connect(sort_upbtn_clicked)
+        sort_downbtn = QtWidgets.QPushButton()
+        sort_downbtn.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'arrow-down.png'))))
+        sort_downbtn.clicked.connect(sort_downbtn_clicked)
+
+        sort_widget2 = QtWidgets.QWidget()
+        sort_layout2 = QtWidgets.QVBoxLayout()
+        sort_layout2.setAlignment(QtCore.Qt.AlignCenter)
+        sort_layout2.addWidget(sort_upbtn)
+        sort_layout2.addWidget(sort_downbtn)
+        sort_widget2.setLayout(sort_layout2)
+
+        sort_list = QtWidgets.QListWidget()
+        sort_widget3 = QtWidgets.QWidget(sort_win)
+        sort_widget3.move(0, 50)
+        sort_widget3.resize(400, 370)
+        sort_layout3 = QtWidgets.QHBoxLayout()
+        sort_layout3.addWidget(sort_list)
+        sort_layout3.addWidget(sort_widget2)
+        sort_widget3.setLayout(sort_layout3)
+        if not channel_sort:
+            sort_label_data = modelA
+        else:
+            sort_label_data = channel_sort
+        for sort_label_ch in sort_label_data:
+            sort_list.addItem(sort_label_ch)
 
         sel_item = None
 
