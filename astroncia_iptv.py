@@ -4829,6 +4829,7 @@ if __name__ == '__main__':
 
                 if not streaminfo_win.isVisible():
                     streaminfo_win.show()
+                    moveWindowToCenter(streaminfo_win)
                 else:
                     streaminfo_win.hide()
 
