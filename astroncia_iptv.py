@@ -3158,6 +3158,7 @@ if __name__ == '__main__':
             stop_label.setText('')
             dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
             win.update()
+            btn_update.click()
 
         def esc_handler():
             global fullscreen
