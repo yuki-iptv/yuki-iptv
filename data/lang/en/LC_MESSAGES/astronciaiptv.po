@@ -641,6 +641,54 @@ msgstr "Inaccurate EPG matching"
 msgid "using"
 msgstr "Using"
 
+msgid "Aspect"
+msgstr "Aspect"
+
+msgid "Average Bitrate"
+msgstr "Average Bitrate"
+
+msgid "Channel Count"
+msgstr "Channel Count"
+
+msgid "Channels"
+msgstr "Channels"
+
+msgid "Codec"
+msgstr "Codec"
+
+msgid "colour"
+msgstr "Colour"
+
+msgid "Dimensions"
+msgstr "Dimensions"
+
+msgid "Format"
+msgstr "Format"
+
+msgid "Gamma"
+msgstr "Gamma"
+
+msgid "general"
+msgstr "General"
+
+msgid "layout"
+msgstr "Layout"
+
+msgid "Pixel Format"
+msgstr "Pixel Format"
+
+msgid "Sample Rate"
+msgstr "Sample Rate"
+
+msgid "Stream Information"
+msgstr "Stream Information"
+
+msgid "Video"
+msgstr "Video"
+
+msgid "Audio"
+msgstr "Audio"
+
 msgid "helptext"
-msgstr "Astroncia IPTV, version {}\n© kestral / astroncia < kestraly (at) gmail.com >\nhttps://gitlab.com/astroncia\n\nIPTV player\n\nSupports TV guide (EPG) only in XMLTV and JTV formats!\n\nChannel not working?\nRight mouse button opens channel settings\n\nIcons by Font Awesome ( https://fontawesome.com/ )\nIcons licensed under the CC BY 4.0 License\n( https://creativecommons.org/licenses/by/4.0/ )\n\nHotkeys:\n\nF / F11 - fullscreen mode\nV - mute\nQ - quit program\nSpace - pause\nS - stop playing\nH - screenshot\nG - tv guide (EPG)\nR - start/stop record\nN - previous channel\nM - next channel\nT - open/close channels list\nO - show/hide clock\nI - channel sort\nD - record scheduler"
+msgstr "Astroncia IPTV, version {}\n© kestral / astroncia < kestraly (at) gmail.com >\nhttps://gitlab.com/astroncia\n\nIPTV player\n\nSupports TV guide (EPG) only in XMLTV and JTV formats!\n\nChannel not working?\nRight mouse button opens channel settings\n\nIcons by Font Awesome ( https://fontawesome.com/ )\nIcons licensed under the CC BY 4.0 License\n( https://creativecommons.org/licenses/by/4.0/ )\n\nHotkeys:\n\nF / F11 - fullscreen mode\nF2 - stream information\nV - mute\nQ - quit program\nSpace - pause\nS - stop playing\nH - screenshot\nG - tv guide (EPG)\nR - start/stop record\nN - previous channel\nM - next channel\nT - open/close channels list\nO - show/hide clock\nI - channel sort\nD - record scheduler"
 

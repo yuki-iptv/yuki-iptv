@@ -111,6 +111,26 @@ TVGUIDE_WIDTH = int((WINDOW_SIZE[0] / 5))
 BCOLOR = "#A2A3A3"
 EMAIL_ADDRESS = "kestraly (at) gmail.com"
 
+UPDATE_BR_INTERVAL = 5
+
+AUDIO_SAMPLE_FORMATS = {"u16": "unsigned 16 bits", \
+    "s16": "signed 16 bits", \
+    "s16p": "signed 16 bits, planar", \
+    "flt" : "float", \
+    "float" : "float", \
+    "fltp" : "float, planar", \
+    "floatp" : "float, planar", \
+    "dbl" : "double", \
+    "dblp": "double, planar"}
+
+class stream_info: # pylint: disable=too-few-public-methods
+    pass
+
+stream_info.video_properties = {}
+stream_info.audio_properties = {}
+stream_info.video_bitrates = []
+stream_info.audio_bitrates = []
+
 DOCK_WIDGET2_HEIGHT = max(DOCK_WIDGET2_HEIGHT, 0)
 DOCK_WIDGET_WIDTH = max(DOCK_WIDGET_WIDTH, 0)
 
@@ -801,6 +821,9 @@ if __name__ == '__main__':
         settings_win.setWindowTitle(LANG['settings'])
         settings_win.setWindowIcon(main_icon)
 
+        streaminfo_win = QtWidgets.QMainWindow()
+        streaminfo_win.setWindowIcon(main_icon)
+
         help_win = QtWidgets.QMainWindow()
         help_win.resize(400, 500)
         help_win.setWindowTitle(LANG['help'])
@@ -1099,6 +1122,13 @@ if __name__ == '__main__':
         time_stop = 0
         autoclosemenu_time = -1
 
+        def moveWindowToCenter(win_arg):
+            qr0 = win_arg.frameGeometry()
+            qr0.moveCenter(
+                QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
+            )
+            win_arg.move(qr0.topLeft())
+
         qr = settings_win.frameGeometry()
         qr.moveCenter(
             QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
@@ -1108,18 +1138,19 @@ if __name__ == '__main__':
         settings_win_l.setY(origY)
         #settings_win.move(settings_win_l)
         settings_win.move(qr.topLeft())
-        help_win.move(qr.topLeft())
-        license_win.move(qr.topLeft())
-        sort_win.move(qr.topLeft())
-        chan_win.move(qr.topLeft())
-        ext_win.move(qr.topLeft())
-        scheduler_win.move(qr.topLeft())
-        xtream_win.move(qr.topLeft())
-        xtream_win_2.move(qr.topLeft())
-        archive_win.move(qr.topLeft())
-        providers_win.move(qr.topLeft())
-        providers_win_edit.move(qr.topLeft())
-        epg_select_win.move(qr.topLeft())
+        moveWindowToCenter(help_win)
+        moveWindowToCenter(streaminfo_win)
+        moveWindowToCenter(license_win)
+        moveWindowToCenter(sort_win)
+        moveWindowToCenter(chan_win)
+        moveWindowToCenter(ext_win)
+        moveWindowToCenter(scheduler_win)
+        moveWindowToCenter(xtream_win)
+        moveWindowToCenter(xtream_win_2)
+        moveWindowToCenter(archive_win)
+        moveWindowToCenter(providers_win)
+        moveWindowToCenter(providers_win_edit)
+        moveWindowToCenter(epg_select_win)
 
         def convert_time(times_1):
             yr = time.strftime('%Y', time.localtime())
@@ -1552,10 +1583,114 @@ if __name__ == '__main__':
         def_user_agent = uas[settings['useragent']]
         print_with_time("Default user agent: {}".format(def_user_agent))
 
+        def _(string1):
+            return LANG[string1]
+
+        def on_bitrate(prop, bitrate):
+            try:
+                if not bitrate or prop not in ["video-bitrate", "audio-bitrate"]:
+                    return
+
+                if _("Average Bitrate") in stream_info.video_properties:
+                    if _("Average Bitrate") in stream_info.audio_properties:
+                        if not streaminfo_win.isVisible():
+                            return
+
+                rates = {"video": stream_info.video_bitrates, "audio": stream_info.audio_bitrates}
+                rate = "video"
+                if prop == "audio-bitrate":
+                    rate = "audio"
+
+                rates[rate].append(int(bitrate) / 1000.0)
+                rates[rate] = rates[rate][-30:]
+                br = sum(rates[rate]) / float(len(rates[rate]))
+
+                if rate == "video":
+                    stream_info.video_properties[_("general")][_("Average Bitrate")] = \
+                    "%.f Kbps" % br
+                else:
+                    stream_info.audio_properties[_("general")][_("Average Bitrate")] = \
+                    "%.f Kbps" % br
+            except: # pylint: disable=bare-except
+                pass
+
+        def on_video_params(property1, params): # pylint: disable=unused-argument
+            try:
+                if not params or not isinstance(params, dict):
+                    return
+                if "w" in params and "h" in params:
+                    stream_info.video_properties[_("general")][_("Dimensions")] = "%sx%s" % (
+                        params["w"], params["h"]
+                    )
+                if "aspect" in params:
+                    aspect = round(float(params["aspect"]), 2)
+                    stream_info.video_properties[_("general")][_("Aspect")] = \
+                    "%s" % aspect
+                if "pixelformat" in params:
+                    stream_info.video_properties[_("colour")][_("Pixel Format")] = \
+                    params["pixelformat"]
+                if "gamma" in params:
+                    stream_info.video_properties[_("colour")][_("Gamma")] = params["gamma"]
+                if "average-bpp" in params:
+                    stream_info.video_properties[_("colour")][_("Bits Per Pixel")] = \
+                        params["average-bpp"]
+            except: # pylint: disable=bare-except
+                pass
+
+        def on_video_format(property1, vformat): # pylint: disable=unused-argument
+            try:
+                if not vformat:
+                    return
+                stream_info.video_properties[_("general")][_("Codec")] = vformat
+            except: # pylint: disable=bare-except
+                pass
+
+        def on_audio_params(property1, params): # pylint: disable=unused-argument
+            try:
+                if not params or not isinstance(params, dict):
+                    return
+                if "channels" in params:
+                    chans = params["channels"]
+                    if "5.1" in chans or "7.1" in chans:
+                        chans += " " + _("surround sound")
+                    stream_info.audio_properties[_("layout")][_("Channels")] = chans
+                if "samplerate" in params:
+                    sr = float(params["samplerate"]) / 1000.0
+                    stream_info.audio_properties[_("general")][_("Sample Rate")] = "%.1f KHz" % sr
+                if "format" in params:
+                    fmt = params["format"]
+                    fmt = AUDIO_SAMPLE_FORMATS.get(fmt, fmt)
+                    stream_info.audio_properties[_("general")][_("Format")] = fmt
+                if "channel-count" in params:
+                    stream_info.audio_properties[_("layout")][_("Channel Count")] = \
+                        params["channel-count"]
+            except: # pylint: disable=bare-except
+                pass
+
+        def on_audio_codec(property1, codec): # pylint: disable=unused-argument
+            try:
+                if not codec:
+                    return
+                stream_info.audio_properties[_("general")][_("Codec")] = codec.split()[0]
+            except: # pylint: disable=bare-except
+                pass
+
+        def monitor_playback():
+            try:
+                player.observe_property("video-params", on_video_params)
+                player.observe_property("video-format", on_video_format)
+                player.observe_property("audio-params", on_audio_params)
+                player.observe_property("audio-codec", on_audio_codec)
+                player.observe_property("video-bitrate", on_bitrate)
+                player.observe_property("audio-bitrate", on_bitrate)
+            except: # pylint: disable=bare-except
+                pass
+
         def hideLoading():
             loading.hide()
             loading_movie.stop()
             loading1.hide()
+            monitor_playback()
 
         def showLoading():
             loading.show()
@@ -1564,8 +1699,22 @@ if __name__ == '__main__':
 
         event_handler = None
 
+        def on_before_play():
+            streaminfo_win.hide()
+            stream_info.video_properties.clear()
+            stream_info.video_properties[_("general")] = {}
+            stream_info.video_properties[_("colour")] = {}
+
+            stream_info.audio_properties.clear()
+            stream_info.audio_properties[_("general")] = {}
+            stream_info.audio_properties[_("layout")] = {}
+
+            stream_info.video_bitrates.clear()
+            stream_info.audio_bitrates.clear()
+
         def mpv_override_play(arg_override_play, ua1=''):
             global event_handler
+            on_before_play()
             # Parsing User-Agent and Referer in Kodi-like style
             player.user_agent = ua1
             if settings["referer"]:
@@ -2011,6 +2160,7 @@ if __name__ == '__main__':
             win.close()
             settings_win.close()
             help_win.close()
+            streaminfo_win.close()
             license_win.close()
             time.sleep(0.1)
             if not os.name == 'nt':
@@ -2629,6 +2779,11 @@ if __name__ == '__main__':
         xtream_win.setCentralWidget(wid3)
         xtream_win_2.setCentralWidget(wid4)
 
+        wid5 = QtWidgets.QWidget()
+        layout36 = QtWidgets.QGridLayout()
+        wid5.setLayout(layout36)
+        streaminfo_win.setCentralWidget(wid5)
+
         def show_license():
             if not license_win.isVisible():
                 license_win.show()
@@ -2913,6 +3068,8 @@ if __name__ == '__main__':
                 except: # pylint: disable=bare-except
                     pass
                 QtWidgets.QMainWindow.resizeEvent(self, event)
+            def closeEvent(self, event1): # pylint: disable=unused-argument, no-self-use
+                streaminfo_win.hide()
 
         win = MainWindow()
         win.setWindowTitle(MAIN_WINDOW_TITLE)
@@ -4590,12 +4747,100 @@ if __name__ == '__main__':
                 dockWidget.show()
                 dockWidget2.show()
 
+        stream_info.data = {}
+
+        def process_stream_info(dat_count, name44, stream_props_out, stream_info_lbname):
+            bold_fnt = QtGui.QFont()
+            bold_fnt.setBold(True)
+
+            if stream_info_lbname:
+                la2 = QtWidgets.QLabel()
+                la2.setStyleSheet('color:green')
+                la2.setFont(bold_fnt)
+                la2.setText('\n' + stream_info_lbname + '\n')
+                layout36.addWidget(la2, dat_count, 0)
+                dat_count += 1
+
+            la1 = QtWidgets.QLabel()
+            la1.setFont(bold_fnt)
+            la1.setText(name44)
+            layout36.addWidget(la1, dat_count, 0)
+
+            for dat1 in stream_props_out:
+                dat_count += 1
+                wdg1 = QtWidgets.QLabel()
+                wdg2 = QtWidgets.QLabel()
+                wdg1.setText(str(dat1))
+                wdg2.setText(str(stream_props_out[dat1]))
+
+                if str(dat1) == _("Average Bitrate") and stream_props_out == \
+                stream_info.video_properties[_("general")]:
+                    stream_info.data['video'] = [wdg2, stream_props_out]
+
+                if str(dat1) == _("Average Bitrate") and stream_props_out == \
+                stream_info.audio_properties[_("general")]:
+                    stream_info.data['audio'] = [wdg2, stream_props_out]
+
+                layout36.addWidget(wdg1, dat_count, 0)
+                layout36.addWidget(wdg2, dat_count, 1)
+            return dat_count + 1
+
+        def thread_bitrate():
+            try:
+                if streaminfo_win.isVisible():
+                    if 'video' in stream_info.data:
+                        stream_info.data['video'][0].setText(
+                            stream_info.data['video'][1][_("Average Bitrate")]
+                        )
+                    if 'audio' in stream_info.data:
+                        stream_info.data['audio'][0].setText(
+                            stream_info.data['audio'][1][_("Average Bitrate")]
+                        )
+            except: # pylint: disable=bare-except
+                pass
+
+        def open_stream_info():
+            global playing_chan
+            if playing_chan:
+                for stream_info_i in reversed(range(layout36.count())):
+                    layout36.itemAt(stream_info_i).widget().setParent(None)
+
+                stream_props = [stream_info.video_properties[_("general")], \
+                    stream_info.video_properties[_("colour")], \
+                    stream_info.audio_properties[_("general")], \
+                    stream_info.audio_properties[_("layout")]]
+
+                dat_count = 1
+                stream_info_video_lbl = QtWidgets.QLabel(_("Video") + '\n')
+                stream_info_video_lbl.setStyleSheet('color:green')
+                bold_fnt_2 = QtGui.QFont()
+                bold_fnt_2.setBold(True)
+                stream_info_video_lbl.setFont(bold_fnt_2)
+                layout36.addWidget(stream_info_video_lbl, 0, 0)
+                dat_count = process_stream_info(dat_count, _("general"), stream_props[0], "")
+                dat_count = process_stream_info(dat_count, _("colour"), stream_props[1], "")
+                dat_count = process_stream_info(
+                    dat_count,
+                    _("general"),
+                    stream_props[2],
+                    _("Audio")
+                )
+                dat_count = process_stream_info(dat_count, _("layout"), stream_props[3], "")
+
+                if not streaminfo_win.isVisible():
+                    streaminfo_win.show()
+                else:
+                    streaminfo_win.hide()
+
+        streaminfo_win.setWindowTitle(_('Stream Information'))
+
         right_click_menu = QtWidgets.QMenu()
         right_click_menu.addAction(LANG['pause'], mpv_play)
         right_click_menu.addSeparator()
         right_click_menu.addAction(LANG['showhideplaylist'], showhideplaylist)
         right_click_menu.addAction(LANG['showhidectrlpanel'], lowpanel_ch_1)
         right_click_menu.addAction(LANG['mininterface'], showhideeverything)
+        right_click_menu.addAction(_('Stream Information'), open_stream_info)
         right_click_menu.addAction(LANG['channelsettings'], main_channel_settings)
 
         right_click_menu_fullscreen = QtWidgets.QMenu()
@@ -5677,6 +5922,7 @@ if __name__ == '__main__':
             settings_win.close()
             win.close()
             help_win.close()
+            streaminfo_win.close()
             license_win.close()
             myExitHandler()
             app.quit()
@@ -5705,6 +5951,7 @@ if __name__ == '__main__':
             QtCore.Qt.Key_Escape: esc_handler, # escape key
             QtCore.Qt.Key_F: mpv_fullscreen, # f - fullscreen
             QtCore.Qt.Key_F11: mpv_fullscreen,
+            QtCore.Qt.Key_F2: open_stream_info, # f2 - stream info
             QtCore.Qt.Key_V: mpv_mute, # v - mute
             QtCore.Qt.Key_Q: key_quit, # q - quit
             QtCore.Qt.Key_Space: mpv_play, # space - pause
@@ -5788,6 +6035,7 @@ if __name__ == '__main__':
                 record_thread_2: 1000,
                 channel_icons_thread: 2000,
                 channel_icons_thread_epg: 2000,
+                thread_bitrate: UPDATE_BR_INTERVAL * 1000,
                 epg_channel_icons_thread: 50,
                 dockwidget_resize_thread: 50
             }

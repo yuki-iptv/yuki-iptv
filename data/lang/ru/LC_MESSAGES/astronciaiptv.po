@@ -641,5 +641,53 @@ msgstr "Неточное сопоставление телепрограммы"
 msgid "using"
 msgstr "Используется"
 
+msgid "Aspect"
+msgstr "Соотношение сторон"
+
+msgid "Average Bitrate"
+msgstr "Средний битрейт"
+
+msgid "Channel Count"
+msgstr "Кол-во каналов"
+
+msgid "Channels"
+msgstr "Каналы"
+
+msgid "Codec"
+msgstr "Кодек"
+
+msgid "colour"
+msgstr "Цвет"
+
+msgid "Dimensions"
+msgstr "Разрешение"
+
+msgid "Format"
+msgstr "Формат"
+
+msgid "Gamma"
+msgstr "Гамма"
+
+msgid "general"
+msgstr "Основное"
+
+msgid "layout"
+msgstr "Режим"
+
+msgid "Pixel Format"
+msgstr "Формат пикселей"
+
+msgid "Sample Rate"
+msgstr "Частота дискретизации"
+
+msgid "Stream Information"
+msgstr "Информация о потоке"
+
+msgid "Video"
+msgstr "Видео"
+
+msgid "Audio"
+msgstr "Аудио"
+
 msgid "helptext"
-msgstr "Astroncia IPTV, версия {}\n© kestral / astroncia < kestraly (at) gmail.com >\nhttps://gitlab.com/astroncia\n\nПоддержка:\nhttps://unixforum.org/viewtopic.php?f=3&t=151801\n\nСделать пожертвование: https://qiwi.com/n/ASTRONCIA\n\nПлеер для просмотра интернет-телевидения\n\nПоддерживается телепрограмма (EPG)\nтолько в форматах XMLTV и JTV!\n\nНе работает канал? Правая клавиша мыши открывает настройки канала.\n\nПосле указания группы канала в настройках переоткройте приложение.\n\nГорячие клавиши:\n\nF / F11 - полноэкранный режим\nV - выключить звук\nQ - выйти из программы\nПробел - пауза\nS - остановить проигрывание\nH - скриншот\nG - телепрограмма\nR - начать/остановить запись\nN - предыдущий канал\nM - следующий канал\nT - показать/скрыть боковую панель плейлиста\nO - показать/скрыть часы\nI - сортировка каналов\nD - планировщик записи\n\nЗначки от Font Awesome ( https://fontawesome.com/ )\nЛицензия значков - CC BY 4.0 License\n( https://creativecommons.org/licenses/by/4.0/ )"
+msgstr "Astroncia IPTV, версия {}\n© kestral / astroncia < kestraly (at) gmail.com >\nhttps://gitlab.com/astroncia\n\nПоддержка:\nhttps://unixforum.org/viewtopic.php?f=3&t=151801\n\nСделать пожертвование: https://qiwi.com/n/ASTRONCIA\n\nПлеер для просмотра интернет-телевидения\n\nПоддерживается телепрограмма (EPG)\nтолько в форматах XMLTV и JTV!\n\nНе работает канал? Правая клавиша мыши открывает настройки канала.\n\nПосле указания группы канала в настройках переоткройте приложение.\n\nГорячие клавиши:\n\nF / F11 - полноэкранный режим\nF2 - информация о потоке\nV - выключить звук\nQ - выйти из программы\nПробел - пауза\nS - остановить проигрывание\nH - скриншот\nG - телепрограмма\nR - начать/остановить запись\nN - предыдущий канал\nM - следующий канал\nT - показать/скрыть боковую панель плейлиста\nO - показать/скрыть часы\nI - сортировка каналов\nD - планировщик записи\n\nЗначки от Font Awesome ( https://fontawesome.com/ )\nЛицензия значков - CC BY 4.0 License\n( https://creativecommons.org/licenses/by/4.0/ )"
