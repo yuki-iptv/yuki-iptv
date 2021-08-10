@@ -5934,7 +5934,7 @@ if __name__ == '__main__':
                         else:
                             is_cursor_x = cursor_x < (settings['exp2'] + 10)
                         if is_cursor_x and cursor_x < win_width:
-                            if win.hasFocus() and not dockWidgetVisible:
+                            if not dockWidgetVisible:
                                 dockWidgetVisible = True
                                 show_playlist()
                         else:
@@ -5946,7 +5946,7 @@ if __name__ == '__main__':
                         win_height = win.height()
                         is_cursor_y = cursor_y > win_height - (dockWidget2.height() + 250)
                         if is_cursor_y and cursor_y < win_height:
-                            if win.hasFocus() and not dockWidget2Visible:
+                            if not dockWidget2Visible:
                                 dockWidget2Visible = True
                                 show_controlpanel()
                         else:
