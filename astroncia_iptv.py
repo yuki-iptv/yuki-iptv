@@ -5461,7 +5461,8 @@ if __name__ == '__main__':
                     os.remove(str(Path(LOCAL_DIR, 'lastchannels.json')))
 
         def myExitHandler(): # pylint: disable=too-many-branches
-            global stopped, epg_thread, epg_thread_2, mpris_loop
+            global stopped, epg_thread, epg_thread_2, mpris_loop, \
+            newdockWidgetHeight, newdockWidgetPosition
             if settings['playlistsep']:
                 try:
                     sepplheight_file = open(
@@ -5472,6 +5473,20 @@ if __name__ == '__main__':
                         dockWidget.pos().y()
                     ]))
                     sepplheight_file.close()
+                except: # pylint: disable=bare-except
+                    pass
+            if settings['exp1']:
+                try:
+                    expheight_file = open(
+                        str(Path(LOCAL_DIR, 'expheight.json')), 'w', encoding="utf8"
+                    )
+                    expheight_file.write(
+                        json.dumps({
+                            "expplaylistheight": newdockWidgetHeight,
+                            "expplaylistposition": newdockWidgetPosition
+                        })
+                    )
+                    expheight_file.close()
                 except: # pylint: disable=bare-except
                     pass
             saveLastChannel()
@@ -5790,41 +5805,15 @@ if __name__ == '__main__':
                     autoclosemenu_time = -1
 
         def resizeCallback(cal_width):
-            global fullscreen, newdockWidgetHeight, newdockWidgetPosition
+            global fullscreen, newdockWidgetHeight
             if settings['exp1'] and fullscreen:
                 newdockWidgetHeight = cal_width
-                try:
-                    expheight_file = open(
-                        str(Path(LOCAL_DIR, 'expheight.json')), 'w', encoding="utf8"
-                    )
-                    expheight_file.write(
-                        json.dumps({
-                            "expplaylistheight": newdockWidgetHeight,
-                            "expplaylistposition": newdockWidgetPosition
-                        })
-                    )
-                    expheight_file.close()
-                except: # pylint: disable=bare-except
-                    pass
 
         def moveCallback(cal_pos):
-            global fullscreen, newdockWidgetHeight, newdockWidgetPosition
+            global fullscreen, newdockWidgetPosition
             cal_position = cal_pos.pos()
             if cal_position.x() and cal_position.y() and fullscreen and settings['exp1']:
                 newdockWidgetPosition = [cal_position.x(), cal_position.y()]
-                try:
-                    expheight_file_1 = open(
-                        str(Path(LOCAL_DIR, 'expheight.json')), 'w', encoding="utf8"
-                    )
-                    expheight_file_1.write(
-                        json.dumps({
-                            "expplaylistheight": newdockWidgetHeight,
-                            "expplaylistposition": newdockWidgetPosition
-                        })
-                    )
-                    expheight_file_1.close()
-                except: # pylint: disable=bare-except
-                    pass
 
         playlist_widget = ResizableWindow()
         playlist_widget.callback = resizeCallback
