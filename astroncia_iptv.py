@@ -109,7 +109,10 @@ DOCK_WIDGET2_HEIGHT_LOW = DOCK_WIDGET2_HEIGHT_HIGH - (DOCK_WIDGET2_HEIGHT_OFFSET
 DOCK_WIDGET_WIDTH = int((WINDOW_SIZE[0] / 2) - 200)
 TVGUIDE_WIDTH = int((WINDOW_SIZE[0] / 5))
 BCOLOR = "#A2A3A3"
+
 EMAIL_ADDRESS = "kestraly (at) gmail.com"
+UPDATE_URL = "https://gitlab.com/astroncia/iptv/-/raw/master/version.txt"
+UPDATE_RELEASES_URL = "https://gitlab.com/astroncia/iptv/-/releases"
 
 UPDATE_BR_INTERVAL = 5
 
@@ -808,12 +811,12 @@ if __name__ == '__main__':
         streaminfo_win.setWindowIcon(main_icon)
 
         help_win = QtWidgets.QMainWindow()
-        help_win.resize(400, 500)
+        help_win.resize(400, 540)
         help_win.setWindowTitle(LANG['help'])
         help_win.setWindowIcon(main_icon)
 
         license_win = QtWidgets.QMainWindow()
-        license_win.resize(500, 500)
+        license_win.resize(500, 550)
         license_win.setWindowTitle(LANG['license'])
         license_win.setWindowIcon(main_icon)
 
@@ -2781,28 +2784,110 @@ if __name__ == '__main__':
             license_str = license_file.read()
             license_file.close()
 
-        licensebox = QtWidgets.QPlainTextEdit(license_win)
-        licensebox.resize(500, 470)
+        licensebox = QtWidgets.QPlainTextEdit()
         licensebox.setReadOnly(True)
         licensebox.setPlainText(license_str)
 
-        licensebox_close_btn = QtWidgets.QPushButton(license_win)
-        licensebox_close_btn.move(180, 470)
+        licensebox_close_btn = QtWidgets.QPushButton()
         licensebox_close_btn.setText(LANG['close'])
         licensebox_close_btn.clicked.connect(license_win.close)
 
-        textbox = QtWidgets.QTextBrowser(help_win)
-        textbox.resize(390, 440)
+        licensewin_widget = QtWidgets.QWidget()
+        licensewin_layout = QtWidgets.QVBoxLayout()
+        licensewin_layout.addWidget(licensebox)
+        licensewin_layout.addWidget(licensebox_close_btn)
+        licensewin_widget.setLayout(licensewin_layout)
+        license_win.setCentralWidget(licensewin_widget)
+
+        textbox = QtWidgets.QTextBrowser()
         textbox.setOpenExternalLinks(True)
         textbox.setReadOnly(True)
-        license_btn = QtWidgets.QPushButton(help_win)
-        license_btn.move(140, 440)
+
+        class Communicate(QtCore.QObject): # pylint: disable=too-few-public-methods
+            if qt_backend == 'PySide6':
+                repaintUpdates = QtCore.Signal(object)
+            else:
+                repaintUpdates = QtCore.pyqtSignal(object)
+
+        @async_function
+        def async_webbrowser():
+            webbrowser.open(UPDATE_RELEASES_URL)
+
+        def check_for_updates_pt2(last_avail_version_2):
+            if last_avail_version_2:
+                if APP_VERSION == last_avail_version_2:
+                    lastversion_installed_msg = QtWidgets.QMessageBox(
+                        qt_icon_information,
+                        MAIN_WINDOW_TITLE,
+                        LANG['gotlatestversion'],
+                        QtWidgets.QMessageBox.Ok
+                    )
+                    lastversion_installed_msg.exec()
+                else:
+                    newversion_avail_msg = QtWidgets.QMessageBox.question(
+                        None,
+                        MAIN_WINDOW_TITLE,
+                        LANG['newversionavail'],
+                        QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+                        QtWidgets.QMessageBox.Yes
+                    )
+                    if newversion_avail_msg == QtWidgets.QMessageBox.Yes:
+                        async_webbrowser()
+            else:
+                fail_version_msg = QtWidgets.QMessageBox(
+                    qt_icon_critical,
+                    MAIN_WINDOW_TITLE,
+                    LANG['newversiongetfail'],
+                    QtWidgets.QMessageBox.Ok
+                )
+                fail_version_msg.exec()
+            checkupdates_btn.setEnabled(True)
+
+        comm_instance = Communicate()
+        comm_instance.repaintUpdates.connect(check_for_updates_pt2)
+
+        @async_function
+        def check_for_updates(self): # pylint: disable=unused-argument
+            last_avail_version = False
+            try:
+                last_avail_version = requests.get(
+                    UPDATE_URL,
+                    headers={'User-Agent': ''},
+                    timeout=2
+                ).text.strip()
+            except: # pylint: disable=bare-except
+                pass
+            comm_instance.repaintUpdates.emit(last_avail_version)
+
+        def check_for_updates_0():
+            checkupdates_btn.setEnabled(False)
+            check_for_updates(None)
+
+        checkupdates_btn = QtWidgets.QPushButton()
+        checkupdates_btn.setText(LANG['checkforupdates'])
+        checkupdates_btn.clicked.connect(check_for_updates_0)
+
+        license_btn = QtWidgets.QPushButton()
         license_btn.setText(LANG['license'])
         license_btn.clicked.connect(show_license)
-        close_btn = QtWidgets.QPushButton(help_win)
-        close_btn.move(140, 470)
+
+        close_btn = QtWidgets.QPushButton()
         close_btn.setText(LANG['close'])
         close_btn.clicked.connect(help_win.close)
+
+        helpwin_widget_btns = QtWidgets.QWidget()
+        helpwin_widget_btns_layout = QtWidgets.QHBoxLayout()
+        helpwin_widget_btns_layout.addWidget(checkupdates_btn)
+        helpwin_widget_btns_layout.addWidget(license_btn)
+        helpwin_widget_btns_layout.addWidget(close_btn)
+        helpwin_widget_btns.setLayout(helpwin_widget_btns_layout)
+
+        helpwin_widget = QtWidgets.QWidget()
+        helpwin_layout = QtWidgets.QVBoxLayout()
+        helpwin_layout.addWidget(textbox)
+        helpwin_layout.addWidget(helpwin_widget_btns)
+        helpwin_widget.setLayout(helpwin_layout)
+        help_win.setCentralWidget(helpwin_widget)
 
         btn_update = QtWidgets.QPushButton()
         btn_update.hide()
