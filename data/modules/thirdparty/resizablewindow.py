@@ -24,3 +24,5 @@ class ResizableWindow(QtWidgets.QMainWindow):
         def updatealcs(A):A.setContentsMargins(*[A.alcSize]*4);C=A.rect();B=C.adjusted(A.alcSize,A.alcSize,-A.alcSize,-A.alcSize);A.classes[0].setGeometry(A.alcSize,B.top()+B.height(),B.width(),A.alcSize)
         def resizeEvent(A,event):QtWidgets.QMainWindow.resizeEvent(A,event);A.updatealcs()
         def moveEvent(A,e):A.callback_move(e);super(ResizableWindow,A).moveEvent(e)
+        def mousePressEvent(A,event):A.old_position = event.globalPos()
+        def mouseMoveEvent(A,event):calc_d = QtCore.QPoint(event.globalPos() - A.old_position);A.move(A.x() + calc_d.x(), A.y() + calc_d.y());A.old_position = event.globalPos()

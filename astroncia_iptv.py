@@ -5938,8 +5938,8 @@ if __name__ == '__main__':
                 )
                 playlist_widget.setWindowOpacity(0.55)
                 playlist_widget.setWindowFlags(
-                    QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
-                    QtCore.Qt.X11BypassWindowManagerHint
+                    QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint #| \
+                    #QtCore.Qt.X11BypassWindowManagerHint
                 )
                 pl_layout.addWidget(widget)
                 playlist_widget.show()
