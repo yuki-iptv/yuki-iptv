@@ -297,27 +297,6 @@ if __name__ == '__main__':
             file01.write('#EXTM3U\n#EXTINF:-1,{}\nhttp://255.255.255.255\n'.format('-'))
             file01.close()
 
-        # Warning about experimental Qt 6 / PySide6 version
-        if qt_backend == 'PySide6':
-            if not os.path.isfile(str(Path(LOCAL_DIR, 'qt6_experimental.flag'))):
-                qt6_file = open(str(Path(LOCAL_DIR, 'qt6_experimental.flag')), 'w', encoding="utf8")
-                qt6_file.write('')
-                qt6_file.close()
-                exp_qt6 = QtWidgets.QMessageBox(
-                    qt_icon_information,
-                    MAIN_WINDOW_TITLE,
-                    'You are using experimental Qt 6 (PySide6)\nversion of Astroncia IPTV.\n' + \
-                    '\nExecute astronciaiptv --disable-qt6\nif you experience problems.\n' + \
-                    '\nThis message will no longer appear.\n\n---\n\n' + \
-                    'Вы используете экспериментальную\n' + \
-                    'версию Astroncia IPTV, основанную на\n' + \
-                    'Qt 6 (PySide6).\n\nЗапустите astronciaiptv ' + \
-                    '--disable-qt6\n, если у вас возникли проблемы.\n\n' + \
-                    'Это сообщение больше не появится.',
-                    QtWidgets.QMessageBox.Ok
-                )
-                exp_qt6.exec()
-
         channel_sets = {}
         prog_ids = {}
         epg_icons = {}
