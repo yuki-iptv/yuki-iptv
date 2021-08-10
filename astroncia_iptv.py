@@ -546,7 +546,9 @@ if __name__ == '__main__':
             if m3u_editor.isVisible():
                 m3u_editor.hide()
             else:
+                moveWindowToCenter(m3u_editor)
                 m3u_editor.show()
+                moveWindowToCenter(m3u_editor)
 
         save_folder = settings['save_folder']
 
@@ -4639,6 +4641,7 @@ if __name__ == '__main__':
         print_with_time("Using {}".format(mpv_version))
 
         QT_URL = "<a href='https://www.qt.io/'>https://www.qt.io/</a>"
+        MPV_URL = "<a href='https://mpv.io/'>mpv</a> "
         CLICKABLE_LINKS = [
             'https://gitlab.com/astroncia',
             'https://unixforum.org/viewtopic.php?f=3&t=151801',
@@ -4660,7 +4663,7 @@ if __name__ == '__main__':
             format_about_text(
                 "{} Qt {} ({}) {}\n{} {}\n\n".format(
                     LANG['using'], qt_version, qt_backend, QT_URL,
-                    LANG['using'], mpv_version
+                    LANG['using'], mpv_version.replace('mpv ', MPV_URL)
                 ) + \
                 LANG['helptext'].format(APP_VERSION)
             )
