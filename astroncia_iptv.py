@@ -1661,7 +1661,9 @@ if __name__ == '__main__':
             except: # pylint: disable=bare-except
                 pass
 
+        @async_function
         def monitor_playback():
+            player.wait_until_playing()
             try:
                 player.observe_property("video-params", on_video_params)
                 player.observe_property("video-format", on_video_format)
@@ -1676,7 +1678,6 @@ if __name__ == '__main__':
             loading.hide()
             loading_movie.stop()
             loading1.hide()
-            monitor_playback()
 
         def showLoading():
             loading.show()
@@ -1878,6 +1879,8 @@ if __name__ == '__main__':
             player.loop = True
             mpv_override_stop(ignore=True)
             mpv_override_play(play_url1, ua_ch if isinstance(ua_ch, str) else uas[ua_ch])
+            if not os.name == 'nt':
+                monitor_playback()
 
         def chan_set_save():
             chan_3 = title.text().replace("{}: ".format(LANG['channel']), "")
