@@ -5860,7 +5860,10 @@ if __name__ == '__main__':
                     playlist_widget_height
                 )
                 playlist_widget.setWindowOpacity(0.55)
-                playlist_widget.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+                playlist_widget.setWindowFlags(
+                    QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
+                    QtCore.Qt.X11BypassWindowManagerHint
+                )
                 pl_layout.addWidget(widget)
                 playlist_widget.show()
             else:
@@ -5881,7 +5884,10 @@ if __name__ == '__main__':
                     500
                 )
                 controlpanel_widget.setWindowOpacity(0.55)
-                controlpanel_widget.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+                controlpanel_widget.setWindowFlags(
+                    QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
+                    QtCore.Qt.X11BypassWindowManagerHint
+                )
                 cp_layout.addWidget(widget2)
                 p_3 = win.main_widget.frameGeometry().center() - QtCore.QRect(
                     QtCore.QPoint(), controlpanel_widget.sizeHint()
