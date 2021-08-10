@@ -2976,13 +2976,19 @@ if __name__ == '__main__':
 
         fullscreen = False
         newdockWidgetHeight = False
+        newdockWidgetPosition = False
 
         try:
             if os.path.isfile(str(Path(LOCAL_DIR, 'expheight.json'))):
                 expheight_file_0 = open(
                     str(Path(LOCAL_DIR, 'expheight.json')), 'r', encoding="utf8"
                 )
-                newdockWidgetHeight = json.loads(expheight_file_0.read())["expplaylistheight"]
+                expheight_file_0_read = json.loads(expheight_file_0.read())
+                newdockWidgetHeight = expheight_file_0_read["expplaylistheight"]
+                try:
+                    newdockWidgetPosition = expheight_file_0_read["expplaylistposition"]
+                except: # pylint: disable=bare-except
+                    pass
                 expheight_file_0.close()
         except: # pylint: disable=bare-except
             pass
@@ -5753,7 +5759,7 @@ if __name__ == '__main__':
                     autoclosemenu_time = -1
 
         def resizeCallback(cal_width):
-            global fullscreen, newdockWidgetHeight
+            global fullscreen, newdockWidgetHeight, newdockWidgetPosition
             if settings['exp1'] and fullscreen:
                 newdockWidgetHeight = cal_width
                 try:
@@ -5761,14 +5767,37 @@ if __name__ == '__main__':
                         str(Path(LOCAL_DIR, 'expheight.json')), 'w', encoding="utf8"
                     )
                     expheight_file.write(
-                        json.dumps({"expplaylistheight": newdockWidgetHeight})
+                        json.dumps({
+                            "expplaylistheight": newdockWidgetHeight,
+                            "expplaylistposition": newdockWidgetPosition
+                        })
                     )
                     expheight_file.close()
                 except: # pylint: disable=bare-except
                     pass
 
+        def moveCallback(cal_pos):
+            global fullscreen, newdockWidgetHeight, newdockWidgetPosition
+            cal_position = cal_pos.pos()
+            if cal_position.x() and cal_position.y() and fullscreen and settings['exp1']:
+                newdockWidgetPosition = [cal_position.x(), cal_position.y()]
+                try:
+                    expheight_file_1 = open(
+                        str(Path(LOCAL_DIR, 'expheight.json')), 'w', encoding="utf8"
+                    )
+                    expheight_file_1.write(
+                        json.dumps({
+                            "expplaylistheight": newdockWidgetHeight,
+                            "expplaylistposition": newdockWidgetPosition
+                        })
+                    )
+                    expheight_file_1.close()
+                except: # pylint: disable=bare-except
+                    pass
+
         playlist_widget = ResizableWindow()
         playlist_widget.callback = resizeCallback
+        playlist_widget.callback_move = moveCallback
         playlist_widget_orig = QtWidgets.QWidget(playlist_widget)
         playlist_widget.setCentralWidget(playlist_widget_orig)
         pl_layout = QtWidgets.QGridLayout()
@@ -5786,7 +5815,10 @@ if __name__ == '__main__':
 
         def show_playlist():
             if settings["exp1"]:
-                playlist_widget.move(win.width() - dockWidget.width(), 0)
+                if newdockWidgetPosition:
+                    playlist_widget.move(newdockWidgetPosition[0], newdockWidgetPosition[1])
+                else:
+                    playlist_widget.move(win.width() - dockWidget.width(), 0)
                 playlist_widget.setFixedWidth(dockWidget.width())
                 if newdockWidgetHeight:
                     playlist_widget_height = newdockWidgetHeight
