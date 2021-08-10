@@ -3306,12 +3306,16 @@ if __name__ == '__main__':
 
         currentWidthHeight = [win.width(), win.height()]
         currentMaximized = win.isMaximized()
+        currentDockWidgetPos = False
 
         def dockWidget_out_clicked():
-            global fullscreen, l1, time_stop, currentWidthHeight, currentMaximized
+            global fullscreen, l1, time_stop, currentWidthHeight, currentMaximized, \
+                currentDockWidgetPos
             if not fullscreen:
                 # Entering fullscreen
                 fullscreen = True
+                if settings['playlistsep']:
+                    currentDockWidgetPos = dockWidget.pos()
                 currentWidthHeight = [win.width(), win.height()]
                 currentMaximized = win.isMaximized()
                 #l1.show()
@@ -3366,6 +3370,8 @@ if __name__ == '__main__':
                     QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
                 )
                 win.move(qr2.topLeft())
+                if settings['playlistsep'] and currentDockWidgetPos:
+                    dockWidget.move(currentDockWidgetPos)
 
         dockWidget_out = QtWidgets.QPushButton()
         dockWidget_out.clicked.connect(dockWidget_out_clicked)
@@ -4369,7 +4375,20 @@ if __name__ == '__main__':
                 win.addDockWidget(QtCore.Qt.LeftDockWidgetArea, dockWidget)
         else:
             dockWidget.setFloating(True)
-            dockWidget.move(win.pos().x() + win.width() + 30, win.pos().y())
+            seppl_data = False
+            if os.path.isfile(str(Path(LOCAL_DIR, 'sepplheight.json'))):
+                try:
+                    sepplheight_file_0 = open(
+                        str(Path(LOCAL_DIR, 'sepplheight.json')), 'r', encoding="utf8"
+                    )
+                    seppl_data = json.loads(sepplheight_file_0.read())
+                    sepplheight_file_0.close()
+                except: # pylint: disable=bare-except
+                    pass
+            if seppl_data:
+                dockWidget.move(seppl_data[0], seppl_data[1])
+            else:
+                dockWidget.move(win.pos().x() + win.width() + 30, win.pos().y())
             dockWidget.resize(dockWidget.width(), win.height())
             dockWidget.setFeatures(QtWidgets.QDockWidget.NoDockWidgetFeatures)
             dockWidget.setAllowedAreas(QtCore.Qt.NoDockWidgetArea)
@@ -5443,6 +5462,18 @@ if __name__ == '__main__':
 
         def myExitHandler(): # pylint: disable=too-many-branches
             global stopped, epg_thread, epg_thread_2, mpris_loop
+            if settings['playlistsep']:
+                try:
+                    sepplheight_file = open(
+                        str(Path(LOCAL_DIR, 'sepplheight.json')), 'w', encoding="utf8"
+                    )
+                    sepplheight_file.write(json.dumps([
+                        dockWidget.pos().x(),
+                        dockWidget.pos().y()
+                    ]))
+                    sepplheight_file.close()
+                except: # pylint: disable=bare-except
+                    pass
             saveLastChannel()
             stop_record()
             for rec_1 in sch_recordings:
