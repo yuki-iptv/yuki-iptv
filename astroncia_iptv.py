@@ -259,6 +259,8 @@ if __name__ == '__main__':
         print_with_time(LANG['foundproblem'] + ": " + EMAIL_ADDRESS)
         print_with_time("")
         # Version debugging
+        print_with_time("Current version: {}".format(APP_VERSION))
+        print_with_time("")
         print_with_time("Using Python {}".format(sys.version.replace('\n', '')))
         try:
             qt_version = qt_version_pt1()
