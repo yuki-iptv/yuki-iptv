@@ -3858,15 +3858,9 @@ if __name__ == '__main__':
                 if chan_4_logo:
                     #fetching_str = "Fetching channel icon from URL '{}' for channel '{}'"
                     #print(fetching_str.format(chan_4_logo, chan_4))
-                    p_1 = Process(
-                        target=fetch_remote_channel_icon,
-                        args=(chan_4, chan_4_logo, channel_icons_data.return_dict,)
+                    fetch_remote_channel_icon(
+                        chan_4, chan_4_logo, channel_icons_data.return_dict
                     )
-                    p_1.start()
-                    while True:
-                        if not p_1.is_alive():
-                            break
-                        time.sleep(0.01)
 
         @async_function
         def update_channel_icons_epg():
@@ -3891,15 +3885,9 @@ if __name__ == '__main__':
                 if chan_5_logo:
                     #fetching_str_2 = "Fetching channel icon from URL '{}' for channel '{}'"
                     #print(fetching_str_2.format(chan_5_logo, chan_5))
-                    p_2 = Process(
-                        target=fetch_remote_channel_icon,
-                        args=(chan_5, chan_5_logo, channel_icons_data_epg.return_dict,)
+                    fetch_remote_channel_icon(
+                        chan_5, chan_5_logo, channel_icons_data_epg.return_dict
                     )
-                    p_2.start()
-                    while True:
-                        if not p_2.is_alive():
-                            break
-                        time.sleep(0.01)
 
         array_copy = copy.deepcopy(array)
         prog_match_arr = {}
