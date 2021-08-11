@@ -5976,12 +5976,18 @@ if __name__ == '__main__':
             else:
                 dockWidget.hide()
 
+        LABEL7_WIDTH = False
+
         def show_controlpanel():
+            global LABEL7_WIDTH
             if settings["exp1"]:
                 controlpanel_widget.setFixedWidth(
                     #int(win.width() / 3) - 100
-                    500
+                    600
                 )
+                if not LABEL7_WIDTH:
+                    LABEL7_WIDTH = label7.width()
+                label7.setFixedWidth(150)
                 controlpanel_widget.setWindowOpacity(0.55)
                 controlpanel_widget.setWindowFlags(
                     QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
@@ -6002,6 +6008,8 @@ if __name__ == '__main__':
 
         def hide_controlpanel():
             if settings["exp1"]:
+                if LABEL7_WIDTH:
+                    label7.setFixedWidth(LABEL7_WIDTH)
                 cp_layout.removeWidget(widget2)
                 dockWidget2.setWidget(widget2)
                 controlpanel_widget.hide()
