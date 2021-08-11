@@ -5,6 +5,7 @@ from data.modules.astroncia.qt import get_qt_backend
 qt_backend, QtWidgets, QtCore, QtGui, QShortcut = get_qt_backend()
 from pathlib import Path
 from data.modules.astroncia.extgrp import parse_extgrp
+from data.modules.astroncia.lang import _ as get_translation
 
 home_folder = ""
 try:
@@ -90,8 +91,8 @@ class Viewer(QtWidgets.QMainWindow):
       self.lb.setAcceptDrops(True)
       self.setCentralWidget(self.lb)
       self.setContentsMargins(10, 10, 10, 10)
-      self.statusBar().showMessage(self.LANG['m3u_ready'], 0)
-      self.setWindowTitle(self.LANG['m3u_m3ueditor'])
+      self.statusBar().showMessage(get_translation('m3u_ready'), 0)
+      self.setWindowTitle(get_translation('m3u_m3ueditor'))
       self.setWindowIcon(QtGui.QIcon.fromTheme("multimedia-playlist"))
       self.createMenuBar()
       self.createToolBar()
@@ -123,7 +124,7 @@ class Viewer(QtWidgets.QMainWindow):
                 else:
                     ch = line.rpartition(',')[2]
                 if ch == "":
-                    ch = self.LANG['m3u_noname']
+                    ch = get_translation('m3u_noname')
                 ch = ch.replace('"', '')
 
                 if 'group-title="' in line:
@@ -158,8 +159,8 @@ class Viewer(QtWidgets.QMainWindow):
 
     def closeEvent(self, event):
         if  self.model.setChanged == True:
-            quit_msg = "<b>{}</b>".format(self.LANG['m3u_waschanged'])
-            reply = QtWidgets.QMessageBox.question(self, self.LANG['m3u_saveconfirm'],
+            quit_msg = "<b>{}</b>".format(get_translation('m3u_waschanged'))
+            reply = QtWidgets.QMessageBox.question(self, get_translation('m3u_saveconfirm'),
                      quit_msg, QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
             if reply == QtWidgets.QMessageBox.Yes:
                 event.accept()
@@ -167,23 +168,23 @@ class Viewer(QtWidgets.QMainWindow):
 
     def createMenuBar(self):
         bar=self.menuBar()
-        self.filemenu=bar.addMenu(self.LANG['m3u_file'])
+        self.filemenu=bar.addMenu(get_translation('m3u_file'))
         self.separatorAct = self.filemenu.addSeparator()
-        self.filemenu.addAction(QtGui.QIcon.fromTheme("document-open"), self.LANG['m3u_loadm3u'],  self.loadM3U, QtGui.QKeySequence.Open)
-        self.filemenu.addAction(QtGui.QIcon.fromTheme("document-save-as"), "{} ...".format(self.LANG['m3u_saveas']),  self.writeCSV, QtGui.QKeySequence.SaveAs)
+        self.filemenu.addAction(QtGui.QIcon.fromTheme("document-open"), get_translation('m3u_loadm3u'),  self.loadM3U, QtGui.QKeySequence.Open)
+        self.filemenu.addAction(QtGui.QIcon.fromTheme("document-save-as"), "{} ...".format(get_translation('m3u_saveas')),  self.writeCSV, QtGui.QKeySequence.SaveAs)
 
     def createToolBar(self):
         tb = self.addToolBar("Tools")
         tb.setIconSize(QtCore.QSize(16, 16))
 
-        self.findfield = QtWidgets.QLineEdit(placeholderText = "{} ...".format(self.LANG['m3u_find']))
+        self.findfield = QtWidgets.QLineEdit(placeholderText = "{} ...".format(get_translation('m3u_find')))
         self.findfield.setClearButtonEnabled(True)
         self.findfield.setFixedWidth(200)
         tb.addWidget(self.findfield)
 
         tb.addSeparator()
 
-        self.replacefield = QtWidgets.QLineEdit(placeholderText = "{} ...".format(self.LANG['m3u_replacewith']))
+        self.replacefield = QtWidgets.QLineEdit(placeholderText = "{} ...".format(get_translation('m3u_replacewith')))
         self.replacefield.setClearButtonEnabled(True)
         self.replacefield.setFixedWidth(200)
         tb.addWidget(self.replacefield)
@@ -191,8 +192,8 @@ class Viewer(QtWidgets.QMainWindow):
         tb.addSeparator()
 
         btn = QtWidgets.QToolButton()
-        btn.setText(self.LANG['m3u_replaceall'])
-        btn.setToolTip(self.LANG['m3u_replaceall'])
+        btn.setText(get_translation('m3u_replaceall'))
+        btn.setToolTip(get_translation('m3u_replaceall'))
         btn.clicked.connect(self.replace_in_table)
         tb.addWidget(btn)
 
@@ -200,7 +201,7 @@ class Viewer(QtWidgets.QMainWindow):
 
         del_btn = QtWidgets.QToolButton()
         del_btn.setIcon(QtGui.QIcon(str(Path('data', self.iconsFolder, 'trash.png'))))
-        del_btn.setToolTip(self.LANG['m3u_deleterow'])
+        del_btn.setToolTip(get_translation('m3u_deleterow'))
         del_btn.clicked.connect(self.del_row)
         tb.addWidget(del_btn)
 
@@ -208,34 +209,34 @@ class Viewer(QtWidgets.QMainWindow):
 
         add_btn = QtWidgets.QToolButton()
         add_btn.setIcon(QtGui.QIcon(str(Path('data', self.iconsFolder, 'plus.png'))))
-        add_btn.setToolTip(self.LANG['m3u_addrow'])
+        add_btn.setToolTip(get_translation('m3u_addrow'))
         add_btn.clicked.connect(self.add_row)
         tb.addWidget(add_btn)
 
         move_down_btn = QtWidgets.QToolButton()
         move_down_btn.setIcon(QtGui.QIcon(str(Path('data', self.iconsFolder, 'arrow-down.png'))))
-        move_down_btn.setToolTip(self.LANG['m3u_movedown'])
+        move_down_btn.setToolTip(get_translation('m3u_movedown'))
         move_down_btn.clicked.connect(self.move_down)
         tb.addWidget(move_down_btn)
 
         move_up_up = QtWidgets.QToolButton()
         move_up_up.setIcon(QtGui.QIcon(str(Path('data', self.iconsFolder, 'arrow-up.png'))))
-        move_up_up.setToolTip(self.LANG['m3u_moveup'])
+        move_up_up.setToolTip(get_translation('m3u_moveup'))
         move_up_up.clicked.connect(self.move_up)
         tb.addWidget(move_up_up)
 
         tb.addSeparator()
 
-        self.filter_field = QtWidgets.QLineEdit(placeholderText = self.LANG['m3u_filtergroup'])
+        self.filter_field = QtWidgets.QLineEdit(placeholderText = get_translation('m3u_filtergroup'))
         self.filter_field.setClearButtonEnabled(True)
-        self.filter_field.setToolTip(self.LANG['m3u_searchterm'])
+        self.filter_field.setToolTip(get_translation('m3u_searchterm'))
         self.filter_field.setFixedWidth(200)
         self.filter_field.returnPressed.connect(self.filter_table)
         self.filter_field.textChanged.connect(self.update_filter)
         tb.addWidget(self.filter_field)
 
         self.filter_combo = QtWidgets.QComboBox()
-        self.filter_combo.setToolTip(self.LANG['m3u_choosecolumn'])
+        self.filter_combo.setToolTip(get_translation('m3u_choosecolumn'))
         self.filter_combo.setFixedWidth(100)
         self.filter_combo.addItems(['tvg-name', 'group-title', 'tvg-logo', 'tvg-id', 'url'])
         self.filter_combo.currentIndexChanged.connect(self.filter_table)
@@ -282,14 +283,14 @@ class Viewer(QtWidgets.QMainWindow):
         self.lb.selectRow(self.model.rowCount() - 1)
 
     def openFile(self, path=None):
-        path, _ = QtWidgets.QFileDialog.getOpenFileName(self, self.LANG['m3u_openfile'], home_folder,self.LANG['m3u_playlists'])
+        path, _ = QtWidgets.QFileDialog.getOpenFileName(self, get_translation('m3u_openfile'), home_folder,get_translation('m3u_playlists'))
         if path:
             return path
 
     def loadM3U(self):
         if self.model.setChanged == True:
-            save_msg = "<b>{}</b>".format(self.LANG['m3u_waschanged'])
-            reply = QtWidgets.QMessageBox.question(self, self.LANG['m3u_saveconfirm'],
+            save_msg = "<b>{}</b>".format(get_translation('m3u_waschanged'))
+            reply = QtWidgets.QMessageBox.question(self, get_translation('m3u_saveconfirm'),
                      save_msg, QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
             if reply == QtWidgets.QMessageBox.Yes:
                 self.writeCSV()
@@ -314,13 +315,13 @@ class Viewer(QtWidgets.QMainWindow):
                 self.lb.setModel(self.model)
                 self.lb.resizeColumnsToContents()
                 self.lb.selectRow(0)
-                self.statusBar().showMessage("{} ".format(fileName) + self.LANG['m3u_loaded'], 0)
+                self.statusBar().showMessage("{} ".format(fileName) + get_translation('m3u_loaded'), 0)
                 self.model.setChanged = False
                 self.lb.verticalHeader().setMinimumWidth(24)
 
 
     def writeCSV(self):
-        fileName, _ = QtWidgets.QFileDialog.getSaveFileName(self, self.LANG['m3u_savefile'], self.fname.replace(".csv", ".m3u"),self.LANG['m3u_m3ufiles'], home_folder)
+        fileName, _ = QtWidgets.QFileDialog.getSaveFileName(self, get_translation('m3u_savefile'), self.fname.replace(".csv", ".m3u"),get_translation('m3u_m3ufiles'), home_folder)
         if fileName:
             # save temporary csv
             f = open(self.csv_file, 'w')

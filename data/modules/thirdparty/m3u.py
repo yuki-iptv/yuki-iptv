@@ -5,7 +5,7 @@ import locale
 import ctypes
 import re
 from pathlib import Path
-from data.modules.astroncia.lang import lang
+from data.modules.astroncia.lang import lang, _
 from data.modules.astroncia.extgrp import parse_extgrp
 
 class M3uParser:
@@ -35,7 +35,7 @@ class M3uParser:
             settings_lang0 = LANG_DEFAULT
 
         LANG = lang[settings_lang0]['strings'] if settings_lang0 in lang else lang[LANG_DEFAULT]['strings']
-        self.allchannels = LANG['allchannels']
+        self.allchannels = _('allchannels')
     
     #Read the file from the given path
     def readM3u(self, filename):
