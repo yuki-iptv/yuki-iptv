@@ -140,11 +140,20 @@ DOCK_WIDGET_WIDTH = max(DOCK_WIDGET_WIDTH, 0)
 parser = argparse.ArgumentParser(description='Astroncia IPTV')
 parser.add_argument('--python')
 parser.add_argument(
+    '--version',
+    action='store_true',
+    help='Show version'
+)
+parser.add_argument(
     '--disable-qt6',
     action='store_true',
     help='Force use Qt 5'
 )
 args1 = parser.parse_args()
+
+if args1.version:
+    print("Astroncia IPTV {}".format(APP_VERSION))
+    sys.exit(0)
 
 if 'HOME' in os.environ and os.path.isdir(os.environ['HOME']):
     try:
