@@ -2817,8 +2817,10 @@ if __name__ == '__main__':
         class Communicate(QtCore.QObject): # pylint: disable=too-few-public-methods
             if qt_backend == 'PySide6':
                 repaintUpdates = QtCore.Signal(object)
+                moveSeparatePlaylist = QtCore.Signal(object)
             else:
                 repaintUpdates = QtCore.pyqtSignal(object)
+                moveSeparatePlaylist = QtCore.pyqtSignal(object)
 
         @async_function
         def async_webbrowser():
@@ -2854,8 +2856,16 @@ if __name__ == '__main__':
                 fail_version_msg.exec()
             checkupdates_btn.setEnabled(True)
 
+        def move_separate_playlist_func(seppl_qpoint):
+            print_with_time("Moving separate playlist to QPoint({}, {})".format(
+                seppl_qpoint.x(),
+                seppl_qpoint.y()
+            ))
+            dockWidget.move(seppl_qpoint)
+
         comm_instance = Communicate()
         comm_instance.repaintUpdates.connect(check_for_updates_pt2)
+        comm_instance.moveSeparatePlaylist.connect(move_separate_playlist_func)
 
         @async_function
         def check_for_updates(self): # pylint: disable=unused-argument
@@ -3402,7 +3412,7 @@ if __name__ == '__main__':
 
         currentWidthHeight = [win.width(), win.height()]
         currentMaximized = win.isMaximized()
-        currentDockWidgetPos = False
+        currentDockWidgetPos = -1
 
         def dockWidget_out_clicked():
             global fullscreen, l1, time_stop, currentWidthHeight, currentMaximized, \
@@ -3412,6 +3422,10 @@ if __name__ == '__main__':
                 fullscreen = True
                 if settings['playlistsep']:
                     currentDockWidgetPos = dockWidget.pos()
+                    print_with_time("Saved separate playlist position - QPoint({}, {})".format(
+                        currentDockWidgetPos.x(),
+                        currentDockWidgetPos.y()
+                    ))
                 currentWidthHeight = [win.width(), win.height()]
                 currentMaximized = win.isMaximized()
                 #l1.show()
@@ -3466,8 +3480,8 @@ if __name__ == '__main__':
                     QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
                 )
                 win.move(qr2.topLeft())
-                if settings['playlistsep'] and currentDockWidgetPos:
-                    dockWidget.move(currentDockWidgetPos)
+                if settings['playlistsep'] and currentDockWidgetPos != -1:
+                    comm_instance.moveSeparatePlaylist.emit(currentDockWidgetPos)
 
         dockWidget_out = QtWidgets.QPushButton()
         dockWidget_out.clicked.connect(dockWidget_out_clicked)
