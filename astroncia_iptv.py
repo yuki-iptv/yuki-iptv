@@ -2290,6 +2290,11 @@ if __name__ == '__main__':
         def close_settings():
             settings_win.hide()
             if not win.isVisible():
+                current_pid1 = os.getpid()
+                if not os.name == 'nt':
+                    os.killpg(0, signal.SIGKILL)
+                else:
+                    os.kill(current_pid1, signal.SIGTERM)
                 sys.exit(0)
         def prov_select(self): # pylint: disable=unused-argument
             prov1 = sprov.currentText()
