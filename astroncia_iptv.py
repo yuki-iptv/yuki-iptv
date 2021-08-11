@@ -454,6 +454,8 @@ if __name__ == '__main__':
         else:
             print_with_time("{} {}".format(_('hwaccel').replace('\n', ' '), _('disabled')))
 
+        print_with_time("Reading cached TV guide if exists...")
+
         if os.path.isfile(str(Path(LOCAL_DIR, 'tvguide.dat'))):
             try:
                 tvguide_c = open(str(Path(LOCAL_DIR, 'tvguide.dat')), 'rb')
@@ -541,6 +543,8 @@ if __name__ == '__main__':
         if not is_program_actual(tvguide_sets):
             use_local_tvguide = False
 
+        print_with_time("TV guide read done")
+
         if settings["themecompat"]:
             ICONS_FOLDER = 'icons_dark'
         else:
@@ -554,7 +558,9 @@ if __name__ == '__main__':
         channels = {}
         programmes = {}
 
+        print_with_time("Init m3u editor")
         m3u_editor = Viewer(lang=LANG, iconsFolder=ICONS_FOLDER)
+        print_with_time("M3u editor init done")
 
         def show_m3u_editor():
             if m3u_editor.isVisible():
