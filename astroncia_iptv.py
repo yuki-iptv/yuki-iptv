@@ -6254,11 +6254,17 @@ if __name__ == '__main__':
                 timers_array[timer].timeout.connect(timer)
                 timers_array[timer].start(timers[timer])
         else:
-            selplaylist_win.show()
-            selplaylist_win.raise_()
-            selplaylist_win.setFocus(QtCore.Qt.PopupFocusReason)
-            selplaylist_win.activateWindow()
-            moveWindowToCenter(selplaylist_win)
+            if not os.path.isfile(str(Path(LOCAL_DIR, 'settings.json'))):
+                selplaylist_win.show()
+                selplaylist_win.raise_()
+                selplaylist_win.setFocus(QtCore.Qt.PopupFocusReason)
+                selplaylist_win.activateWindow()
+                moveWindowToCenter(selplaylist_win)
+            else:
+                settings_win.show()
+                settings_win.raise_()
+                settings_win.setFocus(QtCore.Qt.PopupFocusReason)
+                settings_win.activateWindow()
 
         if qt_backend == 'PySide6':
             sys.exit(app.exec())
