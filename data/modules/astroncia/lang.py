@@ -24,10 +24,7 @@ class LangData: # pylint: disable=too-few-public-methods
     '''Class for not using globals'''
 
 LangData.lang_folder = str(Path(os.getcwd(), 'data', 'lang'))
-LangData.languages = [
-    y for y in os.listdir(LangData.lang_folder) if y not \
-        in ('astronciaiptv.pot', 'update_translations.sh')
-]
+LangData.languages = os.listdir(LangData.lang_folder)
 LangData.current_lang = 'en'
 lang = {}
 

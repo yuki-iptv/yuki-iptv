@@ -638,6 +638,78 @@ msgstr ""
 msgid "iaepgmatch"
 msgstr ""
 
+msgid "using"
+msgstr ""
+
+msgid "Aspect"
+msgstr ""
+
+msgid "Average Bitrate"
+msgstr ""
+
+msgid "Channel Count"
+msgstr ""
+
+msgid "Channels"
+msgstr ""
+
+msgid "Codec"
+msgstr ""
+
+msgid "colour"
+msgstr ""
+
+msgid "Dimensions"
+msgstr ""
+
+msgid "Format"
+msgstr ""
+
+msgid "Gamma"
+msgstr ""
+
+msgid "general"
+msgstr ""
+
+msgid "layout"
+msgstr ""
+
+msgid "Pixel Format"
+msgstr ""
+
+msgid "Sample Rate"
+msgstr ""
+
+msgid "Stream Information"
+msgstr ""
+
+msgid "Video"
+msgstr ""
+
+msgid "Audio"
+msgstr ""
+
+msgid "checkforupdates"
+msgstr ""
+
+msgid "gotlatestversion"
+msgstr ""
+
+msgid "newversiongetfail"
+msgstr ""
+
+msgid "newversionavail"
+msgstr ""
+
+msgid "setdefaultplaylist"
+msgstr ""
+
+msgid "ihaveplaylist"
+msgstr ""
+
+msgid "aboutqt"
+msgstr ""
+
 msgid "helptext"
 msgstr ""
 
