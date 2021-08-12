@@ -4500,7 +4500,7 @@ if __name__ == '__main__':
 
         @async_function
         def mainthread_timer_2(t2):
-            time.sleep(0.1)
+            time.sleep(0.05)
             exInMainThread_partial(t2)
 
         def mainthread_timer(t1):
