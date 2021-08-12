@@ -5113,18 +5113,15 @@ if __name__ == '__main__':
         right_click_menu_fullscreen.addSeparator()
         right_click_menu_fullscreen.addAction(_('channelsettings'), main_channel_settings)
 
-        @player.event_callback('end_file')
-        def ready_handler_2(event): # pylint: disable=unused-argument
-            if event['event']['error'] != 0:
-                if loading.isVisible():
-                    loading.setText(_('playerror'))
-                    loading.setStyleSheet('color: red')
-                    showLoading()
-                    loading1.hide()
-                    loading_movie.stop()
+        def end_file_callback():
+            if loading.isVisible():
+                loading.setText(_('playerror'))
+                loading.setStyleSheet('color: red')
+                showLoading()
+                loading1.hide()
+                loading_movie.stop()
 
-        @player.on_key_press('MBTN_RIGHT')
-        def my_mouse_right():
+        def my_mouse_right_callback():
             global autoclosemenu_time, fullscreen
             #if playing_chan:
             autoclosemenu_time = time.time()
@@ -5138,18 +5135,6 @@ if __name__ == '__main__':
                     right_click_menu_fullscreen.exec(QtGui.QCursor.pos())
                 else:
                     right_click_menu_fullscreen.exec_(QtGui.QCursor.pos())
-
-        @player.on_key_press('MBTN_LEFT_DBL')
-        def my_leftdbl_binding():
-            exInMainThread(mpv_fullscreen)
-
-        @player.on_key_press('MBTN_FORWARD')
-        def my_forward_binding():
-            exInMainThread(next_channel)
-
-        @player.on_key_press('MBTN_BACK')
-        def my_back_binding():
-            exInMainThread(prev_channel)
 
         def my_up_binding_execute():
             global l1, time_stop
@@ -5175,18 +5160,34 @@ if __name__ == '__main__':
                 label7.setValue(volume)
                 mpv_volume_set()
 
-        my_up_binding_btn = QtWidgets.QPushButton()
-        my_up_binding_btn.clicked.connect(my_up_binding_execute)
-        my_down_binding_btn = QtWidgets.QPushButton()
-        my_down_binding_btn.clicked.connect(my_down_binding_execute)
+        @player.event_callback('end_file')
+        def ready_handler_2(event): # pylint: disable=unused-argument
+            if event['event']['error'] != 0:
+                exInMainThread(end_file_callback)
+
+        @player.on_key_press('MBTN_RIGHT')
+        def my_mouse_right():
+            exInMainThread(my_mouse_right_callback)
+
+        @player.on_key_press('MBTN_LEFT_DBL')
+        def my_leftdbl_binding():
+            exInMainThread(mpv_fullscreen)
+
+        @player.on_key_press('MBTN_FORWARD')
+        def my_forward_binding():
+            exInMainThread(next_channel)
+
+        @player.on_key_press('MBTN_BACK')
+        def my_back_binding():
+            exInMainThread(prev_channel)
 
         @player.on_key_press('WHEEL_UP')
         def my_up_binding():
-            my_up_binding_btn.click()
+            exInMainThread(my_up_binding_execute)
 
         @player.on_key_press('WHEEL_DOWN')
         def my_down_binding():
-            my_down_binding_btn.click()
+            exInMainThread(my_down_binding_execute)
 
         dockWidget2 = QtWidgets.QDockWidget(win)
 
