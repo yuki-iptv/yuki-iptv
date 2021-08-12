@@ -701,6 +701,12 @@ msgstr "Error retrieving latest version information"
 msgid "newversionavail"
 msgstr "New version available! Visit web page to install?"
 
+msgid "setdefaultplaylist"
+msgstr "Select default playlist (Free-TV)"
+
+msgid "ihaveplaylist"
+msgstr "I have M3U / XTream playlist"
+
 msgid "helptext"
 msgstr "Astroncia IPTV, version {}\n© kestral / astroncia < kestraly (at) gmail.com >\nhttps://gitlab.com/astroncia\n\nIPTV player\n\nSupports TV guide (EPG) only in XMLTV and JTV formats!\n\nChannel not working?\nRight mouse button opens channel settings\n\nIcons by Font Awesome ( https://fontawesome.com/ )\nIcons licensed under the CC BY 4.0 License\n( https://creativecommons.org/licenses/by/4.0/ )\n\nHotkeys:\n\nF / F11 - fullscreen mode\nF2 - stream information\nV - mute\nQ - quit program\nSpace - pause\nS - stop playing\nH - screenshot\nG - tv guide (EPG)\nR - start/stop record\nN - previous channel\nM - next channel\nT - open/close channels list\nO - show/hide clock\nI - channel sort\nD - record scheduler"
 

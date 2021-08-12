@@ -824,6 +824,10 @@ if __name__ == '__main__':
         settings_win.setWindowTitle(_('settings'))
         settings_win.setWindowIcon(main_icon)
 
+        selplaylist_win = QtWidgets.QMainWindow()
+        selplaylist_win.setWindowTitle('Astroncia IPTV')
+        selplaylist_win.setWindowIcon(main_icon)
+
         streaminfo_win = QtWidgets.QMainWindow()
         streaminfo_win.setWindowIcon(main_icon)
 
@@ -989,6 +993,51 @@ if __name__ == '__main__':
         providers_win_edit_widget.setLayout(providers_win_edit_layout)
         providers_win_edit.setCentralWidget(providers_win_edit_widget)
 
+        def ihaveplaylist_btn_action():
+            selplaylist_win.close()
+            settings_win.show()
+            settings_win.raise_()
+            settings_win.setFocus(QtCore.Qt.PopupFocusReason)
+            settings_win.activateWindow()
+
+        def setdefaultplaylist_action():
+            sprov.setCurrentIndex(1)
+            providers_selected()
+            selplaylist_win.close()
+            save_settings()
+
+        ihaveplaylist_btn = QtWidgets.QPushButton(_('ihaveplaylist'))
+        ihaveplaylist_btn.clicked.connect(ihaveplaylist_btn_action)
+        setdefaultplaylist = QtWidgets.QPushButton(_('setdefaultplaylist'))
+        setdefaultplaylist.clicked.connect(setdefaultplaylist_action)
+        astronciaiptv_icon = QtWidgets.QLabel()
+        astronciaiptv_icon.setPixmap(TV_ICON.pixmap(QtCore.QSize(32, 32)))
+        astronciaiptv_label = QtWidgets.QLabel()
+        myFont6 = QtGui.QFont()
+        myFont6.setPointSize(11)
+        myFont6.setBold(True)
+        astronciaiptv_label.setFont(myFont6)
+        astronciaiptv_label.setTextFormat(QtCore.Qt.RichText)
+        astronciaiptv_label.setText(
+            '<br>&nbsp;<span style="color:green">Astroncia</span>' + \
+            ' <span style="color:#b35900">IPTV</span><br>'
+        )
+
+        astronciaiptv_widget = QtWidgets.QWidget()
+        astronciaiptv_layout = QtWidgets.QHBoxLayout()
+        astronciaiptv_layout.addWidget(astronciaiptv_icon)
+        astronciaiptv_layout.addWidget(astronciaiptv_label)
+        astronciaiptv_widget.setLayout(astronciaiptv_layout)
+
+        selplaylist_widget = QtWidgets.QWidget()
+        selplaylist_layout = QtWidgets.QVBoxLayout()
+        astronciaiptv_layout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        selplaylist_layout.addWidget(astronciaiptv_widget)
+        selplaylist_layout.addWidget(setdefaultplaylist)
+        selplaylist_layout.addWidget(ihaveplaylist_btn)
+        selplaylist_widget.setLayout(selplaylist_layout)
+        selplaylist_win.setCentralWidget(selplaylist_widget)
+
         def esw_input_edit():
             esw_input_text = esw_input.text().lower()
             for est_w in range(0, esw_select.count()):
@@ -1142,6 +1191,7 @@ if __name__ == '__main__':
         #settings_win.move(settings_win_l)
         settings_win.move(qr.topLeft())
         moveWindowToCenter(help_win)
+        moveWindowToCenter(selplaylist_win)
         moveWindowToCenter(streaminfo_win)
         moveWindowToCenter(license_win)
         moveWindowToCenter(sort_win)
@@ -6204,10 +6254,11 @@ if __name__ == '__main__':
                 timers_array[timer].timeout.connect(timer)
                 timers_array[timer].start(timers[timer])
         else:
-            settings_win.show()
-            settings_win.raise_()
-            settings_win.setFocus(QtCore.Qt.PopupFocusReason)
-            settings_win.activateWindow()
+            selplaylist_win.show()
+            selplaylist_win.raise_()
+            selplaylist_win.setFocus(QtCore.Qt.PopupFocusReason)
+            selplaylist_win.activateWindow()
+            moveWindowToCenter(selplaylist_win)
 
         if qt_backend == 'PySide6':
             sys.exit(app.exec())
