@@ -5744,6 +5744,19 @@ if __name__ == '__main__':
                     expheight_file.close()
                 except: # pylint: disable=bare-except
                     pass
+            try:
+                windowpos_file = open(
+                    str(Path(LOCAL_DIR, 'windowpos.json')), 'w', encoding="utf8"
+                )
+                windowpos_file.write(
+                    json.dumps({
+                        "x": win.pos().x(),
+                        "y": win.pos().y()
+                    })
+                )
+                windowpos_file.close()
+            except: # pylint: disable=bare-except
+                pass
             saveLastChannel()
             stop_record()
             for rec_1 in sch_recordings:
@@ -6330,6 +6343,17 @@ if __name__ == '__main__':
             win.raise_()
             win.setFocus(QtCore.Qt.PopupFocusReason)
             win.activateWindow()
+            if os.path.isfile(str(Path(LOCAL_DIR, 'windowpos.json'))):
+                try:
+                    windowpos_file_1 = open(
+                        str(Path(LOCAL_DIR, 'windowpos.json')), 'r', encoding="utf8"
+                    )
+                    windowpos_file_1_out = windowpos_file_1.read()
+                    windowpos_file_1.close()
+                    windowpos_file_1_json = json.loads(windowpos_file_1_out)
+                    win.move(windowpos_file_1_json['x'], windowpos_file_1_json['y'])
+                except: # pylint: disable=bare-except
+                    pass
 
             ic, ic1, ic2 = 0, 0, 0
             timers_array = {}
