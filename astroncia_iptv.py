@@ -2878,6 +2878,7 @@ if __name__ == '__main__':
 
         class Communicate(QtCore.QObject): # pylint: disable=too-few-public-methods
             winPosition = False
+            winPosition2 = False
             if qt_backend == 'PySide6':
                 repaintUpdates = QtCore.Signal(object)
                 moveSeparatePlaylist = QtCore.Signal(object)
@@ -3243,6 +3244,15 @@ if __name__ == '__main__':
                 else:
                     l1_h = 15
                 tvguide_lbl.setFixedHeight(((self.windowHeight - l1_h - h) - 40 - l1_h + h2))
+            def moveEvent(self, event):
+                try:
+                    comm_instance.winPosition2 = {
+                        "x": win.pos().x(),
+                        "y": win.pos().y()
+                    }
+                except: # pylint: disable=bare-except
+                    pass
+                QtWidgets.QMainWindow.moveEvent(self, event)
             def resizeEvent(self, event):
                 try:
                     self.update()
@@ -5728,16 +5738,20 @@ if __name__ == '__main__':
         def myExitHandler(): # pylint: disable=too-many-branches
             global stopped, epg_thread, epg_thread_2, mpris_loop, \
             newdockWidgetHeight, newdockWidgetPosition
+            if comm_instance.winPosition2:
+                mainwindow_position = comm_instance.winPosition2
+            else:
+                mainwindow_position = {
+                    "x": win.pos().x(),
+                    "y": win.pos().y()
+                }
             try:
                 print_with_time("Saving main window position...")
                 windowpos_file = open(
                     str(Path(LOCAL_DIR, 'windowpos.json')), 'w', encoding="utf8"
                 )
                 windowpos_file.write(
-                    json.dumps({
-                        "x": win.pos().x(),
-                        "y": win.pos().y()
-                    })
+                    json.dumps(mainwindow_position)
                 )
                 windowpos_file.close()
                 print_with_time("Main window position saved")
