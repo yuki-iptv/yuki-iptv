@@ -2877,6 +2877,7 @@ if __name__ == '__main__':
         textbox.setReadOnly(True)
 
         class Communicate(QtCore.QObject): # pylint: disable=too-few-public-methods
+            winPosition = False
             if qt_backend == 'PySide6':
                 repaintUpdates = QtCore.Signal(object)
                 moveSeparatePlaylist = QtCore.Signal(object)
@@ -2969,6 +2970,13 @@ if __name__ == '__main__':
         license_btn.setText(_('license'))
         license_btn.clicked.connect(show_license)
 
+        def aboutqt_show():
+            QtWidgets.QMessageBox.aboutQt(QtWidgets.QWidget(), MAIN_WINDOW_TITLE)
+
+        aboutqt_btn = QtWidgets.QPushButton()
+        aboutqt_btn.setText(_('aboutqt'))
+        aboutqt_btn.clicked.connect(aboutqt_show)
+
         close_btn = QtWidgets.QPushButton()
         close_btn.setText(_('close'))
         close_btn.clicked.connect(help_win.close)
@@ -2977,6 +2985,7 @@ if __name__ == '__main__':
         helpwin_widget_btns_layout = QtWidgets.QHBoxLayout()
         helpwin_widget_btns_layout.addWidget(checkupdates_btn)
         helpwin_widget_btns_layout.addWidget(license_btn)
+        helpwin_widget_btns_layout.addWidget(aboutqt_btn)
         helpwin_widget_btns_layout.addWidget(close_btn)
         helpwin_widget_btns.setLayout(helpwin_widget_btns_layout)
 
@@ -3491,11 +3500,12 @@ if __name__ == '__main__':
         currentMaximized = win.isMaximized()
         currentDockWidgetPos = -1
 
-        def dockWidget_out_clicked():
+        def dockWidget_out_clicked(): # pylint: disable=too-many-branches
             global fullscreen, l1, time_stop, currentWidthHeight, currentMaximized, \
                 currentDockWidgetPos
             if not fullscreen:
                 # Entering fullscreen
+                comm_instance.winPosition = win.pos()
                 channelfilter.usePopup = False
                 fullscreen = True
                 if settings['playlistsep']:
@@ -3553,11 +3563,10 @@ if __name__ == '__main__':
                 else:
                     win.showMaximized()
                 win.resize(currentWidthHeight[0], currentWidthHeight[1])
-                qr2 = win.frameGeometry()
-                qr2.moveCenter(
-                    QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
-                )
-                win.move(qr2.topLeft())
+                if comm_instance.winPosition:
+                    win.move(comm_instance.winPosition)
+                else:
+                    moveWindowToCenter(win)
                 if settings['playlistsep'] and currentDockWidgetPos != -1:
                     comm_instance.moveSeparatePlaylist.emit(currentDockWidgetPos)
 
@@ -5719,6 +5728,21 @@ if __name__ == '__main__':
         def myExitHandler(): # pylint: disable=too-many-branches
             global stopped, epg_thread, epg_thread_2, mpris_loop, \
             newdockWidgetHeight, newdockWidgetPosition
+            try:
+                print_with_time("Saving main window position...")
+                windowpos_file = open(
+                    str(Path(LOCAL_DIR, 'windowpos.json')), 'w', encoding="utf8"
+                )
+                windowpos_file.write(
+                    json.dumps({
+                        "x": win.pos().x(),
+                        "y": win.pos().y()
+                    })
+                )
+                windowpos_file.close()
+                print_with_time("Main window position saved")
+            except: # pylint: disable=bare-except
+                pass
             if settings['playlistsep']:
                 try:
                     sepplheight_file = open(
@@ -5745,19 +5769,6 @@ if __name__ == '__main__':
                     expheight_file.close()
                 except: # pylint: disable=bare-except
                     pass
-            try:
-                windowpos_file = open(
-                    str(Path(LOCAL_DIR, 'windowpos.json')), 'w', encoding="utf8"
-                )
-                windowpos_file.write(
-                    json.dumps({
-                        "x": win.pos().x(),
-                        "y": win.pos().y()
-                    })
-                )
-                windowpos_file.close()
-            except: # pylint: disable=bare-except
-                pass
             saveLastChannel()
             stop_record()
             for rec_1 in sch_recordings:
@@ -6346,6 +6357,7 @@ if __name__ == '__main__':
             win.activateWindow()
             if os.path.isfile(str(Path(LOCAL_DIR, 'windowpos.json'))):
                 try:
+                    print_with_time("Restoring main window position...")
                     windowpos_file_1 = open(
                         str(Path(LOCAL_DIR, 'windowpos.json')), 'r', encoding="utf8"
                     )
@@ -6353,6 +6365,7 @@ if __name__ == '__main__':
                     windowpos_file_1.close()
                     windowpos_file_1_json = json.loads(windowpos_file_1_out)
                     win.move(windowpos_file_1_json['x'], windowpos_file_1_json['y'])
+                    print_with_time("Main window position restored")
                 except: # pylint: disable=bare-except
                     pass
 
