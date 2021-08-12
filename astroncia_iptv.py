@@ -46,6 +46,7 @@ import webbrowser
 import threading
 from multiprocessing import Process, Manager, freeze_support, active_children
 freeze_support()
+from functools import partial
 import requests
 from unidecode import unidecode
 from data.modules.astroncia.qt import get_qt_backend
@@ -2879,9 +2880,19 @@ if __name__ == '__main__':
             if qt_backend == 'PySide6':
                 repaintUpdates = QtCore.Signal(object)
                 moveSeparatePlaylist = QtCore.Signal(object)
+                mainThread = QtCore.Signal(type(lambda x: None))
+                mainThread_partial = QtCore.Signal(type(partial(int, 2)))
             else:
                 repaintUpdates = QtCore.pyqtSignal(object)
                 moveSeparatePlaylist = QtCore.pyqtSignal(object)
+                mainThread = QtCore.pyqtSignal(type(lambda x: None))
+                mainThread_partial = QtCore.pyqtSignal(type(partial(int, 2)))
+
+        def exInMainThread(m_func):
+            comm_instance.mainThread.emit(m_func)
+
+        def exInMainThread_partial(m_func_2):
+            comm_instance.mainThread_partial.emit(m_func_2)
 
         @async_function
         def async_webbrowser():
@@ -2924,9 +2935,14 @@ if __name__ == '__main__':
             ))
             dockWidget.move(seppl_qpoint)
 
+        def comm_instance_main_thread(th_func):
+            th_func()
+
         comm_instance = Communicate()
         comm_instance.repaintUpdates.connect(check_for_updates_pt2)
         comm_instance.moveSeparatePlaylist.connect(move_separate_playlist_func)
+        comm_instance.mainThread.connect(comm_instance_main_thread)
+        comm_instance.mainThread_partial.connect(comm_instance_main_thread)
 
         @async_function
         def check_for_updates(self): # pylint: disable=unused-argument
@@ -3480,6 +3496,7 @@ if __name__ == '__main__':
                 currentDockWidgetPos
             if not fullscreen:
                 # Entering fullscreen
+                channelfilter.usePopup = False
                 fullscreen = True
                 if settings['playlistsep']:
                     currentDockWidgetPos = dockWidget.pos()
@@ -4458,7 +4475,86 @@ if __name__ == '__main__':
         combobox.currentIndexChanged.connect(group_change)
         for group in groups:
             combobox.addItem(group)
-        channelfilter = QtWidgets.QLineEdit()
+
+        def focusOutEvent_after(
+                playlist_widget_visible,
+                controlpanel_widget_visible,
+                channelfiltersearch_has_focus
+        ):
+            channelfilter.usePopup = False
+            playlist_widget.setWindowFlags(
+                QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
+                QtCore.Qt.X11BypassWindowManagerHint #| QtCore.Qt.Popup
+            )
+            controlpanel_widget.setWindowFlags(
+                QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
+                QtCore.Qt.X11BypassWindowManagerHint #| QtCore.Qt.Popup
+            )
+            if playlist_widget_visible:
+                playlist_widget.show()
+            if controlpanel_widget_visible:
+                controlpanel_widget.show()
+            if channelfiltersearch_has_focus:
+                #channelfiltersearch.setDisabled(False)
+                channelfiltersearch.click()
+
+        @async_function
+        def mainthread_timer_2(t2):
+            time.sleep(0.1)
+            exInMainThread_partial(t2)
+
+        def mainthread_timer(t1):
+            mainthread_timer_2(t1)
+
+        class MyLineEdit(QtWidgets.QLineEdit):
+            usePopup = False
+            if qt_backend == 'PySide6':
+                click_event = QtCore.Signal()
+            else:
+                click_event = QtCore.pyqtSignal()
+            def mousePressEvent(self, event1):
+                if event1.button() == QtCore.Qt.LeftButton:
+                    self.click_event.emit()
+                else:
+                    super().mousePressEvent(event1)
+            def focusOutEvent(self, event2):
+                super().focusOutEvent(event2)
+                if settings["exp1"] and fullscreen:
+                    playlist_widget_visible1 = playlist_widget.isVisible()
+                    controlpanel_widget_visible1 = controlpanel_widget.isVisible()
+                    channelfiltersearch_has_focus1 = channelfiltersearch.hasFocus()
+                    focusOutEvent_after_partial = partial(
+                        focusOutEvent_after,
+                        playlist_widget_visible1,
+                        controlpanel_widget_visible1,
+                        channelfiltersearch_has_focus1
+                    )
+                    mainthread_timer_1 = partial(
+                        mainthread_timer,
+                        focusOutEvent_after_partial
+                    )
+                    exInMainThread_partial(mainthread_timer_1)
+
+        def channelfilter_clicked():
+            if settings["exp1"] and fullscreen:
+                playlist_widget_visible1 = playlist_widget.isVisible()
+                controlpanel_widget_visible1 = controlpanel_widget.isVisible()
+                channelfilter.usePopup = True
+                playlist_widget.setWindowFlags(
+                    QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
+                    QtCore.Qt.X11BypassWindowManagerHint | QtCore.Qt.Popup
+                )
+                controlpanel_widget.setWindowFlags(
+                    QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
+                    QtCore.Qt.X11BypassWindowManagerHint | QtCore.Qt.Popup
+                )
+                if playlist_widget_visible1:
+                    playlist_widget.show()
+                if controlpanel_widget_visible1:
+                    controlpanel_widget.show()
+
+        channelfilter = MyLineEdit()
+        channelfilter.click_event.connect(channelfilter_clicked)
         channelfilter.setPlaceholderText(_('chansearch'))
         channelfiltersearch = QtWidgets.QPushButton()
         channelfiltersearch.setText(_('search'))
@@ -5045,15 +5141,15 @@ if __name__ == '__main__':
 
         @player.on_key_press('MBTN_LEFT_DBL')
         def my_leftdbl_binding():
-            mpv_fullscreen()
+            exInMainThread(mpv_fullscreen)
 
         @player.on_key_press('MBTN_FORWARD')
         def my_forward_binding():
-            next_channel()
+            exInMainThread(next_channel)
 
         @player.on_key_press('MBTN_BACK')
         def my_back_binding():
-            prev_channel()
+            exInMainThread(prev_channel)
 
         def my_up_binding_execute():
             global l1, time_stop
@@ -6010,7 +6106,7 @@ if __name__ == '__main__':
                 playlist_widget.setWindowOpacity(0.55)
                 playlist_widget.setWindowFlags(
                     QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
-                    QtCore.Qt.X11BypassWindowManagerHint | QtCore.Qt.Popup
+                    QtCore.Qt.X11BypassWindowManagerHint #| QtCore.Qt.Popup
                 )
                 pl_layout.addWidget(widget)
                 playlist_widget.show()
@@ -6038,10 +6134,16 @@ if __name__ == '__main__':
                     LABEL7_WIDTH = label7.width()
                 label7.setFixedWidth(150)
                 controlpanel_widget.setWindowOpacity(0.55)
-                controlpanel_widget.setWindowFlags(
-                    QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
-                    QtCore.Qt.X11BypassWindowManagerHint | QtCore.Qt.Popup
-                )
+                if channelfilter.usePopup:
+                    controlpanel_widget.setWindowFlags(
+                        QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
+                        QtCore.Qt.X11BypassWindowManagerHint | QtCore.Qt.Popup
+                    )
+                else:
+                    controlpanel_widget.setWindowFlags(
+                        QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
+                        QtCore.Qt.X11BypassWindowManagerHint #| QtCore.Qt.Popup
+                    )
                 cp_layout.addWidget(widget2)
                 p_3 = win.main_widget.frameGeometry().center() - QtCore.QRect(
                     QtCore.QPoint(), controlpanel_widget.sizeHint()
