@@ -7,7 +7,6 @@
 
 ## Скачать
 
-**[Версия для Windows](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/Astroncia_IPTV_setup.exe)**  
 deb и rpm пакеты доступны в [Releases](https://gitlab.com/astroncia/iptv/-/releases)  
   
 Для Ubuntu / Linux Mint **рекомендуется** установка из [Launchpad PPA - ppa:astroncia/iptv](https://launchpad.net/~astroncia/+archive/ubuntu/iptv):  
@@ -18,8 +17,6 @@ deb и rpm пакеты доступны в [Releases](https://gitlab.com/astron
 [Arch Linux (AUR)](https://aur.archlinux.org/packages/astronciaiptv/)  
 
 ## Информация
-
-**32-битная Windows не поддерживается!**  
 
 Программа предоставляется **как есть**, никаких гарантий.  
 
@@ -74,11 +71,6 @@ TV архив
 на Debian/Ubuntu:  
 ```sudo apt update && sudo apt install ffmpeg git libmpv1 python3 python3-requests python3-pyqt5 python3-pil python3-pandas python3-gi python3-unidecode python3-pydbus python3-pip python3-setuptools python3-dev python3-wheel```
 
-на Windows:  
-Устанавливаем Git с [официального сайта](https://git-scm.com/download/win)  
-Устанавливаем Python 3 с [официального сайта](https://www.python.org/downloads/windows/) - Windows Installer (64-bit) (Recommended)  
-(**поставьте галочку Add Python 3 to PATH при установке**)  
-
 **Клонируем репозиторий:**
 
 ```git clone --depth=1 https://gitlab.com/astroncia/iptv.git astroncia_iptv```  
@@ -91,29 +83,15 @@ TV архив
 
 **Устанавливаем Python модули:**  
 
-на GNU/Linux:  
 ```python3 -m pip install -r requirements.txt```  
 
-на Windows:  
-```python -m pip install -r requirements.txt```  
-
-**Устанавливаем бинарные зависимости (только для Windows):**
-
-Скачайте файлы  
-[ffmpeg.exe](https://gitlab.com/astroncia/iptv-binary-deps/-/raw/master/ffmpeg.exe)  
-[mpv-1.dll](https://gitlab.com/astroncia/iptv-binary-deps/-/raw/master/mpv-1.dll)  
-и поместите их в папку **astroncia_iptv\data\modules\binary**
-
-**Создание файлов переводов (для Windows придётся генерировать mo файлы вручную):**  
+**Создание файлов переводов:**  
   
 ```make```  
 
 **Запускаем:**
 
-на Windows: запускайте файл ```start_windows.vbs```  
-( можете создать ярлык: **ПКМ** -> **Отправить** -> **Рабочий стол (создать ярлык)** )
-
-на GNU/Linux: ```./start_linux.sh```
+```./start_linux.sh```
 
 ## Просмотр записей
 

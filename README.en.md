@@ -7,7 +7,6 @@
 
 ## Download
 
-**[Version for Windows](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/Astroncia_IPTV_setup.exe)**  
 deb and rpm packages available in [Releases](https://gitlab.com/astroncia/iptv/-/releases)  
   
 For Ubuntu / Linux Mint **recommended** install from [Launchpad PPA - ppa:astroncia/iptv](https://launchpad.net/~astroncia/+archive/ubuntu/iptv):  
@@ -18,8 +17,6 @@ For Ubuntu / Linux Mint **recommended** install from [Launchpad PPA - ppa:astron
 [Arch Linux (AUR)](https://aur.archlinux.org/packages/astronciaiptv/)  
 
 ## Information
-
-**32-bit Windows not supported!**  
 
 Software provided **as is**, no guarantees.  
 
@@ -74,11 +71,6 @@ TV archive
 on Debian/Ubuntu:  
 ```sudo apt update && sudo apt install ffmpeg git libmpv1 python3 python3-requests python3-pyqt5 python3-pil python3-pandas python3-gi python3-unidecode python3-pydbus python3-pip python3-setuptools python3-dev python3-wheel```
 
-on Windows:  
-Install Git from [official website](https://git-scm.com/download/win)  
-Install Python 3 from [official website](https://www.python.org/downloads/windows/) - Windows Installer (64-bit) (Recommended)  
-(**Check 'Add Python 3 to PATH' at install**)  
-
 **Cloning repository:**
 
 ```git clone --depth=1 https://gitlab.com/astroncia/iptv.git astroncia_iptv```  
@@ -91,28 +83,15 @@ Install Python 3 from [official website](https://www.python.org/downloads/window
 
 **Installing Python modules:**  
 
-on GNU/Linux:  
 ```python3 -m pip install -r requirements.txt```  
 
-on Windows:  
-```python -m pip install -r requirements.txt```  
-
-**Installing binary dependenices (only for Windows):**
-
-Download files  
-[ffmpeg.exe](https://gitlab.com/astroncia/iptv-binary-deps/-/raw/master/ffmpeg.exe)  
-[mpv-1.dll](https://gitlab.com/astroncia/iptv-binary-deps/-/raw/master/mpv-1.dll)  
-and put to folder **astroncia_iptv\data\modules\binary**  
-
-**Create translation files (for Windows you will have to generate mo files manually):**  
+**Create translation files:**  
   
 ```make```  
 
 **Starting:**
 
-on Windows: open file ```start_windows.vbs```  
-
-on GNU/Linux: ```./start_linux.sh```
+```./start_linux.sh```
 
 ## View recordings
 
