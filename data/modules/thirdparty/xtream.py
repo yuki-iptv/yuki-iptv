@@ -19,6 +19,7 @@ Github: superolmo
 __version__ = '0.4.0'
 __author__ = 'Claudio Olmi'
 
+from data.modules.astroncia.time import print_with_time
 from typing import List
 import requests
 import time
@@ -62,7 +63,7 @@ class Channel():
             stream_type = "live"
 
         if stream_type != "live" and stream_type != "movie":
-            print("Error the channel has unknown stream type `{}`\n`{}`".format(
+            print_with_time("Error the channel has unknown stream type `{}`\n`{}`".format(
                 stream_type,stream_info
             ))
         else:
@@ -113,7 +114,7 @@ class Channel():
             
             # Check that the constructed URL is valid
             if not xtream.validate_url(self.url):
-                print("{} - Bad URL? `{}`".format(self.name, self.url))
+                print_with_time("{} - Bad URL? `{}`".format(self.name, self.url))
 
     def export_json(self):
         jsondata = {}
@@ -151,7 +152,7 @@ class Group():
         elif "Live":
             self.group_type = TV_GROUP
         else:
-            print("Unrecognized stream type `{}` for `{}`".format(
+            print_with_time("Unrecognized stream type `{}` for `{}`".format(
                 stream_type, group_info
             ))
 
@@ -197,7 +198,7 @@ class Episode():
 
         # Check that the constructed URL is valid
         if not xtream.validate_url(self.url):
-            print("{} - Bad URL? `{}`".format(self.name, self.url))
+            print_with_time("{} - Bad URL? `{}`".format(self.name, self.url))
 
 class Serie():
     # Required by Hypnotix
@@ -312,7 +313,7 @@ class XTream():
         if self.cache_path != "":
             # If the cache_path is not a directory, clear it
             if not osp.isdir(self.cache_path):
-                print("Cache Path is not a directory, using default '~/.xtream-cache/'")
+                print_with_time("Cache Path is not a directory, using default '~/.xtream-cache/'")
                 self.cache_path == ""
         
         # If the cache_path is still empty, use default
@@ -342,24 +343,24 @@ class XTream():
         else:
             regex = re.compile(keyword)
 
-        print("Checking {} movies".format(len(self.movies)))
+        print_with_time("Checking {} movies".format(len(self.movies)))
         for stream in self.movies:
             if re.match(regex, stream.name) is not None:
                 search_result.append(stream.export_json())
 
-        print("Checking {} channels".format(len(self.channels)))
+        print_with_time("Checking {} channels".format(len(self.channels)))
         for stream in self.channels:
             if re.match(regex, stream.name) is not None:
                 search_result.append(stream.export_json())
 
-        print("Checking {} series".format(len(self.series)))
+        print_with_time("Checking {} series".format(len(self.series)))
         for stream in self.series:
             if re.match(regex, stream.name) is not None:
                 search_result.append(stream.export_json())
 
         if return_type == "JSON":
             if search_result != None:
-                print("Found {} results `{}`".format(len(search_result),keyword))
+                print_with_time("Found {} results `{}`".format(len(search_result),keyword))
                 return json.dumps(search_result, ensure_ascii=False)
         else:
             return search_result
@@ -429,7 +430,7 @@ class XTream():
             }
         except requests.exceptions.ConnectionError:
             # If connection refused
-            print("{} - Connection refused URL: {}".format(self.name, self.server))
+            print_with_time("{} - Connection refused URL: {}".format(self.name, self.server))
 
     def load_from_file(self, filename) -> dict:
         """Try to load the distionary from file
@@ -463,7 +464,7 @@ class XTream():
                         if len(my_data) == 0:
                             my_data = None
                 except Exception as e:
-                    print("Could not save to file `{}`: e=`{}`".format(
+                    print_with_time("Could not save to file `{}`: e=`{}`".format(
                         full_filename, e
                     ))
             return my_data
@@ -493,7 +494,7 @@ class XTream():
             with open(full_filename, mode='wt', encoding='utf-8') as myfile:
                 myfile.write(json_data)
         except Exception as e:
-            print("Could not save to file `{}`: e=`{}`".format(
+            print_with_time("Could not save to file `{}`: e=`{}`".format(
                 full_filename, e
             ))
             return False
@@ -533,7 +534,7 @@ class XTream():
 
             # If we got the GROUPS data, show the statistics and load GROUPS
             if all_cat != None:
-                print("Loaded {} {} Groups in {:.3f} seconds".format(
+                print_with_time("Loaded {} {} Groups in {:.3f} seconds".format(
                     len(all_cat),loading_stream_type,dt
                 ))
                 ## Add GROUPS to dictionaries
@@ -547,7 +548,7 @@ class XTream():
                     #  Add to xtream class
                     self.groups.append(new_group)
             else:
-                print("Could not load {} Groups".format(loading_stream_type))
+                print_with_time("Could not load {} Groups".format(loading_stream_type))
                 break
 
             ## Get Streams
@@ -569,7 +570,7 @@ class XTream():
 
             # If we got the STREAMS data, show the statistics and load Streams
             if all_streams != None:
-                print("Loaded {} {} Streams in {:.3f} seconds".format(
+                print_with_time("Loaded {} {} Streams in {:.3f} seconds".format(
                     len(all_streams),loading_stream_type,dt
                 ))
                 ## Add Streams to dictionaries
@@ -629,9 +630,9 @@ class XTream():
                             else:
                                 the_group.series.append(new_series)
                         else:
-                            print("Group not found `{}`".format(stream_channel['name']))
+                            print_with_time("Group not found `{}`".format(stream_channel['name']))
             else:
-                print("Could not load {} Streams".format(loading_stream_type))
+                print_with_time("Could not load {} Streams".format(loading_stream_type))
 
     def get_series_info_by_id(self, get_series: dict):
         """Get Seasons and Episodes for a Serie
@@ -642,7 +643,7 @@ class XTream():
         start = timer()
         series_seasons = self._load_series_info_by_id_from_provider(get_series.series_id)
         dt = timer()-start
-        #print("Loaded in {:.3f} sec".format(dt))
+        #print_with_time("Loaded in {:.3f} sec".format(dt))
         for series_info in series_seasons["seasons"]:
             season_name = series_info["name"]
             season_key = series_info['season_number']

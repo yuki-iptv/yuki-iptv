@@ -89,7 +89,7 @@ if not os.name == 'nt':
         from data.modules.thirdparty.mpris_server.events import EventAdapter
         from data.modules.thirdparty.mpris_server.server import Server
     except: # pylint: disable=bare-except
-        print("Failed to init MPRIS libraries!")
+        print_with_time("Failed to init MPRIS libraries!")
 
 APP_VERSION = '0.0.66'
 
@@ -153,7 +153,7 @@ parser.add_argument(
 args1 = parser.parse_args()
 
 if args1.version:
-    print("Astroncia IPTV {}".format(APP_VERSION))
+    print_with_time("Astroncia IPTV {}".format(APP_VERSION))
     sys.exit(0)
 
 if 'HOME' in os.environ and os.path.isdir(os.environ['HOME']):
@@ -3104,7 +3104,7 @@ if __name__ == '__main__':
         def providers_import_do():
             global providers_saved
             providers_hypnotix = {}
-            print("Fetching playlists from Hypnotix...")
+            print_with_time("Fetching playlists from Hypnotix...")
             try:
                 hypnotix_cmd = "dconf dump /org/x/hypnotix/ 2>/dev/null | grep" + \
                     " '^providers=' | sed 's/^providers=/{\"hypnotix\": /g'" + \
@@ -3127,7 +3127,7 @@ if __name__ == '__main__':
                             "offset": DEF_TIMEZONE
                         }
             except: # pylint: disable=bare-except
-                print("Failed fetching playlists from Hypnotix!")
+                print_with_time("Failed fetching playlists from Hypnotix!")
             if providers_hypnotix:
                 try:
                     providers_list.takeItem(
@@ -3143,12 +3143,12 @@ if __name__ == '__main__':
                 for prov_name_4 in providers_data.providers_used:
                     providers_list.addItem(prov_name_4)
                 providers_save_json()
-                print("Successfully imported playlists from Hypnotix!")
+                print_with_time("Successfully imported playlists from Hypnotix!")
                 providers_win.hide()
                 providers_win_edit.hide()
                 save_settings()
             else:
-                print("No Hypnotix playlists found!")
+                print_with_time("No Hypnotix playlists found!")
                 hypnotix_msg = QtWidgets.QMessageBox(
                     qt_icon_information,
                     MAIN_WINDOW_TITLE,
@@ -3721,11 +3721,11 @@ if __name__ == '__main__':
                 ''')
 
             #def enterEvent(self, event):
-            #    print("hovered", self.tooltip)
+            #    print_with_time("hovered", self.tooltip)
             #    QtWidgets.QToolTip.showText(QtGui.QCursor.pos(), self.tooltip, win.main_widget)
 
             #def leaveEvent(self, event):
-            #    print("left")
+            #    print_with_time("left")
 
             def setTextUp(self, text):
                 self.textUpQLabel.setText(text)
@@ -3888,10 +3888,10 @@ if __name__ == '__main__':
                 if channel_icons_data.do_next_update:
                     channel_icons_data.do_next_update = False
                     btn_update.click()
-                    print("Channel icons updated")
+                    print_with_time("Channel icons updated")
                 try:
                     if len(channel_icons_data.return_dict) != channel_icons_data.total:
-                        print("Channel icons loaded: {}/{}".format(
+                        print_with_time("Channel icons loaded: {}/{}".format(
                             len(channel_icons_data.return_dict), channel_icons_data.total
                         ))
                         btn_update.click()
@@ -3899,7 +3899,7 @@ if __name__ == '__main__':
                         if not channel_icons_data.load_completed:
                             channel_icons_data.load_completed = True
                             channel_icons_data.do_next_update = True
-                            print("Channel icons loaded ({}/{}), took {} seconds".format(
+                            print_with_time("Channel icons loaded ({}/{}), took {} seconds".format(
                                 len(channel_icons_data.return_dict),
                                 channel_icons_data.total,
                                 time.time() - channel_icons_data.load_time
@@ -3914,10 +3914,10 @@ if __name__ == '__main__':
                 if channel_icons_data_epg.do_next_update:
                     channel_icons_data_epg.do_next_update = False
                     btn_update.click()
-                    print("Channel icons (EPG) updated")
+                    print_with_time("Channel icons (EPG) updated")
                 try:
                     if len(channel_icons_data_epg.return_dict) != channel_icons_data_epg.total:
-                        print("Channel icons (EPG) loaded: {}/{}".format(
+                        print_with_time("Channel icons (EPG) loaded: {}/{}".format(
                             len(channel_icons_data_epg.return_dict), channel_icons_data_epg.total
                         ))
                         btn_update.click()
@@ -3925,11 +3925,13 @@ if __name__ == '__main__':
                         if not channel_icons_data_epg.load_completed:
                             channel_icons_data_epg.load_completed = True
                             channel_icons_data_epg.do_next_update = True
-                            print("Channel icons (EPG) loaded ({}/{}), took {} seconds".format(
-                                len(channel_icons_data_epg.return_dict),
-                                channel_icons_data_epg.total,
-                                time.time() - channel_icons_data_epg.load_time
-                            ))
+                            print_with_time(
+                                "Channel icons (EPG) loaded ({}/{}), took {} seconds".format(
+                                    len(channel_icons_data_epg.return_dict),
+                                    channel_icons_data_epg.total,
+                                    time.time() - channel_icons_data_epg.load_time
+                                )
+                            )
                 except: # pylint: disable=bare-except
                     pass
             except: # pylint: disable=bare-except
@@ -3954,7 +3956,7 @@ if __name__ == '__main__':
         def update_channel_icons():
             while not win.isVisible():
                 time.sleep(1)
-            print("Loading channel icons...")
+            print_with_time("Loading channel icons...")
             if not os.path.isdir(str(Path(LOCAL_DIR, 'channel_icons_cache'))):
                 os.mkdir(str(Path(LOCAL_DIR, 'channel_icons_cache')))
             channel_icons_data.load_time = time.time()
@@ -3969,7 +3971,7 @@ if __name__ == '__main__':
                 chan_4_logo = array[chan_4]['tvg-logo']
                 if chan_4_logo:
                     #fetching_str = "Fetching channel icon from URL '{}' for channel '{}'"
-                    #print(fetching_str.format(chan_4_logo, chan_4))
+                    #print_with_time(fetching_str.format(chan_4_logo, chan_4))
                     fetch_remote_channel_icon(
                         chan_4, chan_4_logo, channel_icons_data.return_dict
                     )
@@ -3981,7 +3983,7 @@ if __name__ == '__main__':
                 time.sleep(1)
             while not epg_icons_found:
                 time.sleep(1)
-            print("Loading channel icons (EPG)...")
+            print_with_time("Loading channel icons (EPG)...")
             if not os.path.isdir(str(Path(LOCAL_DIR, 'channel_icons_cache'))):
                 os.mkdir(str(Path(LOCAL_DIR, 'channel_icons_cache')))
             channel_icons_data_epg.load_time = time.time()
@@ -3996,7 +3998,7 @@ if __name__ == '__main__':
                 chan_5_logo = epg_icons[chan_5]
                 if chan_5_logo:
                     #fetching_str_2 = "Fetching channel icon from URL '{}' for channel '{}'"
-                    #print(fetching_str_2.format(chan_5_logo, chan_5))
+                    #print_with_time(fetching_str_2.format(chan_5_logo, chan_5))
                     fetch_remote_channel_icon(
                         chan_5, chan_5_logo, channel_icons_data_epg.return_dict
                     )
@@ -4454,13 +4456,13 @@ if __name__ == '__main__':
                         prog_ids_1.append(x3)
             for x4_chan in [x3 for x3 in array]:
                 if x4_chan.lower() not in programmes:
-                    print("Parsing channel '{}'...".format(x4_chan))
+                    print_with_time("Parsing channel '{}'...".format(x4_chan))
                     matches = {}
                     for x4 in prog_ids_1:
                         x5 = x4.strip().lower()
                         x5_chan = x4_chan.strip().lower()
                         matches[(x4_chan, x4)] = damerau_levenshtein(x5_chan, x5)
-                    print(sorted(matches.items(), key=lambda x6: x6[1])[0][0][1])
+                    print_with_time(sorted(matches.items(), key=lambda x6: x6[1])[0][0][1])
 
         def show_context_menu(pos):
             global sel_item
@@ -4588,6 +4590,106 @@ if __name__ == '__main__':
                 if controlpanel_widget_visible1:
                     controlpanel_widget.show()
 
+        tvguide_many_win = QtWidgets.QMainWindow()
+        tvguide_many_win.setWindowTitle((_('tvguide')))
+        tvguide_many_win.setWindowIcon(main_icon)
+        tvguide_many_win.resize(1000, 700)
+
+        tvguide_many_widget = QtWidgets.QWidget()
+        tvguide_many_layout = QtWidgets.QGridLayout()
+        tvguide_many_widget.setLayout(tvguide_many_layout)
+        tvguide_many_win.setCentralWidget(tvguide_many_widget)
+
+        tvguide_many_table = QtWidgets.QTableWidget()
+
+#        tvguide_many_table.horizontalHeaderItem(0).setToolTip("Column 1 ")
+#        tvguide_many_table.horizontalHeaderItem(1).setToolTip("Column 2 ")
+#        tvguide_many_table.horizontalHeaderItem(2).setToolTip("Column 3 ")
+
+#        tvguide_many_table.horizontalHeaderItem(0).setTextAlignment(Qt.AlignLeft)
+#        tvguide_many_table.horizontalHeaderItem(1).setTextAlignment(Qt.AlignHCenter)
+#        tvguide_many_table.horizontalHeaderItem(2).setTextAlignment(Qt.AlignRight)
+
+        #tvguide_many_table.setItem(0, 0, QtWidgets.QTableWidgetItem("Text in column 1"))
+        #tvguide_many_table.setItem(0, 1, QtWidgets.QTableWidgetItem("Text in column 2"))
+        #tvguide_many_table.setItem(0, 2, QtWidgets.QTableWidgetItem("Text in column 3"))
+        #tvguide_many_table.resizeColumnsToContents()
+
+        tvguide_many_layout.addWidget(tvguide_many_table, 0, 0)
+
+        def tvguide_many_clicked(): # pylint: disable=too-many-locals
+            tvguide_many_chans = []
+            tvguide_many_chans_names = []
+            tvguide_many_i = -1
+            for tvguide_m_chan in [x6[0] for x6 in sorted(array.items())]:
+                epg_search = tvguide_m_chan.lower()
+                if epg_search in prog_match_arr:
+                    epg_search = prog_match_arr[epg_search.lower()]
+                if epg_search in programmes:
+                    tvguide_many_i += 1
+                    tvguide_many_chans.append(epg_search)
+                    tvguide_many_chans_names.append(tvguide_m_chan)
+            tvguide_many_table.setRowCount(len(tvguide_many_chans))
+            tvguide_many_table.setVerticalHeaderLabels(tvguide_many_chans_names)
+            print_with_time(tvguide_many_table.horizontalHeader()) #.setMinimumSectionSize(300)
+            a_1_len_array = []
+            a_1_array = {}
+            for chan_6 in tvguide_many_chans:
+                a_1 = [a_2 for a_2 in programmes[chan_6] if a_2['stop'] > time.time() - 1]
+                a_1_array[chan_6] = a_1
+                a_1_len_array.append(len(a_1))
+            tvguide_many_table.setColumnCount(max(a_1_len_array))
+            tvguide_many_i2 = -1
+            for chan_7 in tvguide_many_chans:
+                tvguide_many_i2 += 1
+                a_3_i = -1
+                for a_3 in a_1_array[chan_7]:
+                    a_3_i += 1
+                    start_3_many = datetime.datetime.fromtimestamp(
+                        a_3['start']
+                    ).strftime('%H:%M') + ' - '
+                    #).strftime('%d.%m.%y %H:%M') + ' - '
+                    stop_3_many = datetime.datetime.fromtimestamp(
+                        a_3['stop']
+                    ).strftime('%H:%M') + '\n'
+                    #).strftime('%d.%m.%y %H:%M') + '\n'
+                    try:
+                        title_3_many = a_3['title'] if 'title' in a_3 else ''
+                    except: # pylint: disable=bare-except
+                        title_3_many = ''
+                    try:
+                        desc_3_many = ('\n' + a_3['desc'] + '\n') if 'desc' in a_3 else ''
+                    except: # pylint: disable=bare-except
+                        desc_3_many = ''
+                    a_3_text = start_3_many + stop_3_many + title_3_many + desc_3_many
+                    #a_3_text = title_3_many
+                    tvguide_many_table.setItem(
+                        tvguide_many_i2,
+                        a_3_i,
+                        QtWidgets.QTableWidgetItem(a_3_text)
+                    )
+            tvguide_many_table.setHorizontalHeaderLabels([
+                time.strftime('%H:%M', time.localtime()),
+                time.strftime('%H:%M', time.localtime())
+            ])
+            #tvguide_many_table.resizeColumnsToContents()
+            if not tvguide_many_win.isVisible():
+                moveWindowToCenter(tvguide_many_win)
+                tvguide_many_win.show()
+                moveWindowToCenter(tvguide_many_win)
+            else:
+                tvguide_many_win.hide()
+
+        tvguide_many = QtWidgets.QPushButton()
+        tvguide_many.setText(_('tvguide'))
+        tvguide_many.clicked.connect(tvguide_many_clicked)
+
+        tvguide_widget = QtWidgets.QWidget()
+        tvguide_layout = QtWidgets.QHBoxLayout()
+        tvguide_layout.setAlignment(QtCore.Qt.AlignRight)
+        tvguide_layout.addWidget(tvguide_many)
+        tvguide_widget.setLayout(tvguide_layout)
+
         channelfilter = MyLineEdit()
         channelfilter.click_event.connect(channelfilter_clicked)
         channelfilter.setPlaceholderText(_('chansearch'))
@@ -4637,6 +4739,7 @@ if __name__ == '__main__':
         layout4.addWidget(page_lbl)
         layout4.addWidget(page_box)
         layout4.addWidget(of_lbl)
+        #layout4.addWidget(tvguide_widget)
         widget4.setLayout(layout4)
         layout = QtWidgets.QGridLayout()
         layout.setVerticalSpacing(0)
@@ -4904,10 +5007,10 @@ if __name__ == '__main__':
                     options[key.replace('--', '')] = value
                     options_2[key.replace('--', '')] = value
         except Exception as e1:
-            print("Could not parse MPV options!")
-            print(e1)
+            print_with_time("Could not parse MPV options!")
+            print_with_time(e1)
         print_with_time("Testing mpv options...")
-        print(options_2)
+        print_with_time(options_2)
         try:
             test_options = mpv.MPV(**options_2)
             print_with_time("mpv options OK")
@@ -5499,7 +5602,7 @@ if __name__ == '__main__':
                 mpris_thread = threading.Thread(target=mpris_loop_start)
                 mpris_thread.start()
             except Exception as mpris_e: # pylint: disable=bare-except
-                print(mpris_e)
+                print_with_time(mpris_e)
                 print_with_time("Failed to set up MPRIS!")
 
         def update_scheduler_programme():
@@ -6389,7 +6492,7 @@ if __name__ == '__main__':
                 volfile_1.close()
             except: # pylint: disable=bare-except
                 volfile_1_out = 100
-            print("Set volume to {}".format(volfile_1_out))
+            print_with_time("Set volume to {}".format(volfile_1_out))
             label7.setValue(volfile_1_out)
             mpv_volume_set()
         firstVolRun = False

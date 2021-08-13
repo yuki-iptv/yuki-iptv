@@ -21,7 +21,7 @@ import time
 def print_with_time(str2):
     try:
         cur_time = time.strftime('%H:%M:%S', time.localtime())
-        if not 'Invalid video timestamp: ' in str2:
-            print('[{}] {}'.format(cur_time, str2))
+        if not 'Invalid video timestamp: ' in str(str2):
+            print('[{}] {}'.format(cur_time, str(str2)))
     except: # pylint: disable=bare-except
         pass

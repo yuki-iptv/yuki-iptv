@@ -16,8 +16,10 @@ Copyright (C) 2021 Astroncia
     You should have received a copy of the GNU General Public License
     along with Astroncia IPTV.  If not, see <https://www.gnu.org/licenses/>.
 '''
+from data.modules.astroncia.time import print_with_time
+
 def parse_extgrp(t):
-    print("EXTGRP parsing...")
+    print_with_time("EXTGRP parsing...")
     tlist = t
     name = '""'
     group = ""

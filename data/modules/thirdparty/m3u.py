@@ -7,6 +7,7 @@ import re
 from pathlib import Path
 from data.modules.astroncia.lang import lang, _
 from data.modules.astroncia.extgrp import parse_extgrp
+from data.modules.astroncia.time import print_with_time
 
 class M3uParser:
     
@@ -25,7 +26,7 @@ class M3uParser:
             LANG_LOCALE = loc.split("_")[0]
         except: # pylint: disable=bare-except
             pass
-        print("System locale: {}".format(LANG_LOCALE))
+        print_with_time("System locale: {}".format(LANG_LOCALE))
         LANG_DEFAULT = LANG_LOCALE if LANG_LOCALE in lang else 'en'
         try:
             settings_file0 = open(str(Path('local', 'settings.json')), 'r', encoding="utf8")
@@ -127,7 +128,7 @@ class M3uParser:
                 title = m.group(1)
             except AttributeError:
                 title = ""
-            # ~ print(name+"||"+id+"||"+logo+"||"+group+"||"+title)
+            # ~ print_with_time(name+"||"+id+"||"+logo+"||"+group+"||"+title)
 
             up = self.udp_proxy
             if up and (lineLink.startswith('udp://') or lineLink.startswith('rtp://')):
