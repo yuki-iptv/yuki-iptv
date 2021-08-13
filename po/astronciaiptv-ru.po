@@ -642,13 +642,13 @@ msgid "using"
 msgstr "Используется"
 
 msgid "Aspect"
-msgstr "Соотношение сторон"
+msgstr "Соотношение сторон кадра"
 
 msgid "Average Bitrate"
 msgstr "Средний битрейт"
 
 msgid "Channel Count"
-msgstr "Кол-во каналов"
+msgstr "Количество каналов"
 
 msgid "Channels"
 msgstr "Каналы"
@@ -660,7 +660,7 @@ msgid "colour"
 msgstr "Цвет"
 
 msgid "Dimensions"
-msgstr "Разрешение"
+msgstr "Размеры"
 
 msgid "Format"
 msgstr "Формат"
@@ -669,10 +669,10 @@ msgid "Gamma"
 msgstr "Гамма"
 
 msgid "general"
-msgstr "Основное"
+msgstr "Общие"
 
 msgid "layout"
-msgstr "Режим"
+msgstr "Компоновка"
 
 msgid "Pixel Format"
 msgstr "Формат пикселей"
@@ -687,7 +687,7 @@ msgid "Video"
 msgstr "Видео"
 
 msgid "Audio"
-msgstr "Аудио"
+msgstr "Звук"
 
 msgid "checkforupdates"
 msgstr "Проверить обновления"
