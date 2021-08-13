@@ -820,6 +820,9 @@ if __name__ == '__main__':
                 self.scroll.setWidgetResizable(True)
                 self.setCentralWidget(self.scroll)
 
+        def empty_function(arg1): # pylint: disable=unused-argument
+            pass
+
         settings_win = settings_scrollable_window()
         settings_win.resize(690, 720)
         settings_win.setWindowTitle(_('settings'))
@@ -831,6 +834,12 @@ if __name__ == '__main__':
 
         streaminfo_win = QtWidgets.QMainWindow()
         streaminfo_win.setWindowIcon(main_icon)
+
+        sepplaylist_win = ResizableWindow()
+        sepplaylist_win.callback = empty_function
+        sepplaylist_win.callback_move = empty_function
+        sepplaylist_win.setWindowTitle(MAIN_WINDOW_TITLE)
+        sepplaylist_win.setWindowIcon(main_icon)
 
         help_win = QtWidgets.QMainWindow()
         help_win.resize(400, 540)
@@ -2936,7 +2945,8 @@ if __name__ == '__main__':
                 seppl_qpoint.x(),
                 seppl_qpoint.y()
             ))
-            dockWidget.move(seppl_qpoint)
+            sepplaylist_win.move(seppl_qpoint)
+            sepplaylist_win.show()
 
         def comm_instance_main_thread(th_func):
             th_func()
@@ -3261,7 +3271,10 @@ if __name__ == '__main__':
                     pass
                 QtWidgets.QMainWindow.resizeEvent(self, event)
             def closeEvent(self, event1): # pylint: disable=unused-argument, no-self-use
-                streaminfo_win.hide()
+                if streaminfo_win.isVisible():
+                    streaminfo_win.hide()
+                if sepplaylist_win.isVisible():
+                    sepplaylist_win.hide()
 
         win = MainWindow()
         win.setWindowTitle(MAIN_WINDOW_TITLE)
@@ -3520,11 +3533,12 @@ if __name__ == '__main__':
                 channelfilter.usePopup = False
                 fullscreen = True
                 if settings['playlistsep']:
-                    currentDockWidgetPos = dockWidget.pos()
+                    currentDockWidgetPos = sepplaylist_win.pos()
                     print_with_time("Saved separate playlist position - QPoint({}, {})".format(
                         currentDockWidgetPos.x(),
                         currentDockWidgetPos.y()
                     ))
+                    sepplaylist_win.hide()
                 currentWidthHeight = [win.width(), win.height()]
                 currentMaximized = win.isMaximized()
                 #l1.show()
@@ -4650,7 +4664,8 @@ if __name__ == '__main__':
             else:
                 win.addDockWidget(QtCore.Qt.LeftDockWidgetArea, dockWidget)
         else:
-            dockWidget.setFloating(True)
+            sepplaylist_win.addDockWidget(QtCore.Qt.RightDockWidgetArea, dockWidget)
+            sepplaylist_win.show()
             seppl_data = False
             if os.path.isfile(str(Path(LOCAL_DIR, 'sepplheight.json'))):
                 try:
@@ -4661,11 +4676,17 @@ if __name__ == '__main__':
                     sepplheight_file_0.close()
                 except: # pylint: disable=bare-except
                     pass
+            RESIZE_WIDTH = dockWidget.width()
+            RESIZE_HEIGHT = win.height()
             if seppl_data:
-                dockWidget.move(seppl_data[0], seppl_data[1])
+                sepplaylist_win.move(seppl_data[0], seppl_data[1])
+                if len(seppl_data) == 4:
+                    RESIZE_WIDTH = seppl_data[2]
+                    RESIZE_HEIGHT = seppl_data[3]
             else:
-                dockWidget.move(win.pos().x() + win.width() + 30, win.pos().y())
-            dockWidget.resize(dockWidget.width(), win.height())
+                sepplaylist_win.move(win.pos().x() + win.width() + 30, win.pos().y())
+            sepplaylist_win.resize(RESIZE_WIDTH, RESIZE_HEIGHT)
+            dockWidget.setTitleBarWidget(QtWidgets.QWidget())
             dockWidget.setFeatures(QtWidgets.QDockWidget.NoDockWidgetFeatures)
             dockWidget.setAllowedAreas(QtCore.Qt.NoDockWidgetArea)
 
@@ -5774,8 +5795,10 @@ if __name__ == '__main__':
                         str(Path(LOCAL_DIR, 'sepplheight.json')), 'w', encoding="utf8"
                     )
                     sepplheight_file.write(json.dumps([
-                        dockWidget.pos().x(),
-                        dockWidget.pos().y()
+                        sepplaylist_win.pos().x(),
+                        sepplaylist_win.pos().y(),
+                        sepplaylist_win.size().width(),
+                        sepplaylist_win.size().height()
                     ]))
                     sepplheight_file.close()
                 except: # pylint: disable=bare-except
