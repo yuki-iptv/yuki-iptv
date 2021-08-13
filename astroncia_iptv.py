@@ -2879,6 +2879,7 @@ if __name__ == '__main__':
         class Communicate(QtCore.QObject): # pylint: disable=too-few-public-methods
             winPosition = False
             winPosition2 = False
+            comboboxIndex = -1
             if qt_backend == 'PySide6':
                 repaintUpdates = QtCore.Signal(object)
                 moveSeparatePlaylist = QtCore.Signal(object)
@@ -4216,6 +4217,7 @@ if __name__ == '__main__':
         first_change = False
 
         def group_change(self):
+            comm_instance.comboboxIndex = combobox.currentIndex()
             global current_group, first_change
             current_group = groups[self]
             if not first_change:
@@ -5738,6 +5740,15 @@ if __name__ == '__main__':
         def myExitHandler(): # pylint: disable=too-many-branches
             global stopped, epg_thread, epg_thread_2, mpris_loop, \
             newdockWidgetHeight, newdockWidgetPosition
+            if comm_instance.comboboxIndex != -1:
+                combobox_index_file = open(
+                    str(Path(LOCAL_DIR, 'comboboxindex.json')), 'w', encoding="utf8"
+                )
+                combobox_index_file.write(json.dumps({
+                    "m3u": settings['m3u'],
+                    "index": comm_instance.comboboxIndex
+                }))
+                combobox_index_file.close()
             if comm_instance.winPosition2:
                 mainwindow_position = comm_instance.winPosition2
             else:
@@ -6347,7 +6358,6 @@ if __name__ == '__main__':
                 ).activated.connect(keybinds[keybind])
 
         app.aboutToQuit.connect(myExitHandler)
-        playLastChannel()
 
         if settings["remembervol"] and os.path.isfile(str(Path(LOCAL_DIR, 'volume.json'))):
             try:
@@ -6382,6 +6392,20 @@ if __name__ == '__main__':
                     print_with_time("Main window position restored")
                 except: # pylint: disable=bare-except
                     pass
+            if os.path.isfile(str(Path(LOCAL_DIR, 'comboboxindex.json'))):
+                try:
+                    combobox_index_file_1 = open(
+                        str(Path(LOCAL_DIR, 'comboboxindex.json')), 'r', encoding="utf8"
+                    )
+                    combobox_index_file_1_out = combobox_index_file_1.read()
+                    combobox_index_file_1.close()
+                    combobox_index_file_1_json = json.loads(combobox_index_file_1_out)
+                    if combobox_index_file_1_json['m3u'] == settings['m3u']:
+                        if combobox_index_file_1_json['index'] < combobox.count():
+                            combobox.setCurrentIndex(combobox_index_file_1_json['index'])
+                except: # pylint: disable=bare-except
+                    pass
+            playLastChannel()
 
             ic, ic1, ic2 = 0, 0, 0
             timers_array = {}
