@@ -5356,11 +5356,15 @@ if __name__ == '__main__':
         def thread_applog():
             try:
                 if applog_win.isVisible():
-                    applog_textarea.setPlainText(get_app_log())
-                    applog_textarea.moveCursor(QtGui.QTextCursor.End)
+                    applog_textarea_new = get_app_log()
+                    if applog_textarea.toPlainText() != applog_textarea_new:
+                        applog_textarea.setPlainText(applog_textarea_new)
+                        applog_textarea.moveCursor(QtGui.QTextCursor.End)
                 if mpvlog_win.isVisible():
-                    mpvlog_textarea.setPlainText(get_mpv_log())
-                    mpvlog_textarea.moveCursor(QtGui.QTextCursor.End)
+                    mpvlog_textarea_new = get_mpv_log()
+                    if mpvlog_textarea.toPlainText() != mpvlog_textarea_new:
+                        mpvlog_textarea.setPlainText(mpvlog_textarea_new)
+                        mpvlog_textarea.moveCursor(QtGui.QTextCursor.End)
             except: # pylint: disable=bare-except
                 pass
 
