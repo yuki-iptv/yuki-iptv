@@ -33,7 +33,7 @@ def record(input_url, out_file, channel_name, http_referer):
     print_with_time("Using user agent '{}' for record channel '{}'".format(user_agent, channel_name))
     print_with_time("HTTP headers: '{}'".format(http_referer))
     if os.name == 'nt':
-        ffmpeg_path = str(Path(os.getcwd(), 'data', 'modules', 'binary', 'ffmpeg.exe'))
+        ffmpeg_path = str(Path(os.getcwd(), 'binary_windows', 'ffmpeg.exe'))
     else:
         if os.path.isfile(str(Path(os.getcwd(), 'ffmpeg'))):
             ffmpeg_path = str(Path(os.getcwd(), 'ffmpeg'))
@@ -84,7 +84,7 @@ def record_return(input_url, out_file, channel_name, http_referer):
     print_with_time("Using user agent '{}' for record channel '{}'".format(user_agent, channel_name))
     print_with_time("HTTP headers: '{}'".format(http_referer))
     if os.name == 'nt':
-        ffmpeg_path = str(Path(os.getcwd(), 'data', 'modules', 'binary', 'ffmpeg.exe'))
+        ffmpeg_path = str(Path(os.getcwd(), 'binary_windows', 'ffmpeg.exe'))
     else:
         if os.path.isfile(str(Path(os.getcwd(), 'ffmpeg'))):
             ffmpeg_path = str(Path(os.getcwd(), 'ffmpeg'))
@@ -158,7 +158,7 @@ def make_ffmpeg_screenshot(input_url, out_file, channel_name, http_referer):
     print_with_time("Using user agent '{}' for screenshot channel '{}'".format(user_agent, channel_name))
     print_with_time("HTTP headers: '{}'".format(http_referer))
     if os.name == 'nt':
-        ffmpeg_path = str(Path(os.getcwd(), 'data', 'modules', 'binary', 'ffmpeg.exe'))
+        ffmpeg_path = str(Path(os.getcwd(), 'binary_windows', 'ffmpeg.exe'))
     else:
         if os.path.isfile(str(Path(os.getcwd(), 'ffmpeg'))):
             ffmpeg_path = str(Path(os.getcwd(), 'ffmpeg'))

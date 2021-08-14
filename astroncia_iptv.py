@@ -287,7 +287,7 @@ if __name__ == '__main__':
         print_with_time("")
 
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
-        modules_path = str(Path(os.path.dirname(__file__), 'data', 'modules', 'binary'))
+        modules_path = str(Path(os.path.dirname(__file__), 'binary_windows'))
         if os.name == 'nt':
             os.environ["PATH"] = modules_path + os.pathsep + os.environ["PATH"]
 
