@@ -56,7 +56,7 @@ from data.modules.astroncia.epg import worker
 from data.modules.astroncia.record import record, record_return, stop_record, \
     async_wait_process, make_ffmpeg_screenshot
 from data.modules.astroncia.providers import iptv_providers
-from data.modules.astroncia.time import print_with_time
+from data.modules.astroncia.time import print_with_time, get_app_log, get_mpv_log
 from data.modules.astroncia.epgurls import EPG_URLS
 from data.modules.astroncia.xtreamtom3u import convert_xtream_to_m3u
 from data.modules.thirdparty.conversion import convert_size, humanbytes, format_seconds_to_hhmmss
@@ -1908,6 +1908,7 @@ if __name__ == '__main__':
             return va1
 
         def doPlay(play_url1, ua_ch=def_user_agent):
+            print_with_time("Playing '{}'".format(play_url1))
             loading.setText(_('loading'))
             loading.setStyleSheet('color: #778a30')
             showLoading()
@@ -3275,6 +3276,10 @@ if __name__ == '__main__':
                     streaminfo_win.hide()
                 if sepplaylist_win.isVisible():
                     sepplaylist_win.hide()
+                if applog_win.isVisible():
+                    applog_win.hide()
+                if mpvlog_win.isVisible():
+                    mpvlog_win.hide()
 
         win = MainWindow()
         win.setWindowTitle(MAIN_WINDOW_TITLE)
@@ -4956,7 +4961,7 @@ if __name__ == '__main__':
                 l1.setText2(_('nochannelselforrecord'))
 
         def my_log(loglevel, component, message):
-            print_with_time('[{}] {}: {}'.format(loglevel, component, message))
+            print_with_time('[{}] {}: {}'.format(loglevel, component, message), log_mpv=True)
 
         def playLastChannel():
             global playing_url, playing_chan, combobox
@@ -5244,6 +5249,127 @@ if __name__ == '__main__':
 
         streaminfo_win.setWindowTitle(_('Stream Information'))
 
+        applog_win = QtWidgets.QMainWindow()
+        applog_win.setWindowTitle(_('applog'))
+        applog_win.setWindowIcon(main_icon)
+        applog_win.resize(700, 500)
+        moveWindowToCenter(applog_win)
+        applog_textarea = QtWidgets.QPlainTextEdit()
+        applog_textarea.setReadOnly(True)
+
+        def applog_clipcopy_clicked():
+            clip = QtWidgets.QApplication.clipboard()
+            clip.clear(mode=clip.Clipboard)
+            clip.setText(applog_textarea.toPlainText(), mode=clip.Clipboard)
+
+        def applog_save_clicked():
+            applog_fname = QtWidgets.QFileDialog.getSaveFileName(
+                applog_win,
+                _('choosesavefilename'),
+                home_folder,
+                '{} (*.log *.txt)'.format(_('logs'))
+            )[0]
+            if applog_fname:
+                try:
+                    applog_fname_file = open(applog_fname, 'w', encoding="utf8")
+                    applog_fname_file.write(applog_textarea.toPlainText())
+                    applog_fname_file.close()
+                except: # pylint: disable=bare-except
+                    pass
+
+        applog_save = QtWidgets.QPushButton()
+        applog_save.setText(_('save'))
+        applog_save.clicked.connect(applog_save_clicked)
+        applog_clipcopy = QtWidgets.QPushButton()
+        applog_clipcopy.setText(_('copytoclipboard'))
+        applog_clipcopy.clicked.connect(applog_clipcopy_clicked)
+        applog_closebtn = QtWidgets.QPushButton()
+        applog_closebtn.setText(_('close'))
+        applog_closebtn.clicked.connect(applog_win.hide)
+
+        applog_widget2 = QtWidgets.QWidget()
+        applog_layout2 = QtWidgets.QHBoxLayout()
+        applog_layout2.addWidget(applog_save)
+        applog_layout2.addWidget(applog_clipcopy)
+        applog_layout2.addWidget(applog_closebtn)
+        applog_widget2.setLayout(applog_layout2)
+
+        applog_widget = QtWidgets.QWidget()
+        applog_layout = QtWidgets.QVBoxLayout()
+        applog_layout.addWidget(applog_textarea)
+        applog_layout.addWidget(applog_widget2)
+        applog_widget.setLayout(applog_layout)
+        applog_win.setCentralWidget(applog_widget)
+
+        mpvlog_win = QtWidgets.QMainWindow()
+        mpvlog_win.setWindowTitle(_('mpvlog'))
+        mpvlog_win.setWindowIcon(main_icon)
+        mpvlog_win.resize(700, 500)
+        moveWindowToCenter(mpvlog_win)
+        mpvlog_textarea = QtWidgets.QPlainTextEdit()
+        mpvlog_textarea.setReadOnly(True)
+
+        def mpvlog_clipcopy_clicked():
+            clip = QtWidgets.QApplication.clipboard()
+            clip.clear(mode=clip.Clipboard)
+            clip.setText(mpvlog_textarea.toPlainText(), mode=clip.Clipboard)
+
+        def mpvlog_save_clicked():
+            mpvlog_fname = QtWidgets.QFileDialog.getSaveFileName(
+                mpvlog_win,
+                _('choosesavefilename'),
+                home_folder,
+                '{} (*.log *.txt)'.format(_('logs'))
+            )[0]
+            if mpvlog_fname:
+                try:
+                    mpvlog_fname_file = open(mpvlog_fname, 'w', encoding="utf8")
+                    mpvlog_fname_file.write(mpvlog_textarea.toPlainText())
+                    mpvlog_fname_file.close()
+                except: # pylint: disable=bare-except
+                    pass
+
+        mpvlog_save = QtWidgets.QPushButton()
+        mpvlog_save.setText(_('save'))
+        mpvlog_save.clicked.connect(mpvlog_save_clicked)
+        mpvlog_clipcopy = QtWidgets.QPushButton()
+        mpvlog_clipcopy.setText(_('copytoclipboard'))
+        mpvlog_clipcopy.clicked.connect(mpvlog_clipcopy_clicked)
+        mpvlog_closebtn = QtWidgets.QPushButton()
+        mpvlog_closebtn.setText(_('close'))
+        mpvlog_closebtn.clicked.connect(mpvlog_win.hide)
+
+        mpvlog_widget2 = QtWidgets.QWidget()
+        mpvlog_layout2 = QtWidgets.QHBoxLayout()
+        mpvlog_layout2.addWidget(mpvlog_save)
+        mpvlog_layout2.addWidget(mpvlog_clipcopy)
+        mpvlog_layout2.addWidget(mpvlog_closebtn)
+        mpvlog_widget2.setLayout(mpvlog_layout2)
+
+        mpvlog_widget = QtWidgets.QWidget()
+        mpvlog_layout = QtWidgets.QVBoxLayout()
+        mpvlog_layout.addWidget(mpvlog_textarea)
+        mpvlog_layout.addWidget(mpvlog_widget2)
+        mpvlog_widget.setLayout(mpvlog_layout)
+        mpvlog_win.setCentralWidget(mpvlog_widget)
+
+        def thread_applog():
+            try:
+                if applog_win.isVisible():
+                    applog_textarea.setPlainText(get_app_log())
+                    applog_textarea.moveCursor(QtGui.QTextCursor.End)
+                if mpvlog_win.isVisible():
+                    mpvlog_textarea.setPlainText(get_mpv_log())
+                    mpvlog_textarea.moveCursor(QtGui.QTextCursor.End)
+            except: # pylint: disable=bare-except
+                pass
+
+        def show_app_log():
+            applog_win.show()
+
+        def show_mpv_log():
+            mpvlog_win.show()
+
         right_click_menu = QtWidgets.QMenu()
         right_click_menu.addAction(_('pause'), mpv_play)
         right_click_menu.addSeparator()
@@ -5252,6 +5378,8 @@ if __name__ == '__main__':
         right_click_menu.addAction(_('mininterface'), showhideeverything)
         right_click_menu.addAction(_('Stream Information'), open_stream_info)
         right_click_menu.addAction(_('channelsettings'), main_channel_settings)
+        right_click_menu.addAction(_('applog'), show_app_log)
+        right_click_menu.addAction(_('mpvlog'), show_mpv_log)
 
         right_click_menu_fullscreen = QtWidgets.QMenu()
         right_click_menu_fullscreen.addAction(_('pause'), mpv_play)
@@ -6539,6 +6667,7 @@ if __name__ == '__main__':
                 thread_mouse: 50,
                 thread_cursor: 50,
                 thread_autoclosemenu: 50,
+                thread_applog: 50,
                 thread_tvguide: 100,
                 thread_record: 100,
                 thread_osc: 100,
