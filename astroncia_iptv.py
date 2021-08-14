@@ -153,7 +153,7 @@ parser.add_argument(
 args1 = parser.parse_args()
 
 if args1.version:
-    print_with_time("Astroncia IPTV {}".format(APP_VERSION))
+    print("Astroncia IPTV {}".format(APP_VERSION))
     sys.exit(0)
 
 if 'HOME' in os.environ and os.path.isdir(os.environ['HOME']):
