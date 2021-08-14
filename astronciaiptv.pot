@@ -725,6 +725,9 @@ msgstr ""
 msgid "logs"
 msgstr ""
 
+msgid "Bits Per Pixel"
+msgstr ""
+
 msgid "helptext"
 msgstr ""
 
