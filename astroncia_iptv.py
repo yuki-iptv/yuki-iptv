@@ -5382,6 +5382,7 @@ if __name__ == '__main__':
         right_click_menu.addAction(_('mininterface'), showhideeverything)
         right_click_menu.addAction(_('Stream Information'), open_stream_info)
         right_click_menu.addAction(_('channelsettings'), main_channel_settings)
+        right_click_menu.addSeparator()
         right_click_menu.addAction(_('applog'), show_app_log)
         right_click_menu.addAction(_('mpvlog'), show_mpv_log)
 
