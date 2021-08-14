@@ -710,6 +710,21 @@ msgstr ""
 msgid "aboutqt"
 msgstr ""
 
+msgid "applog"
+msgstr ""
+
+msgid "mpvlog"
+msgstr ""
+
+msgid "copytoclipboard"
+msgstr ""
+
+msgid "choosesavefilename"
+msgstr ""
+
+msgid "logs"
+msgstr ""
+
 msgid "helptext"
 msgstr ""
 
