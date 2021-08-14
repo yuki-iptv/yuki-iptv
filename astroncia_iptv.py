@@ -91,7 +91,7 @@ if not os.name == 'nt':
     except: # pylint: disable=bare-except
         print_with_time("Failed to init MPRIS libraries!")
 
-APP_VERSION = '0.0.66'
+APP_VERSION = '0.0.67'
 
 if not sys.version_info >= (3, 4, 0):
     print_with_time("Incompatible Python version! Required >= 3.4")
@@ -2962,11 +2962,11 @@ if __name__ == '__main__':
         def check_for_updates(self): # pylint: disable=unused-argument
             last_avail_version = False
             try:
-                last_avail_version = requests.get(
+                last_avail_version = json.loads(requests.get(
                     UPDATE_URL,
                     headers={'User-Agent': ''},
                     timeout=2
-                ).text.strip()
+                ).text)['version'].strip()
             except: # pylint: disable=bare-except
                 pass
             comm_instance.repaintUpdates.emit(last_avail_version)
