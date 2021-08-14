@@ -6402,7 +6402,10 @@ if __name__ == '__main__':
                 if newdockWidgetPosition:
                     playlist_widget.move(newdockWidgetPosition[0], newdockWidgetPosition[1])
                 else:
-                    playlist_widget.move(win.width() - dockWidget.width(), 0)
+                    if settings['panelposition'] == 0:
+                        playlist_widget.move(win.width() - dockWidget.width(), 0)
+                    else:
+                        playlist_widget.move(0, 0)
                 playlist_widget.setFixedWidth(dockWidget.width())
                 if newdockWidgetHeight:
                     playlist_widget_height = newdockWidgetHeight
