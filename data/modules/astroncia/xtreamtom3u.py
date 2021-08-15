@@ -1,7 +1,9 @@
-m3u = '#EXTM3U\n'
+class astroncia_data: # pylint: disable=too-few-public-methods
+    pass
+
+astroncia_data.m3u = '#EXTM3U\n'
 
 def convert_xtream_to_m3u(data):
-    global m3u
     for channel in data:
         name = channel.name
         group = channel.group_title if channel.group_title else ''
@@ -13,5 +15,5 @@ def convert_xtream_to_m3u(data):
         if group:
             d += " group-title=\"{}\"".format(group)
         d += ",{}".format(name)
-        m3u += d + '\n' + url + '\n'
-    return m3u
+        astroncia_data.m3u += d + '\n' + url + '\n'
+    return astroncia_data.m3u

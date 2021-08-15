@@ -23,10 +23,12 @@ from pathlib import Path
 from data.modules.astroncia.ua import get_user_agent_for_channel
 from data.modules.astroncia.time import print_with_time
 
-ffmpeg_proc = None
+class astroncia_data: # pylint: disable=too-few-public-methods
+    pass
+
+astroncia_data.ffmpeg_proc = None
 
 def record(input_url, out_file, channel_name, http_referer):
-    global ffmpeg_proc
     if http_referer == 'Referer: ':
         http_referer = ''
     user_agent = get_user_agent_for_channel(channel_name)
@@ -70,7 +72,7 @@ def record(input_url, out_file, channel_name, http_referer):
     if os.name == 'nt':
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-    ffmpeg_proc = subprocess.Popen(
+    astroncia_data.ffmpeg_proc = subprocess.Popen(
         arr,
         shell=False,
         start_new_session=True,
@@ -142,14 +144,13 @@ def async_wait_process(proc):
     proc.wait()
 
 def stop_record():
-    global ffmpeg_proc
-    if ffmpeg_proc:
-        ffmpeg_proc.terminate()
+    if astroncia_data.ffmpeg_proc:
+        astroncia_data.ffmpeg_proc.terminate()
         try:
-            async_wait_process(ffmpeg_proc)
+            async_wait_process(astroncia_data.ffmpeg_proc)
         except: # pylint: disable=bare-except
             pass
-        ffmpeg_proc = None
+        astroncia_data.ffmpeg_proc = None
 
 def make_ffmpeg_screenshot(input_url, out_file, channel_name, http_referer):
     if http_referer == 'Referer: ':
@@ -195,13 +196,13 @@ def make_ffmpeg_screenshot(input_url, out_file, channel_name, http_referer):
     if os.name == 'nt':
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-    ffmpeg_proc_screenshot = subprocess.Popen(
+    astroncia_data.ffmpeg_proc_screenshot = subprocess.Popen(
         arr,
         shell=False,
         start_new_session=True,
         startupinfo=startupinfo
     )
     try:
-        async_wait_process(ffmpeg_proc_screenshot)
+        async_wait_process(astroncia_data.ffmpeg_proc_screenshot)
     except: # pylint: disable=bare-except
         pass

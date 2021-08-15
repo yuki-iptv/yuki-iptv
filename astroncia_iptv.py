@@ -44,6 +44,7 @@ import codecs
 import ctypes
 import webbrowser
 import threading
+import traceback
 from multiprocessing import Process, Manager, freeze_support, active_children
 freeze_support()
 from functools import partial
@@ -222,7 +223,9 @@ try:
 except: # pylint: disable=bare-except
     pass
 
-def show_exception(e):
+def show_exception(e, e_traceback=""):
+    if e_traceback:
+        e = e_traceback.strip()
     message = "{}\n\n{}".format(_('error2'), str(e))
     msg = QtWidgets.QMessageBox(
         qt_icon_critical,
@@ -230,6 +233,12 @@ def show_exception(e):
         _('foundproblem') + ':\n' + EMAIL_ADDRESS, QtWidgets.QMessageBox.Ok
     )
     msg.exec()
+
+# Used as a decorator to run things in the main loop, from another thread
+def idle_function(func):
+    def wrapper(*args):
+        exInMainThread_partial(partial(func, *args))
+    return wrapper
 
 # Used as a decorator to run things in the background
 def async_function(func):
@@ -455,34 +464,10 @@ if __name__ == '__main__':
         else:
             print_with_time("{} {}".format(_('hwaccel').replace('\n', ' '), _('disabled')))
 
-        print_with_time("Reading cached TV guide if exists...")
-
-        if os.path.isfile(str(Path(LOCAL_DIR, 'tvguide.dat'))):
-            try:
-                tvguide_c = open(str(Path(LOCAL_DIR, 'tvguide.dat')), 'rb')
-                tvguide_c1 = json.loads(
-                    codecs.decode(codecs.decode(tvguide_c.read(), 'zlib'), 'utf-8')
-                )["tvguide_url"]
-                tvguide_c.close()
-                if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
-                    cm3uf1 = open(str(Path(LOCAL_DIR, 'playlist.json')), 'r', encoding="utf8")
-                    cm3u1 = json.loads(cm3uf1.read())
-                    cm3uf1.close()
-                    try:
-                        epg_url1 = cm3u1['epgurl']
-                        if not settings["epg"]:
-                            settings["epg"] = epg_url1
-                    except: # pylint: disable=bare-except
-                        pass
-                if tvguide_c1 != settings["epg"]:
-                    os.remove(str(Path(LOCAL_DIR, 'tvguide.dat')))
-            except: # pylint: disable=bare-except
-                tvguide_c1 = ""
-
         tvguide_sets = {}
-        def save_tvguide_sets_proc():
-            global tvguide_sets
-            if tvguide_sets:
+
+        def save_tvguide_sets_proc(tvguide_sets_arg):
+            if tvguide_sets_arg:
                 file2 = open(str(Path(LOCAL_DIR, 'tvguide.dat')), 'wb')
                 file2.write(codecs.encode(bytes(json.dumps(
                     {
@@ -497,28 +482,12 @@ if __name__ == '__main__':
         epg_thread_2 = None
 
         def save_tvguide_sets():
-            global epg_thread_2
-            epg_thread_2 = Process(target=save_tvguide_sets_proc)
+            global epg_thread_2, tvguide_sets
+            epg_thread_2 = Process(
+                target=save_tvguide_sets_proc,
+                args=(tvguide_sets,)
+            )
             epg_thread_2.start()
-
-        if not os.path.isfile(str(Path(LOCAL_DIR, 'tvguide.dat'))):
-            save_tvguide_sets()
-        else:
-            file1 = open(str(Path(LOCAL_DIR, 'tvguide.dat')), 'rb')
-            try:
-                tvguide_json = json.loads(codecs.decode(file1.read(), 'zlib'))
-            except: # pylint: disable=bare-except
-                tvguide_json = {"tvguide_sets": {}, "tvguide_url": "", "prog_ids": {}}
-            tvguide_sets = tvguide_json["tvguide_sets"]
-            try:
-                prog_ids = tvguide_json["prog_ids"]
-            except: # pylint: disable=bare-except
-                pass
-            try:
-                epg_icons = tvguide_json["epg_icons"]
-            except: # pylint: disable=bare-except
-                pass
-            file1.close()
 
         def clean_programme():
             sets1 = tvguide_sets.copy()
@@ -529,7 +498,11 @@ if __name__ == '__main__':
                             time.time() - 172800 < x12['stop']]
             return sets1
 
-        def is_program_actual(sets0):
+        def is_program_actual(sets0, force=False):
+            global epg_ready
+            if not epg_ready and not force:
+                #print_with_time("is_program_actual override (EPG not ready)")
+                return True
             found_prog = False
             if sets0:
                 for prog1 in sets0:
@@ -539,12 +512,116 @@ if __name__ == '__main__':
                             found_prog = True
             return found_prog
 
-        use_local_tvguide = True
+        first_boot = False
+        epg_updating = False
 
-        if not is_program_actual(tvguide_sets):
+        def force_update_epg():
+            global use_local_tvguide, first_boot
+            if os.path.exists(str(Path(LOCAL_DIR, 'tvguide.dat'))):
+                os.remove(str(Path(LOCAL_DIR, 'tvguide.dat')))
             use_local_tvguide = False
+            if not epg_updating:
+                first_boot = False
 
-        print_with_time("TV guide read done")
+        use_local_tvguide = True
+        epg_ready = False
+
+        def mainwindow_isvisible():
+            try:
+                return win.isVisible()
+            except: # pylint: disable=bare-except
+                return False
+
+        def btn_update_force():
+            while not mainwindow_isvisible():
+                time.sleep(0.05)
+            exInMainThread(epg_loading_hide)
+            btn_update.click()
+
+        def load_tvguide_dat(epg_dict, settings_epg):
+            settings_epg_new = ''
+            try:
+                file_epg1 = open(str(Path(LOCAL_DIR, 'tvguide.dat')), 'rb')
+                file1_json = json.loads(
+                    codecs.decode(codecs.decode(file_epg1.read(), 'zlib'), 'utf-8')
+                )
+                file_epg1.close()
+                tvguide_c1 = file1_json["tvguide_url"]
+                if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
+                    cm3uf1 = open(str(Path(LOCAL_DIR, 'playlist.json')), 'r', encoding="utf8")
+                    cm3u1 = json.loads(cm3uf1.read())
+                    cm3uf1.close()
+                    try:
+                        epg_url1 = cm3u1['epgurl']
+                        if not settings_epg:
+                            settings_epg_new = epg_url1
+                    except: # pylint: disable=bare-except
+                        pass
+                if tvguide_c1 != settings_epg:
+                    # Ignoring tvguide.dat, EPG URL changed
+                    print("Ignoring tvguide.dat, EPG URL changed")
+                    os.remove(str(Path(LOCAL_DIR, 'tvguide.dat')))
+                    tvguide_c1 = ""
+                    file1_json = {}
+            except: # pylint: disable=bare-except
+                tvguide_c1 = ""
+                file1_json = {}
+            epg_dict['out'] = [file1_json, settings_epg_new]
+
+        def epg_loading_hide():
+            epg_loading.hide()
+
+        @async_function
+        def update_epg_func():
+            global settings, tvguide_sets, prog_ids, epg_icons, programmes, epg_ready
+            print_with_time("Reading cached TV guide if exists...")
+            tvguide_read_time = time.time()
+            programmes_1 = {}
+            if not os.path.isfile(str(Path(LOCAL_DIR, 'tvguide.dat'))):
+                save_tvguide_sets()
+            else:
+                # Disregard existed tvguide.dat if EPG url changes
+                manager_epg = Manager()
+                dict_epg = manager_epg.dict()
+                dict_epg['out'] = []
+                epg_process = Process(target=load_tvguide_dat, args=(dict_epg, settings['epg'],))
+                epg_process.start()
+                epg_process.join()
+                file1_json, settings_epg_new = dict_epg['out']
+                if settings_epg_new:
+                    settings['epg'] = settings_epg_new
+                # Loading tvguide.dat
+                if file1_json:
+                    tvguide_json = file1_json
+                else:
+                    tvguide_json = {"tvguide_sets": {}, "tvguide_url": "", "prog_ids": {}}
+                file1_json = {}
+                tvguide_sets = tvguide_json["tvguide_sets"]
+                programmes_1 = {
+                    prog3.lower(): tvguide_sets[prog3] for prog3 in tvguide_sets
+                }
+                try:
+                    prog_ids = tvguide_json["prog_ids"]
+                except: # pylint: disable=bare-except
+                    pass
+                try:
+                    epg_icons = tvguide_json["epg_icons"]
+                except: # pylint: disable=bare-except
+                    pass
+            if not is_program_actual(tvguide_sets, force=True):
+                print_with_time("EPG cache expired, updating...")
+                epg_ready = True
+                force_update_epg()
+            programmes = programmes_1
+            programmes_1 = {}
+            epg_ready = True
+            print_with_time(
+                "TV guide read done, took {} seconds".format(time.time() - tvguide_read_time)
+            )
+            btn_update_force()
+
+        # Updating EPG, async
+        update_epg_func()
 
         if settings["themecompat"]:
             ICONS_FOLDER = 'icons_dark'
@@ -2382,14 +2459,6 @@ if __name__ == '__main__':
         sclose = QtWidgets.QPushButton(_('close'))
         sclose.clicked.connect(close_settings)
 
-        def force_update_epg():
-            global use_local_tvguide, first_boot
-            if os.path.exists(str(Path(LOCAL_DIR, 'tvguide.dat'))):
-                os.remove(str(Path(LOCAL_DIR, 'tvguide.dat')))
-            use_local_tvguide = False
-            if not epg_updating:
-                first_boot = False
-
         def update_m3u():
             if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
                 os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
@@ -2889,6 +2958,7 @@ if __name__ == '__main__':
         class Communicate(QtCore.QObject): # pylint: disable=too-few-public-methods
             winPosition = False
             winPosition2 = False
+            j_save = None
             comboboxIndex = -1
             if qt_backend == 'PySide6':
                 repaintUpdates = QtCore.Signal(object)
@@ -3603,6 +3673,7 @@ if __name__ == '__main__':
         dockWidget_out = QtWidgets.QPushButton()
         dockWidget_out.clicked.connect(dockWidget_out_clicked)
 
+        @idle_function
         def mpv_fullscreen():
             dockWidget_out.click()
 
@@ -3679,7 +3750,7 @@ if __name__ == '__main__':
 
         class QCustomQWidget(QtWidgets.QWidget): # pylint: disable=too-many-instance-attributes
             def __init__(self, parent=None):
-                super(QCustomQWidget, self).__init__(parent)
+                super(QCustomQWidget, self).__init__(parent) # pylint: disable=super-with-arguments
                 self.tooltip = ""
                 self.textQVBoxLayout = QtWidgets.QVBoxLayout()      # QtWidgets
                 self.textUpQLabel = QtWidgets.QLabel()         # QtWidgets
@@ -3762,7 +3833,7 @@ if __name__ == '__main__':
 
         class QCustomQWidget_simple(QtWidgets.QWidget): # pylint: disable=too-many-instance-attributes
             def __init__(self, parent=None):
-                super(QCustomQWidget_simple, self).__init__(parent)
+                super(QCustomQWidget_simple, self).__init__(parent) # pylint: disable=super-with-arguments
                 self.textQHBoxLayout = QtWidgets.QHBoxLayout()      # QtWidgets
                 self.textUpQLabel = QtWidgets.QLabel()         # QtWidgets
                 myFont = QtGui.QFont()
@@ -4071,6 +4142,7 @@ if __name__ == '__main__':
                 l += 1
                 k += 1
                 prog = ''
+                prog_desc = ''
                 prog_search = i.lower()
                 if array_filtered[i]['tvg-ID']:
                     if str(array_filtered[i]['tvg-ID']) in prog_ids:
@@ -4159,9 +4231,15 @@ if __name__ == '__main__':
                             "<i>" + orig_prog + "</i>" + prog_desc
                         ).replace('\n', '<br>')
                     )
-                    myQCustomQWidget.setTextProgress(start_time)
-                    myQCustomQWidget.setTextEnd(stop_time)
-                    myQCustomQWidget.setProgress(int(percentage))
+                    try:
+                        if start_time:
+                            myQCustomQWidget.setTextProgress(start_time)
+                            myQCustomQWidget.setTextEnd(stop_time)
+                            myQCustomQWidget.setProgress(int(percentage))
+                        else:
+                            myQCustomQWidget.hideProgress()
+                    except: # pylint: disable=bare-except
+                        print_with_time("Async EPG load problem, ignoring")
                 else:
                     myQCustomQWidget.hideProgress()
                 i_icon = i.lower()
@@ -4459,7 +4537,7 @@ if __name__ == '__main__':
                 for x3 in prog_ids[x2]:
                     if not x3 in prog_ids_1:
                         prog_ids_1.append(x3)
-            for x4_chan in [x3 for x3 in array]:
+            for x4_chan in [x3 for x3 in array]: # pylint: disable=unnecessary-comprehension
                 if x4_chan.lower() not in programmes:
                     print_with_time("Parsing channel '{}'...".format(x4_chan))
                     matches = {}
@@ -4509,10 +4587,17 @@ if __name__ == '__main__':
         loading.setAlignment(QtCore.Qt.AlignCenter)
         loading.setStyleSheet('color: #778a30')
         hideLoading()
+
+        epg_loading = QtWidgets.QLabel(_('epgloading'))
+        epg_loading.setAlignment(QtCore.Qt.AlignCenter)
+        epg_loading.setStyleSheet('color: #778a30')
+        #epg_loading.hide()
+
         myFont2 = QtGui.QFont()
         myFont2.setPointSize(12)
         myFont2.setBold(True)
         loading.setFont(myFont2)
+        epg_loading.setFont(myFont2)
         combobox = QtWidgets.QComboBox()
         combobox.currentIndexChanged.connect(group_change)
         for group in groups:
@@ -4760,6 +4845,7 @@ if __name__ == '__main__':
         widget.layout().addWidget(widget4)
         widget.layout().addWidget(chan)
         widget.layout().addWidget(loading)
+        widget.layout().addWidget(epg_loading)
         dockWidget.setFixedWidth(DOCK_WIDGET_WIDTH)
         if not settings['playlistsep']:
             dockWidget.setTitleBarWidget(QtWidgets.QWidget())
@@ -5391,6 +5477,7 @@ if __name__ == '__main__':
         right_click_menu_fullscreen.addSeparator()
         right_click_menu_fullscreen.addAction(_('channelsettings'), main_channel_settings)
 
+        @idle_function
         def end_file_callback():
             if loading.isVisible():
                 loading.setText(_('playerror'))
@@ -5399,6 +5486,7 @@ if __name__ == '__main__':
                 loading1.hide()
                 loading_movie.stop()
 
+        @idle_function
         def my_mouse_right_callback():
             global autoclosemenu_time, fullscreen
             #if playing_chan:
@@ -5414,6 +5502,7 @@ if __name__ == '__main__':
                 else:
                     right_click_menu_fullscreen.exec_(QtGui.QCursor.pos())
 
+        @idle_function
         def my_up_binding_execute():
             global l1, time_stop
             if settings["mouseswitchchannels"]:
@@ -5424,6 +5513,7 @@ if __name__ == '__main__':
                 label7.setValue(volume)
                 mpv_volume_set()
 
+        @idle_function
         def my_down_binding_execute():
             global l1, time_stop, fullscreen
             if settings["mouseswitchchannels"]:
@@ -5441,31 +5531,31 @@ if __name__ == '__main__':
         @player.event_callback('end_file')
         def ready_handler_2(event): # pylint: disable=unused-argument
             if event['event']['error'] != 0:
-                exInMainThread(end_file_callback)
+                end_file_callback()
 
         @player.on_key_press('MBTN_RIGHT')
         def my_mouse_right():
-            exInMainThread(my_mouse_right_callback)
+            my_mouse_right_callback()
 
         @player.on_key_press('MBTN_LEFT_DBL')
         def my_leftdbl_binding():
-            exInMainThread(mpv_fullscreen)
+            mpv_fullscreen()
 
         @player.on_key_press('MBTN_FORWARD')
         def my_forward_binding():
-            exInMainThread(next_channel)
+            next_channel()
 
         @player.on_key_press('MBTN_BACK')
         def my_back_binding():
-            exInMainThread(prev_channel)
+            prev_channel()
 
         @player.on_key_press('WHEEL_UP')
         def my_up_binding():
-            exInMainThread(my_up_binding_execute)
+            my_up_binding_execute()
 
         @player.on_key_press('WHEEL_DOWN')
         def my_down_binding():
-            exInMainThread(my_down_binding_execute)
+            my_down_binding_execute()
 
         dockWidget2 = QtWidgets.QDockWidget(win)
 
@@ -5490,9 +5580,11 @@ if __name__ == '__main__':
             win.listWidget.setCurrentRow(next_row)
             itemClicked_event(win.listWidget.currentItem())
 
+        @idle_function
         def prev_channel():
             go_channel(-1)
 
+        @idle_function
         def next_channel():
             go_channel(1)
 
@@ -5739,7 +5831,7 @@ if __name__ == '__main__':
                 print_with_time("Failed to set up MPRIS!")
 
         def update_scheduler_programme():
-            channel_list_2 = [chan_name for chan_name in doSort(array)]
+            channel_list_2 = [chan_name for chan_name in doSort(array)] # pylint: disable=unnecessary-comprehension
             ch_choosed = choosechannel_ch.currentText()
             tvguide_sch.clear()
             if ch_choosed in channel_list_2:
@@ -5755,7 +5847,7 @@ if __name__ == '__main__':
                 scheduler_win.hide()
             else:
                 choosechannel_ch.clear()
-                channel_list = [chan_name for chan_name in doSort(array)]
+                channel_list = [chan_name for chan_name in doSort(array)] # pylint: disable=unnecessary-comprehension
                 for chan1 in channel_list:
                     choosechannel_ch.addItem(chan1)
                 if item_selected in channel_list:
@@ -6095,12 +6187,10 @@ if __name__ == '__main__':
             else:
                 os.kill(current_pid, signal.SIGTERM)
 
-        first_boot = False
         first_boot_1 = True
 
         epg_thread = None
         manager = None
-        epg_updating = False
         return_dict = None
         waiting_for_epg = False
         epg_failed = False
@@ -6712,5 +6802,9 @@ if __name__ == '__main__':
         else:
             sys.exit(app.exec_())
     except Exception as e3:
-        show_exception(e3)
+        print_with_time("ERROR")
+        print_with_time("")
+        e3_traceback = traceback.format_exc()
+        print_with_time(e3_traceback)
+        show_exception(e3, e3_traceback)
         sys.exit(1)

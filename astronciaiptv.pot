@@ -728,6 +728,9 @@ msgstr ""
 msgid "Bits Per Pixel"
 msgstr ""
 
+msgid "epgloading"
+msgstr ""
+
 msgid "helptext"
 msgstr ""
 

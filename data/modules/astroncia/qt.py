@@ -19,10 +19,12 @@ Copyright (C) 2021 Astroncia
 import sys
 from data.modules.astroncia.time import print_with_time
 
-qt6_disable_printed = False
+class astroncia_data: # pylint: disable=too-few-public-methods
+    pass
+
+astroncia_data.qt6_disable_printed = False
 
 def get_qt_backend():
-    global qt6_disable_printed
     qt_backend = "none"
     QShortcut = False
     QtWidgets = False
@@ -30,8 +32,8 @@ def get_qt_backend():
     QtGui = False
     try:
         if '--disable-qt6' in sys.argv:
-            if not qt6_disable_printed:
-                qt6_disable_printed = True
+            if not astroncia_data.qt6_disable_printed:
+                astroncia_data.qt6_disable_printed = True
                 print_with_time("Qt6 force disabled\n")
             raise Exception("")
         from PySide6 import QtWidgets
