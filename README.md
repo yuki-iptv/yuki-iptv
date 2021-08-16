@@ -79,7 +79,7 @@ TV архив
 **Устанавливаем логотипы телеканалов (необязательно):**  
 
 ```git clone --depth=1 https://gitlab.com/astroncia/channel-icons.git```  
-```cp -R channel-icons/* data/```  
+```cp -R channel-icons/* usr/share/astronciaiptv/```  
 
 **Устанавливаем Python модули:**  
 
@@ -108,9 +108,9 @@ Astroncia IPTV не предоставляет плейлисты или дру�
 
 ## Логотипы телеканалов (несвободные)
 
-[deb](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/chanicons/astroncia-iptv-channel-icons-0.0.4.deb) | [rpm](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/chanicons/astroncia-iptv-channel-icons-0.0.4-1.noarch.rpm)  
+[deb](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/chanicons/astroncia-iptv-channel-icons-0.0.7.deb) | [rpm](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/chanicons/astroncia-iptv-channel-icons-0.0.7-1.noarch.rpm)  
 
 или выполните следующую команду, чтобы установить:  
-```curl -L --output - 'https://gitlab.com/astroncia/channel-icons/-/archive/master/channel-icons-master.tar.gz' | sudo tar -C /usr/lib/astronciaiptv/ -zxvf - && sudo mv /usr/lib/astronciaiptv/channel-icons-master/* /usr/lib/astronciaiptv/data/ && sudo rmdir /usr/lib/astronciaiptv/channel-icons-master```  
+```curl -L --output - 'https://gitlab.com/astroncia/channel-icons/-/archive/master/channel-icons-master.tar.gz' | sudo tar -C /usr/lib/astronciaiptv/ -zxvf - && sudo mv /usr/lib/astronciaiptv/channel-icons-master/* /usr/share/astronciaiptv/ && sudo rmdir /usr/lib/astronciaiptv/channel-icons-master```  
 
 *Все права на логотипы телеканалов принадлежат их правообладателям.*  

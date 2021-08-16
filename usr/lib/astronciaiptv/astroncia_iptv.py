@@ -296,7 +296,7 @@ if __name__ == '__main__':
         print_with_time("")
 
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
-        modules_path = str(Path(os.path.dirname(__file__), 'binary_windows'))
+        modules_path = str(Path(os.path.dirname(__file__), '..', '..', '..', 'binary_windows'))
         if os.name == 'nt':
             os.environ["PATH"] = modules_path + os.pathsep + os.environ["PATH"]
 
@@ -532,11 +532,11 @@ if __name__ == '__main__':
             except: # pylint: disable=bare-except
                 return False
 
-        def btn_update_force():
-            while not mainwindow_isvisible():
-                time.sleep(0.05)
-            exInMainThread(epg_loading_hide)
-            btn_update.click()
+        #def btn_update_force():
+        #    while not mainwindow_isvisible():
+        #        time.sleep(0.05)
+        #    exInMainThread(epg_loading_hide)
+        #    btn_update.click()
 
         def load_tvguide_dat(epg_dict, settings_epg):
             settings_epg_new = ''
@@ -571,7 +571,7 @@ if __name__ == '__main__':
         def epg_loading_hide():
             epg_loading.hide()
 
-        @async_function
+        #@async_function
         def update_epg_func():
             global settings, tvguide_sets, prog_ids, epg_icons, programmes, epg_ready
             print_with_time("Reading cached TV guide if exists...")
@@ -618,15 +618,15 @@ if __name__ == '__main__':
             print_with_time(
                 "TV guide read done, took {} seconds".format(time.time() - tvguide_read_time)
             )
-            btn_update_force()
+            #btn_update_force()
 
         # Updating EPG, async
         update_epg_func()
 
         if settings["themecompat"]:
-            ICONS_FOLDER = 'icons_dark'
+            ICONS_FOLDER = str(Path('..', '..', '..', 'share', 'astronciaiptv', 'icons_dark'))
         else:
-            ICONS_FOLDER = 'icons'
+            ICONS_FOLDER = str(Path('..', '..', '..', 'share', 'astronciaiptv', 'icons'))
 
         main_icon = QtGui.QIcon(str(
             Path(os.path.dirname(__file__), 'data', ICONS_FOLDER, 'tv-blue.png')
@@ -830,8 +830,12 @@ if __name__ == '__main__':
             groups.remove(_('allchannels'))
         groups = [_('allchannels'), _('favourite')] + groups
 
-        if os.path.isfile(str(Path('data', 'channel_icons.json'))):
-            icons_file = open(str(Path('data', 'channel_icons.json')), 'r', encoding="utf8")
+        if os.path.isfile(str(Path('..', '..', 'share', 'astronciaiptv', 'channel_icons.json'))):
+            icons_file = open(
+                str(Path('..', '..', 'share', 'astronciaiptv', 'channel_icons.json')),
+                'r',
+                encoding="utf8"
+            )
             icons = json.loads(icons_file.read())
             icons_file.close()
         else:
@@ -3018,6 +3022,9 @@ if __name__ == '__main__':
             ))
             sepplaylist_win.move(seppl_qpoint)
             sepplaylist_win.show()
+            sepplaylist_win.raise_()
+            sepplaylist_win.setFocus(QtCore.Qt.PopupFocusReason)
+            sepplaylist_win.activateWindow()
 
         def comm_instance_main_thread(th_func):
             th_func()
@@ -4247,7 +4254,10 @@ if __name__ == '__main__':
                 if i_icon in icons_l:
                     if not icons_l[i_icon] in ICONS_CACHE:
                         ICONS_CACHE[icons_l[i_icon]] = \
-                            QtGui.QIcon(str(Path('data', 'channel_icons', icons_l[i_icon])))
+                            QtGui.QIcon(str(Path(
+                                '..', '..', 'share', 'astronciaiptv',
+                                'channel_icons', icons_l[i_icon]
+                            )))
                     myQCustomQWidget.setIcon(ICONS_CACHE[icons_l[i_icon]])
                 else:
                     myQCustomQWidget.setIcon(TV_ICON)
@@ -4591,7 +4601,7 @@ if __name__ == '__main__':
         epg_loading = QtWidgets.QLabel(_('epgloading'))
         epg_loading.setAlignment(QtCore.Qt.AlignCenter)
         epg_loading.setStyleSheet('color: #778a30')
-        #epg_loading.hide()
+        epg_loading.hide()
 
         myFont2 = QtGui.QFont()
         myFont2.setPointSize(12)

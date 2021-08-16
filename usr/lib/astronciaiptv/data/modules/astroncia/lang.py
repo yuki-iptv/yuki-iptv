@@ -17,14 +17,23 @@ Copyright (C) 2021 Astroncia
     along with Astroncia IPTV.  If not, see <https://www.gnu.org/licenses/>.
 '''
 import os
+import glob
 import gettext
 from pathlib import Path
+#from data.modules.astroncia.time import print_with_time
 
 class LangData: # pylint: disable=too-few-public-methods
     '''Class for not using globals'''
+    delimiter = '/'
+    if os.name == 'nt':
+        delimiter = '\\'
 
-LangData.lang_folder = str(Path(os.getcwd(), 'data', 'lang'))
-LangData.languages = os.listdir(LangData.lang_folder)
+LangData.lang_folder = str(Path(os.getcwd(), '..', '..', 'share', 'locale'))
+#LangData.languages = os.listdir(LangData.lang_folder)
+LangData.languages = [l1.split(LangData.delimiter)[::-1][2] for l1 in \
+    glob.glob(str(Path(LangData.lang_folder, '*', 'LC_MESSAGES', 'astronciaiptv.mo')))]
+#print_with_time("Available languages: {}".format(str(LangData.languages)))
+#print_with_time("")
 LangData.current_lang = 'en'
 lang = {}
 
