@@ -1818,8 +1818,8 @@ if __name__ == '__main__':
 
         @async_function
         def monitor_playback():
-            player.wait_until_playing()
             try:
+                player.wait_until_playing()
                 player.observe_property("video-params", on_video_params)
                 player.observe_property("video-format", on_video_format)
                 player.observe_property("audio-params", on_audio_params)
@@ -3453,7 +3453,7 @@ if __name__ == '__main__':
 
         def itemClicked_event(item, custom_url="", archived=False): # pylint: disable=too-many-branches
             global playing, playing_chan, item_selected, playing_url, playing_archive
-            #player.stop()
+            #player.command('stop')
             #player.wait_for_playback()
             playing_archive = archived
             try:
