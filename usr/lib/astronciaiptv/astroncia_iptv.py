@@ -1994,7 +1994,6 @@ if __name__ == '__main__':
             loading.setStyleSheet('color: #778a30')
             showLoading()
             player.loop = False
-            stopPlayer(ignore=True)
             if play_url1.startswith("udp://") or play_url1.startswith("rtp://"):
                 try:
                     # For low latency on multicast
@@ -2033,7 +2032,6 @@ if __name__ == '__main__':
             print_with_time("Panscan: {}".format(player.panscan))
             player.user_agent = ua_ch if isinstance(ua_ch, str) else uas[ua_ch]
             player.loop = True
-            mpv_override_stop(ignore=True)
             mpv_override_play(play_url1, ua_ch if isinstance(ua_ch, str) else uas[ua_ch])
             if not os.name == 'nt':
                 monitor_playback()
@@ -3455,13 +3453,15 @@ if __name__ == '__main__':
 
         def itemClicked_event(item, custom_url="", archived=False): # pylint: disable=too-many-branches
             global playing, playing_chan, item_selected, playing_url, playing_archive
-            player.stop()
-            player.wait_for_playback()
+            #player.stop()
+            #player.wait_for_playback()
             playing_archive = archived
             try:
                 j = item.data(QtCore.Qt.UserRole)
             except: # pylint: disable=bare-except
                 j = item
+            print_with_time("")
+            print_with_time("Playing '{}'".format(str(j)))
             playing_chan = j
             item_selected = j
             play_url = array[j]['url']
