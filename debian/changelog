@@ -1,3 +1,11 @@
+astroncia-iptv (0.0.68) unstable; urgency=medium
+
+  * Do not stop player before playback
+  * Fix Ubuntu Bionic compatibility
+  * Changing files structure
+
+ -- astroncia <kestraly@gmail.com>  Mon, 16 Aug 2021 22:12:11 +0300
+
 astroncia-iptv (0.0.67) unstable; urgency=medium
 
   * Remember opened category
