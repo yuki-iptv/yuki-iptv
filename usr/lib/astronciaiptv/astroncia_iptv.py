@@ -740,9 +740,15 @@ if __name__ == '__main__':
                         msg1.exec()
                 else:
                     if os.path.isfile(settings['m3u']):
-                        file = open(settings['m3u'], 'r', encoding="utf8")
-                        m3u = file.read()
-                        file.close()
+                        try:
+                            file = open(settings['m3u'], 'r', encoding="utf8")
+                            m3u = file.read()
+                            file.close()
+                        except: # pylint: disable=bare-except
+                            print_with_time("Playlist is not UTF-8 encoding")
+                            file_111 = open(settings['m3u'], 'r')
+                            m3u = file_111.read()
+                            file_111.close()
                     else:
                         try:
                             m3u = requests.get(
