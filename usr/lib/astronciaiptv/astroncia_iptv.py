@@ -3012,6 +3012,10 @@ if __name__ == '__main__':
                 )
                 fail_version_msg.exec()
             checkupdates_btn.setEnabled(True)
+            help_win.show()
+            help_win.raise_()
+            help_win.setFocus(QtCore.Qt.PopupFocusReason)
+            help_win.activateWindow()
 
         def move_separate_playlist_func(seppl_qpoint):
             print_with_time("Moving separate playlist to QPoint({}, {})".format(
