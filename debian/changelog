@@ -1,0 +1,508 @@
+astroncia-iptv (0.0.67) unstable; urgency=medium
+
+  * Remember opened category
+  * Add logs show in GUI
+
+ -- astroncia <kestraly@gmail.com>  Sat, 14 Aug 2021 07:18:29 +0300
+
+astroncia-iptv (0.0.66) unstable; urgency=medium
+
+  * Add About Qt button to help window
+  * Minor bugfixes
+
+ -- astroncia <kestraly@gmail.com>  Thu, 12 Aug 2021 23:45:34 +0300
+
+astroncia-iptv (0.0.65) unstable; urgency=medium
+
+  * Better playlist selection window on first start
+  * Minor bugfixes
+  * Remember window position
+
+ -- astroncia <kestraly@gmail.com>  Thu, 12 Aug 2021 19:48:55 +0300
+
+astroncia-iptv (0.0.64) unstable; urgency=medium
+
+  * Fix experimental fullscreen mode
+
+ -- astroncia <kestraly@gmail.com>  Wed, 11 Aug 2021 03:33:44 +0300
+
+astroncia-iptv (0.0.63) unstable; urgency=medium
+
+  * Fix search in experimental fullscreen mode
+
+ -- astroncia <kestraly@gmail.com>  Wed, 11 Aug 2021 02:57:23 +0300
+
+astroncia-iptv (0.0.62) unstable; urgency=medium
+
+  * Stream information fix
+
+ -- astroncia <kestraly@gmail.com>  Tue, 10 Aug 2021 21:39:34 +0300
+
+astroncia-iptv (0.0.61) unstable; urgency=medium
+
+  * Add menu option to display stream information
+  * Using unidecode for channel search
+  * Implement check for new versions
+  * UI bugfixes
+
+ -- astroncia <kestraly@gmail.com>  Tue, 10 Aug 2021 19:44:00 +0300
+
+astroncia-iptv (0.0.60) unstable; urgency=medium
+
+  * Updating mpv.py
+  * Small bugfixes
+
+ -- astroncia <kestraly@gmail.com>  Mon, 09 Aug 2021 18:39:00 +0300
+
+astroncia-iptv (0.0.59) unstable; urgency=medium
+
+  * Add Qt version debug info output
+  * Stop player before playing channel
+  * Experimental support for Qt 6 / PySide6
+  * Fix experimental playlist / control panel in fullscreen mode
+
+ -- astroncia <kestraly@gmail.com>  Sun, 08 Aug 2021 04:04:41 +0300
+
+astroncia-iptv (0.0.58) unstable; urgency=medium
+
+  * Fix support for UTF-8 titles in JTV
+  * Fix support for JTV cp1251 encoding
+
+ -- astroncia <kestraly@gmail.com>  Sun, 01 Aug 2021 21:18:32 +0300
+
+astroncia-iptv (0.0.57) unstable; urgency=medium
+
+  * Add scrolling to settings window
+
+ -- astroncia <kestraly@gmail.com>  Mon, 26 Jul 2021 10:07:49 +0300
+
+astroncia-iptv (0.0.56) unstable; urgency=medium
+
+  * Finally fix shutdown issue
+
+ -- astroncia <kestraly@gmail.com>  Mon, 26 Jul 2021 08:01:49 +0300
+
+astroncia-iptv (0.0.55) unstable; urgency=medium
+
+  * Fix shutdown issue
+
+ -- astroncia <kestraly@gmail.com>  Mon, 26 Jul 2021 07:38:46 +0300
+
+astroncia-iptv (0.0.54) unstable; urgency=medium
+
+  * Making settings window lower for smaller screens
+
+ -- astroncia <kestraly@gmail.com>  Sat, 24 Jul 2021 18:26:44 +0300
+
+astroncia-iptv (0.0.53) unstable; urgency=medium
+
+  * Make bold tooltip for EPG in playlist
+  * Hide copyright in screen bottom
+  * Show channel name in EPG tooltip
+  * Small bugfixes
+
+ -- astroncia <kestraly@gmail.com>  Mon, 19 Jul 2021 08:15:41 +0300
+
+astroncia-iptv (0.0.52) unstable; urgency=medium
+
+  * Fix EPG parser
+
+ -- astroncia <kestraly@gmail.com>  Fri, 16 Jul 2021 15:35:54 +0300
+
+astroncia-iptv (0.0.51) unstable; urgency=medium
+
+  * Added Ukrainian translation
+  * Add option for manual set EPG name
+  * Enabling youtube-dl
+
+ -- astroncia <kestraly@gmail.com>  Fri, 16 Jul 2021 11:46:50 +0300
+
+astroncia-iptv (0.0.50) unstable; urgency=medium
+
+  * Fix channels icons cache
+  * Add note about multiple playlists to settings window
+  * Add support for favourites in separate playlist
+
+ -- astroncia <kestraly@gmail.com>  Mon, 05 Jul 2021 04:15:18 +0300
+
+astroncia-iptv (0.0.49) unstable; urgency=medium
+
+  * Add support for channel logos from EPG
+  * Enable local cache for channel icons
+  * Add donate information - Russia only
+  * Experimental support for XTream Codes API, may be unstable
+
+ -- astroncia <kestraly@gmail.com>  Thu, 01 Jul 2021 04:35:52 +0300
+
+astroncia-iptv (0.0.48) unstable; urgency=medium
+
+  * Add EPG tooltip
+  * Mark playing channel in playlist
+  * Add EPG close button
+  * Add volume change step setting
+  * Add hide EPG percentage setting
+
+ -- astroncia <kestraly@gmail.com>  Tue, 29 Jun 2021 21:49:38 +0300
+
+astroncia-iptv (0.0.47) unstable; urgency=medium
+
+  * Move volume position in GUI
+  * Change keyboard shortcuts
+
+ -- astroncia <kestraly@gmail.com>  Mon, 28 Jun 2021 21:52:52 +0300
+
+astroncia-iptv (0.0.46) unstable; urgency=medium
+
+  * Fix UI freezing in EPG
+  * Update Polish translation
+
+ -- astroncia <kestraly@gmail.com>  Sat, 19 Jun 2021 13:00:07 +0300
+
+astroncia-iptv (0.0.45) unstable; urgency=medium
+
+  * Update Russian translation
+  * Fix right click menu for fullscreen
+  * Add floating panel position setting
+  * Add screenshot type experimental setting
+  * Add playlist in separate window setting
+  * Add support for User-Agent and Referer in playlists, Kodi-like style
+
+ -- astroncia <kestraly@gmail.com>  Tue, 15 Jun 2021 12:06:27 +0300
+
+astroncia-iptv (0.0.44) unstable; urgency=medium
+
+  * Bugfixes
+  * Always show player right click menu
+  * Add show/hide playlist to right click context menu
+  * Change volume key to V
+  * Change prev channel key to M
+  * Add ability to hide controls panel
+
+ -- astroncia <kestraly@gmail.com>  Sun, 13 Jun 2021 07:38:59 +0300
+
+astroncia-iptv (0.0.43) unstable; urgency=medium
+
+  * Set blue icon as main
+  * Update Polish translation
+  * Support for relative save folder path
+  * Better cursor autohide for fullscreen mode
+  * Use ffmpeg for screenshots
+  * Add experimental setting for custom floating panels opacity
+  * Auto close right click channel menu if nothing selected
+
+ -- astroncia <kestraly@gmail.com>  Wed, 09 Jun 2021 04:51:33 +0300
+
+astroncia-iptv (0.0.42) unstable; urgency=medium
+
+  * Add Polish translation
+  * Support for TV archive - using utc, lutc
+
+ -- astroncia <kestraly@gmail.com>  Mon, 07 Jun 2021 05:22:31 +0300
+
+astroncia-iptv (0.0.41) unstable; urgency=medium
+
+  * Fix crash if wrong mpv options set
+  * Normal ffmpeg exiting, fixing recording video timings
+
+ -- astroncia <kestraly@gmail.com>  Sat, 05 Jun 2021 04:40:43 +0300
+
+astroncia-iptv (0.0.40) unstable; urgency=medium
+
+  * Moving config to ~/.config/astronciaiptv
+  * Trying to fix floating fullscreen panel problems
+  * Fix hide cursor in fullscreen mode
+  * Fix app quit, no more remaining processes
+
+ -- astroncia <kestraly@gmail.com>  Fri, 04 Jun 2021 09:05:21 +0300
+
+astroncia-iptv (0.0.39) unstable; urgency=medium
+
+  * Fix broken deinterlace
+
+ -- astroncia <kestraly@gmail.com>  Thu, 03 Jun 2021 13:46:22 +0300
+
+astroncia-iptv (0.0.38) unstable; urgency=medium
+
+  * Bugfixes
+  * UI / UX improvements
+  * Remember volume by default
+  * Add ability to set custom icon for app
+  * Add hide TV guide to playlist context menu
+  * Turn off deinterlace on Raspberry Pi by default
+  * Play last channel - remember group
+
+ -- astroncia <kestraly@gmail.com>  Thu, 03 Jun 2021 12:49:04 +0300
+
+astroncia-iptv (0.0.37) unstable; urgency=medium
+
+  * Moving to /usr/lib/astronciaiptv
+
+ -- astroncia <kestraly@gmail.com>  Sun, 30 May 2021 22:54:23 +0300
+
+astroncia-iptv (0.0.36) unstable; urgency=medium
+
+  * Bugfixes
+  * Minor GUI improvements
+  * Set maximum volume to 200
+  * Add experimental settings
+  * Add switch channels with mouse wheel feature
+  * Support x-tvg-url
+  * Add more video settings
+
+ -- astroncia <kestraly@gmail.com>  Sun, 30 May 2021 04:31:34 +0300
+
+astroncia-iptv (0.0.35) unstable; urgency=medium
+
+  * Dark theme compatibility for icons
+  * Add email address to help
+  * Show control panel on hover           
+  * Add hide mpv panel setting
+  * Remember volume
+  * Bugfixes
+
+ -- astroncia <kestraly@gmail.com>  Sun, 23 May 2021 03:52:49 +0300
+
+astroncia-iptv (0.0.34) unstable; urgency=medium
+
+  * Enable hardware acceleration by default
+  * Dark theme compatibility
+  * Change OSC layout
+  * Delete note about exiting fullscreen
+  * Show playlist on hover in fullscreen mode
+  * Added video aspect and zoom controls
+  * Add open in external player feature
+  * HTTP referer support
+
+ -- astroncia <kestraly@gmail.com>  Wed, 19 May 2021 21:22:24 +0300
+
+astroncia-iptv (0.0.33) unstable; urgency=medium
+
+  * Channel record bugfix
+  * GUI improvements
+
+ -- astroncia <kestraly@gmail.com>  Sat, 15 May 2021 19:38:50 +0300
+
+astroncia-iptv (0.0.32) unstable; urgency=medium
+
+  * Bugfixes
+
+ -- astroncia <kestraly@gmail.com>  Fri, 14 May 2021 19:59:25 +0300
+
+astroncia-iptv (0.0.31) unstable; urgency=medium
+
+  * Add Deutsch translation - incomplete
+  * Add open previous channel at startup to settings
+  * Add recording via scheduler indicator
+  * Add post-recording via scheduler action
+  * Fix margins
+  * Fix icons in m3u editor
+  * Fix pfs compatibility
+
+ -- astroncia <kestraly@gmail.com>  Wed, 12 May 2021 18:10:36 +0300
+
+astroncia-iptv (0.0.30) unstable; urgency=medium
+
+  * Better paging
+
+ -- astroncia <kestraly@gmail.com>  Sun, 09 May 2021 15:33:24 +0300
+
+astroncia-iptv (0.0.29) unstable; urgency=medium
+
+  * Use QMessageBox for exceptions
+  * Add PuppyRus support
+  * Remember window size
+
+ -- astroncia <kestraly@gmail.com>  Sat, 08 May 2021 18:21:13 +0300
+
+astroncia-iptv (0.0.28) unstable; urgency=medium
+
+  * Support url-tvg directive
+  * Turn off hardware acceleration by default
+
+ -- astroncia <kestraly@gmail.com>  Thu, 06 May 2021 18:28:08 +0300
+
+astroncia-iptv (0.0.27) unstable; urgency=medium
+
+  * Added EXTGRP support to M3U editor
+  * Added keywords to desktop file and fixed categories
+
+ -- astroncia <kestraly@gmail.com>  Thu, 06 May 2021 14:27:54 +0300
+
+astroncia-iptv (0.0.26) unstable; urgency=medium
+
+  * Set default cache to 0 seconds
+  * Add license show button
+
+ -- astroncia <kestraly@gmail.com>  Mon, 03 May 2021 10:43:22 +0300
+
+astroncia-iptv (0.0.25) unstable; urgency=medium
+
+  * Adding channels on one page to settings
+  * Fetching channel icons from tvg-logo
+  * Add reset providers to default button
+  * New EPG url and user agents
+
+ -- astroncia <kestraly@gmail.com>  Fri, 30 Apr 2021 21:59:17 +0300
+
+astroncia-iptv (0.0.24) unstable; urgency=medium
+
+  * Bugfixes
+  * Import playlists from Hypnotix
+  * Support EPG from multiple sources - tvg-url
+
+ -- astroncia <kestraly@gmail.com>  Thu, 29 Apr 2021 09:54:57 +0300
+
+astroncia-iptv (0.0.23) unstable; urgency=medium
+
+  * Minor bugfixes
+
+ -- astroncia <kestraly@gmail.com>  Wed, 28 Apr 2021 06:37:38 +0300
+
+astroncia-iptv (0.0.22) unstable; urgency=medium
+
+  * Recording scheduler
+  * Providers support
+  * Pagination
+  * Localization - gettext
+
+ -- astroncia <kestraly@gmail.com>  Tue, 27 Apr 2021 20:31:07 +0300
+
+astroncia-iptv (0.0.21) unstable; urgency=medium
+
+  * MPRIS support
+
+ -- astroncia <kestraly@gmail.com>  Wed, 21 Apr 2021 14:03:30 +0300
+
+astroncia-iptv (0.0.20) unstable; urgency=medium
+
+  * GUI improvements
+
+ -- astroncia <kestraly@gmail.com>  Tue, 20 Apr 2021 06:56:37 +0300
+
+astroncia-iptv (0.0.19) unstable; urgency=medium
+
+  * Hardware acceleration bugfix
+
+ -- astroncia <kestraly@gmail.com>  Tue, 20 Apr 2021 05:38:34 +0300
+
+astroncia-iptv (0.0.18) unstable; urgency=medium
+
+  * GUI improvements
+
+ -- astroncia <kestraly@gmail.com>  Tue, 20 Apr 2021 04:20:35 +0300
+
+astroncia-iptv (0.0.17) unstable; urgency=medium
+
+  * Support mpv options
+  * TV guide interface choose
+  * Bugfixes
+
+ -- astroncia <kestraly@gmail.com>  Mon, 19 Apr 2021 14:29:03 +0300
+
+astroncia-iptv (0.0.16) unstable; urgency=medium
+
+  * Global useragent support
+
+ -- astroncia <kestraly@gmail.com>  Sun, 18 Apr 2021 14:16:02 +0300
+
+astroncia-iptv (0.0.15) unstable; urgency=medium
+
+  * Minor bugfixes
+
+ -- astroncia <kestraly@gmail.com>  Sat, 17 Apr 2021 16:05:51 +0300
+
+astroncia-iptv (0.0.14) unstable; urgency=medium
+
+  * Minor bugfixes
+
+ -- astroncia <kestraly@gmail.com>  Sat, 17 Apr 2021 04:24:31 +0300
+
+astroncia-iptv (0.0.13) unstable; urgency=medium
+
+  * EXTGRP support
+  * Multimedia keys support
+  * Custom groups and new providers
+  * Hiding channels
+  * Video settings
+  * PVR timeshift
+  * M3U playlists editor
+
+ -- astroncia <kestraly@gmail.com>  Fri, 16 Apr 2021 09:44:20 +0300
+
+astroncia-iptv (0.0.12) unstable; urgency=medium
+
+  * Bugfixes
+
+ -- astroncia <kestraly@gmail.com>  Thu, 15 Apr 2021 06:19:00 +0300
+
+astroncia-iptv (0.0.11) unstable; urgency=high
+
+  * Custom channel sorting bugfix
+
+ -- astroncia <kestraly@gmail.com>  Thu, 15 Apr 2021 01:57:18 +0300
+
+astroncia-iptv (0.0.10) unstable; urgency=medium
+
+  * Auto network stream reconnect
+  * User agent settings for channel
+  * Custom channel sorting
+
+ -- astroncia <kestraly@gmail.com>  Thu, 15 Apr 2021 01:09:36 +0300
+
+astroncia-iptv (0.0.9) unstable; urgency=low
+
+  * Changing EPG background color
+
+ -- astroncia <kestraly@gmail.com>  Wed, 14 Apr 2021 15:15:26 +0300
+
+astroncia-iptv (0.0.8) unstable; urgency=emergency
+
+  * Emergency bugfix
+
+ -- astroncia <kestraly@gmail.com>  Wed, 14 Apr 2021 09:28:21 +0300
+
+astroncia-iptv (0.0.7) unstable; urgency=medium
+
+  * Hiding clock by default
+  * Add channel sorting
+  * TV guide caching bugfix
+  * Add loading animation
+  * Add cache settings
+  * Channel search support
+
+ -- astroncia <kestraly@gmail.com>  Wed, 14 Apr 2021 06:25:16 +0300
+
+astroncia-iptv (0.0.6) unstable; urgency=high
+
+  * Fast bugfix for TV guide
+  * Enter key support on channel list
+
+ -- astroncia <kestraly@gmail.com>  Tue, 13 Apr 2021 14:52:03 +0300
+
+astroncia-iptv (0.0.5) unstable; urgency=medium
+
+  * Renaming executable to astronciaiptv - lowercase
+  * TV guide read/write optimization
+  * Python 3.5 compatibility
+
+ -- astroncia <kestraly@gmail.com>  Tue, 13 Apr 2021 13:54:37 +0300
+
+astroncia-iptv (0.0.4) unstable; urgency=medium
+
+  * Fixing bugs
+  * Adding support for tvg-name and tvg-id directives in m3u playlist
+
+ -- astroncia <kestraly@gmail.com>  Tue, 13 Apr 2021 05:51:04 +0300
+
+astroncia-iptv (0.0.3) unstable; urgency=medium
+
+  * Bitrate show
+  * Hardware acceleration
+
+ -- astroncia <kestraly@gmail.com>  Mon, 12 Apr 2021 23:26:46 +0300
+
+astroncia-iptv (0.0.2) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Astroncia <kestraly@gmail.com>  Mon, 12 Apr 2021 04:54:10 +0300
