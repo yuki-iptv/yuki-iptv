@@ -3001,8 +3001,8 @@ if __name__ == '__main__':
                 mainThread = QtCore.pyqtSignal(type(lambda x: None))
                 mainThread_partial = QtCore.pyqtSignal(type(partial(int, 2)))
 
-        def exInMainThread(m_func):
-            comm_instance.mainThread.emit(m_func)
+        #def exInMainThread(m_func):
+        #    comm_instance.mainThread.emit(m_func)
 
         def exInMainThread_partial(m_func_2):
             comm_instance.mainThread_partial.emit(m_func_2)
@@ -3713,7 +3713,7 @@ if __name__ == '__main__':
         dockWidget_out.clicked.connect(dockWidget_out_clicked)
 
         @idle_function
-        def mpv_fullscreen():
+        def mpv_fullscreen(arg11=None): # pylint: disable=unused-argument
             dockWidget_out.click()
 
         old_value = 100
@@ -5520,7 +5520,7 @@ if __name__ == '__main__':
         right_click_menu_fullscreen.addAction(_('channelsettings'), main_channel_settings)
 
         @idle_function
-        def end_file_callback():
+        def end_file_callback(arg11=None): # pylint: disable=unused-argument
             if loading.isVisible():
                 loading.setText(_('playerror'))
                 loading.setStyleSheet('color: red')
@@ -5529,7 +5529,7 @@ if __name__ == '__main__':
                 loading_movie.stop()
 
         @idle_function
-        def my_mouse_right_callback():
+        def my_mouse_right_callback(arg11=None): # pylint: disable=unused-argument
             global autoclosemenu_time, fullscreen
             #if playing_chan:
             autoclosemenu_time = time.time()
@@ -5545,7 +5545,7 @@ if __name__ == '__main__':
                     right_click_menu_fullscreen.exec_(QtGui.QCursor.pos())
 
         @idle_function
-        def my_up_binding_execute():
+        def my_up_binding_execute(arg11=None): # pylint: disable=unused-argument
             global l1, time_stop
             if settings["mouseswitchchannels"]:
                 next_channel()
@@ -5556,7 +5556,7 @@ if __name__ == '__main__':
                 mpv_volume_set()
 
         @idle_function
-        def my_down_binding_execute():
+        def my_down_binding_execute(arg11=None): # pylint: disable=unused-argument
             global l1, time_stop, fullscreen
             if settings["mouseswitchchannels"]:
                 prev_channel()
@@ -5623,11 +5623,11 @@ if __name__ == '__main__':
             itemClicked_event(win.listWidget.currentItem())
 
         @idle_function
-        def prev_channel():
+        def prev_channel(arg11=None): # pylint: disable=unused-argument
             go_channel(-1)
 
         @idle_function
-        def next_channel():
+        def next_channel(arg11=None): # pylint: disable=unused-argument
             go_channel(1)
 
         def archive_all_clicked():
