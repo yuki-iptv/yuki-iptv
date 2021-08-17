@@ -50,6 +50,7 @@ freeze_support()
 from functools import partial
 import requests
 from unidecode import unidecode
+from data.modules.thirdparty import chardet
 from data.modules.astroncia.qt import get_qt_backend
 from data.modules.astroncia.lang import lang, init_lang, _
 from data.modules.astroncia.ua import user_agent, uas, ua_names
@@ -746,9 +747,30 @@ if __name__ == '__main__':
                             file.close()
                         except: # pylint: disable=bare-except
                             print_with_time("Playlist is not UTF-8 encoding")
-                            file_111 = open(settings['m3u'], 'r')
-                            m3u = file_111.read()
-                            file_111.close()
+                            print_with_time("Trying to detect encoding...")
+                            file_222_encoding = ''
+                            try:
+                                file_222 = open(settings['m3u'], 'rb')
+                                file_222_encoding = chardet.detect(file_222.read())['encoding']
+                                file_222.close()
+                            except: # pylint: disable=bare-except
+                                pass
+                            if file_222_encoding:
+                                print_with_time("Guessed encoding: {}".format(file_222_encoding))
+                                try:
+                                    file_111 = open(
+                                        settings['m3u'],
+                                        'r',
+                                        encoding=file_222_encoding
+                                    )
+                                    m3u = file_111.read()
+                                    file_111.close()
+                                except: # pylint: disable=bare-except
+                                    print_with_time("Wrong encoding guess!")
+                                    show_exception(_('unknownencoding'))
+                            else:
+                                print_with_time("Unknown encoding!")
+                                show_exception(_('unknownencoding'))
                     else:
                         try:
                             m3u = requests.get(

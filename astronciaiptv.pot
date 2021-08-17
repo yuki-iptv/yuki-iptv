@@ -731,6 +731,9 @@ msgstr ""
 msgid "epgloading"
 msgstr ""
 
+msgid "unknownencoding"
+msgstr ""
+
 msgid "helptext"
 msgstr ""
 
