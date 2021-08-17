@@ -5,7 +5,7 @@ strPath = Wscript.ScriptFullName
 Set objFSO = CreateObject("Scripting.FileSystemObject")
 
 Set objFile = objFSO.GetFile(strPath)
-strFolder = objFSO.GetParentFolderName(objFile) 
+strFolder = objFSO.GetParentFolderName(objFile) & "\usr\lib\astronciaiptv\"
 
 objShell.CurrentDirectory = strFolder
 
