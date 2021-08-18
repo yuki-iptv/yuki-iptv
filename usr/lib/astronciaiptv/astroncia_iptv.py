@@ -2017,12 +2017,16 @@ if __name__ == '__main__':
                 va1 = player.video_aspect
             return va1
 
-        def doPlay(play_url1, ua_ch=def_user_agent):
-            print_with_time("Playing '{}'".format(play_url1))
+        def doPlay(play_url1, ua_ch=def_user_agent, chan_name_0=''):
+            comm_instance.do_play_args = (play_url1, ua_ch, chan_name_0)
+            print_with_time("")
+            print_with_time("Playing '{}' ('{}')".format(chan_name_0, play_url1))
+            # Loading
             loading.setText(_('loading'))
             loading.setStyleSheet('color: #778a30')
             showLoading()
             player.loop = False
+            # Optimizations
             if play_url1.startswith("udp://") or play_url1.startswith("rtp://"):
                 try:
                     # For low latency on multicast
@@ -2044,24 +2048,19 @@ if __name__ == '__main__':
                     '-reconnect=1 -reconnect_at_eof=1 -reconnect_streamed=1 -reconnect_delay_max=2'
             except: # pylint: disable=bare-except
                 pass
+            # Print user agent
             print_with_time("Using user-agent: {}".format(
                 ua_ch if isinstance(ua_ch, str) else uas[ua_ch]
             ))
-            if player.deinterlace:
-                print_with_time("Deinterlace: enabled")
-            else:
-                print_with_time("Deinterlace: disabled")
-            print_with_time("Contrast: {}".format(player.contrast))
-            print_with_time("Brightness: {}".format(player.brightness))
-            print_with_time("Hue: {}".format(player.hue))
-            print_with_time("Saturation: {}".format(player.saturation))
-            print_with_time("Gamma: {}".format(player.gamma))
-            print_with_time("Video aspect: {}".format(getVideoAspect()))
-            print_with_time("Zoom: {}".format(player.video_zoom))
-            print_with_time("Panscan: {}".format(player.panscan))
+            # Set user agent and loop
             player.user_agent = ua_ch if isinstance(ua_ch, str) else uas[ua_ch]
             player.loop = True
+            # Playing
             mpv_override_play(play_url1, ua_ch if isinstance(ua_ch, str) else uas[ua_ch])
+            # Set channel (video) settings
+            #player.wait_for_playback()
+            setPlayerSettings(chan_name_0)
+            # Monitor playback (for stream information)
             if not os.name == 'nt':
                 monitor_playback()
 
@@ -2989,6 +2988,7 @@ if __name__ == '__main__':
         class Communicate(QtCore.QObject): # pylint: disable=too-few-public-methods
             winPosition = False
             winPosition2 = False
+            do_play_args = ()
             j_save = None
             comboboxIndex = -1
             if qt_backend == 'PySide6':
@@ -3484,45 +3484,7 @@ if __name__ == '__main__':
 
         playing_archive = False
 
-        def itemClicked_event(item, custom_url="", archived=False): # pylint: disable=too-many-branches
-            global playing, playing_chan, item_selected, playing_url, playing_archive
-            #player.command('stop')
-            #player.wait_for_playback()
-            playing_archive = archived
-            try:
-                j = item.data(QtCore.Qt.UserRole)
-            except: # pylint: disable=bare-except
-                j = item
-            print_with_time("")
-            print_with_time("Playing '{}'".format(str(j)))
-            playing_chan = j
-            item_selected = j
-            play_url = array[j]['url']
-            MAX_CHAN_SIZE = 35
-            channel_name = j
-            if len(channel_name) > MAX_CHAN_SIZE:
-                channel_name = channel_name[:MAX_CHAN_SIZE - 3] + '...'
-            setChanText('  ' + channel_name)
-            current_prog = None
-            jlower = j.lower()
-            try:
-                jlower = prog_match_arr[jlower]
-            except: # pylint: disable=bare-except
-                pass
-            if settings['epg'] and jlower in programmes:
-                for pr in programmes[jlower]:
-                    if time.time() > pr['start'] and time.time() < pr['stop']:
-                        current_prog = pr
-                        break
-            show_progress(current_prog)
-            if start_label.isVisible():
-                dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
-            else:
-                dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
-            playing = True
-            win.update()
-            playing_url = play_url
-            ua_choose = def_user_agent
+        def setPlayerSettings(j): # pylint: disable=too-many-branches
             if j in channel_sets:
                 d = channel_sets[j]
                 player.deinterlace = d['deinterlace']
@@ -3566,7 +3528,6 @@ if __name__ == '__main__':
                     setPanscan(d['panscan'])
                 else:
                     setPanscan(settings['panscan'])
-                ua_choose = d['useragent']
             else:
                 player.deinterlace = settings['deinterlace']
                 setVideoAspect(
@@ -3579,10 +3540,63 @@ if __name__ == '__main__':
                 player.hue = 0
                 player.brightness = 0
                 player.contrast = 0
-            if not custom_url:
-                doPlay(play_url, ua_choose)
+            # Print settings
+            if player.deinterlace:
+                print_with_time("Deinterlace: enabled")
             else:
-                doPlay(custom_url, ua_choose)
+                print_with_time("Deinterlace: disabled")
+            print_with_time("Contrast: {}".format(player.contrast))
+            print_with_time("Brightness: {}".format(player.brightness))
+            print_with_time("Hue: {}".format(player.hue))
+            print_with_time("Saturation: {}".format(player.saturation))
+            print_with_time("Gamma: {}".format(player.gamma))
+            print_with_time("Video aspect: {}".format(getVideoAspect()))
+            print_with_time("Zoom: {}".format(player.video_zoom))
+            print_with_time("Panscan: {}".format(player.panscan))
+
+        def itemClicked_event(item, custom_url="", archived=False): # pylint: disable=too-many-branches
+            global playing, playing_chan, item_selected, playing_url, playing_archive
+            #player.command('stop')
+            #player.wait_for_playback()
+            playing_archive = archived
+            try:
+                j = item.data(QtCore.Qt.UserRole)
+            except: # pylint: disable=bare-except
+                j = item
+            playing_chan = j
+            item_selected = j
+            play_url = array[j]['url']
+            MAX_CHAN_SIZE = 35
+            channel_name = j
+            if len(channel_name) > MAX_CHAN_SIZE:
+                channel_name = channel_name[:MAX_CHAN_SIZE - 3] + '...'
+            setChanText('  ' + channel_name)
+            current_prog = None
+            jlower = j.lower()
+            try:
+                jlower = prog_match_arr[jlower]
+            except: # pylint: disable=bare-except
+                pass
+            if settings['epg'] and jlower in programmes:
+                for pr in programmes[jlower]:
+                    if time.time() > pr['start'] and time.time() < pr['stop']:
+                        current_prog = pr
+                        break
+            show_progress(current_prog)
+            if start_label.isVisible():
+                dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
+            else:
+                dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
+            playing = True
+            win.update()
+            playing_url = play_url
+            ua_choose = def_user_agent
+            if j in channel_sets:
+                ua_choose = channel_sets[j]['useragent']
+            if not custom_url:
+                doPlay(play_url, ua_choose, j)
+            else:
+                doPlay(custom_url, ua_choose, j)
             btn_update.click()
 
         item_selected = ''
@@ -6327,7 +6341,10 @@ if __name__ == '__main__':
             global x_conn
             if (playing_chan and not loading.isVisible()) and (player.cache_buffering_state == 0):
                 print_with_time("Reconnecting to stream")
-                doPlay(playing_url)
+                try:
+                    doPlay(*comm_instance.do_play_args)
+                except: # pylint: disable=bare-except
+                    print_with_time("Failed reconnecting to stream - no known URL")
             x_conn = None
 
         def check_connection():
