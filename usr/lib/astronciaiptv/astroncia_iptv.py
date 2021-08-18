@@ -3491,83 +3491,90 @@ if __name__ == '__main__':
         @async_function
         def setPlayerSettings(j): # pylint: disable=too-many-branches
             global playing_chan
-            print_with_time("setPlayerSettings waiting for channel load...")
             try:
-                player.wait_until_playing()
-            except: # pylint: disable=bare-except
-                pass
-            if j == playing_chan:
-                print_with_time("setPlayerSettings '{}'".format(j))
-                if j in channel_sets:
-                    d = channel_sets[j]
-                    player.deinterlace = d['deinterlace']
-                    if not 'useragent' in d:
-                        d['useragent'] = settings['useragent']
-                    try:
-                        d['useragent'] = uas.index(d['useragent'])
-                    except: # pylint: disable=bare-except
-                        pass
-                    if 'contrast' in d:
-                        player.contrast = d['contrast']
+                print_with_time("setPlayerSettings waiting for channel load...")
+                try:
+                    player.wait_until_playing()
+                except: # pylint: disable=bare-except
+                    pass
+                if j == playing_chan:
+                    print_with_time("setPlayerSettings '{}'".format(j))
+                    if j in channel_sets:
+                        d = channel_sets[j]
+                        player.deinterlace = d['deinterlace']
+                        if not 'useragent' in d:
+                            d['useragent'] = settings['useragent']
+                        try:
+                            d['useragent'] = uas.index(d['useragent'])
+                        except: # pylint: disable=bare-except
+                            pass
+                        if 'contrast' in d:
+                            player.contrast = d['contrast']
+                        else:
+                            player.contrast = 0
+                        if 'brightness' in d:
+                            player.brightness = d['brightness']
+                        else:
+                            player.brightness = 0
+                        if 'hue' in d:
+                            player.hue = d['hue']
+                        else:
+                            player.hue = 0
+                        if 'saturation' in d:
+                            player.saturation = d['saturation']
+                        else:
+                            player.saturation = 0
+                        if 'gamma' in d:
+                            player.gamma = d['gamma']
+                        else:
+                            player.gamma = 0
+                        if 'videoaspect' in d:
+                            setVideoAspect(
+                                videoaspect_vars[list(videoaspect_vars)[d['videoaspect']]]
+                            )
+                        else:
+                            setVideoAspect(
+                                videoaspect_vars[
+                                    videoaspect_def_choose.itemText(settings['videoaspect'])
+                                ]
+                            )
+                        if 'zoom' in d:
+                            setZoom(zoom_vars[list(zoom_vars)[d['zoom']]])
+                        else:
+                            setZoom(zoom_vars[zoom_def_choose.itemText(settings['zoom'])])
+                        if 'panscan' in d:
+                            setPanscan(d['panscan'])
+                        else:
+                            setPanscan(settings['panscan'])
                     else:
-                        player.contrast = 0
-                    if 'brightness' in d:
-                        player.brightness = d['brightness']
-                    else:
-                        player.brightness = 0
-                    if 'hue' in d:
-                        player.hue = d['hue']
-                    else:
-                        player.hue = 0
-                    if 'saturation' in d:
-                        player.saturation = d['saturation']
-                    else:
-                        player.saturation = 0
-                    if 'gamma' in d:
-                        player.gamma = d['gamma']
-                    else:
-                        player.gamma = 0
-                    if 'videoaspect' in d:
-                        setVideoAspect(videoaspect_vars[list(videoaspect_vars)[d['videoaspect']]])
-                    else:
+                        player.deinterlace = settings['deinterlace']
                         setVideoAspect(
                             videoaspect_vars[
                                 videoaspect_def_choose.itemText(settings['videoaspect'])
                             ]
                         )
-                    if 'zoom' in d:
-                        setZoom(zoom_vars[list(zoom_vars)[d['zoom']]])
-                    else:
                         setZoom(zoom_vars[zoom_def_choose.itemText(settings['zoom'])])
-                    if 'panscan' in d:
-                        setPanscan(d['panscan'])
-                    else:
                         setPanscan(settings['panscan'])
-                else:
-                    player.deinterlace = settings['deinterlace']
-                    setVideoAspect(
-                        videoaspect_vars[videoaspect_def_choose.itemText(settings['videoaspect'])]
-                    )
-                    setZoom(zoom_vars[zoom_def_choose.itemText(settings['zoom'])])
-                    setPanscan(settings['panscan'])
-                    player.gamma = 0
-                    player.saturation = 0
-                    player.hue = 0
-                    player.brightness = 0
-                    player.contrast = 0
-                # Print settings
-                if player.deinterlace:
-                    print_with_time("Deinterlace: enabled")
-                else:
-                    print_with_time("Deinterlace: disabled")
-                print_with_time("Contrast: {}".format(player.contrast))
-                print_with_time("Brightness: {}".format(player.brightness))
-                print_with_time("Hue: {}".format(player.hue))
-                print_with_time("Saturation: {}".format(player.saturation))
-                print_with_time("Gamma: {}".format(player.gamma))
-                print_with_time("Video aspect: {}".format(getVideoAspect()))
-                print_with_time("Zoom: {}".format(player.video_zoom))
-                print_with_time("Panscan: {}".format(player.panscan))
+                        player.gamma = 0
+                        player.saturation = 0
+                        player.hue = 0
+                        player.brightness = 0
+                        player.contrast = 0
+                    # Print settings
+                    if player.deinterlace:
+                        print_with_time("Deinterlace: enabled")
+                    else:
+                        print_with_time("Deinterlace: disabled")
+                    print_with_time("Contrast: {}".format(player.contrast))
+                    print_with_time("Brightness: {}".format(player.brightness))
+                    print_with_time("Hue: {}".format(player.hue))
+                    print_with_time("Saturation: {}".format(player.saturation))
+                    print_with_time("Gamma: {}".format(player.gamma))
+                    print_with_time("Video aspect: {}".format(getVideoAspect()))
+                    print_with_time("Zoom: {}".format(player.video_zoom))
+                    print_with_time("Panscan: {}".format(player.panscan))
+            except: # pylint: disable=bare-except
+                pass
 
         def itemClicked_event(item, custom_url="", archived=False): # pylint: disable=too-many-branches
             global playing, playing_chan, item_selected, playing_url, playing_archive
