@@ -484,11 +484,12 @@ if __name__ == '__main__':
 
         def save_tvguide_sets():
             global epg_thread_2, tvguide_sets
-            epg_thread_2 = Process(
-                target=save_tvguide_sets_proc,
-                args=(tvguide_sets,)
-            )
-            epg_thread_2.start()
+            if not os.name == 'nt':
+                epg_thread_2 = Process(
+                    target=save_tvguide_sets_proc,
+                    args=(tvguide_sets,)
+                )
+                epg_thread_2.start()
 
         def clean_programme():
             sets1 = tvguide_sets.copy()
