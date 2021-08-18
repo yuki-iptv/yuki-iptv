@@ -58,7 +58,7 @@ from data.modules.astroncia.epg import worker
 from data.modules.astroncia.record import record, record_return, stop_record, \
     async_wait_process, make_ffmpeg_screenshot
 from data.modules.astroncia.providers import iptv_providers
-from data.modules.astroncia.menubar import init_astroncia_menubar
+#from data.modules.astroncia.menubar import init_astroncia_menubar
 from data.modules.astroncia.time import print_with_time, get_app_log, get_mpv_log
 from data.modules.astroncia.epgurls import EPG_URLS
 from data.modules.astroncia.xtreamtom3u import convert_xtream_to_m3u
