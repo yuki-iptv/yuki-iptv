@@ -1,3 +1,9 @@
+astroncia-iptv (0.0.72) unstable; urgency=medium
+
+  * Fix channel settings set
+
+ -- astroncia <kestraly@gmail.com>  Wed, 18 Aug 2021 10:02:57 +0300
+
 astroncia-iptv (0.0.71) unstable; urgency=medium
 
   * Fix idle-function
