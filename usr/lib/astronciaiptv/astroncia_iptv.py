@@ -58,6 +58,7 @@ from data.modules.astroncia.epg import worker
 from data.modules.astroncia.record import record, record_return, stop_record, \
     async_wait_process, make_ffmpeg_screenshot
 from data.modules.astroncia.providers import iptv_providers
+from data.modules.astroncia.menubar import init_astroncia_menubar
 from data.modules.astroncia.time import print_with_time, get_app_log, get_mpv_log
 from data.modules.astroncia.epgurls import EPG_URLS
 from data.modules.astroncia.xtreamtom3u import convert_xtream_to_m3u
@@ -179,7 +180,7 @@ if 'HOME' in os.environ and os.path.isdir(os.environ['HOME']):
     if not os.path.isdir(SAVE_FOLDER_DEFAULT):
         os.mkdir(SAVE_FOLDER_DEFAULT)
 else:
-    LOCAL_DIR = 'local'
+    LOCAL_DIR = str(Path(os.path.dirname(__file__), '..', '..', '..', 'local'))
     SAVE_FOLDER_DEFAULT = str(
         Path(os.path.dirname(os.path.abspath(__file__)), 'AstronciaIPTV_saves')
     )
@@ -1777,10 +1778,10 @@ if __name__ == '__main__':
 
                 if rate == "video":
                     stream_info.video_properties[_("general")][_("Average Bitrate")] = \
-                    "%.f Kbps" % br
+                    ("%.f " + _('bitrate2')) % br
                 else:
                     stream_info.audio_properties[_("general")][_("Average Bitrate")] = \
-                    "%.f Kbps" % br
+                    ("%.f " + _('bitrate2')) % br
             except: # pylint: disable=bare-except
                 pass
 
@@ -3315,6 +3316,7 @@ if __name__ == '__main__':
                 self.listWidget = None
                 self.latestWidth = 0
                 self.latestHeight = 0
+                #self.createMenuBar_mw()
             def updateWindowSize(self):
                 if self.width() != self.latestWidth or self.height() != self.latestHeight:
                     self.latestWidth = self.width()
@@ -3387,6 +3389,9 @@ if __name__ == '__main__':
                     applog_win.hide()
                 if mpvlog_win.isVisible():
                     mpvlog_win.hide()
+            #def createMenuBar_mw(self):
+            #    self.menu_bar_qt = self.menuBar()
+            #    init_astroncia_menubar(self, app)
 
         win = MainWindow()
         win.setWindowTitle(MAIN_WINDOW_TITLE)
@@ -3671,6 +3676,7 @@ if __name__ == '__main__':
                 comm_instance.winPosition = win.pos()
                 channelfilter.usePopup = False
                 fullscreen = True
+                #win.menu_bar_qt.hide()
                 if settings['playlistsep']:
                     currentDockWidgetPos = sepplaylist_win.pos()
                     print_with_time("Saved separate playlist position - QPoint({}, {})".format(
@@ -3699,6 +3705,7 @@ if __name__ == '__main__':
                 win.showFullScreen()
             else:
                 # Leaving fullscreen
+                #win.menu_bar_qt.show()
                 hide_playlist()
                 hide_controlpanel()
                 dockWidget.setWindowOpacity(1)
