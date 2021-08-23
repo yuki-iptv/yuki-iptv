@@ -37,7 +37,11 @@ LangData.languages = [l1.split(LangData.delimiter)[::-1][2] for l1 in \
 LangData.current_lang = 'en'
 lang = {}
 
-LangData.en = gettext.translation('astronciaiptv', LangData.lang_folder, languages=['en'])
+LangData.en = None
+try:
+    LangData.en = gettext.translation('astronciaiptv', LangData.lang_folder, languages=['en'])
+except: # pylint: disable=bare-except
+    pass
 
 for language in LangData.languages:
     t = gettext.translation('astronciaiptv', LangData.lang_folder, languages=[language])
@@ -53,12 +57,16 @@ def init_lang(lng):
 
 def _(str1):
     gettext_output = lang[LangData.current_lang]['strings']['lang_gettext'].gettext(str1)
-    if str1 == gettext_output:
-        gettext_output = LangData.en.gettext(str1)
+    if LangData.en:
+        if str1 == gettext_output:
+            gettext_output = LangData.en.gettext(str1)
     return gettext_output
 
 def __(str2, str3, num1):
-    gettext_output = lang[LangData.current_lang]['strings']['lang_gettext'].ngettext(str2, str3, num1)
-    if str2 == gettext_output or not gettext_output:
-        gettext_output = LangData.en.ngettext(str2, str3, num1)
+    gettext_output = lang[LangData.current_lang]['strings']['lang_gettext'].ngettext(
+        str2, str3, num1
+    )
+    if LangData.en:
+        if str2 == gettext_output or not gettext_output:
+            gettext_output = LangData.en.ngettext(str2, str3, num1)
     return gettext_output
