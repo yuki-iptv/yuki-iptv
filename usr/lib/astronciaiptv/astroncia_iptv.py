@@ -5433,14 +5433,15 @@ if __name__ == '__main__':
 
         def showhideeverything():
             global fullscreen
-            if dockWidget.isVisible():
-                dockWidget.hide()
-                dockWidget2.hide()
-                win.menu_bar_qt.hide()
-            else:
-                dockWidget.show()
-                dockWidget2.show()
-                win.menu_bar_qt.show()
+            if not fullscreen:
+                if dockWidget.isVisible():
+                    dockWidget.hide()
+                    dockWidget2.hide()
+                    win.menu_bar_qt.hide()
+                else:
+                    dockWidget.show()
+                    dockWidget2.show()
+                    win.menu_bar_qt.show()
 
         stream_info.data = {}
 
