@@ -69,7 +69,7 @@ TV archive
 **Installing dependencies:**
 
 on Debian/Ubuntu:  
-```sudo apt update && sudo apt install ffmpeg git libmpv1 python3 python3-requests python3-pil python3-pandas python3-gi python3-unidecode python3-pydbus python3-pip python3-setuptools python3-dev python3-wheel```
+```sudo apt update && sudo apt install ffmpeg git libmpv1 python3 python3-requests python3-pyqt5 python3-pil python3-pandas python3-gi python3-unidecode python3-pydbus python3-pip python3-setuptools python3-dev python3-wheel```
 
 **Cloning repository:**
 
