@@ -6863,6 +6863,21 @@ if __name__ == '__main__':
             except: # pylint: disable=bare-except
                 pass
 
+        menubar_st = False
+        def thread_shortcuts():
+            global fullscreen, menubar_st
+            try:
+                if not fullscreen:
+                    menubar_new_st = win.menuBar().isVisible()
+                    if menubar_new_st != menubar_st:
+                        menubar_st = menubar_new_st
+                        if menubar_st:
+                            setShortcutState(False)
+                        else:
+                            setShortcutState(True)
+            except: # pylint: disable=bare-except
+                pass
+
         def thread_mouse(): # pylint: disable=too-many-branches
             try:
                 player['cursor-autohide'] = 1000
@@ -7101,6 +7116,7 @@ if __name__ == '__main__':
             ic, ic1, ic2 = 0, 0, 0
             timers_array = {}
             timers = {
+                thread_shortcuts: 25,
                 thread_mouse: 50,
                 thread_cursor: 50,
                 thread_applog: 50,
