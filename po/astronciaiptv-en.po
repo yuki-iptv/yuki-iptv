@@ -1,6 +1,14 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Astroncia <kestraly@gmail.com>\n"
+"PO-Revision-Date: 2021-08-19 21:40+0300\n"
+"Project-Id-Version: \n"
+"Language-Team: English <kde-i18n-doc@kde.org>\n"
+"Language: en_US\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "name"
 msgstr "English"
@@ -621,7 +629,7 @@ msgid "url"
 msgstr "URL"
 
 msgid "multipleplnote"
-msgstr "You can specify multiple playlists by clicking\nthe Providers button (after saving the settings)"
+msgstr "You can specify multiple playlists by clicking\nthe File - Providers button (after saving the settings)"
 
 msgid "favoritesplaylistsep"
 msgstr "Favourites (separate playlist)"
@@ -733,6 +741,151 @@ msgstr "EPG loading..."
 
 msgid "unknownencoding"
 msgstr "Failed to load playlist - unknown encoding! Please use playlists in UTF-8 encoding."
+
+msgid "menubar_exit"
+msgstr "&Exit"
+
+msgid "menubar_title_file"
+msgstr "&File"
+
+msgid "menubar_title_play"
+msgstr "&Play"
+
+msgid "menubar_playpause"
+msgstr "&Play / Pause"
+
+msgid "menubar_stop"
+msgstr "&Stop"
+
+msgid "minutes_plural"
+msgid_plural ""
+msgstr[0] "minute"
+msgstr[1] "minutes"
+
+msgid "seconds_plural"
+msgid_plural ""
+msgstr[0] "second"
+msgstr[1] "seconds"
+
+msgid "menubar_previous"
+msgstr "&Previous"
+
+msgid "menubar_next"
+msgstr "&Next"
+
+msgid "speed"
+msgstr "Speed"
+
+msgid "menubar_normalspeed"
+msgstr "&Normal speed"
+
+msgid "menubar_video"
+msgstr "&Video"
+
+msgid "menubar_audio"
+msgstr "&Audio"
+
+msgid "menubar_fullscreen"
+msgstr "&Fullscreen"
+
+msgid "menubar_compactmode"
+msgstr "&Compact mode"
+
+msgid "menubar_csforchannel"
+msgstr "&Settings for channel"
+
+msgid "menubar_view"
+msgstr "Vie&w"
+
+msgid "menubar_options"
+msgstr "&Options"
+
+msgid "menubar_settings"
+msgstr "&Settings"
+
+msgid "menubar_about"
+msgstr "&About Astroncia IPTV"
+
+msgid "menubar_help"
+msgstr "&Help"
+
+msgid "menubar_screenshot"
+msgstr "&Screenshot"
+
+msgid "menubar_mute"
+msgstr "&Mute audio"
+
+msgid "menubar_track"
+msgstr "&Track"
+
+msgid "empty_sm"
+msgstr "empty"
+
+msgid "menubar_checkupdates"
+msgstr "&Check for updates"
+
+msgid "ffmpeg_processing"
+msgstr "Processing record..."
+
+msgid "menubar_volumeminus"
+msgstr "V&olume -"
+
+msgid "menubar_volumeplus"
+msgstr "Vo&lume +"
+
+msgid "list"
+msgstr "list"
+
+msgid "menubar_m3ueditor"
+msgstr "&m3u Editor"
+
+msgid "menubar_providers"
+msgstr "&Providers"
+
+msgid "menubar_channelsort"
+msgstr "&Channel sort"
+
+msgid "menubar_filters"
+msgstr "F&ilters"
+
+msgid "menubar_postproc"
+msgstr "&Postprocessing"
+
+msgid "menubar_deblock"
+msgstr "&Deblock"
+
+msgid "menubar_dering"
+msgstr "De&ring"
+
+msgid "menubar_debanding"
+msgstr "Debanding (&gradfun)"
+
+msgid "menubar_noise"
+msgstr "Add n&oise"
+
+msgid "menubar_black"
+msgstr "Add &black borders"
+
+msgid "menubar_phase"
+msgstr "&Autodetect phase"
+
+msgid "menubar_extrastereo"
+msgstr "&Extrastereo"
+
+msgid "menubar_karaoke"
+msgstr "&Karaoke"
+
+msgid "menubar_earvax"
+msgstr "&Headphone optimization"
+
+msgid "menubar_volnorm"
+msgstr "Volume &normalization"
+
+msgid "errorvfapply"
+msgstr "Error applying filters"
+
+msgid "menubar_softscaling"
+msgstr "Soft&ware scaling"
 
 msgid "helptext"
 msgstr "Astroncia IPTV, version {}\n© kestral / astroncia < kestraly (at) gmail.com >\nhttps://gitlab.com/astroncia\n\nIPTV player\n\nSupports TV guide (EPG) only in XMLTV and JTV formats!\n\nChannel not working?\nRight mouse button opens channel settings\n\nIcons by Font Awesome ( https://fontawesome.com/ )\nIcons licensed under the CC BY 4.0 License\n( https://creativecommons.org/licenses/by/4.0/ )\n\nHotkeys:\n\nF / F11 - fullscreen mode\nF2 - stream information\nV - mute\nQ - quit program\nSpace - pause\nS - stop playing\nH - screenshot\nG - tv guide (EPG)\nR - start/stop record\nN - previous channel\nM - next channel\nT - open/close channels list\nO - show/hide clock\nI - channel sort\nD - record scheduler"

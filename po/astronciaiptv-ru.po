@@ -1,6 +1,16 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Astroncia <kestraly@gmail.com>\n"
+"PO-Revision-Date: 2021-08-19 21:30+0300\n"
+"Project-Id-Version: \n"
+"Language-Team: Russian <kde-i18n-doc@kde.org>\n"
+"Language: ru_RU\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
 
 msgid "name"
 msgstr "Русский"
@@ -321,7 +331,7 @@ msgid "hide"
 msgstr "Скрыть канал"
 
 msgid "contrast"
-msgstr "Контраст"
+msgstr "Контрастность"
 
 msgid "brightness"
 msgstr "Яркость"
@@ -621,7 +631,7 @@ msgid "url"
 msgstr "URL адрес"
 
 msgid "multipleplnote"
-msgstr "Вы можете указать несколько плейлистов по\nкнопке Провайдеры (после сохранения настроек)"
+msgstr "Вы можете указать несколько плейлистов по\nкнопке Файл - Провайдеры (после сохранения настроек)"
 
 msgid "favoritesplaylistsep"
 msgstr "Избранное (отдельный плейлист)"
@@ -733,6 +743,153 @@ msgstr "Телепрограмма загружается..."
 
 msgid "unknownencoding"
 msgstr "Не удалось загрузить плейлист - неизвестная кодировка! Пожалуйста, используйте плейлисты в кодировке UTF-8."
+
+msgid "menubar_exit"
+msgstr "&Выход"
+
+msgid "menubar_title_file"
+msgstr "&Файл"
+
+msgid "menubar_title_play"
+msgstr "&Воспроизведение"
+
+msgid "menubar_playpause"
+msgstr "&Воспроизвести / Пауза"
+
+msgid "menubar_stop"
+msgstr "&Стоп"
+
+msgid "minutes_plural"
+msgid_plural ""
+msgstr[0] "минута"
+msgstr[1] "минуты"
+msgstr[2] "минут"
+
+msgid "seconds_plural"
+msgid_plural ""
+msgstr[0] "секунда"
+msgstr[1] "секунды"
+msgstr[2] "секунд"
+
+msgid "menubar_previous"
+msgstr "&Предыдущий"
+
+msgid "menubar_next"
+msgstr "&Следующий"
+
+msgid "speed"
+msgstr "Скорость"
+
+msgid "menubar_normalspeed"
+msgstr "&Нормальная скорость"
+
+msgid "menubar_video"
+msgstr "В&идео"
+
+msgid "menubar_audio"
+msgstr "&Аудио"
+
+msgid "menubar_fullscreen"
+msgstr "Полный &экран"
+
+msgid "menubar_compactmode"
+msgstr "&Компактный режим"
+
+msgid "menubar_csforchannel"
+msgstr "&Настройки для канала"
+
+msgid "menubar_view"
+msgstr "Ви&д"
+
+msgid "menubar_options"
+msgstr "&Параметры"
+
+msgid "menubar_settings"
+msgstr "&Настройки"
+
+msgid "menubar_about"
+msgstr "О&б Astroncia IPTV"
+
+msgid "menubar_help"
+msgstr "Сп&равка"
+
+msgid "menubar_screenshot"
+msgstr "С&нимок экрана"
+
+msgid "menubar_mute"
+msgstr "&Приглушить звук"
+
+msgid "menubar_track"
+msgstr "&Дорожка"
+
+msgid "empty_sm"
+msgstr "пусто"
+
+msgid "menubar_checkupdates"
+msgstr "&Проверить обновления"
+
+msgid "ffmpeg_processing"
+msgstr "Обработка записи..."
+
+msgid "menubar_volumeminus"
+msgstr "Г&ромкость -"
+
+msgid "menubar_volumeplus"
+msgstr "Гр&омкость +"
+
+msgid "list"
+msgstr "список"
+
+msgid "menubar_m3ueditor"
+msgstr "&Редактор плейлистов m3u"
+
+msgid "menubar_providers"
+msgstr "&Провайдеры"
+
+msgid "menubar_channelsort"
+msgstr "&Сортировка каналов"
+
+msgid "menubar_filters"
+msgstr "Ф&ильтры"
+
+msgid "menubar_postproc"
+msgstr "Включить &постобработку"
+
+msgid "menubar_deblock"
+msgstr "Смазывать границы &квадратов"
+
+msgid "menubar_dering"
+msgstr "Удалять к&раевые артефакты"
+
+msgid "menubar_debanding"
+msgstr "Убрать &ступенчатость (gradfun)"
+
+msgid "menubar_noise"
+msgstr "Добавить &шумы"
+
+msgid "menubar_black"
+msgstr "Добавить &чёрные полосы"
+
+msgid "menubar_phase"
+msgstr "&Автоопределять фазу"
+
+msgid "menubar_extrastereo"
+msgstr "&Расширенное стерео"
+
+msgid "menubar_karaoke"
+msgstr "&Караоке (подавление голоса)"
+
+msgid "menubar_earvax"
+msgstr "&Оптимизация для наушников (earvax)"
+
+msgid "menubar_volnorm"
+msgstr "&Нормализация громкости"
+
+msgid "errorvfapply"
+msgstr "Ошибка применения фильтров"
+
+msgid "menubar_softscaling"
+msgstr "Масштабировать про&граммно"
 
 msgid "helptext"
 msgstr "Astroncia IPTV, версия {}\n© kestral / astroncia < kestraly (at) gmail.com >\nhttps://gitlab.com/astroncia\n\nПоддержка:\nhttps://unixforum.org/viewtopic.php?f=3&t=151801\n\nСделать пожертвование: https://qiwi.com/n/ASTRONCIA\n\nПлеер для просмотра интернет-телевидения\n\nПоддерживается телепрограмма (EPG)\nтолько в форматах XMLTV и JTV!\n\nНе работает канал? Правая клавиша мыши открывает настройки канала.\n\nПосле указания группы канала в настройках переоткройте приложение.\n\nГорячие клавиши:\n\nF / F11 - полноэкранный режим\nF2 - информация о потоке\nV - выключить звук\nQ - выйти из программы\nПробел - пауза\nS - остановить проигрывание\nH - скриншот\nG - телепрограмма\nR - начать/остановить запись\nN - предыдущий канал\nM - следующий канал\nT - показать/скрыть боковую панель плейлиста\nO - показать/скрыть часы\nI - сортировка каналов\nD - планировщик записи\n\nЗначки от Font Awesome ( https://fontawesome.com/ )\nЛицензия значков - CC BY 4.0 License\n( https://creativecommons.org/licenses/by/4.0/ )"

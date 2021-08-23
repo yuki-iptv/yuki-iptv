@@ -56,9 +56,10 @@ from data.modules.astroncia.lang import lang, init_lang, _
 from data.modules.astroncia.ua import user_agent, uas, ua_names
 from data.modules.astroncia.epg import worker
 from data.modules.astroncia.record import record, record_return, stop_record, \
-    async_wait_process, make_ffmpeg_screenshot
+    async_wait_process, make_ffmpeg_screenshot, is_ffmpeg_recording
 from data.modules.astroncia.providers import iptv_providers
-#from data.modules.astroncia.menubar import init_astroncia_menubar
+from data.modules.astroncia.menubar import init_astroncia_menubar, init_menubar_player, \
+    populate_menubar, update_menubar, get_active_vf_filters, get_first_run, get_seq
 from data.modules.astroncia.time import print_with_time, get_app_log, get_mpv_log
 from data.modules.astroncia.epgurls import EPG_URLS
 from data.modules.astroncia.xtreamtom3u import convert_xtream_to_m3u
@@ -141,7 +142,7 @@ stream_info.audio_bitrates = []
 DOCK_WIDGET2_HEIGHT = max(DOCK_WIDGET2_HEIGHT, 0)
 DOCK_WIDGET_WIDTH = max(DOCK_WIDGET_WIDTH, 0)
 
-parser = argparse.ArgumentParser(description='Astroncia IPTV')
+parser = argparse.ArgumentParser(description=MAIN_WINDOW_TITLE)
 parser.add_argument('--python')
 parser.add_argument(
     '--version',
@@ -153,10 +154,15 @@ parser.add_argument(
     action='store_true',
     help='Force use Qt 5'
 )
+parser.add_argument(
+    'URL',
+    help='Playlist URL or file',
+    nargs='?'
+)
 args1 = parser.parse_args()
 
 if args1.version:
-    print("Astroncia IPTV {}".format(APP_VERSION))
+    print("{} {}".format(MAIN_WINDOW_TITLE, APP_VERSION))
     sys.exit(0)
 
 if 'HOME' in os.environ and os.path.isdir(os.environ['HOME']):
@@ -225,10 +231,12 @@ try:
 except: # pylint: disable=bare-except
     pass
 
-def show_exception(e, e_traceback=""):
+def show_exception(e, e_traceback="", prev=""):
     if e_traceback:
         e = e_traceback.strip()
-    message = "{}\n\n{}".format(_('error2'), str(e))
+    message = "{}{}\n\n{}\n\n{}".format(
+        _('error2'), prev, 'os.name = "{}"'.format(os.name), str(e)
+    )
     msg = QtWidgets.QMessageBox(
         qt_icon_critical,
         _('error'), message + '\n\n' + \
@@ -279,7 +287,7 @@ if __name__ == '__main__':
         pass
     app = QtWidgets.QApplication(sys.argv)
     try:
-        print_with_time("Astroncia IPTV {}...".format(_('starting')))
+        print_with_time("{} {}...".format(MAIN_WINDOW_TITLE, _('starting')))
         print_with_time("Copyright (C) Astroncia")
         print_with_time("")
         print_with_time(_('foundproblem') + ": " + EMAIL_ADDRESS)
@@ -465,6 +473,10 @@ if __name__ == '__main__':
             print_with_time("{} {}".format(_('hwaccel').replace('\n', ' '), _('enabled')))
         else:
             print_with_time("{} {}".format(_('hwaccel').replace('\n', ' '), _('disabled')))
+
+        # URL override for command line
+        if args1.URL:
+            settings["m3u"] = args1.URL
 
         tvguide_sets = {}
 
@@ -940,7 +952,7 @@ if __name__ == '__main__':
         settings_win.setWindowIcon(main_icon)
 
         selplaylist_win = QtWidgets.QMainWindow()
-        selplaylist_win.setWindowTitle('Astroncia IPTV')
+        selplaylist_win.setWindowTitle(MAIN_WINDOW_TITLE)
         selplaylist_win.setWindowIcon(main_icon)
 
         streaminfo_win = QtWidgets.QMainWindow()
@@ -1391,6 +1403,19 @@ if __name__ == '__main__':
 
         recViaScheduler = False
 
+        @async_function
+        def record_post_action():
+            while True:
+                if is_recording_func() is True:
+                    break
+                time.sleep(1)
+            print_with_time("Record via scheduler ended, executing post-action...")
+            # 0 - nothing to do
+            if praction_choose.currentIndex() == 1: # 1 - Press Stop
+                mpv_stop()
+            if praction_choose.currentIndex() == 2: # 2 - Quit program
+                key_quit()
+
         def record_thread_2():
             try:
                 global recViaScheduler
@@ -1412,21 +1437,21 @@ if __name__ == '__main__':
                     lbl2.show()
                 else:
                     if recViaScheduler:
-                        print_with_time("Record via scheduler ended, executing post-action...")
-                        # 0 - nothing to do
-                        if praction_choose.currentIndex() == 1: # 1 - Press Stop
-                            mpv_stop()
-                        if praction_choose.currentIndex() == 2: # 2 - Quit program
-                            key_quit()
+                        print_with_time(
+                            "Record via scheduler ended, waiting for ffmpeg process completion..."
+                        )
+                        record_post_action()
                     recViaScheduler = False
                     if lbl2.text() == pl_text:
                         lbl2.hide()
             except: # pylint: disable=bare-except
                 pass
 
+        ffmpeg_processes = []
+
         def record_thread():
             try:
-                global is_recording
+                global is_recording, ffmpeg_processes
                 status = _('recnothing')
                 sch_items = [str(schedulers.item(i1).text()) for i1 in range(schedulers.count())]
                 i3 = -1
@@ -1450,6 +1475,7 @@ if __name__ == '__main__':
                                 st_planned.format(start_time_1, end_time_1, channel_name_rec)
                             )
                             sch_recordings[array_name] = do_start_record(array_name)
+                            ffmpeg_processes.append(sch_recordings[array_name])
                     if end_time_1 == current_time:
                         if array_name in sch_recordings:
                             schedulers.takeItem(i3)
@@ -1865,6 +1891,7 @@ if __name__ == '__main__':
             loading1.hide()
 
         def showLoading():
+            centerwidget(loading1)
             loading.show()
             loading_movie.start()
             loading1.show()
@@ -2625,7 +2652,14 @@ if __name__ == '__main__':
             useragent_choose_2.addItem(ua_name_2)
         useragent_choose_2.setCurrentIndex(settings['useragent'])
 
-        mpv_label = QtWidgets.QLabel("{}:".format(_('mpv_options')))
+        mpv_label = QtWidgets.QLabel("{} ({}):".format(
+            _('mpv_options'),
+            '<a href="https://mpv.io/manual/master/#options">{}</a>'.format(
+                _('list')
+            )
+        ))
+        mpv_label.setOpenExternalLinks(True)
+        mpv_label.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse)
         mpv_options = QtWidgets.QLineEdit()
         mpv_options.setText(settings['mpv_options'])
         donot_label = QtWidgets.QLabel("{}:".format(_('donotupdateepg')))
@@ -2992,12 +3026,12 @@ if __name__ == '__main__':
             j_save = None
             comboboxIndex = -1
             if qt_backend == 'PySide6':
-                repaintUpdates = QtCore.Signal(object)
+                repaintUpdates = QtCore.Signal(object, object)
                 moveSeparatePlaylist = QtCore.Signal(object)
                 mainThread = QtCore.Signal(type(lambda x: None))
                 mainThread_partial = QtCore.Signal(type(partial(int, 2)))
             else:
-                repaintUpdates = QtCore.pyqtSignal(object)
+                repaintUpdates = QtCore.pyqtSignal(object, object)
                 moveSeparatePlaylist = QtCore.pyqtSignal(object)
                 mainThread = QtCore.pyqtSignal(type(lambda x: None))
                 mainThread_partial = QtCore.pyqtSignal(type(partial(int, 2)))
@@ -3012,7 +3046,7 @@ if __name__ == '__main__':
         def async_webbrowser():
             webbrowser.open(UPDATE_RELEASES_URL)
 
-        def check_for_updates_pt2(last_avail_version_2):
+        def check_for_updates_pt2(last_avail_version_2, noWin):
             if last_avail_version_2:
                 if APP_VERSION == last_avail_version_2:
                     lastversion_installed_msg = QtWidgets.QMessageBox(
@@ -3041,10 +3075,11 @@ if __name__ == '__main__':
                 )
                 fail_version_msg.exec()
             checkupdates_btn.setEnabled(True)
-            help_win.show()
-            help_win.raise_()
-            help_win.setFocus(QtCore.Qt.PopupFocusReason)
-            help_win.activateWindow()
+            if not noWin:
+                help_win.show()
+                help_win.raise_()
+                help_win.setFocus(QtCore.Qt.PopupFocusReason)
+                help_win.activateWindow()
 
         def move_separate_playlist_func(seppl_qpoint):
             print_with_time("Moving separate playlist to QPoint({}, {})".format(
@@ -3067,7 +3102,7 @@ if __name__ == '__main__':
         comm_instance.mainThread_partial.connect(comm_instance_main_thread)
 
         @async_function
-        def check_for_updates(self): # pylint: disable=unused-argument
+        def check_for_updates(self, noWin): # pylint: disable=unused-argument
             last_avail_version = False
             try:
                 last_avail_version = json.loads(requests.get(
@@ -3077,11 +3112,11 @@ if __name__ == '__main__':
                 ).text)['version'].strip()
             except: # pylint: disable=bare-except
                 pass
-            comm_instance.repaintUpdates.emit(last_avail_version)
+            comm_instance.repaintUpdates.emit(last_avail_version, noWin)
 
-        def check_for_updates_0():
+        def check_for_updates_0(noWin=False):
             checkupdates_btn.setEnabled(False)
-            check_for_updates(None)
+            check_for_updates(None, noWin)
 
         checkupdates_btn = QtWidgets.QPushButton()
         checkupdates_btn.setText(_('checkforupdates'))
@@ -3104,7 +3139,7 @@ if __name__ == '__main__':
 
         helpwin_widget_btns = QtWidgets.QWidget()
         helpwin_widget_btns_layout = QtWidgets.QHBoxLayout()
-        helpwin_widget_btns_layout.addWidget(checkupdates_btn)
+        #helpwin_widget_btns_layout.addWidget(checkupdates_btn)
         helpwin_widget_btns_layout.addWidget(license_btn)
         helpwin_widget_btns_layout.addWidget(aboutqt_btn)
         helpwin_widget_btns_layout.addWidget(close_btn)
@@ -3316,7 +3351,7 @@ if __name__ == '__main__':
                 self.listWidget = None
                 self.latestWidth = 0
                 self.latestHeight = 0
-                #self.createMenuBar_mw()
+                self.createMenuBar_mw()
             def updateWindowSize(self):
                 if self.width() != self.latestWidth or self.height() != self.latestHeight:
                     self.latestWidth = self.width()
@@ -3337,11 +3372,10 @@ if __name__ == '__main__':
                 self.windowHeight = self.height()
                 self.updateWindowSize()
                 if settings['panelposition'] == 0:
-                    tvguide_lbl.move(2, 35)
+                    tvguide_lbl.move(2, tvguide_lbl_offset)
                 else:
-                    tvguide_lbl.move(win.width() - tvguide_lbl.width(), 35)
+                    tvguide_lbl.move(win.width() - tvguide_lbl.width(), tvguide_lbl_offset)
                 if not fullscreen:
-                    lbl2.move(0, 5)
                     l1.setFixedWidth(self.windowWidth - dockWidget.width() + 58)
                     l1.move(
                         int(((self.windowWidth - l1.width()) / 2) - (dockWidget.width() / 1.7)),
@@ -3350,7 +3384,6 @@ if __name__ == '__main__':
                     h = dockWidget2.height()
                     h2 = 20
                 else:
-                    lbl2.move(0, 5)
                     l1.setFixedWidth(self.windowWidth)
                     l1.move(
                         int(((self.windowWidth - l1.width()) / 2)),
@@ -3358,8 +3391,13 @@ if __name__ == '__main__':
                     )
                     h = 0
                     h2 = 10
-                if tvguide_lbl.isVisible() and not fullscreen:
-                    lbl2.move(210, 0)
+                if dockWidget.isVisible():
+                    if settings['panelposition'] == 0:
+                        lbl2.move(0, lbl2_offset)
+                    else:
+                        lbl2.move(tvguide_lbl.width() + lbl2.width(), lbl2_offset)
+                else:
+                    lbl2.move(0, lbl2_offset)
                 if l1.isVisible():
                     l1_h = l1.height()
                 else:
@@ -3389,9 +3427,9 @@ if __name__ == '__main__':
                     applog_win.hide()
                 if mpvlog_win.isVisible():
                     mpvlog_win.hide()
-            #def createMenuBar_mw(self):
-            #    self.menu_bar_qt = self.menuBar()
-            #    init_astroncia_menubar(self, app)
+            def createMenuBar_mw(self):
+                self.menu_bar_qt = self.menuBar()
+                init_astroncia_menubar(self, app, self.menu_bar_qt)
 
         win = MainWindow()
         win.setWindowTitle(MAIN_WINDOW_TITLE)
@@ -3420,6 +3458,20 @@ if __name__ == '__main__':
         win.setAttribute(QtCore.Qt.WA_DontCreateNativeAncestors)
         win.setAttribute(QtCore.Qt.WA_NativeWindow)
 
+        def get_curwindow_pos():
+            try:
+                win_geometry = win.screen().availableGeometry()
+            except: # pylint: disable=bare-except
+                print_with_time(
+                    "win.screen() unavailable (Qt too old), falling " + \
+                    "back to QtWidgets.QDesktopWidget().screenGeometry"
+                )
+                win_geometry = QtWidgets.QDesktopWidget().screenGeometry(win)
+            win_width = win_geometry.width()
+            win_height = win_geometry.height()
+            print_with_time("Screen size: {}x{}".format(win_width, win_height))
+            return (win_width, win_height,)
+
         chan = QtWidgets.QLabel(_('nochannelselected'))
         chan.setAlignment(QtCore.Qt.AlignCenter)
         chan.setStyleSheet('color: green')
@@ -3429,21 +3481,52 @@ if __name__ == '__main__':
         chan.setFont(myFont4)
         chan.resize(200, 30)
 
+        def centerwidget(wdg3, offset1=0):
+            fg1 = win.frameGeometry()
+            xg1 = (fg1.width() - wdg3.width()) / 2
+            yg1 = (fg1.height() - wdg3.height()) / 2
+            wdg3.move(int(xg1), int(yg1) + int(offset1))
+
         loading1 = QtWidgets.QLabel(win)
         loading_movie = QtGui.QMovie(str(Path('data', ICONS_FOLDER, 'loading.gif')))
         loading1.setMovie(loading_movie)
         loading1.setStyleSheet('background-color: white;')
         loading1.resize(32, 32)
         loading1.setAlignment(QtCore.Qt.AlignCenter)
-        loading1.move(win.rect().center())
+        centerwidget(loading1)
         loading1.hide()
+
+        loading2 = QtWidgets.QLabel(win)
+        loading_movie2 = QtGui.QMovie(str(Path('data', ICONS_FOLDER, 'recordwait.gif')))
+        loading2.setMovie(loading_movie2)
+        loading2.setToolTip(_('ffmpeg_processing'))
+        loading2.resize(32, 32)
+        loading2.setAlignment(QtCore.Qt.AlignCenter)
+        centerwidget(loading2, 50)
+        loading2.hide()
+        loading_movie2.stop()
+
+        def showLoading2():
+            if not loading2.isVisible():
+                centerwidget(loading2, 50)
+                loading_movie2.stop()
+                loading_movie2.start()
+                loading2.show()
+
+        def hideLoading2():
+            if loading2.isVisible():
+                loading2.hide()
+                loading_movie2.stop()
+
+        lbl2_offset = 15
+        tvguide_lbl_offset = 30 + lbl2_offset
 
         lbl2 = QtWidgets.QLabel(win)
         lbl2.setAlignment(QtCore.Qt.AlignCenter)
         lbl2.setStyleSheet('color: #e0071a')
         lbl2.setWordWrap(True)
         lbl2.resize(200, 30)
-        lbl2.move(0, 5)
+        lbl2.move(0, lbl2_offset)
         lbl2.hide()
 
         playing = False
@@ -3665,6 +3748,7 @@ if __name__ == '__main__':
             dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
             win.update()
             btn_update.click()
+            redraw_menubar()
 
         def esc_handler():
             global fullscreen
@@ -3680,10 +3764,13 @@ if __name__ == '__main__':
                 currentDockWidgetPos
             if not fullscreen:
                 # Entering fullscreen
-                comm_instance.winPosition = win.pos()
+                setShortcutState(True)
+                comm_instance.winPosition = win.geometry()
+                currentWidthHeight = [win.width(), win.height()]
+                currentMaximized = win.isMaximized()
                 channelfilter.usePopup = False
                 fullscreen = True
-                #win.menu_bar_qt.hide()
+                win.menu_bar_qt.hide()
                 if settings['playlistsep']:
                     currentDockWidgetPos = sepplaylist_win.pos()
                     print_with_time("Saved separate playlist position - QPoint({}, {})".format(
@@ -3691,8 +3778,6 @@ if __name__ == '__main__':
                         currentDockWidgetPos.y()
                     ))
                     sepplaylist_win.hide()
-                currentWidthHeight = [win.width(), win.height()]
-                currentMaximized = win.isMaximized()
                 #l1.show()
                 #l1.setText2("{} F".format(_('exitfullscreen')))
                 #time_stop = time.time() + 3
@@ -3710,9 +3795,17 @@ if __name__ == '__main__':
                 dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
                 win.update()
                 win.showFullScreen()
+                if settings['panelposition'] == 1:
+                    tvguide_close_lbl.move(
+                        get_curwindow_pos()[0] - tvguide_lbl.width() - 40,
+                        tvguide_lbl_offset
+                    )
+                centerwidget(loading1)
+                centerwidget(loading2, 50)
             else:
                 # Leaving fullscreen
-                #win.menu_bar_qt.show()
+                setShortcutState(False)
+                win.menu_bar_qt.show()
                 hide_playlist()
                 hide_controlpanel()
                 dockWidget.setWindowOpacity(1)
@@ -3742,11 +3835,18 @@ if __name__ == '__main__':
                     win.showMaximized()
                 win.resize(currentWidthHeight[0], currentWidthHeight[1])
                 if comm_instance.winPosition:
-                    win.move(comm_instance.winPosition)
+                    win.move(comm_instance.winPosition.x(), comm_instance.winPosition.y())
                 else:
                     moveWindowToCenter(win)
                 if settings['playlistsep'] and currentDockWidgetPos != -1:
                     comm_instance.moveSeparatePlaylist.emit(currentDockWidgetPos)
+                if settings['panelposition'] == 1:
+                    tvguide_close_lbl.move(
+                        win.width() - tvguide_lbl.width() - 40,
+                        tvguide_lbl_offset
+                    )
+                centerwidget(loading1)
+                centerwidget(loading2, 50)
 
         dockWidget_out = QtWidgets.QPushButton()
         dockWidget_out.clicked.connect(dockWidget_out_clicked)
@@ -3816,14 +3916,24 @@ if __name__ == '__main__':
         def tvguide_close_lbl_func(arg): # pylint: disable=unused-argument
             hide_tvguide()
 
-        tvguide_close_lbl = ClickableLabel(tvguide_close_lbl_func)
-        tvguide_close_lbl.setText("      " + _('close'))
-        tvguide_close_lbl.move(0, 4)
-        tvguide_close_lbl.hide()
         tvguide_lbl = ScrollLabel(win)
-        tvguide_lbl.move(0, 35)
+        tvguide_lbl.move(0, tvguide_lbl_offset)
         tvguide_lbl.setFixedWidth(TVGUIDE_WIDTH)
         tvguide_lbl.hide()
+
+        tvguide_close_lbl = ClickableLabel(tvguide_close_lbl_func)
+        tvguide_close_lbl.setPixmap(
+            QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'close.png'))).pixmap(32, 32)
+        )
+        tvguide_close_lbl.setStyleSheet(
+            "background-color: {};".format("black" if settings["themecompat"] else "white")
+        )
+        tvguide_close_lbl.resize(32, 32)
+        if settings['panelposition'] == 0:
+            tvguide_close_lbl.move(tvguide_lbl.width() + 5, tvguide_lbl_offset)
+        else:
+            tvguide_close_lbl.move(win.width() - tvguide_lbl.width() - 40, tvguide_lbl_offset)
+            lbl2.move(tvguide_lbl.width() + lbl2.width(), lbl2_offset)
         tvguide_close_lbl.hide()
 
         class QCustomQWidget(QtWidgets.QWidget): # pylint: disable=too-many-instance-attributes
@@ -4656,12 +4766,12 @@ if __name__ == '__main__':
         win.listWidget.itemDoubleClicked.connect(itemClicked_event)
         def enterPressed():
             itemClicked_event(win.listWidget.currentItem())
-        QShortcut(
+        shortcuts = []
+        shortcuts.append(QShortcut(
             QtGui.QKeySequence(QtCore.Qt.Key_Return),
             win.listWidget,
-            context=QtCore.Qt.WidgetShortcut,
             activated=enterPressed
-        )
+        ))
         def channelfilter_do():
             btn_update.click()
         loading = QtWidgets.QLabel(_('loading'))
@@ -5131,7 +5241,7 @@ if __name__ == '__main__':
             print_with_time('[{}] {}: {}'.format(loglevel, component, message), log_mpv=True)
 
         def playLastChannel():
-            global playing_url, playing_chan, combobox
+            global playing_url, playing_chan, combobox, m3u
             if os.path.isfile(str(Path(LOCAL_DIR, 'lastchannels.json'))) and \
             settings['openprevchan']:
                 try:
@@ -5140,18 +5250,19 @@ if __name__ == '__main__':
                     )
                     lastfile_1_dat = json.loads(lastfile_1.read())
                     lastfile_1.close()
-                    player.user_agent = lastfile_1_dat[2]
-                    setChanText('  ' + lastfile_1_dat[0])
-                    itemClicked_event(lastfile_1_dat[0])
-                    setChanText('  ' + lastfile_1_dat[0])
-                    try:
-                        combobox.setCurrentIndex(lastfile_1_dat[3])
-                    except: # pylint: disable=bare-except
-                        pass
-                    try:
-                        win.listWidget.setCurrentRow(lastfile_1_dat[4])
-                    except: # pylint: disable=bare-except
-                        pass
+                    if lastfile_1_dat[0] in m3u:
+                        player.user_agent = lastfile_1_dat[2]
+                        setChanText('  ' + lastfile_1_dat[0])
+                        itemClicked_event(lastfile_1_dat[0])
+                        setChanText('  ' + lastfile_1_dat[0])
+                        try:
+                            combobox.setCurrentIndex(lastfile_1_dat[3])
+                        except: # pylint: disable=bare-except
+                            pass
+                        try:
+                            win.listWidget.setCurrentRow(lastfile_1_dat[4])
+                        except: # pylint: disable=bare-except
+                            pass
                 except: # pylint: disable=bare-except
                     if os.path.isfile(str(Path(LOCAL_DIR, 'lastchannels.json'))):
                         os.remove(str(Path(LOCAL_DIR, 'lastchannels.json')))
@@ -5302,7 +5413,7 @@ if __name__ == '__main__':
             else:
                 msg = QtWidgets.QMessageBox(
                     qt_icon_warning,
-                    'Astroncia IPTV',
+                    MAIN_WINDOW_TITLE,
                     _('nochannelselected'),
                     QtWidgets.QMessageBox.Ok
                 )
@@ -5321,12 +5432,15 @@ if __name__ == '__main__':
                 pass
 
         def showhideeverything():
+            global fullscreen
             if dockWidget.isVisible():
                 dockWidget.hide()
                 dockWidget2.hide()
+                win.menu_bar_qt.hide()
             else:
                 dockWidget.show()
                 dockWidget2.show()
+                win.menu_bar_qt.show()
 
         stream_info.data = {}
 
@@ -5381,7 +5495,7 @@ if __name__ == '__main__':
                 pass
 
         def open_stream_info():
-            global playing_chan
+            global playing_chan, time_stop
             if playing_chan:
                 for stream_info_i in reversed(range(layout36.count())):
                     layout36.itemAt(stream_info_i).widget().setParent(None)
@@ -5413,6 +5527,10 @@ if __name__ == '__main__':
                     moveWindowToCenter(streaminfo_win)
                 else:
                     streaminfo_win.hide()
+            else:
+                l1.show()
+                l1.setText2("{}!".format(_('nochannelselected')))
+                time_stop = time.time() + 1
 
         streaminfo_win.setWindowTitle(_('Stream Information'))
 
@@ -5541,22 +5659,47 @@ if __name__ == '__main__':
         def show_mpv_log():
             mpvlog_win.show()
 
-        right_click_menu = QtWidgets.QMenu()
-        right_click_menu.addAction(_('pause'), mpv_play)
-        right_click_menu.addSeparator()
-        right_click_menu.addAction(_('showhideplaylist'), showhideplaylist)
-        right_click_menu.addAction(_('showhidectrlpanel'), lowpanel_ch_1)
-        right_click_menu.addAction(_('mininterface'), showhideeverything)
-        right_click_menu.addAction(_('Stream Information'), open_stream_info)
-        right_click_menu.addAction(_('channelsettings'), main_channel_settings)
-        right_click_menu.addSeparator()
-        right_click_menu.addAction(_('applog'), show_app_log)
-        right_click_menu.addAction(_('mpvlog'), show_mpv_log)
+        def is_recording_func():
+            global ffmpeg_processes
+            ret_code_rec = False
+            if ffmpeg_processes:
+                ret_code_array = []
+                for ffmpeg_process_1 in ffmpeg_processes:
+                    ret_code = ffmpeg_process_1[0].returncode
+                    if ret_code == 0:
+                        ret_code = 1
+                    if ret_code:
+                        ret_code_array.append(True)
+                        ffmpeg_processes.remove(ffmpeg_process_1)
+                    else:
+                        ret_code_array.append(False)
+                ret_code_rec = False not in ret_code_array
+            else:
+                ret_code_rec = True
+            return ret_code_rec
 
-        right_click_menu_fullscreen = QtWidgets.QMenu()
-        right_click_menu_fullscreen.addAction(_('pause'), mpv_play)
-        right_click_menu_fullscreen.addSeparator()
-        right_click_menu_fullscreen.addAction(_('channelsettings'), main_channel_settings)
+        def redraw_menubar():
+            global playing_chan
+            #print_with_time("redraw_menubar called")
+            try:
+                update_menubar(
+                    player.track_list,
+                    playing_chan,
+                    settings["m3u"],
+                    str(Path(LOCAL_DIR, 'menubar.json'))
+                )
+            except: # pylint: disable=bare-except
+                print_with_time("WARNING: redraw_menubar failed")
+                show_exception("WARNING: redraw_menubar failed\n\n" + traceback.format_exc())
+
+        right_click_menu = QtWidgets.QMenu()
+        try:
+            populate_menubar(0, win.menu_bar_qt, win, player.track_list, playing_chan)
+            populate_menubar(1, right_click_menu, win, player.track_list, playing_chan)
+        except: # pylint: disable=bare-except
+            print_with_time("WARNING: populate_menubar failed")
+            show_exception("WARNING: populate_menubar failed\n\n" + traceback.format_exc())
+        redraw_menubar()
 
         @idle_function
         def end_file_callback(arg11=None): # pylint: disable=unused-argument
@@ -5568,20 +5711,24 @@ if __name__ == '__main__':
                 loading_movie.stop()
 
         @idle_function
+        def file_loaded_callback(arg11=None): # pylint: disable=unused-argument
+            global playing_chan
+            if playing_chan:
+                redraw_menubar()
+
+        @idle_function
         def my_mouse_right_callback(arg11=None): # pylint: disable=unused-argument
-            global autoclosemenu_time, fullscreen
-            #if playing_chan:
-            autoclosemenu_time = time.time()
-            if not fullscreen:
-                if qt_backend == 'PySide6':
-                    right_click_menu.exec(QtGui.QCursor.pos())
-                else:
-                    right_click_menu.exec_(QtGui.QCursor.pos())
+            global right_click_menu
+            if qt_backend == 'PySide6':
+                right_click_menu.exec(QtGui.QCursor.pos())
             else:
-                if qt_backend == 'PySide6':
-                    right_click_menu_fullscreen.exec(QtGui.QCursor.pos())
-                else:
-                    right_click_menu_fullscreen.exec_(QtGui.QCursor.pos())
+                right_click_menu.exec_(QtGui.QCursor.pos())
+
+        @idle_function
+        def my_mouse_left_callback(arg11=None): # pylint: disable=unused-argument
+            global right_click_menu
+            if right_click_menu.isVisible():
+                right_click_menu.hide()
 
         @idle_function
         def my_up_binding_execute(arg11=None): # pylint: disable=unused-argument
@@ -5609,6 +5756,10 @@ if __name__ == '__main__':
                 label7.setValue(volume)
                 mpv_volume_set()
 
+        @player.event_callback('file-loaded')
+        def file_loaded_2(event): # pylint: disable=unused-argument
+            file_loaded_callback()
+
         @player.event_callback('end_file')
         def ready_handler_2(event): # pylint: disable=unused-argument
             if event['event']['error'] != 0:
@@ -5617,6 +5768,10 @@ if __name__ == '__main__':
         @player.on_key_press('MBTN_RIGHT')
         def my_mouse_right():
             my_mouse_right_callback()
+
+        @player.on_key_press('MBTN_LEFT')
+        def my_mouse_left():
+            my_mouse_left_callback()
 
         @player.on_key_press('MBTN_LEFT_DBL')
         def my_leftdbl_binding():
@@ -5668,6 +5823,42 @@ if __name__ == '__main__':
         @idle_function
         def next_channel(arg11=None): # pylint: disable=unused-argument
             go_channel(1)
+
+        if qt_backend == 'PySide6':
+            qaction_prio = QtGui.QAction.HighPriority
+        else:
+            qaction_prio = QtWidgets.QAction.HighPriority
+
+        init_menubar_player(
+            player,
+            mpv_play,
+            mpv_stop,
+            prev_channel,
+            next_channel,
+            mpv_fullscreen,
+            showhideeverything,
+            main_channel_settings,
+            show_app_log,
+            show_mpv_log,
+            show_settings,
+            show_help,
+            do_screenshot,
+            mpv_mute,
+            showhideplaylist,
+            lowpanel_ch_1,
+            open_stream_info,
+            app.quit,
+            redraw_menubar,
+            QtGui.QIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'circle.png'))).pixmap(8, 8)),
+            check_for_updates_0,
+            my_up_binding_execute,
+            my_down_binding_execute,
+            show_m3u_editor,
+            show_providers,
+            show_sort,
+            show_exception,
+            get_curwindow_pos
+        )
 
         def archive_all_clicked():
             chan_url = array[archive_channel.text()]['url']
@@ -5995,22 +6186,22 @@ if __name__ == '__main__':
         label7_2.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'timeshift.png'))))
         label7_2.setToolTip(_('timeshift') + ' (E)')
         label7_2.clicked.connect(show_timeshift)
-        label8 = QtWidgets.QPushButton()
-        label8.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'settings.png'))))
-        label8.setToolTip(_('settings'))
-        label8.clicked.connect(show_settings)
-        label8_0 = QtWidgets.QPushButton()
-        label8_0.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'tv-blue.png'))))
-        label8_0.setToolTip(_('providers'))
-        label8_0.clicked.connect(show_providers)
+        #label8 = QtWidgets.QPushButton()
+        #label8.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'settings.png'))))
+        #label8.setToolTip(_('settings'))
+        #label8.clicked.connect(show_settings)
+        #label8_0 = QtWidgets.QPushButton()
+        #label8_0.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'tv-blue.png'))))
+        #label8_0.setToolTip(_('providers'))
+        #label8_0.clicked.connect(show_providers)
         label8_1 = QtWidgets.QPushButton()
         label8_1.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'tvguide.png'))))
         label8_1.setToolTip(_('tvguide') + ' (G)')
         label8_1.clicked.connect(show_tvguide)
-        label8_4 = QtWidgets.QPushButton()
-        label8_4.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'sort.png'))))
-        label8_4.setToolTip(_('sort').replace('\n', ' ') + ' (I)')
-        label8_4.clicked.connect(show_sort)
+        #label8_4 = QtWidgets.QPushButton()
+        #label8_4.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'sort.png'))))
+        #label8_4.setToolTip(_('sort').replace('\n', ' ') + ' (I)')
+        #label8_4.clicked.connect(show_sort)
         label8_2 = QtWidgets.QPushButton()
         label8_2.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'prev.png'))))
         label8_2.setToolTip(_('prevchannel') + ' (N)')
@@ -6019,14 +6210,14 @@ if __name__ == '__main__':
         label8_3.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'next.png'))))
         label8_3.setToolTip(_('nextchannel') + ' (M)')
         label8_3.clicked.connect(next_channel)
-        label8_5 = QtWidgets.QPushButton()
-        label8_5.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'edit.png'))))
-        label8_5.setToolTip(_('m3u_m3ueditor'))
-        label8_5.clicked.connect(show_m3u_editor)
-        label9 = QtWidgets.QPushButton()
-        label9.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'help.png'))))
-        label9.setToolTip(_('help'))
-        label9.clicked.connect(show_help)
+        #label8_5 = QtWidgets.QPushButton()
+        #label8_5.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'edit.png'))))
+        #label8_5.setToolTip(_('m3u_m3ueditor'))
+        #label8_5.clicked.connect(show_m3u_editor)
+        #label9 = QtWidgets.QPushButton()
+        #label9.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'help.png'))))
+        #label9.setToolTip(_('help'))
+        #label9.clicked.connect(show_help)
         label12 = QtWidgets.QLabel('')
         #label10 = QtWidgets.QLabel('© kestral / astroncia')
         #label10.setAlignment(QtCore.Qt.AlignCenter)
@@ -6064,8 +6255,9 @@ if __name__ == '__main__':
             label7, label13, label7_1
         ]
         hlayout2_btns_2 = [
-            label8_0, label8, label8_4, label8_1,
-            label8_2, label8_3, label8_5, label9
+            #label8_0, label8, label8_4, label8_1,
+            label8_1,
+            label8_2, label8_3 #, label8_5, label9
         ]
         hlayout2_btns_3 = [label11, label12]
         hlayout2_all_btns = hlayout2_btns_1 + hlayout2_btns_2 + hlayout2_btns_3 + [label7_2]
@@ -6186,6 +6378,19 @@ if __name__ == '__main__':
                     "x": win.pos().x(),
                     "y": win.pos().y()
                 }
+            try:
+                if get_first_run():
+                    print_with_time("Saving active vf filters...")
+                    vf_filters_file = open(
+                        str(Path(LOCAL_DIR, 'menubar.json')), 'w', encoding="utf8"
+                    )
+                    vf_filters_file.write(json.dumps({
+                        "vf_filters": get_active_vf_filters()
+                    }))
+                    vf_filters_file.close()
+                    print_with_time("Active vf filters saved")
+            except: # pylint: disable=bare-except
+                pass
             try:
                 print_with_time("Saving main window position...")
                 windowpos_file = open(
@@ -6491,8 +6696,8 @@ if __name__ == '__main__':
         dockWidget2Visible = False
 
         hide_lbls_fullscreen = [
-            label5_0, label5_2, label7_2, label8,
-            label8_0, label8_4, label8_5, label9,
+            label5_0, label5_2, #label7_2, label8,
+            # label8_0, label8_4, # label8_5, label9,
             label11, label12
         ]
 
@@ -6531,16 +6736,6 @@ if __name__ == '__main__':
                     win.main_widget.unsetCursor()
                 except: # pylint: disable=bare-except
                     pass
-
-        def thread_autoclosemenu():
-            global autoclosemenu_time
-            if autoclosemenu_time != -1:
-                if time.time() - autoclosemenu_time > 3:
-                    if right_click_menu.isVisible():
-                        right_click_menu.hide()
-                    if right_click_menu_fullscreen.isVisible():
-                        right_click_menu_fullscreen.hide()
-                    autoclosemenu_time = -1
 
         def resizeCallback(cal_width):
             global fullscreen, newdockWidgetHeight
@@ -6614,7 +6809,7 @@ if __name__ == '__main__':
             if settings["exp1"]:
                 controlpanel_widget.setFixedWidth(
                     #int(win.width() / 3) - 100
-                    600
+                    650
                 )
                 if not LABEL7_WIDTH:
                     LABEL7_WIDTH = label7.width()
@@ -6652,6 +6847,21 @@ if __name__ == '__main__':
                 controlpanel_widget.hide()
             else:
                 dockWidget2.hide()
+
+        def thread_afterrecord():
+            try:
+                cur_recording = False
+                if not lbl2.isVisible():
+                    if not 'REC / ' in lbl2.text():
+                        cur_recording = is_ffmpeg_recording() is False
+                    else:
+                        cur_recording = not is_recording_func() is True
+                    if cur_recording:
+                        showLoading2()
+                    else:
+                        hideLoading2()
+            except: # pylint: disable=bare-except
+                pass
 
         def thread_mouse(): # pylint: disable=too-many-branches
             try:
@@ -6743,6 +6953,24 @@ if __name__ == '__main__':
             except: # pylint: disable=bare-except
                 pass
 
+        def set_playback_speed(spd):
+            global playing_chan
+            try:
+                if playing_chan:
+                    print_with_time("Set speed to {}".format(spd))
+                    player.speed = spd
+            except: # pylint: disable=bare-except
+                print_with_time("WARNING: set_playback_speed failed")
+
+        def mpv_seek(secs):
+            global playing_chan
+            try:
+                if playing_chan:
+                    print_with_time("Seeking to {} seconds".format(secs))
+                    player.command('seek', secs)
+            except: # pylint: disable=bare-except
+                print_with_time("WARNING: mpv_seek failed")
+
         keybinds = {
             QtCore.Qt.Key_I: show_sort, # i - sort channels
             QtCore.Qt.Key_T: key_t,
@@ -6773,25 +7001,52 @@ if __name__ == '__main__':
             QtCore.Qt.Key_VolumeDown: my_down_binding,
             QtCore.Qt.Key_VolumeMute: mpv_mute,
             QtCore.Qt.Key_E: show_timeshift, # e - show timeshift
-            QtCore.Qt.Key_D: show_scheduler # d - record scheduler
+            QtCore.Qt.Key_D: show_scheduler, # d - record scheduler
+            "Ctrl+C": showhideeverything,
+            "Ctrl+P": show_settings,
+            QtCore.Qt.Key_Backspace: (lambda: set_playback_speed(1.00)),
+            "Ctrl+Q": app.quit,
+            "Ctrl+O": show_providers,
+            QtCore.Qt.Key_9: my_down_binding_execute,
+            QtCore.Qt.Key_0: my_up_binding_execute,
+            QtCore.Qt.Key_Left: (lambda: mpv_seek(-10)),
+            QtCore.Qt.Key_Right: (lambda: mpv_seek(10)),
+            QtCore.Qt.Key_Down: (lambda: mpv_seek(-60)),
+            QtCore.Qt.Key_Up: (lambda: mpv_seek(60)),
+            QtCore.Qt.Key_PageDown: (lambda: mpv_seek(-600)),
+            QtCore.Qt.Key_PageUp: (lambda: mpv_seek(600)),
+            QtCore.Qt.Key_P: lowpanel_ch_1
         }
+
+        seq = get_seq()
+
+        def setShortcutState(st1):
+            for shortcut in shortcuts:
+                if shortcut.key() in seq:
+                    shortcut.setEnabled(st1)
+
         for keybind in keybinds:
             # Main window
-            QShortcut(
+            shortcuts.append(QShortcut(
                 QtGui.QKeySequence(keybind),
-                win
-            ).activated.connect(keybinds[keybind])
+                win,
+                activated=keybinds[keybind]
+            ))
             if settings["exp1"]:
                 # Control panel widget (settings["exp1"])
-                QShortcut(
+                shortcuts.append(QShortcut(
                     QtGui.QKeySequence(keybind),
-                    controlpanel_widget
-                ).activated.connect(keybinds[keybind])
+                    controlpanel_widget,
+                    activated=keybinds[keybind]
+                ))
                 # Playlist widget (settings["exp1"])
-                QShortcut(
+                shortcuts.append(QShortcut(
                     QtGui.QKeySequence(keybind),
-                    playlist_widget
-                ).activated.connect(keybinds[keybind])
+                    playlist_widget,
+                    activated=keybinds[keybind]
+                ))
+
+        setShortcutState(False)
 
         app.aboutToQuit.connect(myExitHandler)
 
@@ -6848,7 +7103,6 @@ if __name__ == '__main__':
             timers = {
                 thread_mouse: 50,
                 thread_cursor: 50,
-                thread_autoclosemenu: 50,
                 thread_applog: 50,
                 thread_tvguide: 100,
                 thread_record: 100,
@@ -6858,6 +7112,7 @@ if __name__ == '__main__':
                 thread_update_time: 1000,
                 record_thread: 1000,
                 record_thread_2: 1000,
+                thread_afterrecord: 50,
                 channel_icons_thread: 2000,
                 channel_icons_thread_epg: 2000,
                 thread_bitrate: UPDATE_BR_INTERVAL * 1000,

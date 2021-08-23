@@ -1,5 +1,5 @@
 requests
-PyQt5
+PySide6
 Pillow
 pandas
 PyGObject

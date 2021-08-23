@@ -24,9 +24,20 @@ from data.modules.astroncia.ua import get_user_agent_for_channel
 from data.modules.astroncia.time import print_with_time
 
 class astroncia_data: # pylint: disable=too-few-public-methods
-    pass
+    ffmpeg_proc = None
 
-astroncia_data.ffmpeg_proc = None
+def is_ffmpeg_recording():
+    ret = -2
+    if astroncia_data.ffmpeg_proc:
+        ffmpeg_ret_code = astroncia_data.ffmpeg_proc.returncode
+        if ffmpeg_ret_code == 0:
+            ffmpeg_ret_code = 1
+        if ffmpeg_ret_code:
+            astroncia_data.ffmpeg_proc = None
+            ret = True
+        else:
+            ret = False
+    return ret
 
 def record(input_url, out_file, channel_name, http_referer):
     if http_referer == 'Referer: ':
@@ -150,7 +161,7 @@ def stop_record():
             async_wait_process(astroncia_data.ffmpeg_proc)
         except: # pylint: disable=bare-except
             pass
-        astroncia_data.ffmpeg_proc = None
+        #astroncia_data.ffmpeg_proc = None
 
 def make_ffmpeg_screenshot(input_url, out_file, channel_name, http_referer):
     if http_referer == 'Referer: ':

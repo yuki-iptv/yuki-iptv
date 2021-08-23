@@ -1,6 +1,16 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-08-20 01:30+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 msgid "name"
 msgstr ""
@@ -732,6 +742,151 @@ msgid "epgloading"
 msgstr ""
 
 msgid "unknownencoding"
+msgstr ""
+
+msgid "menubar_exit"
+msgstr ""
+
+msgid "menubar_title_file"
+msgstr ""
+
+msgid "menubar_title_play"
+msgstr ""
+
+msgid "menubar_playpause"
+msgstr ""
+
+msgid "menubar_stop"
+msgstr ""
+
+msgid "minutes_plural"
+msgid_plural ""
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "seconds_plural"
+msgid_plural ""
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "menubar_previous"
+msgstr ""
+
+msgid "menubar_next"
+msgstr ""
+
+msgid "speed"
+msgstr ""
+
+msgid "menubar_normalspeed"
+msgstr ""
+
+msgid "menubar_video"
+msgstr ""
+
+msgid "menubar_audio"
+msgstr ""
+
+msgid "menubar_fullscreen"
+msgstr ""
+
+msgid "menubar_compactmode"
+msgstr ""
+
+msgid "menubar_csforchannel"
+msgstr ""
+
+msgid "menubar_view"
+msgstr ""
+
+msgid "menubar_options"
+msgstr ""
+
+msgid "menubar_settings"
+msgstr ""
+
+msgid "menubar_about"
+msgstr ""
+
+msgid "menubar_help"
+msgstr ""
+
+msgid "menubar_screenshot"
+msgstr ""
+
+msgid "menubar_mute"
+msgstr ""
+
+msgid "menubar_track"
+msgstr ""
+
+msgid "empty_sm"
+msgstr ""
+
+msgid "menubar_checkupdates"
+msgstr ""
+
+msgid "ffmpeg_processing"
+msgstr ""
+
+msgid "menubar_volumeminus"
+msgstr ""
+
+msgid "menubar_volumeplus"
+msgstr ""
+
+msgid "list"
+msgstr ""
+
+msgid "menubar_m3ueditor"
+msgstr ""
+
+msgid "menubar_providers"
+msgstr ""
+
+msgid "menubar_channelsort"
+msgstr ""
+
+msgid "menubar_filters"
+msgstr ""
+
+msgid "menubar_postproc"
+msgstr ""
+
+msgid "menubar_deblock"
+msgstr ""
+
+msgid "menubar_dering"
+msgstr ""
+
+msgid "menubar_debanding"
+msgstr ""
+
+msgid "menubar_noise"
+msgstr ""
+
+msgid "menubar_black"
+msgstr ""
+
+msgid "menubar_phase"
+msgstr ""
+
+msgid "menubar_extrastereo"
+msgstr ""
+
+msgid "menubar_karaoke"
+msgstr ""
+
+msgid "menubar_earvax"
+msgstr ""
+
+msgid "menubar_volnorm"
+msgstr ""
+
+msgid "errorvfapply"
+msgstr ""
+
+msgid "menubar_softscaling"
 msgstr ""
 
 msgid "helptext"

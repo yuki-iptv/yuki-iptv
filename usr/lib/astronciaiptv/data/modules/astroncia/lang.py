@@ -56,3 +56,9 @@ def _(str1):
     if str1 == gettext_output:
         gettext_output = LangData.en.gettext(str1)
     return gettext_output
+
+def __(str2, str3, num1):
+    gettext_output = lang[LangData.current_lang]['strings']['lang_gettext'].ngettext(str2, str3, num1)
+    if str2 == gettext_output or not gettext_output:
+        gettext_output = LangData.en.ngettext(str2, str3, num1)
+    return gettext_output
