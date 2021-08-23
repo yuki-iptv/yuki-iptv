@@ -52,9 +52,10 @@ TV archive
 
 ## Dependencies
 
-- Python 3 *(3.6 or newer version)*
 - Qt 6 *(or Qt 5)*
 - libmpv1 (>= 0.27.2)
+- [ffmpeg](https://ffmpeg.org/)
+- Python 3 (>= 3.6)
 - [PySide6](https://pypi.org/project/PySide6/) *(or PyQt5)*
 - [Pillow](https://pypi.org/project/Pillow/) (python3-pil)
 - [pandas](https://pypi.org/project/pandas/) (python3-pandas)
@@ -62,7 +63,6 @@ TV archive
 - [pydbus](https://pypi.org/project/pydbus/) (python3-pydbus)
 - [Unidecode](https://pypi.org/project/Unidecode/) (python3-unidecode)
 - [requests](https://pypi.org/project/requests/) (python3-requests)
-- [ffmpeg](https://ffmpeg.org/)
 
 ## Installation
 
