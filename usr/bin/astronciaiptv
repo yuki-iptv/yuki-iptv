@@ -1,5 +1,5 @@
 #!/bin/sh
-cd /usr/lib/astronciaiptv || exit 1
+cd "$(dirname "$(readlink -f "$0")")/../lib/astronciaiptv/" || exit 1
 LD_LIBRARY_PATH="$(./data/modules/astroncia/pfs.py)"
 export LD_LIBRARY_PATH
 exec ./astroncia_iptv.py "$@"
