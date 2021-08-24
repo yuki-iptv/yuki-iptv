@@ -160,7 +160,7 @@ msgid "m3uplaylist"
 msgstr "M3U плейлист"
 
 msgid "updateatboot"
-msgstr "Обновлять\nпри запуске"
+msgstr "Обновлять плейлист\nпри запуске"
 
 msgid "epgaddress"
 msgstr "Адрес\nтелепрограммы\n(XMLTV / JTV)"
@@ -349,7 +349,7 @@ msgid "timeshift"
 msgstr "Архив"
 
 msgid "jtvoffsetrecommendation"
-msgstr "Рекомендуется указать 0, если JTV"
+msgstr "Рекомендуется указать 0, если используется JTV"
 
 msgid "tab_main"
 msgstr "Общие"
@@ -450,8 +450,8 @@ msgstr "Страница"
 msgid "fasterview"
 msgstr "Для более быстрой загрузки каналов установите\nв настройках сети кэш 1 или более секунд"
 
-msgid "providers"
-msgstr "Провайдеры"
+msgid "playlists"
+msgstr "Плейлисты"
 
 msgid "provselect"
 msgstr "Выбрать"
@@ -477,7 +477,7 @@ msgstr "Импортировать из Hypnotix"
 msgid "channelsonpage"
 msgstr "Каналов на\nстраницу"
 
-msgid "resetdefproviders"
+msgid "resetdefplaylists"
 msgstr "Сброс по умолчанию"
 
 msgid "license"
@@ -631,7 +631,7 @@ msgid "url"
 msgstr "URL адрес"
 
 msgid "multipleplnote"
-msgstr "Вы можете указать несколько плейлистов по\nкнопке Файл - Провайдеры (после сохранения настроек)"
+msgstr "Вы можете указать несколько плейлистов по\nкнопке Файл - Плейлисты (после сохранения настроек)"
 
 msgid "favoritesplaylistsep"
 msgstr "Избранное (отдельный плейлист)"
@@ -843,8 +843,8 @@ msgstr "список"
 msgid "menubar_m3ueditor"
 msgstr "&Редактор плейлистов m3u"
 
-msgid "menubar_providers"
-msgstr "&Провайдеры"
+msgid "menubar_playlists"
+msgstr "&Плейлисты"
 
 msgid "menubar_channelsort"
 msgstr "&Сортировка каналов"
@@ -890,6 +890,9 @@ msgstr "Ошибка применения фильтров"
 
 msgid "menubar_softscaling"
 msgstr "Масштабировать про&граммно"
+
+msgid "menubar_updateepg"
+msgstr "&Обновить телепрограмму"
 
 msgid "helptext"
 msgstr "Astroncia IPTV, версия {}\n© kestral / astroncia < kestraly (at) gmail.com >\nhttps://gitlab.com/astroncia\n\nПоддержка:\nhttps://unixforum.org/viewtopic.php?f=3&t=151801\n\nСделать пожертвование: https://qiwi.com/n/ASTRONCIA\n\nПлеер для просмотра интернет-телевидения\n\nПоддерживается телепрограмма (EPG)\nтолько в форматах XMLTV и JTV!\n\nНе работает канал? Правая клавиша мыши открывает настройки канала.\n\nПосле указания группы канала в настройках переоткройте приложение.\n\nГорячие клавиши:\n\nF / F11 - полноэкранный режим\nF2 - информация о потоке\nV - выключить звук\nQ - выйти из программы\nПробел - пауза\nS - остановить проигрывание\nH - скриншот\nG - телепрограмма\nR - начать/остановить запись\nN - предыдущий канал\nM - следующий канал\nT - показать/скрыть боковую панель плейлиста\nO - показать/скрыть часы\nI - сортировка каналов\nD - планировщик записи\n\nЗначки от Font Awesome ( https://fontawesome.com/ )\nЛицензия значков - CC BY 4.0 License\n( https://creativecommons.org/licenses/by/4.0/ )"

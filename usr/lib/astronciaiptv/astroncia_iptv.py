@@ -57,7 +57,7 @@ from data.modules.astroncia.ua import user_agent, uas, ua_names
 from data.modules.astroncia.epg import worker
 from data.modules.astroncia.record import record, record_return, stop_record, \
     async_wait_process, make_ffmpeg_screenshot, is_ffmpeg_recording
-from data.modules.astroncia.providers import iptv_providers
+from data.modules.astroncia.playlists import iptv_playlists
 from data.modules.astroncia.menubar import init_astroncia_menubar, init_menubar_player, \
     populate_menubar, update_menubar, get_active_vf_filters, get_first_run, get_seq
 from data.modules.astroncia.time import print_with_time, get_app_log, get_mpv_log
@@ -395,7 +395,6 @@ if __name__ == '__main__':
                 'hideepgpercentage': False,
                 'volumechangestep': 1,
                 'themecompat': False,
-                'exp1': False,
                 'exp2': DOCK_WIDGET_WIDTH,
                 'mouseswitchchannels': False,
                 'showplaylistmouse': True,
@@ -441,8 +440,6 @@ if __name__ == '__main__':
             settings['volumechangestep'] = 1
         if 'themecompat' not in settings:
             settings['themecompat'] = False
-        if 'exp1' not in settings:
-            settings['exp1'] = False
         if 'exp2' not in settings:
             settings['exp2'] = DOCK_WIDGET_WIDTH
         if 'mouseswitchchannels' not in settings:
@@ -818,8 +815,8 @@ if __name__ == '__main__':
                     groups = []
 
             a = 'hidden_channels'
-            if settings['provider'] in iptv_providers and a in iptv_providers[settings['provider']]:
-                h1 = iptv_providers[settings['provider']][a]
+            if settings['provider'] in iptv_playlists and a in iptv_playlists[settings['provider']]:
+                h1 = iptv_playlists[settings['provider']][a]
                 h1 = json.loads(base64.b64decode(bytes(h1, 'utf-8')).decode('utf-8'))
                 for ch2 in h1:
                     ch2['tvg-name'] = ch2['tvg-name'] if 'tvg-name' in ch2 else ''
@@ -947,7 +944,7 @@ if __name__ == '__main__':
             pass
 
         settings_win = settings_scrollable_window()
-        settings_win.resize(690, 720)
+        settings_win.resize(720, 500)
         settings_win.setWindowTitle(_('settings'))
         settings_win.setWindowIcon(main_icon)
 
@@ -1016,50 +1013,50 @@ if __name__ == '__main__':
         archive_win.setWindowTitle(_('timeshift'))
         archive_win.setWindowIcon(main_icon)
 
-        providers_win = QtWidgets.QMainWindow()
-        providers_win.resize(400, 590)
-        providers_win.setWindowTitle(_('providers'))
-        providers_win.setWindowIcon(main_icon)
+        playlists_win = QtWidgets.QMainWindow()
+        playlists_win.resize(400, 590)
+        playlists_win.setWindowTitle(_('playlists'))
+        playlists_win.setWindowIcon(main_icon)
 
-        providers_win_edit = QtWidgets.QMainWindow()
-        providers_win_edit.resize(500, 180)
-        providers_win_edit.setWindowTitle(_('providers'))
-        providers_win_edit.setWindowIcon(main_icon)
+        playlists_win_edit = QtWidgets.QMainWindow()
+        playlists_win_edit.resize(500, 180)
+        playlists_win_edit.setWindowTitle(_('playlists'))
+        playlists_win_edit.setWindowIcon(main_icon)
 
         epg_select_win = QtWidgets.QMainWindow()
         epg_select_win.resize(400, 500)
         epg_select_win.setWindowTitle(_('tvguide'))
         epg_select_win.setWindowIcon(main_icon)
 
-        class providers_data: # pylint: disable=too-few-public-methods
+        class playlists_data: # pylint: disable=too-few-public-methods
             pass
 
-        providers_data.oldName = ""
+        playlists_data.oldName = ""
 
-        def providers_win_save():
+        def playlists_win_save():
             try:
-                providers_list.takeItem(
-                    providers_list.row(
-                        providers_list.findItems(providers_data.oldName, QtCore.Qt.MatchExactly)[0]
+                playlists_list.takeItem(
+                    playlists_list.row(
+                        playlists_list.findItems(playlists_data.oldName, QtCore.Qt.MatchExactly)[0]
                     )
                 )
-                providers_data.providers_used.pop(providers_data.oldName)
+                playlists_data.playlists_used.pop(playlists_data.oldName)
             except: # pylint: disable=bare-except
                 pass
             channel_text_prov = name_edit_1.text()
             if channel_text_prov:
-                providers_list.addItem(channel_text_prov)
-                providers_data.providers_used[channel_text_prov] = {
+                playlists_list.addItem(channel_text_prov)
+                playlists_data.playlists_used[channel_text_prov] = {
                     "m3u": m3u_edit_1.text(),
                     "epg": epg_edit_1.text(),
                     "offset": soffset_1.value()
                 }
-            providers_save_json()
-            providers_win_edit.hide()
+            playlists_save_json()
+            playlists_win_edit.hide()
 
         def m3u_file_1_clicked():
             fname_1 = QtWidgets.QFileDialog.getOpenFileName(
-                providers_win_edit,
+                playlists_win_edit,
                 _('selectplaylist'),
                 home_folder
             )[0]
@@ -1068,7 +1065,7 @@ if __name__ == '__main__':
 
         def epg_file_1_clicked():
             fname_2 = QtWidgets.QFileDialog.getOpenFileName(
-                providers_win_edit,
+                playlists_win_edit,
                 _('selectepg'),
                 home_folder
             )[0]
@@ -1091,7 +1088,7 @@ if __name__ == '__main__':
         epg_file_1.clicked.connect(epg_file_1_clicked)
         save_btn_1 = QtWidgets.QPushButton(_('save'))
         save_btn_1.setStyleSheet('font-weight: bold; color: green;')
-        save_btn_1.clicked.connect(providers_win_save)
+        save_btn_1.clicked.connect(playlists_win_save)
         set_label_1 = QtWidgets.QLabel(_('jtvoffsetrecommendation'))
         set_label_1.setStyleSheet('color: #666600')
         soffset_1 = QtWidgets.QDoubleSpinBox()
@@ -1107,35 +1104,35 @@ if __name__ == '__main__':
         xtream_btn_1 = QtWidgets.QPushButton("XTream")
         xtream_btn_1.clicked.connect(lo_xtream_select_1)
 
-        providers_win_edit_widget = QtWidgets.QWidget()
-        providers_win_edit_layout = QtWidgets.QGridLayout()
-        providers_win_edit_layout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
-        providers_win_edit_layout.addWidget(name_label_1, 0, 0)
-        providers_win_edit_layout.addWidget(name_edit_1, 0, 1)
-        providers_win_edit_layout.addWidget(m3u_label_1, 1, 0)
-        providers_win_edit_layout.addWidget(m3u_edit_1, 1, 1)
-        providers_win_edit_layout.addWidget(m3u_file_1, 1, 2)
-        providers_win_edit_layout.addWidget(xtream_btn_1, 2, 0)
-        providers_win_edit_layout.addWidget(epg_label_1, 3, 0)
-        providers_win_edit_layout.addWidget(epg_edit_1, 3, 1)
-        providers_win_edit_layout.addWidget(epg_file_1, 3, 2)
-        providers_win_edit_layout.addWidget(offset_label_1, 4, 0)
-        providers_win_edit_layout.addWidget(soffset_1, 4, 1)
-        providers_win_edit_layout.addWidget(set_label_1, 5, 1)
-        providers_win_edit_layout.addWidget(save_btn_1, 6, 1)
-        providers_win_edit_widget.setLayout(providers_win_edit_layout)
-        providers_win_edit.setCentralWidget(providers_win_edit_widget)
+        playlists_win_edit_widget = QtWidgets.QWidget()
+        playlists_win_edit_layout = QtWidgets.QGridLayout()
+        playlists_win_edit_layout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        playlists_win_edit_layout.addWidget(name_label_1, 0, 0)
+        playlists_win_edit_layout.addWidget(name_edit_1, 0, 1)
+        playlists_win_edit_layout.addWidget(m3u_label_1, 1, 0)
+        playlists_win_edit_layout.addWidget(m3u_edit_1, 1, 1)
+        playlists_win_edit_layout.addWidget(m3u_file_1, 1, 2)
+        playlists_win_edit_layout.addWidget(xtream_btn_1, 2, 0)
+        playlists_win_edit_layout.addWidget(epg_label_1, 3, 0)
+        playlists_win_edit_layout.addWidget(epg_edit_1, 3, 1)
+        playlists_win_edit_layout.addWidget(epg_file_1, 3, 2)
+        playlists_win_edit_layout.addWidget(offset_label_1, 4, 0)
+        playlists_win_edit_layout.addWidget(soffset_1, 4, 1)
+        playlists_win_edit_layout.addWidget(set_label_1, 5, 1)
+        playlists_win_edit_layout.addWidget(save_btn_1, 6, 1)
+        playlists_win_edit_widget.setLayout(playlists_win_edit_layout)
+        playlists_win_edit.setCentralWidget(playlists_win_edit_widget)
 
         def ihaveplaylist_btn_action():
             selplaylist_win.close()
-            settings_win.show()
-            settings_win.raise_()
-            settings_win.setFocus(QtCore.Qt.PopupFocusReason)
-            settings_win.activateWindow()
+            show_playlists()
+            playlists_win.raise_()
+            playlists_win.setFocus(QtCore.Qt.PopupFocusReason)
+            playlists_win.activateWindow()
 
         def setdefaultplaylist_action():
             sprov.setCurrentIndex(1)
-            providers_selected()
+            playlists_selected()
             selplaylist_win.close()
             save_settings()
 
@@ -1235,74 +1232,81 @@ if __name__ == '__main__':
         ext_win.setCentralWidget(ext_widget)
 
         def_provider = 0
-        def_provider_name = list(iptv_providers.keys())[def_provider].replace('[Worldwide] ', '')
-        providers_saved = {}
+        def_provider_name = list(iptv_playlists.keys())[def_provider].replace('[Worldwide] ', '')
+        playlists_saved = {}
 
-        providers_saved_default = {}
-        providers_saved_default[def_provider_name] = {
-            "m3u": list(iptv_providers.values())[def_provider]['m3u'],
+        playlists_saved_default = {}
+        playlists_saved_default[def_provider_name] = {
+            "m3u": list(iptv_playlists.values())[def_provider]['m3u'],
             "offset": 0
         }
         try:
-            providers_saved_default[def_provider_name]["epg"] = \
-                list(iptv_providers.values())[def_provider]['epg']
+            playlists_saved_default[def_provider_name]["epg"] = \
+                list(iptv_playlists.values())[def_provider]['epg']
         except: # pylint: disable=bare-except
-            providers_saved_default[def_provider_name]["epg"] = ""
+            playlists_saved_default[def_provider_name]["epg"] = ""
 
-        if not os.path.isfile(str(Path(LOCAL_DIR, 'providers.json'))):
-            providers_saved[def_provider_name] = {
-                "m3u": list(iptv_providers.values())[def_provider]['m3u'],
+        if not os.path.isfile(str(Path(LOCAL_DIR, 'playlists.json'))):
+            playlists_saved[def_provider_name] = {
+                "m3u": list(iptv_playlists.values())[def_provider]['m3u'],
                 "offset": 0
             }
             try:
-                providers_saved[def_provider_name]["epg"] = \
-                    list(iptv_providers.values())[def_provider]['epg']
+                playlists_saved[def_provider_name]["epg"] = \
+                    list(iptv_playlists.values())[def_provider]['epg']
             except: # pylint: disable=bare-except
-                providers_saved[def_provider_name]["epg"] = ""
+                playlists_saved[def_provider_name]["epg"] = ""
         else:
-            providers_json = open(str(Path(LOCAL_DIR, 'providers.json')), 'r', encoding="utf8")
-            providers_saved = json.loads(providers_json.read())
-            providers_json.close()
-        providers_list = QtWidgets.QListWidget(providers_win)
-        providers_list.resize(400, 330)
-        providers_list.move(0, 0)
-        providers_select = QtWidgets.QPushButton(_('provselect'), providers_win)
-        providers_select.setStyleSheet('font-weight: bold; color: green;')
-        providers_select.move(140, 335)
-        providers_add = QtWidgets.QPushButton(_('provadd'), providers_win)
-        providers_add.move(140, 375)
-        providers_edit = QtWidgets.QPushButton(_('provedit'), providers_win)
-        providers_edit.move(140, 415)
-        providers_edit.resize(130, 30)
-        providers_delete = QtWidgets.QPushButton(_('provdelete'), providers_win)
-        providers_delete.move(140, 455)
-        providers_favourites = QtWidgets.QPushButton(_('favourite') + '+', providers_win)
-        providers_favourites.move(250, 455)
+            playlists_json = open(str(Path(LOCAL_DIR, 'playlists.json')), 'r', encoding="utf8")
+            playlists_saved = json.loads(playlists_json.read())
+            playlists_json.close()
 
-        def providers_favourites_do():
-            providers_win.close()
+        playlists_list = QtWidgets.QListWidget()
+        playlists_select = QtWidgets.QPushButton(_('provselect'))
+        playlists_select.setStyleSheet('font-weight: bold; color: green;')
+        playlists_add = QtWidgets.QPushButton(_('provadd'))
+        playlists_edit = QtWidgets.QPushButton(_('provedit'))
+        playlists_delete = QtWidgets.QPushButton(_('provdelete'))
+        playlists_favourites = QtWidgets.QPushButton(_('favourite') + '+')
+        playlists_reset = QtWidgets.QPushButton(_('resetdefplaylists'))
+        playlists_import = QtWidgets.QPushButton(_('importhypnotix'))
+
+        playlists_win_widget = QtWidgets.QWidget()
+        playlists_win_layout = QtWidgets.QGridLayout()
+        playlists_win_layout.addWidget(playlists_add, 0, 0)
+        playlists_win_layout.addWidget(playlists_edit, 0, 1)
+        playlists_win_layout.addWidget(playlists_delete, 0, 2)
+        playlists_win_layout.addWidget(playlists_favourites, 1, 0)
+        playlists_win_layout.addWidget(playlists_reset, 1, 1)
+        playlists_win_layout.addWidget(playlists_import, 1, 2)
+        playlists_win_widget.setLayout(playlists_win_layout)
+
+        playlists_win_widget_main = QtWidgets.QWidget()
+        playlists_win_widget_main_layout = QtWidgets.QVBoxLayout()
+        playlists_win_widget_main_layout.addWidget(playlists_list)
+        playlists_win_widget_main_layout.addWidget(playlists_select)
+        playlists_win_widget_main_layout.addWidget(playlists_win_widget)
+        playlists_win_widget_main.setLayout(playlists_win_widget_main_layout)
+
+        playlists_win.setCentralWidget(playlists_win_widget_main)
+
+        def playlists_favourites_do():
+            playlists_win.close()
             reset_prov()
             sm3u.setText(str(Path(LOCAL_DIR, 'playlist_separate.m3u')))
             sepg.setText("")
             save_settings()
 
-        providers_favourites.clicked.connect(providers_favourites_do)
-        providers_reset = QtWidgets.QPushButton(_('resetdefproviders'), providers_win)
-        providers_reset.move(140, 495)
-        providers_reset.resize(230, 30)
-        providers_import = QtWidgets.QPushButton(_('importhypnotix'), providers_win)
-        providers_import.move(140, 535)
-        providers_import.resize(230, 30)
+        playlists_favourites.clicked.connect(playlists_favourites_do)
         if os.name == 'nt':
-            providers_import.hide()
-            providers_win.resize(400, 540)
+            playlists_import.hide()
 
-        def providers_json_save(providers_save0=None):
-            if not providers_save0:
-                providers_save0 = providers_saved
-            providers_json1 = open(str(Path(LOCAL_DIR, 'providers.json')), 'w', encoding="utf8")
-            providers_json1.write(json.dumps(providers_save0))
-            providers_json1.close()
+        def playlists_json_save(playlists_save0=None):
+            if not playlists_save0:
+                playlists_save0 = playlists_saved
+            playlists_json1 = open(str(Path(LOCAL_DIR, 'playlists.json')), 'w', encoding="utf8")
+            playlists_json1.write(json.dumps(playlists_save0))
+            playlists_json1.close()
 
         time_stop = 0
         autoclosemenu_time = -1
@@ -1334,8 +1338,8 @@ if __name__ == '__main__':
         moveWindowToCenter(xtream_win)
         moveWindowToCenter(xtream_win_2)
         moveWindowToCenter(archive_win)
-        moveWindowToCenter(providers_win)
-        moveWindowToCenter(providers_win_edit)
+        moveWindowToCenter(playlists_win)
+        moveWindowToCenter(playlists_win_edit)
         moveWindowToCenter(epg_select_win)
 
         def convert_time(times_1):
@@ -2309,7 +2313,6 @@ if __name__ == '__main__':
                 'hideepgpercentage': hideepgpercentage_flag.isChecked(),
                 'volumechangestep': volumechangestep_choose.value(),
                 'themecompat': themecompat_flag.isChecked(),
-                'exp1': exp1_flag.isChecked(),
                 'exp2': exp2_input.value(),
                 'mouseswitchchannels': mouseswitchchannels_flag.isChecked(),
                 'showplaylistmouse': showplaylistmouse_flag.isChecked(),
@@ -2408,12 +2411,12 @@ if __name__ == '__main__':
         )
         fastview_label.setWordWrap(True)
         fastview_label.setText(
-            '<span style="color:#666600;">' + \
-            _('jtvoffsetrecommendation') + '</span><br>' + \
+            #'<span style="color:#666600;">' + \
+            #_('jtvoffsetrecommendation') + '</span><br>' + \
             '<span style="color:#1D877C;">' + \
-            _('fasterview') + '</span><br>' + \
-            '<span style="color:#b35900;">' + \
-            _('multipleplnote') + '</span>'
+            _('fasterview') + '</span><br>' #+ \
+            #'<span style="color:#b35900;">' + \
+            #_('multipleplnote') + '</span>'
         )
         #fastview_label.setStyleSheet('color: #1D877C')
         #multipleplnote_label = QtWidgets.QLabel(_('multipleplnote'))
@@ -2494,15 +2497,15 @@ if __name__ == '__main__':
         def prov_select(self): # pylint: disable=unused-argument
             prov1 = sprov.currentText()
             if prov1 != '--{}--'.format(_('notselected')):
-                sm3u.setText(iptv_providers[prov1]['m3u'])
-                if 'epg' in iptv_providers[prov1]:
-                    sepg.setText(iptv_providers[prov1]['epg'] if not \
-                        iptv_providers[prov1]['epg'].startswith('^^::MULTIPLE::^^') else '')
+                sm3u.setText(iptv_playlists[prov1]['m3u'])
+                if 'epg' in iptv_playlists[prov1]:
+                    sepg.setText(iptv_playlists[prov1]['epg'] if not \
+                        iptv_playlists[prov1]['epg'].startswith('^^::MULTIPLE::^^') else '')
         sprov.currentIndexChanged.connect(prov_select)
         sprov.addItem('--{}--'.format(_('notselected')))
         provs = {}
         ic3 = 0
-        for prov in iptv_providers:
+        for prov in iptv_playlists:
             ic3 += 1
             provs[prov] = ic3
             sprov.addItem(prov)
@@ -2514,6 +2517,7 @@ if __name__ == '__main__':
                 except: # pylint: disable=bare-except
                     pass
         sclose = QtWidgets.QPushButton(_('close'))
+        sclose.setStyleSheet('color: red;')
         sclose.clicked.connect(close_settings)
 
         def update_m3u():
@@ -2521,23 +2525,23 @@ if __name__ == '__main__':
                 os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
             save_settings()
 
-        sm3ufile = QtWidgets.QPushButton(settings_win)
+        sm3ufile = QtWidgets.QPushButton()
         sm3ufile.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'file.png'))))
         sm3ufile.clicked.connect(m3u_select)
-        sm3uupd = QtWidgets.QPushButton(settings_win)
+        sm3uupd = QtWidgets.QPushButton()
         sm3uupd.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'update.png'))))
         sm3uupd.clicked.connect(update_m3u)
         sm3uupd.setToolTip(_('update'))
 
-        sepgfile = QtWidgets.QPushButton(settings_win)
+        sepgfile = QtWidgets.QPushButton()
         sepgfile.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'file.png'))))
         sepgfile.clicked.connect(epg_select)
-        sepgupd = QtWidgets.QPushButton(settings_win)
+        sepgupd = QtWidgets.QPushButton()
         sepgupd.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'update.png'))))
         sepgupd.clicked.connect(force_update_epg)
         sepgupd.setToolTip(_('update'))
 
-        sfolder = QtWidgets.QPushButton(settings_win)
+        sfolder = QtWidgets.QPushButton()
         sfolder.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'file.png'))))
         sfolder.clicked.connect(save_folder_select)
 
@@ -2602,45 +2606,7 @@ if __name__ == '__main__':
 
         grid = QtWidgets.QGridLayout()
         grid.setSpacing(10)
-
-        xtream_btn = QtWidgets.QPushButton("XTream")
-        xtream_btn.clicked.connect(xtream_select)
-
-        grid.addWidget(m3u_label, 1, 0)
-        grid.addWidget(sm3u, 1, 1)
-        grid.addWidget(sm3ufile, 1, 2)
-        grid.addWidget(sm3uupd, 1, 3)
-
-        grid.addWidget(update_label, 2, 0)
-        grid.addWidget(supdate, 2, 1)
-        grid.addWidget(xtream_btn, 2, 3)
-
-        #grid.addWidget(sframe, 3, 0)
-        #grid.addWidget(sframe1, 3, 1)
-        #grid.addWidget(sframe2, 3, 2)
-        #grid.addWidget(sframe3, 3, 3)
-
-        grid.addWidget(epg_label, 3, 0)
-        grid.addWidget(sepgcombox, 3, 1)
-        grid.addWidget(sepgfile, 3, 2)
-        grid.addWidget(sepgupd, 3, 3)
-
-        grid.addWidget(offset_label, 4, 0)
-        grid.addWidget(soffset, 4, 1)
-        grid.addWidget(hours_label, 4, 2)
-
-        #grid.addWidget(set_label, 6, 1)
-
-        grid.addWidget(fastview_label, 5, 1)
-        #grid.addWidget(multipleplnote_label, 8, 1)
-
-        grid.addWidget(sselect, 6, 1)
-        grid.addWidget(sprov, 7, 1)
-
-        grid.addWidget(sframe4, 8, 0)
-        grid.addWidget(sframe5, 8, 1)
-        grid.addWidget(sframe6, 8, 2)
-        grid.addWidget(sframe7, 8, 3)
+        grid.addWidget(fastview_label, 0, 0)
 
         useragent_lbl_2 = QtWidgets.QLabel("{}:".format(_('useragent')))
         referer_lbl = QtWidgets.QLabel("HTTP Referer:")
@@ -2706,10 +2672,7 @@ if __name__ == '__main__':
 
         exp_warning = QtWidgets.QLabel(_('expwarning'))
         exp_warning.setStyleSheet('color:red')
-        exp1_label = QtWidgets.QLabel("{}:".format(_('exp1')))
         exp2_label = QtWidgets.QLabel("{}:".format(_('exp2')))
-        exp1_flag = QtWidgets.QCheckBox()
-        exp1_flag.setChecked(settings['exp1'])
         exp2_input = QtWidgets.QSpinBox()
         exp2_input.setMaximum(9999)
         exp2_input.setValue(settings['exp2'])
@@ -2739,7 +2702,7 @@ if __name__ == '__main__':
 
         screenshot_label = QtWidgets.QLabel("{}:".format(_('doscreenshotsvia')))
         screenshot_choose = QtWidgets.QComboBox()
-        screenshot_choose.addItem(_('default'))
+        screenshot_choose.addItem('mpv')
         screenshot_choose.addItem('ffmpeg')
         screenshot_choose.setCurrentIndex(settings['screenshot'])
 
@@ -2786,14 +2749,12 @@ if __name__ == '__main__':
         tab4 = QtWidgets.QWidget()
         tab5 = QtWidgets.QWidget()
         tab6 = QtWidgets.QWidget()
-        tab7 = QtWidgets.QWidget()
         tabs.addTab(tab1, _('tab_main'))
         tabs.addTab(tab2, _('tab_video'))
         tabs.addTab(tab3, _('tab_network'))
         tabs.addTab(tab5, _('tab_gui'))
-        tabs.addTab(tab7, _('actions'))
+        tabs.addTab(tab6, _('actions'))
         tabs.addTab(tab4, _('tab_other'))
-        tabs.addTab(tab6, _('tab_exp'))
         tab1.layout = QtWidgets.QGridLayout()
         tab1.layout.addWidget(lang_label, 0, 0)
         tab1.layout.addWidget(slang, 0, 1)
@@ -2802,6 +2763,12 @@ if __name__ == '__main__':
         tab1.layout.addWidget(sfolder, 1, 2)
         tab1.layout.addWidget(sort_label, 2, 0)
         tab1.layout.addWidget(sort_widget, 2, 1)
+        tab1.layout.addWidget(update_label, 3, 0)
+        tab1.layout.addWidget(supdate, 3, 1)
+        tab1.layout.addWidget(openprevchan_label, 4, 0)
+        tab1.layout.addWidget(openprevchan_flag, 4, 1)
+        tab1.layout.addWidget(remembervol_label, 5, 0)
+        tab1.layout.addWidget(remembervol_flag, 5, 1)
         tab1.setLayout(tab1.layout)
 
         tab2.layout = QtWidgets.QGridLayout()
@@ -2846,6 +2813,8 @@ if __name__ == '__main__':
         tab4.layout.addWidget(chaniconsfromepg_flag, 4, 1)
         tab4.layout.addWidget(volumechangestep_label, 5, 0)
         tab4.layout.addWidget(volumechangestep_choose, 5, 1)
+        tab4.layout.addWidget(screenshot_label, 6, 0)
+        tab4.layout.addWidget(screenshot_choose, 6, 1)
         tab4.setLayout(tab4.layout)
 
         tab5.layout = QtWidgets.QGridLayout()
@@ -2857,57 +2826,45 @@ if __name__ == '__main__':
         tab5.layout.addWidget(channels_label, 1, 0)
         tab5.layout.addWidget(channels_box, 1, 1)
         #tab5.layout.addWidget(QtWidgets.QLabel(), 3, 0)
-        tab5.layout.addWidget(openprevchan_label, 2, 0)
-        tab5.layout.addWidget(openprevchan_flag, 2, 1)
-        tab5.layout.addWidget(remembervol_label, 3, 0)
-        tab5.layout.addWidget(remembervol_flag, 3, 1)
-        tab5.layout.addWidget(panelposition_label, 4, 0)
-        tab5.layout.addWidget(panelposition_choose, 4, 1)
-        tab5.layout.addWidget(playlistsep_label, 5, 0)
-        tab5.layout.addWidget(playlistsep_flag, 5, 1)
+        tab5.layout.addWidget(panelposition_label, 2, 0)
+        tab5.layout.addWidget(panelposition_choose, 2, 1)
+        tab5.layout.addWidget(playlistsep_label, 3, 0)
+        tab5.layout.addWidget(playlistsep_flag, 3, 1)
+        tab5.layout.addWidget(exp2_label, 4, 0)
+        tab5.layout.addWidget(exp2_input, 4, 1)
+        tab5.layout.addWidget(hideepgpercentage_label, 5, 0)
+        tab5.layout.addWidget(hideepgpercentage_flag, 5, 1)
         #tab5.layout.addWidget(QtWidgets.QLabel(), 8, 0)
         tab5.setLayout(tab5.layout)
 
         tab6.layout = QtWidgets.QGridLayout()
-        tab6.layout.addWidget(exp_warning, 0, 0)
-        tab6.layout.addWidget(QtWidgets.QLabel(), 1, 0)
-        tab6.layout.addWidget(exp1_label, 2, 0)
-        tab6.layout.addWidget(exp1_flag, 2, 1)
-        tab6.layout.addWidget(exp2_label, 3, 0)
-        tab6.layout.addWidget(exp2_input, 3, 1)
-        tab6.layout.addWidget(QtWidgets.QLabel(), 3, 2)
-        #tab6.layout.addWidget(flpopacity_label, 4, 0)
-        #tab6.layout.addWidget(flpopacity_input, 4, 1)
-        tab6.layout.addWidget(screenshot_label, 4, 0)
-        tab6.layout.addWidget(screenshot_choose, 4, 1)
-        tab6.layout.addWidget(hideepgpercentage_label, 5, 0)
-        tab6.layout.addWidget(hideepgpercentage_flag, 5, 1)
-        tab6.layout.addWidget(QtWidgets.QLabel(), 6, 0)
+        tab6.layout.addWidget(mouseswitchchannels_label, 0, 0)
+        tab6.layout.addWidget(mouseswitchchannels_flag, 0, 1)
+        tab6.layout.addWidget(QtWidgets.QLabel(), 0, 2)
+        tab6.layout.addWidget(QtWidgets.QLabel(), 0, 3)
+        tab6.layout.addWidget(defaultchangevol_label, 1, 0)
+        tab6.layout.addWidget(QtWidgets.QLabel(), 2, 0)
+        tab6.layout.addWidget(showplaylistmouse_label, 3, 0)
+        tab6.layout.addWidget(showplaylistmouse_flag, 3, 1)
+        tab6.layout.addWidget(showcontrolsmouse_label, 4, 0)
+        tab6.layout.addWidget(showcontrolsmouse_flag, 4, 1)
         tab6.setLayout(tab6.layout)
-
-        tab7.layout = QtWidgets.QGridLayout()
-        tab7.layout.addWidget(mouseswitchchannels_label, 0, 0)
-        tab7.layout.addWidget(mouseswitchchannels_flag, 0, 1)
-        tab7.layout.addWidget(QtWidgets.QLabel(), 0, 2)
-        tab7.layout.addWidget(QtWidgets.QLabel(), 0, 3)
-        tab7.layout.addWidget(defaultchangevol_label, 1, 0)
-        tab7.layout.addWidget(QtWidgets.QLabel(), 2, 0)
-        tab7.layout.addWidget(showplaylistmouse_label, 3, 0)
-        tab7.layout.addWidget(showplaylistmouse_flag, 3, 1)
-        tab7.layout.addWidget(showcontrolsmouse_label, 4, 0)
-        tab7.layout.addWidget(showcontrolsmouse_flag, 4, 1)
-        tab7.setLayout(tab7.layout)
 
         grid2 = QtWidgets.QVBoxLayout()
         grid2.addWidget(tabs)
-        grid2.addWidget(sframe8)
+        #grid2.addWidget(sframe8)
 
         grid3 = QtWidgets.QGridLayout()
-        grid3.setSpacing(10)
+        grid3.setSpacing(0)
 
-        grid3.addWidget(ssave, 2, 1)
+        ssaveclose = QtWidgets.QWidget()
+        ssaveclose_layout = QtWidgets.QHBoxLayout()
+        ssaveclose_layout.addWidget(ssave)
+        ssaveclose_layout.addWidget(sclose)
+        ssaveclose.setLayout(ssaveclose_layout)
+
+        grid3.addWidget(ssaveclose, 2, 1)
         grid3.addWidget(sreset, 3, 1)
-        grid3.addWidget(sclose, 4, 1)
 
         layout2 = QtWidgets.QVBoxLayout()
         layout2.addLayout(grid)
@@ -3173,19 +3130,19 @@ if __name__ == '__main__':
             else:
                 sort_win.hide()
 
-        def show_providers():
-            if not providers_win.isVisible():
-                providers_list.clear()
-                providers_data.providers_used = providers_saved
-                for item2 in providers_data.providers_used:
-                    providers_list.addItem(item2)
-                providers_win.show()
+        def show_playlists():
+            if not playlists_win.isVisible():
+                playlists_list.clear()
+                playlists_data.playlists_used = playlists_saved
+                for item2 in playlists_data.playlists_used:
+                    playlists_list.addItem(item2)
+                playlists_win.show()
             else:
-                providers_win.hide()
+                playlists_win.hide()
 
-        def providers_selected():
+        def playlists_selected():
             try:
-                prov_data = providers_data.providers_used[providers_list.currentItem().text()]
+                prov_data = playlists_data.playlists_used[playlists_list.currentItem().text()]
                 prov_m3u = prov_data['m3u']
                 prov_epg = ''
                 if 'epg' in prov_data:
@@ -3195,19 +3152,19 @@ if __name__ == '__main__':
                 sepg.setText(prov_epg if not prov_epg.startswith('^^::MULTIPLE::^^') else '')
                 soffset.setValue(prov_offset)
                 sprov.setCurrentIndex(0)
-                providers_save_json()
-                providers_win.hide()
-                providers_win_edit.hide()
+                playlists_save_json()
+                playlists_win.hide()
+                playlists_win_edit.hide()
                 save_settings()
             except: # pylint: disable=bare-except
                 pass
 
-        def providers_save_json():
-            providers_json_save(providers_data.providers_used)
+        def playlists_save_json():
+            playlists_json_save(playlists_data.playlists_used)
 
-        def providers_edit_do(ignore0=False):
+        def playlists_edit_do(ignore0=False):
             try:
-                currentItem_text = providers_list.currentItem().text()
+                currentItem_text = playlists_list.currentItem().text()
             except: # pylint: disable=bare-except
                 currentItem_text = ""
             if ignore0:
@@ -3215,43 +3172,43 @@ if __name__ == '__main__':
                 m3u_edit_1.setText("")
                 epg_edit_1.setText("")
                 soffset_1.setValue(DEF_TIMEZONE)
-                providers_data.oldName = ""
-                providers_win_edit.show()
+                playlists_data.oldName = ""
+                playlists_win_edit.show()
             else:
                 if currentItem_text:
-                    item_m3u = providers_data.providers_used[currentItem_text]['m3u']
+                    item_m3u = playlists_data.playlists_used[currentItem_text]['m3u']
                     try:
-                        item_epg = providers_data.providers_used[currentItem_text]['epg']
+                        item_epg = playlists_data.playlists_used[currentItem_text]['epg']
                     except: # pylint: disable=bare-except
                         item_epg = ""
-                    item_offset = providers_data.providers_used[currentItem_text]['offset']
+                    item_offset = playlists_data.playlists_used[currentItem_text]['offset']
                     name_edit_1.setText(currentItem_text)
                     m3u_edit_1.setText(item_m3u)
                     epg_edit_1.setText(item_epg)
                     soffset_1.setValue(item_offset)
-                    providers_data.oldName = currentItem_text
-                    providers_win_edit.show()
+                    playlists_data.oldName = currentItem_text
+                    playlists_win_edit.show()
 
-        def providers_delete_do():
+        def playlists_delete_do():
             try:
-                currentItem_text = providers_list.currentItem().text()
+                currentItem_text = playlists_list.currentItem().text()
             except: # pylint: disable=bare-except
                 currentItem_text = ""
             if currentItem_text:
-                providers_list.takeItem(providers_list.currentRow())
-                providers_data.providers_used.pop(currentItem_text)
-                providers_save_json()
+                playlists_list.takeItem(playlists_list.currentRow())
+                playlists_data.playlists_used.pop(currentItem_text)
+                playlists_save_json()
 
-        def providers_add_do():
-            providers_edit_do(True)
+        def playlists_add_do():
+            playlists_edit_do(True)
 
-        def providers_import_do():
-            global providers_saved
-            providers_hypnotix = {}
+        def playlists_import_do():
+            global playlists_saved
+            playlists_hypnotix = {}
             print_with_time("Fetching playlists from Hypnotix...")
             try:
                 hypnotix_cmd = "dconf dump /org/x/hypnotix/ 2>/dev/null | grep" + \
-                    " '^providers=' | sed 's/^providers=/{\"hypnotix\": /g'" + \
+                    " '^playlists=' | sed 's/^playlists=/{\"hypnotix\": /g'" + \
                     " | sed 's/$/}/g' | sed \"s/'/\\\"/g\""
                 hypnotix_cmd_eval = subprocess.check_output(
                     hypnotix_cmd, shell=True, text=True
@@ -3265,31 +3222,31 @@ if __name__ == '__main__':
                         prov_name_2 = provider_2[0]
                         prov_m3u_2 = provider_2[2][0]
                         prov_epg_2 = provider_2[2][1]
-                        providers_hypnotix[prov_name_2] = {
+                        playlists_hypnotix[prov_name_2] = {
                             "m3u": prov_m3u_2,
                             "epg": prov_epg_2,
                             "offset": DEF_TIMEZONE
                         }
             except: # pylint: disable=bare-except
                 print_with_time("Failed fetching playlists from Hypnotix!")
-            if providers_hypnotix:
+            if playlists_hypnotix:
                 try:
-                    providers_list.takeItem(
-                        providers_list.row(
-                            providers_list.findItems(def_provider_name, QtCore.Qt.MatchExactly)[0]
+                    playlists_list.takeItem(
+                        playlists_list.row(
+                            playlists_list.findItems(def_provider_name, QtCore.Qt.MatchExactly)[0]
                         )
                     )
-                    providers_data.providers_used.pop(def_provider_name)
+                    playlists_data.playlists_used.pop(def_provider_name)
                 except: # pylint: disable=bare-except
                     pass
-                providers_data.providers_used = providers_hypnotix
-                providers_saved = providers_hypnotix
-                for prov_name_4 in providers_data.providers_used:
-                    providers_list.addItem(prov_name_4)
-                providers_save_json()
+                playlists_data.playlists_used = playlists_hypnotix
+                playlists_saved = playlists_hypnotix
+                for prov_name_4 in playlists_data.playlists_used:
+                    playlists_list.addItem(prov_name_4)
+                playlists_save_json()
                 print_with_time("Successfully imported playlists from Hypnotix!")
-                providers_win.hide()
-                providers_win_edit.hide()
+                playlists_win.hide()
+                playlists_win_edit.hide()
                 save_settings()
             else:
                 print_with_time("No Hypnotix playlists found!")
@@ -3301,22 +3258,22 @@ if __name__ == '__main__':
                 )
                 hypnotix_msg.exec()
 
-        def providers_reset_do():
-            global providers_saved
-            providers_data.providers_used = providers_saved_default
-            providers_saved = providers_saved_default
-            providers_save_json()
-            providers_win.hide()
-            providers_win_edit.hide()
+        def playlists_reset_do():
+            global playlists_saved
+            playlists_data.playlists_used = playlists_saved_default
+            playlists_saved = playlists_saved_default
+            playlists_save_json()
+            playlists_win.hide()
+            playlists_win_edit.hide()
             save_settings()
 
-        providers_list.itemDoubleClicked.connect(providers_selected)
-        providers_select.clicked.connect(providers_selected)
-        providers_add.clicked.connect(providers_add_do)
-        providers_edit.clicked.connect(providers_edit_do)
-        providers_delete.clicked.connect(providers_delete_do)
-        providers_import.clicked.connect(providers_import_do)
-        providers_reset.clicked.connect(providers_reset_do)
+        playlists_list.itemDoubleClicked.connect(playlists_selected)
+        playlists_select.clicked.connect(playlists_selected)
+        playlists_add.clicked.connect(playlists_add_do)
+        playlists_edit.clicked.connect(playlists_edit_do)
+        playlists_delete.clicked.connect(playlists_delete_do)
+        playlists_import.clicked.connect(playlists_import_do)
+        playlists_reset.clicked.connect(playlists_reset_do)
 
         # This is necessary since PyQT stomps over the locale settings needed by libmpv.
         # This needs to happen after importing PyQT before creating the first mpv.MPV instance.
@@ -3786,8 +3743,11 @@ if __name__ == '__main__':
                 #progress.hide()
                 #start_label.hide()
                 #stop_label.hide()
-                for hide_lbl_fullscreen in hide_lbls_fullscreen:
-                    hide_lbl_fullscreen.hide()
+                label11.hide()
+                label12.hide()
+                for lbl3 in labels:
+                    if lbl3 not in show_lbls_fullscreen:
+                        lbl3.hide()
                 progress.hide()
                 start_label.hide()
                 stop_label.hide()
@@ -3823,8 +3783,11 @@ if __name__ == '__main__':
                     start_label.show()
                     stop_label.show()
                     dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
-                for hide_lbl_fullscreen in hide_lbls_fullscreen:
-                    hide_lbl_fullscreen.show()
+                label11.show()
+                label12.show()
+                for lbl3 in labels:
+                    if lbl3 not in show_lbls_fullscreen:
+                        lbl3.show()
                 dockWidget2.show()
                 dockWidget.show()
                 chan.show()
@@ -4837,7 +4800,7 @@ if __name__ == '__main__':
                     super().mousePressEvent(event1)
             def focusOutEvent(self, event2):
                 super().focusOutEvent(event2)
-                if settings["exp1"] and fullscreen:
+                if fullscreen:
                     playlist_widget_visible1 = playlist_widget.isVisible()
                     controlpanel_widget_visible1 = controlpanel_widget.isVisible()
                     channelfiltersearch_has_focus1 = channelfiltersearch.hasFocus()
@@ -4854,7 +4817,7 @@ if __name__ == '__main__':
                     exInMainThread_partial(mainthread_timer_1)
 
         def channelfilter_clicked():
-            if settings["exp1"] and fullscreen:
+            if fullscreen:
                 playlist_widget_visible1 = playlist_widget.isVisible()
                 controlpanel_widget_visible1 = controlpanel_widget.isVisible()
                 channelfilter.usePopup = True
@@ -5855,10 +5818,11 @@ if __name__ == '__main__':
             my_up_binding_execute,
             my_down_binding_execute,
             show_m3u_editor,
-            show_providers,
+            show_playlists,
             show_sort,
             show_exception,
-            get_curwindow_pos
+            get_curwindow_pos,
+            force_update_epg
         )
 
         def archive_all_clicked():
@@ -6187,22 +6151,22 @@ if __name__ == '__main__':
         label7_2.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'timeshift.png'))))
         label7_2.setToolTip(_('timeshift') + ' (E)')
         label7_2.clicked.connect(show_timeshift)
-        #label8 = QtWidgets.QPushButton()
-        #label8.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'settings.png'))))
-        #label8.setToolTip(_('settings'))
-        #label8.clicked.connect(show_settings)
-        #label8_0 = QtWidgets.QPushButton()
-        #label8_0.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'tv-blue.png'))))
-        #label8_0.setToolTip(_('providers'))
-        #label8_0.clicked.connect(show_providers)
+        label8 = QtWidgets.QPushButton()
+        label8.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'settings.png'))))
+        label8.setToolTip(_('settings'))
+        label8.clicked.connect(show_settings)
+        label8_0 = QtWidgets.QPushButton()
+        label8_0.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'tv-blue.png'))))
+        label8_0.setToolTip(_('playlists'))
+        label8_0.clicked.connect(show_playlists)
         label8_1 = QtWidgets.QPushButton()
         label8_1.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'tvguide.png'))))
         label8_1.setToolTip(_('tvguide') + ' (G)')
         label8_1.clicked.connect(show_tvguide)
-        #label8_4 = QtWidgets.QPushButton()
-        #label8_4.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'sort.png'))))
-        #label8_4.setToolTip(_('sort').replace('\n', ' ') + ' (I)')
-        #label8_4.clicked.connect(show_sort)
+        label8_4 = QtWidgets.QPushButton()
+        label8_4.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'sort.png'))))
+        label8_4.setToolTip(_('sort').replace('\n', ' ') + ' (I)')
+        label8_4.clicked.connect(show_sort)
         label8_2 = QtWidgets.QPushButton()
         label8_2.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'prev.png'))))
         label8_2.setToolTip(_('prevchannel') + ' (N)')
@@ -6211,18 +6175,21 @@ if __name__ == '__main__':
         label8_3.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'next.png'))))
         label8_3.setToolTip(_('nextchannel') + ' (M)')
         label8_3.clicked.connect(next_channel)
-        #label8_5 = QtWidgets.QPushButton()
-        #label8_5.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'edit.png'))))
-        #label8_5.setToolTip(_('m3u_m3ueditor'))
-        #label8_5.clicked.connect(show_m3u_editor)
-        #label9 = QtWidgets.QPushButton()
-        #label9.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'help.png'))))
-        #label9.setToolTip(_('help'))
-        #label9.clicked.connect(show_help)
+        label8_5 = QtWidgets.QPushButton()
+        label8_5.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'edit.png'))))
+        label8_5.setToolTip(_('m3u_m3ueditor'))
+        label8_5.clicked.connect(show_m3u_editor)
+        label9 = QtWidgets.QPushButton()
+        label9.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'help.png'))))
+        label9.setToolTip(_('help'))
+        label9.clicked.connect(show_help)
+
+        labels = [
+            label3, label4, label5, label5_0, label5_1, label5_2, label6, label7, label7_1,
+            label7_2, label8, label8_0, label8_1, label8_2, label8_3, label8_4, label8_5, label9
+        ]
+
         label12 = QtWidgets.QLabel('')
-        #label10 = QtWidgets.QLabel('© kestral / astroncia')
-        #label10.setAlignment(QtCore.Qt.AlignCenter)
-        #label10.setStyleSheet('color: #a60f46')
         label11 = QtWidgets.QLabel()
         myFont3 = QtGui.QFont()
         myFont3.setPointSize(11)
@@ -6250,31 +6217,17 @@ if __name__ == '__main__':
         hlayout1.addWidget(progress)
         hlayout1.addWidget(stop_label)
 
-        hlayout2_btns_1 = [
+        hlayout2_btns = [
             label3, label4, label5, label5_1,
             label5_2, label5_0, label6,
-            label7, label13, label7_1
+            label7, label13, label7_1, label7_2,
+            label8_1, label8_2, label8_3
         ]
-        hlayout2_btns_2 = [
-            #label8_0, label8, label8_4, label8_1,
-            label8_1,
-            label8_2, label8_3 #, label8_5, label9
-        ]
-        hlayout2_btns_3 = [label11, label12]
-        hlayout2_all_btns = hlayout2_btns_1 + hlayout2_btns_2 + hlayout2_btns_3 + [label7_2]
-        #for hlayout2_btn_3 in hlayout2_all_btns:
-        #    hlayout2_btn_3.setFixedHeight(20)
-        for hlayout2_btn in hlayout2_btns_1:
+        for hlayout2_btn in hlayout2_btns:
             hlayout2.addWidget(hlayout2_btn)
-        #if not os.name == 'nt':
-        hlayout2.addWidget(label7_2)
-        for hlayout2_btn_1 in hlayout2_btns_2:
-            hlayout2.addWidget(hlayout2_btn_1)
-        hlayout2.addStretch(100000)
-        for hlayout2_btn_2 in hlayout2_btns_3:
-            hlayout2.addWidget(hlayout2_btn_2)
-
-        #hlayout3.addWidget(label10)
+        hlayout2.addStretch(1000000)
+        hlayout2.addWidget(label11)
+        hlayout2.addWidget(label12)
 
         #hlayout1.addStretch(1)
         vlayout3.addLayout(hlayout2)
@@ -6418,20 +6371,19 @@ if __name__ == '__main__':
                     sepplheight_file.close()
                 except: # pylint: disable=bare-except
                     pass
-            if settings['exp1']:
-                try:
-                    expheight_file = open(
-                        str(Path(LOCAL_DIR, 'expheight.json')), 'w', encoding="utf8"
-                    )
-                    expheight_file.write(
-                        json.dumps({
-                            "expplaylistheight": newdockWidgetHeight,
-                            "expplaylistposition": newdockWidgetPosition
-                        })
-                    )
-                    expheight_file.close()
-                except: # pylint: disable=bare-except
-                    pass
+            try:
+                expheight_file = open(
+                    str(Path(LOCAL_DIR, 'expheight.json')), 'w', encoding="utf8"
+                )
+                expheight_file.write(
+                    json.dumps({
+                        "expplaylistheight": newdockWidgetHeight,
+                        "expplaylistposition": newdockWidgetPosition
+                    })
+                )
+                expheight_file.close()
+            except: # pylint: disable=bare-except
+                pass
             saveLastChannel()
             stop_record()
             for rec_1 in sch_recordings:
@@ -6696,10 +6648,11 @@ if __name__ == '__main__':
         dockWidgetVisible = False
         dockWidget2Visible = False
 
-        hide_lbls_fullscreen = [
-            label5_0, label5_2, #label7_2, label8,
-            # label8_0, label8_4, # label8_5, label9,
-            label11, label12
+        #show_lbls_fullscreen = labels
+
+        show_lbls_fullscreen = [
+            label3, label4, label5, label5_1, label6, label7, label7_1,
+            label7_2, label8, label8_0, label8_1, label8_2, label8_3, label8_4, label8_5, label9
         ]
 
         dockWidget.installEventFilter(win)
@@ -6740,13 +6693,13 @@ if __name__ == '__main__':
 
         def resizeCallback(cal_width):
             global fullscreen, newdockWidgetHeight
-            if settings['exp1'] and fullscreen:
+            if fullscreen:
                 newdockWidgetHeight = cal_width
 
         def moveCallback(cal_pos):
             global fullscreen, newdockWidgetPosition
             cal_position = cal_pos.pos()
-            if cal_position.x() and cal_position.y() and fullscreen and settings['exp1']:
+            if cal_position.x() and cal_position.y() and fullscreen:
                 newdockWidgetPosition = [cal_position.x(), cal_position.y()]
 
         playlist_widget = ResizableWindow()
@@ -6767,101 +6720,81 @@ if __name__ == '__main__':
         controlpanel_widget.setLayout(cp_layout)
         controlpanel_widget.hide()
 
+        def maptoglobal(x6, y6):
+            return win.mapToGlobal(QtCore.QPoint(x6, y6))
+
         def show_playlist():
-            if settings["exp1"]:
-                if newdockWidgetPosition:
-                    playlist_widget.move(newdockWidgetPosition[0], newdockWidgetPosition[1])
-                else:
-                    if settings['panelposition'] == 0:
-                        playlist_widget.move(win.width() - dockWidget.width(), 0)
-                    else:
-                        playlist_widget.move(0, 0)
-                playlist_widget.setFixedWidth(dockWidget.width())
-                if newdockWidgetHeight:
-                    playlist_widget_height = newdockWidgetHeight
-                else:
-                    playlist_widget_height = win.height() - 50
-                playlist_widget.resize(
-                    playlist_widget.width(),
-                    playlist_widget_height
-                )
-                playlist_widget.setWindowOpacity(0.55)
-                playlist_widget.setWindowFlags(
-                    QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
-                    QtCore.Qt.X11BypassWindowManagerHint #| QtCore.Qt.Popup
-                )
-                pl_layout.addWidget(widget)
-                playlist_widget.show()
+            if newdockWidgetPosition:
+                playlist_widget.move(newdockWidgetPosition[0], newdockWidgetPosition[1])
             else:
-                dockWidget.show()
+                if settings['panelposition'] == 0:
+                    playlist_widget.move(maptoglobal(win.width() - dockWidget.width(), 0))
+                else:
+                    playlist_widget.move(maptoglobal(0, 0))
+            playlist_widget.setFixedWidth(dockWidget.width())
+            if newdockWidgetHeight:
+                playlist_widget_height = newdockWidgetHeight
+            else:
+                playlist_widget_height = win.height() - 50
+            playlist_widget.resize(
+                playlist_widget.width(),
+                playlist_widget_height
+            )
+            playlist_widget.setWindowOpacity(0.55)
+            playlist_widget.setWindowFlags(
+                QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
+                QtCore.Qt.X11BypassWindowManagerHint #| QtCore.Qt.Popup
+            )
+            pl_layout.addWidget(widget)
+            playlist_widget.show()
 
         def hide_playlist():
-            if settings["exp1"]:
-                pl_layout.removeWidget(widget)
-                dockWidget.setWidget(widget)
-                playlist_widget.hide()
-            else:
-                dockWidget.hide()
+            pl_layout.removeWidget(widget)
+            dockWidget.setWidget(widget)
+            playlist_widget.hide()
 
         LABEL7_WIDTH = False
 
         def show_controlpanel():
             global LABEL7_WIDTH
-            if settings["exp1"]:
-                if not LABEL7_WIDTH:
-                    LABEL7_WIDTH = label7.width()
-                label7.setFixedWidth(150)
-                hlayout2_width = 0
-                hlayout2_count = hlayout2.count()
-                while hlayout2_count >= 0:
-                    try:
-                        hlayout2_wg = hlayout2.itemAt(hlayout2_count).widget()
-                        if hlayout2_wg:
-                            hlayout2_append = 0
-                            if isinstance(hlayout2_wg, QtWidgets.QSlider):
-                                hlayout2_append = 70
-                            hlayout2_width += hlayout2_wg.width() + hlayout2_append
-                    except: # pylint: disable=bare-except
-                        pass
-                    hlayout2_count -=1
-                controlpanel_widget.setFixedWidth(
-                    #int(win.width() / 3) - 100
-                    #650
-                    hlayout2_width
+            if not LABEL7_WIDTH:
+                LABEL7_WIDTH = label7.width()
+            label7.setFixedWidth(150)
+            controlpanel_widget.setWindowOpacity(0.55)
+            if channelfilter.usePopup:
+                controlpanel_widget.setWindowFlags(
+                    QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
+                    QtCore.Qt.X11BypassWindowManagerHint | QtCore.Qt.Popup
                 )
-                controlpanel_widget.setWindowOpacity(0.55)
-                if channelfilter.usePopup:
-                    controlpanel_widget.setWindowFlags(
-                        QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
-                        QtCore.Qt.X11BypassWindowManagerHint | QtCore.Qt.Popup
-                    )
-                else:
-                    controlpanel_widget.setWindowFlags(
-                        QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
-                        QtCore.Qt.X11BypassWindowManagerHint #| QtCore.Qt.Popup
-                    )
-                cp_layout.addWidget(widget2)
-                p_3 = win.main_widget.frameGeometry().center() - QtCore.QRect(
-                    QtCore.QPoint(), controlpanel_widget.sizeHint()
-                ).center()
-                controlpanel_widget.move(
-                    #int(win.width() / 2) - controlpanel_widget.width(),
-                    p_3.x() - 100,
-                    win.height() - 100
-                )
-                controlpanel_widget.show()
             else:
-                dockWidget2.show()
+                controlpanel_widget.setWindowFlags(
+                    QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
+                    QtCore.Qt.X11BypassWindowManagerHint #| QtCore.Qt.Popup
+                )
+            cp_layout.addWidget(widget2)
+            lb2_width = 0
+            for lb2_wdg in show_lbls_fullscreen:
+                if hlayout2.indexOf(lb2_wdg) != -1:
+                    lb2_width += lb2_wdg.width() + 15
+            controlpanel_widget.setFixedWidth(
+                #int(win.width() / 3) - 100
+                #650
+                lb2_width
+            )
+            p_3 = win.main_widget.frameGeometry().center() - QtCore.QRect(
+                QtCore.QPoint(), controlpanel_widget.sizeHint()
+            ).center()
+            controlpanel_widget.move(maptoglobal(
+                p_3.x() - 100, win.height() - 100
+            ))
+            controlpanel_widget.show()
 
         def hide_controlpanel():
-            if settings["exp1"]:
-                if LABEL7_WIDTH:
-                    label7.setFixedWidth(LABEL7_WIDTH)
-                cp_layout.removeWidget(widget2)
-                dockWidget2.setWidget(widget2)
-                controlpanel_widget.hide()
-            else:
-                dockWidget2.hide()
+            if LABEL7_WIDTH:
+                label7.setFixedWidth(LABEL7_WIDTH)
+            cp_layout.removeWidget(widget2)
+            dockWidget2.setWidget(widget2)
+            controlpanel_widget.hide()
 
         def thread_afterrecord():
             try:
@@ -7036,7 +6969,8 @@ if __name__ == '__main__':
             "Ctrl+P": show_settings,
             QtCore.Qt.Key_Backspace: (lambda: set_playback_speed(1.00)),
             "Ctrl+Q": app.quit,
-            "Ctrl+O": show_providers,
+            "Ctrl+O": show_playlists,
+            "Ctrl+U": force_update_epg,
             QtCore.Qt.Key_9: my_down_binding_execute,
             QtCore.Qt.Key_0: my_up_binding_execute,
             QtCore.Qt.Key_Left: (lambda: mpv_seek(-10)),
@@ -7062,19 +6996,18 @@ if __name__ == '__main__':
                 win,
                 activated=keybinds[keybind]
             ))
-            if settings["exp1"]:
-                # Control panel widget (settings["exp1"])
-                shortcuts.append(QShortcut(
-                    QtGui.QKeySequence(keybind),
-                    controlpanel_widget,
-                    activated=keybinds[keybind]
-                ))
-                # Playlist widget (settings["exp1"])
-                shortcuts.append(QShortcut(
-                    QtGui.QKeySequence(keybind),
-                    playlist_widget,
-                    activated=keybinds[keybind]
-                ))
+            # Control panel widget
+            shortcuts.append(QShortcut(
+                QtGui.QKeySequence(keybind),
+                controlpanel_widget,
+                activated=keybinds[keybind]
+            ))
+            # Playlist widget
+            shortcuts.append(QShortcut(
+                QtGui.QKeySequence(keybind),
+                playlist_widget,
+                activated=keybinds[keybind]
+            ))
 
         setShortcutState(False)
 
@@ -7162,10 +7095,10 @@ if __name__ == '__main__':
                 selplaylist_win.activateWindow()
                 moveWindowToCenter(selplaylist_win)
             else:
-                settings_win.show()
-                settings_win.raise_()
-                settings_win.setFocus(QtCore.Qt.PopupFocusReason)
-                settings_win.activateWindow()
+                show_playlists()
+                playlists_win.raise_()
+                playlists_win.setFocus(QtCore.Qt.PopupFocusReason)
+                playlists_win.activateWindow()
 
         if qt_backend == 'PySide6':
             sys.exit(app.exec())

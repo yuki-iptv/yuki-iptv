@@ -158,7 +158,7 @@ msgid "m3uplaylist"
 msgstr "M3U playlist"
 
 msgid "updateatboot"
-msgstr "Update\nat launch"
+msgstr "Update playlist\nat launch"
 
 msgid "epgaddress"
 msgstr "TV guide\naddress\n(XMLTV or JTV)"
@@ -347,7 +347,7 @@ msgid "timeshift"
 msgstr "Archive"
 
 msgid "jtvoffsetrecommendation"
-msgstr "Recommended to set 0 here if JTV"
+msgstr "Recommended to set 0 here if using JTV"
 
 msgid "tab_main"
 msgstr "Main"
@@ -448,8 +448,8 @@ msgstr "Page"
 msgid "fasterview"
 msgstr "For faster channel loading, set the cache\nfor 1 or more seconds in the network settings"
 
-msgid "providers"
-msgstr "Providers"
+msgid "playlists"
+msgstr "Playlists"
 
 msgid "provselect"
 msgstr "Select"
@@ -475,7 +475,7 @@ msgstr "Import from Hypnotix"
 msgid "channelsonpage"
 msgstr "Channels on\npage"
 
-msgid "resetdefproviders"
+msgid "resetdefplaylists"
 msgstr "Reset to defaults"
 
 msgid "license"
@@ -629,7 +629,7 @@ msgid "url"
 msgstr "URL"
 
 msgid "multipleplnote"
-msgstr "You can specify multiple playlists by clicking\nthe File - Providers button (after saving the settings)"
+msgstr "You can specify multiple playlists by clicking\nthe File - Playlists button (after saving the settings)"
 
 msgid "favoritesplaylistsep"
 msgstr "Favourites (separate playlist)"
@@ -839,8 +839,8 @@ msgstr "list"
 msgid "menubar_m3ueditor"
 msgstr "&m3u Editor"
 
-msgid "menubar_providers"
-msgstr "&Providers"
+msgid "menubar_playlists"
+msgstr "&Playlists"
 
 msgid "menubar_channelsort"
 msgstr "&Channel sort"
@@ -886,6 +886,9 @@ msgstr "Error applying filters"
 
 msgid "menubar_softscaling"
 msgstr "Soft&ware scaling"
+
+msgid "menubar_updateepg"
+msgstr "&Update TV guide"
 
 msgid "helptext"
 msgstr "Astroncia IPTV, version {}\n© kestral / astroncia < kestraly (at) gmail.com >\nhttps://gitlab.com/astroncia\n\nIPTV player\n\nSupports TV guide (EPG) only in XMLTV and JTV formats!\n\nChannel not working?\nRight mouse button opens channel settings\n\nIcons by Font Awesome ( https://fontawesome.com/ )\nIcons licensed under the CC BY 4.0 License\n( https://creativecommons.org/licenses/by/4.0/ )\n\nHotkeys:\n\nF / F11 - fullscreen mode\nF2 - stream information\nV - mute\nQ - quit program\nSpace - pause\nS - stop playing\nH - screenshot\nG - tv guide (EPG)\nR - start/stop record\nN - previous channel\nM - next channel\nT - open/close channels list\nO - show/hide clock\nI - channel sort\nD - record scheduler"

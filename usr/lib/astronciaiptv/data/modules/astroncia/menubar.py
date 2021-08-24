@@ -104,9 +104,9 @@ def qkeysequence(seq):
 def init_menubar(data): # pylint: disable=too-many-statements
     # File
 
-    AstronciaData.providers = qaction(_('menubar_providers'), data)
-    AstronciaData.providers.setShortcut(qkeysequence("Ctrl+O"))
-    AstronciaData.providers.triggered.connect(lambda: AstronciaData.show_providers())
+    AstronciaData.playlists = qaction(_('menubar_playlists'), data)
+    AstronciaData.playlists.setShortcut(qkeysequence("Ctrl+O"))
+    AstronciaData.playlists.triggered.connect(lambda: AstronciaData.show_playlists())
 
     AstronciaData.m3uEditor = qaction(_('menubar_m3ueditor') + AstronciaData.str_offset, data)
     AstronciaData.m3uEditor.triggered.connect(lambda: AstronciaData.show_m3u_editor())
@@ -254,6 +254,12 @@ def init_menubar(data): # pylint: disable=too-many-statements
     )
     AstronciaData.streaminformationAction.setShortcut(qkeysequence(QtCore.Qt.Key_F2))
 
+    AstronciaData.forceupdateepgAction = qaction(_('menubar_updateepg'), data)
+    AstronciaData.forceupdateepgAction.triggered.connect(
+        lambda: AstronciaData.force_update_epg()
+    )
+    AstronciaData.forceupdateepgAction.setShortcut(qkeysequence("Ctrl+U"))
+
     AstronciaData.applogAction = qaction(_('applog'), data)
     AstronciaData.applogAction.triggered.connect(lambda: AstronciaData.show_app_log())
 
@@ -318,7 +324,7 @@ def populate_menubar(i, menubar, data, track_list=None, playing_chan=None): # py
         AstronciaData.menubar_ready = True
 
     file_menu = menubar.addMenu(_('menubar_title_file'))
-    file_menu.addAction(AstronciaData.providers)
+    file_menu.addAction(AstronciaData.playlists)
     file_menu.addSeparator()
     file_menu.addAction(AstronciaData.m3uEditor)
     file_menu.addAction(AstronciaData.exitAction)
@@ -383,6 +389,7 @@ def populate_menubar(i, menubar, data, track_list=None, playing_chan=None): # py
     view_menu.addAction(AstronciaData.showhideplaylistAction)
     view_menu.addAction(AstronciaData.showhidectrlpanelAction)
     view_menu.addAction(AstronciaData.streaminformationAction)
+    view_menu.addAction(AstronciaData.forceupdateepgAction)
     view_menu.addSection(_('logs'))
     view_menu.addAction(AstronciaData.applogAction)
     view_menu.addAction(AstronciaData.mpvlogAction)
@@ -502,10 +509,11 @@ def init_menubar_player( # pylint: disable=too-many-arguments, too-many-locals
     my_up_binding_execute,
     my_down_binding_execute,
     show_m3u_editor,
-    show_providers,
+    show_playlists,
     show_sort,
     show_exception,
-    get_curwindow_pos
+    get_curwindow_pos,
+    force_update_epg
 ):
     for func in locals().items():
         setattr(AstronciaData, func[0], func[1])

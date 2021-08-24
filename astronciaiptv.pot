@@ -450,7 +450,7 @@ msgstr ""
 msgid "fasterview"
 msgstr ""
 
-msgid "providers"
+msgid "playlists"
 msgstr ""
 
 msgid "provselect"
@@ -477,7 +477,7 @@ msgstr ""
 msgid "channelsonpage"
 msgstr ""
 
-msgid "resetdefproviders"
+msgid "resetdefplaylists"
 msgstr ""
 
 msgid "license"
@@ -841,7 +841,7 @@ msgstr ""
 msgid "menubar_m3ueditor"
 msgstr ""
 
-msgid "menubar_providers"
+msgid "menubar_playlists"
 msgstr ""
 
 msgid "menubar_channelsort"
@@ -887,6 +887,9 @@ msgid "errorvfapply"
 msgstr ""
 
 msgid "menubar_softscaling"
+msgstr ""
+
+msgid "menubar_updateepg"
 msgstr ""
 
 msgid "helptext"

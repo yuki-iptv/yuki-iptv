@@ -454,7 +454,7 @@ msgstr ""
 "Для швидшого завантаження каналів встановіть\nкеш 1 або більше секунд в"
 " налаштуваннях мережі"
 
-msgid "providers"
+msgid "playlists"
 msgstr "Провайдери"
 
 msgid "provselect"
@@ -481,7 +481,7 @@ msgstr "Імпортувати з Hypnotix"
 msgid "channelsonpage"
 msgstr "Каналів на\nсторінку"
 
-msgid "resetdefproviders"
+msgid "resetdefplaylists"
 msgstr "Повернути типові"
 
 msgid "license"

@@ -1,4 +1,4 @@
-'''IPTV providers URLs'''
+'''IPTV playlists URLs'''
 '''
 Copyright (C) 2021 Astroncia
 
@@ -17,12 +17,8 @@ Copyright (C) 2021 Astroncia
     You should have received a copy of the GNU General Public License
     along with Astroncia IPTV.  If not, see <https://www.gnu.org/licenses/>.
 '''
-iptv_providers = {
+iptv_playlists = {
     "[Worldwide] Free-TV": {
         'm3u': 'https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8'
-    },
-    "[Интернет-провайдер] SkyNet (Россия, Санкт-Петербург)": {
-        'm3u': 'http://m3u.sknt.ru/cat/',
-        'epg': 'http://astroncia.crabdance.com:59642/epg.xml.gz'
     }
 }
