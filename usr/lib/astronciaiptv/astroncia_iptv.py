@@ -48,9 +48,9 @@ import traceback
 from multiprocessing import Process, Manager, freeze_support, active_children
 freeze_support()
 from functools import partial
+import chardet
 import requests
 from unidecode import unidecode
-from data.modules.thirdparty import chardet
 from data.modules.astroncia.qt import get_qt_backend
 from data.modules.astroncia.lang import lang, init_lang, _
 from data.modules.astroncia.ua import user_agent, uas, ua_names

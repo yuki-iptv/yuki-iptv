@@ -5,3 +5,4 @@ pandas
 PyGObject
 pydbus
 unidecode
+chardet
