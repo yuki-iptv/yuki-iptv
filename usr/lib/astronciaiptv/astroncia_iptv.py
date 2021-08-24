@@ -3208,7 +3208,7 @@ if __name__ == '__main__':
             print_with_time("Fetching playlists from Hypnotix...")
             try:
                 hypnotix_cmd = "dconf dump /org/x/hypnotix/ 2>/dev/null | grep" + \
-                    " '^playlists=' | sed 's/^playlists=/{\"hypnotix\": /g'" + \
+                    " '^providers=' | sed 's/^providers=/{\"hypnotix\": /g'" + \
                     " | sed 's/$/}/g' | sed \"s/'/\\\"/g\""
                 hypnotix_cmd_eval = subprocess.check_output(
                     hypnotix_cmd, shell=True, text=True
@@ -6223,7 +6223,7 @@ if __name__ == '__main__':
             label7, label13, label7_1, label7_2,
             label8_1, label8_2, label8_3
         ]
-        for hlayout2_btn in hlayout2_btns:
+        for hlayout2_btn in hlayout2_btns: # TODO
             hlayout2.addWidget(hlayout2_btn)
         hlayout2.addStretch(1000000)
         hlayout2.addWidget(label11)
@@ -6648,6 +6648,7 @@ if __name__ == '__main__':
         dockWidgetVisible = False
         dockWidget2Visible = False
 
+        # TODO
         #show_lbls_fullscreen = labels
 
         show_lbls_fullscreen = [
