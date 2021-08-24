@@ -178,7 +178,7 @@ def init_menubar(data): # pylint: disable=too-many-statements
     AstronciaData.compactmode.triggered.connect(lambda: AstronciaData.showhideeverything())
     AstronciaData.compactmode.setShortcut(qkeysequence("Ctrl+C"))
 
-    AstronciaData.csforchannel = qaction(_('menubar_csforchannel'), data)
+    AstronciaData.csforchannel = qaction(_('menubar_csforchannel') + AstronciaData.str_offset, data)
     AstronciaData.csforchannel.triggered.connect(lambda: AstronciaData.main_channel_settings())
 
     AstronciaData.screenshot = qaction(_('menubar_screenshot'), data)
