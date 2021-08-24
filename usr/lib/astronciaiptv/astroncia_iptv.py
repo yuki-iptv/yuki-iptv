@@ -6808,13 +6808,27 @@ if __name__ == '__main__':
         def show_controlpanel():
             global LABEL7_WIDTH
             if settings["exp1"]:
-                controlpanel_widget.setFixedWidth(
-                    #int(win.width() / 3) - 100
-                    650
-                )
                 if not LABEL7_WIDTH:
                     LABEL7_WIDTH = label7.width()
                 label7.setFixedWidth(150)
+                hlayout2_width = 0
+                hlayout2_count = hlayout2.count()
+                while hlayout2_count >= 0:
+                    try:
+                        hlayout2_wg = hlayout2.itemAt(hlayout2_count).widget()
+                        if hlayout2_wg:
+                            hlayout2_append = 0
+                            if isinstance(hlayout2_wg, QtWidgets.QSlider):
+                                hlayout2_append = 70
+                            hlayout2_width += hlayout2_wg.width() + hlayout2_append
+                    except: # pylint: disable=bare-except
+                        pass
+                    hlayout2_count -=1
+                controlpanel_widget.setFixedWidth(
+                    #int(win.width() / 3) - 100
+                    #650
+                    hlayout2_width
+                )
                 controlpanel_widget.setWindowOpacity(0.55)
                 if channelfilter.usePopup:
                     controlpanel_widget.setWindowFlags(
