@@ -97,8 +97,8 @@ if not os.name == 'nt':
 
 APP_VERSION = '0.0.75'
 
-if not sys.version_info >= (3, 4, 0):
-    print_with_time("Incompatible Python version! Required >= 3.4")
+if not sys.version_info >= (3, 6, 0):
+    print_with_time("Incompatible Python version! Required >= 3.6")
     sys.exit(1)
 
 if not (os.name == 'nt' or os.name == 'posix'):
