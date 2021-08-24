@@ -20,6 +20,10 @@ Installation for Debian:
 ```sudo apt-get update```  
 ```sudo apt-get install astroncia-iptv```  
   
+If you got *No dirmngr* error when running gpg:  
+```sudo apt-get install dirmngr```  
+```sudo dirmngr &```  
+  
 [Arch Linux (AUR)](https://aur.archlinux.org/packages/astronciaiptv/)  
 
 ## Information
