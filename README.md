@@ -14,6 +14,12 @@ For Ubuntu / Linux Mint **recommended** install from [Launchpad PPA - ppa:astron
 ```sudo apt-get update```  
 ```sudo apt-get install astroncia-iptv```  
   
+Installation for Debian:  
+```sudo apt-key adv --recv-key --keyserver hkp://keyserver.ubuntu.com:80 --recv 0x20F6B78167C962EA29F8112EB4A4D3FDCE021A84```  
+```echo 'deb http://ppa.launchpad.net/astroncia/iptv/ubuntu focal main' | sudo tee -a /etc/apt/sources.list```  
+```sudo apt-get update```  
+```sudo apt-get install astroncia-iptv astroncia-iptv-channel-icons```  
+  
 [Arch Linux (AUR)](https://aur.archlinux.org/packages/astronciaiptv/)  
 
 ## Information
