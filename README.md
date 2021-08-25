@@ -45,22 +45,22 @@ Icons: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 
 ## Features
 
-Watching IPTV (from m3u8 playlist)  
-Viewing unencrypted streams UDP (multicast), HTTP, HLS (m3u8)  
-Adding channels to favorites  
-Recording TV programs  
-Hotkeys  
-Channel search  
-TV program (EPG) support in XMLTV and JTV formats  
-Display of technical information - video / audio codec, bit rate, resolution  
-Channel groups (from playlist and custom)  
-Hide channels  
-Sorting channels  
-Video settings for each channel - contrast, brightness, hue, saturation, gamma  
-Change user agent for each channel  
-M3U playlist editor  
-TV archive  
-Localization  
+- Watching IPTV (from m3u / m3u8 playlist, local or remote)  
+- Viewing unencrypted streams UDP (multicast), HTTP, HLS (m3u8)  
+- Adding channels to favorites  
+- Recording TV programs  
+- Hotkeys  
+- Channel search  
+- TV program (EPG) support in XMLTV and JTV formats  
+- Display of technical information - video / audio codec, bit rate, resolution  
+- Channel groups (from playlist and custom)  
+- Hide channels  
+- Sorting channels  
+- Video settings for each channel - contrast, brightness, hue, saturation, gamma  
+- Change user agent for each channel  
+- M3U playlist editor  
+- TV archive  
+- Internalization  
 
 ## Requirements
 
