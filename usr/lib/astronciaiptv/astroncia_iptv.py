@@ -5714,7 +5714,7 @@ if __name__ == '__main__':
                 volume = int(player.volume - settings['volumechangestep'])
                 volume = max(volume, 0)
                 time_stop = time.time() + 3
-                if not fullscreen:
+                if fullscreen:
                     l1.show()
                     l1.setText2("{}: {}%".format(_('volume'), volume))
                 label7.setValue(volume)
@@ -6223,7 +6223,7 @@ if __name__ == '__main__':
             label7, label13, label7_1, label7_2,
             label8_1, label8_2, label8_3
         ]
-        for hlayout2_btn in hlayout2_btns: # TODO
+        for hlayout2_btn in hlayout2_btns:
             hlayout2.addWidget(hlayout2_btn)
         hlayout2.addStretch(1000000)
         hlayout2.addWidget(label11)
@@ -6648,7 +6648,6 @@ if __name__ == '__main__':
         dockWidgetVisible = False
         dockWidget2Visible = False
 
-        # TODO
         #show_lbls_fullscreen = labels
 
         show_lbls_fullscreen = [
