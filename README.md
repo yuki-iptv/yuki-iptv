@@ -1,9 +1,7 @@
 # Astroncia IPTV
 ### IPTV player with EPG support
 
-[![license](https://img.shields.io/badge/license-GPL%20v.3-green.svg)](https://gitlab.com/astroncia/iptv/-/blob/master/COPYING) [![PPA](https://img.shields.io/badge/PPA-available-green.svg)](https://launchpad.net/~astroncia/+archive/ubuntu/iptv) [![AUR](https://img.shields.io/aur/version/astronciaiptv)](https://aur.archlinux.org/packages/astronciaiptv/)  
-
-[![GUI](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/screenshots/astroncia-iptv-screenshot-thumb.png)](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/screenshots/astroncia-iptv-screenshot.png)  
+[![Screenshot](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/screenshots/astroncia-iptv-screenshot-thumb.png)](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/screenshots/astroncia-iptv-screenshot.png)  
 
 ## Download
 
@@ -27,7 +25,7 @@ If you got *No dirmngr* error when running gpg:
 ```sudo apt-get install dirmngr```  
 ```sudo dirmngr &```  
   
-[Arch Linux (AUR)](https://aur.archlinux.org/packages/astronciaiptv/)  
+[Arch Linux (**AUR**)](https://aur.archlinux.org/packages/astronciaiptv/)  
 
 ## Information
 
@@ -64,7 +62,7 @@ M3U playlist editor
 TV archive  
 Localization  
 
-## Dependencies
+## Requirements
 
 - Qt 6 *(or Qt 5)*
 - libmpv1 (>= 0.27.2)
