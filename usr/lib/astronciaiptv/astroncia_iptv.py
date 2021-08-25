@@ -212,7 +212,15 @@ try:
 except: # pylint: disable=bare-except
     settings_lang0 = LANG_DEFAULT
 
-LANG = lang[settings_lang0]['strings'] if settings_lang0 in lang else lang[LANG_DEFAULT]['strings']
+try:
+    LANG = lang[settings_lang0]['strings'] if settings_lang0 in \
+        lang else lang[LANG_DEFAULT]['strings']
+except: # pylint: disable=bare-except
+    print_with_time("")
+    print_with_time("ERROR: No locales found!")
+    print_with_time("Execute 'make' for create locale files.")
+    print_with_time("")
+    sys.exit(1)
 LANG_NAME = lang[settings_lang0]['strings']['name'] if settings_lang0 in lang \
     else lang[LANG_DEFAULT]['strings']['name']
 print_with_time("Settings locale: {}\n".format(LANG_NAME))
