@@ -111,12 +111,3 @@ For recordings view recommended [VLC media player](https://www.videolan.org/).
 ## Disclaimer
 
 Astroncia IPTV doesn't provide any playlists or other digital content.  
-
-## Channel logos (nonfree)
-
-[deb](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/chanicons/astroncia-iptv-channel-icons-0.0.7.deb) | [rpm](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/chanicons/astroncia-iptv-channel-icons-0.0.7-1.noarch.rpm)  
-
-or execute this command to install:  
-```curl -L --output - 'https://gitlab.com/astroncia/channel-icons/-/archive/master/channel-icons-master.tar.gz' | sudo tar -C /usr/share/astronciaiptv/ -zxvf - && sudo mv /usr/share/astronciaiptv/channel-icons-master/* /usr/share/astronciaiptv/ && sudo rmdir /usr/share/astronciaiptv/channel-icons-master```  
-
-*All rights to the logos of TV channels belong to their copyright holders.*  

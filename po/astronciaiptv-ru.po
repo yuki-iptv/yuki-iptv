@@ -349,7 +349,7 @@ msgid "timeshift"
 msgstr "Архив"
 
 msgid "jtvoffsetrecommendation"
-msgstr "Рекомендуется указать 0, если используется JTV"
+msgstr "Рекомендуется указать 0, если используется JTV\n\n(часовой пояс XMLTV игнорируется)"
 
 msgid "tab_main"
 msgstr "Общие"
