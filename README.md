@@ -1,13 +1,13 @@
 # Astroncia IPTV
 ### IPTV player with EPG support
 
-[![license](https://img.shields.io/badge/license-GPL%20v.3-green.svg)](https://gitlab.com/astroncia/iptv/-/blob/master/COPYING) [![PPA](https://img.shields.io/badge/PPA-available-green.svg)](https://launchpad.net/~astroncia/+archive/ubuntu/iptv) [![AUR](https://img.shields.io/aur/version/astronciaiptv)](https://aur.archlinux.org/packages/astronciaiptv/) [![Packaging status](https://repology.org/badge/tiny-repos/astronciaiptv.svg)](https://repology.org/project/astronciaiptv/versions)  
+[![license](https://img.shields.io/badge/license-GPL%20v.3-green.svg)](https://gitlab.com/astroncia/iptv/-/blob/master/COPYING) [![PPA](https://img.shields.io/badge/PPA-available-green.svg)](https://launchpad.net/~astroncia/+archive/ubuntu/iptv) [![AUR](https://img.shields.io/aur/version/astronciaiptv)](https://aur.archlinux.org/packages/astronciaiptv/)  
 
 [![GUI](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/screenshots/astroncia-iptv-screenshot-thumb.png)](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/screenshots/astroncia-iptv-screenshot.png)  
 
 ## Download
 
-deb and rpm packages available in [Releases](https://gitlab.com/astroncia/iptv/-/releases)  
+Download are available on [Releases](https://gitlab.com/astroncia/iptv/-/releases) page.  
   
 *AppImage / snap / flatpak / other "container" or "everything-in-one-file" formats are **NOT planned**!  
 Please do not ask about it!*  
@@ -45,7 +45,7 @@ Icons: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
   
 *Icons by [Font Awesome](https://fontawesome.com/)*  
 
-## Capabilities
+## Features
 
 Watching IPTV (from m3u8 playlist)  
 Viewing unencrypted streams UDP (multicast), HTTP, HLS (m3u8)  
@@ -62,6 +62,7 @@ Video settings for each channel - contrast, brightness, hue, saturation, gamma
 Change user agent for each channel  
 M3U playlist editor  
 TV archive  
+Localization  
 
 ## Dependencies
 
@@ -78,7 +79,7 @@ TV archive
 - [requests](https://pypi.org/project/requests/) (python3-requests)
 - [chardet](https://pypi.org/project/chardet/) (python3-chardet)
 
-## Installation
+## Installation from git
 
 **Installing dependencies:**
 
@@ -102,14 +103,9 @@ on Debian/Ubuntu:
 
 ```./start_linux.sh```
 
-## View recordings
+**Updating:**
 
-MKV container used for recordings  
-For recordings view recommended [VLC media player](https://www.videolan.org/).  
-
-## Program update
-
-```git pull https://gitlab.com/astroncia/iptv.git```  
+```git pull https://gitlab.com/astroncia/iptv.git```
 
 ## TV Channels and media content
 
