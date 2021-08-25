@@ -3419,26 +3419,15 @@ if __name__ == '__main__':
             try:
                 win_geometry = win.screen().availableGeometry()
             except: # pylint: disable=bare-except
-                #print_with_time(
-                #    "win.screen() unavailable (Qt too old), falling " + \
-                #    "back to QtWidgets.QDesktopWidget().screenGeometry"
-                #)
+                print_with_time(
+                    "win.screen() unavailable (Qt too old), falling " + \
+                    "back to QtWidgets.QDesktopWidget().screenGeometry"
+                )
                 win_geometry = QtWidgets.QDesktopWidget().screenGeometry(win)
             win_width = win_geometry.width()
             win_height = win_geometry.height()
             print_with_time("Screen size: {}x{}".format(win_width, win_height))
             return (win_width, win_height,)
-
-        def get_curwindow_pos_actual():
-            try:
-                win_geometry_1 = win.screen().availableGeometry()
-            except: # pylint: disable=bare-except
-                #print_with_time(
-                #    "win.screen() unavailable (Qt too old), falling " + \
-                #    "back to QtWidgets.QDesktopWidget().screenGeometry"
-                #)
-                win_geometry_1 = QtWidgets.QDesktopWidget().screenGeometry(win)
-            return win_geometry_1
 
         chan = QtWidgets.QLabel(_('nochannelselected'))
         chan.setAlignment(QtCore.Qt.AlignCenter)
@@ -3756,9 +3745,9 @@ if __name__ == '__main__':
                 #stop_label.hide()
                 label11.hide()
                 label12.hide()
-                #for lbl3 in hlayout2_btns:
-                #    if lbl3 not in show_lbls_fullscreen:
-                #        lbl3.hide()
+                for lbl3 in hlayout2_btns:
+                    if lbl3 not in show_lbls_fullscreen:
+                        lbl3.hide()
                 progress.hide()
                 start_label.hide()
                 stop_label.hide()
@@ -6195,6 +6184,11 @@ if __name__ == '__main__':
         label9.setToolTip(_('help'))
         label9.clicked.connect(show_help)
 
+        labels = [
+            label3, label4, label5, label5_0, label5_1, label5_2, label6, label7, label7_1,
+            label7_2, label8, label8_0, label8_1, label8_2, label8_3, label8_4, label8_5, label9
+        ]
+
         label12 = QtWidgets.QLabel('')
         label11 = QtWidgets.QLabel()
         myFont3 = QtGui.QFont()
@@ -6223,56 +6217,26 @@ if __name__ == '__main__':
         hlayout1.addWidget(progress)
         hlayout1.addWidget(stop_label)
 
-        all_labels = [
-            label3,
-            label4,
-            label5,
-            label5_0,
-            label5_1,
-            label5_2,
-            label6,
-            label7,
-            label7_1,
-            label7_2,
-            label8,
-            label8_0,
-            label8_1,
-            label8_2,
-            label8_3,
-            label8_4,
-            label8_5,
-            label9
-        ]
-
         hlayout2_btns = [
             label3, label4, label5, label5_1,
             label5_2, label5_0, label6,
             label7, label13, label7_1, label7_2,
             label8_1, label8_2, label8_3
         ]
-
-        show_lbls_fullscreen = [
-            label3, label4, label5, label5_1,
-            label6, label7, label13, label7_1, label7_2,
-            label8_1, label8_2, label8_3
-            , label9 # TODO
-        ]
-
-        fs_widget = QtWidgets.QWidget()
-        fs_widget_l = QtWidgets.QHBoxLayout()
-        label8.setMaximumWidth(32)
-        fs_widget_l.addWidget(label8)
-        fs_widget.setLayout(fs_widget_l)
-
         for hlayout2_btn in hlayout2_btns:
             hlayout2.addWidget(hlayout2_btn)
         hlayout2.addStretch(1000000)
         hlayout2.addWidget(label11)
         hlayout2.addWidget(label12)
 
+        #hlayout1.addStretch(1)
         vlayout3.addLayout(hlayout2)
+
         hlayout2.addStretch(1)
         vlayout3.addLayout(hlayout1)
+
+        #hlayout2.addStretch(1)
+        #vlayout3.addLayout(hlayout3)
 
         widget2 = QtWidgets.QWidget()
         widget2.setLayout(vlayout3)
@@ -6684,6 +6648,14 @@ if __name__ == '__main__':
         dockWidgetVisible = False
         dockWidget2Visible = False
 
+        #show_lbls_fullscreen = labels
+
+        show_lbls_fullscreen = [
+            label3, label4, label5, label5_1,
+            label6, label7, label13, label7_1, label7_2,
+            label8_1, label8_2, label8_3
+        ]
+
         dockWidget.installEventFilter(win)
 
         prev_cursor = QtGui.QCursor.pos()
@@ -6800,7 +6772,7 @@ if __name__ == '__main__':
                     QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
                     QtCore.Qt.X11BypassWindowManagerHint #| QtCore.Qt.Popup
                 )
-            cp_layout.addWidget(fs_widget)
+            cp_layout.addWidget(widget2)
             lb2_width = 0
             for lb2_wdg in show_lbls_fullscreen:
                 if hlayout2.indexOf(lb2_wdg) != -1:
@@ -6810,11 +6782,12 @@ if __name__ == '__main__':
                 #650
                 lb2_width
             )
-            p_3 = (get_curwindow_pos_actual().center() - controlpanel_widget.rect().center()).x()
-            controlpanel_widget.move(
-                p_3,
-                maptoglobal(0, win.height() - 100).y()
-            )
+            p_3 = win.main_widget.frameGeometry().center() - QtCore.QRect(
+                QtCore.QPoint(), controlpanel_widget.sizeHint()
+            ).center()
+            controlpanel_widget.move(maptoglobal(
+                p_3.x() - 100, win.height() - 100
+            ))
             controlpanel_widget.show()
 
         def hide_controlpanel():
