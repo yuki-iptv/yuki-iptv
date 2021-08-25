@@ -10,12 +10,12 @@ Downloads are available on [Releases](https://gitlab.com/astroncia/iptv/-/releas
 *AppImage / snap / flatpak / other "container" or "everything-in-one-file" formats are **NOT planned**!  
 Please do not ask about it!*  
   
-For Ubuntu / Linux Mint **recommended** install from [Launchpad PPA - ppa:astroncia/iptv](https://launchpad.net/~astroncia/+archive/ubuntu/iptv):  
+For **Ubuntu** / **Linux Mint** recommended install from [Launchpad PPA - ppa:astroncia/iptv](https://launchpad.net/~astroncia/+archive/ubuntu/iptv):  
 ```sudo add-apt-repository ppa:astroncia/iptv -y```  
 ```sudo apt-get update```  
 ```sudo apt-get install astroncia-iptv```  
   
-Installation for Debian:  
+Installation for **Debian**:  
 ```sudo gpg --no-default-keyring --keyring /usr/share/keyrings/astroncia-iptv-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0x20F6B78167C962EA29F8112EB4A4D3FDCE021A84```  
 ```echo 'deb [signed-by=/usr/share/keyrings/astroncia-iptv-archive-keyring.gpg] http://ppa.launchpad.net/astroncia/iptv/ubuntu focal main' | sudo tee /etc/apt/sources.list.d/astroncia-iptv.list```  
 ```sudo apt-get update```  
@@ -25,7 +25,7 @@ If you got *No dirmngr* error when running gpg:
 ```sudo apt-get install dirmngr```  
 ```sudo dirmngr &```  
   
-[Arch Linux (**AUR**)](https://aur.archlinux.org/packages/astronciaiptv/)  
+[**Arch Linux** (AUR)](https://aur.archlinux.org/packages/astronciaiptv/)  
 
 ## Information
 
