@@ -2,7 +2,7 @@ Source: astroncia-iptv
 Section: video
 Priority: optional
 Build-Depends: debhelper (>= 9)
-Maintainer: astroncia <kestraly@gmail.com>
+Maintainer: Astroncia <kestraly@gmail.com>
 
 Package: astroncia-iptv
 Depends: ffmpeg, libmpv1 (>= 0.27.2), python3 (>= 3.6.0-1), python3-requests, python3-chardet, python3-pyqt5, python3-pil, python3-pandas, python3-gi, python3-pydbus, python3-unidecode
