@@ -3745,7 +3745,7 @@ if __name__ == '__main__':
                 #stop_label.hide()
                 label11.hide()
                 label12.hide()
-                for lbl3 in labels:
+                for lbl3 in hlayout2_btns:
                     if lbl3 not in show_lbls_fullscreen:
                         lbl3.hide()
                 progress.hide()
@@ -3785,7 +3785,7 @@ if __name__ == '__main__':
                     dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
                 label11.show()
                 label12.show()
-                for lbl3 in labels:
+                for lbl3 in hlayout2_btns:
                     if lbl3 not in show_lbls_fullscreen:
                         lbl3.show()
                 dockWidget2.show()
@@ -6651,8 +6651,9 @@ if __name__ == '__main__':
         #show_lbls_fullscreen = labels
 
         show_lbls_fullscreen = [
-            label3, label4, label5, label5_1, label6, label7, label7_1,
-            label7_2, label8, label8_0, label8_1, label8_2, label8_3, label8_4, label8_5, label9
+            label3, label4, label5, label5_1,
+            label6, label7, label13, label7_1, label7_2,
+            label8_1, label8_2, label8_3
         ]
 
         dockWidget.installEventFilter(win)
