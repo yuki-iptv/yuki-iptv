@@ -108,6 +108,18 @@ For recordings view recommended [VLC media player](https://www.videolan.org/).
 
 ```git pull https://gitlab.com/astroncia/iptv.git```  
 
-## Disclaimer
+## TV Channels and media content
 
-Astroncia IPTV doesn't provide any playlists or other digital content.  
+Astroncia IPTV does not provide content or TV channels, it is a player application which streams from IPTV providers.  
+  
+By default, Astroncia IPTV is configured with one IPTV provider called Free-TV: [https://github.com/Free-TV/IPTV](https://github.com/Free-TV/IPTV).  
+  
+This provider was chosen because it satisfied the following criterias:  
+  
+- It only includes free, legal, publicly available content  
+- It groups TV channels by countries  
+- It doesn't include adult content  
+  
+Issues relating to TV channels and media content should be addressed directly to the relevant provider.  
+  
+Note: Feel free to remove Free-TV from Astroncia IPTV if you don't use it, or add any other provider you may have access to or local M3U playlists.  
