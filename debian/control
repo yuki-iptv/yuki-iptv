@@ -1,14 +1,24 @@
 Source: astroncia-iptv
 Section: video
 Priority: optional
-Build-Depends: debhelper (>= 9)
 Maintainer: Astroncia <kestraly@gmail.com>
+Build-Depends: debhelper (>= 9)
+Standards-Version: 3.9.6
+Rules-Requires-Root: no
 
 Package: astroncia-iptv
-Depends: ffmpeg, libmpv1 (>= 0.27.2), python3 (>= 3.6.0-1), python3-requests, python3-chardet, python3-pyqt5, python3-pil, python3-pandas, python3-gi, python3-pydbus, python3-unidecode
-Recommends: libvdpau1, va-driver-all | va-driver
-Section: video
-Priority: optional
 Architecture: all
+Depends: ffmpeg,
+         libmpv1 (>= 0.27.2),
+         python3 (>= 3.6.0-1),
+         python3-requests,
+         python3-chardet,
+         python3-pyqt5,
+         python3-pil,
+         python3-pandas,
+         python3-gi,
+         python3-pydbus,
+         python3-unidecode
+Recommends: libvdpau1, va-driver-all | va-driver
 Description: IPTV player
  Simple IPTV player with EPG support.
