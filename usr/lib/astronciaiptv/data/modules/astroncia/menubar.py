@@ -109,6 +109,7 @@ def init_menubar(data): # pylint: disable=too-many-statements
     AstronciaData.playlists.triggered.connect(lambda: AstronciaData.show_playlists())
 
     AstronciaData.m3uEditor = qaction(_('menubar_m3ueditor') + AstronciaData.str_offset, data)
+    AstronciaData.m3uEditor.setShortcut(qkeysequence("Ctrl+E"))
     AstronciaData.m3uEditor.triggered.connect(lambda: AstronciaData.show_m3u_editor())
 
     AstronciaData.exitAction = qaction(_('menubar_exit'), data)
@@ -180,6 +181,7 @@ def init_menubar(data): # pylint: disable=too-many-statements
 
     AstronciaData.csforchannel = qaction(_('menubar_csforchannel') + AstronciaData.str_offset, data)
     AstronciaData.csforchannel.triggered.connect(lambda: AstronciaData.main_channel_settings())
+    AstronciaData.csforchannel.setShortcut(qkeysequence("Ctrl+S"))
 
     AstronciaData.screenshot = qaction(_('menubar_screenshot'), data)
     AstronciaData.screenshot.triggered.connect(lambda: AstronciaData.do_screenshot())

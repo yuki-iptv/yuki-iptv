@@ -1619,7 +1619,6 @@ if __name__ == '__main__':
 
         scheduler_layout_main = QtWidgets.QVBoxLayout()
         scheduler_layout_main.addWidget(scheduler_widget)
-        #scheduler_layout_main.addWidget(warning_lbl)
         scheduler_widget_main = QtWidgets.QWidget()
         scheduler_widget_main.setLayout(scheduler_layout_main)
 
@@ -2133,8 +2132,6 @@ if __name__ == '__main__':
                 setVideoAspect(
                     videoaspect_vars[list(videoaspect_vars)[videoaspect_choose.currentIndex()]]
                 )
-                #stopPlayer()
-                #doPlay(playing_url, uas[useragent_choose.currentIndex()])
             btn_update.click()
             chan_win.close()
 
@@ -2419,16 +2416,8 @@ if __name__ == '__main__':
         )
         fastview_label.setWordWrap(True)
         fastview_label.setText(
-            #'<span style="color:#666600;">' + \
-            #_('jtvoffsetrecommendation') + '</span><br>' + \
-            '<span style="color:#1D877C;">' + \
-            _('fasterview') + '</span><br>' #+ \
-            #'<span style="color:#b35900;">' + \
-            #_('multipleplnote') + '</span>'
+            '<span style="color:#1D877C;">' + _('fasterview') + '</span><br>'
         )
-        #fastview_label.setStyleSheet('color: #1D877C')
-        #multipleplnote_label = QtWidgets.QLabel(_('multipleplnote'))
-        #multipleplnote_label.setStyleSheet('color: #b35900')
         hours_label = QtWidgets.QLabel(_('hours'))
 
         def reset_channel_settings():
@@ -2560,33 +2549,6 @@ if __name__ == '__main__':
         soffset.setDecimals(1)
         soffset.setValue(settings["timezone"])
 
-        #sframe = QtWidgets.QFrame()
-        #sframe.setFrameShape(QtWidgets.QFrame.HLine)
-        #sframe.setFrameShadow(QtWidgets.QFrame.Raised)
-        #sframe1 = QtWidgets.QFrame()
-        #sframe1.setFrameShape(QtWidgets.QFrame.HLine)
-        #sframe1.setFrameShadow(QtWidgets.QFrame.Raised)
-        #sframe2 = QtWidgets.QFrame()
-        #sframe2.setFrameShape(QtWidgets.QFrame.HLine)
-        #sframe2.setFrameShadow(QtWidgets.QFrame.Raised)
-        #sframe3 = QtWidgets.QFrame()
-        #sframe3.setFrameShape(QtWidgets.QFrame.HLine)
-        #sframe3.setFrameShadow(QtWidgets.QFrame.Raised)
-        sframe4 = QtWidgets.QFrame()
-        sframe4.setFrameShape(QtWidgets.QFrame.HLine)
-        sframe4.setFrameShadow(QtWidgets.QFrame.Raised)
-        sframe5 = QtWidgets.QFrame()
-        sframe5.setFrameShape(QtWidgets.QFrame.HLine)
-        sframe5.setFrameShadow(QtWidgets.QFrame.Raised)
-        sframe6 = QtWidgets.QFrame()
-        sframe6.setFrameShape(QtWidgets.QFrame.HLine)
-        sframe6.setFrameShadow(QtWidgets.QFrame.Raised)
-        sframe7 = QtWidgets.QFrame()
-        sframe7.setFrameShape(QtWidgets.QFrame.HLine)
-        sframe7.setFrameShadow(QtWidgets.QFrame.Raised)
-        sframe8 = QtWidgets.QFrame()
-        sframe8.setFrameShape(QtWidgets.QFrame.HLine)
-        sframe8.setFrameShadow(QtWidgets.QFrame.Raised)
         scache1 = QtWidgets.QSpinBox()
         scache1.setMinimum(0)
         scache1.setMaximum(120)
@@ -2860,7 +2822,6 @@ if __name__ == '__main__':
 
         grid2 = QtWidgets.QVBoxLayout()
         grid2.addWidget(tabs)
-        #grid2.addWidget(sframe8)
 
         grid3 = QtWidgets.QGridLayout()
         grid3.setSpacing(0)
@@ -3427,15 +3388,18 @@ if __name__ == '__main__':
             try:
                 win_geometry = win.screen().availableGeometry()
             except: # pylint: disable=bare-except
-                print_with_time(
-                    "win.screen() unavailable (Qt too old), falling " + \
-                    "back to QtWidgets.QDesktopWidget().screenGeometry"
-                )
                 win_geometry = QtWidgets.QDesktopWidget().screenGeometry(win)
             win_width = win_geometry.width()
             win_height = win_geometry.height()
             print_with_time("Screen size: {}x{}".format(win_width, win_height))
             return (win_width, win_height,)
+
+        def get_curwindow_pos_actual():
+            try:
+                win_geometry_1 = win.screen().availableGeometry()
+            except: # pylint: disable=bare-except
+                win_geometry_1 = QtWidgets.QDesktopWidget().screenGeometry(win)
+            return win_geometry_1
 
         chan = QtWidgets.QLabel(_('nochannelselected'))
         chan.setAlignment(QtCore.Qt.AlignCenter)
@@ -5391,16 +5355,20 @@ if __name__ == '__main__':
                 msg.exec()
 
         def showhideplaylist():
-            try:
-                key_t()
-            except: # pylint: disable=bare-except
-                pass
+            global fullscreen
+            if not fullscreen:
+                try:
+                    key_t()
+                except: # pylint: disable=bare-except
+                    pass
 
         def lowpanel_ch_1():
-            try:
-                lowpanel_ch()
-            except: # pylint: disable=bare-except
-                pass
+            global fullscreen
+            if not fullscreen:
+                try:
+                    lowpanel_ch()
+                except: # pylint: disable=bare-except
+                    pass
 
         def showhideeverything():
             global fullscreen
@@ -6192,11 +6160,6 @@ if __name__ == '__main__':
         label9.setToolTip(_('help'))
         label9.clicked.connect(show_help)
 
-        labels = [
-            label3, label4, label5, label5_0, label5_1, label5_2, label6, label7, label7_1,
-            label7_2, label8, label8_0, label8_1, label8_2, label8_3, label8_4, label8_5, label9
-        ]
-
         label12 = QtWidgets.QLabel('')
         label11 = QtWidgets.QLabel()
         myFont3 = QtGui.QFont()
@@ -6225,26 +6188,55 @@ if __name__ == '__main__':
         hlayout1.addWidget(progress)
         hlayout1.addWidget(stop_label)
 
+        all_labels = [
+            label3,
+            label4,
+            label5,
+            label5_0,
+            label5_1,
+            label5_2,
+            label6,
+            label7,
+            label7_1,
+            label7_2,
+            label8,
+            label8_0,
+            label8_1,
+            label8_2,
+            label8_3,
+            label8_4,
+            label8_5,
+            label9
+        ]
+
         hlayout2_btns = [
             label3, label4, label5, label5_1,
             label5_2, label5_0, label6,
             label7, label13, label7_1, label7_2,
             label8_1, label8_2, label8_3
         ]
+
+        show_lbls_fullscreen = [
+            label3, label4, label5, label5_1,
+            label6, label7, label13, label7_1, label7_2,
+            label8_1, label8_2, label8_3
+        ]
+
+        fs_widget = QtWidgets.QWidget()
+        fs_widget_l = QtWidgets.QHBoxLayout()
+        label8.setMaximumWidth(32)
+        fs_widget_l.addWidget(label8)
+        fs_widget.setLayout(fs_widget_l)
+
         for hlayout2_btn in hlayout2_btns:
             hlayout2.addWidget(hlayout2_btn)
         hlayout2.addStretch(1000000)
         hlayout2.addWidget(label11)
         hlayout2.addWidget(label12)
 
-        #hlayout1.addStretch(1)
         vlayout3.addLayout(hlayout2)
-
         hlayout2.addStretch(1)
         vlayout3.addLayout(hlayout1)
-
-        #hlayout2.addStretch(1)
-        #vlayout3.addLayout(hlayout3)
 
         widget2 = QtWidgets.QWidget()
         widget2.setLayout(vlayout3)
@@ -6656,14 +6648,6 @@ if __name__ == '__main__':
         dockWidgetVisible = False
         dockWidget2Visible = False
 
-        #show_lbls_fullscreen = labels
-
-        show_lbls_fullscreen = [
-            label3, label4, label5, label5_1,
-            label6, label7, label13, label7_1, label7_2,
-            label8_1, label8_2, label8_3
-        ]
-
         dockWidget.installEventFilter(win)
 
         prev_cursor = QtGui.QCursor.pos()
@@ -6780,6 +6764,7 @@ if __name__ == '__main__':
                     QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
                     QtCore.Qt.X11BypassWindowManagerHint #| QtCore.Qt.Popup
                 )
+            #cp_layout.addWidget(fs_widget)
             cp_layout.addWidget(widget2)
             lb2_width = 0
             for lb2_wdg in show_lbls_fullscreen:
@@ -6790,6 +6775,11 @@ if __name__ == '__main__':
                 #650
                 lb2_width
             )
+            #p_3 = (get_curwindow_pos_actual().center() - controlpanel_widget.rect().center()).x()
+            #controlpanel_widget.move(
+            #    p_3,
+            #    maptoglobal(0, win.height() - 100).y()
+            #)
             p_3 = win.main_widget.frameGeometry().center() - QtCore.QRect(
                 QtCore.QPoint(), controlpanel_widget.sizeHint()
             ).center()
@@ -6980,6 +6970,8 @@ if __name__ == '__main__':
             "Ctrl+Q": app.quit,
             "Ctrl+O": show_playlists,
             "Ctrl+U": force_update_epg,
+            "Ctrl+S": main_channel_settings,
+            "Ctrl+E": show_m3u_editor,
             QtCore.Qt.Key_9: my_down_binding_execute,
             QtCore.Qt.Key_0: my_up_binding_execute,
             QtCore.Qt.Key_Left: (lambda: mpv_seek(-10)),
