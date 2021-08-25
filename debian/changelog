@@ -1,3 +1,9 @@
+astroncia-iptv (0.0.76) unstable; urgency=medium
+
+  * GUI improvements
+
+ -- Astroncia <kestraly@gmail.com>  Thu, 26 Aug 2021 01:39:46 +0300
+
 astroncia-iptv (0.0.75) unstable; urgency=medium
 
   * Fix startup if no en lang
