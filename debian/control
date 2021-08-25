@@ -19,6 +19,6 @@ Depends: ffmpeg,
          python3-gi,
          python3-pydbus,
          python3-unidecode
-Recommends: libvdpau1, va-driver-all | va-driver
+Recommends: libvdpau1, va-driver-all | va-driver, youtube-dl
 Description: IPTV player
  Simple IPTV player with EPG support.
