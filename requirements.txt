@@ -1,8 +1,0 @@
-requests
-PySide6
-Pillow
-pandas
-PyGObject
-pydbus
-unidecode
-chardet

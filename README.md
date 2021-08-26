@@ -77,34 +77,6 @@ Icons: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 - [requests](https://pypi.org/project/requests/) (python3-requests)
 - [chardet](https://pypi.org/project/chardet/) (python3-chardet)
 
-## Installation from git
-
-**Installing dependencies:**
-
-on Debian/Ubuntu:  
-```sudo apt update && sudo apt install ffmpeg git libmpv1 python3 python3-requests python3-chardet python3-pyqt5 python3-pil python3-pandas python3-gi python3-unidecode python3-pydbus python3-pip python3-setuptools python3-dev python3-wheel```
-
-**Cloning repository:**
-
-```git clone --depth=1 https://gitlab.com/astroncia/iptv.git astronciaiptv```  
-```cd astronciaiptv```  
-
-**Installing Python modules:**  
-
-```python3 -m pip install -r requirements.txt```  
-
-**Create translation files:**  
-  
-```make```  
-
-**Starting:**
-
-```./start_linux.sh```
-
-**Updating:**
-
-```git pull https://gitlab.com/astroncia/iptv.git```
-
 ## TV Channels and media content
 
 Astroncia IPTV does not provide content or TV channels, it is a player application which streams from IPTV providers.  
