@@ -73,6 +73,7 @@ Icons: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 - [Unidecode](https://pypi.org/project/Unidecode/) (python3-unidecode)
 - [requests](https://pypi.org/project/requests/) (python3-requests)
 - [chardet](https://pypi.org/project/chardet/) (python3-chardet)
+- [setproctitle](https://pypi.org/project/setproctitle/) (python3-setproctitle)
 
 ## TV Channels and media content
 

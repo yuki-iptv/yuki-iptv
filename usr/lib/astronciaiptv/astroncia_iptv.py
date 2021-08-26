@@ -2,6 +2,7 @@
 '''Astroncia IPTV - Cross platform IPTV player'''
 # pylint: disable=invalid-name, global-statement, missing-docstring, wrong-import-position
 # pylint: disable=too-many-lines, ungrouped-imports, too-many-statements, broad-except
+# pylint: disable=c-extension-no-member
 #
 # Icons by Font Awesome ( https://fontawesome.com/ ) ( https://fontawesome.com/license )
 #
@@ -50,6 +51,7 @@ freeze_support()
 from functools import partial
 import chardet
 import requests
+import setproctitle
 from unidecode import unidecode
 from astroncia.qt import get_qt_backend
 from astroncia.lang import lang, init_lang, _
@@ -133,6 +135,8 @@ AUDIO_SAMPLE_FORMATS = {"u16": "unsigned 16 bits", \
 
 class stream_info: # pylint: disable=too-few-public-methods
     pass
+
+setproctitle.setproctitle("astronciaiptv")
 
 stream_info.video_properties = {}
 stream_info.audio_properties = {}
