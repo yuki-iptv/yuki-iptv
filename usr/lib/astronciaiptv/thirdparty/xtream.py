@@ -19,7 +19,7 @@ Github: superolmo
 __version__ = '0.4.0'
 __author__ = 'Claudio Olmi'
 
-from data.modules.astroncia.time import print_with_time
+from astroncia.time import print_with_time
 from typing import List
 import requests
 import time

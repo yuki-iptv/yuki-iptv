@@ -20,8 +20,8 @@ import os
 import subprocess
 import threading
 from pathlib import Path
-from data.modules.astroncia.ua import get_user_agent_for_channel
-from data.modules.astroncia.time import print_with_time
+from astroncia.ua import get_user_agent_for_channel
+from astroncia.time import print_with_time
 
 class astroncia_data: # pylint: disable=too-few-public-methods
     ffmpeg_proc = None

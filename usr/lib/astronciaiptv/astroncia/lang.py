@@ -20,7 +20,7 @@ import os
 import glob
 import gettext
 from pathlib import Path
-#from data.modules.astroncia.time import print_with_time
+#from astroncia.time import print_with_time
 
 class LangData: # pylint: disable=too-few-public-methods
     '''Class for not using globals'''

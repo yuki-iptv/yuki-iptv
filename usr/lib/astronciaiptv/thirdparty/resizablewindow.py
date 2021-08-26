@@ -1,4 +1,4 @@
-from data.modules.astroncia.qt import get_qt_backend
+from astroncia.qt import get_qt_backend
 qt_backend, QtWidgets, QtCore, QtGui, QShortcut = get_qt_backend()
 D=max
 B=None

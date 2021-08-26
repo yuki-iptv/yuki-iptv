@@ -2,7 +2,7 @@ import zipfile
 import io
 import datetime
 import struct
-from data.modules.astroncia.time import print_with_time
+from astroncia.time import print_with_time
 
 def filetime_to_datetime(time, settings):
     if len(time) == 8:

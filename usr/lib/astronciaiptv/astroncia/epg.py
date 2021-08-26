@@ -21,10 +21,10 @@ Copyright (C) 2021 Astroncia
 import os
 import datetime
 import requests
-from data.modules.astroncia.ua import uas
-from data.modules.astroncia.jtv import parse_jtv
-from data.modules.astroncia.xmltv import parse_as_xmltv
-from data.modules.astroncia.time import print_with_time
+from astroncia.ua import uas
+from astroncia.jtv import parse_jtv
+from astroncia.xmltv import parse_as_xmltv
+from astroncia.time import print_with_time
 
 def load_epg(epg_url, user_agent):
     '''Load EPG file'''

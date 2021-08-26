@@ -51,30 +51,30 @@ from functools import partial
 import chardet
 import requests
 from unidecode import unidecode
-from data.modules.astroncia.qt import get_qt_backend
-from data.modules.astroncia.lang import lang, init_lang, _
-from data.modules.astroncia.ua import user_agent, uas, ua_names
-from data.modules.astroncia.epg import worker
-from data.modules.astroncia.record import record, record_return, stop_record, \
+from astroncia.qt import get_qt_backend
+from astroncia.lang import lang, init_lang, _
+from astroncia.ua import user_agent, uas, ua_names
+from astroncia.epg import worker
+from astroncia.record import record, record_return, stop_record, \
     async_wait_process, make_ffmpeg_screenshot, is_ffmpeg_recording
-from data.modules.astroncia.playlists import iptv_playlists
-from data.modules.astroncia.menubar import init_astroncia_menubar, init_menubar_player, \
+from astroncia.playlists import iptv_playlists
+from astroncia.menubar import init_astroncia_menubar, init_menubar_player, \
     populate_menubar, update_menubar, get_active_vf_filters, get_first_run, get_seq
-from data.modules.astroncia.time import print_with_time, get_app_log, get_mpv_log
-from data.modules.astroncia.epgurls import EPG_URLS
-from data.modules.astroncia.xtreamtom3u import convert_xtream_to_m3u
-from data.modules.thirdparty.conversion import convert_size, humanbytes, format_seconds_to_hhmmss
-from data.modules.thirdparty.m3u import M3uParser
-from data.modules.thirdparty.m3ueditor import Viewer
-from data.modules.thirdparty.xtream import XTream
-from data.modules.thirdparty.levenshtein import damerau_levenshtein
+from astroncia.time import print_with_time, get_app_log, get_mpv_log
+from astroncia.epgurls import EPG_URLS
+from astroncia.xtreamtom3u import convert_xtream_to_m3u
+from thirdparty.conversion import convert_size, humanbytes, format_seconds_to_hhmmss
+from thirdparty.m3u import M3uParser
+from thirdparty.m3ueditor import Viewer
+from thirdparty.xtream import XTream
+from thirdparty.levenshtein import damerau_levenshtein
 
 qt_backend, QtWidgets, QtCore, QtGui, QShortcut = get_qt_backend()
 if qt_backend == 'none' or not QtWidgets:
     print_with_time("ERROR: No Qt library found!")
     sys.exit(1)
 
-from data.modules.thirdparty.resizablewindow import ResizableWindow
+from thirdparty.resizablewindow import ResizableWindow
 
 if qt_backend == 'PyQt5':
     qt_icon_critical = 3
@@ -88,10 +88,10 @@ else:
 if not os.name == 'nt':
     try:
         from gi.repository import GLib
-        from data.modules.thirdparty.mpris_server.adapters import PlayState, MprisAdapter, \
+        from thirdparty.mpris_server.adapters import PlayState, MprisAdapter, \
           Microseconds, VolumeDecimal, RateDecimal, Track, DEFAULT_RATE
-        from data.modules.thirdparty.mpris_server.events import EventAdapter
-        from data.modules.thirdparty.mpris_server.server import Server
+        from thirdparty.mpris_server.events import EventAdapter
+        from thirdparty.mpris_server.server import Server
     except: # pylint: disable=bare-except
         print_with_time("Failed to init MPRIS libraries!")
 
@@ -328,10 +328,10 @@ if __name__ == '__main__':
                 sys.exit(1)
 
         try:
-            from data.modules.thirdparty import mpv
+            from thirdparty import mpv
         except: # pylint: disable=bare-except
             print_with_time("Falling back to old mpv library...")
-            from data.modules.thirdparty import mpv_old as mpv
+            from thirdparty import mpv_old as mpv
 
         if not os.path.isdir(LOCAL_DIR):
             os.mkdir(LOCAL_DIR)
@@ -649,7 +649,7 @@ if __name__ == '__main__':
             ICONS_FOLDER = str(Path('..', '..', '..', 'share', 'astronciaiptv', 'icons'))
 
         main_icon = QtGui.QIcon(str(
-            Path(os.path.dirname(__file__), 'data', ICONS_FOLDER, 'tv-blue.png')
+            Path(os.path.dirname(__file__), 'astroncia', ICONS_FOLDER, 'tv-blue.png')
         ))
         if os.path.isfile(str(Path(LOCAL_DIR, 'customicon.png'))):
             main_icon = QtGui.QIcon(str(Path(LOCAL_DIR, 'customicon.png')))
@@ -902,7 +902,7 @@ if __name__ == '__main__':
         timer.start(500)
         timer.timeout.connect(lambda: None)
 
-        TV_ICON = QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'tv.png')))
+        TV_ICON = QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'tv.png')))
         ICONS_CACHE = {}
         ICONS_CACHE_FETCHED = {}
         ICONS_CACHE_FETCHED_EPG = {}
@@ -1089,10 +1089,10 @@ if __name__ == '__main__':
         epg_edit_1 = QtWidgets.QLineEdit()
         epg_edit_1.setPlaceholderText(_('filepath'))
         m3u_file_1 = QtWidgets.QPushButton()
-        m3u_file_1.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'file.png'))))
+        m3u_file_1.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'file.png'))))
         m3u_file_1.clicked.connect(m3u_file_1_clicked)
         epg_file_1 = QtWidgets.QPushButton()
-        epg_file_1.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'file.png'))))
+        epg_file_1.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'file.png'))))
         epg_file_1.clicked.connect(epg_file_1_clicked)
         save_btn_1 = QtWidgets.QPushButton(_('save'))
         save_btn_1.setStyleSheet('font-weight: bold; color: green;')
@@ -1973,7 +1973,7 @@ if __name__ == '__main__':
             if not ignore:
                 print_with_time("Disabling deinterlace for main.png")
                 player.deinterlace = False
-            player.play(str(Path('data', ICONS_FOLDER, 'main.png')))
+            player.play(str(Path('astroncia', ICONS_FOLDER, 'main.png')))
             if (not os.name == 'nt') and event_handler:
                 try:
                     event_handler.on_title()
@@ -2029,7 +2029,7 @@ if __name__ == '__main__':
                 mpv_override_stop(ignore)
             except: # pylint: disable=bare-except
                 player.loop = True
-                mpv_override_play(str(Path('data', ICONS_FOLDER, 'main.png')))
+                mpv_override_play(str(Path('astroncia', ICONS_FOLDER, 'main.png')))
 
         def setVideoAspect(va):
             if va == 0:
@@ -2523,23 +2523,23 @@ if __name__ == '__main__':
             save_settings()
 
         sm3ufile = QtWidgets.QPushButton()
-        sm3ufile.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'file.png'))))
+        sm3ufile.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'file.png'))))
         sm3ufile.clicked.connect(m3u_select)
         sm3uupd = QtWidgets.QPushButton()
-        sm3uupd.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'update.png'))))
+        sm3uupd.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'update.png'))))
         sm3uupd.clicked.connect(update_m3u)
         sm3uupd.setToolTip(_('update'))
 
         sepgfile = QtWidgets.QPushButton()
-        sepgfile.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'file.png'))))
+        sepgfile.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'file.png'))))
         sepgfile.clicked.connect(epg_select)
         sepgupd = QtWidgets.QPushButton()
-        sepgupd.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'update.png'))))
+        sepgupd.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'update.png'))))
         sepgupd.clicked.connect(force_update_epg)
         sepgupd.setToolTip(_('update'))
 
         sfolder = QtWidgets.QPushButton()
-        sfolder.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'file.png'))))
+        sfolder.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'file.png'))))
         sfolder.clicked.connect(save_folder_select)
 
         soffset = QtWidgets.QDoubleSpinBox()
@@ -2919,9 +2919,9 @@ if __name__ == '__main__':
                 license_win.hide()
 
         license_str = "GPLv3"
-        if os.path.isfile(str(Path('data', 'modules', 'astroncia', 'license.txt'))):
+        if os.path.isfile(str(Path('astroncia', 'license.txt'))):
             license_file = open(
-                str(Path('data', 'modules', 'astroncia', 'license.txt')), 'r', encoding="utf8"
+                str(Path('astroncia', 'license.txt')), 'r', encoding="utf8"
             )
             license_str = license_file.read()
             license_file.close()
@@ -3417,7 +3417,7 @@ if __name__ == '__main__':
             wdg3.move(int(xg1), int(yg1) + int(offset1))
 
         loading1 = QtWidgets.QLabel(win)
-        loading_movie = QtGui.QMovie(str(Path('data', ICONS_FOLDER, 'loading.gif')))
+        loading_movie = QtGui.QMovie(str(Path('astroncia', ICONS_FOLDER, 'loading.gif')))
         loading1.setMovie(loading_movie)
         loading1.setStyleSheet('background-color: white;')
         loading1.resize(32, 32)
@@ -3426,7 +3426,7 @@ if __name__ == '__main__':
         loading1.hide()
 
         loading2 = QtWidgets.QLabel(win)
-        loading_movie2 = QtGui.QMovie(str(Path('data', ICONS_FOLDER, 'recordwait.gif')))
+        loading_movie2 = QtGui.QMovie(str(Path('astroncia', ICONS_FOLDER, 'recordwait.gif')))
         loading2.setMovie(loading_movie2)
         loading2.setToolTip(_('ffmpeg_processing'))
         loading2.resize(32, 32)
@@ -3648,11 +3648,11 @@ if __name__ == '__main__':
             global autoclosemenu_time
             autoclosemenu_time = -1
             if player.pause:
-                label3.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'pause.png'))))
+                label3.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'pause.png'))))
                 label3.setToolTip(_('pause'))
                 mpv_override_pause(False)
             else:
-                label3.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'play.png'))))
+                label3.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'play.png'))))
                 label3.setToolTip(_('play'))
                 mpv_override_pause(True)
 
@@ -3667,7 +3667,7 @@ if __name__ == '__main__':
             stopPlayer()
             player.loop = True
             player.deinterlace = False
-            mpv_override_play(str(Path('data', ICONS_FOLDER, 'main.png')))
+            mpv_override_play(str(Path('astroncia', ICONS_FOLDER, 'main.png')))
             chan.setText(_('nochannelselected'))
             progress.hide()
             start_label.hide()
@@ -3798,14 +3798,16 @@ if __name__ == '__main__':
             l1.show()
             if player.mute:
                 if old_value > 50:
-                    label6.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'volume.png'))))
+                    label6.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'volume.png'))))
                 else:
-                    label6.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'volume-low.png'))))
+                    label6.setIcon(
+                        QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'volume-low.png')))
+                    )
                 mpv_override_mute(False)
                 label7.setValue(old_value)
                 l1.setText2("{}: {}%".format(_('volume'), int(old_value)))
             else:
-                label6.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'mute.png'))))
+                label6.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'mute.png'))))
                 mpv_override_mute(True)
                 old_value = label7.value()
                 label7.setValue(0)
@@ -3829,13 +3831,15 @@ if __name__ == '__main__':
             mpv_override_volume(vol)
             if vol == 0:
                 mpv_override_mute(True)
-                label6.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'mute.png'))))
+                label6.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'mute.png'))))
             else:
                 mpv_override_mute(False)
                 if vol > 50:
-                    label6.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'volume.png'))))
+                    label6.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'volume.png'))))
                 else:
-                    label6.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'volume-low.png'))))
+                    label6.setIcon(
+                        QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'volume-low.png')))
+                    )
 
         dockWidget = QtWidgets.QDockWidget(win)
         win.listWidget = QtWidgets.QListWidget()
@@ -3858,7 +3862,7 @@ if __name__ == '__main__':
 
         tvguide_close_lbl = ClickableLabel(tvguide_close_lbl_func)
         tvguide_close_lbl.setPixmap(
-            QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'close.png'))).pixmap(32, 32)
+            QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'close.png'))).pixmap(32, 32)
         )
         tvguide_close_lbl.setStyleSheet(
             "background-color: {};".format("black" if settings["themecompat"] else "white")
@@ -4479,10 +4483,10 @@ if __name__ == '__main__':
                 sort_list.setCurrentRow(curIndex1+1)
 
         sort_upbtn = QtWidgets.QPushButton()
-        sort_upbtn.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'arrow-up.png'))))
+        sort_upbtn.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'arrow-up.png'))))
         sort_upbtn.clicked.connect(sort_upbtn_clicked)
         sort_downbtn = QtWidgets.QPushButton()
-        sort_downbtn.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'arrow-down.png'))))
+        sort_downbtn.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'arrow-down.png'))))
         sort_downbtn.clicked.connect(sort_downbtn_clicked)
 
         sort_widget2 = QtWidgets.QWidget()
@@ -4931,7 +4935,7 @@ if __name__ == '__main__':
               subcontrol-origin: margin;
               subcontrol-position: center left;
               left: 1px;
-              image: url(''' + str(Path('data', ICONS_FOLDER, 'leftarrow.png')) + ''');
+              image: url(''' + str(Path('astroncia', ICONS_FOLDER, 'leftarrow.png')) + ''');
               height: 24px;
               width: 24px;
             }
@@ -4940,7 +4944,7 @@ if __name__ == '__main__':
               subcontrol-origin: margin;
               subcontrol-position: center right;
               right: 1px;
-              image: url(''' + str(Path('data', ICONS_FOLDER, 'rightarrow.png')) + ''');
+              image: url(''' + str(Path('astroncia', ICONS_FOLDER, 'rightarrow.png')) + ''');
               height: 24px;
               width: 24px;
             }
@@ -5333,7 +5337,7 @@ if __name__ == '__main__':
             print_with_time("No HTTP referer set up")
         mpv_override_volume(100)
         player.loop = True
-        mpv_override_play(str(Path('data', ICONS_FOLDER, 'main.png')))
+        mpv_override_play(str(Path('astroncia', ICONS_FOLDER, 'main.png')))
 
         #print_with_time("")
         #print_with_time("M3U: '{}' EPG: '{}'".format(settings["m3u"], settings["epg"]))
@@ -5789,7 +5793,9 @@ if __name__ == '__main__':
             open_stream_info,
             app.quit,
             redraw_menubar,
-            QtGui.QIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'circle.png'))).pixmap(8, 8)),
+            QtGui.QIcon(
+                QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'circle.png'))).pixmap(8, 8)
+            ),
             check_for_updates_0,
             my_up_binding_execute,
             my_down_binding_execute,
@@ -6087,31 +6093,31 @@ if __name__ == '__main__':
             mpv_volume_set(showdata=False)
 
         label3 = QtWidgets.QPushButton()
-        label3.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'pause.png'))))
+        label3.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'pause.png'))))
         label3.setToolTip(_('pause') + ' (Space)')
         label3.clicked.connect(mpv_play)
         label4 = QtWidgets.QPushButton()
-        label4.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'stop.png'))))
+        label4.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'stop.png'))))
         label4.setToolTip(_('stop') + ' (S)')
         label4.clicked.connect(mpv_stop)
         label5 = QtWidgets.QPushButton()
-        label5.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'fullscreen.png'))))
+        label5.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'fullscreen.png'))))
         label5.setToolTip(_('fullscreen') + ' (F)')
         label5.clicked.connect(mpv_fullscreen)
         label5_0 = QtWidgets.QPushButton()
-        label5_0.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'folder.png'))))
+        label5_0.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'folder.png'))))
         label5_0.setToolTip(_('openrecordingsfolder'))
         label5_0.clicked.connect(open_recording_folder)
         label5_1 = QtWidgets.QPushButton()
-        label5_1.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'record.png'))))
+        label5_1.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'record.png'))))
         label5_1.setToolTip(_("record") + ' (R)')
         label5_1.clicked.connect(do_record)
         label5_2 = QtWidgets.QPushButton()
-        label5_2.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'calendar.png'))))
+        label5_2.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'calendar.png'))))
         label5_2.setToolTip(_("scheduler") + ' (D)')
         label5_2.clicked.connect(show_scheduler)
         label6 = QtWidgets.QPushButton()
-        label6.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'volume.png'))))
+        label6.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'volume.png'))))
         label6.setToolTip(_('volume') + ' (V)')
         label6.clicked.connect(mpv_mute)
         label7 = QtWidgets.QSlider(QtCore.Qt.Horizontal)
@@ -6120,43 +6126,43 @@ if __name__ == '__main__':
         label7.valueChanged.connect(mpv_volume_set_custom)
         label7.setValue(100)
         label7_1 = QtWidgets.QPushButton()
-        label7_1.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'screenshot.png'))))
+        label7_1.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'screenshot.png'))))
         label7_1.setToolTip(_('screenshot') + ' (H)')
         label7_1.clicked.connect(do_screenshot)
         label7_2 = QtWidgets.QPushButton()
-        label7_2.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'timeshift.png'))))
+        label7_2.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'timeshift.png'))))
         label7_2.setToolTip(_('timeshift') + ' (E)')
         label7_2.clicked.connect(show_timeshift)
         label8 = QtWidgets.QPushButton()
-        label8.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'settings.png'))))
+        label8.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'settings.png'))))
         label8.setToolTip(_('settings'))
         label8.clicked.connect(show_settings)
         label8_0 = QtWidgets.QPushButton()
-        label8_0.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'tv-blue.png'))))
+        label8_0.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'tv-blue.png'))))
         label8_0.setToolTip(_('playlists'))
         label8_0.clicked.connect(show_playlists)
         label8_1 = QtWidgets.QPushButton()
-        label8_1.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'tvguide.png'))))
+        label8_1.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'tvguide.png'))))
         label8_1.setToolTip(_('tvguide') + ' (G)')
         label8_1.clicked.connect(show_tvguide)
         label8_4 = QtWidgets.QPushButton()
-        label8_4.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'sort.png'))))
+        label8_4.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'sort.png'))))
         label8_4.setToolTip(_('sort').replace('\n', ' ') + ' (I)')
         label8_4.clicked.connect(show_sort)
         label8_2 = QtWidgets.QPushButton()
-        label8_2.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'prev.png'))))
+        label8_2.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'prev.png'))))
         label8_2.setToolTip(_('prevchannel') + ' (N)')
         label8_2.clicked.connect(prev_channel)
         label8_3 = QtWidgets.QPushButton()
-        label8_3.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'next.png'))))
+        label8_3.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'next.png'))))
         label8_3.setToolTip(_('nextchannel') + ' (M)')
         label8_3.clicked.connect(next_channel)
         label8_5 = QtWidgets.QPushButton()
-        label8_5.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'edit.png'))))
+        label8_5.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'edit.png'))))
         label8_5.setToolTip(_('m3u_m3ueditor'))
         label8_5.clicked.connect(show_m3u_editor)
         label9 = QtWidgets.QPushButton()
-        label9.setIcon(QtGui.QIcon(str(Path('data', ICONS_FOLDER, 'help.png'))))
+        label9.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'help.png'))))
         label9.setToolTip(_('help'))
         label9.clicked.connect(show_help)
 

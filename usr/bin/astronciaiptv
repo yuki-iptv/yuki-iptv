@@ -1,6 +1,6 @@
 #!/bin/sh
 cd "$(dirname "$(readlink -f "$0")")/../lib/astronciaiptv/" || exit 1
-LD_LIBRARY_PATH="$(./data/modules/astroncia/pfs.py)"
+LD_LIBRARY_PATH="$(./astroncia/pfs.py)"
 export LD_LIBRARY_PATH
 exec ./astroncia_iptv.py "$@"
 exit "$?"

@@ -21,9 +21,9 @@ Copyright (C) 2021 Astroncia
 import json
 import traceback
 from functools import partial
-from data.modules.astroncia.time import print_with_time
-from data.modules.astroncia.qt import get_qt_backend
-from data.modules.astroncia.lang import _, __
+from astroncia.time import print_with_time
+from astroncia.qt import get_qt_backend
+from astroncia.lang import _, __
 qt_backend, QtWidgets, QtCore, QtGui, QShortcut = get_qt_backend()
 
 class AstronciaData: # pylint: disable=too-few-public-methods

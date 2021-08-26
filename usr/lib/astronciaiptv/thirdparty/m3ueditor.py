@@ -1,11 +1,11 @@
 import sys
 import os
 import pandas as pd
-from data.modules.astroncia.qt import get_qt_backend
+from astroncia.qt import get_qt_backend
 qt_backend, QtWidgets, QtCore, QtGui, QShortcut = get_qt_backend()
 from pathlib import Path
-from data.modules.astroncia.extgrp import parse_extgrp
-from data.modules.astroncia.lang import _ as get_translation
+from astroncia.extgrp import parse_extgrp
+from astroncia.lang import _ as get_translation
 
 home_folder = ""
 try:
@@ -200,7 +200,7 @@ class Viewer(QtWidgets.QMainWindow):
         tb.addSeparator()
 
         del_btn = QtWidgets.QToolButton()
-        del_btn.setIcon(QtGui.QIcon(str(Path('data', self.iconsFolder, 'trash.png'))))
+        del_btn.setIcon(QtGui.QIcon(str(Path('astroncia', self.iconsFolder, 'trash.png'))))
         del_btn.setToolTip(get_translation('m3u_deleterow'))
         del_btn.clicked.connect(self.del_row)
         tb.addWidget(del_btn)
@@ -208,19 +208,19 @@ class Viewer(QtWidgets.QMainWindow):
         tb.addSeparator()
 
         add_btn = QtWidgets.QToolButton()
-        add_btn.setIcon(QtGui.QIcon(str(Path('data', self.iconsFolder, 'plus.png'))))
+        add_btn.setIcon(QtGui.QIcon(str(Path('astroncia', self.iconsFolder, 'plus.png'))))
         add_btn.setToolTip(get_translation('m3u_addrow'))
         add_btn.clicked.connect(self.add_row)
         tb.addWidget(add_btn)
 
         move_down_btn = QtWidgets.QToolButton()
-        move_down_btn.setIcon(QtGui.QIcon(str(Path('data', self.iconsFolder, 'arrow-down.png'))))
+        move_down_btn.setIcon(QtGui.QIcon(str(Path('astroncia', self.iconsFolder, 'arrow-down.png'))))
         move_down_btn.setToolTip(get_translation('m3u_movedown'))
         move_down_btn.clicked.connect(self.move_down)
         tb.addWidget(move_down_btn)
 
         move_up_up = QtWidgets.QToolButton()
-        move_up_up.setIcon(QtGui.QIcon(str(Path('data', self.iconsFolder, 'arrow-up.png'))))
+        move_up_up.setIcon(QtGui.QIcon(str(Path('astroncia', self.iconsFolder, 'arrow-up.png'))))
         move_up_up.setToolTip(get_translation('m3u_moveup'))
         move_up_up.clicked.connect(self.move_up)
         tb.addWidget(move_up_up)

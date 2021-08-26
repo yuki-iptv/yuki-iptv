@@ -17,7 +17,7 @@ Copyright (C) 2021 Astroncia
     along with Astroncia IPTV.  If not, see <https://www.gnu.org/licenses/>.
 '''
 import sys
-from data.modules.astroncia.time import print_with_time
+from astroncia.time import print_with_time
 
 class astroncia_data: # pylint: disable=too-few-public-methods
     pass

@@ -19,7 +19,7 @@ Copyright (C) 2021 Astroncia
 import gzip
 import datetime
 import xml.etree.ElementTree as ET
-from data.modules.astroncia.time import print_with_time
+from astroncia.time import print_with_time
 
 def parse_as_xmltv(epg, settings):
     '''Load EPG file'''

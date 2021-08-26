@@ -5,9 +5,9 @@ import locale
 import ctypes
 import re
 from pathlib import Path
-from data.modules.astroncia.lang import lang, _
-from data.modules.astroncia.extgrp import parse_extgrp
-from data.modules.astroncia.time import print_with_time
+from astroncia.lang import lang, _
+from astroncia.extgrp import parse_extgrp
+from astroncia.time import print_with_time
 
 class M3uParser:
     
