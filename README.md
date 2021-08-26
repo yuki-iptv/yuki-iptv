@@ -7,9 +7,6 @@
 
 Downloads are available on [Releases](https://gitlab.com/astroncia/iptv/-/releases) page.  
   
-*AppImage / snap / flatpak / other "container" or "everything-in-one-file" formats are **NOT planned**!  
-Please do not ask about it!*  
-  
 For **Ubuntu** / **Linux Mint** recommended install from [Launchpad PPA - ppa:astroncia/iptv](https://launchpad.net/~astroncia/+archive/ubuntu/iptv):  
 ```sudo add-apt-repository ppa:astroncia/iptv -y```  
 ```sudo apt-get update```  
