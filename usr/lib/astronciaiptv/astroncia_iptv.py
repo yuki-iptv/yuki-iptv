@@ -3661,7 +3661,6 @@ if __name__ == '__main__':
 
         def mpv_stop():
             global playing, playing_chan, playing_url
-            #player.osc = False
             playing_chan = ''
             playing_url = ''
             hideLoading()
@@ -5284,7 +5283,10 @@ if __name__ == '__main__':
         #player.osc = False
         #player.script_opts = 'osc-visibility=always,osc-barmargin=50'
         if settings["hidempv"]:
-            player.osc = False
+            try:
+                player.osc = False
+            except: # pylint: disable=bare-except
+                print_with_time("player.osc set failed")
         try:
             player['force-seekable'] = True
         except: # pylint: disable=bare-except
@@ -5902,14 +5904,6 @@ if __name__ == '__main__':
                 archive_win.hide()
             else:
                 archive_win.show()
-            #if playing_chan:
-            #    if player.osc:
-            #        player.osc = False
-            #    else:
-            #        if not settings["hidempv"]:
-            #            player.osc = True
-            #else:
-            #    player.osc = False
 
         stopped = False
 
@@ -6675,9 +6669,15 @@ if __name__ == '__main__':
                 global playing_url
                 if playing_url:
                     if not settings["hidempv"]:
-                        player.osc = True
+                        try:
+                            player.osc = True
+                        except: # pylint: disable=bare-except
+                            pass
                 else:
-                    player.osc = False
+                    try:
+                        player.osc = False
+                    except: # pylint: disable=bare-except
+                        pass
             except: # pylint: disable=bare-except
                 pass
 
