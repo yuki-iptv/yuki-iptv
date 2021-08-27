@@ -5262,15 +5262,25 @@ if __name__ == '__main__':
                 loglevel='info' # debug
             )
         except: # pylint: disable=bare-except
-            player = mpv.MPV(
-                **options,
-                wid=str(int(win.main_widget.winId())),
-                osc=True,
-                script_opts='osc-layout=box,osc-seekbarstyle=bar,' + \
-                    'osc-deadzonesize=0,osc-minmousemove=3',
-                log_handler=my_log,
-                loglevel='info' # debug
-            )
+            print_with_time("mpv init with ytdl failed")
+            try:
+                player = mpv.MPV(
+                    **options,
+                    wid=str(int(win.main_widget.winId())),
+                    osc=True,
+                    script_opts='osc-layout=box,osc-seekbarstyle=bar,' + \
+                        'osc-deadzonesize=0,osc-minmousemove=3',
+                    log_handler=my_log,
+                    loglevel='info' # debug
+                )
+            except: # pylint: disable=bare-except
+                print_with_time("mpv init with osc failed")
+                player = mpv.MPV(
+                    **options,
+                    wid=str(int(win.main_widget.winId())),
+                    log_handler=my_log,
+                    loglevel='info' # debug
+                )
         #player.osc = False
         #player.script_opts = 'osc-visibility=always,osc-barmargin=50'
         if settings["hidempv"]:
