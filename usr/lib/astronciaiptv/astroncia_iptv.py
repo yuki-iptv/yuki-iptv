@@ -6893,13 +6893,18 @@ if __name__ == '__main__':
 
         key_t_visible = False
         def key_t():
-            #global key_t_visible
-            if dockWidget.isVisible():
-                #key_t_visible = False
-                dockWidget.hide()
-            else:
-                #key_t_visible = True
-                dockWidget.show()
+            global fullscreen
+            if not fullscreen:
+                if settings['playlistsep']:
+                    if sepplaylist_win.isVisible():
+                        sepplaylist_win.hide()
+                    else:
+                        sepplaylist_win.show()
+                else:
+                    if dockWidget.isVisible():
+                        dockWidget.hide()
+                    else:
+                        dockWidget.show()
 
         def lowpanel_ch():
             if dockWidget2.isVisible():
