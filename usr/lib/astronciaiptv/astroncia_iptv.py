@@ -2,7 +2,6 @@
 '''Astroncia IPTV - Cross platform IPTV player'''
 # pylint: disable=invalid-name, global-statement, missing-docstring, wrong-import-position
 # pylint: disable=too-many-lines, ungrouped-imports, too-many-statements, broad-except
-# pylint: disable=c-extension-no-member
 #
 # Icons by Font Awesome ( https://fontawesome.com/ ) ( https://fontawesome.com/license )
 #
