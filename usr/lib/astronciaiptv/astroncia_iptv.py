@@ -974,7 +974,7 @@ if __name__ == '__main__':
         sepplaylist_win.setWindowIcon(main_icon)
 
         help_win = QtWidgets.QMainWindow()
-        help_win.resize(400, 540)
+        help_win.resize(400, 600)
         help_win.setWindowTitle(_('help'))
         help_win.setWindowIcon(main_icon)
 

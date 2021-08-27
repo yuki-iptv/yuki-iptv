@@ -136,7 +136,7 @@ msgid "selectepg"
 msgstr "Выберите файл телепрограммы (XMLTV / JTV EPG)"
 
 msgid "selectwritefolder"
-msgstr "Выберите папку для записи и скриншотов"
+msgstr "Выберите папку для записи и снимков экрана"
 
 msgid "deinterlace"
 msgstr "Деинтерлейс"
@@ -169,7 +169,7 @@ msgid "udpproxy"
 msgstr "UDP прокси"
 
 msgid "writefolder"
-msgstr "Папка для записей\nи скриншотов"
+msgstr "Папка для записей\nи снимков экрана"
 
 msgid "orselectyourprovider"
 msgstr "Или выберите провайдера"
@@ -214,13 +214,13 @@ msgid "loading"
 msgstr "Загрузка..."
 
 msgid "doingscreenshot"
-msgstr "Делаю скриншот..."
+msgstr "Делаю снимок экрана..."
 
 msgid "screenshotsaved"
-msgstr "Скриншот сохранён!"
+msgstr "снимок экрана сохранён!"
 
 msgid "screenshotsaveerror"
-msgstr "Ошибка создания скриншота!"
+msgstr "Ошибка создания снимка экрана!"
 
 msgid "notvguideforchannel"
 msgstr "Нет телепрограммы для канала"
@@ -244,7 +244,7 @@ msgid "record"
 msgstr "Запись"
 
 msgid "screenshot"
-msgstr "Скриншот"
+msgstr "снимок экрана"
 
 msgid "prevchannel"
 msgstr "Предыдущий канал"
@@ -601,7 +601,7 @@ msgid "right"
 msgstr "Справа"
 
 msgid "doscreenshotsvia"
-msgstr "Делать скриншоты через"
+msgstr "Делать снимки экрана через"
 
 msgid "playlistsep"
 msgstr "Плейлист в отдельном окне"
@@ -895,5 +895,5 @@ msgid "menubar_updateepg"
 msgstr "&Обновить телепрограмму"
 
 msgid "helptext"
-msgstr "Astroncia IPTV, версия {}\n© kestral / astroncia < kestraly (at) gmail.com >\nhttps://gitlab.com/astroncia\n\nПоддержка:\nhttps://unixforum.org/viewtopic.php?f=3&t=151801\n\nСделать пожертвование: https://qiwi.com/n/ASTRONCIA\n\nПлеер для просмотра интернет-телевидения\n\nПоддерживается телепрограмма (EPG)\nтолько в форматах XMLTV и JTV!\n\nНе работает канал? Правая клавиша мыши открывает настройки канала.\n\nПосле указания группы канала в настройках переоткройте приложение.\n\nГорячие клавиши:\n\nF / F11 - полноэкранный режим\nF2 - информация о потоке\nV - выключить звук\nQ - выйти из программы\nПробел - пауза\nS - остановить проигрывание\nH - скриншот\nG - телепрограмма\nR - начать/остановить запись\nN - предыдущий канал\nM - следующий канал\nT - показать/скрыть боковую панель плейлиста\nP - показать/скрыть панель управления\nO - показать/скрыть часы\nI - сортировка каналов\nD - планировщик записи\n\nЗначки от Font Awesome ( https://fontawesome.com/ )\nЛицензия значков - CC BY 4.0 License\n( https://creativecommons.org/licenses/by/4.0/ )"
+msgstr "Astroncia IPTV, версия {}\n© kestral / astroncia < kestraly (at) gmail.com >\nhttps://gitlab.com/astroncia\n\nЗначки от Font Awesome ( https://fontawesome.com/ )\nЛицензия значков - CC BY 4.0 License\n( https://creativecommons.org/licenses/by/4.0/ )\n\nПоддержка:\nhttps://unixforum.org/viewtopic.php?f=3&t=151801\n\nСделать пожертвование: https://qiwi.com/n/ASTRONCIA\n\nПлеер для просмотра интернет-телевидения\n\nПоддерживается телепрограмма (EPG)\nтолько в форматах XMLTV и JTV!\n\nНе работает канал? Правая клавиша мыши открывает настройки канала.\n\nПосле указания группы канала в настройках переоткройте приложение.\n\nГорячие клавиши:\n\nF / F11 - полноэкранный режим\nF2 - информация о потоке\nV - выключить звук\nQ - выйти из программы\nПробел - пауза\nS - остановить проигрывание\nH - снимок экрана\nG - телепрограмма\nR - начать/остановить запись\nN - предыдущий канал\nM - следующий канал\nT - показать/скрыть боковую панель плейлиста\nP - показать/скрыть панель управления\nO - показать/скрыть часы\nI - сортировка каналов\nD - планировщик записи\nCtrl+O - плейлисты\nCtrl+E - редактор плейлистов m3u\nCtrl+Q - выход\nCtrl+C - компактный режим\nCtrl+S - настройки видео для канала\n9 - убавить громкость\n0 - прибавить громкость\nCtrl+U - обновить телепрограмму\nCtrl+P - настройки"
 
