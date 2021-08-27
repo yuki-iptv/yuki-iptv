@@ -1,0 +1,29 @@
+#!/usr/bin/env python3
+'''Generate desktop file for Astroncia IPTV'''
+import glob
+import gettext
+
+PREFIX = '''[Desktop Entry]
+Type=Application
+Name=Astroncia IPTV
+Comment=IPTV player
+'''
+
+SUFFIX = '''Exec=astronciaiptv
+Icon=astronciaiptv
+Categories=AudioVideo;Video;Player;Recorder;TV;
+Keywords=Television;Stream;
+'''
+
+FILE = open('./usr/share/applications/astronciaiptv.desktop', 'w', encoding='utf8')
+FILE.write(PREFIX)
+
+for lang_file in glob.glob('./po/astronciaiptv-*.po'):
+    lang = lang_file.replace('.po', '').split('-')[1]
+    translation = gettext.translation('astronciaiptv', './usr/share/locale/', languages=[lang])
+    playername = translation.gettext('playername')
+    if playername != 'playername' and lang != 'en':
+        FILE.write("Comment[{}]={}\n".format(lang, playername))
+
+FILE.write(SUFFIX)
+FILE.close()

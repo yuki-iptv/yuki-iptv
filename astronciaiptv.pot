@@ -892,6 +892,9 @@ msgstr ""
 msgid "menubar_updateepg"
 msgstr ""
 
+msgid "playername"
+msgstr ""
+
 msgid "helptext"
 msgstr ""
 
