@@ -3741,6 +3741,8 @@ if __name__ == '__main__':
             else:
                 # Leaving fullscreen
                 setShortcutState(False)
+                if l1.isVisible() and l1.text().startswith(_('volume')):
+                    l1.hide()
                 win.menu_bar_qt.show()
                 hide_playlist()
                 hide_controlpanel()
@@ -3796,10 +3798,17 @@ if __name__ == '__main__':
 
         old_value = 100
 
+        def show_volume(v1):
+            if not controlpanel_widget.isVisible():
+                l1.show()
+                if isinstance(v1, str):
+                    l1.setText2(v1)
+                else:
+                    l1.setText2("{}: {}%".format(_('volume'), int(v1)))
+
         def mpv_mute():
             global old_value, time_stop, l1
             time_stop = time.time() + 3
-            l1.show()
             if player.mute:
                 if old_value > 50:
                     label6.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'volume.png'))))
@@ -3809,13 +3818,13 @@ if __name__ == '__main__':
                     )
                 mpv_override_mute(False)
                 label7.setValue(old_value)
-                l1.setText2("{}: {}%".format(_('volume'), int(old_value)))
+                show_volume(old_value)
             else:
                 label6.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'mute.png'))))
                 mpv_override_mute(True)
                 old_value = label7.value()
                 label7.setValue(0)
-                l1.setText2(_('volumeoff'))
+                show_volume(_('volumeoff'))
 
         def mpv_volume_set(showdata=True):
             global time_stop, l1, fullscreen
@@ -3825,11 +3834,10 @@ if __name__ == '__main__':
                 showdata = False
             if showdata:
                 try:
-                    l1.show()
                     if vol == 0:
-                        l1.setText2(_('volumeoff'))
+                        show_volume(_('volumeoff'))
                     else:
-                        l1.setText2("{}: {}%".format(_('volume'), vol))
+                        show_volume(vol)
                 except NameError:
                     pass
             mpv_override_volume(vol)
@@ -5699,8 +5707,7 @@ if __name__ == '__main__':
                 volume = max(volume, 0)
                 time_stop = time.time() + 3
                 if fullscreen:
-                    l1.show()
-                    l1.setText2("{}: {}%".format(_('volume'), volume))
+                    show_volume(volume)
                 label7.setValue(volume)
                 mpv_volume_set()
 
@@ -6844,6 +6851,9 @@ if __name__ == '__main__':
             try: # pylint: disable=too-many-nested-blocks
                 global fullscreen, key_t_visible, dockWidgetVisible, \
                 dockWidget2Visible
+                if fullscreen and l1.isVisible() and l1.text().startswith(_('volume')) and \
+                  controlpanel_widget.isVisible():
+                    l1.hide()
                 #label13.setText("{}: {}%".format(_('volumeshort'), int(player.volume)))
                 label13.setText("{}%".format(int(player.volume)))
                 if fullscreen:
