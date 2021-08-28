@@ -6995,7 +6995,7 @@ if __name__ == '__main__':
             QtCore.Qt.Key_F: mpv_fullscreen, # f - fullscreen
             QtCore.Qt.Key_F11: mpv_fullscreen,
             QtCore.Qt.Key_F2: open_stream_info, # f2 - stream info
-            QtCore.Qt.Key_M: mpv_mute, # v - mute
+            QtCore.Qt.Key_M: mpv_mute, # m - mute
             QtCore.Qt.Key_Q: key_quit, # q - quit
             QtCore.Qt.Key_Space: mpv_play, # space - pause
             QtCore.Qt.Key_MediaTogglePlayPause: mpv_play,
@@ -7009,9 +7009,9 @@ if __name__ == '__main__':
             QtCore.Qt.Key_G: show_tvguide, # g - tv guide
             QtCore.Qt.Key_R: do_record, # r - record
             QtCore.Qt.Key_MediaRecord: do_record,
-            QtCore.Qt.Key_B: prev_channel, # n - prev channel
+            QtCore.Qt.Key_B: prev_channel, # b - prev channel
             QtCore.Qt.Key_MediaPrevious: prev_channel,
-            QtCore.Qt.Key_N: next_channel, # m - next channel
+            QtCore.Qt.Key_N: next_channel, # n - next channel
             QtCore.Qt.Key_MediaNext: next_channel,
             QtCore.Qt.Key_O: show_clock, # o - show/hide clock
             QtCore.Qt.Key_VolumeUp: my_up_binding,
