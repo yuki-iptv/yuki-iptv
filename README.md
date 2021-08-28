@@ -23,7 +23,6 @@ If you got *No dirmngr* error when running gpg:
 ```sudo dirmngr &```  
   
 [**Arch Linux** (AUR)](https://aur.archlinux.org/packages/astronciaiptv/)  
-[**Open Build Service**](https://software.opensuse.org/package/astronciaiptv)  
 
 ## Information
 
