@@ -1,3 +1,10 @@
+astroncia-iptv (0.0.78) unstable; urgency=medium
+
+  * Minor bugfixes
+  * Change default keybinds
+
+ -- Astroncia <kestraly@gmail.com>  Sat, 28 Aug 2021 05:06:40 +0300
+
 astroncia-iptv (0.0.77) unstable; urgency=medium
 
   * Add python3-setproctitle to dependencies
