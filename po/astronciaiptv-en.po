@@ -1,3 +1,4 @@
+# This file is distributed under the same license as the astronciaiptv package.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"

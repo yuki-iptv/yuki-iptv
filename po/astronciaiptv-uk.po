@@ -1,3 +1,4 @@
+# This file is distributed under the same license as the astronciaiptv package.
 # Serhii Kuznietsov <serhiy_k@meta.ua>, 2021.
 msgid ""
 msgstr ""
