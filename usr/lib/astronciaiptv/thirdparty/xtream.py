@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 """xtream
 
 Module handles downloading xtream data
@@ -7,7 +6,7 @@ It does not support M3U
 This application comes from the pyxtream library found at:
 https://pypi.org/project/pyxtream
 
-Part of this content comes from 
+Part of this content comes from
 https://github.com/chazlarson/py-xtream-codes/blob/master/xtream.py
 https://github.com/linuxmint/hypnotix
 
