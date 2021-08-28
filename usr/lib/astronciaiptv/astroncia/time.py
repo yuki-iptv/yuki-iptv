@@ -19,21 +19,29 @@ Copyright (C) 2021 Astroncia
 import time
 
 class AppLog: # pylint: disable=too-few-public-methods
-    pass
+    app_log = ''
+    mpv_log = ''
+    args1 = None
 
-AppLog.app_log = ''
-AppLog.mpv_log = ''
+def args_init(args1):
+    AppLog.args1 = args1
 
 def print_with_time(str2, log_mpv=False):
+    is_silent = False
+    try:
+        is_silent = AppLog.args1.silent
+    except: # pylint: disable=bare-except
+        pass
     try:
         cur_time = time.strftime('%H:%M:%S', time.localtime())
-        if not 'Invalid video timestamp: ' in str(str2):
-            OUT_STR = '[{}] {}'.format(cur_time, str(str2))
-            print(OUT_STR)
+        if 'Invalid video timestamp: ' not in str(str2):
+            out_str = '[{}] {}'.format(cur_time, str(str2))
+            if not is_silent:
+                print(out_str)
             if log_mpv:
-                AppLog.mpv_log += OUT_STR + '\n'
+                AppLog.mpv_log += out_str + '\n'
             else:
-                AppLog.app_log += OUT_STR + '\n'
+                AppLog.app_log += out_str + '\n'
     except: # pylint: disable=bare-except
         pass
 
