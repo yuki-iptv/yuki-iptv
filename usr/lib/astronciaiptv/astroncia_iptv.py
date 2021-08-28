@@ -5692,14 +5692,7 @@ if __name__ == '__main__':
             qaction_prio = QtWidgets.QAction.HighPriority
 
         def get_keybind(func1):
-            pretty_name = None
-            for key1, func in keybinds.items():
-                if func == func1:
-                    if isinstance(key1, str):
-                        pretty_name = key1
-                    else:
-                        pretty_name = QtGui.QKeySequence(key1).toString()
-            print(pretty_name)
+            return main_keybinds[func1][0]
 
         def archive_all_clicked():
             chan_url = array[archive_channel.text()]['url']
@@ -6838,54 +6831,165 @@ if __name__ == '__main__':
             except: # pylint: disable=bare-except
                 print_with_time("WARNING: mpv_seek failed")
 
-        keybinds = {
-            QtCore.Qt.Key_I: show_sort, # i - sort channels
-            QtCore.Qt.Key_T: key_t,
-            QtCore.Qt.Key_Escape: esc_handler, # escape key
-            QtCore.Qt.Key_F: mpv_fullscreen, # f - fullscreen
-            QtCore.Qt.Key_F11: mpv_fullscreen,
-            QtCore.Qt.Key_F2: open_stream_info, # f2 - stream info
-            QtCore.Qt.Key_M: mpv_mute, # m - mute
-            QtCore.Qt.Key_Q: key_quit, # q - quit
-            QtCore.Qt.Key_Space: mpv_play, # space - pause
-            QtCore.Qt.Key_MediaTogglePlayPause: mpv_play,
-            QtCore.Qt.Key_MediaPlay: mpv_play,
-            QtCore.Qt.Key_MediaPause: mpv_play,
-            QtCore.Qt.Key_Play: mpv_play,
-            QtCore.Qt.Key_S: mpv_stop, # s - stop
-            QtCore.Qt.Key_Stop: mpv_stop,
-            QtCore.Qt.Key_MediaStop: mpv_stop,
-            QtCore.Qt.Key_H: do_screenshot, # h - screenshot
-            QtCore.Qt.Key_G: show_tvguide, # g - tv guide
-            QtCore.Qt.Key_R: do_record, # r - record
-            QtCore.Qt.Key_MediaRecord: do_record,
-            QtCore.Qt.Key_B: prev_channel, # b - prev channel
-            QtCore.Qt.Key_MediaPrevious: prev_channel,
-            QtCore.Qt.Key_N: next_channel, # n - next channel
-            QtCore.Qt.Key_MediaNext: next_channel,
-            QtCore.Qt.Key_O: show_clock, # o - show/hide clock
-            QtCore.Qt.Key_VolumeUp: (lambda: my_up_binding()), # pylint: disable=undefined-variable
-            QtCore.Qt.Key_VolumeDown: (lambda: my_down_binding()), # pylint: disable=undefined-variable
-            QtCore.Qt.Key_VolumeMute: mpv_mute,
-            QtCore.Qt.Key_E: show_timeshift, # e - show timeshift
-            QtCore.Qt.Key_D: show_scheduler, # d - record scheduler
-            "Ctrl+C": showhideeverything,
-            "Ctrl+P": show_settings,
-            QtCore.Qt.Key_Backspace: (lambda: set_playback_speed(1.00)),
-            "Ctrl+Q": app.quit,
-            "Ctrl+O": show_playlists,
-            "Ctrl+U": force_update_epg,
-            "Ctrl+S": main_channel_settings,
-            "Ctrl+E": show_m3u_editor,
-            QtCore.Qt.Key_9: my_down_binding_execute,
-            QtCore.Qt.Key_0: my_up_binding_execute,
-            QtCore.Qt.Key_Left: (lambda: mpv_seek(-10)),
-            QtCore.Qt.Key_Right: (lambda: mpv_seek(10)),
-            QtCore.Qt.Key_Down: (lambda: mpv_seek(-60)),
-            QtCore.Qt.Key_Up: (lambda: mpv_seek(60)),
-            QtCore.Qt.Key_PageDown: (lambda: mpv_seek(-600)),
-            QtCore.Qt.Key_PageUp: (lambda: mpv_seek(600)),
-            QtCore.Qt.Key_P: lowpanel_ch_1
+        funcs = {
+            "show_sort": show_sort,
+            "key_t": key_t,
+            "esc_handler": esc_handler,
+            "mpv_fullscreen": mpv_fullscreen,
+            "open_stream_info": open_stream_info,
+            "mpv_mute": mpv_mute,
+            "key_quit": key_quit,
+            "mpv_play": mpv_play,
+            "mpv_stop": mpv_stop,
+            "do_screenshot": do_screenshot,
+            "show_tvguide": show_tvguide,
+            "do_record": do_record,
+            "prev_channel": prev_channel,
+            "next_channel": next_channel,
+            "show_clock": show_clock,
+            "(lambda: my_up_binding())": (lambda: my_up_binding()), # pylint: disable=undefined-variable
+            "(lambda: my_down_binding())": (lambda: my_down_binding()), # pylint: disable=undefined-variable
+            "show_timeshift": show_timeshift,
+            "show_scheduler": show_scheduler,
+            "showhideeverything": showhideeverything,
+            "show_settings": show_settings,
+            "(lambda: set_playback_speed(1.00))": (lambda: set_playback_speed(1.00)),
+            "app.quit": app.quit,
+            "show_playlists": show_playlists,
+            "force_update_epg": force_update_epg,
+            "main_channel_settings": main_channel_settings,
+            "show_m3u_editor": show_m3u_editor,
+            "my_down_binding_execute": my_down_binding_execute,
+            "my_up_binding_execute": my_up_binding_execute,
+            "(lambda: mpv_seek(-10))": (lambda: mpv_seek(-10)),
+            "(lambda: mpv_seek(10))": (lambda: mpv_seek(10)),
+            "(lambda: mpv_seek(-60))": (lambda: mpv_seek(-60)),
+            "(lambda: mpv_seek(60))": (lambda: mpv_seek(60)),
+            "(lambda: mpv_seek(-600))": (lambda: mpv_seek(-600)),
+            "(lambda: mpv_seek(600))": (lambda: mpv_seek(600)),
+            "lowpanel_ch_1": lowpanel_ch_1
+        }
+
+        main_keybinds = {
+            "(lambda: mpv_seek(-10))": [
+                QtCore.Qt.Key_Left
+            ],
+            "(lambda: mpv_seek(-60))": [
+                QtCore.Qt.Key_Down
+            ],
+            "(lambda: mpv_seek(-600))": [
+                QtCore.Qt.Key_PageDown
+            ],
+            "(lambda: mpv_seek(10))": [
+                QtCore.Qt.Key_Right
+            ],
+            "(lambda: mpv_seek(60))": [
+                QtCore.Qt.Key_Up
+            ],
+            "(lambda: mpv_seek(600))": [
+                QtCore.Qt.Key_PageUp
+            ],
+            "(lambda: my_down_binding())": [
+                QtCore.Qt.Key_VolumeDown
+            ],
+            "(lambda: my_up_binding())": [
+                QtCore.Qt.Key_VolumeUp
+            ],
+            "(lambda: set_playback_speed(1.00))": [
+                QtCore.Qt.Key_Backspace
+            ],
+            "app.quit": [
+                "Ctrl+Q"
+            ],
+            "do_record": [
+                QtCore.Qt.Key_R,
+                QtCore.Qt.Key_MediaRecord
+            ],
+            "do_screenshot": [
+                QtCore.Qt.Key_H
+            ],
+            "esc_handler": [
+                QtCore.Qt.Key_Escape
+            ],
+            "force_update_epg": [
+                "Ctrl+U"
+            ],
+            "key_quit": [
+                QtCore.Qt.Key_Q
+            ],
+            "key_t": [
+                QtCore.Qt.Key_T
+            ],
+            "lowpanel_ch_1": [
+                QtCore.Qt.Key_P
+            ],
+            "main_channel_settings": [
+                "Ctrl+S"
+            ],
+            "mpv_fullscreen": [
+                QtCore.Qt.Key_F,
+                QtCore.Qt.Key_F11
+            ],
+            "mpv_mute": [
+                QtCore.Qt.Key_M,
+                QtCore.Qt.Key_VolumeMute
+            ],
+            "mpv_play": [
+                QtCore.Qt.Key_Space,
+                QtCore.Qt.Key_MediaTogglePlayPause,
+                QtCore.Qt.Key_MediaPlay,
+                QtCore.Qt.Key_MediaPause,
+                QtCore.Qt.Key_Play
+            ],
+            "mpv_stop": [
+                QtCore.Qt.Key_S,
+                QtCore.Qt.Key_Stop,
+                QtCore.Qt.Key_MediaStop
+            ],
+            "my_down_binding_execute": [
+                QtCore.Qt.Key_9
+            ],
+            "my_up_binding_execute": [
+                QtCore.Qt.Key_0
+            ],
+            "next_channel": [
+                QtCore.Qt.Key_N,
+                QtCore.Qt.Key_MediaNext
+            ],
+            "open_stream_info": [
+                QtCore.Qt.Key_F2
+            ],
+            "prev_channel": [
+                QtCore.Qt.Key_B,
+                QtCore.Qt.Key_MediaPrevious
+            ],
+            "show_clock": [
+                QtCore.Qt.Key_O
+            ],
+            "show_m3u_editor": [
+                "Ctrl+E"
+            ],
+            "show_playlists": [
+                "Ctrl+O"
+            ],
+            "show_scheduler": [
+                QtCore.Qt.Key_D
+            ],
+            "show_settings": [
+                "Ctrl+P"
+            ],
+            "show_sort": [
+                QtCore.Qt.Key_I
+            ],
+            "show_timeshift": [
+                QtCore.Qt.Key_E
+            ],
+            "show_tvguide": [
+                QtCore.Qt.Key_G
+            ],
+            "showhideeverything": [
+                "Ctrl+C"
+            ]
         }
 
         seq = get_seq()
@@ -6895,25 +6999,26 @@ if __name__ == '__main__':
                 if shortcut.key() in seq:
                     shortcut.setEnabled(st1)
 
-        for keybind in keybinds:
-            # Main window
-            shortcuts.append(QShortcut(
-                QtGui.QKeySequence(keybind),
-                win,
-                activated=keybinds[keybind]
-            ))
-            # Control panel widget
-            shortcuts.append(QShortcut(
-                QtGui.QKeySequence(keybind),
-                controlpanel_widget,
-                activated=keybinds[keybind]
-            ))
-            # Playlist widget
-            shortcuts.append(QShortcut(
-                QtGui.QKeySequence(keybind),
-                playlist_widget,
-                activated=keybinds[keybind]
-            ))
+        for kbd1 in main_keybinds:
+            for kbd in main_keybinds[kbd1]:
+                # Main window
+                shortcuts.append(QShortcut(
+                    QtGui.QKeySequence(kbd),
+                    win,
+                    activated=funcs[kbd1]
+                ))
+                # Control panel widget
+                shortcuts.append(QShortcut(
+                    QtGui.QKeySequence(kbd),
+                    controlpanel_widget,
+                    activated=funcs[kbd1]
+                ))
+                # Playlist widget
+                shortcuts.append(QShortcut(
+                    QtGui.QKeySequence(kbd),
+                    playlist_widget,
+                    activated=funcs[kbd1]
+                ))
 
         setShortcutState(False)
 
@@ -7028,8 +7133,12 @@ if __name__ == '__main__':
             mpv_override_play(str(Path('astroncia', ICONS_FOLDER, 'main.png')))
 
             try:
-                populate_menubar(0, win.menu_bar_qt, win, player.track_list, playing_chan)
-                populate_menubar(1, right_click_menu, win, player.track_list, playing_chan)
+                populate_menubar(
+                    0, win.menu_bar_qt, win, player.track_list, playing_chan, get_keybind
+                )
+                populate_menubar(
+                    1, right_click_menu, win, player.track_list, playing_chan, get_keybind
+                )
             except: # pylint: disable=bare-except
                 print_with_time("WARNING: populate_menubar failed")
                 show_exception("WARNING: populate_menubar failed\n\n" + traceback.format_exc())

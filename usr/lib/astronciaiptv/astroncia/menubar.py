@@ -101,29 +101,32 @@ def qkeysequence(seq):
     AstronciaData.keyboard_sequences.append(s_e)
     return s_e
 
+def kbd(k_1):
+    return qkeysequence(AstronciaData.get_keybind(k_1))
+
 def init_menubar(data): # pylint: disable=too-many-statements
     # File
 
     AstronciaData.playlists = qaction(_('menubar_playlists'), data)
-    AstronciaData.playlists.setShortcut(qkeysequence("Ctrl+O"))
+    AstronciaData.playlists.setShortcut(kbd("show_playlists"))
     AstronciaData.playlists.triggered.connect(lambda: AstronciaData.show_playlists())
 
     AstronciaData.m3uEditor = qaction(_('menubar_m3ueditor') + AstronciaData.str_offset, data)
-    AstronciaData.m3uEditor.setShortcut(qkeysequence("Ctrl+E"))
+    AstronciaData.m3uEditor.setShortcut(kbd("show_m3u_editor"))
     AstronciaData.m3uEditor.triggered.connect(lambda: AstronciaData.show_m3u_editor())
 
     AstronciaData.exitAction = qaction(_('menubar_exit'), data)
-    AstronciaData.exitAction.setShortcut(qkeysequence("Ctrl+Q"))
+    AstronciaData.exitAction.setShortcut(kbd("app.quit"))
     AstronciaData.exitAction.triggered.connect(lambda: AstronciaData.app_quit())
 
     # Play
 
     AstronciaData.playpause = qaction(_('menubar_playpause'), data)
-    AstronciaData.playpause.setShortcut(qkeysequence(QtCore.Qt.Key_Space))
+    AstronciaData.playpause.setShortcut(kbd("mpv_play"))
     AstronciaData.playpause.triggered.connect(lambda: AstronciaData.mpv_play())
 
     AstronciaData.stop = qaction(_('menubar_stop'), data)
-    AstronciaData.stop.setShortcut(qkeysequence(QtCore.Qt.Key_S))
+    AstronciaData.stop.setShortcut(kbd("mpv_stop"))
     AstronciaData.stop.triggered.connect(lambda: AstronciaData.mpv_stop())
 
     AstronciaData.secs = []
@@ -153,7 +156,7 @@ def init_menubar(data): # pylint: disable=too-many-statements
 
     AstronciaData.normalSpeed = qaction(_('menubar_normalspeed'), data)
     AstronciaData.normalSpeed.triggered.connect(partial(ast_mpv_speed, 1.00))
-    AstronciaData.normalSpeed.setShortcut(qkeysequence(QtCore.Qt.Key_Backspace))
+    AstronciaData.normalSpeed.setShortcut(kbd("(lambda: set_playback_speed(1.00))"))
 
     AstronciaData.spds = []
 
@@ -164,28 +167,28 @@ def init_menubar(data): # pylint: disable=too-many-statements
 
     AstronciaData.prevchannel = qaction(_('menubar_previous'), data)
     AstronciaData.prevchannel.triggered.connect(lambda: AstronciaData.prev_channel())
-    AstronciaData.prevchannel.setShortcut(qkeysequence(QtCore.Qt.Key_B))
+    AstronciaData.prevchannel.setShortcut(kbd("prev_channel"))
 
     AstronciaData.nextchannel = qaction(_('menubar_next'), data)
     AstronciaData.nextchannel.triggered.connect(lambda: AstronciaData.next_channel())
-    AstronciaData.nextchannel.setShortcut(qkeysequence(QtCore.Qt.Key_N))
+    AstronciaData.nextchannel.setShortcut(kbd("next_channel"))
 
     # Video
     AstronciaData.fullscreen = qaction(_('menubar_fullscreen'), data)
     AstronciaData.fullscreen.triggered.connect(lambda: AstronciaData.mpv_fullscreen())
-    AstronciaData.fullscreen.setShortcut(qkeysequence(QtCore.Qt.Key_F))
+    AstronciaData.fullscreen.setShortcut(kbd("mpv_fullscreen"))
 
     AstronciaData.compactmode = qaction(_('menubar_compactmode'), data)
     AstronciaData.compactmode.triggered.connect(lambda: AstronciaData.showhideeverything())
-    AstronciaData.compactmode.setShortcut(qkeysequence("Ctrl+C"))
+    AstronciaData.compactmode.setShortcut(kbd("showhideeverything"))
 
     AstronciaData.csforchannel = qaction(_('menubar_csforchannel') + AstronciaData.str_offset, data)
     AstronciaData.csforchannel.triggered.connect(lambda: AstronciaData.main_channel_settings())
-    AstronciaData.csforchannel.setShortcut(qkeysequence("Ctrl+S"))
+    AstronciaData.csforchannel.setShortcut(kbd("main_channel_settings"))
 
     AstronciaData.screenshot = qaction(_('menubar_screenshot'), data)
     AstronciaData.screenshot.triggered.connect(lambda: AstronciaData.do_screenshot())
-    AstronciaData.screenshot.setShortcut(qkeysequence(QtCore.Qt.Key_H))
+    AstronciaData.screenshot.setShortcut(kbd("do_screenshot"))
 
     # Video filters
     AstronciaData.vf_postproc = qaction(_('menubar_postproc'), data)
@@ -216,15 +219,15 @@ def init_menubar(data): # pylint: disable=too-many-statements
 
     AstronciaData.muteAction = qaction(_('menubar_mute'), data)
     AstronciaData.muteAction.triggered.connect(lambda: AstronciaData.mpv_mute())
-    AstronciaData.muteAction.setShortcut(qkeysequence(QtCore.Qt.Key_M))
+    AstronciaData.muteAction.setShortcut(kbd("mpv_mute"))
 
     AstronciaData.volumeMinus = qaction(_('menubar_volumeminus'), data)
     AstronciaData.volumeMinus.triggered.connect(lambda: AstronciaData.my_down_binding_execute())
-    AstronciaData.volumeMinus.setShortcut(qkeysequence(QtCore.Qt.Key_9))
+    AstronciaData.volumeMinus.setShortcut(kbd("my_down_binding_execute"))
 
     AstronciaData.volumePlus = qaction(_('menubar_volumeplus'), data)
     AstronciaData.volumePlus.triggered.connect(lambda: AstronciaData.my_up_binding_execute())
-    AstronciaData.volumePlus.setShortcut(qkeysequence(QtCore.Qt.Key_0))
+    AstronciaData.volumePlus.setShortcut(kbd("my_up_binding_execute"))
 
     # Audio filters
 
@@ -244,23 +247,23 @@ def init_menubar(data): # pylint: disable=too-many-statements
 
     AstronciaData.showhideplaylistAction = qaction(_('showhideplaylist'), data)
     AstronciaData.showhideplaylistAction.triggered.connect(lambda: AstronciaData.showhideplaylist())
-    AstronciaData.showhideplaylistAction.setShortcut(qkeysequence(QtCore.Qt.Key_T))
+    AstronciaData.showhideplaylistAction.setShortcut(kbd("key_t"))
 
     AstronciaData.showhidectrlpanelAction = qaction(_('showhidectrlpanel'), data)
     AstronciaData.showhidectrlpanelAction.triggered.connect(lambda: AstronciaData.lowpanel_ch_1())
-    AstronciaData.showhidectrlpanelAction.setShortcut(qkeysequence(QtCore.Qt.Key_P))
+    AstronciaData.showhidectrlpanelAction.setShortcut(kbd("lowpanel_ch_1"))
 
     AstronciaData.streaminformationAction = qaction(_('Stream Information'), data)
     AstronciaData.streaminformationAction.triggered.connect(
         lambda: AstronciaData.open_stream_info()
     )
-    AstronciaData.streaminformationAction.setShortcut(qkeysequence(QtCore.Qt.Key_F2))
+    AstronciaData.streaminformationAction.setShortcut(kbd("open_stream_info"))
 
     AstronciaData.forceupdateepgAction = qaction(_('menubar_updateepg'), data)
     AstronciaData.forceupdateepgAction.triggered.connect(
         lambda: AstronciaData.force_update_epg()
     )
-    AstronciaData.forceupdateepgAction.setShortcut(qkeysequence("Ctrl+U"))
+    AstronciaData.forceupdateepgAction.setShortcut(kbd("force_update_epg"))
 
     AstronciaData.applogAction = qaction(_('applog'), data)
     AstronciaData.applogAction.triggered.connect(lambda: AstronciaData.show_app_log())
@@ -272,11 +275,11 @@ def init_menubar(data): # pylint: disable=too-many-statements
 
     AstronciaData.sortAction = qaction(_('menubar_channelsort'), data)
     AstronciaData.sortAction.triggered.connect(lambda: AstronciaData.show_sort())
-    AstronciaData.sortAction.setShortcut(qkeysequence(QtCore.Qt.Key_I))
+    AstronciaData.sortAction.setShortcut(kbd("show_sort"))
 
     AstronciaData.settingsAction = qaction(_('menubar_settings'), data)
     AstronciaData.settingsAction.triggered.connect(lambda: AstronciaData.show_settings())
-    AstronciaData.settingsAction.setShortcut(qkeysequence("Ctrl+P"))
+    AstronciaData.settingsAction.setShortcut(kbd("show_settings"))
 
     # Help
 
@@ -317,9 +320,12 @@ def init_menubar(data): # pylint: disable=too-many-statements
             partial(apply_vf_filter, vf_filter, AstronciaData.filter_mapping[vf_filter])
         )
 
-def populate_menubar(i, menubar, data, track_list=None, playing_chan=None): # pylint: disable=too-many-statements, too-many-locals
+def populate_menubar(i, menubar, data, track_list=None, playing_chan=None, get_keybind=None): # pylint: disable=too-many-statements, too-many-arguments, too-many-locals
     #print_with_time("populate_menubar called")
     # File
+
+    if get_keybind:
+        AstronciaData.get_keybind = get_keybind
 
     if not AstronciaData.menubar_ready:
         init_menubar(data)
