@@ -5805,6 +5805,16 @@ if __name__ == '__main__':
         else:
             qaction_prio = QtWidgets.QAction.HighPriority
 
+        def get_keybind(func1):
+            pretty_name = None
+            for key1, func in keybinds.items():
+                if func == func1:
+                    if isinstance(key1, str):
+                        pretty_name = key1
+                    else:
+                        pretty_name = QtGui.QKeySequence(key1).toString()
+            print(pretty_name)
+
         init_menubar_player(
             player,
             mpv_play,
@@ -5836,7 +5846,8 @@ if __name__ == '__main__':
             show_sort,
             show_exception,
             get_curwindow_pos,
-            force_update_epg
+            force_update_epg,
+            get_keybind
         )
 
         def archive_all_clicked():
@@ -6118,15 +6129,15 @@ if __name__ == '__main__':
 
         label3 = QtWidgets.QPushButton()
         label3.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'pause.png'))))
-        label3.setToolTip(_('pause') + ' (Space)')
+        label3.setToolTip(_('pause'))
         label3.clicked.connect(mpv_play)
         label4 = QtWidgets.QPushButton()
         label4.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'stop.png'))))
-        label4.setToolTip(_('stop') + ' (S)')
+        label4.setToolTip(_('stop'))
         label4.clicked.connect(mpv_stop)
         label5 = QtWidgets.QPushButton()
         label5.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'fullscreen.png'))))
-        label5.setToolTip(_('fullscreen') + ' (F)')
+        label5.setToolTip(_('fullscreen'))
         label5.clicked.connect(mpv_fullscreen)
         label5_0 = QtWidgets.QPushButton()
         label5_0.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'folder.png'))))
@@ -6134,15 +6145,15 @@ if __name__ == '__main__':
         label5_0.clicked.connect(open_recording_folder)
         label5_1 = QtWidgets.QPushButton()
         label5_1.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'record.png'))))
-        label5_1.setToolTip(_("record") + ' (R)')
+        label5_1.setToolTip(_("record"))
         label5_1.clicked.connect(do_record)
         label5_2 = QtWidgets.QPushButton()
         label5_2.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'calendar.png'))))
-        label5_2.setToolTip(_("scheduler") + ' (D)')
+        label5_2.setToolTip(_("scheduler"))
         label5_2.clicked.connect(show_scheduler)
         label6 = QtWidgets.QPushButton()
         label6.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'volume.png'))))
-        label6.setToolTip(_('volume') + ' (V)')
+        label6.setToolTip(_('volume'))
         label6.clicked.connect(mpv_mute)
         label7 = QtWidgets.QSlider(QtCore.Qt.Horizontal)
         label7.setMinimum(0)
@@ -6151,11 +6162,11 @@ if __name__ == '__main__':
         label7.setValue(100)
         label7_1 = QtWidgets.QPushButton()
         label7_1.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'screenshot.png'))))
-        label7_1.setToolTip(_('screenshot') + ' (H)')
+        label7_1.setToolTip(_('screenshot').capitalize())
         label7_1.clicked.connect(do_screenshot)
         label7_2 = QtWidgets.QPushButton()
         label7_2.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'timeshift.png'))))
-        label7_2.setToolTip(_('timeshift') + ' (E)')
+        label7_2.setToolTip(_('timeshift'))
         label7_2.clicked.connect(show_timeshift)
         label8 = QtWidgets.QPushButton()
         label8.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'settings.png'))))
@@ -6167,19 +6178,19 @@ if __name__ == '__main__':
         label8_0.clicked.connect(show_playlists)
         label8_1 = QtWidgets.QPushButton()
         label8_1.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'tvguide.png'))))
-        label8_1.setToolTip(_('tvguide') + ' (G)')
+        label8_1.setToolTip(_('tvguide'))
         label8_1.clicked.connect(show_tvguide)
         label8_4 = QtWidgets.QPushButton()
         label8_4.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'sort.png'))))
-        label8_4.setToolTip(_('sort').replace('\n', ' ') + ' (I)')
+        label8_4.setToolTip(_('sort').replace('\n', ' '))
         label8_4.clicked.connect(show_sort)
         label8_2 = QtWidgets.QPushButton()
         label8_2.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'prev.png'))))
-        label8_2.setToolTip(_('prevchannel') + ' (N)')
+        label8_2.setToolTip(_('prevchannel'))
         label8_2.clicked.connect(prev_channel)
         label8_3 = QtWidgets.QPushButton()
         label8_3.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'next.png'))))
-        label8_3.setToolTip(_('nextchannel') + ' (M)')
+        label8_3.setToolTip(_('nextchannel'))
         label8_3.clicked.connect(next_channel)
         label8_5 = QtWidgets.QPushButton()
         label8_5.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'edit.png'))))
@@ -6984,7 +6995,7 @@ if __name__ == '__main__':
             QtCore.Qt.Key_F: mpv_fullscreen, # f - fullscreen
             QtCore.Qt.Key_F11: mpv_fullscreen,
             QtCore.Qt.Key_F2: open_stream_info, # f2 - stream info
-            QtCore.Qt.Key_V: mpv_mute, # v - mute
+            QtCore.Qt.Key_M: mpv_mute, # v - mute
             QtCore.Qt.Key_Q: key_quit, # q - quit
             QtCore.Qt.Key_Space: mpv_play, # space - pause
             QtCore.Qt.Key_MediaTogglePlayPause: mpv_play,
@@ -6998,9 +7009,9 @@ if __name__ == '__main__':
             QtCore.Qt.Key_G: show_tvguide, # g - tv guide
             QtCore.Qt.Key_R: do_record, # r - record
             QtCore.Qt.Key_MediaRecord: do_record,
-            QtCore.Qt.Key_N: prev_channel, # n - prev channel
+            QtCore.Qt.Key_B: prev_channel, # n - prev channel
             QtCore.Qt.Key_MediaPrevious: prev_channel,
-            QtCore.Qt.Key_M: next_channel, # m - next channel
+            QtCore.Qt.Key_N: next_channel, # m - next channel
             QtCore.Qt.Key_MediaNext: next_channel,
             QtCore.Qt.Key_O: show_clock, # o - show/hide clock
             QtCore.Qt.Key_VolumeUp: my_up_binding,

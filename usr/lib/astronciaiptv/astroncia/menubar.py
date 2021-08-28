@@ -164,11 +164,11 @@ def init_menubar(data): # pylint: disable=too-many-statements
 
     AstronciaData.prevchannel = qaction(_('menubar_previous'), data)
     AstronciaData.prevchannel.triggered.connect(lambda: AstronciaData.prev_channel())
-    AstronciaData.prevchannel.setShortcut(qkeysequence(QtCore.Qt.Key_N))
+    AstronciaData.prevchannel.setShortcut(qkeysequence(QtCore.Qt.Key_B))
 
     AstronciaData.nextchannel = qaction(_('menubar_next'), data)
     AstronciaData.nextchannel.triggered.connect(lambda: AstronciaData.next_channel())
-    AstronciaData.nextchannel.setShortcut(qkeysequence(QtCore.Qt.Key_M))
+    AstronciaData.nextchannel.setShortcut(qkeysequence(QtCore.Qt.Key_N))
 
     # Video
     AstronciaData.fullscreen = qaction(_('menubar_fullscreen'), data)
@@ -216,7 +216,7 @@ def init_menubar(data): # pylint: disable=too-many-statements
 
     AstronciaData.muteAction = qaction(_('menubar_mute'), data)
     AstronciaData.muteAction.triggered.connect(lambda: AstronciaData.mpv_mute())
-    AstronciaData.muteAction.setShortcut(qkeysequence(QtCore.Qt.Key_V))
+    AstronciaData.muteAction.setShortcut(qkeysequence(QtCore.Qt.Key_M))
 
     AstronciaData.volumeMinus = qaction(_('menubar_volumeminus'), data)
     AstronciaData.volumeMinus.triggered.connect(lambda: AstronciaData.my_down_binding_execute())
@@ -515,7 +515,8 @@ def init_menubar_player( # pylint: disable=too-many-arguments, too-many-locals
     show_sort,
     show_exception,
     get_curwindow_pos,
-    force_update_epg
+    force_update_epg,
+    get_keybind
 ):
     for func in locals().items():
         setattr(AstronciaData, func[0], func[1])
