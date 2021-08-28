@@ -1649,12 +1649,33 @@ if __name__ == '__main__':
             file4.close()
             sort_win.hide()
 
-        close_sort_btn = QtWidgets.QPushButton(_('close'), sort_win)
-        close_sort_btn.move(145, 465)
+        close_sort_btn = QtWidgets.QPushButton(_('close'))
         close_sort_btn.clicked.connect(sort_win.hide)
-        save_sort_btn = QtWidgets.QPushButton(_('save'), sort_win)
+        close_sort_btn.setStyleSheet('color: red;')
+
+        save_sort_btn = QtWidgets.QPushButton(_('save'))
+        save_sort_btn.setStyleSheet('font-weight: bold; color: green;')
         save_sort_btn.clicked.connect(save_sort)
-        save_sort_btn.move(145, 430)
+
+        sort_label = QtWidgets.QLabel(_('donotforgetsort'))
+        sort_label.setAlignment(QtCore.Qt.AlignCenter)
+
+        sort_widget3 = QtWidgets.QWidget()
+
+        sort_widget4 = QtWidgets.QWidget()
+        sort_widget4_layout = QtWidgets.QHBoxLayout()
+        sort_widget4_layout.addWidget(save_sort_btn)
+        sort_widget4_layout.addWidget(close_sort_btn)
+        sort_widget4.setLayout(sort_widget4_layout)
+
+        sort_widget_main = QtWidgets.QWidget()
+        sort_layout = QtWidgets.QVBoxLayout()
+        sort_layout.addWidget(sort_label)
+        sort_layout.addWidget(sort_widget3)
+        sort_layout.addWidget(sort_widget4)
+        sort_layout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        sort_widget_main.setLayout(sort_layout)
+        sort_win.setCentralWidget(sort_widget_main)
 
         home_folder = ""
         try:
@@ -4474,10 +4495,6 @@ if __name__ == '__main__':
             win.listWidget.addItem(channels[channel][0])
             win.listWidget.setItemWidget(channels[channel][0], channels[channel][1])
 
-        sort_label = QtWidgets.QLabel(_('donotforgetsort'), sort_win)
-        sort_label.resize(400, 50)
-        sort_label.setAlignment(QtCore.Qt.AlignCenter)
-
         def sort_upbtn_clicked():
             curIndex = sort_list.currentRow()
             if curIndex != -1 and curIndex > 0:
@@ -4507,9 +4524,6 @@ if __name__ == '__main__':
         sort_widget2.setLayout(sort_layout2)
 
         sort_list = QtWidgets.QListWidget()
-        sort_widget3 = QtWidgets.QWidget(sort_win)
-        sort_widget3.move(0, 50)
-        sort_widget3.resize(400, 370)
         sort_layout3 = QtWidgets.QHBoxLayout()
         sort_layout3.addWidget(sort_list)
         sort_layout3.addWidget(sort_widget2)
