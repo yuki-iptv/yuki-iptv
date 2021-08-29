@@ -3333,12 +3333,20 @@ if __name__ == '__main__':
                     tvguide_lbl.move(win.width() - tvguide_lbl.width(), tvguide_lbl_offset)
                 if not fullscreen:
                     l1.setFixedWidth(self.windowWidth - dockWidget.width() + 58)
-                    l1.move(
-                        int(((self.windowWidth - l1.width()) / 2) - (dockWidget.width() / 1.7)),
-                        int(((self.windowHeight - l1.height()) - dockWidget2.height() - 10))
-                    )
-                    h = dockWidget2.height()
-                    h2 = 20
+                    if not dockWidget2.isVisible():
+                        l1.move(
+                            int(((self.windowWidth - l1.width()) / 2) - (dockWidget.width() / 1.7)),
+                            int(((self.windowHeight - l1.height()) - 20))
+                        )
+                        h = 0
+                        h2 = 10
+                    else:
+                        l1.move(
+                            int(((self.windowWidth - l1.width()) / 2) - (dockWidget.width() / 1.7)),
+                            int(((self.windowHeight - l1.height()) - dockWidget2.height() - 10))
+                        )
+                        h = dockWidget2.height()
+                        h2 = 20
                 else:
                     l1.setFixedWidth(self.windowWidth)
                     l1.move(
@@ -3823,8 +3831,15 @@ if __name__ == '__main__':
 
         old_value = 100
 
+        def is_show_volume():
+            global fullscreen
+            showdata = fullscreen
+            if not fullscreen and win.isVisible():
+                showdata = not dockWidget2.isVisible()
+            return showdata and not controlpanel_widget.isVisible()
+
         def show_volume(v1):
-            if not controlpanel_widget.isVisible():
+            if is_show_volume():
                 l1.show()
                 if isinstance(v1, str):
                     l1.setText2(v1)
@@ -3855,16 +3870,13 @@ if __name__ == '__main__':
             global time_stop, l1, fullscreen
             time_stop = time.time() + 3
             vol = int(label7.value())
-            if not fullscreen:
-                showdata = False
-            if showdata:
-                try:
-                    if vol == 0:
-                        show_volume(_('volumeoff'))
-                    else:
-                        show_volume(vol)
-                except NameError:
-                    pass
+            try:
+                if vol == 0:
+                    show_volume(_('volumeoff'))
+                else:
+                    show_volume(vol)
+            except NameError:
+                pass
             mpv_override_volume(vol)
             if vol == 0:
                 mpv_override_mute(True)
@@ -5649,8 +5661,7 @@ if __name__ == '__main__':
                 volume = int(player.volume - settings['volumechangestep'])
                 volume = max(volume, 0)
                 time_stop = time.time() + 3
-                if fullscreen:
-                    show_volume(volume)
+                show_volume(volume)
                 label7.setValue(volume)
                 mpv_volume_set()
 
@@ -6723,8 +6734,8 @@ if __name__ == '__main__':
             try: # pylint: disable=too-many-nested-blocks
                 global fullscreen, key_t_visible, dockWidgetVisible, \
                 dockWidget2Visible
-                if fullscreen and l1.isVisible() and l1.text().startswith(_('volume')) and \
-                  controlpanel_widget.isVisible():
+                if l1.isVisible() and l1.text().startswith(_('volume')) and \
+                  not is_show_volume():
                     l1.hide()
                 #label13.setText("{}: {}%".format(_('volumeshort'), int(player.volume)))
                 label13.setText("{}%".format(int(player.volume)))
