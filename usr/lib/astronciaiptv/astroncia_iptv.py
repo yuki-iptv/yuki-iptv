@@ -692,7 +692,13 @@ if __name__ == '__main__':
             pass
 
         if not os.path.isdir(str(Path(save_folder))):
-            os.mkdir(str(Path(save_folder)))
+            try:
+                os.mkdir(str(Path(save_folder)))
+            except: # pylint: disable=bare-except
+                print_with_time("Failed to create save folder!")
+                save_folder = SAVE_FOLDER_DEFAULT
+                if not os.path.isdir(str(Path(save_folder))):
+                    os.mkdir(str(Path(save_folder)))
 
         if not os.path.isdir(str(Path(save_folder, 'screenshots'))):
             os.mkdir(str(Path(save_folder, 'screenshots')))
