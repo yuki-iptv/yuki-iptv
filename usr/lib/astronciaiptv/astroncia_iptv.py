@@ -6688,7 +6688,7 @@ if __name__ == '__main__':
             lb2_width = 0
             for lb2_wdg in show_lbls_fullscreen:
                 if hlayout2.indexOf(lb2_wdg) != -1:
-                    lb2_width += lb2_wdg.width() + 15
+                    lb2_width += lb2_wdg.width() + 10
             controlpanel_widget.setFixedWidth(
                 #int(win.width() / 3) - 100
                 #650
