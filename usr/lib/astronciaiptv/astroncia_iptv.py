@@ -68,7 +68,7 @@ from thirdparty.conversion import convert_size, format_bytes, human_secs
 from thirdparty.m3u import M3uParser
 from thirdparty.m3ueditor import Viewer
 from thirdparty.xtream import XTream
-from thirdparty.levenshtein import damerau_levenshtein
+#from thirdparty.levenshtein import damerau_levenshtein
 
 qt_backend, QtWidgets, QtCore, QtGui, QShortcut = get_qt_backend()
 if qt_backend == 'none' or not QtWidgets:
@@ -4722,21 +4722,21 @@ if __name__ == '__main__':
                     file02.close()
 
         # Fix this, make async
-        def iaepgmatch():
-            prog_ids_1 = []
-            for x2 in prog_ids:
-                for x3 in prog_ids[x2]:
-                    if not x3 in prog_ids_1:
-                        prog_ids_1.append(x3)
-            for x4_chan in [x3 for x3 in array]: # pylint: disable=unnecessary-comprehension
-                if x4_chan.lower() not in programmes:
-                    print_with_time("Parsing channel '{}'...".format(x4_chan))
-                    matches = {}
-                    for x4 in prog_ids_1:
-                        x5 = x4.strip().lower()
-                        x5_chan = x4_chan.strip().lower()
-                        matches[(x4_chan, x4)] = damerau_levenshtein(x5_chan, x5)
-                    print_with_time(sorted(matches.items(), key=lambda x6: x6[1])[0][0][1])
+        #def iaepgmatch():
+        #    prog_ids_1 = []
+        #    for x2 in prog_ids:
+        #        for x3 in prog_ids[x2]:
+        #            if not x3 in prog_ids_1:
+        #                prog_ids_1.append(x3)
+        #    for x4_chan in [x3 for x3 in array]: # pylint: disable=unnecessary-comprehension
+        #        if x4_chan.lower() not in programmes:
+        #            print_with_time("Parsing channel '{}'...".format(x4_chan))
+        #            matches = {}
+        #            for x4 in prog_ids_1:
+        #                x5 = x4.strip().lower()
+        #                x5_chan = x4_chan.strip().lower()
+        #                matches[(x4_chan, x4)] = damerau_levenshtein(x5_chan, x5)
+        #            print_with_time(sorted(matches.items(), key=lambda x6: x6[1])[0][0][1])
 
         def show_context_menu(pos):
             global sel_item

@@ -10,7 +10,6 @@ from astroncia.extgrp import parse_extgrp
 from astroncia.time import print_with_time
 
 class M3uParser:
-    
     def __init__(self, udp_proxy):
         self.files = []
         self.udp_proxy = udp_proxy
@@ -37,8 +36,7 @@ class M3uParser:
 
         LANG = lang[settings_lang0]['strings'] if settings_lang0 in lang else lang[LANG_DEFAULT]['strings']
         self.allchannels = _('allchannels')
-    
-    #Read the file from the given path
+
     def readM3u(self, filename):
         self.epg_url = ''
         self.filename = filename
@@ -54,7 +52,6 @@ class M3uParser:
             self.epg_url = '^^::MULTIPLE::^^' + ':::^^^:::'.join(self.epg_array)
         return [self.files, self.epg_url]
 
-    #Read all file lines
     def readAllLines(self):
         self.lines = [line.rstrip('\n').rstrip() for line in self.filename.strip().split('\n')]
         if not self.lines[-1]:
@@ -77,21 +74,20 @@ class M3uParser:
                         self.epg_url = re.findall('url-tvg="(.*?)"', self.lines[0])[0]
                     except: # pylint: disable=bare-except
                         pass
-            # No dead URLs, please
             self.epg_url = self.epg_url if self.epg_url != 'http://server/jtv.zip' else ''
             self.lines.pop(0)
         self.lines = [x.rstrip() for x in self.lines if not x.startswith('#EXTVLCOPT:')]
         self.lines = ['#EXTM3U'] + [x0 for x0 in self.lines if x0]
         self.lines = parse_extgrp(self.lines)
         return len(self.lines)
-    
+
     def parseFile(self):
         numLine = len(self.lines)
         for n in range(numLine):
             line = self.lines[n]
             if line[0] == "#":
                 self.manageLine(n)
-    
+
     def manageLine(self, n):
         lineInfo = self.lines[n]
         lineLink = self.lines[n+1]
@@ -128,12 +124,11 @@ class M3uParser:
                 title = m.group(1)
             except AttributeError:
                 title = ""
-            # ~ print_with_time(name+"||"+id+"||"+logo+"||"+group+"||"+title)
 
             up = self.udp_proxy
             if up and (lineLink.startswith('udp://') or lineLink.startswith('rtp://')):
                 lineLink = up + "/" + lineLink.replace("udp://", "udp/").replace("rtp://", "rtp/")
-                lineLink = lineLink.replace('//udp/', '/udp/').replace('//rtp/', '/rtp/')    
+                lineLink = lineLink.replace('//udp/', '/udp/').replace('//rtp/', '/rtp/')
 
             test = {
                 "title": title,
