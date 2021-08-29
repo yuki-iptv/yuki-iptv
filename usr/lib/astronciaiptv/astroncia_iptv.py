@@ -3327,7 +3327,7 @@ if __name__ == '__main__':
                         ws_file.close()
                     except: # pylint: disable=bare-except
                         pass
-            def update(self):
+            def update(self): # pylint: disable=too-many-branches
                 global l1, tvguide_lbl, fullscreen
 
                 self.windowWidth = self.width()
@@ -3338,15 +3338,28 @@ if __name__ == '__main__':
                 else:
                     tvguide_lbl.move(win.width() - tvguide_lbl.width(), tvguide_lbl_offset)
                 if not fullscreen:
-                    l1.setFixedWidth(self.windowWidth - dockWidget.width() + 58)
                     if not dockWidget2.isVisible():
-                        l1.move(
-                            int(((self.windowWidth - l1.width()) / 2) - (dockWidget.width() / 1.7)),
-                            int(((self.windowHeight - l1.height()) - 20))
-                        )
-                        h = 0
-                        h2 = 10
+                        if settings["playlistsep"]:
+                            l1.setFixedWidth(self.windowWidth)
+                            l1.move(
+                                int(((self.windowWidth - l1.width()) / 2)),
+                                int(((self.windowHeight - l1.height()) - 20))
+                            )
+                            h = 0
+                            h2 = 10
+                        else:
+                            l1.setFixedWidth(self.windowWidth - dockWidget.width() + 58)
+                            l1.move(
+                                int(
+                                    ((self.windowWidth - l1.width()) / 2) - \
+                                    (dockWidget.width() / 1.7)
+                                ),
+                                int(((self.windowHeight - l1.height()) - 20))
+                            )
+                            h = 0
+                            h2 = 10
                     else:
+                        l1.setFixedWidth(self.windowWidth - dockWidget.width() + 58)
                         l1.move(
                             int(((self.windowWidth - l1.width()) / 2) - (dockWidget.width() / 1.7)),
                             int(((self.windowHeight - l1.height()) - dockWidget2.height() - 10))
