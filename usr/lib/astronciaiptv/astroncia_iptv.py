@@ -64,7 +64,7 @@ from astroncia.menubar import init_astroncia_menubar, init_menubar_player, \
 from astroncia.time import print_with_time, get_app_log, get_mpv_log, args_init
 from astroncia.epgurls import EPG_URLS
 from astroncia.xtreamtom3u import convert_xtream_to_m3u
-from thirdparty.conversion import convert_size, humanbytes, format_seconds_to_hhmmss
+from thirdparty.conversion import convert_size, format_bytes, human_secs
 from thirdparty.m3u import M3uParser
 from thirdparty.m3ueditor import Viewer
 from thirdparty.xtream import XTream
@@ -1449,7 +1449,7 @@ if __name__ == '__main__':
                 activerec_list_value = activerec_list.verticalScrollBar().value()
                 activerec_list.clear()
                 for sch0 in sch_recordings:
-                    counted_time0 = format_seconds_to_hhmmss(time.time() - sch_recordings[sch0][1])
+                    counted_time0 = human_secs(time.time() - sch_recordings[sch0][1])
                     channel_name0 = sch_recordings[sch0][3]
                     file_name0 = sch_recordings[sch0][2]
                     file_size0 = "WAITING"
@@ -6412,7 +6412,7 @@ if __name__ == '__main__':
                     if is_recording:
                         if not recording_time:
                             recording_time = time.time()
-                        record_time = format_seconds_to_hhmmss(time.time() - recording_time)
+                        record_time = human_secs(time.time() - recording_time)
                         if os.path.isfile(record_file):
                             record_size = convert_size(os.path.getsize(record_file))
                             lbl2.setText("REC " + record_time + " - " + record_size)
@@ -6465,7 +6465,7 @@ if __name__ == '__main__':
                             _('bitrate1'), _('bitrate2'),
                             _('bitrate3'), _('bitrate4'), _('bitrate5')
                         ]
-                        video_bitrate = " - " + str(humanbytes(player.video_bitrate, bitrate_arr))
+                        video_bitrate = " - " + str(format_bytes(player.video_bitrate, bitrate_arr))
                     else:
                         video_bitrate = ""
                 except: # pylint: disable=bare-except

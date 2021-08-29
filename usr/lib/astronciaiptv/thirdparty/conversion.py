@@ -1,16 +1,7 @@
 # pylint: disable=no-else-return, inconsistent-return-statements
 import math
 
-def convert_size(size_bytes):
-    if size_bytes == 0:
-        return "0B"
-    size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
-    i_i = int(math.floor(math.log(size_bytes, 1024)))
-    p_p = math.pow(1024, i_i)
-    s_s = round(size_bytes / p_p)
-    return "%s %s" % (s_s, size_name[i_i])
-
-def humanbytes(B, hbnames):
+def format_bytes(B, hbnames):
     B = float(B)
     kilobytes = float(1024)
     megabytes = float(kilobytes ** 2)
@@ -27,10 +18,12 @@ def humanbytes(B, hbnames):
     elif terabytes <= B:
         return '{0:.2f}'.format(B/terabytes) + " " + hbnames[4]
 
-def format_seconds_to_hhmmss(seconds_dat):
-    '''Formating seconds to HH:MM:SS'''
-    hours_dat = seconds_dat // (60*60)
-    seconds_dat %= (60*60)
-    minutes_dat = seconds_dat // 60
-    seconds_dat %= 60
-    return "%02i:%02i:%02i" % (hours_dat, minutes_dat, seconds_dat)
+def convert_size(size_bytes):
+    return format_bytes(size_bytes, ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"])
+
+def human_secs(scds):
+    hrs = scds // (60*60)
+    scds %= (60*60)
+    mnts = scds // 60
+    scds %= 60
+    return "%02i:%02i:%02i" % (hrs, mnts, scds)
