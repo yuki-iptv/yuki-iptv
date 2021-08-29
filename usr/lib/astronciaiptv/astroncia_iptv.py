@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 '''Astroncia IPTV - Cross platform IPTV player'''
 # pylint: disable=invalid-name, global-statement, missing-docstring, wrong-import-position
 # pylint: disable=too-many-lines, ungrouped-imports, too-many-statements, broad-except
@@ -1329,7 +1328,7 @@ if __name__ == '__main__':
         time_stop = 0
         autoclosemenu_time = -1
 
-        def moveWindowToCenter(win_arg):
+        def moveWindowToCenter(win_arg, force=False):
             qr0 = win_arg.frameGeometry()
             qr0.moveCenter(
                 QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
@@ -3804,7 +3803,7 @@ if __name__ == '__main__':
                 if comm_instance.winPosition:
                     win.move(comm_instance.winPosition.x(), comm_instance.winPosition.y())
                 else:
-                    moveWindowToCenter(win)
+                    moveWindowToCenter(win, True)
                 if settings['playlistsep'] and currentDockWidgetPos != -1:
                     comm_instance.moveSeparatePlaylist.emit(currentDockWidgetPos)
                 if settings['panelposition'] == 1:
