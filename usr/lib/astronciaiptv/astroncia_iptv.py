@@ -7029,6 +7029,13 @@ if __name__ == '__main__':
                     playlist_widget,
                     activated=funcs[kbd1]
                 ))
+                if settings["playlistsep"]:
+                    # Separate playlist
+                    QShortcut(
+                        QtGui.QKeySequence(kbd),
+                        sepplaylist_win,
+                        activated=funcs[kbd1]
+                    )
 
         setShortcutState(False)
 
