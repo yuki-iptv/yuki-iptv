@@ -3872,7 +3872,7 @@ if __name__ == '__main__':
                 label7.setValue(0)
                 show_volume(_('volumeoff'))
 
-        def mpv_volume_set(showdata=True):
+        def mpv_volume_set():
             global time_stop, l1, fullscreen
             time_stop = time.time() + 3
             vol = int(label7.value())
@@ -5985,7 +5985,7 @@ if __name__ == '__main__':
                 scheduler_win.show()
 
         def mpv_volume_set_custom():
-            mpv_volume_set(showdata=False)
+            mpv_volume_set()
 
         label3 = QtWidgets.QPushButton()
         label3.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'pause.png'))))
