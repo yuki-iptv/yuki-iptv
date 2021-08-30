@@ -31,6 +31,7 @@ def parse_xspf(xspf): # pylint: disable=missing-function-docstring
             if re.match(r'file:///.:/', location):
                 location = location.replace('file:///', '').replace('/', '\\')
             else:
+                # Linux
                 location = location.replace('file://', '')
         array.append({
             'title': title,
