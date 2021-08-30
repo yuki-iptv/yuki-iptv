@@ -3500,6 +3500,10 @@ if __name__ == '__main__':
                 label7.setValue(100)
                 mpv_volume_set()
 
+        def move_label(label, x, y):
+            if x > 0 and y > 0:
+                label.move(x, y)
+
         class MainWindow(QtWidgets.QMainWindow):
             def __init__(self, parent=None):
                 super().__init__(parent)
@@ -3542,14 +3546,15 @@ if __name__ == '__main__':
                 self.windowHeight = self.height()
                 self.updateWindowSize()
                 if settings['panelposition'] == 0:
-                    tvguide_lbl.move(2, tvguide_lbl_offset)
+                    move_label(tvguide_lbl, 2, tvguide_lbl_offset)
                 else:
-                    tvguide_lbl.move(win.width() - tvguide_lbl.width(), tvguide_lbl_offset)
+                    move_label(tvguide_lbl, win.width() - tvguide_lbl.width(), tvguide_lbl_offset)
                 if not fullscreen:
                     if not dockWidget2.isVisible():
                         if settings["playlistsep"]:
                             l1.setFixedWidth(self.windowWidth)
-                            l1.move(
+                            move_label(
+                                l1,
                                 int(((self.windowWidth - l1.width()) / 2)),
                                 int(((self.windowHeight - l1.height()) - 20))
                             )
@@ -3557,7 +3562,8 @@ if __name__ == '__main__':
                             h2 = 10
                         else:
                             l1.setFixedWidth(self.windowWidth - dockWidget.width() + 58)
-                            l1.move(
+                            move_label(
+                                l1,
                                 int(
                                     ((self.windowWidth - l1.width()) / 2) - \
                                     (dockWidget.width() / 1.7)
@@ -3568,7 +3574,8 @@ if __name__ == '__main__':
                             h2 = 10
                     else:
                         l1.setFixedWidth(self.windowWidth - dockWidget.width() + 58)
-                        l1.move(
+                        move_label(
+                            l1,
                             int(((self.windowWidth - l1.width()) / 2) - (dockWidget.width() / 1.7)),
                             int(((self.windowHeight - l1.height()) - dockWidget2.height() - 10))
                         )
@@ -3576,7 +3583,8 @@ if __name__ == '__main__':
                         h2 = 20
                 else:
                     l1.setFixedWidth(self.windowWidth)
-                    l1.move(
+                    move_label(
+                        l1,
                         int(((self.windowWidth - l1.width()) / 2)),
                         int(((self.windowHeight - l1.height()) - 20))
                     )
