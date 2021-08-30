@@ -7262,10 +7262,9 @@ if __name__ == '__main__':
         #if doSaveSettings:
         #    save_settings()
 
-        init_mpv_player()
-
         if settings['m3u'] and m3u:
             win.show()
+            init_mpv_player()
             win.raise_()
             win.setFocus(QtCore.Qt.PopupFocusReason)
             win.activateWindow()
