@@ -3035,24 +3035,33 @@ if __name__ == '__main__':
 
         def check_for_updates_pt2(last_avail_version_2, noWin):
             if last_avail_version_2:
-                if APP_VERSION == last_avail_version_2:
-                    lastversion_installed_msg = QtWidgets.QMessageBox(
-                        qt_icon_information,
+                if APP_VERSION == '__DEB' + '_VERSION__':
+                    fail_version_msg = QtWidgets.QMessageBox(
+                        qt_icon_critical,
                         MAIN_WINDOW_TITLE,
-                        _('gotlatestversion'),
+                        _('newversiongetfail'),
                         QtWidgets.QMessageBox.Ok
                     )
-                    lastversion_installed_msg.exec()
+                    fail_version_msg.exec()
                 else:
-                    newversion_avail_msg = QtWidgets.QMessageBox.question(
-                        None,
-                        MAIN_WINDOW_TITLE,
-                        _('newversionavail'),
-                        QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
-                        QtWidgets.QMessageBox.Yes
-                    )
-                    if newversion_avail_msg == QtWidgets.QMessageBox.Yes:
-                        async_webbrowser()
+                    if APP_VERSION == last_avail_version_2:
+                        lastversion_installed_msg = QtWidgets.QMessageBox(
+                            qt_icon_information,
+                            MAIN_WINDOW_TITLE,
+                            _('gotlatestversion'),
+                            QtWidgets.QMessageBox.Ok
+                        )
+                        lastversion_installed_msg.exec()
+                    else:
+                        newversion_avail_msg = QtWidgets.QMessageBox.question(
+                            None,
+                            MAIN_WINDOW_TITLE,
+                            _('newversionavail'),
+                            QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+                            QtWidgets.QMessageBox.Yes
+                        )
+                        if newversion_avail_msg == QtWidgets.QMessageBox.Yes:
+                            async_webbrowser()
             else:
                 fail_version_msg = QtWidgets.QMessageBox(
                     qt_icon_critical,
