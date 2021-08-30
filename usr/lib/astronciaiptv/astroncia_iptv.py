@@ -3592,11 +3592,11 @@ if __name__ == '__main__':
                     h2 = 10
                 if dockWidget.isVisible():
                     if settings['panelposition'] == 0:
-                        lbl2.move(0, lbl2_offset)
+                        move_label(lbl2, 0, lbl2_offset)
                     else:
-                        lbl2.move(tvguide_lbl.width() + lbl2.width(), lbl2_offset)
+                        move_label(lbl2, tvguide_lbl.width() + lbl2.width(), lbl2_offset)
                 else:
-                    lbl2.move(0, lbl2_offset)
+                    move_label(lbl2, 0, lbl2_offset)
                 if l1.isVisible():
                     l1_h = l1.height()
                 else:
