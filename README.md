@@ -1,7 +1,7 @@
 # Astroncia IPTV
 ### IPTV player with EPG support
 
-[![Screenshot](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/screenshots/astroncia-iptv-screenshot-thumb.png)](https://gitlab.com/astroncia/iptv-binaries/-/raw/master/screenshots/astroncia-iptv-screenshot.png)  
+[![Screenshot](https://gitlab.com/astroncia/iptv/uploads/b59522369ccba3c99f349e397d102c0b/astroncia-iptv-screenshot-thumb.png)](https://gitlab.com/astroncia/iptv/uploads/9cb6c1e462a679117f36e67ec98ec8b0/astroncia-iptv-screenshot.png)  
 
 ## Download
 
