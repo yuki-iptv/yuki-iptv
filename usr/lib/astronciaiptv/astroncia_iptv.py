@@ -3504,6 +3504,10 @@ if __name__ == '__main__':
             if x > 0 and y > 0:
                 label.move(x, y)
 
+        def set_label_width(label, width):
+            if width > 0:
+                label.setFixedWidth(width)
+
         class MainWindow(QtWidgets.QMainWindow):
             def __init__(self, parent=None):
                 super().__init__(parent)
@@ -3552,7 +3556,7 @@ if __name__ == '__main__':
                 if not fullscreen:
                     if not dockWidget2.isVisible():
                         if settings["playlistsep"]:
-                            l1.setFixedWidth(self.windowWidth)
+                            set_label_width(l1, self.windowWidth)
                             move_label(
                                 l1,
                                 int(((self.windowWidth - l1.width()) / 2)),
@@ -3561,7 +3565,7 @@ if __name__ == '__main__':
                             h = 0
                             h2 = 10
                         else:
-                            l1.setFixedWidth(self.windowWidth - dockWidget.width() + 58)
+                            set_label_width(l1, self.windowWidth - dockWidget.width() + 58)
                             move_label(
                                 l1,
                                 int(
@@ -3573,7 +3577,7 @@ if __name__ == '__main__':
                             h = 0
                             h2 = 10
                     else:
-                        l1.setFixedWidth(self.windowWidth - dockWidget.width() + 58)
+                        set_label_width(l1, self.windowWidth - dockWidget.width() + 58)
                         move_label(
                             l1,
                             int(((self.windowWidth - l1.width()) / 2) - (dockWidget.width() / 1.7)),
@@ -3582,7 +3586,7 @@ if __name__ == '__main__':
                         h = dockWidget2.height()
                         h2 = 20
                 else:
-                    l1.setFixedWidth(self.windowWidth)
+                    set_label_width(l1, self.windowWidth)
                     move_label(
                         l1,
                         int(((self.windowWidth - l1.width()) / 2)),
