@@ -68,6 +68,7 @@ from astroncia.menubar import init_astroncia_menubar, init_menubar_player, \
 from astroncia.time import print_with_time, get_app_log, get_mpv_log, args_init
 from astroncia.epgurls import EPG_URLS
 from astroncia.xtreamtom3u import convert_xtream_to_m3u
+from astroncia.xspf import parse_xspf
 from thirdparty.conversion import convert_size, format_bytes, human_secs
 from thirdparty.m3u import M3uParser
 from thirdparty.m3ueditor import Viewer
@@ -829,7 +830,12 @@ if __name__ == '__main__':
             epg_url = ""
             if m3u:
                 try:
-                    m3u_data0 = m3u_parser.readM3u(m3u)
+                    is_xspf = '<?xml version="' in m3u and ('http://xspf.org/' in m3u or \
+                    'https://xspf.org/' in m3u)
+                    if not is_xspf:
+                        m3u_data0 = m3u_parser.readM3u(m3u)
+                    else:
+                        m3u_data0 = parse_xspf(m3u)
                     m3u_data = m3u_data0[0]
                     epg_url = m3u_data0[1]
                     if epg_url and not settings["epg"]:
@@ -4135,9 +4141,9 @@ if __name__ == '__main__':
             lbl2.move(tvguide_lbl.width() + lbl2.width(), lbl2_offset)
         tvguide_close_lbl.hide()
 
-        class QCustomQWidget(QtWidgets.QWidget): # pylint: disable=too-many-instance-attributes
+        class cwdg(QtWidgets.QWidget): # pylint: disable=too-many-instance-attributes
             def __init__(self, parent=None):
-                super(QCustomQWidget, self).__init__(parent) # pylint: disable=super-with-arguments
+                super(cwdg, self).__init__(parent) # pylint: disable=super-with-arguments
                 self.tooltip = ""
                 self.textQVBoxLayout = QtWidgets.QVBoxLayout()      # QtWidgets
                 self.textUpQLabel = QtWidgets.QLabel()         # QtWidgets
@@ -4218,9 +4224,9 @@ if __name__ == '__main__':
                 self.op.setOpacity(0)
                 self.progressBar.setGraphicsEffect(self.op)
 
-        class QCustomQWidget_simple(QtWidgets.QWidget): # pylint: disable=too-many-instance-attributes
+        class cwdg_simple(QtWidgets.QWidget): # pylint: disable=too-many-instance-attributes
             def __init__(self, parent=None):
-                super(QCustomQWidget_simple, self).__init__(parent) # pylint: disable=super-with-arguments
+                super(cwdg_simple, self).__init__(parent) # pylint: disable=super-with-arguments
                 self.textQHBoxLayout = QtWidgets.QHBoxLayout()      # QtWidgets
                 self.textUpQLabel = QtWidgets.QLabel()         # QtWidgets
                 myFont = QtGui.QFont()
@@ -4592,11 +4598,11 @@ if __name__ == '__main__':
                         percentage = 0
                         prog = ''
                         prog_desc = ''
-                # Create QCustomQWidget
+                # Create cwdg
                 if settings['gui'] == 0:
-                    myQCustomQWidget = QCustomQWidget()
+                    mycwdg = cwdg()
                 else:
-                    myQCustomQWidget = QCustomQWidget_simple()
+                    mycwdg = cwdg_simple()
                 MAX_SIZE_CHAN = 21
                 chan_name = i
                 if len(chan_name) > MAX_SIZE_CHAN:
@@ -4605,13 +4611,13 @@ if __name__ == '__main__':
                 append_symbol = ""
                 if playing_chan == chan_name:
                     append_symbol = unicode_play_symbol
-                myQCustomQWidget.setTextUp(append_symbol + str(k) + ". " + chan_name)
+                mycwdg.setTextUp(append_symbol + str(k) + ". " + chan_name)
                 MAX_SIZE = 28
                 orig_prog = prog
                 if len(prog) > MAX_SIZE:
                     prog = prog[0:MAX_SIZE] + "..."
                 if prog_search in programmes:
-                    myQCustomQWidget.setTextDown(
+                    mycwdg.setTextDown(
                         prog,
                         (
                             "<b>{}</b>".format(i) + "<br><br>" + \
@@ -4620,15 +4626,15 @@ if __name__ == '__main__':
                     )
                     try:
                         if start_time:
-                            myQCustomQWidget.setTextProgress(start_time)
-                            myQCustomQWidget.setTextEnd(stop_time)
-                            myQCustomQWidget.setProgress(int(percentage))
+                            mycwdg.setTextProgress(start_time)
+                            mycwdg.setTextEnd(stop_time)
+                            mycwdg.setProgress(int(percentage))
                         else:
-                            myQCustomQWidget.hideProgress()
+                            mycwdg.hideProgress()
                     except: # pylint: disable=bare-except
                         print_with_time("Async EPG load problem, ignoring")
                 else:
-                    myQCustomQWidget.hideProgress()
+                    mycwdg.hideProgress()
                 i_icon = i.lower()
                 icons_l = {picon.lower(): icons[picon] for picon in icons}
                 if i_icon in icons_l:
@@ -4638,9 +4644,9 @@ if __name__ == '__main__':
                                 '..', '..', 'share', 'astronciaiptv',
                                 'channel_icons', icons_l[i_icon]
                             )))
-                    myQCustomQWidget.setIcon(ICONS_CACHE[icons_l[i_icon]])
+                    mycwdg.setIcon(ICONS_CACHE[icons_l[i_icon]])
                 else:
-                    myQCustomQWidget.setIcon(TV_ICON)
+                    mycwdg.setIcon(TV_ICON)
 
                 # Icon from playlist
                 if i in channel_icons_data.return_dict and channel_icons_data.return_dict[i]:
@@ -4649,7 +4655,7 @@ if __name__ == '__main__':
                     else:
                         fetched_icon = channel_icons_data.return_dict[i][0]
                         ICONS_CACHE_FETCHED[i] = fetched_icon
-                    myQCustomQWidget.setIcon(fetched_icon)
+                    mycwdg.setIcon(fetched_icon)
 
                 # Icon from EPG
                 if i in channel_icons_data_epg.return_dict and \
@@ -4659,14 +4665,14 @@ if __name__ == '__main__':
                     else:
                         fetched_icon_epg = channel_icons_data_epg.return_dict[i][0]
                         ICONS_CACHE_FETCHED_EPG[i] = fetched_icon_epg
-                    myQCustomQWidget.setIcon(fetched_icon_epg)
+                    mycwdg.setIcon(fetched_icon_epg)
 
                 # Create QListWidgetItem
                 myQListWidgetItem = QtWidgets.QListWidgetItem()
                 myQListWidgetItem.setData(QtCore.Qt.UserRole, i)
                 # Set size hint
-                myQListWidgetItem.setSizeHint(myQCustomQWidget.sizeHint())
-                res[l] = [myQListWidgetItem, myQCustomQWidget, l, i]
+                myQListWidgetItem.setSizeHint(mycwdg.sizeHint())
+                res[l] = [myQListWidgetItem, mycwdg, l, i]
             j1 = playing_chan.lower()
             try:
                 j1 = prog_match_arr[j1]
