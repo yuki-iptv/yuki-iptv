@@ -894,6 +894,9 @@ msgstr "&Update TV guide"
 msgid "playername"
 msgstr "IPTV player"
 
+msgid "hidebitrateinfo"
+msgstr "Hide bitrate / video info"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, version {}\n© kestral / astroncia < kestraly (at) gmail.com "

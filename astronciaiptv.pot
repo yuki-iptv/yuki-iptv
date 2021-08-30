@@ -901,5 +901,8 @@ msgstr ""
 msgid "playername"
 msgstr ""
 
+msgid "hidebitrateinfo"
+msgstr ""
+
 msgid "helptext"
 msgstr ""

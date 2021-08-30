@@ -420,6 +420,7 @@ if __name__ == '__main__':
                 'hidempv': False,
                 'chaniconsfromepg': True,
                 'hideepgpercentage': False,
+                'hidebitrateinfo': False,
                 'volumechangestep': 1,
                 'themecompat': False,
                 'exp2': DOCK_WIDGET_WIDTH,
@@ -463,6 +464,8 @@ if __name__ == '__main__':
             settings['chaniconsfromepg'] = True
         if 'hideepgpercentage' not in settings:
             settings['hideepgpercentage'] = False
+        if 'hidebitrateinfo' not in settings:
+            settings['hidebitrateinfo'] = False
         if 'volumechangestep' not in settings:
             settings['volumechangestep'] = 1
         if 'themecompat' not in settings:
@@ -2367,6 +2370,7 @@ if __name__ == '__main__':
                 'hidempv': hidempv_flag.isChecked(),
                 'chaniconsfromepg': chaniconsfromepg_flag.isChecked(),
                 'hideepgpercentage': hideepgpercentage_flag.isChecked(),
+                'hidebitrateinfo': hidebitrateinfo_flag.isChecked(),
                 'volumechangestep': volumechangestep_choose.value(),
                 'themecompat': themecompat_flag.isChecked(),
                 'exp2': exp2_input.value(),
@@ -2659,6 +2663,7 @@ if __name__ == '__main__':
         hidempv_label = QtWidgets.QLabel("{}:".format(_('hidempv')))
         chaniconsfromepg_label = QtWidgets.QLabel("{}:".format(_('chaniconsfromepg')))
         hideepgpercentage_label = QtWidgets.QLabel("{}:".format(_('hideepgpercentage')))
+        hidebitrateinfo_label = QtWidgets.QLabel("{}:".format(_('hidebitrateinfo')))
         volumechangestep_label = QtWidgets.QLabel("{}:".format(_('volumechangestep')))
         channels_label = QtWidgets.QLabel("{}:".format(_('channelsonpage')))
         channels_box = QtWidgets.QSpinBox()
@@ -2686,6 +2691,9 @@ if __name__ == '__main__':
 
         hideepgpercentage_flag = QtWidgets.QCheckBox()
         hideepgpercentage_flag.setChecked(settings['hideepgpercentage'])
+
+        hidebitrateinfo_flag = QtWidgets.QCheckBox()
+        hidebitrateinfo_flag.setChecked(settings['hidebitrateinfo'])
 
         themecompat_label = QtWidgets.QLabel("{}:".format(_('themecompat')))
         themecompat_flag = QtWidgets.QCheckBox()
@@ -2855,6 +2863,8 @@ if __name__ == '__main__':
         tab5.layout.addWidget(exp2_input, 4, 1)
         tab5.layout.addWidget(hideepgpercentage_label, 5, 0)
         tab5.layout.addWidget(hideepgpercentage_flag, 5, 1)
+        tab5.layout.addWidget(hidebitrateinfo_label, 6, 0)
+        tab5.layout.addWidget(hidebitrateinfo_flag, 6, 1)
         #tab5.layout.addWidget(QtWidgets.QLabel(), 8, 0)
         tab5.setLayout(tab5.layout)
 
@@ -6665,7 +6675,7 @@ if __name__ == '__main__':
             except: # pylint: disable=bare-except
                 print_with_time("Failed to set connection loss detector!")
 
-        def thread_check_tvguide_obsolete():
+        def thread_check_tvguide_obsolete(): # pylint: disable=too-many-branches
             try:
                 global first_boot, ic2
                 check_connection()
@@ -6693,10 +6703,13 @@ if __name__ == '__main__':
                     width = 800
                     height = 600
                 if (not (codec == 'png' and width == 800 and height == 600)) and (width and height):
-                    label12.setText('  {}x{}{} - {} / {}'.format(
-                        width, height, video_bitrate,
-                        codec, audio_codec
-                    ))
+                    if settings['hidebitrateinfo']:
+                        label12.setText('')
+                    else:
+                        label12.setText('  {}x{}{} - {} / {}'.format(
+                            width, height, video_bitrate,
+                            codec, audio_codec
+                        ))
                     if loading.text() == _('loading'):
                         hideLoading()
                 else:

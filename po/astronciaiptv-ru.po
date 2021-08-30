@@ -898,6 +898,9 @@ msgstr "&Обновить телепрограмму"
 msgid "playername"
 msgstr "IPTV плеер"
 
+msgid "hidebitrateinfo"
+msgstr "Скрыть информацию о битрейте / видео"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, версия {}\n© kestral / astroncia < kestraly (at) gmail.com "
