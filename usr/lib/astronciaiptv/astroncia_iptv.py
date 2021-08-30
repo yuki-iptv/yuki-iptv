@@ -7346,7 +7346,10 @@ if __name__ == '__main__':
                 playlists_win.activateWindow()
 
         if qt_backend == 'PySide6':
-            sys.exit(app.exec())
+            try:
+                sys.exit(app.exec())
+            except: # pylint: disable=bare-except
+                sys.exit(app.exec_())
         else:
             sys.exit(app.exec_())
     except Exception as e3:
