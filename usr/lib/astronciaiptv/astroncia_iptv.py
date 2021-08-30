@@ -25,6 +25,9 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
+# =========================================================================
+# I apologize for code quality but i cannot write better. Sorry for that.
+# =========================================================================
 from pathlib import Path
 import sys
 import os
