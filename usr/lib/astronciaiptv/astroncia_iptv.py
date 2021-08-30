@@ -303,6 +303,11 @@ if __name__ == '__main__':
     except: # pylint: disable=bare-except
         pass
     app = QtWidgets.QApplication(sys.argv)
+
+    # This is necessary since PyQT stomps over the locale settings needed by libmpv.
+    # This needs to happen after importing PyQT before creating the first mpv.MPV instance.
+    locale.setlocale(locale.LC_NUMERIC, 'C')
+
     try:
         print_with_time("{} {}...".format(MAIN_WINDOW_TITLE, _('starting')))
         print_with_time("Copyright (C) Astroncia")
@@ -3280,10 +3285,6 @@ if __name__ == '__main__':
         playlists_import.clicked.connect(playlists_import_do)
         playlists_reset.clicked.connect(playlists_reset_do)
 
-        # This is necessary since PyQT stomps over the locale settings needed by libmpv.
-        # This needs to happen after importing PyQT before creating the first mpv.MPV instance.
-        locale.setlocale(locale.LC_NUMERIC, 'C')
-
         fullscreen = False
         newdockWidgetHeight = False
         newdockWidgetPosition = False
@@ -3303,17 +3304,214 @@ if __name__ == '__main__':
         except: # pylint: disable=bare-except
             pass
 
+        def init_mpv_player(): # pylint: disable=too-many-branches
+            global player
+            try:
+                player = mpv.MPV(
+                    **options,
+                    wid=str(int(win.container.winId())),
+                    osc=True,
+                    script_opts='osc-layout=box,osc-seekbarstyle=bar,' + \
+                        'osc-deadzonesize=0,osc-minmousemove=3',
+                    ytdl=True,
+                    log_handler=my_log,
+                    loglevel='info' # debug
+                )
+            except: # pylint: disable=bare-except
+                print_with_time("mpv init with ytdl failed")
+                try:
+                    player = mpv.MPV(
+                        **options,
+                        wid=str(int(win.container.winId())),
+                        osc=True,
+                        script_opts='osc-layout=box,osc-seekbarstyle=bar,' + \
+                            'osc-deadzonesize=0,osc-minmousemove=3',
+                        log_handler=my_log,
+                        loglevel='info' # debug
+                    )
+                except: # pylint: disable=bare-except
+                    print_with_time("mpv init with osc failed")
+                    player = mpv.MPV(
+                        **options,
+                        wid=str(int(win.container.winId())),
+                        log_handler=my_log,
+                        loglevel='info' # debug
+                    )
+            if settings["hidempv"]:
+                try:
+                    player.osc = False
+                except: # pylint: disable=bare-except
+                    print_with_time("player.osc set failed")
+            try:
+                player['force-seekable'] = True
+            except: # pylint: disable=bare-except
+                pass
+            if not settings['hwaccel']:
+                try:
+                    player['x11-bypass-compositor'] = 'yes'
+                except: # pylint: disable=bare-except
+                    pass
+            try:
+                player['network-timeout'] = 5
+            except: # pylint: disable=bare-except
+                pass
+
+            try:
+                mpv_version = player.mpv_version
+                if not mpv_version.startswith('mpv '):
+                    mpv_version = 'mpv ' + mpv_version
+            except: # pylint: disable=bare-except
+                mpv_version = "unknown mpv version"
+
+            print_with_time("Using {}".format(mpv_version))
+
+            textbox.setText(
+                format_about_text(
+                    "{} Qt {} ({}) {}\n{} {}\n\n".format(
+                        _('using'), qt_version, qt_backend, QT_URL,
+                        _('using'), mpv_version.replace('mpv ', MPV_URL)
+                    ) + \
+                    _('helptext').format(APP_VERSION)
+                )
+            )
+
+            if settings["cache_secs"] != 0:
+                try:
+                    player['demuxer-readahead-secs'] = settings["cache_secs"]
+                    print_with_time('Demuxer cache set to {}s'.format(settings["cache_secs"]))
+                except: # pylint: disable=bare-except
+                    pass
+                try:
+                    player['cache-secs'] = settings["cache_secs"]
+                    print_with_time('Cache set to {}s'.format(settings["cache_secs"]))
+                except: # pylint: disable=bare-except
+                    pass
+            else:
+                print_with_time("Using default cache settings")
+            player.user_agent = def_user_agent
+            if settings["referer"]:
+                player.http_header_fields = "Referer: {}".format(settings["referer"])
+                print_with_time("HTTP referer: '{}'".format(settings["referer"]))
+            else:
+                print_with_time("No HTTP referer set up")
+            mpv_override_volume(100)
+            player.loop = True
+            mpv_override_play(str(Path('astroncia', ICONS_FOLDER, 'main.png')))
+
+            try:
+                populate_menubar(
+                    0, win.menu_bar_qt, win, player.track_list, playing_chan, get_keybind
+                )
+                populate_menubar(
+                    1, right_click_menu, win, player.track_list, playing_chan, get_keybind
+                )
+            except: # pylint: disable=bare-except
+                print_with_time("WARNING: populate_menubar failed")
+                show_exception("WARNING: populate_menubar failed\n\n" + traceback.format_exc())
+            redraw_menubar()
+
+            @player.event_callback('file-loaded')
+            def file_loaded_2(event): # pylint: disable=unused-argument, unused-variable
+                file_loaded_callback()
+
+            @player.event_callback('end_file')
+            def ready_handler_2(event): # pylint: disable=unused-argument, unused-variable
+                if event['event']['error'] != 0:
+                    end_file_callback()
+
+            @player.on_key_press('MBTN_RIGHT')
+            def my_mouse_right(): # pylint: disable=unused-variable
+                my_mouse_right_callback()
+
+            @player.on_key_press('MBTN_LEFT')
+            def my_mouse_left(): # pylint: disable=unused-variable
+                my_mouse_left_callback()
+
+            @player.on_key_press('MBTN_LEFT_DBL')
+            def my_leftdbl_binding(): # pylint: disable=unused-variable
+                mpv_fullscreen()
+
+            @player.on_key_press('MBTN_FORWARD')
+            def my_forward_binding(): # pylint: disable=unused-variable
+                next_channel()
+
+            @player.on_key_press('MBTN_BACK')
+            def my_back_binding(): # pylint: disable=unused-variable
+                prev_channel()
+
+            @player.on_key_press('WHEEL_UP')
+            def my_up_binding(): # pylint: disable=unused-variable
+                my_up_binding_execute()
+
+            @player.on_key_press('WHEEL_DOWN')
+            def my_down_binding(): # pylint: disable=unused-variable
+                my_down_binding_execute()
+
+            init_menubar_player(
+                player,
+                mpv_play,
+                mpv_stop,
+                prev_channel,
+                next_channel,
+                mpv_fullscreen,
+                showhideeverything,
+                main_channel_settings,
+                show_app_log,
+                show_mpv_log,
+                show_settings,
+                show_help,
+                do_screenshot,
+                mpv_mute,
+                showhideplaylist,
+                lowpanel_ch_1,
+                open_stream_info,
+                app.quit,
+                redraw_menubar,
+                QtGui.QIcon(
+                    QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'circle.png'))).pixmap(8, 8)
+                ),
+                check_for_updates_0,
+                my_up_binding_execute,
+                my_down_binding_execute,
+                show_m3u_editor,
+                show_playlists,
+                show_sort,
+                show_exception,
+                get_curwindow_pos,
+                force_update_epg,
+                get_keybind
+            )
+
+            if settings["remembervol"] and os.path.isfile(str(Path(LOCAL_DIR, 'volume.json'))):
+                print_with_time("Set volume to {}".format(vol_remembered))
+                label7.setValue(vol_remembered)
+                mpv_volume_set()
+            else:
+                label7.setValue(100)
+                mpv_volume_set()
+
         class MainWindow(QtWidgets.QMainWindow):
-            def __init__(self):
-                super().__init__()
+            def __init__(self, parent=None):
+                super().__init__(parent)
                 # Shut up pylint (attribute-defined-outside-init)
                 self.windowWidth = self.width()
                 self.windowHeight = self.height()
-                self.main_widget = None
+                self.container = None
                 self.listWidget = None
                 self.latestWidth = 0
                 self.latestHeight = 0
                 self.createMenuBar_mw()
+                #
+                # == mpv init ==
+                #
+                self.container = QtWidgets.QWidget(self)
+                self.setCentralWidget(self.container)
+                self.container.setAttribute(QtCore.Qt.WA_DontCreateNativeAncestors)
+                self.container.setAttribute(QtCore.Qt.WA_NativeWindow)
+                self.container.setFocus()
+                self.container.setStyleSheet('''
+                    background-color: #C0C6CA;
+                ''')
             def updateWindowSize(self):
                 if self.width() != self.latestWidth or self.height() != self.latestHeight:
                     self.latestWidth = self.width()
@@ -3430,16 +3628,6 @@ if __name__ == '__main__':
             QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
         )
         win.move(qr.topLeft())
-
-        win.main_widget = QtWidgets.QWidget(win)
-        win.main_widget.setFocus()
-        win.main_widget.setStyleSheet('''
-            background-color: #C0C6CA;
-        ''')
-        win.setCentralWidget(win.main_widget)
-
-        win.main_widget.setAttribute(QtCore.Qt.WA_DontCreateNativeAncestors)
-        win.main_widget.setAttribute(QtCore.Qt.WA_NativeWindow)
 
         def get_curwindow_pos():
             try:
@@ -3993,7 +4181,7 @@ if __name__ == '__main__':
 
             #def enterEvent(self, event):
             #    print_with_time("hovered", self.tooltip)
-            #    QtWidgets.QToolTip.showText(QtGui.QCursor.pos(), self.tooltip, win.main_widget)
+            #    QtWidgets.QToolTip.showText(QtGui.QCursor.pos(), self.tooltip, win.container)
 
             #def leaveEvent(self, event):
             #    print_with_time("left")
@@ -6592,14 +6780,14 @@ if __name__ == '__main__':
             if fullscreen:
                 try:
                     if show_cursor_really:
-                        win.main_widget.unsetCursor()
+                        win.container.unsetCursor()
                     else:
-                        win.main_widget.setCursor(QtCore.Qt.BlankCursor)
+                        win.container.setCursor(QtCore.Qt.BlankCursor)
                 except: # pylint: disable=bare-except
                     pass
             else:
                 try:
-                    win.main_widget.unsetCursor()
+                    win.container.unsetCursor()
                 except: # pylint: disable=bare-except
                     pass
 
@@ -6699,7 +6887,7 @@ if __name__ == '__main__':
             #    p_3,
             #    maptoglobal(0, win.height() - 100).y()
             #)
-            p_3 = win.main_widget.frameGeometry().center() - QtCore.QRect(
+            p_3 = win.container.frameGeometry().center() - QtCore.QRect(
                 QtCore.QPoint(), controlpanel_widget.sizeHint()
             ).center()
             controlpanel_widget.move(maptoglobal(
@@ -6765,7 +6953,7 @@ if __name__ == '__main__':
                 if fullscreen and not key_t_visible:
                     # Playlist
                     if settings['showplaylistmouse']:
-                        cursor_x = win.main_widget.mapFromGlobal(QtGui.QCursor.pos()).x()
+                        cursor_x = win.container.mapFromGlobal(QtGui.QCursor.pos()).x()
                         win_width = win.width()
                         if settings['panelposition'] == 0:
                             is_cursor_x = cursor_x > win_width - (settings['exp2'] + 10)
@@ -6780,7 +6968,7 @@ if __name__ == '__main__':
                             hide_playlist()
                     # Control panel
                     if settings['showcontrolsmouse']:
-                        cursor_y = win.main_widget.mapFromGlobal(QtGui.QCursor.pos()).y()
+                        cursor_y = win.container.mapFromGlobal(QtGui.QCursor.pos()).y()
                         win_height = win.height()
                         is_cursor_y = cursor_y > win_height - (dockWidget2.height() + 250)
                         if is_cursor_y and cursor_y < win_height:
@@ -7073,192 +7261,6 @@ if __name__ == '__main__':
 
         #if doSaveSettings:
         #    save_settings()
-
-        def init_mpv_player(): # pylint: disable=too-many-branches
-            global player
-            try:
-                player = mpv.MPV(
-                    **options,
-                    wid=str(int(win.main_widget.winId())),
-                    osc=True,
-                    script_opts='osc-layout=box,osc-seekbarstyle=bar,' + \
-                        'osc-deadzonesize=0,osc-minmousemove=3',
-                    ytdl=True,
-                    log_handler=my_log,
-                    loglevel='info' # debug
-                )
-            except: # pylint: disable=bare-except
-                print_with_time("mpv init with ytdl failed")
-                try:
-                    player = mpv.MPV(
-                        **options,
-                        wid=str(int(win.main_widget.winId())),
-                        osc=True,
-                        script_opts='osc-layout=box,osc-seekbarstyle=bar,' + \
-                            'osc-deadzonesize=0,osc-minmousemove=3',
-                        log_handler=my_log,
-                        loglevel='info' # debug
-                    )
-                except: # pylint: disable=bare-except
-                    print_with_time("mpv init with osc failed")
-                    player = mpv.MPV(
-                        **options,
-                        wid=str(int(win.main_widget.winId())),
-                        log_handler=my_log,
-                        loglevel='info' # debug
-                    )
-            if settings["hidempv"]:
-                try:
-                    player.osc = False
-                except: # pylint: disable=bare-except
-                    print_with_time("player.osc set failed")
-            try:
-                player['force-seekable'] = True
-            except: # pylint: disable=bare-except
-                pass
-            if not settings['hwaccel']:
-                try:
-                    player['x11-bypass-compositor'] = 'yes'
-                except: # pylint: disable=bare-except
-                    pass
-            try:
-                player['network-timeout'] = 5
-            except: # pylint: disable=bare-except
-                pass
-
-            try:
-                mpv_version = player.mpv_version
-                if not mpv_version.startswith('mpv '):
-                    mpv_version = 'mpv ' + mpv_version
-            except: # pylint: disable=bare-except
-                mpv_version = "unknown mpv version"
-
-            print_with_time("Using {}".format(mpv_version))
-
-            textbox.setText(
-                format_about_text(
-                    "{} Qt {} ({}) {}\n{} {}\n\n".format(
-                        _('using'), qt_version, qt_backend, QT_URL,
-                        _('using'), mpv_version.replace('mpv ', MPV_URL)
-                    ) + \
-                    _('helptext').format(APP_VERSION)
-                )
-            )
-
-            if settings["cache_secs"] != 0:
-                try:
-                    player['demuxer-readahead-secs'] = settings["cache_secs"]
-                    print_with_time('Demuxer cache set to {}s'.format(settings["cache_secs"]))
-                except: # pylint: disable=bare-except
-                    pass
-                try:
-                    player['cache-secs'] = settings["cache_secs"]
-                    print_with_time('Cache set to {}s'.format(settings["cache_secs"]))
-                except: # pylint: disable=bare-except
-                    pass
-            else:
-                print_with_time("Using default cache settings")
-            player.user_agent = def_user_agent
-            if settings["referer"]:
-                player.http_header_fields = "Referer: {}".format(settings["referer"])
-                print_with_time("HTTP referer: '{}'".format(settings["referer"]))
-            else:
-                print_with_time("No HTTP referer set up")
-            mpv_override_volume(100)
-            player.loop = True
-            mpv_override_play(str(Path('astroncia', ICONS_FOLDER, 'main.png')))
-
-            try:
-                populate_menubar(
-                    0, win.menu_bar_qt, win, player.track_list, playing_chan, get_keybind
-                )
-                populate_menubar(
-                    1, right_click_menu, win, player.track_list, playing_chan, get_keybind
-                )
-            except: # pylint: disable=bare-except
-                print_with_time("WARNING: populate_menubar failed")
-                show_exception("WARNING: populate_menubar failed\n\n" + traceback.format_exc())
-            redraw_menubar()
-
-            @player.event_callback('file-loaded')
-            def file_loaded_2(event): # pylint: disable=unused-argument, unused-variable
-                file_loaded_callback()
-
-            @player.event_callback('end_file')
-            def ready_handler_2(event): # pylint: disable=unused-argument, unused-variable
-                if event['event']['error'] != 0:
-                    end_file_callback()
-
-            @player.on_key_press('MBTN_RIGHT')
-            def my_mouse_right(): # pylint: disable=unused-variable
-                my_mouse_right_callback()
-
-            @player.on_key_press('MBTN_LEFT')
-            def my_mouse_left(): # pylint: disable=unused-variable
-                my_mouse_left_callback()
-
-            @player.on_key_press('MBTN_LEFT_DBL')
-            def my_leftdbl_binding(): # pylint: disable=unused-variable
-                mpv_fullscreen()
-
-            @player.on_key_press('MBTN_FORWARD')
-            def my_forward_binding(): # pylint: disable=unused-variable
-                next_channel()
-
-            @player.on_key_press('MBTN_BACK')
-            def my_back_binding(): # pylint: disable=unused-variable
-                prev_channel()
-
-            @player.on_key_press('WHEEL_UP')
-            def my_up_binding(): # pylint: disable=unused-variable
-                my_up_binding_execute()
-
-            @player.on_key_press('WHEEL_DOWN')
-            def my_down_binding(): # pylint: disable=unused-variable
-                my_down_binding_execute()
-
-            init_menubar_player(
-                player,
-                mpv_play,
-                mpv_stop,
-                prev_channel,
-                next_channel,
-                mpv_fullscreen,
-                showhideeverything,
-                main_channel_settings,
-                show_app_log,
-                show_mpv_log,
-                show_settings,
-                show_help,
-                do_screenshot,
-                mpv_mute,
-                showhideplaylist,
-                lowpanel_ch_1,
-                open_stream_info,
-                app.quit,
-                redraw_menubar,
-                QtGui.QIcon(
-                    QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'circle.png'))).pixmap(8, 8)
-                ),
-                check_for_updates_0,
-                my_up_binding_execute,
-                my_down_binding_execute,
-                show_m3u_editor,
-                show_playlists,
-                show_sort,
-                show_exception,
-                get_curwindow_pos,
-                force_update_epg,
-                get_keybind
-            )
-
-            if settings["remembervol"] and os.path.isfile(str(Path(LOCAL_DIR, 'volume.json'))):
-                print_with_time("Set volume to {}".format(vol_remembered))
-                label7.setValue(vol_remembered)
-                mpv_volume_set()
-            else:
-                label7.setValue(100)
-                mpv_volume_set()
 
         init_mpv_player()
 
