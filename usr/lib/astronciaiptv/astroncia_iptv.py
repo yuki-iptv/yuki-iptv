@@ -140,6 +140,11 @@ AUDIO_SAMPLE_FORMATS = {"u16": "unsigned 16 bits", \
 class stream_info: # pylint: disable=too-few-public-methods
     pass
 
+class AstronciaData: # pylint: disable=too-few-public-methods
+    compact_mode = False
+    playlist_hidden = False
+    controlpanel_hidden = False
+
 setproctitle.setproctitle("astronciaiptv")
 
 stream_info.video_properties = {}
@@ -5591,19 +5596,23 @@ if __name__ == '__main__':
             if not fullscreen:
                 if settings['playlistsep']:
                     if sepplaylist_win.isVisible():
+                        AstronciaData.compact_mode = True
                         sepplaylist_win.hide()
                         dockWidget2.hide()
                         win.menu_bar_qt.hide()
                     else:
+                        AstronciaData.compact_mode = False
                         sepplaylist_win.show()
                         dockWidget2.show()
                         win.menu_bar_qt.show()
                 else:
                     if dockWidget.isVisible():
+                        AstronciaData.compact_mode = True
                         dockWidget.hide()
                         dockWidget2.hide()
                         win.menu_bar_qt.hide()
                     else:
+                        AstronciaData.compact_mode = False
                         dockWidget.show()
                         dockWidget2.show()
                         win.menu_bar_qt.show()
@@ -6526,6 +6535,17 @@ if __name__ == '__main__':
                 expheight_file.close()
             except: # pylint: disable=bare-except
                 pass
+            try:
+                with open(str(Path(LOCAL_DIR, 'compactstate.json')), 'w', encoding="utf8") \
+                as compactstate_file:
+                    compactstate_file.write(json.dumps({
+                        "compact_mode": AstronciaData.compact_mode,
+                        "playlist_hidden": AstronciaData.playlist_hidden,
+                        "controlpanel_hidden": AstronciaData.controlpanel_hidden
+                    }))
+                    compactstate_file.close()
+            except: # pylint: disable=bare-except
+                pass
             saveLastChannel()
             stop_record()
             for rec_1 in sch_recordings:
@@ -7031,19 +7051,25 @@ if __name__ == '__main__':
             if not fullscreen:
                 if settings['playlistsep']:
                     if sepplaylist_win.isVisible():
+                        AstronciaData.playlist_hidden = True
                         sepplaylist_win.hide()
                     else:
+                        AstronciaData.playlist_hidden = False
                         sepplaylist_win.show()
                 else:
                     if dockWidget.isVisible():
+                        AstronciaData.playlist_hidden = True
                         dockWidget.hide()
                     else:
+                        AstronciaData.playlist_hidden = False
                         dockWidget.show()
 
         def lowpanel_ch():
             if dockWidget2.isVisible():
+                AstronciaData.controlpanel_hidden = True
                 dockWidget2.hide()
             else:
+                AstronciaData.controlpanel_hidden = False
                 dockWidget2.show()
 
         # Key bindings
@@ -7306,6 +7332,23 @@ if __name__ == '__main__':
         #if doSaveSettings:
         #    save_settings()
 
+        def restore_compact_state():
+            if os.path.isfile(str(Path(LOCAL_DIR, 'compactstate.json'))):
+                try:
+                    with open(str(Path(LOCAL_DIR, 'compactstate.json')), 'r', encoding="utf8") \
+                    as compactstate_file_1:
+                        compactstate = json.loads(compactstate_file_1.read())
+                        compactstate_file_1.close()
+                        if compactstate["compact_mode"]:
+                            showhideeverything()
+                        else:
+                            if compactstate["playlist_hidden"]:
+                                key_t()
+                            if compactstate["controlpanel_hidden"]:
+                                lowpanel_ch()
+                except: # pylint: disable=bare-except
+                    pass
+
         if settings['m3u'] and m3u:
             win.show()
             init_mpv_player()
@@ -7339,6 +7382,7 @@ if __name__ == '__main__':
                 except: # pylint: disable=bare-except
                     pass
             playLastChannel()
+            restore_compact_state()
 
             ic, ic1, ic2 = 0, 0, 0
             timers_array = {}
