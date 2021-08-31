@@ -1,33 +1,35 @@
 from astroncia.qt import get_qt_backend
 qt_backend, QtWidgets, QtCore, QtGui, QShortcut = get_qt_backend()
-D=max
-B=None
+
 class C(QtWidgets.QWidget):
-        def __init__(A,parent):QtWidgets.QWidget.__init__(A,parent);A.setCursor(QtCore.Qt.SizeVerCursor);A.resizeFunc=A.resizeBottom;A.mousePos=B
-        def resizeBottom(B,delta):
-            A=B.window();C=D(A.minimumHeight(),A.height()+delta.y());A.resize(A.width(),C);
-            B.window().callback(C)
-        def mousePressEvent(B,event):
-                A=event
-                if A.button()==QtCore.Qt.LeftButton:B.mousePos=A.pos()
-        def mouseMoveEvent(A,event):
-                if A.mousePos is not B:C=event.pos()-A.mousePos;A.resizeFunc(C)
-        def mouseReleaseEvent(A,event):A.mousePos=B
+    def __init__(N, parent, e, ignoreResize):
+        QtWidgets.QWidget.__init__(N, parent)
+        if e == QtCore.Qt.TopEdge:
+            if not ignoreResize:
+                N.setCursor(QtCore.Qt.SizeVerCursor)
+                N.rszf = N.rszup
+        else:N.setCursor(QtCore.Qt.SizeVerCursor);N.rszf = N.rszdown
+        N.mp = None
+    def rszup(N, dl):I = N.window();height = max(I.minimumHeight(), I.height() - dl.y());geo = I.geometry();geo.setTop(geo.bottom() - height);I.setGeometry(geo);N.window().callback(I.height())
+    def rszdown(N, dl):I = N.window();height = max(I.minimumHeight(), I.height() + dl.y());I.resize(I.width(), height);N.window().callback(height)
+    def mousePressEvent(N, event):
+        if event.button() == QtCore.Qt.LeftButton:N.mp = event.pos()
+    def mouseMoveEvent(N, event):
+        if N.mp is not None:dl = event.pos() - N.mp;N.rszf(dl)
+    def mouseReleaseEvent(N, event):N.mp = None
+
 class ResizableWindow(QtWidgets.QMainWindow):
-        _alcSize=8
-        def __init__(A):QtWidgets.QMainWindow.__init__(A);A.setWindowFlags(QtCore.Qt.FramelessWindowHint);A.classes=[C(A)]
-        @property
-        def alcSize(self):return self._alcSize
-        def setalcSize(A,size):
-                if size==A._alcSize:return
-                A._alcSize=D(2,size);A.updatealcs()
-        def updatealcs(A):A.setContentsMargins(*[A.alcSize]*4);C=A.rect();B=C.adjusted(A.alcSize,A.alcSize,-A.alcSize,-A.alcSize);A.classes[0].setGeometry(A.alcSize,B.top()+B.height(),B.width(),A.alcSize)
-        def resizeEvent(A,event):QtWidgets.QMainWindow.resizeEvent(A,event);A.updatealcs()
-        def moveEvent(A,e):A.callback_move(e);super(ResizableWindow,A).moveEvent(e)
-        def mousePressEvent(A,event):A.old_position = event.globalPos()
-        def mouseMoveEvent(A,event):
-            try:
-                calc_d = QtCore.QPoint(event.globalPos() - A.old_position);A.move(A.x() + calc_d.x(), A.y() + calc_d.y());
-                A.old_position = event.globalPos()
-            except: # pylint: disable=bare-except
-                pass
+    x1 = 4*2
+    def __init__(y, ignoreResize):QtWidgets.QMainWindow.__init__(y);y.setWindowFlags(QtCore.Qt.FramelessWindowHint);y.array = [C(y, QtCore.Qt.TopEdge, ignoreResize),C(y, QtCore.Qt.BottomEdge, ignoreResize)]
+    @property
+    def alcSize(y):return y.x1
+    def setalcSize(y, X):
+        if X == y.x1:return;
+        y.x1 = max(2, X);y.upd()
+    def upd(y):y.setContentsMargins(*[y.alcSize] * 4);n = y.rect();irec = n.adjusted(y.alcSize,y.alcSize,-y.alcSize,-y.alcSize);y.array[0].setGeometry(irec.left(), 0, irec.width(), y.alcSize);y.array[1].setGeometry(y.alcSize, irec.top() + irec.height(),irec.width(), y.alcSize)
+    def resizeEvent(y, s):QtWidgets.QMainWindow.resizeEvent(y, s);y.upd()
+    def moveEvent(y,e):y.callback_move(e);super(ResizableWindow,y).moveEvent(e)
+    def mousePressEvent(y,s):y.oldpos = s.globalPos()
+    def mouseMoveEvent(y,s):
+        try:f = QtCore.QPoint(s.globalPos() - y.oldpos);y.move(y.x() + f.x(), y.y() + f.y());y.oldpos = s.globalPos()
+        except:pass

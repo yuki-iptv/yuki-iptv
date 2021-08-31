@@ -1001,9 +1001,13 @@ if __name__ == '__main__':
         streaminfo_win = QtWidgets.QMainWindow()
         streaminfo_win.setWindowIcon(main_icon)
 
-        sepplaylist_win = ResizableWindow()
+        sepplaylist_win = ResizableWindow(ignoreResize=True)
         sepplaylist_win.callback = empty_function
         sepplaylist_win.callback_move = empty_function
+        #sepplaylist_win.setWindowFlags(
+        #    QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
+        #    QtCore.Qt.X11BypassWindowManagerHint
+        #)
         sepplaylist_win.setWindowTitle(MAIN_WINDOW_TITLE)
         sepplaylist_win.setWindowIcon(main_icon)
 
@@ -6866,7 +6870,7 @@ if __name__ == '__main__':
             if cal_position.x() and cal_position.y() and fullscreen:
                 newdockWidgetPosition = [cal_position.x(), cal_position.y()]
 
-        playlist_widget = ResizableWindow()
+        playlist_widget = ResizableWindow(ignoreResize=False)
         playlist_widget.callback = resizeCallback
         playlist_widget.callback_move = moveCallback
         playlist_widget_orig = QtWidgets.QWidget(playlist_widget)
