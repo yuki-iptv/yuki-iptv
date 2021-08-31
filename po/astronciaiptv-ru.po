@@ -901,6 +901,9 @@ msgstr "IPTV плеер"
 msgid "hidebitrateinfo"
 msgstr "Скрыть информацию о битрейте / видео"
 
+msgid "movedragging"
+msgstr "Перемещать окно мышью"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, версия {}\n© kestral / astroncia < kestraly (at) gmail.com "
