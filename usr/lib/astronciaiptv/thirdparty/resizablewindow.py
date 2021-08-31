@@ -15,7 +15,11 @@ class C(QtWidgets.QWidget):
     def mousePressEvent(N, event):
         if event.button() == QtCore.Qt.LeftButton:N.mp = event.pos()
     def mouseMoveEvent(N, event):
-        if N.mp is not None:dl = event.pos() - N.mp;N.rszf(dl)
+        if N.mp is not None:dl = event.pos() - N.mp;
+        try:
+            N.rszf(dl)
+        except:
+            pass
     def mouseReleaseEvent(N, event):N.mp = None
 
 class ResizableWindow(QtWidgets.QMainWindow):
