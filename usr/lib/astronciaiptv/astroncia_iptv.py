@@ -5149,6 +5149,14 @@ if __name__ == '__main__':
                     playlist_widget.show()
                 if controlpanel_widget_visible1:
                     controlpanel_widget.show()
+            if settings["playlistsep"] and \
+            bool(sepplaylist_win.windowFlags() & QtCore.Qt.X11BypassWindowManagerHint):
+                del_sep_flag()
+                sepplaylist_win.show()
+                sepplaylist_win.raise_()
+                sepplaylist_win.setFocus(QtCore.Qt.PopupFocusReason)
+                sepplaylist_win.activateWindow()
+                channelfilter.setFocus()
 
         tvguide_many_win = QtWidgets.QMainWindow()
         tvguide_many_win.setWindowTitle((_('tvguide')))
