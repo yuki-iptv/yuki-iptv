@@ -24,8 +24,8 @@ class astroncia_data: # pylint: disable=too-few-public-methods
 
 astroncia_data.qt6_disable_printed = False
 
-def get_qt_backend():
-    qt_backend = "none"
+def get_qt_library():
+    qt_library = "none"
     QShortcut = False
     QtWidgets = False
     QtCore = False
@@ -40,11 +40,11 @@ def get_qt_backend():
         from PySide6 import QtCore
         from PySide6 import QtGui
         QShortcut = QtGui.QShortcut
-        qt_backend = "PySide6"
+        qt_library = "PySide6"
     except: # pylint: disable=bare-except
         from PyQt5 import QtWidgets
         from PyQt5 import QtCore
         from PyQt5 import QtGui
         QShortcut = QtWidgets.QShortcut
-        qt_backend = "PyQt5"
-    return qt_backend, QtWidgets, QtCore, QtGui, QShortcut
+        qt_library = "PyQt5"
+    return qt_library, QtWidgets, QtCore, QtGui, QShortcut

@@ -1,8 +1,8 @@
 import sys
 import os
 import pandas as pd
-from astroncia.qt import get_qt_backend
-qt_backend, QtWidgets, QtCore, QtGui, QShortcut = get_qt_backend()
+from astroncia.qt import get_qt_library
+qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
 from pathlib import Path
 from astroncia.extgrp import parse_extgrp
 from astroncia.lang import _ as get_translation

@@ -22,9 +22,9 @@ import json
 import traceback
 from functools import partial
 from astroncia.time import print_with_time
-from astroncia.qt import get_qt_backend
+from astroncia.qt import get_qt_library
 from astroncia.lang import _, __
-qt_backend, QtWidgets, QtCore, QtGui, QShortcut = get_qt_backend()
+qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
 
 class AstronciaData: # pylint: disable=too-few-public-methods
     menubar_ready = False
@@ -33,7 +33,7 @@ class AstronciaData: # pylint: disable=too-few-public-methods
     data = {}
     cur_vf_filters = []
     keyboard_sequences = []
-    if qt_backend == 'PySide6':
+    if qt_library == 'PySide6':
         str_offset = ' ' * 44
     else:
         str_offset = ''
@@ -87,7 +87,7 @@ def apply_vf_filter(vf_filter, e_l):
         AstronciaData.show_exception(e_4, e4_traceback, '\n\n' + _('errorvfapply'))
 
 def qaction(arg1, arg2):
-    if qt_backend == 'PySide6':
+    if qt_library == 'PySide6':
         func = QtGui.QAction
     else:
         func = QtWidgets.QAction
@@ -320,7 +320,7 @@ def init_menubar(data): # pylint: disable=too-many-statements
             partial(apply_vf_filter, vf_filter, AstronciaData.filter_mapping[vf_filter])
         )
 
-def populate_menubar(i, menubar, data, track_list=None, playing_chan=None, get_keybind=None): # pylint: disable=too-many-statements, too-many-arguments, too-many-locals
+def populate_menubar(i, menubar, data, track_list=None, playing_chan=None, get_keybind=None, CHECK_UPDATES_ENABLED=True): # pylint: disable=too-many-statements, too-many-arguments, too-many-locals
     #print_with_time("populate_menubar called")
     # File
 
@@ -412,8 +412,9 @@ def populate_menubar(i, menubar, data, track_list=None, playing_chan=None, get_k
     # Help
 
     help_menu = menubar.addMenu(_('menubar_help'))
-    help_menu.addAction(AstronciaData.checkUpdAction)
-    help_menu.addSeparator()
+    if CHECK_UPDATES_ENABLED:
+        help_menu.addAction(AstronciaData.checkUpdAction)
+        help_menu.addSeparator()
     help_menu.addAction(AstronciaData.aboutAction)
 
     AstronciaData.menubars[i] = [video_track_menu, audio_track_menu]

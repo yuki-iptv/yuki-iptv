@@ -1,5 +1,5 @@
-from astroncia.qt import get_qt_backend
-qt_backend, QtWidgets, QtCore, QtGui, QShortcut = get_qt_backend()
+from astroncia.qt import get_qt_library
+qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
 
 class C(QtWidgets.QWidget):
     def __init__(N, parent, e, ignoreResize):

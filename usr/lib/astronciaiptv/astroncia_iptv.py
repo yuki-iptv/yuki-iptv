@@ -56,7 +56,7 @@ import chardet
 import requests
 import setproctitle
 from unidecode import unidecode
-from astroncia.qt import get_qt_backend
+from astroncia.qt import get_qt_library
 from astroncia.lang import lang, init_lang, _
 from astroncia.ua import user_agent, uas, ua_names
 from astroncia.epg import worker
@@ -75,14 +75,14 @@ from thirdparty.m3ueditor import Viewer
 from thirdparty.xtream import XTream
 #from thirdparty.levenshtein import damerau_levenshtein
 
-qt_backend, QtWidgets, QtCore, QtGui, QShortcut = get_qt_backend()
-if qt_backend == 'none' or not QtWidgets:
+qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
+if qt_library == 'none' or not QtWidgets:
     print_with_time("ERROR: No Qt library found!")
     sys.exit(1)
 
 from thirdparty.resizablewindow import ResizableWindow
 
-if qt_backend == 'PyQt5':
+if qt_library == 'PyQt5':
     qt_icon_critical = 3
     qt_icon_warning = 2
     qt_icon_information = 1
@@ -100,6 +100,10 @@ if not os.name == 'nt':
         from thirdparty.mpris_server.server import Server
     except: # pylint: disable=bare-except
         print_with_time("Failed to init MPRIS libraries!")
+        try:
+            print(traceback.format_exc())
+        except: # pylint: disable=bare-except
+            pass
 
 APP_VERSION = '__DEB_VERSION__'
 
@@ -122,6 +126,11 @@ TVGUIDE_WIDTH = int((WINDOW_SIZE[0] / 5))
 BCOLOR = "#A2A3A3"
 
 EMAIL_ADDRESS = "kestraly (at) gmail.com"
+
+# Set this option to False if you want to disable check updates button in menubar
+# for example, if you packaging this into (stable) repository
+CHECK_UPDATES_ENABLED = True
+
 UPDATE_URL = "https://gitlab.com/astroncia/iptv/-/raw/master/version.txt"
 UPDATE_RELEASES_URL = "https://gitlab.com/astroncia/iptv/-/releases"
 
@@ -334,7 +343,7 @@ if __name__ == '__main__':
             qt_version = qt_version_pt2()
         print_with_time("Qt version: {}".format(qt_version))
         # Qt backend debugging
-        print_with_time("Qt library: {}".format(qt_backend))
+        print_with_time("Qt library: {}".format(qt_library))
         print_with_time("")
 
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -426,6 +435,7 @@ if __name__ == '__main__':
                 'chaniconsfromepg': True,
                 'hideepgpercentage': False,
                 'hidebitrateinfo': False,
+                'movedragging': False,
                 'volumechangestep': 1,
                 'themecompat': False,
                 'exp2': DOCK_WIDGET_WIDTH,
@@ -471,6 +481,8 @@ if __name__ == '__main__':
             settings['hideepgpercentage'] = False
         if 'hidebitrateinfo' not in settings:
             settings['hidebitrateinfo'] = False
+        if 'movedragging' not in settings:
+            settings['movedragging'] = False
         if 'volumechangestep' not in settings:
             settings['volumechangestep'] = 1
         if 'themecompat' not in settings:
@@ -1410,7 +1422,7 @@ if __name__ == '__main__':
 
         def addrecord_clicked():
             selected_chan = choosechannel_ch.currentText()
-            if qt_backend == 'PySide6':
+            if qt_library == 'PySide6':
                 start_time_r = starttime_w.dateTime().toPython().strftime('%d.%m.%y %H:%M')
                 end_time_r = endtime_w.dateTime().toPython().strftime('%d.%m.%y %H:%M')
             else:
@@ -2380,6 +2392,7 @@ if __name__ == '__main__':
                 'chaniconsfromepg': chaniconsfromepg_flag.isChecked(),
                 'hideepgpercentage': hideepgpercentage_flag.isChecked(),
                 'hidebitrateinfo': hidebitrateinfo_flag.isChecked(),
+                'movedragging': movedragging_flag.isChecked(),
                 'volumechangestep': volumechangestep_choose.value(),
                 'themecompat': themecompat_flag.isChecked(),
                 'exp2': exp2_input.value(),
@@ -2673,6 +2686,7 @@ if __name__ == '__main__':
         chaniconsfromepg_label = QtWidgets.QLabel("{}:".format(_('chaniconsfromepg')))
         hideepgpercentage_label = QtWidgets.QLabel("{}:".format(_('hideepgpercentage')))
         hidebitrateinfo_label = QtWidgets.QLabel("{}:".format(_('hidebitrateinfo')))
+        movedragging_label = QtWidgets.QLabel("{}:".format(_('movedragging')))
         volumechangestep_label = QtWidgets.QLabel("{}:".format(_('volumechangestep')))
         channels_label = QtWidgets.QLabel("{}:".format(_('channelsonpage')))
         channels_box = QtWidgets.QSpinBox()
@@ -2703,6 +2717,9 @@ if __name__ == '__main__':
 
         hidebitrateinfo_flag = QtWidgets.QCheckBox()
         hidebitrateinfo_flag.setChecked(settings['hidebitrateinfo'])
+
+        movedragging_flag = QtWidgets.QCheckBox()
+        movedragging_flag.setChecked(settings['movedragging'])
 
         themecompat_label = QtWidgets.QLabel("{}:".format(_('themecompat')))
         themecompat_flag = QtWidgets.QCheckBox()
@@ -2874,6 +2891,8 @@ if __name__ == '__main__':
         tab5.layout.addWidget(hideepgpercentage_flag, 5, 1)
         tab5.layout.addWidget(hidebitrateinfo_label, 6, 0)
         tab5.layout.addWidget(hidebitrateinfo_flag, 6, 1)
+        tab5.layout.addWidget(movedragging_label, 7, 0)
+        tab5.layout.addWidget(movedragging_flag, 7, 1)
         #tab5.layout.addWidget(QtWidgets.QLabel(), 8, 0)
         tab5.setLayout(tab5.layout)
 
@@ -3021,7 +3040,7 @@ if __name__ == '__main__':
             do_play_args = ()
             j_save = None
             comboboxIndex = -1
-            if qt_backend == 'PySide6':
+            if qt_library == 'PySide6':
                 repaintUpdates = QtCore.Signal(object, object)
                 moveSeparatePlaylist = QtCore.Signal(object)
                 mainThread = QtCore.Signal(type(lambda x: None))
@@ -3406,7 +3425,7 @@ if __name__ == '__main__':
             textbox.setText(
                 format_about_text(
                     "{} Qt {} ({}) {}\n{} {}\n\n".format(
-                        _('using'), qt_version, qt_backend, QT_URL,
+                        _('using'), qt_version, qt_library, QT_URL,
                         _('using'), mpv_version.replace('mpv ', MPV_URL)
                     ) + \
                     _('helptext').format(APP_VERSION)
@@ -3438,10 +3457,12 @@ if __name__ == '__main__':
 
             try:
                 populate_menubar(
-                    0, win.menu_bar_qt, win, player.track_list, playing_chan, get_keybind
+                    0, win.menu_bar_qt, win, player.track_list, playing_chan, get_keybind,
+                    CHECK_UPDATES_ENABLED
                 )
                 populate_menubar(
-                    1, right_click_menu, win, player.track_list, playing_chan, get_keybind
+                    1, right_click_menu, win, player.track_list, playing_chan, get_keybind,
+                    CHECK_UPDATES_ENABLED
                 )
             except: # pylint: disable=bare-except
                 print_with_time("WARNING: populate_menubar failed")
@@ -3529,14 +3550,18 @@ if __name__ == '__main__':
                 mpv_volume_set()
 
         def move_label(label, x, y):
-            if x > 0 and y > 0:
-                label.move(x, y)
+            label.move(x, y)
 
         def set_label_width(label, width):
             if width > 0:
                 label.setFixedWidth(width)
 
-        class MainWindow(QtWidgets.QMainWindow):
+        def get_global_cursor_position():
+            return QtGui.QCursor.pos()
+
+        class MainWindow(QtWidgets.QMainWindow): # pylint: disable=too-many-instance-attributes
+            oldpos = None
+            oldpos1 = None
             def __init__(self, parent=None):
                 super().__init__(parent)
                 # Shut up pylint (attribute-defined-outside-init)
@@ -3558,6 +3583,17 @@ if __name__ == '__main__':
                 self.container.setStyleSheet('''
                     background-color: #C0C6CA;
                 ''')
+            def mousePressEvent(self, s):
+                if settings["movedragging"]:
+                    self.oldpos = s.globalPos()
+            def mouseMoveEvent(self, s):
+                if settings["movedragging"]:
+                    try:
+                        f = QtCore.QPoint(s.globalPos() - self.oldpos)
+                        self.move(self.x() + f.x(), self.y() + f.y())
+                        self.oldpos = s.globalPos()
+                    except: # pylint: disable=bare-except
+                        pass
             def updateWindowSize(self):
                 if self.width() != self.latestWidth or self.height() != self.latestHeight:
                     self.latestWidth = self.width()
@@ -4992,7 +5028,7 @@ if __name__ == '__main__':
             menu.addAction(_('startrecording'), tvguide_start_record)
             menu.addAction(_('channelsettings'), settings_context_menu)
             #menu.addAction(_('iaepgmatch'), iaepgmatch)
-            if qt_backend == 'PySide6':
+            if qt_library == 'PySide6':
                 menu.exec(self.mapToGlobal(pos))
             else:
                 menu.exec_(self.mapToGlobal(pos))
@@ -5064,7 +5100,7 @@ if __name__ == '__main__':
 
         class MyLineEdit(QtWidgets.QLineEdit):
             usePopup = False
-            if qt_backend == 'PySide6':
+            if qt_library == 'PySide6':
                 click_event = QtCore.Signal()
             else:
                 click_event = QtCore.pyqtSignal()
@@ -5857,6 +5893,11 @@ if __name__ == '__main__':
                 ret_code_rec = True
             return ret_code_rec
 
+        # TODO
+        def move_window_drag():
+            if settings["movedragging"]:
+                win.oldpos = get_global_cursor_position()
+
         def redraw_menubar():
             global playing_chan
             #print_with_time("redraw_menubar called")
@@ -5891,7 +5932,7 @@ if __name__ == '__main__':
         @idle_function
         def my_mouse_right_callback(arg11=None): # pylint: disable=unused-argument
             global right_click_menu
-            if qt_backend == 'PySide6':
+            if qt_library == 'PySide6':
                 right_click_menu.exec(QtGui.QCursor.pos())
             else:
                 right_click_menu.exec_(QtGui.QCursor.pos())
@@ -5901,6 +5942,7 @@ if __name__ == '__main__':
             global right_click_menu
             if right_click_menu.isVisible():
                 right_click_menu.hide()
+            move_window_drag()
 
         @idle_function
         def my_up_binding_execute(arg11=None): # pylint: disable=unused-argument
@@ -5957,7 +5999,7 @@ if __name__ == '__main__':
         def next_channel(arg11=None): # pylint: disable=unused-argument
             go_channel(1)
 
-        if qt_backend == 'PySide6':
+        if qt_library == 'PySide6':
             qaction_prio = QtGui.QAction.HighPriority
         else:
             qaction_prio = QtWidgets.QAction.HighPriority
@@ -7427,7 +7469,7 @@ if __name__ == '__main__':
                 playlists_win.setFocus(QtCore.Qt.PopupFocusReason)
                 playlists_win.activateWindow()
 
-        if qt_backend == 'PySide6':
+        if qt_library == 'PySide6':
             try:
                 sys.exit(app.exec())
             except: # pylint: disable=bare-except
