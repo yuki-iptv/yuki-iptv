@@ -2,15 +2,23 @@ from astroncia.qt import get_qt_library
 qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
 
 class C(QtWidgets.QWidget):
-    def __init__(N, parent, e, ignoreResize):
+    def __init__(N, parent, e, ignoreResize, add_sep_flag, del_sep_flag):
         QtWidgets.QWidget.__init__(N, parent)
+        N.add_sep_flag = add_sep_flag
+        N.del_sep_flag = del_sep_flag
         if e == QtCore.Qt.TopEdge:
             if not ignoreResize:
                 N.setCursor(QtCore.Qt.SizeVerCursor)
                 N.rszf = N.rszup
+            else:
+                N.setCursor(QtCore.Qt.SizeVerCursor)
+                N.rszf = N.rszup_1
         else:N.setCursor(QtCore.Qt.SizeVerCursor);N.rszf = N.rszdown
         N.mp = None
     def rszup(N, dl):I = N.window();height = max(I.minimumHeight(), I.height() - dl.y());geo = I.geometry();geo.setTop(geo.bottom() - height);I.setGeometry(geo);N.window().callback(I.height())
+    def rszup_1(N, dl):
+        N.add_sep_flag()
+        I = N.window();height = max(I.minimumHeight(), I.height() - dl.y());geo = I.geometry();geo.setTop(geo.bottom() - height);I.setGeometry(geo);N.window().callback(I.height())
     def rszdown(N, dl):I = N.window();height = max(I.minimumHeight(), I.height() + dl.y());I.resize(I.width(), height);N.window().callback(height)
     def mousePressEvent(N, event):
         if event.button() == QtCore.Qt.LeftButton:N.mp = event.pos()
@@ -24,7 +32,7 @@ class C(QtWidgets.QWidget):
 
 class ResizableWindow(QtWidgets.QMainWindow):
     x1 = 4*2
-    def __init__(y, ignoreResize):QtWidgets.QMainWindow.__init__(y);y.setWindowFlags(QtCore.Qt.FramelessWindowHint);y.array = [C(y, QtCore.Qt.TopEdge, ignoreResize),C(y, QtCore.Qt.BottomEdge, ignoreResize)]
+    def __init__(y, ignoreResize, add_sep_flag=None, del_sep_flag=None):QtWidgets.QMainWindow.__init__(y);y.setWindowFlags(QtCore.Qt.FramelessWindowHint);y.array = [C(y, QtCore.Qt.TopEdge, ignoreResize, add_sep_flag, del_sep_flag),C(y, QtCore.Qt.BottomEdge, ignoreResize, add_sep_flag, del_sep_flag)]
     @property
     def alcSize(y):return y.x1
     def setalcSize(y, X):

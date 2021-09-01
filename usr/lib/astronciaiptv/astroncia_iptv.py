@@ -1,13 +1,11 @@
 '''Astroncia IPTV - Cross platform IPTV player'''
 # pylint: disable=invalid-name, global-statement, missing-docstring, wrong-import-position
 # pylint: disable=too-many-lines, ungrouped-imports, too-many-statements, broad-except
-# pylint: disable=unnecessary-lambda
 #
 # Icons by Font Awesome ( https://fontawesome.com/ ) ( https://fontawesome.com/license )
 #
 # The Font Awesome pictograms are licensed under the CC BY 4.0 License
 # https://creativecommons.org/licenses/by/4.0/
-#
 #
 # Copyright (C) 2021 Astroncia
 #
@@ -23,11 +21,6 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#
-#
-# =========================================================================
-# I apologize for code quality but i cannot write better. Sorry for that.
-# =========================================================================
 #
 from pathlib import Path
 import sys
@@ -1013,14 +1006,31 @@ if __name__ == '__main__':
         streaminfo_win = QtWidgets.QMainWindow()
         streaminfo_win.setWindowIcon(main_icon)
 
-        sepplaylist_win = ResizableWindow(ignoreResize=True)
+        def add_sep_flag():
+            if settings["playlistsep"]:
+                sepplaylist_win.setWindowFlags(
+                    sepplaylist_win.windowFlags() | QtCore.Qt.X11BypassWindowManagerHint
+                )
+                sepplaylist_win.show()
+
+        def del_sep_flag():
+            if settings["playlistsep"]:
+                sepplaylist_win.setWindowFlags(
+                    sepplaylist_win.windowFlags() & ~QtCore.Qt.X11BypassWindowManagerHint
+                )
+
+        sepplaylist_win = ResizableWindow(
+            ignoreResize=True,
+            add_sep_flag=add_sep_flag,
+            del_sep_flag=del_sep_flag
+        )
         sepplaylist_win.callback = empty_function
         sepplaylist_win.callback_move = empty_function
         #sepplaylist_win.setWindowFlags(
         #    QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
         #    QtCore.Qt.X11BypassWindowManagerHint
         #)
-        sepplaylist_win.setWindowTitle(MAIN_WINDOW_TITLE)
+        sepplaylist_win.setWindowTitle('{} ({})'.format(MAIN_WINDOW_TITLE, _('playlist')))
         sepplaylist_win.setWindowIcon(main_icon)
 
         help_win = QtWidgets.QMainWindow()
@@ -4024,6 +4034,7 @@ if __name__ == '__main__':
             if not fullscreen:
                 # Entering fullscreen
                 setShortcutState(True)
+                del_sep_flag()
                 comm_instance.winPosition = win.geometry()
                 currentWidthHeight = [win.width(), win.height()]
                 currentMaximized = win.isMaximized()
@@ -6522,13 +6533,6 @@ if __name__ == '__main__':
                     "index": comm_instance.comboboxIndex
                 }))
                 combobox_index_file.close()
-            if comm_instance.winPosition2:
-                mainwindow_position = comm_instance.winPosition2
-            else:
-                mainwindow_position = {
-                    "x": win.pos().x(),
-                    "y": win.pos().y()
-                }
             try:
                 if get_first_run():
                     print_with_time("Saving active vf filters...")
@@ -6548,7 +6552,10 @@ if __name__ == '__main__':
                     str(Path(LOCAL_DIR, 'windowpos.json')), 'w', encoding="utf8"
                 )
                 windowpos_file.write(
-                    json.dumps(mainwindow_position)
+                    json.dumps({
+                        "x": win.geometry().x(),
+                        "y": win.geometry().y()
+                    })
                 )
                 windowpos_file.close()
                 print_with_time("Main window position saved")
@@ -7180,8 +7187,10 @@ if __name__ == '__main__':
             "prev_channel": prev_channel,
             "next_channel": next_channel,
             "show_clock": show_clock,
-            "(lambda: my_up_binding())": (lambda: my_up_binding()), # pylint: disable=undefined-variable
-            "(lambda: my_down_binding())": (lambda: my_down_binding()), # pylint: disable=undefined-variable
+            # Yes, lambda is REALLY needed here
+            # don't ask why
+            "(lambda: my_up_binding())": (lambda: my_up_binding()), # pylint: disable=undefined-variable, unnecessary-lambda
+            "(lambda: my_down_binding())": (lambda: my_down_binding()), # pylint: disable=undefined-variable, unnecessary-lambda
             "show_timeshift": show_timeshift,
             "show_scheduler": show_scheduler,
             "showhideeverything": showhideeverything,
