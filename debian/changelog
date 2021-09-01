@@ -1,3 +1,12 @@
+astroncia-iptv (0.0.79) unstable; urgency=medium
+
+  * Minor bugfixes
+  * Remember compact mode / playlist / control panel state
+  * Add hide bitrate / video info setting
+  * Add XSPF support
+
+ -- Astroncia <kestraly@gmail.com>  Wed, 01 Sep 2021 19:51:55 +0300
+
 astroncia-iptv (0.0.78) unstable; urgency=medium
 
   * Minor bugfixes
