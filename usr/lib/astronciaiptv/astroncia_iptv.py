@@ -1012,6 +1012,9 @@ if __name__ == '__main__':
                     sepplaylist_win.windowFlags() | QtCore.Qt.X11BypassWindowManagerHint
                 )
                 sepplaylist_win.show()
+                sepplaylist_win.raise_()
+                sepplaylist_win.setFocus(QtCore.Qt.PopupFocusReason)
+                sepplaylist_win.activateWindow()
 
         def del_sep_flag():
             if settings["playlistsep"]:
