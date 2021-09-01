@@ -2,12 +2,12 @@ from astroncia.qt import get_qt_library
 qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
 
 class C(QtWidgets.QWidget):
-    def __init__(N, parent, e, ignoreResize, add_sep_flag, del_sep_flag):
+    def __init__(N, parent, e, sepPlaylist, add_sep_flag, del_sep_flag):
         QtWidgets.QWidget.__init__(N, parent)
         N.add_sep_flag = add_sep_flag
         N.del_sep_flag = del_sep_flag
         if e == QtCore.Qt.TopEdge:
-            if not ignoreResize:
+            if not sepPlaylist:
                 N.setCursor(QtCore.Qt.SizeVerCursor)
                 N.rszf = N.rszup
             else:
@@ -32,7 +32,7 @@ class C(QtWidgets.QWidget):
 
 class ResizableWindow(QtWidgets.QMainWindow):
     x1 = 4*2
-    def __init__(y, ignoreResize, add_sep_flag=None, del_sep_flag=None):QtWidgets.QMainWindow.__init__(y);y.setWindowFlags(QtCore.Qt.FramelessWindowHint);y.array = [C(y, QtCore.Qt.TopEdge, ignoreResize, add_sep_flag, del_sep_flag),C(y, QtCore.Qt.BottomEdge, ignoreResize, add_sep_flag, del_sep_flag)]
+    def __init__(y, sepPlaylist, add_sep_flag=None, del_sep_flag=None):QtWidgets.QMainWindow.__init__(y);y.setWindowFlags(QtCore.Qt.FramelessWindowHint);y.array = [C(y, QtCore.Qt.TopEdge, sepPlaylist, add_sep_flag, del_sep_flag),C(y, QtCore.Qt.BottomEdge, sepPlaylist, add_sep_flag, del_sep_flag)]
     @property
     def alcSize(y):return y.x1
     def setalcSize(y, X):

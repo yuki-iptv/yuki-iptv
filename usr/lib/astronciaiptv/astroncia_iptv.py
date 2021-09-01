@@ -1020,7 +1020,7 @@ if __name__ == '__main__':
                 )
 
         sepplaylist_win = ResizableWindow(
-            ignoreResize=True,
+            sepPlaylist=True,
             add_sep_flag=add_sep_flag,
             del_sep_flag=del_sep_flag
         )
@@ -3608,15 +3608,6 @@ if __name__ == '__main__':
                 if self.width() != self.latestWidth or self.height() != self.latestHeight:
                     self.latestWidth = self.width()
                     self.latestHeight = self.height()
-                    window_size = {'w': self.width(), 'h': self.height()}
-                    try:
-                        ws_file = open(
-                            str(Path(LOCAL_DIR, 'windowsize.json')), 'w', encoding="utf8"
-                        )
-                        ws_file.write(json.dumps(window_size))
-                        ws_file.close()
-                    except: # pylint: disable=bare-except
-                        pass
             def update(self): # pylint: disable=too-many-branches
                 global l1, tvguide_lbl, fullscreen
 
@@ -3712,10 +3703,13 @@ if __name__ == '__main__':
         win.setWindowTitle(MAIN_WINDOW_TITLE)
         win.setWindowIcon(main_icon)
         if os.path.isfile(str(Path(LOCAL_DIR, 'windowsize.json'))):
-            ws_file_1 = open(str(Path(LOCAL_DIR, 'windowsize.json')), 'r', encoding="utf8")
-            ws_file_1_out = json.loads(ws_file_1.read())
-            ws_file_1.close()
-            win.resize(ws_file_1_out['w'], ws_file_1_out['h'])
+            try:
+                ws_file_1 = open(str(Path(LOCAL_DIR, 'windowsize.json')), 'r', encoding="utf8")
+                ws_file_1_out = json.loads(ws_file_1.read())
+                ws_file_1.close()
+                win.resize(ws_file_1_out['w'], ws_file_1_out['h'])
+            except: # pylint: disable=bare-except
+                win.resize(WINDOW_SIZE[0], WINDOW_SIZE[1])
         else:
             win.resize(WINDOW_SIZE[0], WINDOW_SIZE[1])
 
@@ -6561,6 +6555,17 @@ if __name__ == '__main__':
                 print_with_time("Main window position saved")
             except: # pylint: disable=bare-except
                 pass
+            try:
+                print_with_time("Saving main window width / height...")
+                window_size = {'w': win.width(), 'h': win.height()}
+                ws_file = open(
+                    str(Path(LOCAL_DIR, 'windowsize.json')), 'w', encoding="utf8"
+                )
+                ws_file.write(json.dumps(window_size))
+                ws_file.close()
+                print_with_time("Main window width / height saved")
+            except: # pylint: disable=bare-except
+                pass
             if settings['playlistsep']:
                 try:
                     sepplheight_file = open(
@@ -6919,7 +6924,7 @@ if __name__ == '__main__':
             if cal_position.x() and cal_position.y() and fullscreen:
                 newdockWidgetPosition = [cal_position.x(), cal_position.y()]
 
-        playlist_widget = ResizableWindow(ignoreResize=False)
+        playlist_widget = ResizableWindow(sepPlaylist=False)
         playlist_widget.callback = resizeCallback
         playlist_widget.callback_move = moveCallback
         playlist_widget_orig = QtWidgets.QWidget(playlist_widget)
