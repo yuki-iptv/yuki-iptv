@@ -81,7 +81,7 @@ msgid "m3u_savefile"
 msgstr "Save File"
 
 msgid "m3u_m3ufiles"
-msgstr "M3U Files (*.m3u)"
+msgstr "Playlists (*.m3u, *.xspf)"
 
 msgid "error"
 msgstr "Error"
@@ -156,7 +156,7 @@ msgid "save"
 msgstr "Save"
 
 msgid "m3uplaylist"
-msgstr "M3U playlist"
+msgstr "M3U / XSPF playlist"
 
 msgid "updateatboot"
 msgstr "Update playlist\nat launch"

@@ -85,7 +85,7 @@ msgid "m3u_savefile"
 msgstr "Зберегти файл"
 
 msgid "m3u_m3ufiles"
-msgstr "M3U плейлисти (*.m3u)"
+msgstr "Плейлисти (*.m3u, *.xspf)"
 
 msgid "error"
 msgstr "Помилка"
@@ -160,7 +160,7 @@ msgid "save"
 msgstr "Зберегти"
 
 msgid "m3uplaylist"
-msgstr "M3U плейлист"
+msgstr "M3U / XSPF плейлист"
 
 msgid "updateatboot"
 msgstr "Оновлювати\nпри запуску"

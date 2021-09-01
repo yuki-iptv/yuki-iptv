@@ -73,7 +73,7 @@ msgid "m3u_savefile"
 msgstr "Zapisz plik"
 
 msgid "m3u_m3ufiles"
-msgstr "Pliki M3U (*.m3u)"
+msgstr "Pliki (*.m3u, *.xspf)"
 
 msgid "error"
 msgstr "Błąd"
@@ -148,7 +148,7 @@ msgid "save"
 msgstr "Zapisz"
 
 msgid "m3uplaylist"
-msgstr "Lista odtwarzania M3U"
+msgstr "Lista odtwarzania M3U / XSPF"
 
 msgid "updateatboot"
 msgstr "Aktualizuj\nprzy uruchomieniu"

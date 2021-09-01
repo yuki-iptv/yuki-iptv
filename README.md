@@ -42,7 +42,7 @@ Icons: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 
 ## Features
 
-- Watching IPTV (from m3u / m3u8 playlist, local or remote)  
+- Watching IPTV (from m3u / m3u8 / xspf playlist, local or remote)  
 - Viewing unencrypted streams UDP (multicast), HTTP, HLS (m3u8)  
 - Adding channels to favorites  
 - Recording TV programs  
