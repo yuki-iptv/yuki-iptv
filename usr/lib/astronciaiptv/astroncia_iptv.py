@@ -315,6 +315,10 @@ if __name__ == '__main__':
     except: # pylint: disable=bare-except
         pass
     app = QtWidgets.QApplication(sys.argv)
+    try:
+        app.setStyle("fusion")
+    except: # pylint: disable=bare-except
+        print_with_time('app.setStyle("fusion") failed')
 
     # This is necessary since PyQT stomps over the locale settings needed by libmpv.
     # This needs to happen after importing PyQT before creating the first mpv.MPV instance.
@@ -7498,6 +7502,7 @@ if __name__ == '__main__':
             try:
                 sys.exit(app.exec())
             except: # pylint: disable=bare-except
+                # Qt 6.0 compatibility
                 sys.exit(app.exec_())
         else:
             sys.exit(app.exec_())
