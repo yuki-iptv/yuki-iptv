@@ -62,6 +62,7 @@ from astroncia.time import print_with_time, get_app_log, get_mpv_log, args_init
 from astroncia.epgurls import EPG_URLS
 from astroncia.xtreamtom3u import convert_xtream_to_m3u
 from astroncia.xspf import parse_xspf
+from astroncia.qt6compat import globalPos, getX, getY
 from thirdparty.conversion import convert_size, format_bytes, human_secs
 from thirdparty.m3u import M3uParser
 from thirdparty.m3ueditor import Viewer
@@ -3602,13 +3603,13 @@ if __name__ == '__main__':
                 ''')
             def mousePressEvent(self, s):
                 if settings["movedragging"]:
-                    self.oldpos = s.globalPos()
+                    self.oldpos = globalPos(s)
             def mouseMoveEvent(self, s):
                 if settings["movedragging"]:
                     try:
-                        f = QtCore.QPoint(s.globalPos() - self.oldpos)
-                        self.move(self.x() + f.x(), self.y() + f.y())
-                        self.oldpos = s.globalPos()
+                        f = QtCore.QPoint(globalPos(s) - self.oldpos)
+                        self.move(getX(self) + getX(f), getY(self) + getY(f))
+                        self.oldpos = globalPos(s)
                     except: # pylint: disable=bare-except
                         pass
             def updateWindowSize(self):

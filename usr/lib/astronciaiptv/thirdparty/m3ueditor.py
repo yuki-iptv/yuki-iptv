@@ -7,6 +7,11 @@ from pathlib import Path
 from astroncia.extgrp import parse_extgrp
 from astroncia.lang import _ as get_translation
 
+try:
+    qt_DisplayRole = QtCore.Qt.DisplayRole
+except: # pylint: disable=bare-except
+    qt_DisplayRole = QtCore.Qt.ItemDataRole.DisplayRole
+
 home_folder = ""
 try:
     home_folder = os.environ['HOME']
@@ -23,8 +28,8 @@ class PandasModel(QtCore.QAbstractTableModel):
     def setModified(self):
         self.setChanged = True
 
-    def headerData(self, section, orientation, role=QtCore.Qt.DisplayRole):
-        if role != QtCore.Qt.DisplayRole:
+    def headerData(self, section, orientation, role=qt_DisplayRole):
+        if role != qt_DisplayRole:
             return None
         if orientation == QtCore.Qt.Horizontal:
             try:
@@ -40,11 +45,11 @@ class PandasModel(QtCore.QAbstractTableModel):
     def flags(self, index):
         return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEditable
 
-    def data(self, index, role=QtCore.Qt.DisplayRole):
+    def data(self, index, role=qt_DisplayRole):
         if index.isValid():
             if (role == QtCore.Qt.EditRole):
                 return self._df.values[index.row()][index.column()]
-            elif (role == QtCore.Qt.DisplayRole):
+            elif (role == qt_DisplayRole):
                 return self._df.values[index.row()][index.column()]
         return None
 

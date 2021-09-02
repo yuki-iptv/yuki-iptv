@@ -1,4 +1,5 @@
 from astroncia.qt import get_qt_library
+from astroncia.qt6compat import globalPos, getX, getY
 qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
 
 class C(QtWidgets.QWidget):
@@ -41,7 +42,7 @@ class ResizableWindow(QtWidgets.QMainWindow):
     def upd(y):y.setContentsMargins(*[y.alcSize] * 4);n = y.rect();irec = n.adjusted(y.alcSize,y.alcSize,-y.alcSize,-y.alcSize);y.array[0].setGeometry(irec.left(), 0, irec.width(), y.alcSize);y.array[1].setGeometry(y.alcSize, irec.top() + irec.height(),irec.width(), y.alcSize)
     def resizeEvent(y, s):QtWidgets.QMainWindow.resizeEvent(y, s);y.upd()
     def moveEvent(y,e):y.callback_move(e);super(ResizableWindow,y).moveEvent(e)
-    def mousePressEvent(y,s):y.oldpos = s.globalPos()
+    def mousePressEvent(y,s):y.oldpos = globalPos(s)
     def mouseMoveEvent(y,s):
-        try:f = QtCore.QPoint(s.globalPos() - y.oldpos);y.move(y.x() + f.x(), y.y() + f.y());y.oldpos = s.globalPos()
+        try:f = QtCore.QPoint(globalPos(s) - y.oldpos);y.move(getX(y) + getX(f), getY(y) + getY(f));y.oldpos = globalPos(s)
         except:pass
