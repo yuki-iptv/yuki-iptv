@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2021 Astroncia <kestraly@gmail.com> -->
+<component type="desktop-application">
+  <id>com.astroncia.astronciaiptv</id>
+  <metadata_license>FSFAP</metadata_license>
+  <project_license>GPL-3.0</project_license>
+  <name>Astroncia IPTV</name>
+  <summary>IPTV player</summary>
+
+  <description>
+    <p>
+      Simple IPTV player with EPG support
+    </p>
+  </description>
+
+  <launchable type="desktop-id">astronciaiptv.desktop</launchable>
+
+  <screenshots>
+    <screenshot type="default">
+      <image>https://gitlab.com/astroncia/iptv/uploads/9cb6c1e462a679117f36e67ec98ec8b0/astroncia-iptv-screenshot.png</image>
+    </screenshot>
+  </screenshots>
+
+  <url type="homepage">https://gitlab.com/astroncia/iptv</url>
+
+  <provides>
+    <binary>astronciaiptv</binary>
+  </provides>
+</component>
