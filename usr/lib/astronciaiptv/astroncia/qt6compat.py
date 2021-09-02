@@ -18,17 +18,15 @@ Copyright (C) 2021 Astroncia
 '''
 from astroncia.time import print_with_time
 
-class astroncia_data: # pylint: disable=too-few-public-methods
+class AstronciaData: # pylint: disable=too-few-public-methods
     WRITTEN = False
-    WRITTENX = False
-    WRITTENY = False
 
 def globalPos(arg):
     try:
         ret = arg.globalPosition().toPoint()
     except: # pylint: disable=bare-except
-        if not astroncia_data.WRITTEN:
-            astroncia_data.WRITTEN = True
+        if not AstronciaData.WRITTEN:
+            AstronciaData.WRITTEN = True
             print_with_time("Qt 5 (globalPos) compatibility enabled")
         ret = arg.globalPos()
     return ret
