@@ -315,6 +315,8 @@ if __name__ == '__main__':
         os.environ['GDK_BACKEND'] = 'x11'
     except: # pylint: disable=bare-except
         pass
+    print_with_time("Qt init")
+    print_with_time("")
     app = QtWidgets.QApplication(sys.argv)
     try:
         app.setStyle("fusion")
@@ -1012,20 +1014,10 @@ if __name__ == '__main__':
         streaminfo_win.setWindowIcon(main_icon)
 
         def add_sep_flag():
-            if settings["playlistsep"]:
-                sepplaylist_win.setWindowFlags(
-                    sepplaylist_win.windowFlags() | QtCore.Qt.X11BypassWindowManagerHint
-                )
-                sepplaylist_win.show()
-                sepplaylist_win.raise_()
-                sepplaylist_win.setFocus(QtCore.Qt.PopupFocusReason)
-                sepplaylist_win.activateWindow()
+            pass
 
         def del_sep_flag():
-            if settings["playlistsep"]:
-                sepplaylist_win.setWindowFlags(
-                    sepplaylist_win.windowFlags() & ~QtCore.Qt.X11BypassWindowManagerHint
-                )
+            pass
 
         sepplaylist_win = ResizableWindow(
             sepPlaylist=True,
@@ -1034,10 +1026,10 @@ if __name__ == '__main__':
         )
         sepplaylist_win.callback = empty_function
         sepplaylist_win.callback_move = empty_function
-        #sepplaylist_win.setWindowFlags(
-        #    QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
-        #    QtCore.Qt.X11BypassWindowManagerHint
-        #)
+        sepplaylist_win.setWindowFlags(
+            QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
+            QtCore.Qt.X11BypassWindowManagerHint
+        )
         sepplaylist_win.setWindowTitle('{} ({})'.format(MAIN_WINDOW_TITLE, _('playlist')))
         sepplaylist_win.setWindowIcon(main_icon)
 
@@ -1391,7 +1383,8 @@ if __name__ == '__main__':
         time_stop = 0
         autoclosemenu_time = -1
 
-        def moveWindowToCenter(win_arg, force=False):
+        # TODO
+        def moveWindowToCenter(win_arg, force=False): # pylint: disable=unused-argument
             qr0 = win_arg.frameGeometry()
             qr0.moveCenter(
                 QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
@@ -3130,9 +3123,9 @@ if __name__ == '__main__':
             ))
             sepplaylist_win.move(seppl_qpoint)
             sepplaylist_win.show()
-            sepplaylist_win.raise_()
-            sepplaylist_win.setFocus(QtCore.Qt.PopupFocusReason)
-            sepplaylist_win.activateWindow()
+            #sepplaylist_win.raise_()
+            #sepplaylist_win.setFocus(QtCore.Qt.PopupFocusReason)
+            #sepplaylist_win.activateWindow()
 
         def comm_instance_main_thread(th_func):
             th_func()
@@ -4035,6 +4028,12 @@ if __name__ == '__main__':
                 currentDockWidgetPos
             if not fullscreen:
                 # Entering fullscreen
+                del_sep_flag()
+                if settings["playlistsep"]:
+                    win.show()
+                    win.raise_()
+                    win.setFocus(QtCore.Qt.PopupFocusReason)
+                    win.activateWindow()
                 setShortcutState(True)
                 del_sep_flag()
                 comm_instance.winPosition = win.geometry()
@@ -4069,6 +4068,7 @@ if __name__ == '__main__':
                 dockWidget2.hide()
                 dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
                 win.update()
+                del_sep_flag()
                 win.showFullScreen()
                 if settings['panelposition'] == 1:
                     tvguide_close_lbl.move(
@@ -5158,7 +5158,8 @@ if __name__ == '__main__':
                 if controlpanel_widget_visible1:
                     controlpanel_widget.show()
             if settings["playlistsep"] and \
-            bool(sepplaylist_win.windowFlags() & QtCore.Qt.X11BypassWindowManagerHint):
+            bool(sepplaylist_win.windowFlags() & QtCore.Qt.X11BypassWindowManagerHint) and\
+            not fullscreen:
                 del_sep_flag()
                 sepplaylist_win.show()
                 sepplaylist_win.raise_()
@@ -5562,11 +5563,16 @@ if __name__ == '__main__':
                     if os.path.isfile(str(Path(LOCAL_DIR, 'lastchannels.json'))):
                         os.remove(str(Path(LOCAL_DIR, 'lastchannels.json')))
 
+        if os.name == 'nt':
+            DIRECT3D = 'direct3d,'
+        else:
+            DIRECT3D = ''
+
         if settings['hwaccel']:
-            VIDEO_OUTPUT = 'gpu,vdpau,opengl,direct3d,xv,x11'
+            VIDEO_OUTPUT = 'gpu,vdpau,opengl,{}xv,x11'.format(DIRECT3D)
             HWACCEL = 'auto'
         else:
-            VIDEO_OUTPUT = 'direct3d,xv,x11'
+            VIDEO_OUTPUT = '{}xv,x11'.format(DIRECT3D)
             HWACCEL = 'no'
         options = {
             'vo': '' if os.name == 'nt' else VIDEO_OUTPUT,
@@ -5587,14 +5593,23 @@ if __name__ == '__main__':
         except Exception as e1:
             print_with_time("Could not parse MPV options!")
             print_with_time(e1)
-        print_with_time("Testing mpv options...")
+        print_with_time("Testing custom mpv options...")
         print_with_time(options_2)
         try:
             test_options = mpv.MPV(**options_2)
             print_with_time("mpv options OK")
         except: # pylint: disable=bare-except
             print_with_time("mpv options test failed, ignoring them")
+            msg_wrongmpvoptions = QtWidgets.QMessageBox(
+                qt_icon_warning,
+                MAIN_WINDOW_TITLE,
+                _('ignoringmpvoptions') + "\n\n" + str(json.dumps(options_2)),
+                QtWidgets.QMessageBox.Ok
+            )
+            msg_wrongmpvoptions.exec()
             options = options_orig
+
+        print_with_time("Using mpv options: {}".format(json.dumps(options)))
 
         player = None
 
@@ -7055,9 +7070,52 @@ if __name__ == '__main__':
             except: # pylint: disable=bare-except
                 pass
 
+        win_has_focus = False
+
+        def is_win_has_focus():
+            return win.isActiveWindow() or \
+                sepplaylist_win.isActiveWindow() or \
+                help_win.isActiveWindow() or \
+                selplaylist_win.isActiveWindow() or \
+                streaminfo_win.isActiveWindow() or \
+                license_win.isActiveWindow() or \
+                sort_win.isActiveWindow() or \
+                chan_win.isActiveWindow() or \
+                ext_win.isActiveWindow() or \
+                scheduler_win.isActiveWindow() or \
+                xtream_win.isActiveWindow() or \
+                xtream_win_2.isActiveWindow() or \
+                archive_win.isActiveWindow() or \
+                playlists_win.isActiveWindow() or \
+                playlists_win_edit.isActiveWindow() or \
+                epg_select_win.isActiveWindow() or \
+                tvguide_many_win.isActiveWindow() or \
+                applog_win.isActiveWindow() or \
+                mpvlog_win.isActiveWindow() or \
+                m3u_editor.isActiveWindow() or \
+                settings_win.isActiveWindow()
+
         menubar_st = False
         def thread_shortcuts():
-            global fullscreen, menubar_st
+            global fullscreen, menubar_st, win_has_focus
+            try:
+                if settings["playlistsep"]:
+                    cur_has_focus = is_win_has_focus()
+                    if cur_has_focus != win_has_focus:
+                        win_has_focus = cur_has_focus
+                        #print_with_time("win_has_focus changed to {}".format(win_has_focus))
+                        if win_has_focus:
+                            if not fullscreen:
+                                sepplaylist_win.show()
+                                win.show()
+                                win.raise_()
+                                win.setFocus(QtCore.Qt.PopupFocusReason)
+                                win.activateWindow()
+                        else:
+                            if settings["playlistsep"]:
+                                sepplaylist_win.hide()
+            except: # pylint: disable=bare-except
+                pass
             try:
                 if not fullscreen:
                     menubar_new_st = win.menuBar().isVisible()
@@ -7382,13 +7440,13 @@ if __name__ == '__main__':
                     playlist_widget,
                     activated=funcs[kbd1]
                 ))
-                if settings["playlistsep"]:
-                    # Separate playlist
-                    QShortcut(
-                        QtGui.QKeySequence(kbd),
-                        sepplaylist_win,
-                        activated=funcs[kbd1]
-                    )
+                #if settings["playlistsep"]:
+                #    # Separate playlist
+                #    QShortcut(
+                #        QtGui.QKeySequence(kbd),
+                #        sepplaylist_win,
+                #        activated=funcs[kbd1]
+                #    )
 
         setShortcutState(False)
 
