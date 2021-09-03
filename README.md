@@ -13,6 +13,7 @@ For **Ubuntu** / **Linux Mint** recommended install from [Launchpad PPA - ppa:as
 ```sudo apt-get install astroncia-iptv```  
   
 [Installation for **Debian**](https://software.opensuse.org/download/package?package=astronciaiptv&project=home%3Aastroncia)  
+  
 [**Arch Linux** (AUR)](https://aur.archlinux.org/packages/astronciaiptv/)  
 
 ## Information
