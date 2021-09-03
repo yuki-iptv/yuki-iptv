@@ -907,6 +907,9 @@ msgstr "Перемещать окно мышью"
 msgid "playlist"
 msgstr "список воспроизведения"
 
+msgid "ignoringmpvoptions"
+msgstr "Неверные опции MPV игнорируются"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, версия {}\n© kestral / astroncia < kestraly (at) gmail.com "

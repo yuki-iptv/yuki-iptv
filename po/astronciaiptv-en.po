@@ -903,6 +903,9 @@ msgstr "Move window by dragging"
 msgid "playlist"
 msgstr "playlist"
 
+msgid "ignoringmpvoptions"
+msgstr "Custom MPV options invalid, ignoring them"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, version {}\n© kestral / astroncia < kestraly (at) gmail.com "
