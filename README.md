@@ -81,4 +81,4 @@ This provider was chosen because it satisfied the following criterias:
   
 Issues relating to TV channels and media content should be addressed directly to the relevant provider.  
   
-Note: Feel free to remove Free-TV from Astroncia IPTV if you don't use it, or add any other provider you may have access to or local M3U playlists.  
+Note: Feel free to remove Free-TV from Astroncia IPTV if you don't use it, or add any other provider you may have access to or local M3U / XSPF playlists.  
