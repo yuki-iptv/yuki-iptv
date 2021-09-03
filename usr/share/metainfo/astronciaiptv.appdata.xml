@@ -22,6 +22,7 @@
   </screenshots>
 
   <url type="homepage">https://gitlab.com/astroncia/iptv</url>
+  <url type="bugtracker">https://gitlab.com/astroncia/iptv/-/issues</url>
 
   <provides>
     <binary>astronciaiptv</binary>
