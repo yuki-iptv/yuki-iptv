@@ -5957,12 +5957,21 @@ if __name__ == '__main__':
                 except: # pylint: disable=bare-except
                     pass
 
+        force_turnoff_osc = False
+
         def move_window_drag():
+            global force_turnoff_osc
             if settings["movedragging"]:
                 if not win.oldpos:
                     win.oldpos = get_global_cursor_position()
+                    force_turnoff_osc = True
+                    try:
+                        player.osc = False
+                    except: # pylint: disable=bare-except
+                        pass
                 else:
                     win.oldpos = None
+                    force_turnoff_osc = False
 
         def redraw_menubar():
             global playing_chan
@@ -6920,11 +6929,14 @@ if __name__ == '__main__':
 
         def thread_osc():
             try:
-                global playing_url
+                global playing_url, force_turnoff_osc
                 if playing_url:
                     if not settings["hidempv"]:
                         try:
-                            player.osc = True
+                            if not force_turnoff_osc:
+                                player.osc = True
+                            else:
+                                player.osc = False
                         except: # pylint: disable=bare-except
                             pass
                 else:
