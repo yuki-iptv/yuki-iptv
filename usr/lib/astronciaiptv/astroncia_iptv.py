@@ -337,6 +337,8 @@ if __name__ == '__main__':
         print_with_time("Current version: {}".format(APP_VERSION))
         print_with_time("")
         print_with_time("Using Python {}".format(sys.version.replace('\n', '')))
+        # Qt library debugging
+        print_with_time("Qt library: {}".format(qt_library))
         try:
             qt_version = qt_version_pt1()
         except: # pylint: disable=bare-except
@@ -346,12 +348,10 @@ if __name__ == '__main__':
         if qt_library == 'PySide6':
             try:
                 import PySide6 # pylint: disable=import-error
+                print_with_time("Qt version (PySide6 compiled with): {}".format(QtCore.__version__))
                 print_with_time("PySide6 version: {}".format(PySide6.__version__))
-                print_with_time("Qt library (PySide6 compiled with): {}".format(QtCore.__version__))
             except: # pylint: disable=bare-except
                 pass
-        # Qt library debugging
-        print_with_time("Qt library: {}".format(qt_library))
         print_with_time("")
 
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
