@@ -341,8 +341,16 @@ if __name__ == '__main__':
             qt_version = qt_version_pt1()
         except: # pylint: disable=bare-except
             qt_version = qt_version_pt2()
-        print_with_time("Qt version: {}".format(qt_version))
-        # Qt backend debugging
+        print_with_time("Qt version (runtime): {}".format(qt_version))
+        # Qt library debugging (PySide6 only)
+        if qt_library == 'PySide6':
+            try:
+                import PySide6 # pylint: disable=import-error
+                print_with_time("PySide6 version: {}".format(PySide6.__version__))
+                print_with_time("Qt library (PySide6 compiled with): {}".format(QtCore.__version__))
+            except: # pylint: disable=bare-except
+                pass
+        # Qt library debugging
         print_with_time("Qt library: {}".format(qt_library))
         print_with_time("")
 
@@ -5158,7 +5166,7 @@ if __name__ == '__main__':
                 if controlpanel_widget_visible1:
                     controlpanel_widget.show()
             if settings["playlistsep"] and \
-            bool(sepplaylist_win.windowFlags() & QtCore.Qt.X11BypassWindowManagerHint) and\
+            bool(sepplaylist_win.windowFlags() & QtCore.Qt.X11BypassWindowManagerHint) and \
             not fullscreen:
                 del_sep_flag()
                 sepplaylist_win.show()
