@@ -3505,6 +3505,13 @@ if __name__ == '__main__':
             def my_mouse_left(): # pylint: disable=unused-variable
                 my_mouse_left_callback()
 
+            try:
+                @player.on_key_press('MOUSE_MOVE')
+                def mouse_move_event(): # pylint: disable=unused-variable
+                    mouse_move_event_callback()
+            except: # pylint: disable=bare-except
+                print_with_time("Failed to set up mouse move callbacks")
+
             @player.on_key_press('MBTN_LEFT_DBL')
             def my_leftdbl_binding(): # pylint: disable=unused-variable
                 mpv_fullscreen()
@@ -5937,10 +5944,25 @@ if __name__ == '__main__':
                 ret_code_rec = True
             return ret_code_rec
 
-        # TODO
+        win.oldpos = None
+
+        @idle_function
+        def mouse_move_event_callback(arg11=None): # pylint: disable=unused-argument
+            if settings["movedragging"] and win.oldpos:
+                try:
+                    globalPos1 = get_global_cursor_position()
+                    f = QtCore.QPoint(globalPos1 - win.oldpos)
+                    win.move(win.x() + f.x(), win.y() + f.y())
+                    win.oldpos = globalPos1
+                except: # pylint: disable=bare-except
+                    pass
+
         def move_window_drag():
             if settings["movedragging"]:
-                win.oldpos = get_global_cursor_position()
+                if not win.oldpos:
+                    win.oldpos = get_global_cursor_position()
+                else:
+                    win.oldpos = None
 
         def redraw_menubar():
             global playing_chan
