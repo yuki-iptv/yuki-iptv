@@ -1134,6 +1134,14 @@ if __name__ == '__main__':
             playlists_save_json()
             playlists_win_edit.hide()
 
+        def epg_edit_1_settext(txt1):
+            sepgcombox_1.clear()
+            sepgcombox_1.addItems(
+                [txt1 if not \
+                    txt1.startswith('^^::MULTIPLE::^^') else ''] + EPG_URLS
+            )
+            epg_edit_1.setText(txt1)
+
         def m3u_file_1_clicked():
             fname_1 = QtWidgets.QFileDialog.getOpenFileName(
                 playlists_win_edit,
@@ -1150,7 +1158,7 @@ if __name__ == '__main__':
                 home_folder
             )[0]
             if fname_2:
-                epg_edit_1.setText(fname_2)
+                epg_edit_1_settext(fname_2)
 
         name_label_1 = QtWidgets.QLabel('{}:'.format(_('provname')))
         m3u_label_1 = QtWidgets.QLabel('{}:'.format(_('m3uplaylist')))
@@ -1160,6 +1168,8 @@ if __name__ == '__main__':
         m3u_edit_1.setPlaceholderText(_('filepath'))
         epg_edit_1 = QtWidgets.QLineEdit()
         epg_edit_1.setPlaceholderText(_('filepath'))
+        sepgcombox_1 = QtWidgets.QComboBox()
+        sepgcombox_1.setLineEdit(epg_edit_1)
         m3u_file_1 = QtWidgets.QPushButton()
         m3u_file_1.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'file.png'))))
         m3u_file_1.clicked.connect(m3u_file_1_clicked)
@@ -1194,7 +1204,7 @@ if __name__ == '__main__':
         playlists_win_edit_layout.addWidget(m3u_file_1, 1, 2)
         playlists_win_edit_layout.addWidget(xtream_btn_1, 2, 0)
         playlists_win_edit_layout.addWidget(epg_label_1, 3, 0)
-        playlists_win_edit_layout.addWidget(epg_edit_1, 3, 1)
+        playlists_win_edit_layout.addWidget(sepgcombox_1, 3, 1)
         playlists_win_edit_layout.addWidget(epg_file_1, 3, 2)
         playlists_win_edit_layout.addWidget(offset_label_1, 4, 0)
         playlists_win_edit_layout.addWidget(soffset_1, 4, 1)
@@ -3256,7 +3266,7 @@ if __name__ == '__main__':
             if ignore0:
                 name_edit_1.setText("")
                 m3u_edit_1.setText("")
-                epg_edit_1.setText("")
+                epg_edit_1_settext("")
                 soffset_1.setValue(DEF_TIMEZONE)
                 playlists_data.oldName = ""
                 playlists_win_edit.show()
@@ -3270,7 +3280,7 @@ if __name__ == '__main__':
                     item_offset = playlists_data.playlists_used[currentItem_text]['offset']
                     name_edit_1.setText(currentItem_text)
                     m3u_edit_1.setText(item_m3u)
-                    epg_edit_1.setText(item_epg)
+                    epg_edit_1_settext(item_epg)
                     soffset_1.setValue(item_offset)
                     playlists_data.oldName = currentItem_text
                     playlists_win_edit.show()
