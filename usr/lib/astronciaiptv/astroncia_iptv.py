@@ -5676,7 +5676,8 @@ if __name__ == '__main__':
                 )
                 msg.exec()
 
-        def showhideplaylist():
+        @idle_function
+        def showhideplaylist(arg33=None): # pylint: disable=unused-argument
             global fullscreen
             if not fullscreen:
                 try:
@@ -5684,7 +5685,8 @@ if __name__ == '__main__':
                 except: # pylint: disable=bare-except
                     pass
 
-        def lowpanel_ch_1():
+        @idle_function
+        def lowpanel_ch_1(arg33=None): # pylint: disable=unused-argument
             global fullscreen
             if not fullscreen:
                 try:
