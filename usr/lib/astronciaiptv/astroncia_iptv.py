@@ -7242,6 +7242,9 @@ if __name__ == '__main__':
                     else:
                         AstronciaData.playlist_hidden = False
                         sepplaylist_win.show()
+                        selplaylist_win.raise_()
+                        selplaylist_win.setFocus(QtCore.Qt.PopupFocusReason)
+                        selplaylist_win.activateWindow()
                 else:
                     if dockWidget.isVisible():
                         AstronciaData.playlist_hidden = True
