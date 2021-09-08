@@ -5599,6 +5599,15 @@ if __name__ == '__main__':
         else:
             VIDEO_OUTPUT = '{}xv,x11'.format(DIRECT3D)
             HWACCEL = 'no'
+
+        # Wayland fix
+        try:
+            if 'WAYLAND_DISPLAY' in os.environ:
+                print_with_time("Applying video output fix for Wayland")
+                VIDEO_OUTPUT = 'x11'
+        except: # pylint: disable=bare-except
+            pass
+
         options = {
             'vo': '' if os.name == 'nt' else VIDEO_OUTPUT,
             'hwdec': HWACCEL,
