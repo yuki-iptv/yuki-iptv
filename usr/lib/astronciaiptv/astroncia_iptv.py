@@ -3375,21 +3375,6 @@ if __name__ == '__main__':
         newdockWidgetHeight = False
         newdockWidgetPosition = False
 
-        try:
-            if os.path.isfile(str(Path(LOCAL_DIR, 'expheight.json'))):
-                expheight_file_0 = open(
-                    str(Path(LOCAL_DIR, 'expheight.json')), 'r', encoding="utf8"
-                )
-                expheight_file_0_read = json.loads(expheight_file_0.read())
-                newdockWidgetHeight = expheight_file_0_read["expplaylistheight"]
-                try:
-                    newdockWidgetPosition = expheight_file_0_read["expplaylistposition"]
-                except: # pylint: disable=bare-except
-                    pass
-                expheight_file_0.close()
-        except: # pylint: disable=bare-except
-            pass
-
         def init_mpv_player(): # pylint: disable=too-many-branches
             global player
             try:
@@ -6606,6 +6591,18 @@ if __name__ == '__main__':
                 if os.path.isfile(str(Path(LOCAL_DIR, 'lastchannels.json'))):
                     os.remove(str(Path(LOCAL_DIR, 'lastchannels.json')))
 
+        def cur_win_width():
+            w1_width = 0
+            for app_scr in app.screens():
+                w1_width += app_scr.size().width()
+            return w1_width
+
+        def cur_win_height():
+            w1_height = 0
+            for app_scr in app.screens():
+                w1_height += app_scr.size().height()
+            return w1_height
+
         def myExitHandler(): # pylint: disable=too-many-branches
             global stopped, epg_thread, epg_thread_2, mpris_loop, \
             newdockWidgetHeight, newdockWidgetPosition
@@ -6678,7 +6675,9 @@ if __name__ == '__main__':
                 expheight_file.write(
                     json.dumps({
                         "expplaylistheight": newdockWidgetHeight,
-                        "expplaylistposition": newdockWidgetPosition
+                        "expplaylistposition": newdockWidgetPosition,
+                        "w_width": cur_win_width(),
+                        "w_height": cur_win_height()
                     })
                 )
                 expheight_file.close()
@@ -7549,6 +7548,46 @@ if __name__ == '__main__':
                 except: # pylint: disable=bare-except
                     pass
 
+        def read_expheight_json():
+            global newdockWidgetHeight, newdockWidgetPosition
+            try:
+                if os.path.isfile(str(Path(LOCAL_DIR, 'expheight.json'))):
+                    print_with_time("Loading expheight.json...")
+
+                    cur_w_width = cur_win_width()
+                    cur_w_height = cur_win_height()
+                    print_with_time(
+                        "Current width / height: {}x{}".format(cur_w_width, cur_w_height)
+                    )
+
+                    expheight_file_0 = open(
+                        str(Path(LOCAL_DIR, 'expheight.json')), 'r', encoding="utf8"
+                    )
+                    expheight_file_0_read = json.loads(expheight_file_0.read())
+
+                    expheight_read_continue = True
+                    if 'w_width' in expheight_file_0_read and 'w_height' in expheight_file_0_read:
+                        read_w_width = expheight_file_0_read['w_width']
+                        read_w_height = expheight_file_0_read['w_height']
+                        print_with_time(
+                            "Remembered width / height: {}x{}".format(read_w_width, read_w_height)
+                        )
+                        if read_w_width == cur_w_width and read_w_height == cur_w_height:
+                            print_with_time("Matched, continue")
+                        else:
+                            print_with_time("Resolution changed, ignoring old settings")
+                            expheight_read_continue = False
+
+                    if expheight_read_continue:
+                        newdockWidgetHeight = expheight_file_0_read["expplaylistheight"]
+                        try:
+                            newdockWidgetPosition = expheight_file_0_read["expplaylistposition"]
+                        except: # pylint: disable=bare-except
+                            pass
+                    expheight_file_0.close()
+            except: # pylint: disable=bare-except
+                pass
+
         if settings['m3u'] and m3u:
             win.show()
             init_mpv_player()
@@ -7581,6 +7620,7 @@ if __name__ == '__main__':
                             combobox.setCurrentIndex(combobox_index_file_1_json['index'])
                 except: # pylint: disable=bare-except
                     pass
+            read_expheight_json()
             playLastChannel()
             restore_compact_state()
 
