@@ -906,6 +906,9 @@ msgstr "playlist"
 msgid "ignoringmpvoptions"
 msgstr "Custom MPV options invalid, ignoring them"
 
+msgid "showonlychplaylist"
+msgstr "Show only channels in playlist"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, version {}\n© kestral / astroncia < kestraly (at) gmail.com "

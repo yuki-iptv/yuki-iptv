@@ -3181,6 +3181,9 @@ if __name__ == '__main__':
 
         def aboutqt_show():
             QtWidgets.QMessageBox.aboutQt(QtWidgets.QWidget(), MAIN_WINDOW_TITLE)
+            help_win.raise_()
+            help_win.setFocus(QtCore.Qt.PopupFocusReason)
+            help_win.activateWindow()
 
         aboutqt_btn = QtWidgets.QPushButton()
         aboutqt_btn.setText(_('aboutqt'))
