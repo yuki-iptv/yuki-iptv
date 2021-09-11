@@ -5672,8 +5672,9 @@ if __name__ == '__main__':
         # Wayland fix
         try:
             if 'WAYLAND_DISPLAY' in os.environ:
-                print_with_time("Applying video output fix for Wayland")
-                VIDEO_OUTPUT = 'x11'
+                if os.environ['WAYLAND_DISPLAY']:
+                    print_with_time("[NOTE] Applying video output fix for Wayland")
+                    VIDEO_OUTPUT = 'x11'
         except: # pylint: disable=bare-except
             pass
 
