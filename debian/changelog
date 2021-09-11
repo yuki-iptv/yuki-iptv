@@ -1,3 +1,10 @@
+astroncia-iptv (0.0.80) unstable; urgency=medium
+
+  * Minor bugfixes
+  * Add View - TV guide button
+
+ -- Astroncia <kestraly@gmail.com>  Sat, 11 Sep 2021 18:10:35 +0300
+
 astroncia-iptv (0.0.79) unstable; urgency=medium
 
   * Minor bugfixes
