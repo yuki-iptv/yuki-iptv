@@ -1459,11 +1459,16 @@ if __name__ == '__main__':
         time_stop = 0
         autoclosemenu_time = -1
 
-        # TODO
         def moveWindowToCenter(win_arg, force=False): # pylint: disable=unused-argument
+            used_screen = QtWidgets.QApplication.primaryScreen()
+            if not force:
+                try:
+                    used_screen = win.screen()
+                except: # pylint: disable=bare-except
+                    pass
             qr0 = win_arg.frameGeometry()
             qr0.moveCenter(
-                QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
+                QtGui.QScreen.availableGeometry(used_screen).center()
             )
             win_arg.move(qr0.topLeft())
 
@@ -1476,20 +1481,6 @@ if __name__ == '__main__':
         settings_win_l.setY(origY)
         #settings_win.move(settings_win_l)
         settings_win.move(qr.topLeft())
-        moveWindowToCenter(help_win)
-        moveWindowToCenter(selplaylist_win)
-        moveWindowToCenter(streaminfo_win)
-        moveWindowToCenter(license_win)
-        moveWindowToCenter(sort_win)
-        moveWindowToCenter(chan_win)
-        moveWindowToCenter(ext_win)
-        moveWindowToCenter(scheduler_win)
-        moveWindowToCenter(xtream_win)
-        moveWindowToCenter(xtream_win_2)
-        moveWindowToCenter(archive_win)
-        moveWindowToCenter(playlists_win)
-        moveWindowToCenter(playlists_win_edit)
-        moveWindowToCenter(epg_select_win)
 
         def convert_time(times_1):
             yr = time.strftime('%Y', time.localtime())
@@ -1882,6 +1873,7 @@ if __name__ == '__main__':
             for prog_ids_0_dat in prog_ids_0:
                 esw_select.addItem(prog_ids_0_dat)
             esw_input_edit()
+            moveWindowToCenter(epg_select_win)
             epg_select_win.show()
 
         contrast_lbl = QtWidgets.QLabel("{}:".format(_('contrast')))
@@ -2726,6 +2718,7 @@ if __name__ == '__main__':
                 xtr_password_input.setText(sm3u_text_sp[2])
                 xtr_url_input.setText(sm3u_text_sp[3])
                 reset_prov()
+            moveWindowToCenter(xtream_win)
             xtream_win.show()
 
         def xtream_select_1():
@@ -2736,6 +2729,7 @@ if __name__ == '__main__':
                 xtr_password_input_2.setText(m3u_edit_1_text_sp[2])
                 xtr_url_input_2.setText(m3u_edit_1_text_sp[3])
                 reset_prov()
+            moveWindowToCenter(xtream_win_2)
             xtream_win_2.show()
 
         grid = QtWidgets.QGridLayout()
@@ -3090,6 +3084,7 @@ if __name__ == '__main__':
 
         def show_license():
             if not license_win.isVisible():
+                moveWindowToCenter(license_win)
                 license_win.show()
             else:
                 license_win.hide()
@@ -3187,6 +3182,7 @@ if __name__ == '__main__':
                 fail_version_msg.exec()
             checkupdates_btn.setEnabled(True)
             if not noWin:
+                moveWindowToCenter(help_win)
                 help_win.show()
                 help_win.raise_()
                 help_win.setFocus(QtCore.Qt.PopupFocusReason)
@@ -3271,18 +3267,21 @@ if __name__ == '__main__':
 
         def show_settings():
             if not settings_win.isVisible():
+                moveWindowToCenter(settings_win)
                 settings_win.show()
             else:
                 settings_win.hide()
 
         def show_help():
             if not help_win.isVisible():
+                moveWindowToCenter(help_win)
                 help_win.show()
             else:
                 help_win.hide()
 
         def show_sort():
             if not sort_win.isVisible():
+                moveWindowToCenter(sort_win)
                 sort_win.show()
             else:
                 sort_win.hide()
@@ -3293,6 +3292,7 @@ if __name__ == '__main__':
                 playlists_data.playlists_used = playlists_saved
                 for item2 in playlists_data.playlists_used:
                     playlists_list.addItem(item2)
+                moveWindowToCenter(playlists_win)
                 playlists_win.show()
             else:
                 playlists_win.hide()
@@ -3330,6 +3330,7 @@ if __name__ == '__main__':
                 epg_edit_1_settext("")
                 soffset_1.setValue(DEF_TIMEZONE)
                 playlists_data.oldName = ""
+                moveWindowToCenter(playlists_win_edit)
                 playlists_win_edit.show()
             else:
                 if currentItem_text:
@@ -3344,6 +3345,7 @@ if __name__ == '__main__':
                     epg_edit_1_settext(item_epg)
                     soffset_1.setValue(item_offset)
                     playlists_data.oldName = currentItem_text
+                    moveWindowToCenter(playlists_win_edit)
                     playlists_win_edit.show()
 
         def playlists_delete_do():
@@ -5012,6 +5014,7 @@ if __name__ == '__main__':
                 useragent_choose.setCurrentIndex(settings['useragent'])
                 group_text.setText('')
                 epgname_lbl.setText(_('default'))
+            moveWindowToCenter(chan_win)
             chan_win.show()
 
         def tvguide_favourites_add():
@@ -5023,6 +5026,7 @@ if __name__ == '__main__':
             btn_update.click()
 
         def open_external_player():
+            moveWindowToCenter(ext_win)
             ext_win.show()
 
         def tvguide_start_record():
@@ -6232,6 +6236,7 @@ if __name__ == '__main__':
             if archive_win.isVisible():
                 archive_win.hide()
             else:
+                moveWindowToCenter(archive_win)
                 archive_win.show()
 
         stopped = False
@@ -6440,6 +6445,7 @@ if __name__ == '__main__':
                 #        ), 'd.M.yyyy hh:mm'
                 #    )
                 #)
+                moveWindowToCenter(scheduler_win)
                 scheduler_win.show()
 
         def mpv_volume_set_custom():
