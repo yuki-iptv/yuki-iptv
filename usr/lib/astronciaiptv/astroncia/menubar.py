@@ -259,6 +259,12 @@ def init_menubar(data): # pylint: disable=too-many-statements
     )
     AstronciaData.streaminformationAction.setShortcut(kbd("open_stream_info"))
 
+    AstronciaData.showepgAction = qaction(_('tvguide'), data)
+    AstronciaData.showepgAction.triggered.connect(
+        lambda: AstronciaData.show_tvguide_2()
+    )
+    AstronciaData.showepgAction.setShortcut(kbd("show_tvguide_2"))
+
     AstronciaData.forceupdateepgAction = qaction(_('menubar_updateepg'), data)
     AstronciaData.forceupdateepgAction.triggered.connect(
         lambda: AstronciaData.force_update_epg()
@@ -397,6 +403,7 @@ def populate_menubar(i, menubar, data, track_list=None, playing_chan=None, get_k
     view_menu.addAction(AstronciaData.showhideplaylistAction)
     view_menu.addAction(AstronciaData.showhidectrlpanelAction)
     view_menu.addAction(AstronciaData.streaminformationAction)
+    view_menu.addAction(AstronciaData.showepgAction)
     view_menu.addAction(AstronciaData.forceupdateepgAction)
     view_menu.addSection(_('logs'))
     view_menu.addAction(AstronciaData.applogAction)
@@ -523,7 +530,8 @@ def init_menubar_player( # pylint: disable=too-many-arguments, too-many-locals
     show_exception,
     get_curwindow_pos,
     force_update_epg,
-    get_keybind
+    get_keybind,
+    show_tvguide_2
 ):
     for func in locals().items():
         setattr(AstronciaData, func[0], func[1])

@@ -1066,12 +1066,70 @@ if __name__ == '__main__':
         ext_win.setWindowTitle(_('openexternal'))
         ext_win.setWindowIcon(main_icon)
 
+        # epg_win
+
         epg_win = QtWidgets.QMainWindow()
         epg_win.resize(400, 600)
         epg_win.setWindowTitle(_('tvguide'))
         epg_win.setWindowIcon(main_icon)
-        tvguide_lbl_2 = ScrollLabel(epg_win)
-        tvguide_lbl_2.resize(395, 595)
+
+        tvguide_lbl_2 = ScrollLabel()
+        epg_win_widget = QtWidgets.QWidget()
+        epg_win_layout = QtWidgets.QVBoxLayout()
+        epg_win_layout.addWidget(tvguide_lbl_2)
+        epg_win_widget.setLayout(epg_win_layout)
+        epg_win.setCentralWidget(epg_win_widget)
+
+        # epg_win_2
+
+        epg_win_2 = QtWidgets.QMainWindow()
+        epg_win_2.resize(600, 600)
+        epg_win_2.setWindowTitle(_('tvguide'))
+        epg_win_2.setWindowIcon(main_icon)
+
+        def epg_win_2_checkbox_changed():
+            tvguide_lbl_3.setText(_('notvguideforchannel'))
+            try:
+                ch_3 = epg_win_2_checkbox.currentText()
+                ch_3_guide = update_tvguide(ch_3, True).replace('!@#$%^^&*(', '\n')
+                ch_3_guide = ch_3_guide.replace('\n', '<br>').replace('<br>', '', 1)
+                ch_3_guide = ch_3_guide.replace(
+                    '<span style="color: green;">', '<span style="color: red;">', 1
+                )
+                tvguide_lbl_3.setText(ch_3_guide)
+            except: # pylint: disable=bare-except
+                print_with_time("[WARNING] Exception in epg_win_2_checkbox_changed")
+
+        def showonlychplaylist_chk_clk():
+            update_tvguide_2()
+
+        showonlychplaylist_lbl = QtWidgets.QLabel()
+        showonlychplaylist_lbl.setText('{}:'.format(_('showonlychplaylist')))
+        showonlychplaylist_chk = QtWidgets.QCheckBox()
+        showonlychplaylist_chk.setChecked(True)
+        showonlychplaylist_chk.clicked.connect(showonlychplaylist_chk_clk)
+        epg_win_2_checkbox = QtWidgets.QComboBox()
+        epg_win_2_checkbox.currentIndexChanged.connect(epg_win_2_checkbox_changed)
+
+        epg_win_2_count = QtWidgets.QLabel()
+        epg_win_2_count.setAlignment(QtCore.Qt.AlignCenter)
+
+        epg_win_2_1_widget = QtWidgets.QWidget()
+        epg_win_2_1_layout = QtWidgets.QHBoxLayout()
+        epg_win_2_1_layout.addWidget(showonlychplaylist_lbl)
+        epg_win_2_1_layout.addWidget(showonlychplaylist_chk)
+        epg_win_2_1_widget.setLayout(epg_win_2_1_layout)
+
+        tvguide_lbl_3 = ScrollLabel()
+
+        epg_win_2_widget = QtWidgets.QWidget()
+        epg_win_2_layout = QtWidgets.QVBoxLayout()
+        epg_win_2_layout.addWidget(epg_win_2_1_widget)
+        epg_win_2_layout.addWidget(epg_win_2_checkbox)
+        epg_win_2_layout.addWidget(epg_win_2_count)
+        epg_win_2_layout.addWidget(tvguide_lbl_3)
+        epg_win_2_widget.setLayout(epg_win_2_layout)
+        epg_win_2.setCentralWidget(epg_win_2_widget)
 
         xtream_win = QtWidgets.QMainWindow()
         xtream_win.resize(400, 140)
@@ -3562,7 +3620,8 @@ if __name__ == '__main__':
                 show_exception,
                 get_curwindow_pos,
                 force_update_epg,
-                get_keybind
+                get_keybind,
+                show_tvguide_2
             )
 
             if settings["remembervol"] and os.path.isfile(str(Path(LOCAL_DIR, 'volume.json'))):
@@ -5508,6 +5567,24 @@ if __name__ == '__main__':
                     tvguide_lbl_2.setText('')
                     epg_win.hide()
 
+        def update_tvguide_2():
+            epg_win_2_checkbox.clear()
+            if showonlychplaylist_chk.isChecked():
+                for chan_0 in array:
+                    epg_win_2_count.setText('({}: {})'.format(_('channels'), len(array)))
+                    epg_win_2_checkbox.addItem(chan_0)
+            else:
+                for chan_0 in programmes:
+                    epg_win_2_count.setText('({}: {})'.format(_('channels'), len(programmes)))
+                    epg_win_2_checkbox.addItem(chan_0)
+
+        def show_tvguide_2():
+            if epg_win_2.isVisible():
+                epg_win_2.hide()
+            else:
+                update_tvguide_2()
+                epg_win_2.show()
+
         is_recording = False
         recording_time = 0
         record_file = None
@@ -7356,7 +7433,8 @@ if __name__ == '__main__':
             "(lambda: mpv_seek(60))": (lambda: mpv_seek(60)),
             "(lambda: mpv_seek(-600))": (lambda: mpv_seek(-600)),
             "(lambda: mpv_seek(600))": (lambda: mpv_seek(600)),
-            "lowpanel_ch_1": lowpanel_ch_1
+            "lowpanel_ch_1": lowpanel_ch_1,
+            "show_tvguide_2": show_tvguide_2
         }
 
         main_keybinds = {
@@ -7478,6 +7556,9 @@ if __name__ == '__main__':
             ],
             "showhideeverything": [
                 "Ctrl+C"
+            ],
+            "show_tvguide_2": [
+                QtCore.Qt.Key_J
             ]
         }
 
