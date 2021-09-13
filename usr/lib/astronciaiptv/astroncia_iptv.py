@@ -6538,6 +6538,7 @@ if __name__ == '__main__':
         myFont4 = QtGui.QFont()
         myFont4.setPointSize(12)
         label13 = QtWidgets.QLabel('')
+        label13.setMinimumWidth(50)
         label12.setFont(myFont4)
         myFont5 = QtGui.QFont()
         myFont5.setPointSize(12)
