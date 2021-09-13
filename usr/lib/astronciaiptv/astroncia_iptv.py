@@ -3530,7 +3530,6 @@ if __name__ == '__main__':
                 print_with_time("No HTTP referer set up")
             mpv_override_volume(100)
             player.loop = True
-            mpv_override_play(str(Path('astroncia', ICONS_FOLDER, 'main.png')))
 
             try:
                 populate_menubar(
@@ -6105,9 +6104,12 @@ if __name__ == '__main__':
 
         @idle_function
         def my_mouse_left_callback(arg11=None): # pylint: disable=unused-argument
-            global right_click_menu
+            global right_click_menu, fullscreen
             if right_click_menu.isVisible():
                 right_click_menu.hide()
+            else:
+                if os.path.isfile(str(Path(LOCAL_DIR, 'mouseleftsep.flag'))) and not fullscreen:
+                    key_t()
             move_window_drag()
 
         @idle_function
@@ -7712,6 +7714,7 @@ if __name__ == '__main__':
                 except: # pylint: disable=bare-except
                     pass
             read_expheight_json()
+            mpv_override_play(str(Path('astroncia', ICONS_FOLDER, 'main.png')))
             playLastChannel()
             restore_compact_state()
 
