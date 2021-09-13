@@ -5724,7 +5724,6 @@ if __name__ == '__main__':
         CLICKABLE_LINKS = [
             'https://gitlab.com/astroncia',
             'https://unixforum.org/viewtopic.php?f=3&t=151801',
-            'https://qiwi.com/n/ASTRONCIA',
             'https://fontawesome.com/',
             'https://creativecommons.org/licenses/by/4.0/'
         ]
