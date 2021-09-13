@@ -5631,6 +5631,7 @@ if __name__ == '__main__':
 
         def playLastChannel():
             global playing_url, playing_chan, combobox, m3u
+            isPlayingLast = False
             if os.path.isfile(str(Path(LOCAL_DIR, 'lastchannels.json'))) and \
             settings['openprevchan']:
                 try:
@@ -5640,6 +5641,7 @@ if __name__ == '__main__':
                     lastfile_1_dat = json.loads(lastfile_1.read())
                     lastfile_1.close()
                     if lastfile_1_dat[0] in m3u:
+                        isPlayingLast = True
                         player.user_agent = lastfile_1_dat[2]
                         setChanText('  ' + lastfile_1_dat[0])
                         itemClicked_event(lastfile_1_dat[0])
@@ -5655,6 +5657,7 @@ if __name__ == '__main__':
                 except: # pylint: disable=bare-except
                     if os.path.isfile(str(Path(LOCAL_DIR, 'lastchannels.json'))):
                         os.remove(str(Path(LOCAL_DIR, 'lastchannels.json')))
+            return isPlayingLast
 
         if os.name == 'nt':
             DIRECT3D = 'direct3d,'
@@ -7714,8 +7717,11 @@ if __name__ == '__main__':
                 except: # pylint: disable=bare-except
                     pass
             read_expheight_json()
-            mpv_override_play(str(Path('astroncia', ICONS_FOLDER, 'main.png')))
-            playLastChannel()
+            if not playLastChannel():
+                print_with_time("Show splash")
+                mpv_override_play(str(Path('astroncia', ICONS_FOLDER, 'main.png')))
+            else:
+                print_with_time("Playing last channel, splash turned off")
             restore_compact_state()
 
             ic, ic1, ic2 = 0, 0, 0
