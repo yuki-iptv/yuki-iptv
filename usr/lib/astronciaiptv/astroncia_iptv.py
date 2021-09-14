@@ -449,6 +449,7 @@ if __name__ == '__main__':
                 'exp2': DOCK_WIDGET_WIDTH,
                 'mouseswitchchannels': False,
                 'showplaylistmouse': True,
+                'hideplaylistleftclk': False,
                 'showcontrolsmouse': True,
                 'flpopacity': 0.7,
                 'panelposition': 0,
@@ -501,6 +502,8 @@ if __name__ == '__main__':
             settings['mouseswitchchannels'] = False
         if 'showplaylistmouse' not in settings:
             settings['showplaylistmouse'] = True
+        if 'hideplaylistleftclk' not in settings:
+            settings['hideplaylistleftclk'] = False
         if 'showcontrolsmouse' not in settings:
             settings['showcontrolsmouse'] = True
         if 'flpopacity' not in settings:
@@ -2477,6 +2480,7 @@ if __name__ == '__main__':
                 'exp2': exp2_input.value(),
                 'mouseswitchchannels': mouseswitchchannels_flag.isChecked(),
                 'showplaylistmouse': showplaylistmouse_flag.isChecked(),
+                'hideplaylistleftclk': hideplaylistleftclk_flag.isChecked(),
                 'showcontrolsmouse': showcontrolsmouse_flag.isChecked(),
                 'flpopacity': flpopacity_input.value(),
                 'panelposition': panelposition_choose.currentIndex(),
@@ -2855,6 +2859,10 @@ if __name__ == '__main__':
         showcontrolsmouse_flag = QtWidgets.QCheckBox()
         showcontrolsmouse_flag.setChecked(settings['showcontrolsmouse'])
 
+        hideplaylistleftclk_label = QtWidgets.QLabel("{}:".format(_('hideplaylistleftclk')))
+        hideplaylistleftclk_flag = QtWidgets.QCheckBox()
+        hideplaylistleftclk_flag.setChecked(settings['hideplaylistleftclk'])
+
         videoaspectdef_label = QtWidgets.QLabel("{}:".format(_('videoaspect')))
         zoomdef_label = QtWidgets.QLabel("{}:".format(_('zoom')))
         panscan_def_label = QtWidgets.QLabel("{}:".format(_('panscan')))
@@ -2951,6 +2959,8 @@ if __name__ == '__main__':
         tab4.layout.addWidget(volumechangestep_choose, 5, 1)
         tab4.layout.addWidget(screenshot_label, 6, 0)
         tab4.layout.addWidget(screenshot_choose, 6, 1)
+        tab4.layout.addWidget(hideplaylistleftclk_label, 7, 0)
+        tab4.layout.addWidget(hideplaylistleftclk_flag, 7, 1)
         tab4.setLayout(tab4.layout)
 
         tab5.layout = QtWidgets.QGridLayout()
@@ -6118,7 +6128,7 @@ if __name__ == '__main__':
             if right_click_menu.isVisible():
                 right_click_menu.hide()
             else:
-                if os.path.isfile(str(Path(LOCAL_DIR, 'mouseleftsep.flag'))) and not fullscreen:
+                if settings['hideplaylistleftclk'] and not fullscreen:
                     key_t()
             move_window_drag()
 
