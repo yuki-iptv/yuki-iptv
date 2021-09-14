@@ -916,6 +916,9 @@ msgstr "Показывать только каналы из плейлиста"
 msgid "channels"
 msgstr "каналов"
 
+msgid "hideplaylistleftclk"
+msgstr "Скрывать плейлист левым кликом"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, версия {}\n© kestral / astroncia < kestraly (at) gmail.com "
