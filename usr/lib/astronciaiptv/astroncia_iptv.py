@@ -6492,9 +6492,11 @@ if __name__ == '__main__':
         label6.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'volume.png'))))
         label6.setToolTip(_('volume'))
         label6.clicked.connect(mpv_mute)
+        LABEL7_SET_WIDTH = 150
         label7 = QtWidgets.QSlider(QtCore.Qt.Horizontal)
         label7.setMinimum(0)
         label7.setMaximum(200)
+        label7.setFixedWidth(LABEL7_SET_WIDTH)
         label7.valueChanged.connect(mpv_volume_set_custom)
         label7_1 = QtWidgets.QPushButton()
         label7_1.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'screenshot.png'))))
@@ -7174,7 +7176,7 @@ if __name__ == '__main__':
             global LABEL7_WIDTH
             if not LABEL7_WIDTH:
                 LABEL7_WIDTH = label7.width()
-            label7.setFixedWidth(150)
+            label7.setFixedWidth(LABEL7_SET_WIDTH)
             controlpanel_widget.setWindowOpacity(0.55)
             if channelfilter.usePopup:
                 controlpanel_widget.setWindowFlags(
