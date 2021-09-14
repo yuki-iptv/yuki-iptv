@@ -1,3 +1,10 @@
+astroncia-iptv (0.0.81) unstable; urgency=medium
+
+  * Minor bugfixes
+  * Add hide playlist by left click option
+
+ -- Astroncia <kestraly@gmail.com>  Tue, 14 Sep 2021 17:27:20 +0300
+
 astroncia-iptv (0.0.80) unstable; urgency=medium
 
   * Minor bugfixes
