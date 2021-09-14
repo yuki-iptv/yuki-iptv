@@ -4096,11 +4096,17 @@ if __name__ == '__main__':
         currentMaximized = win.isMaximized()
         currentDockWidgetPos = -1
 
+        isPlaylistVisible = False
+
         def dockWidget_out_clicked(): # pylint: disable=too-many-branches
             global fullscreen, l1, time_stop, currentWidthHeight, currentMaximized, \
-                currentDockWidgetPos
+                currentDockWidgetPos, isPlaylistVisible
             if not fullscreen:
                 # Entering fullscreen
+                if settings["playlistsep"]:
+                    isPlaylistVisible = sepplaylist_win.isVisible()
+                else:
+                    isPlaylistVisible = dockWidget.isVisible()
                 del_sep_flag()
                 if settings["playlistsep"]:
                     win.show()
@@ -4193,6 +4199,8 @@ if __name__ == '__main__':
                     moveWindowToCenter(win, True)
                 if settings['playlistsep'] and currentDockWidgetPos != -1:
                     comm_instance.moveSeparatePlaylist.emit(currentDockWidgetPos)
+                if not isPlaylistVisible:
+                    key_t()
                 if settings['panelposition'] == 1:
                     tvguide_close_lbl.move(
                         win.width() - tvguide_lbl.width() - 40,
