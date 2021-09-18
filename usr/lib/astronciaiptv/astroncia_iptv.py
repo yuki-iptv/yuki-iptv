@@ -7270,9 +7270,10 @@ if __name__ == '__main__':
                 settings_win.isActiveWindow()
 
         menubar_st = False
+        AstronciaData.playlist_state = sepplaylist_win.isVisible()
         def thread_shortcuts():
             global fullscreen, menubar_st, win_has_focus
-            try:
+            try: # pylint: disable=too-many-nested-blocks
                 if settings["playlistsep"]:
                     cur_has_focus = is_win_has_focus()
                     if cur_has_focus != win_has_focus:
@@ -7280,13 +7281,15 @@ if __name__ == '__main__':
                         #print_with_time("win_has_focus changed to {}".format(win_has_focus))
                         if win_has_focus:
                             if not fullscreen:
-                                sepplaylist_win.show()
+                                if AstronciaData.playlist_state:
+                                    sepplaylist_win.show()
                                 win.show()
                                 win.raise_()
                                 win.setFocus(QtCore.Qt.PopupFocusReason)
                                 win.activateWindow()
                         else:
                             if settings["playlistsep"]:
+                                AstronciaData.playlist_state = sepplaylist_win.isVisible()
                                 sepplaylist_win.hide()
             except: # pylint: disable=bare-except
                 pass
