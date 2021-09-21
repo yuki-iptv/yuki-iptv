@@ -5820,7 +5820,8 @@ if __name__ == '__main__':
                         win.menu_bar_qt.hide()
                     else:
                         AstronciaData.compact_mode = False
-                        dockWidget.show()
+                        if not settings["playlistsep"]:
+                            dockWidget.show()
                         dockWidget2.show()
                         win.menu_bar_qt.show()
 
@@ -7383,7 +7384,8 @@ if __name__ == '__main__':
                         dockWidget.hide()
                     else:
                         AstronciaData.playlist_hidden = False
-                        dockWidget.show()
+                        if not settings["playlistsep"]:
+                            dockWidget.show()
 
         def lowpanel_ch():
             if dockWidget2.isVisible():
