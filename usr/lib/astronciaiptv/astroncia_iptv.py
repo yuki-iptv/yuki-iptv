@@ -1030,10 +1030,14 @@ if __name__ == '__main__':
         def del_sep_flag():
             pass
 
+        def sepplaylist_resize_func(is_left, win_width): # pylint: disable=unused-argument
+            pass
+
         sepplaylist_win = ResizableWindow(
             sepPlaylist=True,
             add_sep_flag=add_sep_flag,
-            del_sep_flag=del_sep_flag
+            del_sep_flag=del_sep_flag,
+            resize_func=sepplaylist_resize_func
         )
         sepplaylist_win.callback = empty_function
         sepplaylist_win.callback_move = empty_function
@@ -4195,7 +4199,8 @@ if __name__ == '__main__':
                     if lbl3 not in show_lbls_fullscreen:
                         lbl3.show()
                 dockWidget2.show()
-                dockWidget.show()
+                if not settings["playlistsep"]:
+                    dockWidget.show()
                 chan.show()
                 win.update()
                 if not currentMaximized:
@@ -4288,6 +4293,8 @@ if __name__ == '__main__':
                     )
 
         dockWidget = QtWidgets.QDockWidget(win)
+        if settings["playlistsep"]:
+            dockWidget.hide()
         win.listWidget = QtWidgets.QListWidget()
 
         class ClickableLabel(QtWidgets.QLabel): # pylint: disable=too-few-public-methods
@@ -5429,8 +5436,7 @@ if __name__ == '__main__':
         dockWidget.setFixedWidth(DOCK_WIDGET_WIDTH)
         if not settings['playlistsep']:
             dockWidget.setTitleBarWidget(QtWidgets.QWidget())
-        dockWidget.setWidget(widget)
-        if not settings['playlistsep']:
+            dockWidget.setWidget(widget)
             dockWidget.setFloating(False)
             dockWidget.setFeatures(QtWidgets.QDockWidget.NoDockWidgetFeatures)
             if settings['panelposition'] == 0:
@@ -5438,7 +5444,7 @@ if __name__ == '__main__':
             else:
                 win.addDockWidget(QtCore.Qt.LeftDockWidgetArea, dockWidget)
         else:
-            sepplaylist_win.addDockWidget(QtCore.Qt.RightDockWidgetArea, dockWidget)
+            sepplaylist_win.setCentralWidget(widget)
             sepplaylist_win.show()
             seppl_data = False
             if os.path.isfile(str(Path(LOCAL_DIR, 'sepplheight.json'))):
@@ -7177,7 +7183,10 @@ if __name__ == '__main__':
 
         def hide_playlist():
             pl_layout.removeWidget(widget)
-            dockWidget.setWidget(widget)
+            if not settings['playlistsep']:
+                dockWidget.setWidget(widget)
+            else:
+                sepplaylist_win.setCentralWidget(widget)
             playlist_widget.hide()
 
         LABEL7_WIDTH = False
