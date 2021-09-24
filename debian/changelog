@@ -1,3 +1,9 @@
+astroncia-iptv (0.0.82) unstable; urgency=medium
+
+  * Add separate playlist width resize
+
+ -- Astroncia <kestraly@gmail.com>  Fri, 24 Sep 2021 20:11:25 +0300
+
 astroncia-iptv (0.0.81) unstable; urgency=medium
 
   * Minor bugfixes
