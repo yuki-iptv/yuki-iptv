@@ -3,6 +3,7 @@ Type=Application
 Name=Astroncia IPTV
 Comment=IPTV player
 Comment[ru]=IPTV плеер
+Comment[hr]=IPTV reproduktor
 Exec=astronciaiptv
 Icon=astronciaiptv
 Categories=AudioVideo;Video;Player;Recorder;TV;
