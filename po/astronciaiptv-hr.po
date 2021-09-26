@@ -144,7 +144,7 @@ msgid "selectwritefolder"
 msgstr "Odaberi mape za snimanje i slike zaslona"
 
 msgid "deinterlace"
-msgstr "Deinterlace"
+msgstr "Raspletanje"
 
 msgid "useragent"
 msgstr "Korisnički agent"
