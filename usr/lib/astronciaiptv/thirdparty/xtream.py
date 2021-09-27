@@ -22,9 +22,11 @@ from astroncia.time import print_with_time
 from typing import List
 import requests
 import time
+from os import name as osn
 from os import path as osp
 from os import makedirs
 from os import remove
+from pathlib import Path
 
 # Timing xtream json downloads
 from timeit import default_timer as timer, timeit
@@ -317,7 +319,10 @@ class XTream():
         
         # If the cache_path is still empty, use default
         if self.cache_path == "":
-            self.cache_path = osp.expanduser("~/.xtream-cache/")
+            if osn == 'nt':
+                self.cache_path = str(Path(osp.dirname(__file__), '..', '..', '..', 'local', 'xtream-cache'))
+            else:
+                self.cache_path = osp.expanduser("~/.xtream-cache/")
             if not osp.isdir(self.cache_path):
                 makedirs(self.cache_path, exist_ok=True)
 
