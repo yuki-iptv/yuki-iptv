@@ -915,6 +915,9 @@ msgstr "channels"
 msgid "hideplaylistleftclk"
 msgstr "Hide playlist by left click"
 
+msgid "styleredefoff"
+msgstr "Disable styles redefinition"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, version {}\n© kestral / astroncia < kestraly (at) gmail.com "
