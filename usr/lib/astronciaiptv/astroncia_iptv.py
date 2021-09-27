@@ -194,6 +194,11 @@ if 'HOME' in os.environ and os.path.isdir(os.environ['HOME']):
     except: # pylint: disable=bare-except
         pass
     try:
+        if not os.path.isdir(str(Path(os.environ['HOME'], '.cache'))):
+            os.mkdir(str(Path(os.environ['HOME'], '.cache')))
+    except: # pylint: disable=bare-except
+        pass
+    try:
         if os.path.isdir(str(Path(os.environ['HOME'], '.AstronciaIPTV'))):
             os.rename(
                 str(Path(os.environ['HOME'], '.AstronciaIPTV')),
