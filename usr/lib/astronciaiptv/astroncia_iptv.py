@@ -807,7 +807,7 @@ if __name__ == '__main__':
                         xtream_username,
                         xtream_password,
                         xtream_url,
-                        str(Path(LOCAL_DIR, 'xtream'))
+                        ''
                     )
                     if xt.auth_data != {}:
                         xt.load_iptv()
