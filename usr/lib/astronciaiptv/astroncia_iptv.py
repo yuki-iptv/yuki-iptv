@@ -318,10 +318,25 @@ if __name__ == '__main__':
     print_with_time("Qt init")
     print_with_time("")
     app = QtWidgets.QApplication(sys.argv)
+
+    setAppFusion = True
     try:
-        app.setStyle("fusion")
+        if os.path.isfile(str(Path(LOCAL_DIR, 'settings.json'))):
+            with open(str(Path(LOCAL_DIR, 'settings.json')), 'r', encoding="utf8") as settings_tmp:
+                settings_tmp_json = json.loads(settings_tmp.read())
+                if 'styleredefoff' in settings_tmp_json:
+                    setAppFusion = settings_tmp_json['styleredefoff']
     except: # pylint: disable=bare-except
-        print_with_time('app.setStyle("fusion") failed')
+        print_with_time("WARNING: failed to read settings.json")
+
+    try:
+        if setAppFusion:
+            app.setStyle("fusion")
+            print_with_time('app.setStyle("fusion") OK')
+        else:
+            print_with_time("fusion style turned OFF")
+    except: # pylint: disable=bare-except
+        print_with_time('[WARNING] app.setStyle("fusion") FAILED')
 
     # This is necessary since PyQT stomps over the locale settings needed by libmpv.
     # This needs to happen after importing PyQT before creating the first mpv.MPV instance.
@@ -444,6 +459,7 @@ if __name__ == '__main__':
                 'hideepgpercentage': False,
                 'hidebitrateinfo': False,
                 'movedragging': False,
+                'styleredefoff': True,
                 'volumechangestep': 1,
                 'themecompat': False,
                 'exp2': DOCK_WIDGET_WIDTH,
@@ -492,6 +508,8 @@ if __name__ == '__main__':
             settings['hidebitrateinfo'] = False
         if 'movedragging' not in settings:
             settings['movedragging'] = False
+        if 'styleredefoff' not in settings:
+            settings['styleredefoff'] = True
         if 'volumechangestep' not in settings:
             settings['volumechangestep'] = 1
         if 'themecompat' not in settings:
@@ -2479,6 +2497,7 @@ if __name__ == '__main__':
                 'hideepgpercentage': hideepgpercentage_flag.isChecked(),
                 'hidebitrateinfo': hidebitrateinfo_flag.isChecked(),
                 'movedragging': movedragging_flag.isChecked(),
+                'styleredefoff': styleredefoff_flag.isChecked(),
                 'volumechangestep': volumechangestep_choose.value(),
                 'themecompat': themecompat_flag.isChecked(),
                 'exp2': exp2_input.value(),
@@ -2776,6 +2795,7 @@ if __name__ == '__main__':
         hideepgpercentage_label = QtWidgets.QLabel("{}:".format(_('hideepgpercentage')))
         hidebitrateinfo_label = QtWidgets.QLabel("{}:".format(_('hidebitrateinfo')))
         movedragging_label = QtWidgets.QLabel("{}:".format(_('movedragging')))
+        styleredefoff_label = QtWidgets.QLabel("{}:".format(_('styleredefoff')))
         volumechangestep_label = QtWidgets.QLabel("{}:".format(_('volumechangestep')))
         channels_label = QtWidgets.QLabel("{}:".format(_('channelsonpage')))
         channels_box = QtWidgets.QSpinBox()
@@ -2809,6 +2829,9 @@ if __name__ == '__main__':
 
         movedragging_flag = QtWidgets.QCheckBox()
         movedragging_flag.setChecked(settings['movedragging'])
+
+        styleredefoff_flag = QtWidgets.QCheckBox()
+        styleredefoff_flag.setChecked(settings['styleredefoff'])
 
         themecompat_label = QtWidgets.QLabel("{}:".format(_('themecompat')))
         themecompat_flag = QtWidgets.QCheckBox()
@@ -2988,6 +3011,8 @@ if __name__ == '__main__':
         tab5.layout.addWidget(hidebitrateinfo_flag, 6, 1)
         tab5.layout.addWidget(movedragging_label, 7, 0)
         tab5.layout.addWidget(movedragging_flag, 7, 1)
+        tab5.layout.addWidget(styleredefoff_label, 8, 0)
+        tab5.layout.addWidget(styleredefoff_flag, 8, 1)
         #tab5.layout.addWidget(QtWidgets.QLabel(), 8, 0)
         tab5.setLayout(tab5.layout)
 
