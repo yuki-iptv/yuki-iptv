@@ -327,7 +327,7 @@ if __name__ == '__main__':
                 if 'styleredefoff' in settings_tmp_json:
                     setAppFusion = settings_tmp_json['styleredefoff']
     except: # pylint: disable=bare-except
-        print_with_time("WARNING: failed to read settings.json")
+        print_with_time("[WARNING] failed to read settings.json")
 
     try:
         if setAppFusion:

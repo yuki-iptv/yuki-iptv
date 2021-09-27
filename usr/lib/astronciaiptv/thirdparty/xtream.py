@@ -314,15 +314,15 @@ class XTream():
         if self.cache_path != "":
             # If the cache_path is not a directory, clear it
             if not osp.isdir(self.cache_path):
-                print_with_time("Cache Path is not a directory, using default '~/.xtream-cache/'")
+                print_with_time("Cache Path is not a directory, using default '~/.astroncia-xtream-cache/'")
                 self.cache_path == ""
         
         # If the cache_path is still empty, use default
         if self.cache_path == "":
             if osn == 'nt':
-                self.cache_path = str(Path(osp.dirname(__file__), '..', '..', '..', 'local', 'xtream-cache'))
+                self.cache_path = str(Path(osp.dirname(__file__), '..', '..', '..', 'local', 'astroncia-xtream-cache'))
             else:
-                self.cache_path = osp.expanduser("~/.xtream-cache/")
+                self.cache_path = osp.expanduser("~/.astroncia-xtream-cache/")
             if not osp.isdir(self.cache_path):
                 makedirs(self.cache_path, exist_ok=True)
 
