@@ -176,6 +176,11 @@ parser.add_argument(
     help='Do not output to console'
 )
 parser.add_argument(
+    '--debug',
+    action='store_true',
+    help='More debugging output'
+)
+parser.add_argument(
     'URL',
     help='Playlist URL or file',
     nargs='?'
@@ -816,7 +821,7 @@ if __name__ == '__main__':
                     except: # pylint: disable=bare-except
                         print_with_time("XTream init failure")
                         xt = EmptyClass()
-                        xt.auth_data = {}
+                        xt.auth_data = {} # pylint: disable=attribute-defined-outside-init
                     if xt.auth_data != {}:
                         xt.load_iptv()
                         try:
@@ -6174,7 +6179,10 @@ if __name__ == '__main__':
                 right_click_menu.hide()
             else:
                 if settings['hideplaylistleftclk'] and not fullscreen:
-                    key_t()
+                    if AstronciaData.fcstate:
+                        key_t()
+                    else:
+                        AstronciaData.fcstate = True
             move_window_drag()
 
         @idle_function
@@ -7319,14 +7327,16 @@ if __name__ == '__main__':
 
         menubar_st = False
         AstronciaData.playlist_state = sepplaylist_win.isVisible()
-        def thread_shortcuts():
+        AstronciaData.fcstate = True
+        def thread_shortcuts(): # pylint: disable=too-many-branches
             global fullscreen, menubar_st, win_has_focus
             try: # pylint: disable=too-many-nested-blocks
                 if settings["playlistsep"]:
                     cur_has_focus = is_win_has_focus()
                     if cur_has_focus != win_has_focus:
                         win_has_focus = cur_has_focus
-                        #print_with_time("win_has_focus changed to {}".format(win_has_focus))
+                        if args1.debug:
+                            print_with_time("win_has_focus changed to {}".format(win_has_focus))
                         if win_has_focus:
                             if not fullscreen:
                                 if AstronciaData.playlist_state:
@@ -7338,6 +7348,8 @@ if __name__ == '__main__':
                         else:
                             if settings["playlistsep"]:
                                 AstronciaData.playlist_state = sepplaylist_win.isVisible()
+                                if not AstronciaData.playlist_state:
+                                    AstronciaData.fcstate = False
                                 sepplaylist_win.hide()
             except: # pylint: disable=bare-except
                 pass
