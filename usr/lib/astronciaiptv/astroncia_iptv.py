@@ -773,6 +773,9 @@ if __name__ == '__main__':
         array = {}
         groups = []
 
+        class EmptyClass: # pylint: disable=too-few-public-methods
+            pass
+
         doSaveSettings = False
 
         use_cache = settings['m3u'].startswith('http://') or settings['m3u'].startswith('https://')
@@ -802,13 +805,18 @@ if __name__ == '__main__':
                     xtream_url = xtream_split[3]
                     if not os.path.isdir(str(Path(LOCAL_DIR, 'xtream'))):
                         os.mkdir(str(Path(LOCAL_DIR, 'xtream')))
-                    xt = XTream(
-                        xtream_sha512,
-                        xtream_username,
-                        xtream_password,
-                        xtream_url,
-                        ''
-                    )
+                    try:
+                        xt = XTream(
+                            xtream_sha512,
+                            xtream_username,
+                            xtream_password,
+                            xtream_url,
+                            ''
+                        )
+                    except: # pylint: disable=bare-except
+                        print_with_time("XTream init failure")
+                        xt = EmptyClass()
+                        xt.auth_data = {}
                     if xt.auth_data != {}:
                         xt.load_iptv()
                         try:
