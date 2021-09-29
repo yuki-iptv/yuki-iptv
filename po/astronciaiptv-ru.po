@@ -928,6 +928,9 @@ msgstr "Окно всегда наверху"
 msgid "expfunctionwarning"
 msgstr "ВНИМАНИЕ: экспериментальная функция, работает с проблемами"
 
+msgid "menubar_expfunction"
+msgstr "экспериментальная функция"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, версия {}\n© kestral / astroncia < kestraly (at) gmail.com "
