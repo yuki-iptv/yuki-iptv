@@ -922,6 +922,9 @@ msgstr "Скрывать плейлист левым кликом"
 msgid "styleredefoff"
 msgstr "Отключить переопределение стилей"
 
+msgid "alwaysontop"
+msgstr "Окно всегда наверху"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, версия {}\n© kestral / astroncia < kestraly (at) gmail.com "
