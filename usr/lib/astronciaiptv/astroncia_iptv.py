@@ -464,6 +464,7 @@ if __name__ == '__main__':
                 'channelsonpage': 100,
                 'openprevchan': False,
                 'remembervol': True,
+                'alwaysontop': False,
                 'hidempv': False,
                 'chaniconsfromepg': True,
                 'hideepgpercentage': False,
@@ -508,6 +509,8 @@ if __name__ == '__main__':
             settings['openprevchan'] = False
         if 'remembervol' not in settings:
             settings['remembervol'] = True
+        if 'alwaysontop' not in settings:
+            settings['alwaysontop'] = False
         if 'hidempv' not in settings:
             settings['hidempv'] = False
         if 'chaniconsfromepg' not in settings:
@@ -2510,6 +2513,7 @@ if __name__ == '__main__':
                 'channelsonpage': channels_box.value(),
                 'openprevchan': openprevchan_flag.isChecked(),
                 'remembervol': remembervol_flag.isChecked(),
+                'alwaysontop': alwaysontop_flag.isChecked(),
                 'hidempv': hidempv_flag.isChecked(),
                 'chaniconsfromepg': chaniconsfromepg_flag.isChecked(),
                 'hideepgpercentage': hideepgpercentage_flag.isChecked(),
@@ -2808,6 +2812,8 @@ if __name__ == '__main__':
         gui_label = QtWidgets.QLabel("{}:".format(_('epg_gui')))
         openprevchan_label = QtWidgets.QLabel("{}:".format(_('openprevchan')))
         remembervol_label = QtWidgets.QLabel("{}:".format(_('remembervol')))
+        alwaysontop_label = QtWidgets.QLabel("{}:".format(_('alwaysontop')))
+        alwaysontop_label.setStyleSheet('color: #8d8f29')
         hidempv_label = QtWidgets.QLabel("{}:".format(_('hidempv')))
         chaniconsfromepg_label = QtWidgets.QLabel("{}:".format(_('chaniconsfromepg')))
         hideepgpercentage_label = QtWidgets.QLabel("{}:".format(_('hideepgpercentage')))
@@ -2833,6 +2839,9 @@ if __name__ == '__main__':
         remembervol_flag = QtWidgets.QCheckBox()
         remembervol_flag.setChecked(settings['remembervol'])
 
+        alwaysontop_flag = QtWidgets.QCheckBox()
+        alwaysontop_flag.setChecked(settings['alwaysontop'])
+
         hidempv_flag = QtWidgets.QCheckBox()
         hidempv_flag.setChecked(settings['hidempv'])
 
@@ -2854,6 +2863,9 @@ if __name__ == '__main__':
         themecompat_label = QtWidgets.QLabel("{}:".format(_('themecompat')))
         themecompat_flag = QtWidgets.QCheckBox()
         themecompat_flag.setChecked(settings['themecompat'])
+
+        alwaysontop_label.setToolTip(_('expfunctionwarning'))
+        alwaysontop_flag.setToolTip(_('expfunctionwarning'))
 
         exp_warning = QtWidgets.QLabel(_('expwarning'))
         exp_warning.setStyleSheet('color:red')
@@ -3006,6 +3018,8 @@ if __name__ == '__main__':
         tab4.layout.addWidget(screenshot_choose, 6, 1)
         tab4.layout.addWidget(hideplaylistleftclk_label, 7, 0)
         tab4.layout.addWidget(hideplaylistleftclk_flag, 7, 1)
+        tab4.layout.addWidget(alwaysontop_label, 8, 0)
+        tab4.layout.addWidget(alwaysontop_flag, 8, 1)
         tab4.setLayout(tab4.layout)
 
         tab5.layout = QtWidgets.QGridLayout()
@@ -4148,6 +4162,15 @@ if __name__ == '__main__':
             global fullscreen
             if fullscreen:
                 mpv_fullscreen()
+
+        winFlags = win.windowFlags()
+
+        # Always on top
+        if settings["alwaysontop"]:
+            print_with_time("Always on top enabled")
+            win.setWindowFlags(winFlags | QtCore.Qt.WindowStaysOnTopHint)
+        else:
+            print_with_time("Always on top disabled")
 
         currentWidthHeight = [win.width(), win.height()]
         currentMaximized = win.isMaximized()
@@ -7325,6 +7348,28 @@ if __name__ == '__main__':
                 m3u_editor.isActiveWindow() or \
                 settings_win.isActiveWindow()
 
+        def is_other_wins_has_focus():
+            return sepplaylist_win.isActiveWindow() or \
+                help_win.isActiveWindow() or \
+                selplaylist_win.isActiveWindow() or \
+                streaminfo_win.isActiveWindow() or \
+                license_win.isActiveWindow() or \
+                sort_win.isActiveWindow() or \
+                chan_win.isActiveWindow() or \
+                ext_win.isActiveWindow() or \
+                scheduler_win.isActiveWindow() or \
+                xtream_win.isActiveWindow() or \
+                xtream_win_2.isActiveWindow() or \
+                archive_win.isActiveWindow() or \
+                playlists_win.isActiveWindow() or \
+                playlists_win_edit.isActiveWindow() or \
+                epg_select_win.isActiveWindow() or \
+                tvguide_many_win.isActiveWindow() or \
+                applog_win.isActiveWindow() or \
+                mpvlog_win.isActiveWindow() or \
+                m3u_editor.isActiveWindow() or \
+                settings_win.isActiveWindow()
+
         menubar_st = False
         AstronciaData.playlist_state = sepplaylist_win.isVisible()
         AstronciaData.fcstate = True
@@ -7362,6 +7407,26 @@ if __name__ == '__main__':
                             setShortcutState(False)
                         else:
                             setShortcutState(True)
+            except: # pylint: disable=bare-except
+                pass
+
+        isowhf_status = -2
+
+        def thread_alwaysontop(): # fix that
+            global isowhf_status
+            try:
+                if settings["alwaysontop"]:
+                    isowhf_status_new = is_other_wins_has_focus()
+                    if isowhf_status != isowhf_status_new:
+                        isowhf_status = isowhf_status_new
+                        if isowhf_status:
+                            win.setWindowFlags(winFlags & ~QtCore.Qt.WindowStaysOnTopHint)
+                            if args1.debug:
+                                print_with_time("is_other_wins_has_focus changed to True")
+                        else:
+                            win.setWindowFlags(winFlags | QtCore.Qt.WindowStaysOnTopHint)
+                            if args1.debug:
+                                print_with_time("is_other_wins_has_focus changed to False")
             except: # pylint: disable=bare-except
                 pass
 
@@ -7812,6 +7877,7 @@ if __name__ == '__main__':
             timers_array = {}
             timers = {
                 thread_shortcuts: 25,
+                #thread_alwaysontop: 25,
                 thread_mouse: 50,
                 thread_cursor: 50,
                 thread_applog: 50,
