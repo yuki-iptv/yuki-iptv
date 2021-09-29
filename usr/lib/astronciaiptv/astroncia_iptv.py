@@ -4177,12 +4177,14 @@ if __name__ == '__main__':
         currentDockWidgetPos = -1
 
         isPlaylistVisible = False
+        isControlPanelVisible = False
 
         def dockWidget_out_clicked(): # pylint: disable=too-many-branches
             global fullscreen, l1, time_stop, currentWidthHeight, currentMaximized, \
-                currentDockWidgetPos, isPlaylistVisible
+                currentDockWidgetPos, isPlaylistVisible, isControlPanelVisible
             if not fullscreen:
                 # Entering fullscreen
+                isControlPanelVisible = dockWidget2.isVisible()
                 if settings["playlistsep"]:
                     isPlaylistVisible = sepplaylist_win.isVisible()
                 else:
@@ -4289,6 +4291,10 @@ if __name__ == '__main__':
                     )
                 centerwidget(loading1)
                 centerwidget(loading2, 50)
+                if isControlPanelVisible:
+                    dockWidget2.show()
+                else:
+                    dockWidget2.hide()
 
         dockWidget_out = QtWidgets.QPushButton()
         dockWidget_out.clicked.connect(dockWidget_out_clicked)
