@@ -921,6 +921,9 @@ msgstr "Disable styles redefinition"
 msgid "alwaysontop"
 msgstr "Window always on top"
 
+msgid "expfunctionwarning"
+msgstr "WARNING: experimental function, working with problems"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, version {}\n© kestral / astroncia < kestraly (at) gmail.com "

@@ -925,6 +925,9 @@ msgstr "Отключить переопределение стилей"
 msgid "alwaysontop"
 msgstr "Окно всегда наверху"
 
+msgid "expfunctionwarning"
+msgstr "ВНИМАНИЕ: экспериментальная функция, работает с проблемами"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, версия {}\n© kestral / astroncia < kestraly (at) gmail.com "
