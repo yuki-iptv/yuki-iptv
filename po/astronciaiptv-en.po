@@ -927,6 +927,9 @@ msgstr "WARNING: experimental function, working with problems"
 msgid "menubar_expfunction"
 msgstr "experimental function"
 
+msgid "autoreconnection"
+msgstr "Automatic reconnection"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, version {}\n© kestral / astroncia < kestraly (at) gmail.com "

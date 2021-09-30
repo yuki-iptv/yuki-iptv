@@ -931,6 +931,9 @@ msgstr "ВНИМАНИЕ: экспериментальная функция, р�
 msgid "menubar_expfunction"
 msgstr "экспериментальная функция"
 
+msgid "autoreconnection"
+msgstr "Автоматическое переподключение"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, версия {}\n© kestral / astroncia < kestraly (at) gmail.com "
