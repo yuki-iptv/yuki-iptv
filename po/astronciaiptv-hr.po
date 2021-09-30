@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-14 14:18+0000\n"
-"PO-Revision-Date: 2021-09-26 10:56+0200\n"
+"POT-Creation-Date: 2021-09-30 02:53+0000\n"
+"PO-Revision-Date: 2021-09-30 17:00+0200\n"
 "Last-Translator: gogo <trebelnik2@gmail.com>\n"
 "Language-Team: Croatian <kde-i18n-doc@kde.org>\n"
 "Language: hr\n"
@@ -976,6 +976,21 @@ msgstr "programi"
 
 msgid "hideplaylistleftclk"
 msgstr "Sakrij popis izvođenja lijevim klikom"
+
+msgid "styleredefoff"
+msgstr "Omogući redefiniranje izgleda"
+
+msgid "alwaysontop"
+msgstr "Uvijek na vrhu"
+
+msgid "expfunctionwarning"
+msgstr "UPOZORENJE: eksperimentalna funkcija, radi s problemima"
+
+msgid "menubar_expfunction"
+msgstr "eksperimentalna funkcija"
+
+msgid "autoreconnection"
+msgstr "Automatsko ponovno povezivanje"
 
 msgid "helptext"
 msgstr ""
