@@ -920,7 +920,7 @@ msgid "hideplaylistleftclk"
 msgstr "Скрывать плейлист левым кликом"
 
 msgid "styleredefoff"
-msgstr "Отключить переопределение стилей"
+msgstr "Включить переопределение стилей"
 
 msgid "alwaysontop"
 msgstr "Окно всегда наверху"

@@ -916,7 +916,7 @@ msgid "hideplaylistleftclk"
 msgstr "Hide playlist by left click"
 
 msgid "styleredefoff"
-msgstr "Disable styles redefinition"
+msgstr "Enable styles redefinition"
 
 msgid "alwaysontop"
 msgstr "Window always on top"
