@@ -464,7 +464,6 @@ if __name__ == '__main__':
                 'channelsonpage': 100,
                 'openprevchan': False,
                 'remembervol': True,
-                'alwaysontop': False,
                 'hidempv': False,
                 'chaniconsfromepg': True,
                 'hideepgpercentage': False,
@@ -509,8 +508,6 @@ if __name__ == '__main__':
             settings['openprevchan'] = False
         if 'remembervol' not in settings:
             settings['remembervol'] = True
-        if 'alwaysontop' not in settings:
-            settings['alwaysontop'] = False
         if 'hidempv' not in settings:
             settings['hidempv'] = False
         if 'chaniconsfromepg' not in settings:
@@ -2513,7 +2510,6 @@ if __name__ == '__main__':
                 'channelsonpage': channels_box.value(),
                 'openprevchan': openprevchan_flag.isChecked(),
                 'remembervol': remembervol_flag.isChecked(),
-                'alwaysontop': alwaysontop_flag.isChecked(),
                 'hidempv': hidempv_flag.isChecked(),
                 'chaniconsfromepg': chaniconsfromepg_flag.isChecked(),
                 'hideepgpercentage': hideepgpercentage_flag.isChecked(),
@@ -2812,8 +2808,6 @@ if __name__ == '__main__':
         gui_label = QtWidgets.QLabel("{}:".format(_('epg_gui')))
         openprevchan_label = QtWidgets.QLabel("{}:".format(_('openprevchan')))
         remembervol_label = QtWidgets.QLabel("{}:".format(_('remembervol')))
-        alwaysontop_label = QtWidgets.QLabel("{}:".format(_('alwaysontop')))
-        alwaysontop_label.setStyleSheet('color: #8d8f29')
         hidempv_label = QtWidgets.QLabel("{}:".format(_('hidempv')))
         chaniconsfromepg_label = QtWidgets.QLabel("{}:".format(_('chaniconsfromepg')))
         hideepgpercentage_label = QtWidgets.QLabel("{}:".format(_('hideepgpercentage')))
@@ -2839,9 +2833,6 @@ if __name__ == '__main__':
         remembervol_flag = QtWidgets.QCheckBox()
         remembervol_flag.setChecked(settings['remembervol'])
 
-        alwaysontop_flag = QtWidgets.QCheckBox()
-        alwaysontop_flag.setChecked(settings['alwaysontop'])
-
         hidempv_flag = QtWidgets.QCheckBox()
         hidempv_flag.setChecked(settings['hidempv'])
 
@@ -2863,9 +2854,6 @@ if __name__ == '__main__':
         themecompat_label = QtWidgets.QLabel("{}:".format(_('themecompat')))
         themecompat_flag = QtWidgets.QCheckBox()
         themecompat_flag.setChecked(settings['themecompat'])
-
-        alwaysontop_label.setToolTip(_('expfunctionwarning'))
-        alwaysontop_flag.setToolTip(_('expfunctionwarning'))
 
         exp_warning = QtWidgets.QLabel(_('expwarning'))
         exp_warning.setStyleSheet('color:red')
@@ -3018,8 +3006,6 @@ if __name__ == '__main__':
         tab4.layout.addWidget(screenshot_choose, 6, 1)
         tab4.layout.addWidget(hideplaylistleftclk_label, 7, 0)
         tab4.layout.addWidget(hideplaylistleftclk_flag, 7, 1)
-        tab4.layout.addWidget(alwaysontop_label, 8, 0)
-        tab4.layout.addWidget(alwaysontop_flag, 8, 1)
         tab4.setLayout(tab4.layout)
 
         tab5.layout = QtWidgets.QGridLayout()
@@ -3693,7 +3679,10 @@ if __name__ == '__main__':
                 get_curwindow_pos,
                 force_update_epg,
                 get_keybind,
-                show_tvguide_2
+                show_tvguide_2,
+                enable_always_on_top,
+                disable_always_on_top,
+                str(Path(LOCAL_DIR, 'alwaysontop.json'))
             )
 
             if settings["remembervol"] and os.path.isfile(str(Path(LOCAL_DIR, 'volume.json'))):
@@ -4163,12 +4152,35 @@ if __name__ == '__main__':
             if fullscreen:
                 mpv_fullscreen()
 
-        winFlags = win.windowFlags()
+        @idle_function
+        def enable_always_on_top(arg11=None): # pylint: disable=unused-argument
+            win.setWindowFlags(win.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
+            win.show()
+            win.raise_()
+            win.setFocus(QtCore.Qt.PopupFocusReason)
+            win.activateWindow()
+
+        @idle_function
+        def disable_always_on_top(arg11=None): # pylint: disable=unused-argument
+            win.setWindowFlags(win.windowFlags() & ~QtCore.Qt.WindowStaysOnTopHint)
+            win.show()
+            win.raise_()
+            win.setFocus(QtCore.Qt.PopupFocusReason)
+            win.activateWindow()
 
         # Always on top
-        if settings["alwaysontop"]:
+        is_aot = False
+        if os.path.isfile(str(Path(LOCAL_DIR, 'alwaysontop.json'))):
+            try:
+                aot_f1 = open(str(Path(LOCAL_DIR, 'alwaysontop.json')), 'r', encoding='utf-8')
+                aot_f1_data = json.loads(aot_f1.read())["alwaysontop"]
+                aot_f1.close()
+                is_aot = aot_f1_data
+            except: # pylint: disable=bare-except
+                pass
+        if is_aot:
             print_with_time("Always on top enabled")
-            win.setWindowFlags(winFlags | QtCore.Qt.WindowStaysOnTopHint)
+            enable_always_on_top()
         else:
             print_with_time("Always on top disabled")
 
@@ -6170,7 +6182,8 @@ if __name__ == '__main__':
                     player.track_list,
                     playing_chan,
                     settings["m3u"],
-                    str(Path(LOCAL_DIR, 'menubar.json'))
+                    str(Path(LOCAL_DIR, 'menubar.json')),
+                    str(Path(LOCAL_DIR, 'alwaysontop.json'))
                 )
             except: # pylint: disable=bare-except
                 print_with_time("WARNING: redraw_menubar failed")
@@ -7416,26 +7429,6 @@ if __name__ == '__main__':
             except: # pylint: disable=bare-except
                 pass
 
-        isowhf_status = -2
-
-        def thread_alwaysontop(): # fix that
-            global isowhf_status
-            try:
-                if settings["alwaysontop"]:
-                    isowhf_status_new = is_other_wins_has_focus()
-                    if isowhf_status != isowhf_status_new:
-                        isowhf_status = isowhf_status_new
-                        if isowhf_status:
-                            win.setWindowFlags(winFlags & ~QtCore.Qt.WindowStaysOnTopHint)
-                            if args1.debug:
-                                print_with_time("is_other_wins_has_focus changed to True")
-                        else:
-                            win.setWindowFlags(winFlags | QtCore.Qt.WindowStaysOnTopHint)
-                            if args1.debug:
-                                print_with_time("is_other_wins_has_focus changed to False")
-            except: # pylint: disable=bare-except
-                pass
-
         def thread_mouse(): # pylint: disable=too-many-branches
             try:
                 player['cursor-autohide'] = 1000
@@ -7883,7 +7876,6 @@ if __name__ == '__main__':
             timers_array = {}
             timers = {
                 thread_shortcuts: 25,
-                #thread_alwaysontop: 25,
                 thread_mouse: 50,
                 thread_cursor: 50,
                 thread_applog: 50,

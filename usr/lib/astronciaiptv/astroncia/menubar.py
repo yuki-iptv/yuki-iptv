@@ -18,6 +18,7 @@ Copyright (C) 2021 Astroncia
     You should have received a copy of the GNU General Public License
     along with Astroncia IPTV.  If not, see <https://www.gnu.org/licenses/>.
 '''
+import os
 import json
 import traceback
 from functools import partial
@@ -29,6 +30,7 @@ qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
 class AstronciaData: # pylint: disable=too-few-public-methods
     menubar_ready = False
     first_run = False
+    first_run1 = False
     menubars = {}
     data = {}
     cur_vf_filters = []
@@ -103,6 +105,22 @@ def qkeysequence(seq):
 
 def kbd(k_1):
     return qkeysequence(AstronciaData.get_keybind(k_1))
+
+def alwaysontop_action():
+    try:
+        aot_f = open(AstronciaData.aot_file, 'w', encoding='utf-8')
+        aot_f.write(json.dumps({
+            "alwaysontop": AstronciaData.alwaysontopAction.isChecked()
+        }))
+        aot_f.close()
+    except: # pylint: disable=bare-except
+        pass
+    if AstronciaData.alwaysontopAction.isChecked():
+        print_with_time("Always on top enabled now")
+        AstronciaData.enable_always_on_top()
+    else:
+        print_with_time("Always on top disabled now")
+        AstronciaData.disable_always_on_top()
 
 def init_menubar(data): # pylint: disable=too-many-statements
     # File
@@ -253,6 +271,10 @@ def init_menubar(data): # pylint: disable=too-many-statements
     AstronciaData.showhidectrlpanelAction.triggered.connect(lambda: AstronciaData.lowpanel_ch_1())
     AstronciaData.showhidectrlpanelAction.setShortcut(kbd("lowpanel_ch_1"))
 
+    AstronciaData.alwaysontopAction = qaction(_('alwaysontop'), data)
+    AstronciaData.alwaysontopAction.triggered.connect(alwaysontop_action)
+    AstronciaData.alwaysontopAction.setCheckable(True)
+
     AstronciaData.streaminformationAction = qaction(_('Stream Information'), data)
     AstronciaData.streaminformationAction.triggered.connect(
         lambda: AstronciaData.open_stream_info()
@@ -326,7 +348,10 @@ def init_menubar(data): # pylint: disable=too-many-statements
             partial(apply_vf_filter, vf_filter, AstronciaData.filter_mapping[vf_filter])
         )
 
-def populate_menubar(i, menubar, data, track_list=None, playing_chan=None, get_keybind=None, CHECK_UPDATES_ENABLED=True): # pylint: disable=too-many-statements, too-many-arguments, too-many-locals
+def populate_menubar(
+    i, menubar, data, track_list=None, playing_chan=None,
+    get_keybind=None, check_updates_enabled=True
+): # pylint: disable=too-many-statements, too-many-arguments, too-many-locals
     #print_with_time("populate_menubar called")
     # File
 
@@ -402,6 +427,7 @@ def populate_menubar(i, menubar, data, track_list=None, playing_chan=None, get_k
     view_menu = menubar.addMenu(_('menubar_view'))
     view_menu.addAction(AstronciaData.showhideplaylistAction)
     view_menu.addAction(AstronciaData.showhidectrlpanelAction)
+    view_menu.addAction(AstronciaData.alwaysontopAction)
     view_menu.addAction(AstronciaData.streaminformationAction)
     view_menu.addAction(AstronciaData.showepgAction)
     view_menu.addAction(AstronciaData.forceupdateepgAction)
@@ -419,7 +445,7 @@ def populate_menubar(i, menubar, data, track_list=None, playing_chan=None, get_k
     # Help
 
     help_menu = menubar.addMenu(_('menubar_help'))
-    if CHECK_UPDATES_ENABLED:
+    if check_updates_enabled:
         help_menu.addAction(AstronciaData.checkUpdAction)
         help_menu.addSeparator()
     help_menu.addAction(AstronciaData.aboutAction)
@@ -449,7 +475,7 @@ def recursive_filter_setstate(state):
 def get_first_run():
     return AstronciaData.first_run
 
-def update_menubar(track_list, playing_chan, m3u, file): # pylint: disable=too-many-branches
+def update_menubar(track_list, playing_chan, m3u, file, aot_file): # pylint: disable=too-many-branches, too-many-statements
     # Filters enable / disable
     if playing_chan:
         recursive_filter_setstate(True)
@@ -469,6 +495,21 @@ def update_menubar(track_list, playing_chan, m3u, file): # pylint: disable=too-m
                 pass
     else:
         recursive_filter_setstate(False)
+    # Always on top
+    if not AstronciaData.first_run1:
+        AstronciaData.first_run1 = True
+        try:
+            if os.path.isfile(aot_file):
+                file_2 = open(aot_file, 'r', encoding='utf-8')
+                file_2_out = file_2.read()
+                file_2.close()
+                aot_state = json.loads(file_2_out)["alwaysontop"]
+                if aot_state:
+                    AstronciaData.alwaysontopAction.setChecked(True)
+                else:
+                    AstronciaData.alwaysontopAction.setChecked(False)
+        except: # pylint: disable=bare-except
+            pass
     # Track list
     for i in AstronciaData.menubars:
         clear_menu(AstronciaData.menubars[i][0])
@@ -531,7 +572,10 @@ def init_menubar_player( # pylint: disable=too-many-arguments, too-many-locals
     get_curwindow_pos,
     force_update_epg,
     get_keybind,
-    show_tvguide_2
+    show_tvguide_2,
+    enable_always_on_top,
+    disable_always_on_top,
+    aot_file
 ):
     for func in locals().items():
         setattr(AstronciaData, func[0], func[1])
