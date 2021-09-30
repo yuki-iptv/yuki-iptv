@@ -1,3 +1,12 @@
+astroncia-iptv (0.0.83) unstable; urgency=medium
+
+  * Minor bugfixes
+  * Add window always on top option
+  * Add style redefinition setting
+  * Add Croatian translation
+
+ -- Astroncia <kestraly@gmail.com>  Thu, 30 Sep 2021 04:00:09 +0300
+
 astroncia-iptv (0.0.82) unstable; urgency=medium
 
   * Add separate playlist width resize
