@@ -4226,7 +4226,6 @@ if __name__ == '__main__':
                 currentWidthHeight = [win.width(), win.height()]
                 currentMaximized = win.isMaximized()
                 channelfilter.usePopup = False
-                fullscreen = True
                 win.menu_bar_qt.hide()
                 if settings['playlistsep']:
                     currentDockWidgetPos = sepplaylist_win.pos()
@@ -4235,6 +4234,7 @@ if __name__ == '__main__':
                         currentDockWidgetPos.y()
                     ))
                     sepplaylist_win.hide()
+                fullscreen = True
                 #l1.show()
                 #l1.setText2("{} F".format(_('exitfullscreen')))
                 #time_stop = time.time() + 3
@@ -7293,24 +7293,7 @@ if __name__ == '__main__':
 
         LABEL7_WIDTH = False
 
-        def show_controlpanel():
-            global LABEL7_WIDTH
-            if not LABEL7_WIDTH:
-                LABEL7_WIDTH = label7.width()
-            label7.setFixedWidth(LABEL7_SET_WIDTH)
-            controlpanel_widget.setWindowOpacity(0.55)
-            if channelfilter.usePopup:
-                controlpanel_widget.setWindowFlags(
-                    QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
-                    QtCore.Qt.X11BypassWindowManagerHint | QtCore.Qt.Popup
-                )
-            else:
-                controlpanel_widget.setWindowFlags(
-                    QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
-                    QtCore.Qt.X11BypassWindowManagerHint #| QtCore.Qt.Popup
-                )
-            #cp_layout.addWidget(fs_widget)
-            cp_layout.addWidget(widget2)
+        def resizeandmove_controlpanel():
             lb2_width = 0
             for lb2_wdg in show_lbls_fullscreen:
                 if hlayout2.indexOf(lb2_wdg) != -1:
@@ -7331,6 +7314,26 @@ if __name__ == '__main__':
             controlpanel_widget.move(maptoglobal(
                 p_3.x() - 100, win.height() - 100
             ))
+
+        def show_controlpanel():
+            global LABEL7_WIDTH
+            if not LABEL7_WIDTH:
+                LABEL7_WIDTH = label7.width()
+            label7.setFixedWidth(LABEL7_SET_WIDTH)
+            controlpanel_widget.setWindowOpacity(0.55)
+            if channelfilter.usePopup:
+                controlpanel_widget.setWindowFlags(
+                    QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
+                    QtCore.Qt.X11BypassWindowManagerHint | QtCore.Qt.Popup
+                )
+            else:
+                controlpanel_widget.setWindowFlags(
+                    QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
+                    QtCore.Qt.X11BypassWindowManagerHint #| QtCore.Qt.Popup
+                )
+            #cp_layout.addWidget(fs_widget)
+            cp_layout.addWidget(widget2)
+            resizeandmove_controlpanel()
             controlpanel_widget.show()
 
         def hide_controlpanel():
@@ -7439,6 +7442,20 @@ if __name__ == '__main__':
                             setShortcutState(False)
                         else:
                             setShortcutState(True)
+            except: # pylint: disable=bare-except
+                pass
+
+        def thread_fullscreen_sepplaylist_very_bad_workaround():
+            global fullscreen
+            try:
+                if settings["playlistsep"]:
+                    if fullscreen and sepplaylist_win.isVisible():
+                        print_with_time("Applied workaround for separate playlist in fullscreen")
+                        sepplaylist_win.hide()
+                    #if (not fullscreen) and (not sepplaylist_win.isVisible()):
+                    #    pass
+                if fullscreen:
+                    resizeandmove_controlpanel()
             except: # pylint: disable=bare-except
                 pass
 
@@ -7889,6 +7906,7 @@ if __name__ == '__main__':
             timers_array = {}
             timers = {
                 thread_shortcuts: 25,
+                thread_fullscreen_sepplaylist_very_bad_workaround: 25,
                 thread_mouse: 50,
                 thread_cursor: 50,
                 thread_applog: 50,
