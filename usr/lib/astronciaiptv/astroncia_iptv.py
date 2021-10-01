@@ -4152,21 +4152,34 @@ if __name__ == '__main__':
             if fullscreen:
                 mpv_fullscreen()
 
+        def set_always_on_top(aot_state):
+            if args1.debug:
+                print_with_time("[DEBUG] set_always_on_top: {}".format(aot_state))
+            if ( (aot_state and (win.windowFlags() & QtCore.Qt.WindowStaysOnTopHint)) or \
+                (not aot_state and (not win.windowFlags() & QtCore.Qt.WindowStaysOnTopHint)) ):
+                if args1.debug:
+                    print_with_time("[DEBUG] set_always_on_top: nothing to do")
+                    return
+            winIsVisible = win.isVisible()
+            winPos1 = win.pos()
+            if aot_state:
+                win.setWindowFlags(win.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
+            else:
+                win.setWindowFlags(win.windowFlags() & ~QtCore.Qt.WindowStaysOnTopHint)
+            win.move(winPos1)
+            if winIsVisible:
+                win.show()
+                win.raise_()
+                win.setFocus(QtCore.Qt.PopupFocusReason)
+                win.activateWindow()
+
         @idle_function
         def enable_always_on_top(arg11=None): # pylint: disable=unused-argument
-            win.setWindowFlags(win.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
-            win.show()
-            win.raise_()
-            win.setFocus(QtCore.Qt.PopupFocusReason)
-            win.activateWindow()
+            set_always_on_top(True)
 
         @idle_function
         def disable_always_on_top(arg11=None): # pylint: disable=unused-argument
-            win.setWindowFlags(win.windowFlags() & ~QtCore.Qt.WindowStaysOnTopHint)
-            win.show()
-            win.raise_()
-            win.setFocus(QtCore.Qt.PopupFocusReason)
-            win.activateWindow()
+            set_always_on_top(False)
 
         # Always on top
         is_aot = False
