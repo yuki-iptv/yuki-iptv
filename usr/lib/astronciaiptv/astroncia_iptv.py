@@ -329,8 +329,11 @@ if __name__ == '__main__':
     print_with_time("")
     print_with_time("IF YOU SEE 'Cannot mix incompatible Qt library' ERROR HERE")
     print_with_time("IT'S NOT ASTRONCIA IPTV FAULT, IT'S **YOUR** PROBLEM, DO NOT REPORT IT!")
+    print_with_time("IF YOU ARE ARCH LINUX USER MAKE SURE ALL PACKAGES UPDATED")
     print_with_time("")
     app = QtWidgets.QApplication(sys.argv)
+    print_with_time("Qt init successful")
+    print_with_time("")
 
     setAppFusion = True
     try:
