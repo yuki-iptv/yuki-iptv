@@ -934,6 +934,9 @@ msgstr "экспериментальная функция"
 msgid "autoreconnection"
 msgstr "Автоматическое переподключение"
 
+msgid "qtmixwarning"
+msgstr "Если вы видите здесь ошибку Cannot mix incompatible Qt library, это не проблема Astroncia IPTV, а ВАША.\nУбедитесь, что все библиотеки Qt обновлены до последней версии."
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, версия {}\n© kestral / astroncia < kestraly (at) gmail.com "

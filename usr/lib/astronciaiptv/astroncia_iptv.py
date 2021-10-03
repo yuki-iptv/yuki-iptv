@@ -327,9 +327,12 @@ if __name__ == '__main__':
         pass
     print_with_time("Qt init")
     print_with_time("")
-    print_with_time("IF YOU SEE 'Cannot mix incompatible Qt library' ERROR HERE")
-    print_with_time("IT'S NOT ASTRONCIA IPTV FAULT, IT'S **YOUR** PROBLEM, DO NOT REPORT IT!")
-    print_with_time("IF YOU ARE ARCH LINUX USER MAKE SURE ALL PACKAGES UPDATED")
+    if _('qtmixwarning') != 'qtmixwarning':
+        print_with_time(_('qtmixwarning'))
+    else:
+        print_with_time("IF YOU SEE 'Cannot mix incompatible Qt library' ERROR HERE")
+        print_with_time("IT'S NOT ASTRONCIA IPTV FAULT, IT'S **YOUR** PROBLEM, DO NOT REPORT IT!")
+        print_with_time("IF YOU ARE ARCH LINUX USER MAKE SURE ALL PACKAGES UPDATED")
     print_with_time("")
     app = QtWidgets.QApplication(sys.argv)
     print_with_time("Qt init successful")
