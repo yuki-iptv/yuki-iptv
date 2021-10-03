@@ -274,6 +274,7 @@ def init_menubar(data): # pylint: disable=too-many-statements
     AstronciaData.alwaysontopAction = qaction(_('alwaysontop'), data)
     AstronciaData.alwaysontopAction.triggered.connect(alwaysontop_action)
     AstronciaData.alwaysontopAction.setCheckable(True)
+    AstronciaData.alwaysontopAction.setShortcut(kbd("alwaysontop"))
 
     AstronciaData.streaminformationAction = qaction(_('Stream Information'), data)
     AstronciaData.streaminformationAction.triggered.connect(
@@ -347,6 +348,7 @@ def init_menubar(data): # pylint: disable=too-many-statements
         AstronciaData.filter_mapping[vf_filter].triggered.connect(
             partial(apply_vf_filter, vf_filter, AstronciaData.filter_mapping[vf_filter])
         )
+    return AstronciaData.alwaysontopAction
 
 def populate_menubar(
     i, menubar, data, track_list=None, playing_chan=None,
@@ -358,8 +360,10 @@ def populate_menubar(
     if get_keybind:
         AstronciaData.get_keybind = get_keybind
 
+    aot_action = None
+
     if not AstronciaData.menubar_ready:
-        init_menubar(data)
+        aot_action = init_menubar(data)
         AstronciaData.menubar_ready = True
 
     file_menu = menubar.addMenu(_('menubar_title_file'))
@@ -451,6 +455,8 @@ def populate_menubar(
     help_menu.addAction(AstronciaData.aboutAction)
 
     AstronciaData.menubars[i] = [video_track_menu, audio_track_menu]
+
+    return aot_action
 
 # Preventing memory leak
 def clear_menu(menu):

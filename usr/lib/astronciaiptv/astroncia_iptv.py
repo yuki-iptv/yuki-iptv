@@ -327,6 +327,9 @@ if __name__ == '__main__':
         pass
     print_with_time("Qt init")
     print_with_time("")
+    print_with_time("IF YOU SEE 'Cannot mix incompatible Qt library' ERROR HERE")
+    print_with_time("IT'S NOT ASTRONCIA IPTV FAULT, IT'S **YOUR** PROBLEM, DO NOT REPORT IT!")
+    print_with_time("")
     app = QtWidgets.QApplication(sys.argv)
 
     setAppFusion = True
@@ -3588,8 +3591,9 @@ if __name__ == '__main__':
             mpv_override_volume(100)
             player.loop = True
 
+            aot_action1 = None
             try:
-                populate_menubar(
+                aot_action1 = populate_menubar(
                     0, win.menu_bar_qt, win, player.track_list, playing_chan, get_keybind,
                     CHECK_UPDATES_ENABLED
                 )
@@ -3692,6 +3696,8 @@ if __name__ == '__main__':
             else:
                 label7.setValue(100)
                 mpv_volume_set()
+
+            return aot_action1
 
         def move_label(label, x, y):
             label.move(x, y)
@@ -4152,7 +4158,13 @@ if __name__ == '__main__':
             if fullscreen:
                 mpv_fullscreen()
 
+        def get_always_on_top():
+            global cur_aot_state
+            return cur_aot_state
+
         def set_always_on_top(aot_state):
+            global cur_aot_state
+            cur_aot_state = aot_state
             if args1.debug:
                 print_with_time("[DEBUG] set_always_on_top: {}".format(aot_state))
             if ( (aot_state and (win.windowFlags() & QtCore.Qt.WindowStaysOnTopHint)) or \
@@ -4196,6 +4208,8 @@ if __name__ == '__main__':
             enable_always_on_top()
         else:
             print_with_time("Always on top disabled")
+
+        cur_aot_state = is_aot
 
         currentWidthHeight = [win.width(), win.height()]
         currentMaximized = win.isMaximized()
@@ -7585,6 +7599,18 @@ if __name__ == '__main__':
             except: # pylint: disable=bare-except
                 print_with_time("WARNING: mpv_seek failed")
 
+        def change_aot_mode():
+            global aot_action, fullscreen
+            if not fullscreen:
+                if aot_action.isChecked():
+                    print_with_time("change_aot_mode to False")
+                    aot_action.setChecked(False)
+                    disable_always_on_top()
+                else:
+                    print_with_time("change_aot_mode to True")
+                    aot_action.setChecked(True)
+                    enable_always_on_top()
+
         funcs = {
             "show_sort": show_sort,
             "key_t": key_t,
@@ -7624,7 +7650,8 @@ if __name__ == '__main__':
             "(lambda: mpv_seek(-600))": (lambda: mpv_seek(-600)),
             "(lambda: mpv_seek(600))": (lambda: mpv_seek(600)),
             "lowpanel_ch_1": lowpanel_ch_1,
-            "show_tvguide_2": show_tvguide_2
+            "show_tvguide_2": show_tvguide_2,
+            "alwaysontop": change_aot_mode
         }
 
         main_keybinds = {
@@ -7749,6 +7776,9 @@ if __name__ == '__main__':
             ],
             "show_tvguide_2": [
                 QtCore.Qt.Key_J
+            ],
+            "alwaysontop": [
+                QtCore.Qt.Key_A
             ]
         }
 
@@ -7864,7 +7894,7 @@ if __name__ == '__main__':
 
         if settings['m3u'] and m3u:
             win.show()
-            init_mpv_player()
+            aot_action = init_mpv_player()
             win.raise_()
             win.setFocus(QtCore.Qt.PopupFocusReason)
             win.activateWindow()
