@@ -1,3 +1,10 @@
+astroncia-iptv (0.0.84) unstable; urgency=medium
+
+  * Minor bugfixes
+  * Update Croatian translation
+
+ -- Astroncia <kestraly@gmail.com>  Mon, 04 Oct 2021 05:46:29 +0300
+
 astroncia-iptv (0.0.83) unstable; urgency=medium
 
   * Minor bugfixes
