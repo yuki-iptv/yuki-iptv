@@ -275,6 +275,8 @@ def init_menubar(data): # pylint: disable=too-many-statements
     AstronciaData.alwaysontopAction.triggered.connect(alwaysontop_action)
     AstronciaData.alwaysontopAction.setCheckable(True)
     AstronciaData.alwaysontopAction.setShortcut(kbd("alwaysontop"))
+    if qt_library == 'PySide6':
+        AstronciaData.alwaysontopAction.setVisible(False)
 
     AstronciaData.streaminformationAction = qaction(_('Stream Information'), data)
     AstronciaData.streaminformationAction.triggered.connect(
