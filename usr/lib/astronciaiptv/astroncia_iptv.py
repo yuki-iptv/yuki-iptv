@@ -5554,7 +5554,24 @@ if __name__ == '__main__':
                 win.addDockWidget(QtCore.Qt.LeftDockWidgetArea, dockWidget)
         else:
             sepplaylist_win.setCentralWidget(widget)
-            sepplaylist_win.show()
+            playlistHiddenFlag = False
+            try:
+                if os.path.isfile(str(Path(LOCAL_DIR, 'compactstate.json'))):
+                    with open(str(Path(LOCAL_DIR, 'compactstate.json')), 'r', encoding="utf8") \
+                    as compactstate_file_0:
+                        compactstate_file_0_read = compactstate_file_0.read()
+                        compactstate_file_0.close()
+                        playlistHiddenFlag = json.loads(compactstate_file_0_read)["playlist_hidden"]
+            except: # pylint: disable=bare-except
+                pass
+            if not playlistHiddenFlag:
+                if args1.debug:
+                    print_with_time("playlistHiddenFlag = False")
+                sepplaylist_win.show()
+            else:
+                if args1.debug:
+                    print_with_time("playlistHiddenFlag = True")
+                sepplaylist_win.hide()
             seppl_data = False
             if os.path.isfile(str(Path(LOCAL_DIR, 'sepplheight.json'))):
                 try:
@@ -7844,7 +7861,11 @@ if __name__ == '__main__':
                             showhideeverything()
                         else:
                             if compactstate["playlist_hidden"]:
-                                key_t()
+                                if settings['playlistsep']:
+                                    AstronciaData.playlist_hidden = True
+                                    sepplaylist_win.hide()
+                                else:
+                                    key_t()
                             if compactstate["controlpanel_hidden"]:
                                 lowpanel_ch()
                 except: # pylint: disable=bare-except
