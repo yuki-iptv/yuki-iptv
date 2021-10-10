@@ -929,7 +929,7 @@ msgid "menubar_expfunction"
 msgstr "экспериментальная функция"
 
 msgid "autoreconnection"
-msgstr "Автоматическое переподключение"
+msgstr "Автоматическое\nпереподключение"
 
 msgid "hideplaylistscrollclk"
 msgstr "Скрывать плейлист средним кликом"

@@ -987,7 +987,7 @@ msgid "menubar_expfunction"
 msgstr "eksperimentalna funkcija"
 
 msgid "autoreconnection"
-msgstr "Automatsko ponovno povezivanje"
+msgstr "Automatsko ponovno\npovezivanje"
 
 msgid "helptext"
 msgstr ""
