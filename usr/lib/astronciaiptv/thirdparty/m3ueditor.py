@@ -446,9 +446,3 @@ def stylesheet(self):
         }
 
     """
-
-if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    main = Viewer()
-    main.show()
-    sys.exit(app.exec_())

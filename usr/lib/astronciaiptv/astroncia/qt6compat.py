@@ -36,3 +36,15 @@ def getX(arg1):
 
 def getY(arg2):
     return arg2.y()
+
+def _exec(obj, arg=None):
+    if hasattr(obj, 'exec'):
+        if arg:
+            return obj.exec(arg)
+        else:
+            return obj.exec()
+    else:
+        if arg:
+            return obj.exec_(arg)
+        else:
+            return obj.exec_()

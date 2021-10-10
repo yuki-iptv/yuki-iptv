@@ -62,7 +62,7 @@ from astroncia.time import print_with_time, get_app_log, get_mpv_log, args_init
 from astroncia.epgurls import EPG_URLS
 from astroncia.xtreamtom3u import convert_xtream_to_m3u
 from astroncia.xspf import parse_xspf
-from astroncia.qt6compat import globalPos, getX, getY
+from astroncia.qt6compat import globalPos, getX, getY, _exec
 from thirdparty.conversion import convert_size, format_bytes, human_secs
 from thirdparty.m3u import M3uParser
 from thirdparty.m3ueditor import Viewer
@@ -5263,10 +5263,7 @@ if __name__ == '__main__':
             menu.addAction(_('startrecording'), tvguide_start_record)
             menu.addAction(_('channelsettings'), settings_context_menu)
             #menu.addAction(_('iaepgmatch'), iaepgmatch)
-            if qt_library == 'PySide6':
-                menu.exec(self.mapToGlobal(pos))
-            else:
-                menu.exec_(self.mapToGlobal(pos))
+            _exec(menu, self.mapToGlobal(pos))
 
         win.listWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         win.listWidget.customContextMenuRequested.connect(show_context_menu)
@@ -6269,10 +6266,7 @@ if __name__ == '__main__':
         @idle_function
         def my_mouse_right_callback(arg11=None): # pylint: disable=unused-argument
             global right_click_menu
-            if qt_library == 'PySide6':
-                right_click_menu.exec(QtGui.QCursor.pos())
-            else:
-                right_click_menu.exec_(QtGui.QCursor.pos())
+            _exec(right_click_menu, QtGui.QCursor.pos())
 
         @idle_function
         def my_mouse_left_callback(arg11=None): # pylint: disable=unused-argument
@@ -8017,14 +8011,7 @@ if __name__ == '__main__':
                 playlists_win.setFocus(QtCore.Qt.PopupFocusReason)
                 playlists_win.activateWindow()
 
-        if qt_library == 'PySide6':
-            try:
-                sys.exit(app.exec())
-            except: # pylint: disable=bare-except
-                # Qt 6.0 compatibility
-                sys.exit(app.exec_())
-        else:
-            sys.exit(app.exec_())
+        sys.exit(_exec(app))
     except Exception as e3:
         print_with_time("ERROR")
         print_with_time("")
