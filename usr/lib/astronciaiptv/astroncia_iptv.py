@@ -476,7 +476,7 @@ if __name__ == '__main__':
                 'exp2': DOCK_WIDGET_WIDTH,
                 'mouseswitchchannels': False,
                 'showplaylistmouse': True,
-                'hideplaylistleftclk': False,
+                'hideplaylistscrollclk': False,
                 'showcontrolsmouse': True,
                 'flpopacity': 0.7,
                 'panelposition': 0,
@@ -531,8 +531,8 @@ if __name__ == '__main__':
             settings['mouseswitchchannels'] = False
         if 'showplaylistmouse' not in settings:
             settings['showplaylistmouse'] = True
-        if 'hideplaylistleftclk' not in settings:
-            settings['hideplaylistleftclk'] = False
+        if 'hideplaylistscrollclk' not in settings:
+            settings['hideplaylistscrollclk'] = False
         if 'showcontrolsmouse' not in settings:
             settings['showcontrolsmouse'] = True
         if 'flpopacity' not in settings:
@@ -2522,7 +2522,7 @@ if __name__ == '__main__':
                 'exp2': exp2_input.value(),
                 'mouseswitchchannels': mouseswitchchannels_flag.isChecked(),
                 'showplaylistmouse': showplaylistmouse_flag.isChecked(),
-                'hideplaylistleftclk': hideplaylistleftclk_flag.isChecked(),
+                'hideplaylistscrollclk': hideplaylistscrollclk_flag.isChecked(),
                 'showcontrolsmouse': showcontrolsmouse_flag.isChecked(),
                 'flpopacity': flpopacity_input.value(),
                 'panelposition': panelposition_choose.currentIndex(),
@@ -2905,9 +2905,9 @@ if __name__ == '__main__':
         showcontrolsmouse_flag = QtWidgets.QCheckBox()
         showcontrolsmouse_flag.setChecked(settings['showcontrolsmouse'])
 
-        hideplaylistleftclk_label = QtWidgets.QLabel("{}:".format(_('hideplaylistleftclk')))
-        hideplaylistleftclk_flag = QtWidgets.QCheckBox()
-        hideplaylistleftclk_flag.setChecked(settings['hideplaylistleftclk'])
+        hideplaylistscrollclk_label = QtWidgets.QLabel("{}:".format(_('hideplaylistscrollclk')))
+        hideplaylistscrollclk_flag = QtWidgets.QCheckBox()
+        hideplaylistscrollclk_flag.setChecked(settings['hideplaylistscrollclk'])
 
         videoaspectdef_label = QtWidgets.QLabel("{}:".format(_('videoaspect')))
         zoomdef_label = QtWidgets.QLabel("{}:".format(_('zoom')))
@@ -3005,8 +3005,8 @@ if __name__ == '__main__':
         tab4.layout.addWidget(volumechangestep_choose, 5, 1)
         tab4.layout.addWidget(screenshot_label, 6, 0)
         tab4.layout.addWidget(screenshot_choose, 6, 1)
-        tab4.layout.addWidget(hideplaylistleftclk_label, 7, 0)
-        tab4.layout.addWidget(hideplaylistleftclk_flag, 7, 1)
+        tab4.layout.addWidget(hideplaylistscrollclk_label, 7, 0)
+        tab4.layout.addWidget(hideplaylistscrollclk_flag, 7, 1)
         tab4.setLayout(tab4.layout)
 
         tab5.layout = QtWidgets.QGridLayout()
@@ -3620,6 +3620,10 @@ if __name__ == '__main__':
             @player.on_key_press('MBTN_LEFT')
             def my_mouse_left(): # pylint: disable=unused-variable
                 my_mouse_left_callback()
+
+            @player.on_key_press('MBTN_MID')
+            def my_mouse_scrollclk(): # pylint: disable=unused-variable
+                my_mouse_scrollclk_callback()
 
             try:
                 @player.on_key_press('MOUSE_MOVE')
@@ -6233,6 +6237,14 @@ if __name__ == '__main__':
 
         right_click_menu = QtWidgets.QMenu()
 
+        def playlistmouse_action():
+            global fullscreen
+            if settings['hideplaylistscrollclk'] and not fullscreen:
+                if AstronciaData.fcstate:
+                    key_t()
+                else:
+                    AstronciaData.fcstate = True
+
         @idle_function
         def end_file_callback(arg11=None): # pylint: disable=unused-argument
             if loading.isVisible():
@@ -6261,13 +6273,11 @@ if __name__ == '__main__':
             global right_click_menu, fullscreen
             if right_click_menu.isVisible():
                 right_click_menu.hide()
-            else:
-                if settings['hideplaylistleftclk'] and not fullscreen:
-                    if AstronciaData.fcstate:
-                        key_t()
-                    else:
-                        AstronciaData.fcstate = True
             move_window_drag()
+
+        @idle_function
+        def my_mouse_scrollclk_callback(arg11=None): # pylint: disable=unused-argument
+            playlistmouse_action()
 
         @idle_function
         def my_up_binding_execute(arg11=None): # pylint: disable=unused-argument
