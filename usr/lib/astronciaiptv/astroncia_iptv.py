@@ -6240,10 +6240,7 @@ if __name__ == '__main__':
         def playlistmouse_action():
             global fullscreen
             if settings['hideplaylistscrollclk'] and not fullscreen:
-                if AstronciaData.fcstate:
-                    key_t()
-                else:
-                    AstronciaData.fcstate = True
+                key_t()
 
         @idle_function
         def end_file_callback(arg11=None): # pylint: disable=unused-argument
