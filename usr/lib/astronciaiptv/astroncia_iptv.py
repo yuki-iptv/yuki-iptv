@@ -74,6 +74,11 @@ if qt_library == 'none' or not QtWidgets:
     print_with_time("ERROR: No Qt library found!")
     sys.exit(1)
 
+if 'PyQt6' in sys.modules or 'PyQt5' in sys.modules:
+    Signal = QtCore.pyqtSignal
+else:
+    Signal = QtCore.Signal
+
 from thirdparty.resizablewindow import ResizableWindow
 
 if qt_library == 'PyQt5':
@@ -3189,16 +3194,10 @@ if __name__ == '__main__':
             do_play_args = ()
             j_save = None
             comboboxIndex = -1
-            if qt_library == 'PySide6':
-                repaintUpdates = QtCore.Signal(object, object)
-                moveSeparatePlaylist = QtCore.Signal(object)
-                mainThread = QtCore.Signal(type(lambda x: None))
-                mainThread_partial = QtCore.Signal(type(partial(int, 2)))
-            else:
-                repaintUpdates = QtCore.pyqtSignal(object, object)
-                moveSeparatePlaylist = QtCore.pyqtSignal(object)
-                mainThread = QtCore.pyqtSignal(type(lambda x: None))
-                mainThread_partial = QtCore.pyqtSignal(type(partial(int, 2)))
+            repaintUpdates = Signal(object, object)
+            moveSeparatePlaylist = Signal(object)
+            mainThread = Signal(type(lambda x: None))
+            mainThread_partial = Signal(type(partial(int, 2)))
 
         #def exInMainThread(m_func):
         #    comm_instance.mainThread.emit(m_func)
@@ -5332,10 +5331,7 @@ if __name__ == '__main__':
 
         class MyLineEdit(QtWidgets.QLineEdit):
             usePopup = False
-            if qt_library == 'PySide6':
-                click_event = QtCore.Signal()
-            else:
-                click_event = QtCore.pyqtSignal()
+            click_event = Signal()
             def mousePressEvent(self, event1):
                 if event1.button() == QtCore.Qt.LeftButton:
                     self.click_event.emit()
