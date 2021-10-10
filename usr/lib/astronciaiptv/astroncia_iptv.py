@@ -475,6 +475,7 @@ if __name__ == '__main__':
                 'themecompat': False,
                 'exp2': DOCK_WIDGET_WIDTH,
                 'mouseswitchchannels': False,
+                'autoreconnection': True,
                 'showplaylistmouse': True,
                 'hideplaylistscrollclk': False,
                 'showcontrolsmouse': True,
@@ -529,6 +530,8 @@ if __name__ == '__main__':
             settings['exp2'] = DOCK_WIDGET_WIDTH
         if 'mouseswitchchannels' not in settings:
             settings['mouseswitchchannels'] = False
+        if 'autoreconnection' not in settings:
+            settings['autoreconnection'] = True
         if 'showplaylistmouse' not in settings:
             settings['showplaylistmouse'] = True
         if 'hideplaylistscrollclk' not in settings:
@@ -2521,6 +2524,7 @@ if __name__ == '__main__':
                 'themecompat': themecompat_flag.isChecked(),
                 'exp2': exp2_input.value(),
                 'mouseswitchchannels': mouseswitchchannels_flag.isChecked(),
+                'autoreconnection': autoreconnection_flag.isChecked(),
                 'showplaylistmouse': showplaylistmouse_flag.isChecked(),
                 'hideplaylistscrollclk': hideplaylistscrollclk_flag.isChecked(),
                 'showcontrolsmouse': showcontrolsmouse_flag.isChecked(),
@@ -2893,10 +2897,13 @@ if __name__ == '__main__':
         screenshot_choose.setCurrentIndex(settings['screenshot'])
 
         mouseswitchchannels_label = QtWidgets.QLabel("{}:".format(_('mouseswitchchannels')))
+        autoreconnection_label = QtWidgets.QLabel("{}:".format(_('autoreconnection')))
         defaultchangevol_label = QtWidgets.QLabel("({})".format(_('defaultchangevol')))
         defaultchangevol_label.setStyleSheet('color:blue')
         mouseswitchchannels_flag = QtWidgets.QCheckBox()
         mouseswitchchannels_flag.setChecked(settings['mouseswitchchannels'])
+        autoreconnection_flag = QtWidgets.QCheckBox()
+        autoreconnection_flag.setChecked(settings['autoreconnection'])
 
         showplaylistmouse_label = QtWidgets.QLabel("{}:".format(_('showplaylistmouse')))
         showplaylistmouse_flag = QtWidgets.QCheckBox()
@@ -2988,6 +2995,8 @@ if __name__ == '__main__':
         tab3.layout.addWidget(useragent_choose_2, 2, 1)
         tab3.layout.addWidget(referer_lbl, 3, 0)
         tab3.layout.addWidget(referer_choose, 3, 1)
+        tab3.layout.addWidget(autoreconnection_label, 4, 0)
+        tab3.layout.addWidget(autoreconnection_flag, 4, 1)
         tab3.setLayout(tab3.layout)
 
         tab4.layout = QtWidgets.QGridLayout()
@@ -7095,18 +7104,28 @@ if __name__ == '__main__':
                     print_with_time("Failed reconnecting to stream - no known URL")
             x_conn = None
 
+        AstronciaData.connprinted = False
+
         def check_connection():
             global x_conn
-            try:
-                if (playing_chan and not loading.isVisible()) and \
-                (player.cache_buffering_state == 0):
-                    if not x_conn:
-                        print_with_time("Connection to stream lost, waiting 5 secs...")
-                        x_conn = QtCore.QTimer()
-                        x_conn.timeout.connect(do_reconnect)
-                        x_conn.start(5000)
-            except: # pylint: disable=bare-except
-                print_with_time("Failed to set connection loss detector!")
+            if settings['autoreconnection']:
+                if not AstronciaData.connprinted:
+                    AstronciaData.connprinted = True
+                    print_with_time("Connection loss detector enabled")
+                try:
+                    if (playing_chan and not loading.isVisible()) and \
+                    (player.cache_buffering_state == 0):
+                        if not x_conn:
+                            print_with_time("Connection to stream lost, waiting 5 secs...")
+                            x_conn = QtCore.QTimer()
+                            x_conn.timeout.connect(do_reconnect)
+                            x_conn.start(5000)
+                except: # pylint: disable=bare-except
+                    print_with_time("Failed to set connection loss detector!")
+            else:
+                if not AstronciaData.connprinted:
+                    AstronciaData.connprinted = True
+                    print_with_time("Connection loss detector DISABLED")
 
         def thread_check_tvguide_obsolete(): # pylint: disable=too-many-branches
             try:
