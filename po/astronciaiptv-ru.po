@@ -916,9 +916,6 @@ msgstr "Показывать только каналы из плейлиста"
 msgid "channels"
 msgstr "каналов"
 
-msgid "hideplaylistleftclk"
-msgstr "Скрывать плейлист левым кликом"
-
 msgid "styleredefoff"
 msgstr "Включить переопределение стилей"
 
@@ -933,6 +930,9 @@ msgstr "экспериментальная функция"
 
 msgid "autoreconnection"
 msgstr "Автоматическое переподключение"
+
+msgid "hideplaylistscrollclk"
+msgstr "Скрывать плейлист средним кликом"
 
 msgid "helptext"
 msgstr ""

@@ -974,9 +974,6 @@ msgstr "Prikaži samo programe u popisu izvođenja"
 msgid "channels"
 msgstr "programi"
 
-msgid "hideplaylistleftclk"
-msgstr "Sakrij popis izvođenja lijevim klikom"
-
 msgid "styleredefoff"
 msgstr "Omogući redefiniranje izgleda"
 
