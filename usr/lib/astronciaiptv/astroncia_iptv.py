@@ -3476,8 +3476,9 @@ if __name__ == '__main__':
         def playlists_import_do():
             global playlists_saved
             playlists_hypnotix = {}
+            hypnotix_import_ok = True
             print_with_time("Fetching playlists from Hypnotix...")
-            try:
+            try: # pylint: disable=too-many-nested-blocks
                 hypnotix_cmd = "dconf dump /org/x/hypnotix/ 2>/dev/null | grep" + \
                     " '^providers=' | sed 's/^providers=/{\"hypnotix\": /g'" + \
                     " | sed 's/$/}/g' | sed \"s/'/\\\"/g\""
@@ -3486,21 +3487,42 @@ if __name__ == '__main__':
                 ).strip()
                 if hypnotix_cmd_eval:
                     hypnotix_cmd_eval = json.loads(hypnotix_cmd_eval)['hypnotix']
+                    print_with_time("Hypnotix JSON output: {}".format(hypnotix_cmd_eval))
+                    print_with_time("")
                     for provider_2 in hypnotix_cmd_eval:
                         provider_2 = provider_2.replace(':' * 9, '^' * 9).split(':::')
                         provider_2[2] = provider_2[2].split('^' * 9)
-                        provider_2[2][0] = provider_2[2][0].replace('file://', '')
+                        print_with_time("{}".format(provider_2))
                         prov_name_2 = provider_2[0]
                         prov_m3u_2 = provider_2[2][0]
-                        prov_epg_2 = provider_2[2][1]
+                        # XTream API parse
+                        if provider_2[1] == 'xtream':
+                            prov_m3u_2 = "XTREAM::::::::::::::" + \
+                            "{}::::::::::::::{}::::::::::::::{}".format(
+                                provider_2[3], # username
+                                provider_2[4], # password
+                                provider_2[2][0] # url
+                            )
+                            prov_epg_2 = provider_2[5]
+                        else:
+                            # Local or remote URL
+                            prov_epg_2 = provider_2[2][1]
+                            # Local
+                            if provider_2[1] == 'local':
+                                if provider_2[2][0].startswith('file://'):
+                                    provider_2[2][0] = provider_2[2][0].replace('file://', '')
+                                prov_m3u_2 = provider_2[2][0]
                         playlists_hypnotix[prov_name_2] = {
                             "m3u": prov_m3u_2,
                             "epg": prov_epg_2,
                             "offset": DEF_TIMEZONE
                         }
             except: # pylint: disable=bare-except
+                print_with_time("")
+                print_with_time(traceback.format_exc())
                 print_with_time("Failed fetching playlists from Hypnotix!")
-            if playlists_hypnotix:
+                hypnotix_import_ok = False
+            if playlists_hypnotix and hypnotix_import_ok:
                 try:
                     playlists_list.takeItem(
                         playlists_list.row(
@@ -3517,6 +3539,7 @@ if __name__ == '__main__':
                 for prov_name_4 in playlists_data.playlists_used:
                     playlists_list.addItem(prov_name_4)
                 playlists_save_json()
+                print_with_time("")
                 print_with_time("Successfully imported playlists from Hypnotix!")
                 playlists_win.hide()
                 playlists_win_edit.hide()
