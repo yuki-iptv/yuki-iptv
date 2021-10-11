@@ -27,7 +27,9 @@ uas = [
     'Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
     'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36',
     'OnlineTvAppDroid',
-    'smartlabs'
+    'smartlabs',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5)',
+    'Mozilla/5.0'
 ]
 ua_names = [
     '',
@@ -36,7 +38,9 @@ ua_names = [
     'iPhone',
     'Linux Browser',
     'OnlineTvAppDroid',
-    'Smartlabs'
+    'Smartlabs',
+    'Mac OS X',
+    'Mozilla/5.0'
 ]
 
 if 'HOME' in os.environ and os.path.isdir(os.environ['HOME']):
