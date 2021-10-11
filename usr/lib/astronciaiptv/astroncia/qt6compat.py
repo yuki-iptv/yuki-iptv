@@ -48,3 +48,11 @@ def _exec(obj, arg=None):
             return obj.exec_(arg)
         else:
             return obj.exec_()
+
+def _enum(obj, name):
+    parent, child = name.split('.')
+    result0 = getattr(obj, child, False)
+    if result0:
+        return result0
+    obj = getattr(obj, parent)
+    return getattr(obj, child)
