@@ -2858,6 +2858,11 @@ if __name__ == '__main__':
         movedragging_flag = QtWidgets.QCheckBox()
         movedragging_flag.setChecked(settings['movedragging'])
 
+        # Mark option as experimental
+        movedragging_flag.setToolTip(_('expfunctionwarning'))
+        movedragging_label.setToolTip(_('expfunctionwarning'))
+        movedragging_label.setStyleSheet('color: #cf9e17')
+
         styleredefoff_flag = QtWidgets.QCheckBox()
         styleredefoff_flag.setChecked(settings['styleredefoff'])
 
@@ -2895,6 +2900,11 @@ if __name__ == '__main__':
         playlistsep_flag = QtWidgets.QCheckBox()
         playlistsep_flag.setChecked(settings['playlistsep'])
 
+        # Mark option as experimental
+        playlistsep_flag.setToolTip(_('expfunctionwarning'))
+        playlistsep_label.setToolTip(_('expfunctionwarning'))
+        playlistsep_label.setStyleSheet('color: #cf9e17')
+
         screenshot_label = QtWidgets.QLabel("{}:".format(_('doscreenshotsvia')))
         screenshot_choose = QtWidgets.QComboBox()
         screenshot_choose.addItem('mpv')
@@ -2920,6 +2930,11 @@ if __name__ == '__main__':
         hideplaylistleftclk_label = QtWidgets.QLabel("{}:".format(_('hideplaylistleftclk')))
         hideplaylistleftclk_flag = QtWidgets.QCheckBox()
         hideplaylistleftclk_flag.setChecked(settings['hideplaylistleftclk'])
+
+        # Mark option as experimental
+        hideplaylistleftclk_flag.setToolTip(_('expfunctionwarning'))
+        hideplaylistleftclk_label.setToolTip(_('expfunctionwarning'))
+        hideplaylistleftclk_label.setStyleSheet('color: #cf9e17')
 
         videoaspectdef_label = QtWidgets.QLabel("{}:".format(_('videoaspect')))
         zoomdef_label = QtWidgets.QLabel("{}:".format(_('zoom')))
