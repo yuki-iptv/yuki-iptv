@@ -54,11 +54,11 @@ Icons: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 
 ## Requirements
 
-- Qt 6 *(or Qt 5)*
+- Qt 5
 - libmpv1 (>= 0.27.2)
 - [ffmpeg](https://ffmpeg.org/)
 - Python 3 (>= 3.6)
-- [PySide6](https://pypi.org/project/PySide6/) *(or PyQt5)*
+- [PyQt5](https://pypi.org/project/PyQt5/)
 - [Pillow](https://pypi.org/project/Pillow/) (python3-pil)
 - [pandas](https://pypi.org/project/pandas/) (python3-pandas)
 - [PyGObject](https://pypi.org/project/PyGObject/) (python3-gi)

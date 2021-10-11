@@ -31,16 +31,16 @@ def get_qt_library():
     QtCore = False
     QtGui = False
     try:
-        if '--disable-qt6' in sys.argv:
+        if '--disable-qt6' in sys.argv or True:
             if not astroncia_data.qt6_disable_printed:
                 astroncia_data.qt6_disable_printed = True
-                print_with_time("Qt6 force disabled\n")
+                #print_with_time("Qt6 force disabled\n")
             raise Exception("")
-        from PySide6 import QtWidgets
-        from PySide6 import QtCore
-        from PySide6 import QtGui
+        from PyQt6 import QtWidgets
+        from PyQt6 import QtCore
+        from PyQt6 import QtGui
         QShortcut = QtGui.QShortcut
-        qt_library = "PySide6"
+        qt_library = "PyQt6"
     except: # pylint: disable=bare-except
         from PyQt5 import QtWidgets
         from PyQt5 import QtCore

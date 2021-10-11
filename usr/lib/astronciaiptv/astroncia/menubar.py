@@ -25,6 +25,7 @@ from functools import partial
 from astroncia.time import print_with_time
 from astroncia.qt import get_qt_library
 from astroncia.lang import _, __
+from astroncia.qt6compat import _enum
 qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
 
 class AstronciaData: # pylint: disable=too-few-public-methods
@@ -35,7 +36,7 @@ class AstronciaData: # pylint: disable=too-few-public-methods
     data = {}
     cur_vf_filters = []
     keyboard_sequences = []
-    if qt_library == 'PySide6':
+    if qt_library == 'PyQt6':
         str_offset = ' ' * 44
     else:
         str_offset = ''
@@ -89,7 +90,7 @@ def apply_vf_filter(vf_filter, e_l):
         AstronciaData.show_exception(e_4, e4_traceback, '\n\n' + _('errorvfapply'))
 
 def qaction(arg1, arg2):
-    if qt_library == 'PySide6':
+    if qt_library == 'PyQt6':
         func = QtGui.QAction
     else:
         func = QtWidgets.QAction
@@ -149,12 +150,12 @@ def init_menubar(data): # pylint: disable=too-many-statements
 
     AstronciaData.secs = []
     sec_keys = [
-        QtCore.Qt.Key_Left,
-        QtCore.Qt.Key_Right,
-        QtCore.Qt.Key_Down,
-        QtCore.Qt.Key_Up,
-        QtCore.Qt.Key_PageDown,
-        QtCore.Qt.Key_PageUp
+        _enum(QtCore.Qt, 'Key.Key_Left'),
+        _enum(QtCore.Qt, 'Key.Key_Right'),
+        _enum(QtCore.Qt, 'Key.Key_Down'),
+        _enum(QtCore.Qt, 'Key.Key_Up'),
+        _enum(QtCore.Qt, 'Key.Key_PageDown'),
+        _enum(QtCore.Qt, 'Key.Key_PageUp')
     ]
     sec_i = -1
     for i in (
@@ -275,7 +276,7 @@ def init_menubar(data): # pylint: disable=too-many-statements
     AstronciaData.alwaysontopAction.triggered.connect(alwaysontop_action)
     AstronciaData.alwaysontopAction.setCheckable(True)
     AstronciaData.alwaysontopAction.setShortcut(kbd("alwaysontop"))
-    if qt_library == 'PySide6':
+    if qt_library == 'PyQt6':
         AstronciaData.alwaysontopAction.setVisible(False)
 
     AstronciaData.streaminformationAction = qaction(_('Stream Information'), data)

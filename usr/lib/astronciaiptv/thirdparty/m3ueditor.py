@@ -6,11 +6,7 @@ qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
 from pathlib import Path
 from astroncia.extgrp import parse_extgrp
 from astroncia.lang import _ as get_translation
-
-try:
-    qt_DisplayRole = QtCore.Qt.DisplayRole
-except: # pylint: disable=bare-except
-    qt_DisplayRole = QtCore.Qt.ItemDataRole.DisplayRole
+from astroncia.qt6compat import _enum
 
 home_folder = ""
 try:
@@ -28,28 +24,28 @@ class PandasModel(QtCore.QAbstractTableModel):
     def setModified(self):
         self.setChanged = True
 
-    def headerData(self, section, orientation, role=qt_DisplayRole):
-        if role != qt_DisplayRole:
+    def headerData(self, section, orientation, role=_enum(QtCore.Qt, 'ItemDataRole.DisplayRole')):
+        if role != _enum(QtCore.Qt, 'ItemDataRole.DisplayRole'):
             return None
-        if orientation == QtCore.Qt.Horizontal:
+        if orientation == _enum(QtCore.Qt, 'Orientation.Horizontal'):
             try:
                 return self._df.columns.tolist()[section]
             except (IndexError, ):
                 return None
-        elif orientation == QtCore.Qt.Vertical:
+        elif orientation == _enum(QtCore.Qt, 'Orientation.Vertical'):
             try:
                 return self._df.index.tolist()[section]
             except (IndexError, ):
                 return None
 
     def flags(self, index):
-        return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEditable
+        return _enum(QtCore.Qt, 'ItemFlag.ItemIsEnabled') | _enum(QtCore.Qt, 'ItemFlag.ItemIsSelectable') | _enum(QtCore.Qt, 'ItemFlag.ItemIsEditable')
 
-    def data(self, index, role=qt_DisplayRole):
+    def data(self, index, role=_enum(QtCore.Qt, 'ItemDataRole.DisplayRole')):
         if index.isValid():
-            if (role == QtCore.Qt.EditRole):
+            if (role == _enum(QtCore.Qt, 'ItemDataRole.EditRole')):
                 return self._df.values[index.row()][index.column()]
-            elif (role == qt_DisplayRole):
+            elif (role == _enum(QtCore.Qt, 'ItemDataRole.DisplayRole')):
                 return self._df.values[index.row()][index.column()]
         return None
 
@@ -69,7 +65,7 @@ class PandasModel(QtCore.QAbstractTableModel):
     def sort(self, column, order):
         colname = self._df.columns.tolist()[column]
         self.layoutAboutToBeChanged.emit()
-        self._df.sort_values(colname, ascending= order == QtCore.Qt.AscendingOrder, inplace=True)
+        self._df.sort_values(colname, ascending= order == _enum(QtCore.Qt, 'SortOrder.AscendingOrder'), inplace=True)
         self._df.reset_index(inplace=True, drop=True)
         self.layoutChanged.emit()
 
@@ -88,10 +84,10 @@ class Viewer(QtWidgets.QMainWindow):
       self.lb.horizontalHeader().hide()
       self.model =  PandasModel()
       self.lb.setModel(self.model)
-      self.lb.setEditTriggers(QtWidgets.QAbstractItemView.DoubleClicked)
-      self.lb.setSelectionBehavior(self.lb.SelectRows)
-      self.lb.setSelectionMode(self.lb.SingleSelection)
-      self.lb.setDragDropMode(self.lb.InternalMove)
+      self.lb.setEditTriggers(_enum(QtWidgets.QAbstractItemView, 'EditTrigger.DoubleClicked'))
+      self.lb.setSelectionBehavior(_enum(self.lb, 'SelectionBehavior.SelectRows'))
+      self.lb.setSelectionMode(_enum(self.lb, 'SelectionMode.SingleSelection'))
+      self.lb.setDragDropMode(_enum(self.lb, 'DragDropMode.InternalMove'))
       self.setStyleSheet(stylesheet(self))
       self.lb.setAcceptDrops(True)
       self.setCentralWidget(self.lb)
@@ -166,8 +162,8 @@ class Viewer(QtWidgets.QMainWindow):
         if  self.model.setChanged == True:
             quit_msg = "<b>{}</b>".format(get_translation('m3u_waschanged'))
             reply = QtWidgets.QMessageBox.question(self, get_translation('m3u_saveconfirm'),
-                     quit_msg, QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
-            if reply == QtWidgets.QMessageBox.Yes:
+                     quit_msg, _enum(QtWidgets.QMessageBox, 'StandardButton.Yes'), _enum(QtWidgets.QMessageBox, 'StandardButton.No'))
+            if reply == _enum(QtWidgets.QMessageBox, 'StandardButton.Yes'):
                 event.accept()
                 self.writeCSV()
 
@@ -175,8 +171,8 @@ class Viewer(QtWidgets.QMainWindow):
         bar=self.menuBar()
         self.filemenu=bar.addMenu(get_translation('m3u_file'))
         self.separatorAct = self.filemenu.addSeparator()
-        self.filemenu.addAction(QtGui.QIcon.fromTheme("document-open"), get_translation('m3u_loadm3u'),  self.loadM3U, QtGui.QKeySequence.Open)
-        self.filemenu.addAction(QtGui.QIcon.fromTheme("document-save-as"), "{} ...".format(get_translation('m3u_saveas')),  self.writeCSV, QtGui.QKeySequence.SaveAs)
+        self.filemenu.addAction(QtGui.QIcon.fromTheme("document-open"), get_translation('m3u_loadm3u'),  self.loadM3U, _enum(QtGui.QKeySequence, 'StandardKey.Open'))
+        self.filemenu.addAction(QtGui.QIcon.fromTheme("document-save-as"), "{} ...".format(get_translation('m3u_saveas')),  self.writeCSV, _enum(QtGui.QKeySequence, 'StandardKey.SaveAs'))
 
     def createToolBar(self):
         tb = self.addToolBar("Tools")
@@ -296,8 +292,8 @@ class Viewer(QtWidgets.QMainWindow):
         if self.model.setChanged == True:
             save_msg = "<b>{}</b>".format(get_translation('m3u_waschanged'))
             reply = QtWidgets.QMessageBox.question(self, get_translation('m3u_saveconfirm'),
-                     save_msg, QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
-            if reply == QtWidgets.QMessageBox.Yes:
+                     save_msg, _enum(QtWidgets.QMessageBox, 'StandardButton.Yes'), _enum(QtWidgets.QMessageBox, 'StandardButton.No'))
+            if reply == _enum(QtWidgets.QMessageBox, 'StandardButton.Yes'):
                 self.writeCSV()
                 self.open_m3u()
             else:

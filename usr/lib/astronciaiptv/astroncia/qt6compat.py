@@ -20,6 +20,7 @@ from astroncia.time import print_with_time
 
 class AstronciaData: # pylint: disable=too-few-public-methods
     WRITTEN = False
+    WRITTENQT = False
 
 def globalPos(arg):
     try:
@@ -51,8 +52,10 @@ def _exec(obj, arg=None):
 
 def _enum(obj, name):
     parent, child = name.split('.')
-    result0 = getattr(obj, child, False)
-    if result0:
-        return result0
-    obj = getattr(obj, parent)
-    return getattr(obj, child)
+    try:
+        return getattr(getattr(obj, parent), child)
+    except: # pylint: disable=bare-except
+        if not AstronciaData.WRITTENQT:
+            AstronciaData.WRITTENQT = True
+            print_with_time("Falling back to short names for Qt enums")
+        return getattr(obj, child)

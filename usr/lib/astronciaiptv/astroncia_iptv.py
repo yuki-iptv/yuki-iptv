@@ -62,7 +62,7 @@ from astroncia.time import print_with_time, get_app_log, get_mpv_log, args_init
 from astroncia.epgurls import EPG_URLS
 from astroncia.xtreamtom3u import convert_xtream_to_m3u
 from astroncia.xspf import parse_xspf
-from astroncia.qt6compat import globalPos, getX, getY, _exec
+from astroncia.qt6compat import globalPos, getX, getY, _exec, _enum
 from thirdparty.conversion import convert_size, format_bytes, human_secs
 from thirdparty.m3u import M3uParser
 from thirdparty.m3ueditor import Viewer
@@ -285,7 +285,7 @@ def show_exception(e, e_traceback="", prev=""):
     msg = QtWidgets.QMessageBox(
         qt_icon_critical,
         _('error'), message + '\n\n' + \
-        _('foundproblem') + ':\n' + EMAIL_ADDRESS, QtWidgets.QMessageBox.Ok
+        _('foundproblem') + ':\n' + EMAIL_ADDRESS, _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
     )
     msg.exec()
 
@@ -374,15 +374,7 @@ if __name__ == '__main__':
             qt_version = qt_version_pt1()
         except: # pylint: disable=bare-except
             qt_version = qt_version_pt2()
-        print_with_time("Qt version (runtime): {}".format(qt_version))
-        # Qt library debugging (PySide6 only)
-        if qt_library == 'PySide6':
-            try:
-                import PySide6 # pylint: disable=import-error
-                print_with_time("Qt version (PySide6 compiled with): {}".format(QtCore.__version__))
-                print_with_time("PySide6 version: {}".format(PySide6.__version__))
-            except: # pylint: disable=bare-except
-                pass
+        print_with_time("Qt version: {}".format(qt_version))
         print_with_time("")
 
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -844,7 +836,7 @@ if __name__ == '__main__':
                                 qt_icon_warning,
                                 _('error'),
                                 message2,
-                                QtWidgets.QMessageBox.Ok
+                                _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
                             )
                             msg2.exec()
                     else:
@@ -856,7 +848,7 @@ if __name__ == '__main__':
                             qt_icon_warning,
                             _('error'),
                             message1,
-                            QtWidgets.QMessageBox.Ok
+                            _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
                         )
                         msg1.exec()
                 else:
@@ -1025,7 +1017,7 @@ if __name__ == '__main__':
                 self.setWidget(content)
                 lay = QtWidgets.QVBoxLayout(content)
                 self.label = QtWidgets.QLabel(content)
-                self.label.setAlignment(QtCore.Qt.AlignCenter)
+                self.label.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
                 self.label.setWordWrap(True)
                 self.label.setStyleSheet('background-color: ' + bcolor_scrollabel)
                 lay.addWidget(self.label)
@@ -1049,8 +1041,12 @@ if __name__ == '__main__':
 
             def initScroll(self):
                 self.scroll = QtWidgets.QScrollArea()
-                self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
-                self.scroll.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+                self.scroll.setVerticalScrollBarPolicy(
+                    _enum(QtCore.Qt, 'ScrollBarPolicy.ScrollBarAlwaysOn')
+                )
+                self.scroll.setHorizontalScrollBarPolicy(
+                    _enum(QtCore.Qt, 'ScrollBarPolicy.ScrollBarAlwaysOn')
+                )
                 self.scroll.setWidgetResizable(True)
                 self.setCentralWidget(self.scroll)
 
@@ -1087,8 +1083,9 @@ if __name__ == '__main__':
         sepplaylist_win.callback = empty_function
         sepplaylist_win.callback_move = empty_function
         sepplaylist_win.setWindowFlags(
-            QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
-            QtCore.Qt.X11BypassWindowManagerHint
+            _enum(QtCore.Qt, 'WindowType.CustomizeWindowHint') | \
+            _enum(QtCore.Qt, 'WindowType.FramelessWindowHint') | \
+            _enum(QtCore.Qt, 'WindowType.X11BypassWindowManagerHint')
         )
         sepplaylist_win.setWindowTitle('{} ({})'.format(MAIN_WINDOW_TITLE, _('playlist')))
         sepplaylist_win.setWindowIcon(main_icon)
@@ -1164,7 +1161,7 @@ if __name__ == '__main__':
         epg_win_2_checkbox.currentIndexChanged.connect(epg_win_2_checkbox_changed)
 
         epg_win_2_count = QtWidgets.QLabel()
-        epg_win_2_count.setAlignment(QtCore.Qt.AlignCenter)
+        epg_win_2_count.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
 
         epg_win_2_1_widget = QtWidgets.QWidget()
         epg_win_2_1_layout = QtWidgets.QHBoxLayout()
@@ -1227,7 +1224,9 @@ if __name__ == '__main__':
             try:
                 playlists_list.takeItem(
                     playlists_list.row(
-                        playlists_list.findItems(playlists_data.oldName, QtCore.Qt.MatchExactly)[0]
+                        playlists_list.findItems(
+                            playlists_data.oldName, _enum(QtCore.Qt, 'MatchFlag.MatchExactly')
+                        )[0]
                     )
                 )
                 playlists_data.playlists_used.pop(playlists_data.oldName)
@@ -1306,7 +1305,10 @@ if __name__ == '__main__':
 
         playlists_win_edit_widget = QtWidgets.QWidget()
         playlists_win_edit_layout = QtWidgets.QGridLayout()
-        playlists_win_edit_layout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        playlists_win_edit_layout.setAlignment(
+            _enum(QtCore.Qt, 'AlignmentFlag.AlignHCenter') | \
+            _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+        )
         playlists_win_edit_layout.addWidget(name_label_1, 0, 0)
         playlists_win_edit_layout.addWidget(name_edit_1, 0, 1)
         playlists_win_edit_layout.addWidget(m3u_label_1, 1, 0)
@@ -1327,7 +1329,7 @@ if __name__ == '__main__':
             selplaylist_win.close()
             show_playlists()
             playlists_win.raise_()
-            playlists_win.setFocus(QtCore.Qt.PopupFocusReason)
+            playlists_win.setFocus(_enum(QtCore.Qt, 'FocusReason.PopupFocusReason'))
             playlists_win.activateWindow()
 
         def setdefaultplaylist_action():
@@ -1347,7 +1349,7 @@ if __name__ == '__main__':
         myFont6.setPointSize(11)
         myFont6.setBold(True)
         astronciaiptv_label.setFont(myFont6)
-        astronciaiptv_label.setTextFormat(QtCore.Qt.RichText)
+        astronciaiptv_label.setTextFormat(_enum(QtCore.Qt, 'TextFormat.RichText'))
         astronciaiptv_label.setText(
             '<br>&nbsp;<span style="color:green">Astroncia</span>' + \
             ' <span style="color:#b35900">IPTV</span><br>'
@@ -1361,7 +1363,10 @@ if __name__ == '__main__':
 
         selplaylist_widget = QtWidgets.QWidget()
         selplaylist_layout = QtWidgets.QVBoxLayout()
-        astronciaiptv_layout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        astronciaiptv_layout.setAlignment(
+            _enum(QtCore.Qt, 'AlignmentFlag.AlignHCenter') | \
+            _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+        )
         selplaylist_layout.addWidget(astronciaiptv_widget)
         selplaylist_layout.addWidget(setdefaultplaylist)
         selplaylist_layout.addWidget(ihaveplaylist_btn)
@@ -1399,7 +1404,10 @@ if __name__ == '__main__':
 
         epg_select_win_widget = QtWidgets.QWidget()
         epg_select_win_layout = QtWidgets.QVBoxLayout()
-        epg_select_win_layout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        epg_select_win_layout.setAlignment(
+            _enum(QtCore.Qt, 'AlignmentFlag.AlignHCenter') | \
+            _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+        )
         epg_select_win_layout.addWidget(esw_widget, 0)
         epg_select_win_layout.addWidget(esw_select, 1)
         epg_select_win_widget.setLayout(epg_select_win_layout)
@@ -1427,7 +1435,10 @@ if __name__ == '__main__':
         ext_layout = QtWidgets.QGridLayout()
         ext_layout.addWidget(ext_player_txt, 0, 0)
         ext_layout.addWidget(ext_open_btn, 0, 1)
-        ext_layout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        ext_layout.setAlignment(
+            _enum(QtCore.Qt, 'AlignmentFlag.AlignHCenter') | \
+            _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+        )
         ext_widget.setLayout(ext_layout)
         ext_win.setCentralWidget(ext_widget)
 
@@ -1552,7 +1563,7 @@ if __name__ == '__main__':
 
         def addrecord_clicked():
             selected_chan = choosechannel_ch.currentText()
-            if qt_library == 'PySide6':
+            if qt_library == 'PyQt6':
                 start_time_r = starttime_w.dateTime().toPython().strftime('%d.%m.%y %H:%M')
                 end_time_r = endtime_w.dateTime().toPython().strftime('%d.%m.%y %H:%M')
             else:
@@ -1752,7 +1763,10 @@ if __name__ == '__main__':
         activerec_list = QtWidgets.QListWidget()
 
         scheduler_layout_2 = QtWidgets.QGridLayout()
-        scheduler_layout_2.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        scheduler_layout_2.setAlignment(
+            _enum(QtCore.Qt, 'AlignmentFlag.AlignHCenter') | \
+            _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+        )
         scheduler_layout_2.addWidget(starttime_lbl, 0, 0)
         scheduler_layout_2.addWidget(starttime_w, 1, 0)
         scheduler_layout_2.addWidget(endtime_lbl, 2, 0)
@@ -1764,13 +1778,19 @@ if __name__ == '__main__':
         scheduler_layout_2.addWidget(praction_choose, 8, 0)
 
         scheduler_layout_3 = QtWidgets.QGridLayout()
-        scheduler_layout_3.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        scheduler_layout_3.setAlignment(
+            _enum(QtCore.Qt, 'AlignmentFlag.AlignHCenter') | \
+            _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+        )
         scheduler_layout_3.addWidget(statusrec_lbl, 0, 0)
         scheduler_layout_3.addWidget(plannedrec_lbl, 1, 0)
         scheduler_layout_3.addWidget(schedulers, 2, 0)
 
         scheduler_layout_4 = QtWidgets.QGridLayout()
-        scheduler_layout_4.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        scheduler_layout_4.setAlignment(
+            _enum(QtCore.Qt, 'AlignmentFlag.AlignHCenter') | \
+            _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+        )
         scheduler_layout_4.addWidget(activerec_lbl, 0, 0)
         scheduler_layout_4.addWidget(activerec_list, 1, 0)
 
@@ -1799,7 +1819,7 @@ if __name__ == '__main__':
         myFont5.setBold(True)
         warning_lbl.setFont(myFont5)
         warning_lbl.setStyleSheet('color: red')
-        warning_lbl.setAlignment(QtCore.Qt.AlignCenter)
+        warning_lbl.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
 
         scheduler_layout_main = QtWidgets.QVBoxLayout()
         scheduler_layout_main.addWidget(scheduler_widget)
@@ -1839,7 +1859,7 @@ if __name__ == '__main__':
         save_sort_btn.clicked.connect(save_sort)
 
         sort_label = QtWidgets.QLabel(_('donotforgetsort'))
-        sort_label.setAlignment(QtCore.Qt.AlignCenter)
+        sort_label.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
 
         sort_widget3 = QtWidgets.QWidget()
 
@@ -1854,7 +1874,10 @@ if __name__ == '__main__':
         sort_layout.addWidget(sort_label)
         sort_layout.addWidget(sort_widget3)
         sort_layout.addWidget(sort_widget4)
-        sort_layout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        sort_layout.setAlignment(
+            _enum(QtCore.Qt, 'AlignmentFlag.AlignHCenter') | \
+            _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+        )
         sort_widget_main.setLayout(sort_layout)
         sort_win.setCentralWidget(sort_widget_main)
 
@@ -1888,7 +1911,7 @@ if __name__ == '__main__':
             folder_name = QtWidgets.QFileDialog.getExistingDirectory(
                 settings_win,
                 _('selectwritefolder'),
-                options=QtWidgets.QFileDialog.ShowDirsOnly
+                options=_enum(QtWidgets.QFileDialog, 'Option.ShowDirsOnly')
             )
             if folder_name:
                 sfld.setText(folder_name)
@@ -1900,7 +1923,7 @@ if __name__ == '__main__':
         myFont2 = QtGui.QFont()
         myFont2.setBold(True)
         title.setFont(myFont2)
-        title.setAlignment(QtCore.Qt.AlignCenter)
+        title.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
 
         deinterlace_lbl = QtWidgets.QLabel("{}:".format(_('deinterlace')))
         useragent_lbl = QtWidgets.QLabel("{}:".format(_('useragent')))
@@ -2352,91 +2375,91 @@ if __name__ == '__main__':
         horizontalLayout2.addWidget(deinterlace_lbl)
         horizontalLayout2.addWidget(deinterlace_chk)
         horizontalLayout2.addWidget(QtWidgets.QLabel("\n"))
-        horizontalLayout2.setAlignment(QtCore.Qt.AlignCenter)
+        horizontalLayout2.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
 
         horizontalLayout2_1 = QtWidgets.QHBoxLayout()
         horizontalLayout2_1.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_1.addWidget(useragent_lbl)
         horizontalLayout2_1.addWidget(useragent_choose)
         horizontalLayout2_1.addWidget(QtWidgets.QLabel("\n"))
-        horizontalLayout2_1.setAlignment(QtCore.Qt.AlignCenter)
+        horizontalLayout2_1.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
 
         horizontalLayout2_2 = QtWidgets.QHBoxLayout()
         horizontalLayout2_2.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_2.addWidget(group_lbl)
         horizontalLayout2_2.addWidget(group_text)
         horizontalLayout2_2.addWidget(QtWidgets.QLabel("\n"))
-        horizontalLayout2_2.setAlignment(QtCore.Qt.AlignCenter)
+        horizontalLayout2_2.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
 
         horizontalLayout2_3 = QtWidgets.QHBoxLayout()
         horizontalLayout2_3.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_3.addWidget(hidden_lbl)
         horizontalLayout2_3.addWidget(hidden_chk)
         horizontalLayout2_3.addWidget(QtWidgets.QLabel("\n"))
-        horizontalLayout2_3.setAlignment(QtCore.Qt.AlignCenter)
+        horizontalLayout2_3.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
 
         horizontalLayout2_4 = QtWidgets.QHBoxLayout()
         horizontalLayout2_4.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_4.addWidget(contrast_lbl)
         horizontalLayout2_4.addWidget(contrast_choose)
         horizontalLayout2_4.addWidget(QtWidgets.QLabel("\n"))
-        horizontalLayout2_4.setAlignment(QtCore.Qt.AlignCenter)
+        horizontalLayout2_4.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
 
         horizontalLayout2_5 = QtWidgets.QHBoxLayout()
         horizontalLayout2_5.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_5.addWidget(brightness_lbl)
         horizontalLayout2_5.addWidget(brightness_choose)
         horizontalLayout2_5.addWidget(QtWidgets.QLabel("\n"))
-        horizontalLayout2_5.setAlignment(QtCore.Qt.AlignCenter)
+        horizontalLayout2_5.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
 
         horizontalLayout2_6 = QtWidgets.QHBoxLayout()
         horizontalLayout2_6.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_6.addWidget(hue_lbl)
         horizontalLayout2_6.addWidget(hue_choose)
         horizontalLayout2_6.addWidget(QtWidgets.QLabel("\n"))
-        horizontalLayout2_6.setAlignment(QtCore.Qt.AlignCenter)
+        horizontalLayout2_6.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
 
         horizontalLayout2_7 = QtWidgets.QHBoxLayout()
         horizontalLayout2_7.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_7.addWidget(saturation_lbl)
         horizontalLayout2_7.addWidget(saturation_choose)
         horizontalLayout2_7.addWidget(QtWidgets.QLabel("\n"))
-        horizontalLayout2_7.setAlignment(QtCore.Qt.AlignCenter)
+        horizontalLayout2_7.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
 
         horizontalLayout2_8 = QtWidgets.QHBoxLayout()
         horizontalLayout2_8.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_8.addWidget(gamma_lbl)
         horizontalLayout2_8.addWidget(gamma_choose)
         horizontalLayout2_8.addWidget(QtWidgets.QLabel("\n"))
-        horizontalLayout2_8.setAlignment(QtCore.Qt.AlignCenter)
+        horizontalLayout2_8.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
 
         horizontalLayout2_9 = QtWidgets.QHBoxLayout()
         horizontalLayout2_9.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_9.addWidget(videoaspect_lbl)
         horizontalLayout2_9.addWidget(videoaspect_choose)
         horizontalLayout2_9.addWidget(QtWidgets.QLabel("\n"))
-        horizontalLayout2_9.setAlignment(QtCore.Qt.AlignCenter)
+        horizontalLayout2_9.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
 
         horizontalLayout2_10 = QtWidgets.QHBoxLayout()
         horizontalLayout2_10.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_10.addWidget(zoom_lbl)
         horizontalLayout2_10.addWidget(zoom_choose)
         horizontalLayout2_10.addWidget(QtWidgets.QLabel("\n"))
-        horizontalLayout2_10.setAlignment(QtCore.Qt.AlignCenter)
+        horizontalLayout2_10.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
 
         horizontalLayout2_11 = QtWidgets.QHBoxLayout()
         horizontalLayout2_11.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_11.addWidget(panscan_lbl)
         horizontalLayout2_11.addWidget(panscan_choose)
         horizontalLayout2_11.addWidget(QtWidgets.QLabel("\n"))
-        horizontalLayout2_11.setAlignment(QtCore.Qt.AlignCenter)
+        horizontalLayout2_11.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
 
         horizontalLayout2_12 = QtWidgets.QHBoxLayout()
         horizontalLayout2_12.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_12.addWidget(epgname_btn)
         horizontalLayout2_12.addWidget(epgname_lbl)
         horizontalLayout2_12.addWidget(QtWidgets.QLabel("\n"))
-        horizontalLayout2_12.setAlignment(QtCore.Qt.AlignCenter)
+        horizontalLayout2_12.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
 
         horizontalLayout3 = QtWidgets.QHBoxLayout()
         horizontalLayout3.addWidget(save_btn)
@@ -2457,7 +2480,10 @@ if __name__ == '__main__':
         verticalLayout.addLayout(horizontalLayout2_11)
         verticalLayout.addLayout(horizontalLayout2_12)
         verticalLayout.addLayout(horizontalLayout3)
-        verticalLayout.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        verticalLayout.setAlignment(
+            _enum(QtCore.Qt, 'AlignmentFlag.AlignHCenter') | \
+            _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+        )
 
         wid.setLayout(verticalLayout)
         chan_win.setCentralWidget(wid)
@@ -2620,10 +2646,10 @@ if __name__ == '__main__':
         #set_label = QtWidgets.QLabel(_('jtvoffsetrecommendation'))
         #set_label.setStyleSheet('color: #666600')
         fastview_label = QtWidgets.QLabel()
-        fastview_label.setTextFormat(QtCore.Qt.RichText)
+        fastview_label.setTextFormat(_enum(QtCore.Qt, 'TextFormat.RichText'))
         fastview_label.setSizePolicy(
-            QtWidgets.QSizePolicy.Preferred,
-            QtWidgets.QSizePolicy.Minimum
+            _enum(QtWidgets.QSizePolicy, 'Policy.Preferred'),
+            _enum(QtWidgets.QSizePolicy, 'Policy.Minimum')
         )
         fastview_label.setWordWrap(True)
         fastview_label.setText(
@@ -2808,7 +2834,9 @@ if __name__ == '__main__':
             )
         ))
         mpv_label.setOpenExternalLinks(True)
-        mpv_label.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse)
+        mpv_label.setTextInteractionFlags(
+            _enum(QtCore.Qt, 'TextInteractionFlag.LinksAccessibleByMouse')
+        )
         mpv_options = QtWidgets.QLineEdit()
         mpv_options.setText(settings['mpv_options'])
         donot_label = QtWidgets.QLabel("{}:".format(_('donotupdateepg')))
@@ -3231,7 +3259,7 @@ if __name__ == '__main__':
                         qt_icon_critical,
                         MAIN_WINDOW_TITLE,
                         _('newversiongetfail'),
-                        QtWidgets.QMessageBox.Ok
+                        _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
                     )
                     fail_version_msg.exec()
                 else:
@@ -3240,7 +3268,7 @@ if __name__ == '__main__':
                             qt_icon_information,
                             MAIN_WINDOW_TITLE,
                             _('gotlatestversion'),
-                            QtWidgets.QMessageBox.Ok
+                            _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
                         )
                         lastversion_installed_msg.exec()
                     else:
@@ -3248,17 +3276,20 @@ if __name__ == '__main__':
                             None,
                             MAIN_WINDOW_TITLE,
                             _('newversionavail'),
-                            QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
-                            QtWidgets.QMessageBox.Yes
+                            _enum(QtWidgets.QMessageBox, 'StandardButton.Yes') | \
+                            _enum(QtWidgets.QMessageBox, 'StandardButton.No'),
+                            _enum(QtWidgets.QMessageBox, 'StandardButton.Yes')
                         )
-                        if newversion_avail_msg == QtWidgets.QMessageBox.Yes:
+                        if newversion_avail_msg == _enum(
+                            QtWidgets.QMessageBox, 'StandardButton.Yes'
+                        ):
                             async_webbrowser()
             else:
                 fail_version_msg = QtWidgets.QMessageBox(
                     qt_icon_critical,
                     MAIN_WINDOW_TITLE,
                     _('newversiongetfail'),
-                    QtWidgets.QMessageBox.Ok
+                    _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
                 )
                 fail_version_msg.exec()
             checkupdates_btn.setEnabled(True)
@@ -3266,7 +3297,7 @@ if __name__ == '__main__':
                 moveWindowToCenter(help_win)
                 help_win.show()
                 help_win.raise_()
-                help_win.setFocus(QtCore.Qt.PopupFocusReason)
+                help_win.setFocus(_enum(QtCore.Qt, 'FocusReason.PopupFocusReason'))
                 help_win.activateWindow()
 
         def move_separate_playlist_func(seppl_qpoint):
@@ -3277,7 +3308,7 @@ if __name__ == '__main__':
             sepplaylist_win.move(seppl_qpoint)
             sepplaylist_win.show()
             #sepplaylist_win.raise_()
-            #sepplaylist_win.setFocus(QtCore.Qt.PopupFocusReason)
+            #sepplaylist_win.setFocus(_enum(QtCore.Qt, 'FocusReason.PopupFocusReason'))
             #sepplaylist_win.activateWindow()
 
         def comm_instance_main_thread(th_func):
@@ -3317,7 +3348,7 @@ if __name__ == '__main__':
         def aboutqt_show():
             QtWidgets.QMessageBox.aboutQt(QtWidgets.QWidget(), MAIN_WINDOW_TITLE)
             help_win.raise_()
-            help_win.setFocus(QtCore.Qt.PopupFocusReason)
+            help_win.setFocus(_enum(QtCore.Qt, 'FocusReason.PopupFocusReason'))
             help_win.activateWindow()
 
         aboutqt_btn = QtWidgets.QPushButton()
@@ -3473,7 +3504,9 @@ if __name__ == '__main__':
                 try:
                     playlists_list.takeItem(
                         playlists_list.row(
-                            playlists_list.findItems(def_provider_name, QtCore.Qt.MatchExactly)[0]
+                            playlists_list.findItems(
+                                def_provider_name, _enum(QtCore.Qt, 'MatchFlag.MatchExactly')
+                            )[0]
                         )
                     )
                     playlists_data.playlists_used.pop(def_provider_name)
@@ -3494,7 +3527,7 @@ if __name__ == '__main__':
                     qt_icon_information,
                     MAIN_WINDOW_TITLE,
                     _('nohypnotixpf'),
-                    QtWidgets.QMessageBox.Ok
+                    _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
                 )
                 hypnotix_msg.exec()
 
@@ -3748,8 +3781,12 @@ if __name__ == '__main__':
                 #
                 self.container = QtWidgets.QWidget(self)
                 self.setCentralWidget(self.container)
-                self.container.setAttribute(QtCore.Qt.WA_DontCreateNativeAncestors)
-                self.container.setAttribute(QtCore.Qt.WA_NativeWindow)
+                self.container.setAttribute(
+                    _enum(QtCore.Qt, 'WidgetAttribute.WA_DontCreateNativeAncestors')
+                )
+                self.container.setAttribute(
+                    _enum(QtCore.Qt, 'WidgetAttribute.WA_NativeWindow')
+                )
                 self.container.setFocus()
                 self.container.setStyleSheet('''
                     background-color: #C0C6CA;
@@ -3898,7 +3935,7 @@ if __name__ == '__main__':
             return win_geometry_1
 
         chan = QtWidgets.QLabel(_('nochannelselected'))
-        chan.setAlignment(QtCore.Qt.AlignCenter)
+        chan.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
         chan.setStyleSheet('color: green')
         myFont4 = QtGui.QFont()
         myFont4.setPointSize(11)
@@ -3917,7 +3954,7 @@ if __name__ == '__main__':
         loading1.setMovie(loading_movie)
         loading1.setStyleSheet('background-color: white;')
         loading1.resize(32, 32)
-        loading1.setAlignment(QtCore.Qt.AlignCenter)
+        loading1.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
         centerwidget(loading1)
         loading1.hide()
 
@@ -3926,7 +3963,7 @@ if __name__ == '__main__':
         loading2.setMovie(loading_movie2)
         loading2.setToolTip(_('ffmpeg_processing'))
         loading2.resize(32, 32)
-        loading2.setAlignment(QtCore.Qt.AlignCenter)
+        loading2.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
         centerwidget(loading2, 50)
         loading2.hide()
         loading_movie2.stop()
@@ -3947,7 +3984,7 @@ if __name__ == '__main__':
         tvguide_lbl_offset = 30 + lbl2_offset
 
         lbl2 = QtWidgets.QLabel(win)
-        lbl2.setAlignment(QtCore.Qt.AlignCenter)
+        lbl2.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
         lbl2.setStyleSheet('color: #e0071a')
         lbl2.setWordWrap(True)
         lbl2.resize(200, 30)
@@ -3970,7 +4007,7 @@ if __name__ == '__main__':
                 prog_stop_time = datetime.datetime.fromtimestamp(prog_stop).strftime('%H:%M')
                 progress.setValue(prog_percentage)
                 progress.setFormat(str(prog_percentage) + '% ' + prog_title)
-                progress.setAlignment(QtCore.Qt.AlignLeft)
+                progress.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignLeft'))
                 start_label.setText(prog_start_time)
                 stop_label.setText(prog_stop_time)
                 if not fullscreen:
@@ -4090,7 +4127,7 @@ if __name__ == '__main__':
             #player.wait_for_playback()
             playing_archive = archived
             try:
-                j = item.data(QtCore.Qt.UserRole)
+                j = item.data(_enum(QtCore.Qt, 'ItemDataRole.UserRole'))
             except: # pylint: disable=bare-except
                 j = item
             playing_chan = j
@@ -4134,7 +4171,7 @@ if __name__ == '__main__':
         def itemSelected_event(item):
             global item_selected
             try:
-                n_1 = item.data(QtCore.Qt.UserRole)
+                n_1 = item.data(_enum(QtCore.Qt, 'ItemDataRole.UserRole'))
                 item_selected = n_1
                 update_tvguide(n_1)
             except: # pylint: disable=bare-except
@@ -4188,22 +4225,27 @@ if __name__ == '__main__':
             cur_aot_state = aot_state
             if args1.debug:
                 print_with_time("[DEBUG] set_always_on_top: {}".format(aot_state))
-            if ( (aot_state and (win.windowFlags() & QtCore.Qt.WindowStaysOnTopHint)) or \
-                (not aot_state and (not win.windowFlags() & QtCore.Qt.WindowStaysOnTopHint)) ):
+            whint1 = _enum(QtCore.Qt, 'WindowType.WindowStaysOnTopHint')
+            if ( (aot_state and (win.windowFlags() & whint1)) or \
+                (not aot_state and (not win.windowFlags() & whint1)) ):
                 if args1.debug:
                     print_with_time("[DEBUG] set_always_on_top: nothing to do")
                     return
             winIsVisible = win.isVisible()
             winPos1 = win.pos()
             if aot_state:
-                win.setWindowFlags(win.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
+                win.setWindowFlags(
+                    win.windowFlags() | _enum(QtCore.Qt, 'WindowType.WindowStaysOnTopHint')
+                )
             else:
-                win.setWindowFlags(win.windowFlags() & ~QtCore.Qt.WindowStaysOnTopHint)
+                win.setWindowFlags(
+                    win.windowFlags() & ~_enum(QtCore.Qt, 'WindowType.WindowStaysOnTopHint')
+                )
             win.move(winPos1)
             if winIsVisible:
                 win.show()
                 win.raise_()
-                win.setFocus(QtCore.Qt.PopupFocusReason)
+                win.setFocus(_enum(QtCore.Qt, 'FocusReason.PopupFocusReason'))
                 win.activateWindow()
 
         @idle_function
@@ -4253,7 +4295,7 @@ if __name__ == '__main__':
                 if settings["playlistsep"]:
                     win.show()
                     win.raise_()
-                    win.setFocus(QtCore.Qt.PopupFocusReason)
+                    win.setFocus(_enum(QtCore.Qt, 'FocusReason.PopupFocusReason'))
                     win.activateWindow()
                 setShortcutState(True)
                 del_sep_flag()
@@ -4659,7 +4701,7 @@ if __name__ == '__main__':
             try:
                 qp_1 = QtGui.QPixmap()
                 qp_1.loadFromData(req_data)
-                qp_1 = qp_1.scaled(64, 64, QtCore.Qt.KeepAspectRatio)
+                qp_1 = qp_1.scaled(64, 64, _enum(QtCore.Qt, 'AspectRatioMode.KeepAspectRatio'))
                 fetched_icon = Pickable_QIcon(qp_1)
                 return_dict_2[chan_name] = [fetched_icon]
             except: # pylint: disable=bare-except
@@ -4988,7 +5030,7 @@ if __name__ == '__main__':
 
                 # Create QListWidgetItem
                 myQListWidgetItem = QtWidgets.QListWidgetItem()
-                myQListWidgetItem.setData(QtCore.Qt.UserRole, i)
+                myQListWidgetItem.setData(_enum(QtCore.Qt, 'ItemDataRole.UserRole'), i)
                 # Set size hint
                 myQListWidgetItem.setSizeHint(mycwdg.sizeHint())
                 res[l] = [myQListWidgetItem, mycwdg, l, i]
@@ -5072,7 +5114,7 @@ if __name__ == '__main__':
 
         sort_widget2 = QtWidgets.QWidget()
         sort_layout2 = QtWidgets.QVBoxLayout()
-        sort_layout2.setAlignment(QtCore.Qt.AlignCenter)
+        sort_layout2.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
         sort_layout2.addWidget(sort_upbtn)
         sort_layout2.addWidget(sort_downbtn)
         sort_widget2.setLayout(sort_layout2)
@@ -5275,7 +5317,7 @@ if __name__ == '__main__':
             #menu.addAction(_('iaepgmatch'), iaepgmatch)
             _exec(menu, self.mapToGlobal(pos))
 
-        win.listWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        win.listWidget.setContextMenuPolicy(_enum(QtCore.Qt, 'ContextMenuPolicy.CustomContextMenu'))
         win.listWidget.customContextMenuRequested.connect(show_context_menu)
         win.listWidget.currentItemChanged.connect(itemSelected_event)
         win.listWidget.itemClicked.connect(itemSelected_event)
@@ -5284,19 +5326,19 @@ if __name__ == '__main__':
             itemClicked_event(win.listWidget.currentItem())
         shortcuts = []
         shortcuts.append(QShortcut(
-            QtGui.QKeySequence(QtCore.Qt.Key_Return),
+            QtGui.QKeySequence(_enum(QtCore.Qt, 'Key.Key_Return')),
             win.listWidget,
             activated=enterPressed
         ))
         def channelfilter_do():
             btn_update.click()
         loading = QtWidgets.QLabel(_('loading'))
-        loading.setAlignment(QtCore.Qt.AlignCenter)
+        loading.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
         loading.setStyleSheet('color: #778a30')
         hideLoading()
 
         epg_loading = QtWidgets.QLabel(_('epgloading'))
-        epg_loading.setAlignment(QtCore.Qt.AlignCenter)
+        epg_loading.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
         epg_loading.setStyleSheet('color: #778a30')
         epg_loading.hide()
 
@@ -5317,12 +5359,16 @@ if __name__ == '__main__':
         ):
             channelfilter.usePopup = False
             playlist_widget.setWindowFlags(
-                QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
-                QtCore.Qt.X11BypassWindowManagerHint #| QtCore.Qt.Popup
+                _enum(QtCore.Qt, 'WindowType.CustomizeWindowHint') | \
+                _enum(QtCore.Qt, 'WindowType.FramelessWindowHint') | \
+                _enum(QtCore.Qt, 'WindowType.X11BypassWindowManagerHint')
+                #| _enum(QtCore.Qt, 'WindowType.Popup')
             )
             controlpanel_widget.setWindowFlags(
-                QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
-                QtCore.Qt.X11BypassWindowManagerHint #| QtCore.Qt.Popup
+                _enum(QtCore.Qt, 'WindowType.CustomizeWindowHint') | \
+                _enum(QtCore.Qt, 'WindowType.FramelessWindowHint') | \
+                _enum(QtCore.Qt, 'WindowType.X11BypassWindowManagerHint')
+                #| _enum(QtCore.Qt, 'WindowType.Popup')
             )
             if playlist_widget_visible:
                 playlist_widget.show()
@@ -5344,7 +5390,7 @@ if __name__ == '__main__':
             usePopup = False
             click_event = Signal()
             def mousePressEvent(self, event1):
-                if event1.button() == QtCore.Qt.LeftButton:
+                if event1.button() == _enum(QtCore.Qt, 'MouseButton.LeftButton'):
                     self.click_event.emit()
                 else:
                     super().mousePressEvent(event1)
@@ -5372,24 +5418,29 @@ if __name__ == '__main__':
                 controlpanel_widget_visible1 = controlpanel_widget.isVisible()
                 channelfilter.usePopup = True
                 playlist_widget.setWindowFlags(
-                    QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
-                    QtCore.Qt.X11BypassWindowManagerHint | QtCore.Qt.Popup
+                    _enum(QtCore.Qt, 'WindowType.CustomizeWindowHint') | \
+                    _enum(QtCore.Qt, 'WindowType.FramelessWindowHint') | \
+                    _enum(QtCore.Qt, 'WindowType.X11BypassWindowManagerHint') | \
+                    _enum(QtCore.Qt, 'WindowType.Popup')
                 )
                 controlpanel_widget.setWindowFlags(
-                    QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
-                    QtCore.Qt.X11BypassWindowManagerHint | QtCore.Qt.Popup
+                    _enum(QtCore.Qt, 'WindowType.CustomizeWindowHint') | \
+                    _enum(QtCore.Qt, 'WindowType.FramelessWindowHint') | \
+                    _enum(QtCore.Qt, 'WindowType.X11BypassWindowManagerHint') | \
+                    _enum(QtCore.Qt, 'WindowType.Popup')
                 )
                 if playlist_widget_visible1:
                     playlist_widget.show()
                 if controlpanel_widget_visible1:
                     controlpanel_widget.show()
+            xbhint0 = _enum(QtCore.Qt, 'WindowType.X11BypassWindowManagerHint')
             if settings["playlistsep"] and \
-            bool(sepplaylist_win.windowFlags() & QtCore.Qt.X11BypassWindowManagerHint) and \
+            bool(sepplaylist_win.windowFlags() & xbhint0) and \
             not fullscreen:
                 del_sep_flag()
                 sepplaylist_win.show()
                 sepplaylist_win.raise_()
-                sepplaylist_win.setFocus(QtCore.Qt.PopupFocusReason)
+                sepplaylist_win.setFocus(_enum(QtCore.Qt, 'FocusReason.PopupFocusReason'))
                 sepplaylist_win.activateWindow()
                 channelfilter.setFocus()
 
@@ -5489,7 +5540,7 @@ if __name__ == '__main__':
 
         tvguide_widget = QtWidgets.QWidget()
         tvguide_layout = QtWidgets.QHBoxLayout()
-        tvguide_layout.setAlignment(QtCore.Qt.AlignRight)
+        tvguide_layout.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignRight'))
         tvguide_layout.addWidget(tvguide_many)
         tvguide_widget.setLayout(tvguide_layout)
 
@@ -5506,7 +5557,10 @@ if __name__ == '__main__':
         widget3.setLayout(layout3)
         widget4 = QtWidgets.QWidget()
         layout4 = QtWidgets.QHBoxLayout()
-        layout4.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        layout4.setAlignment(
+            _enum(QtCore.Qt, 'AlignmentFlag.AlignLeft') | \
+            _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+        )
         page_lbl = QtWidgets.QLabel('{}:'.format(_('page')))
         of_lbl = QtWidgets.QLabel('{}'.format(_('of')))
         page_box = QtWidgets.QSpinBox()
@@ -5532,7 +5586,7 @@ if __name__ == '__main__':
               width: 24px;
             }
         ''')
-        page_box.setAlignment(QtCore.Qt.AlignCenter)
+        page_box.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
         of_lbl.setText('{} {}'.format(_('of'), \
             round(len(array) / settings["channelsonpage"]) + 1))
         def page_change():
@@ -5547,7 +5601,7 @@ if __name__ == '__main__':
         layout = QtWidgets.QGridLayout()
         layout.setVerticalSpacing(0)
         layout.setContentsMargins(0, 0, 0, 0)
-        layout.setAlignment(QtCore.Qt.AlignTop)
+        layout.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignTop'))
         layout.setSpacing(0)
         widget = QtWidgets.QWidget()
         widget.setLayout(layout)
@@ -5564,11 +5618,17 @@ if __name__ == '__main__':
             dockWidget.setTitleBarWidget(QtWidgets.QWidget())
             dockWidget.setWidget(widget)
             dockWidget.setFloating(False)
-            dockWidget.setFeatures(QtWidgets.QDockWidget.NoDockWidgetFeatures)
+            dockWidget.setFeatures(
+                _enum(QtWidgets.QDockWidget, 'DockWidgetFeature.NoDockWidgetFeatures')
+            )
             if settings['panelposition'] == 0:
-                win.addDockWidget(QtCore.Qt.RightDockWidgetArea, dockWidget)
+                win.addDockWidget(
+                    _enum(QtCore.Qt, 'DockWidgetArea.RightDockWidgetArea'), dockWidget
+                )
             else:
-                win.addDockWidget(QtCore.Qt.LeftDockWidgetArea, dockWidget)
+                win.addDockWidget(
+                    _enum(QtCore.Qt, 'DockWidgetArea.LeftDockWidgetArea'), dockWidget
+                )
         else:
             sepplaylist_win.setCentralWidget(widget)
             playlistHiddenFlag = False
@@ -5610,8 +5670,10 @@ if __name__ == '__main__':
                 sepplaylist_win.move(win.pos().x() + win.width() + 30, win.pos().y())
             sepplaylist_win.resize(RESIZE_WIDTH, RESIZE_HEIGHT)
             dockWidget.setTitleBarWidget(QtWidgets.QWidget())
-            dockWidget.setFeatures(QtWidgets.QDockWidget.NoDockWidgetFeatures)
-            dockWidget.setAllowedAreas(QtCore.Qt.NoDockWidgetArea)
+            dockWidget.setFeatures(
+                _enum(QtWidgets.QDockWidget, 'DockWidgetFeature.NoDockWidgetFeatures')
+            )
+            dockWidget.setAllowedAreas(_enum(QtCore.Qt, 'DockWidgetArea.NoDockWidgetArea'))
 
         FORBIDDEN_CHARS = ('"', '*', ':', '<', '>', '?', '\\', '/', '|', '[', ']')
 
@@ -5877,7 +5939,7 @@ if __name__ == '__main__':
                 qt_icon_warning,
                 MAIN_WINDOW_TITLE,
                 _('ignoringmpvoptions') + "\n\n" + str(json.dumps(options_2)),
-                QtWidgets.QMessageBox.Ok
+                _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
             )
             msg_wrongmpvoptions.exec()
             options = options_orig
@@ -5919,7 +5981,7 @@ if __name__ == '__main__':
                     qt_icon_warning,
                     MAIN_WINDOW_TITLE,
                     _('nochannelselected'),
-                    QtWidgets.QMessageBox.Ok
+                    _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
                 )
                 msg.exec()
 
@@ -6070,8 +6132,8 @@ if __name__ == '__main__':
 
         def applog_clipcopy_clicked():
             clip = QtWidgets.QApplication.clipboard()
-            clip.clear(mode=clip.Clipboard)
-            clip.setText(applog_textarea.toPlainText(), mode=clip.Clipboard)
+            clip.clear(mode=_enum(clip, 'Mode.Clipboard'))
+            clip.setText(applog_textarea.toPlainText(), mode=_enum(clip, 'Mode.Clipboard'))
 
         def applog_save_clicked():
             applog_fname = QtWidgets.QFileDialog.getSaveFileName(
@@ -6122,8 +6184,8 @@ if __name__ == '__main__':
 
         def mpvlog_clipcopy_clicked():
             clip = QtWidgets.QApplication.clipboard()
-            clip.clear(mode=clip.Clipboard)
-            clip.setText(mpvlog_textarea.toPlainText(), mode=clip.Clipboard)
+            clip.clear(mode=_enum(clip, 'Mode.Clipboard'))
+            clip.setText(mpvlog_textarea.toPlainText(), mode=_enum(clip, 'Mode.Clipboard'))
 
         def mpvlog_save_clicked():
             mpvlog_fname = QtWidgets.QFileDialog.getSaveFileName(
@@ -6170,12 +6232,12 @@ if __name__ == '__main__':
                     applog_textarea_new = get_app_log()
                     if applog_textarea.toPlainText() != applog_textarea_new:
                         applog_textarea.setPlainText(applog_textarea_new)
-                        applog_textarea.moveCursor(QtGui.QTextCursor.End)
+                        applog_textarea.moveCursor(_enum(QtGui.QTextCursor, 'MoveOperation.End'))
                 if mpvlog_win.isVisible():
                     mpvlog_textarea_new = get_mpv_log()
                     if mpvlog_textarea.toPlainText() != mpvlog_textarea_new:
                         mpvlog_textarea.setPlainText(mpvlog_textarea_new)
-                        mpvlog_textarea.moveCursor(QtGui.QTextCursor.End)
+                        mpvlog_textarea.moveCursor(_enum(QtGui.QTextCursor, 'MoveOperation.End'))
             except: # pylint: disable=bare-except
                 pass
 
@@ -6338,10 +6400,10 @@ if __name__ == '__main__':
         def next_channel(arg11=None): # pylint: disable=unused-argument
             go_channel(1)
 
-        if qt_library == 'PySide6':
-            qaction_prio = QtGui.QAction.HighPriority
+        if qt_library == 'PyQt6':
+            qaction_prio = _enum(QtGui.QAction, 'Priority.HighPriority')
         else:
-            qaction_prio = QtWidgets.QAction.HighPriority
+            qaction_prio = _enum(QtWidgets.QAction, 'Priority.HighPriority')
 
         def get_keybind(func1):
             return main_keybinds[func1][0]
@@ -6654,7 +6716,7 @@ if __name__ == '__main__':
         label6.setToolTip(_('volume'))
         label6.clicked.connect(mpv_mute)
         LABEL7_SET_WIDTH = 150
-        label7 = QtWidgets.QSlider(QtCore.Qt.Horizontal)
+        label7 = QtWidgets.QSlider(_enum(QtCore.Qt, 'Orientation.Horizontal'))
         label7.setMinimum(0)
         label7.setMaximum(200)
         label7.setFixedWidth(LABEL7_SET_WIDTH)
@@ -6785,8 +6847,10 @@ if __name__ == '__main__':
         dockWidget2.setWidget(widget2)
         dockWidget2.setFloating(False)
         dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
-        dockWidget2.setFeatures(QtWidgets.QDockWidget.NoDockWidgetFeatures)
-        win.addDockWidget(QtCore.Qt.BottomDockWidgetArea, dockWidget2)
+        dockWidget2.setFeatures(
+            _enum(QtWidgets.QDockWidget, 'DockWidgetFeature.NoDockWidgetFeatures')
+        )
+        win.addDockWidget(_enum(QtCore.Qt, 'DockWidgetArea.BottomDockWidgetArea'), dockWidget2)
 
         progress.hide()
         start_label.hide()
@@ -6801,7 +6865,7 @@ if __name__ == '__main__':
         l1.setFont(myFont1)
         l1.setWordWrap(True)
         l1.move(50, 50)
-        l1.setAlignment(QtCore.Qt.AlignCenter)
+        l1.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
 
         static_text = ""
         gl_is_static = False
@@ -7270,7 +7334,7 @@ if __name__ == '__main__':
                     if show_cursor_really:
                         win.container.unsetCursor()
                     else:
-                        win.container.setCursor(QtCore.Qt.BlankCursor)
+                        win.container.setCursor(_enum(QtCore.Qt, 'CursorShape.BlankCursor'))
                 except: # pylint: disable=bare-except
                     pass
             else:
@@ -7298,7 +7362,7 @@ if __name__ == '__main__':
         pl_layout = QtWidgets.QGridLayout()
         pl_layout.setVerticalSpacing(0)
         pl_layout.setContentsMargins(0, 0, 0, 0)
-        pl_layout.setAlignment(QtCore.Qt.AlignTop)
+        pl_layout.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignTop'))
         pl_layout.setSpacing(0)
         playlist_widget_orig.setLayout(pl_layout)
         playlist_widget.hide()
@@ -7330,8 +7394,10 @@ if __name__ == '__main__':
             )
             playlist_widget.setWindowOpacity(0.55)
             playlist_widget.setWindowFlags(
-                QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
-                QtCore.Qt.X11BypassWindowManagerHint #| QtCore.Qt.Popup
+                _enum(QtCore.Qt, 'WindowType.CustomizeWindowHint') | \
+                _enum(QtCore.Qt, 'WindowType.FramelessWindowHint') | \
+                _enum(QtCore.Qt, 'WindowType.X11BypassWindowManagerHint')
+                #| _enum(QtCore.Qt, 'WindowType.Popup')
             )
             pl_layout.addWidget(widget)
             playlist_widget.show()
@@ -7376,13 +7442,17 @@ if __name__ == '__main__':
             controlpanel_widget.setWindowOpacity(0.55)
             if channelfilter.usePopup:
                 controlpanel_widget.setWindowFlags(
-                    QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
-                    QtCore.Qt.X11BypassWindowManagerHint | QtCore.Qt.Popup
+                    _enum(QtCore.Qt, 'WindowType.CustomizeWindowHint') | \
+                    _enum(QtCore.Qt, 'WindowType.FramelessWindowHint') | \
+                    _enum(QtCore.Qt, 'WindowType.X11BypassWindowManagerHint') | \
+                    _enum(QtCore.Qt, 'WindowType.Popup')
                 )
             else:
                 controlpanel_widget.setWindowFlags(
-                    QtCore.Qt.CustomizeWindowHint | QtCore.Qt.FramelessWindowHint | \
-                    QtCore.Qt.X11BypassWindowManagerHint #| QtCore.Qt.Popup
+                    _enum(QtCore.Qt, 'WindowType.CustomizeWindowHint') | \
+                    _enum(QtCore.Qt, 'WindowType.FramelessWindowHint') | \
+                    _enum(QtCore.Qt, 'WindowType.X11BypassWindowManagerHint')
+                    #| _enum(QtCore.Qt, 'WindowType.Popup')
                 )
             #cp_layout.addWidget(fs_widget)
             cp_layout.addWidget(widget2)
@@ -7476,7 +7546,7 @@ if __name__ == '__main__':
                                     sepplaylist_win.show()
                                 win.show()
                                 win.raise_()
-                                win.setFocus(QtCore.Qt.PopupFocusReason)
+                                win.setFocus(_enum(QtCore.Qt, 'FocusReason.PopupFocusReason'))
                                 win.activateWindow()
                         else:
                             if settings["playlistsep"]:
@@ -7573,7 +7643,7 @@ if __name__ == '__main__':
                         AstronciaData.playlist_hidden = False
                         sepplaylist_win.show()
                         selplaylist_win.raise_()
-                        selplaylist_win.setFocus(QtCore.Qt.PopupFocusReason)
+                        selplaylist_win.setFocus(_enum(QtCore.Qt, 'FocusReason.PopupFocusReason'))
                         selplaylist_win.activateWindow()
                 else:
                     if dockWidget.isVisible():
@@ -7695,99 +7765,99 @@ if __name__ == '__main__':
 
         main_keybinds = {
             "(lambda: mpv_seek(-10))": [
-                QtCore.Qt.Key_Left
+                _enum(QtCore.Qt, 'Key.Key_Left')
             ],
             "(lambda: mpv_seek(-60))": [
-                QtCore.Qt.Key_Down
+                _enum(QtCore.Qt, 'Key.Key_Down')
             ],
             "(lambda: mpv_seek(-600))": [
-                QtCore.Qt.Key_PageDown
+                _enum(QtCore.Qt, 'Key.Key_PageDown')
             ],
             "(lambda: mpv_seek(10))": [
-                QtCore.Qt.Key_Right
+                _enum(QtCore.Qt, 'Key.Key_Right')
             ],
             "(lambda: mpv_seek(60))": [
-                QtCore.Qt.Key_Up
+                _enum(QtCore.Qt, 'Key.Key_Up')
             ],
             "(lambda: mpv_seek(600))": [
-                QtCore.Qt.Key_PageUp
+                _enum(QtCore.Qt, 'Key.Key_PageUp')
             ],
             "(lambda: my_down_binding())": [
-                QtCore.Qt.Key_VolumeDown
+                _enum(QtCore.Qt, 'Key.Key_VolumeDown')
             ],
             "(lambda: my_up_binding())": [
-                QtCore.Qt.Key_VolumeUp
+                _enum(QtCore.Qt, 'Key.Key_VolumeUp')
             ],
             "(lambda: set_playback_speed(1.00))": [
-                QtCore.Qt.Key_Backspace
+                _enum(QtCore.Qt, 'Key.Key_Backspace')
             ],
             "app.quit": [
                 "Ctrl+Q"
             ],
             "do_record": [
-                QtCore.Qt.Key_R,
-                QtCore.Qt.Key_MediaRecord
+                _enum(QtCore.Qt, 'Key.Key_R'),
+                _enum(QtCore.Qt, 'Key.Key_MediaRecord')
             ],
             "do_screenshot": [
-                QtCore.Qt.Key_H
+                _enum(QtCore.Qt, 'Key.Key_H')
             ],
             "esc_handler": [
-                QtCore.Qt.Key_Escape
+                _enum(QtCore.Qt, 'Key.Key_Escape')
             ],
             "force_update_epg": [
                 "Ctrl+U"
             ],
             "key_quit": [
-                QtCore.Qt.Key_Q
+                _enum(QtCore.Qt, 'Key.Key_Q')
             ],
             "key_t": [
-                QtCore.Qt.Key_T
+                _enum(QtCore.Qt, 'Key.Key_T')
             ],
             "lowpanel_ch_1": [
-                QtCore.Qt.Key_P
+                _enum(QtCore.Qt, 'Key.Key_P')
             ],
             "main_channel_settings": [
                 "Ctrl+S"
             ],
             "mpv_fullscreen": [
-                QtCore.Qt.Key_F,
-                QtCore.Qt.Key_F11
+                _enum(QtCore.Qt, 'Key.Key_F'),
+                _enum(QtCore.Qt, 'Key.Key_F11')
             ],
             "mpv_mute": [
-                QtCore.Qt.Key_M,
-                QtCore.Qt.Key_VolumeMute
+                _enum(QtCore.Qt, 'Key.Key_M'),
+                _enum(QtCore.Qt, 'Key.Key_VolumeMute')
             ],
             "mpv_play": [
-                QtCore.Qt.Key_Space,
-                QtCore.Qt.Key_MediaTogglePlayPause,
-                QtCore.Qt.Key_MediaPlay,
-                QtCore.Qt.Key_MediaPause,
-                QtCore.Qt.Key_Play
+                _enum(QtCore.Qt, 'Key.Key_Space'),
+                _enum(QtCore.Qt, 'Key.Key_MediaTogglePlayPause'),
+                _enum(QtCore.Qt, 'Key.Key_MediaPlay'),
+                _enum(QtCore.Qt, 'Key.Key_MediaPause'),
+                _enum(QtCore.Qt, 'Key.Key_Play')
             ],
             "mpv_stop": [
-                QtCore.Qt.Key_S,
-                QtCore.Qt.Key_Stop,
-                QtCore.Qt.Key_MediaStop
+                _enum(QtCore.Qt, 'Key.Key_S'),
+                _enum(QtCore.Qt, 'Key.Key_Stop'),
+                _enum(QtCore.Qt, 'Key.Key_MediaStop')
             ],
             "my_down_binding_execute": [
-                QtCore.Qt.Key_9
+                _enum(QtCore.Qt, 'Key.Key_9')
             ],
             "my_up_binding_execute": [
-                QtCore.Qt.Key_0
+                _enum(QtCore.Qt, 'Key.Key_0')
             ],
             "next_channel": [
-                QtCore.Qt.Key_N,
-                QtCore.Qt.Key_MediaNext
+                _enum(QtCore.Qt, 'Key.Key_N'),
+                _enum(QtCore.Qt, 'Key.Key_MediaNext')
             ],
             "open_stream_info": [
-                QtCore.Qt.Key_F2
+                _enum(QtCore.Qt, 'Key.Key_F2')
             ],
             "prev_channel": [
-                QtCore.Qt.Key_B,
-                QtCore.Qt.Key_MediaPrevious
+                _enum(QtCore.Qt, 'Key.Key_B'),
+                _enum(QtCore.Qt, 'Key.Key_MediaPrevious')
             ],
             "show_clock": [
-                QtCore.Qt.Key_O
+                _enum(QtCore.Qt, 'Key.Key_O')
             ],
             "show_m3u_editor": [
                 "Ctrl+E"
@@ -7796,28 +7866,28 @@ if __name__ == '__main__':
                 "Ctrl+O"
             ],
             "show_scheduler": [
-                QtCore.Qt.Key_D
+                _enum(QtCore.Qt, 'Key.Key_D')
             ],
             "show_settings": [
                 "Ctrl+P"
             ],
             "show_sort": [
-                QtCore.Qt.Key_I
+                _enum(QtCore.Qt, 'Key.Key_I')
             ],
             "show_timeshift": [
-                QtCore.Qt.Key_E
+                _enum(QtCore.Qt, 'Key.Key_E')
             ],
             "show_tvguide": [
-                QtCore.Qt.Key_G
+                _enum(QtCore.Qt, 'Key.Key_G')
             ],
             "showhideeverything": [
                 "Ctrl+C"
             ],
             "show_tvguide_2": [
-                QtCore.Qt.Key_J
+                _enum(QtCore.Qt, 'Key.Key_J')
             ],
             "alwaysontop": [
-                QtCore.Qt.Key_A
+                _enum(QtCore.Qt, 'Key.Key_A')
             ]
         }
 
@@ -7939,7 +8009,7 @@ if __name__ == '__main__':
             win.show()
             aot_action = init_mpv_player()
             win.raise_()
-            win.setFocus(QtCore.Qt.PopupFocusReason)
+            win.setFocus(_enum(QtCore.Qt, 'FocusReason.PopupFocusReason'))
             win.activateWindow()
             if os.path.isfile(str(Path(LOCAL_DIR, 'windowpos.json'))):
                 try:
@@ -8006,13 +8076,13 @@ if __name__ == '__main__':
             if not os.path.isfile(str(Path(LOCAL_DIR, 'settings.json'))):
                 selplaylist_win.show()
                 selplaylist_win.raise_()
-                selplaylist_win.setFocus(QtCore.Qt.PopupFocusReason)
+                selplaylist_win.setFocus(_enum(QtCore.Qt, 'FocusReason.PopupFocusReason'))
                 selplaylist_win.activateWindow()
                 moveWindowToCenter(selplaylist_win)
             else:
                 show_playlists()
                 playlists_win.raise_()
-                playlists_win.setFocus(QtCore.Qt.PopupFocusReason)
+                playlists_win.setFocus(_enum(QtCore.Qt, 'FocusReason.PopupFocusReason'))
                 playlists_win.activateWindow()
 
         sys.exit(_exec(app))
