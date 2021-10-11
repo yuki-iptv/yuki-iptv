@@ -716,7 +716,7 @@ msgid "setdefaultplaylist"
 msgstr "Выбрать плейлист по умолчанию (Free-TV)"
 
 msgid "ihaveplaylist"
-msgstr "У меня есть M3U / XTream плейлист"
+msgstr "У меня есть M3U / XSPF / XTream плейлист"
 
 msgid "aboutqt"
 msgstr "О Qt"
