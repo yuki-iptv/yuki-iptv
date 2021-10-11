@@ -912,6 +912,9 @@ msgstr "Show only channels in playlist"
 msgid "channels"
 msgstr "channels"
 
+msgid "hideplaylistleftclk"
+msgstr "Hide playlist by left click"
+
 msgid "styleredefoff"
 msgstr "Enable styles redefinition"
 
@@ -926,9 +929,6 @@ msgstr "experimental function"
 
 msgid "autoreconnection"
 msgstr "Automatic\nreconnection"
-
-msgid "hideplaylistscrollclk"
-msgstr "Hide playlist by middle click"
 
 msgid "helptext"
 msgstr ""
