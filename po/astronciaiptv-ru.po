@@ -934,6 +934,9 @@ msgstr "экспериментальная функция"
 msgid "autoreconnection"
 msgstr "Автоматическое\nпереподключение"
 
+msgid "customua"
+msgstr "- пользовательский -"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, версия {}\n© kestral / astroncia < kestraly (at) gmail.com "

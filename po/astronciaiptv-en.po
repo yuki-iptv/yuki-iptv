@@ -930,6 +930,9 @@ msgstr "experimental function"
 msgid "autoreconnection"
 msgstr "Automatic\nreconnection"
 
+msgid "customua"
+msgstr "- custom -"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, version {}\n© kestral / astroncia < kestraly (at) gmail.com "
