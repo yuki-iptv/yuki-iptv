@@ -4420,6 +4420,9 @@ if __name__ == '__main__':
                     dockWidget2.show()
                 else:
                     dockWidget2.hide()
+                if AstronciaData.compact_mode:
+                    win.menu_bar_qt.hide()
+                    setShortcutState(True)
 
         dockWidget_out = QtWidgets.QPushButton()
         dockWidget_out.clicked.connect(dockWidget_out_clicked)
