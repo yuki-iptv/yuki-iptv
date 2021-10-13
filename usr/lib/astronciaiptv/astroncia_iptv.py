@@ -3921,6 +3921,7 @@ if __name__ == '__main__':
                 init_astroncia_menubar(self, app, self.menu_bar_qt)
 
         win = MainWindow()
+        win.setMinimumSize(1, 1)
         win.setWindowTitle(MAIN_WINDOW_TITLE)
         win.setWindowIcon(main_icon)
         if os.path.isfile(str(Path(LOCAL_DIR, 'windowsize.json'))):
