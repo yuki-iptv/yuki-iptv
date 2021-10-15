@@ -937,6 +937,9 @@ msgstr "Автоматическое\nпереподключение"
 msgid "customua"
 msgstr "- пользовательский -"
 
+msgid "deletefromfav"
+msgstr "Удалить из избранного"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, версия {}\n© kestral / astroncia < kestraly (at) gmail.com "

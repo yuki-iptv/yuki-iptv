@@ -933,6 +933,9 @@ msgstr "Automatic\nreconnection"
 msgid "customua"
 msgstr "- custom -"
 
+msgid "deletefromfav"
+msgstr "Delete from favourites"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, version {}\n© kestral / astroncia < kestraly (at) gmail.com "
