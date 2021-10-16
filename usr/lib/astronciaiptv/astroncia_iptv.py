@@ -5244,7 +5244,18 @@ if __name__ == '__main__':
 
         def tvguide_favourites_add():
             if item_selected in favourite_sets:
-                favourite_sets.remove(item_selected)
+                isdelete_fav_msg = QtWidgets.QMessageBox.question(
+                    None,
+                    MAIN_WINDOW_TITLE,
+                    str(_('deletefromfav')) + '?',
+                    _enum(QtWidgets.QMessageBox, 'StandardButton.Yes') | \
+                    _enum(QtWidgets.QMessageBox, 'StandardButton.No'),
+                    _enum(QtWidgets.QMessageBox, 'StandardButton.Yes')
+                )
+                if isdelete_fav_msg == _enum(
+                    QtWidgets.QMessageBox, 'StandardButton.Yes'
+                ):
+                    favourite_sets.remove(item_selected)
             else:
                 favourite_sets.append(item_selected)
             save_favourite_sets()
