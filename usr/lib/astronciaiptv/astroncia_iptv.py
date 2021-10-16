@@ -130,7 +130,7 @@ EMAIL_ADDRESS = "kestraly (at) gmail.com"
 # for example, if you packaging this into (stable) repository
 CHECK_UPDATES_ENABLED = True
 
-UPDATE_URL = "https://gitlab.com/astroncia/iptv/-/raw/master/version.txt"
+UPDATE_URL = "https://gitlab.com/api/v4/projects/25752124/releases/"
 UPDATE_RELEASES_URL = "https://gitlab.com/astroncia/iptv/-/releases"
 
 UPDATE_BR_INTERVAL = 5
@@ -3254,6 +3254,10 @@ if __name__ == '__main__':
 
         def check_for_updates_pt2(last_avail_version_2, noWin):
             if last_avail_version_2:
+                print_with_time("")
+                print_with_time("Current version: {}".format(APP_VERSION))
+                print_with_time("Latest version available: {}".format(last_avail_version_2))
+                print_with_time("")
                 if APP_VERSION == '__DEB' + '_VERSION__':
                     fail_version_msg = QtWidgets.QMessageBox(
                         qt_icon_critical,
@@ -3328,7 +3332,7 @@ if __name__ == '__main__':
                     UPDATE_URL,
                     headers={'User-Agent': ''},
                     timeout=2
-                ).text)['version'].strip()
+                ).text)[0]['name'].strip()
             except: # pylint: disable=bare-except
                 pass
             comm_instance.repaintUpdates.emit(last_avail_version, noWin)
