@@ -4,7 +4,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 
 msgid "name"
-msgstr "Deutsch (INCOMPLETE)"
+msgstr "Deutsch"
 
 msgid "m3u_ready"
 msgstr "Bereit"
