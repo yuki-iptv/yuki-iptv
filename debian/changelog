@@ -1,3 +1,13 @@
+astroncia-iptv (0.0.85) unstable; urgency=medium
+
+  * Adding Spanish translation
+  * Update Croatian language
+  * Ask before deleting channel from favourites
+  * Add auto stream reconnection option
+  * Temporarily drop Qt 6 support because of bugs
+
+ -- Astroncia <kestraly@gmail.com>  Mon, 18 Oct 2021 12:23:56 +0300
+
 astroncia-iptv (0.0.84) unstable; urgency=medium
 
   * Minor bugfixes
