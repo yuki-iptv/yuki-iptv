@@ -1,3 +1,10 @@
+astroncia-iptv (0.0.86) unstable; urgency=medium
+
+  * Fix ffmpeg recording data and quality issues
+  * Add do not create subfolders for recordings and screenshots option
+
+ -- Astroncia <kestraly@gmail.com>  Wed, 20 Oct 2021 20:01:16 +0300
+
 astroncia-iptv (0.0.85) unstable; urgency=medium
 
   * Adding Spanish translation
