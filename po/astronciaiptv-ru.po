@@ -941,7 +941,7 @@ msgid "deletefromfav"
 msgstr "Удалить из избранного"
 
 msgid "scrrecnosubfolders"
-msgstr "Не создавать подпапки для скриншотов и записей"
+msgstr "Не создавать подпапки\nдля скриншотов и записей"
 
 msgid "helptext"
 msgstr ""

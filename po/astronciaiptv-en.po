@@ -937,7 +937,7 @@ msgid "deletefromfav"
 msgstr "Delete from favourites"
 
 msgid "scrrecnosubfolders"
-msgstr "Do not create screenshots and recordings subfolders"
+msgstr "Do not create screenshots\nand recordings subfolders"
 
 msgid "helptext"
 msgstr ""
