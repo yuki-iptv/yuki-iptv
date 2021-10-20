@@ -936,6 +936,9 @@ msgstr "- custom -"
 msgid "deletefromfav"
 msgstr "Delete from favourites"
 
+msgid "scrrecnosubfolders"
+msgstr "Do not create screenshots and recordings subfolders"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, version {}\n© kestral / astroncia < kestraly (at) gmail.com "
