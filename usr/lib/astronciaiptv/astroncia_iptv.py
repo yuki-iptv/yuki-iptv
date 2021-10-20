@@ -475,6 +475,7 @@ if __name__ == '__main__':
                 'autoreconnection': True,
                 'showplaylistmouse': True,
                 'hideplaylistleftclk': False,
+                'scrrecnosubfolders': False,
                 'showcontrolsmouse': True,
                 'flpopacity': 0.7,
                 'panelposition': 0,
@@ -533,6 +534,8 @@ if __name__ == '__main__':
             settings['showplaylistmouse'] = True
         if 'hideplaylistleftclk' not in settings:
             settings['hideplaylistleftclk'] = False
+        if 'scrrecnosubfolders' not in settings:
+            settings['scrrecnosubfolders'] = False
         if 'showcontrolsmouse' not in settings:
             settings['showcontrolsmouse'] = True
         if 'flpopacity' not in settings:
@@ -770,11 +773,22 @@ if __name__ == '__main__':
                 if not os.path.isdir(str(Path(save_folder))):
                     os.mkdir(str(Path(save_folder)))
 
-        if not os.path.isdir(str(Path(save_folder, 'screenshots'))):
-            os.mkdir(str(Path(save_folder, 'screenshots')))
-
-        if not os.path.isdir(str(Path(save_folder, 'recordings'))):
-            os.mkdir(str(Path(save_folder, 'recordings')))
+        if not settings['scrrecnosubfolders']:
+            if not os.path.isdir(str(Path(save_folder, 'screenshots'))):
+                os.mkdir(str(Path(save_folder, 'screenshots')))
+            if not os.path.isdir(str(Path(save_folder, 'recordings'))):
+                os.mkdir(str(Path(save_folder, 'recordings')))
+        else:
+            if os.path.isdir(str(Path(save_folder, 'screenshots'))):
+                try:
+                    os.rmdir(str(Path(save_folder, 'screenshots')))
+                except: # pylint: disable=bare-except
+                    pass
+            if os.path.isdir(str(Path(save_folder, 'recordings'))):
+                try:
+                    os.rmdir(str(Path(save_folder, 'recordings')))
+                except: # pylint: disable=bare-except
+                    pass
 
         array = {}
         groups = []
@@ -1583,11 +1597,17 @@ if __name__ == '__main__':
             for char in FORBIDDEN_CHARS:
                 ch = ch.replace(char, "")
             cur_time = datetime.datetime.now().strftime('%d%m%Y_%H%M%S')
-            out_file = str(Path(
-                save_folder,
-                'recordings',
-                'recording_-_' + cur_time + '_-_' + ch + '.mkv'
-            ))
+            if not settings['scrrecnosubfolders']:
+                out_file = str(Path(
+                    save_folder,
+                    'recordings',
+                    'recording_-_' + cur_time + '_-_' + ch + '.mkv'
+                ))
+            else:
+                out_file = str(Path(
+                    save_folder,
+                    'recording_-_' + cur_time + '_-_' + ch + '.mkv'
+                ))
             record_url = array[ch_name]['url']
             return [
                 record_return(
@@ -2558,6 +2578,7 @@ if __name__ == '__main__':
                 'autoreconnection': autoreconnection_flag.isChecked(),
                 'showplaylistmouse': showplaylistmouse_flag.isChecked(),
                 'hideplaylistleftclk': hideplaylistleftclk_flag.isChecked(),
+                'scrrecnosubfolders': scrrecnosubfolders_flag.isChecked(),
                 'showcontrolsmouse': showcontrolsmouse_flag.isChecked(),
                 'flpopacity': flpopacity_input.value(),
                 'panelposition': panelposition_choose.currentIndex(),
@@ -2959,6 +2980,10 @@ if __name__ == '__main__':
         hideplaylistleftclk_flag = QtWidgets.QCheckBox()
         hideplaylistleftclk_flag.setChecked(settings['hideplaylistleftclk'])
 
+        scrrecnosubfolders_label = QtWidgets.QLabel("{}:".format(_('scrrecnosubfolders')))
+        scrrecnosubfolders_flag = QtWidgets.QCheckBox()
+        scrrecnosubfolders_flag.setChecked(settings['scrrecnosubfolders'])
+
         # Mark option as experimental
         hideplaylistleftclk_flag.setToolTip(_('expfunctionwarning'))
         hideplaylistleftclk_label.setToolTip(_('expfunctionwarning'))
@@ -3006,14 +3031,16 @@ if __name__ == '__main__':
         tab1.layout.addWidget(fld_label, 1, 0)
         tab1.layout.addWidget(sfld, 1, 1)
         tab1.layout.addWidget(sfolder, 1, 2)
-        tab1.layout.addWidget(sort_label, 2, 0)
-        tab1.layout.addWidget(sort_widget, 2, 1)
-        tab1.layout.addWidget(update_label, 3, 0)
-        tab1.layout.addWidget(supdate, 3, 1)
-        tab1.layout.addWidget(openprevchan_label, 4, 0)
-        tab1.layout.addWidget(openprevchan_flag, 4, 1)
-        tab1.layout.addWidget(remembervol_label, 5, 0)
-        tab1.layout.addWidget(remembervol_flag, 5, 1)
+        tab1.layout.addWidget(scrrecnosubfolders_label, 2, 0)
+        tab1.layout.addWidget(scrrecnosubfolders_flag, 2, 1)
+        tab1.layout.addWidget(sort_label, 3, 0)
+        tab1.layout.addWidget(sort_widget, 3, 1)
+        tab1.layout.addWidget(update_label, 4, 0)
+        tab1.layout.addWidget(supdate, 4, 1)
+        tab1.layout.addWidget(openprevchan_label, 5, 0)
+        tab1.layout.addWidget(openprevchan_flag, 5, 1)
+        tab1.layout.addWidget(remembervol_label, 6, 0)
+        tab1.layout.addWidget(remembervol_flag, 6, 1)
         tab1.setLayout(tab1.layout)
 
         tab2.layout = QtWidgets.QGridLayout()
@@ -5729,7 +5756,10 @@ if __name__ == '__main__':
                     ch = ch.replace(char, "")
                 cur_time = datetime.datetime.now().strftime('%d%m%Y_%H%M%S')
                 file_name = 'screenshot_-_' + cur_time + '_-_' + ch + '.png'
-                file_path = str(Path(save_folder, 'screenshots', file_name))
+                if not settings['scrrecnosubfolders']:
+                    file_path = str(Path(save_folder, 'screenshots', file_name))
+                else:
+                    file_path = str(Path(save_folder, file_name))
                 try:
                     if settings['screenshot'] == 0:
                         pillow_img = player.screenshot_raw()
@@ -5874,11 +5904,17 @@ if __name__ == '__main__':
                 for char in FORBIDDEN_CHARS:
                     ch = ch.replace(char, "")
                 cur_time = datetime.datetime.now().strftime('%d%m%Y_%H%M%S')
-                out_file = str(Path(
-                    save_folder,
-                    'recordings',
-                    'recording_-_' + cur_time + '_-_' + ch + '.mkv'
-                ))
+                if not settings['scrrecnosubfolders']:
+                    out_file = str(Path(
+                        save_folder,
+                        'recordings',
+                        'recording_-_' + cur_time + '_-_' + ch + '.mkv'
+                    ))
+                else:
+                    out_file = str(Path(
+                        save_folder,
+                        'recording_-_' + cur_time + '_-_' + ch + '.mkv'
+                    ))
                 record_file = out_file
                 record(url3, out_file, orig_channel_name, "Referer: {}".format(settings["referer"]))
             else:
