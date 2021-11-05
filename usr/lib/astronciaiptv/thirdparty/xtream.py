@@ -6,7 +6,7 @@ It does not support M3U
 This application comes from the pyxtream library found at:
 https://pypi.org/project/pyxtream
 
-Part of this content comes from
+Part of this content comes from 
 https://github.com/chazlarson/py-xtream-codes/blob/master/xtream.py
 https://github.com/linuxmint/hypnotix
 
@@ -60,7 +60,7 @@ class Channel():
     def __init__(self, xtream: object, group_title, stream_info):
         stream_type = stream_info['stream_type']
         # Adjust the odd "created_live" type
-        if stream_type == "created_live":
+        if stream_type == "created_live" or stream_type == "radio_streams":
             stream_type = "live"
 
         if stream_type != "live" and stream_type != "movie":
@@ -427,11 +427,14 @@ class XTream():
             r = requests.get(
                 self.get_authenticate_URL()
                 )
-            self.auth_data = r.json()
-            self.authorization = {
-                "username": self.auth_data["user_info"]["username"],
-                "password": self.auth_data["user_info"]["password"]
-            }
+            if r.ok:
+                self.auth_data = r.json()
+                self.authorization = {
+                    "username": self.auth_data["user_info"]["username"],
+                    "password": self.auth_data["user_info"]["password"]
+                }
+            else:
+                print_with_time("Provider `{}` could not be loaded. Reason: `{} {}`".format(self.name,r.status_code, r.reason))
         except requests.exceptions.ConnectionError:
             # If connection refused
             print_with_time("{} - Connection refused URL: {}".format(self.name, self.server))
@@ -580,61 +583,64 @@ class XTream():
                 ## Add Streams to dictionaries
 
                 for stream_channel in all_streams:
-                    # Generate Group Title
-                    if stream_channel['name'][0].isalnum():
+                    if stream_channel['name'] != "":
+                        # Generate Group Title
+                        if stream_channel['name'][0].isalnum():
 
-                        # Some channels have no group, 
-                        # so let's add them to the catche all group
-                        if stream_channel['category_id'] == None:
-                            stream_channel['category_id'] = '9999'
-                        elif stream_channel['category_id'] != '1':
-                            pass
+                            # Some channels have no group, 
+                            # so let's add them to the catche all group
+                            if stream_channel['category_id'] == None:
+                                stream_channel['category_id'] = '9999'
+                            elif stream_channel['category_id'] != '1':
+                                pass
 
-                        # Find the first occurence of the group that the
-                        # Channel or Stream is pointing to
-                        the_group = next(
-                            (x for x in self.groups if x.group_id == stream_channel['category_id']),
-                            None
-                        )
-                        
-                        if the_group != None:
-                            group_title = the_group.name
-                        else:
-                            group_title = self.catch_all_group.name
-                            the_group = self.catch_all_group
-
-                        if loading_stream_type == self.series_type:
-                            # Load all Series
-                            new_series = Serie(self, stream_channel)
-                            # To get all the Episodes for every Season of each 
-                            # Series is very time consuming, we will only 
-                            # populate the Series once the user click on the 
-                            # Series, the Seasons and Episodes will be loaded 
-                            # using x.getSeriesInfoByID() function
-
-                        else:
-                            new_channel = Channel(
-                                self, 
-                                group_title, 
-                                stream_channel
+                            # Find the first occurence of the group that the
+                            # Channel or Stream is pointing to
+                            the_group = next(
+                                (x for x in self.groups if x.group_id == stream_channel['category_id']),
+                                None
                             )
-
-                        # Save the new channel to the local list of channels
-                        if loading_stream_type == self.live_type:
-                            self.channels.append(new_channel)
-                        elif loading_stream_type == self.vod_type:
-                            self.movies.append(new_channel)
-                        else:
-                            self.series.append(new_series)
-
-                        # Add stream to the specific Group       
-                        if the_group != None:
-                            if loading_stream_type != self.series_type:
-                                the_group.channels.append(new_channel)
+                            
+                            if the_group != None:
+                                group_title = the_group.name
                             else:
-                                the_group.series.append(new_series)
-                        else:
-                            print_with_time("Group not found `{}`".format(stream_channel['name']))
+                                group_title = self.catch_all_group.name
+                                the_group = self.catch_all_group
+
+                            if loading_stream_type == self.series_type:
+                                # Load all Series
+                                new_series = Serie(self, stream_channel)
+                                # To get all the Episodes for every Season of each 
+                                # Series is very time consuming, we will only 
+                                # populate the Series once the user click on the 
+                                # Series, the Seasons and Episodes will be loaded 
+                                # using x.getSeriesInfoByID() function
+
+                            else:
+                                new_channel = Channel(
+                                    self, 
+                                    group_title, 
+                                    stream_channel
+                                )
+
+                            # Save the new channel to the local list of channels
+                            if loading_stream_type == self.live_type:
+                                self.channels.append(new_channel)
+                            elif loading_stream_type == self.vod_type:
+                                self.movies.append(new_channel)
+                            else:
+                                self.series.append(new_series)
+
+                            # Add stream to the specific Group       
+                            if the_group != None:
+                                if loading_stream_type != self.series_type:
+                                    the_group.channels.append(new_channel)
+                                else:
+                                    the_group.series.append(new_series)
+                            else:
+                                print_with_time("Group not found `{}`".format(stream_channel['name']))
+                    else:
+                        print_with_time("Stream has empty name `{}`".format(json.dumps(stream_channel)))
             else:
                 print_with_time("Could not load {} Streams".format(loading_stream_type))
 
