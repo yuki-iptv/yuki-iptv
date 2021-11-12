@@ -797,6 +797,7 @@ if __name__ == '__main__':
             pass
 
         doSaveSettings = False
+        m3uFailed = False
 
         use_cache = settings['m3u'].startswith('http://') or settings['m3u'].startswith('https://')
         if settings['nocache']:
@@ -910,6 +911,7 @@ if __name__ == '__main__':
             doSaveSettings = False
             m3u_parser = M3uParser(settings['udp_proxy'])
             epg_url = ""
+            m3uFailed = False
             if m3u:
                 try:
                     is_xspf = '<?xml version="' in m3u and ('http://xspf.org/' in m3u or \
@@ -930,9 +932,16 @@ if __name__ == '__main__':
                 except: # pylint: disable=bare-except
                     print_with_time("Playlist parsing error!")
                     show_exception(_('playlistloaderror'))
+                    try:
+                        file10 = open(str(Path(LOCAL_DIR, 'failedplaylist.txt')), 'w', encoding="utf8")
+                        file10.write(m3u)
+                        file10.close()
+                    except: # pylint: disable=bare-except
+                        pass
                     m3u = ""
                     array = {}
                     groups = []
+                    m3uFailed = True
 
             a = 'hidden_channels'
             if settings['provider'] in iptv_playlists and a in iptv_playlists[settings['provider']]:
@@ -999,6 +1008,9 @@ if __name__ == '__main__':
             icons_file.close()
         else:
             icons = {}
+
+        if m3uFailed and os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
+            os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
 
         def sigint_handler(*args): # pylint: disable=unused-argument
             """Handler for the SIGINT signal."""
@@ -1495,6 +1507,8 @@ if __name__ == '__main__':
         playlists_favourites = QtWidgets.QPushButton(_('favourite') + '+')
         playlists_reset = QtWidgets.QPushButton(_('resetdefplaylists'))
         playlists_import = QtWidgets.QPushButton(_('importhypnotix'))
+        playlists_settings = QtWidgets.QPushButton(_('settings'))
+        playlists_settings.setStyleSheet('color: blue;')
 
         playlists_win_widget = QtWidgets.QWidget()
         playlists_win_layout = QtWidgets.QGridLayout()
@@ -1511,6 +1525,7 @@ if __name__ == '__main__':
         playlists_win_widget_main_layout.addWidget(playlists_list)
         playlists_win_widget_main_layout.addWidget(playlists_select)
         playlists_win_widget_main_layout.addWidget(playlists_win_widget)
+        playlists_win_widget_main_layout.addWidget(playlists_settings)
         playlists_win_widget_main.setLayout(playlists_win_widget_main_layout)
 
         playlists_win.setCentralWidget(playlists_win_widget_main)
@@ -2743,12 +2758,13 @@ if __name__ == '__main__':
         def close_settings():
             settings_win.hide()
             if not win.isVisible():
-                current_pid1 = os.getpid()
-                if not os.name == 'nt':
-                    os.killpg(0, signal.SIGKILL)
-                else:
-                    os.kill(current_pid1, signal.SIGTERM)
-                sys.exit(0)
+                if not playlists_win.isVisible():
+                    current_pid1 = os.getpid()
+                    if not os.name == 'nt':
+                        os.killpg(0, signal.SIGKILL)
+                    else:
+                        os.kill(current_pid1, signal.SIGTERM)
+                    sys.exit(0)
         def prov_select(self): # pylint: disable=unused-argument
             prov1 = sprov.currentText()
             if prov1 != '--{}--'.format(_('notselected')):
@@ -3601,6 +3617,7 @@ if __name__ == '__main__':
         playlists_delete.clicked.connect(playlists_delete_do)
         playlists_import.clicked.connect(playlists_import_do)
         playlists_reset.clicked.connect(playlists_reset_do)
+        playlists_settings.clicked.connect(show_settings)
 
         fullscreen = False
         newdockWidgetHeight = False
