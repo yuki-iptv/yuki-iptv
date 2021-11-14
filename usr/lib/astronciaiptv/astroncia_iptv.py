@@ -282,11 +282,18 @@ def show_exception(e, e_traceback="", prev=""):
     message = "{}{}\n\n{}\n\n{}".format(
         _('error2'), prev, 'os.name = "{}"'.format(os.name), str(e)
     )
-    msg = QtWidgets.QMessageBox(
-        qt_icon_critical,
-        _('error'), message + '\n\n' + \
-        _('foundproblem') + ':\n' + EMAIL_ADDRESS, _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
-    )
+    if not os.name == 'nt':
+        msg = QtWidgets.QMessageBox(
+            qt_icon_critical,
+            _('error'), message + '\n\n' + \
+            _('foundproblem') + ':\n' + EMAIL_ADDRESS,
+            _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
+        )
+    else:
+        msg = QtWidgets.QMessageBox(
+            qt_icon_critical,
+            _('error'), message, _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
+        )
     msg.exec()
 
 # Used as a decorator to run things in the main loop, from another thread
@@ -362,8 +369,9 @@ if __name__ == '__main__':
         print_with_time("{} {}...".format(MAIN_WINDOW_TITLE, _('starting')))
         print_with_time("Copyright (C) Astroncia")
         print_with_time("")
-        print_with_time(_('foundproblem') + ": " + EMAIL_ADDRESS)
-        print_with_time("")
+        if not os.name == 'nt':
+            print_with_time(_('foundproblem') + ": " + EMAIL_ADDRESS)
+            print_with_time("")
         # Version debugging
         print_with_time("Current version: {}".format(APP_VERSION))
         print_with_time("")
@@ -933,7 +941,9 @@ if __name__ == '__main__':
                     print_with_time("Playlist parsing error!")
                     show_exception(_('playlistloaderror'))
                     try:
-                        file10 = open(str(Path(LOCAL_DIR, 'failedplaylist.txt')), 'w', encoding="utf8")
+                        file10 = open(
+                            str(Path(LOCAL_DIR, 'failedplaylist.txt')), 'w', encoding="utf8"
+                        )
                         file10.write(m3u)
                         file10.close()
                     except: # pylint: disable=bare-except
