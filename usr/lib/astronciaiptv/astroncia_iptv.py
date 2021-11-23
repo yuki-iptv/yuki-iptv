@@ -820,6 +820,19 @@ if __name__ == '__main__':
                 os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
         if (not use_cache) and os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
             os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
+        if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
+            try:
+                playlist_load_tmp = open(
+                    str(Path(LOCAL_DIR, 'playlist.json')), 'r', encoding="utf8"
+                )
+                playlist_load_tmp_data = playlist_load_tmp.read()
+                playlist_load_tmp.close()
+                playlist_load_tmp_data = json.loads(playlist_load_tmp_data)
+                if not playlist_load_tmp_data['m3u'] and not playlist_load_tmp_data['array']:
+                    print_with_time("Cached playlist broken, ignoring and deleting")
+                    os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
+            except: # pylint: disable=bare-except
+                pass
         if not os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
             print_with_time(_('loadingplaylist'))
             if settings['m3u']:
