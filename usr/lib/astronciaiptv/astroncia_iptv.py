@@ -928,6 +928,9 @@ if __name__ == '__main__':
                             ).text
                         except: # pylint: disable=bare-except
                             m3u = ""
+                            exp3 = traceback.format_exc()
+                            print_with_time("Playlist URL loading error!" + '\n' + exp3)
+                            show_exception(_('playlistloaderror'))
 
             doSaveSettings = False
             m3u_parser = M3uParser(settings['udp_proxy'])
