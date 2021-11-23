@@ -483,6 +483,7 @@ if __name__ == '__main__':
                 'autoreconnection': True,
                 'showplaylistmouse': True,
                 'hideplaylistleftclk': False,
+                'nocacheepg': False,
                 'scrrecnosubfolders': False,
                 'showcontrolsmouse': True,
                 'flpopacity': 0.7,
@@ -542,6 +543,8 @@ if __name__ == '__main__':
             settings['showplaylistmouse'] = True
         if 'hideplaylistleftclk' not in settings:
             settings['hideplaylistleftclk'] = False
+        if 'nocacheepg' not in settings:
+            settings['nocacheepg'] = False
         if 'scrrecnosubfolders' not in settings:
             settings['scrrecnosubfolders'] = False
         if 'showcontrolsmouse' not in settings:
@@ -577,16 +580,17 @@ if __name__ == '__main__':
 
         def save_tvguide_sets_proc(tvguide_sets_arg):
             if tvguide_sets_arg:
-                file2 = open(str(Path(LOCAL_DIR, 'tvguide.dat')), 'wb')
-                file2.write(codecs.encode(bytes(json.dumps(
-                    {
-                        "tvguide_sets": clean_programme(),
-                        "tvguide_url": str(settings["epg"]),
-                        "prog_ids": prog_ids,
-                        "epg_icons": epg_icons
-                    }
-                ), 'utf-8'), 'zlib'))
-                file2.close()
+                if not settings["nocacheepg"]:
+                    file2 = open(str(Path(LOCAL_DIR, 'tvguide.dat')), 'wb')
+                    file2.write(codecs.encode(bytes(json.dumps(
+                        {
+                            "tvguide_sets": clean_programme(),
+                            "tvguide_url": str(settings["epg"]),
+                            "prog_ids": prog_ids,
+                            "epg_icons": epg_icons
+                        }
+                    ), 'utf-8'), 'zlib'))
+                    file2.close()
 
         epg_thread_2 = None
 
@@ -684,6 +688,13 @@ if __name__ == '__main__':
         #@async_function
         def update_epg_func():
             global settings, tvguide_sets, prog_ids, epg_icons, programmes, epg_ready
+            if settings["nocacheepg"]:
+                print_with_time("No cache EPG active, deleting old EPG cache file")
+                try:
+                    if os.path.isfile(str(Path(LOCAL_DIR, 'tvguide.dat'))):
+                        os.remove(str(Path(LOCAL_DIR, 'tvguide.dat')))
+                except: # pylint: disable=bare-except
+                    pass
             print_with_time("Reading cached TV guide if exists...")
             tvguide_read_time = time.time()
             programmes_1 = {}
@@ -2619,6 +2630,7 @@ if __name__ == '__main__':
                 'autoreconnection': autoreconnection_flag.isChecked(),
                 'showplaylistmouse': showplaylistmouse_flag.isChecked(),
                 'hideplaylistleftclk': hideplaylistleftclk_flag.isChecked(),
+                'nocacheepg': nocacheepg_flag.isChecked(),
                 'scrrecnosubfolders': scrrecnosubfolders_flag.isChecked(),
                 'showcontrolsmouse': showcontrolsmouse_flag.isChecked(),
                 'flpopacity': flpopacity_input.value(),
@@ -3022,6 +3034,10 @@ if __name__ == '__main__':
         hideplaylistleftclk_flag = QtWidgets.QCheckBox()
         hideplaylistleftclk_flag.setChecked(settings['hideplaylistleftclk'])
 
+        nocacheepg_label = QtWidgets.QLabel("{}:".format(_('nocacheepg')))
+        nocacheepg_flag = QtWidgets.QCheckBox()
+        nocacheepg_flag.setChecked(settings['nocacheepg'])
+
         scrrecnosubfolders_label = QtWidgets.QLabel("{}:".format(_('scrrecnosubfolders')))
         scrrecnosubfolders_flag = QtWidgets.QCheckBox()
         scrrecnosubfolders_flag.setChecked(settings['scrrecnosubfolders'])
@@ -3133,6 +3149,8 @@ if __name__ == '__main__':
         tab4.layout.addWidget(screenshot_choose, 6, 1)
         tab4.layout.addWidget(hideplaylistleftclk_label, 7, 0)
         tab4.layout.addWidget(hideplaylistleftclk_flag, 7, 1)
+        tab4.layout.addWidget(nocacheepg_label, 8, 0)
+        tab4.layout.addWidget(nocacheepg_flag, 8, 1)
         tab4.setLayout(tab4.layout)
 
         tab5.layout = QtWidgets.QGridLayout()

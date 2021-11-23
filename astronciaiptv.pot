@@ -946,5 +946,8 @@ msgstr ""
 msgid "scrrecnosubfolders"
 msgstr ""
 
+msgid "nocacheepg"
+msgstr ""
+
 msgid "helptext"
 msgstr ""
