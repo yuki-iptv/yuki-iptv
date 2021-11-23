@@ -939,6 +939,9 @@ msgstr "Delete from favourites"
 msgid "scrrecnosubfolders"
 msgstr "Do not create screenshots\nand recordings subfolders"
 
+msgid "nocacheepg"
+msgstr "Do not cache EPG"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, version {}\n© kestral / astroncia < kestraly (at) gmail.com "

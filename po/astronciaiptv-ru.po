@@ -943,6 +943,9 @@ msgstr "Удалить из избранного"
 msgid "scrrecnosubfolders"
 msgstr "Не создавать подпапки\nдля скриншотов и записей"
 
+msgid "nocacheepg"
+msgstr "Не кэшировать EPG"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, версия {}\n© kestral / astroncia < kestraly (at) gmail.com "
