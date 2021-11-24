@@ -1,3 +1,11 @@
+astroncia-iptv (0.0.87) unstable; urgency=medium
+
+  * Minor bugfixes
+  * Update pyxtream library
+  * Add no cache EPG option
+
+ -- Astroncia <kestraly@gmail.com>  Wed, 24 Nov 2021 17:22:16 +0300
+
 astroncia-iptv (0.0.86) unstable; urgency=medium
 
   * Fix ffmpeg recording data and quality issues
