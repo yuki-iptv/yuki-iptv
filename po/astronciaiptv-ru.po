@@ -946,6 +946,9 @@ msgstr "Не создавать подпапки\nдля скриншотов и
 msgid "nocacheepg"
 msgstr "Не кэшировать EPG"
 
+msgid "nourlset"
+msgstr "Не указан URL!"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, версия {}\n© kestral / astroncia < kestraly (at) gmail.com "

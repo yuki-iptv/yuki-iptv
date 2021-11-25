@@ -942,6 +942,9 @@ msgstr "Do not create screenshots\nand recordings subfolders"
 msgid "nocacheepg"
 msgstr "Do not cache EPG"
 
+msgid "nourlset"
+msgstr "URL not specified!"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, version {}\n© kestral / astroncia < kestraly (at) gmail.com "
