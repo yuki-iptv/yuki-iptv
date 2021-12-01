@@ -1295,16 +1295,25 @@ if __name__ == '__main__':
                 playlists_data.playlists_used.pop(playlists_data.oldName)
             except: # pylint: disable=bare-except
                 pass
-            channel_text_prov = name_edit_1.text()
-            if channel_text_prov:
-                playlists_list.addItem(channel_text_prov)
-                playlists_data.playlists_used[channel_text_prov] = {
-                    "m3u": m3u_edit_1.text(),
-                    "epg": epg_edit_1.text(),
-                    "offset": soffset_1.value()
-                }
-            playlists_save_json()
-            playlists_win_edit.hide()
+            if m3u_edit_1.text():
+                channel_text_prov = name_edit_1.text()
+                if channel_text_prov:
+                    playlists_list.addItem(channel_text_prov)
+                    playlists_data.playlists_used[channel_text_prov] = {
+                        "m3u": m3u_edit_1.text(),
+                        "epg": epg_edit_1.text(),
+                        "offset": soffset_1.value()
+                    }
+                playlists_save_json()
+                playlists_win_edit.hide()
+            else:
+                nourlset_msg = QtWidgets.QMessageBox(
+                    qt_icon_warning,
+                    MAIN_WINDOW_TITLE,
+                    _('nourlset'),
+                    _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
+                )
+                nourlset_msg.exec()
 
         def epg_edit_1_settext(txt1):
             sepgcombox_1.clear()
