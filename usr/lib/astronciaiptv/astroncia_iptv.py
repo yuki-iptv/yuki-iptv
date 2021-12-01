@@ -333,10 +333,6 @@ if __name__ == '__main__':
         os.setpgrp()
     except: # pylint: disable=bare-except
         pass
-    try:
-        os.environ['GDK_BACKEND'] = 'x11'
-    except: # pylint: disable=bare-except
-        pass
     print_with_time("Qt init...")
     app = QtWidgets.QApplication(sys.argv)
     print_with_time("Qt init successful")
