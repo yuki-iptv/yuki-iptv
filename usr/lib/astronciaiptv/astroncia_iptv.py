@@ -152,6 +152,7 @@ class AstronciaData: # pylint: disable=too-few-public-methods
     compact_mode = False
     playlist_hidden = False
     controlpanel_hidden = False
+    fullscreen_locked = False
 
 setproctitle.setproctitle("astronciaiptv")
 
@@ -4407,120 +4408,126 @@ if __name__ == '__main__':
                 currentDockWidgetPos, isPlaylistVisible, isControlPanelVisible
             if not fullscreen:
                 # Entering fullscreen
-                isControlPanelVisible = dockWidget2.isVisible()
-                if settings["playlistsep"]:
-                    isPlaylistVisible = sepplaylist_win.isVisible()
-                else:
-                    isPlaylistVisible = dockWidget.isVisible()
-                del_sep_flag()
-                if settings["playlistsep"]:
-                    win.show()
-                    win.raise_()
-                    win.setFocus(_enum(QtCore.Qt, 'FocusReason.PopupFocusReason'))
-                    win.activateWindow()
-                setShortcutState(True)
-                del_sep_flag()
-                comm_instance.winPosition = win.geometry()
-                currentWidthHeight = [win.width(), win.height()]
-                currentMaximized = win.isMaximized()
-                channelfilter.usePopup = False
-                win.menu_bar_qt.hide()
-                if settings['playlistsep']:
-                    currentDockWidgetPos = sepplaylist_win.pos()
-                    print_with_time("Saved separate playlist position - QPoint({}, {})".format(
-                        currentDockWidgetPos.x(),
-                        currentDockWidgetPos.y()
-                    ))
-                    sepplaylist_win.hide()
-                fullscreen = True
-                #l1.show()
-                #l1.setText2("{} F".format(_('exitfullscreen')))
-                #time_stop = time.time() + 3
-                dockWidget.hide()
-                chan.hide()
-                #progress.hide()
-                #start_label.hide()
-                #stop_label.hide()
-                label11.hide()
-                label12.hide()
-                for lbl3 in hlayout2_btns:
-                    if lbl3 not in show_lbls_fullscreen:
-                        lbl3.hide()
-                progress.hide()
-                start_label.hide()
-                stop_label.hide()
-                dockWidget2.hide()
-                dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
-                win.update()
-                del_sep_flag()
-                win.showFullScreen()
-                if settings['panelposition'] == 1:
-                    tvguide_close_lbl.move(
-                        get_curwindow_pos()[0] - tvguide_lbl.width() - 40,
-                        tvguide_lbl_offset
-                    )
-                centerwidget(loading1)
-                centerwidget(loading2, 50)
+                if not AstronciaData.fullscreen_locked:
+                    AstronciaData.fullscreen_locked = True
+                    isControlPanelVisible = dockWidget2.isVisible()
+                    if settings["playlistsep"]:
+                        isPlaylistVisible = sepplaylist_win.isVisible()
+                    else:
+                        isPlaylistVisible = dockWidget.isVisible()
+                    del_sep_flag()
+                    if settings["playlistsep"]:
+                        win.show()
+                        win.raise_()
+                        win.setFocus(_enum(QtCore.Qt, 'FocusReason.PopupFocusReason'))
+                        win.activateWindow()
+                    setShortcutState(True)
+                    del_sep_flag()
+                    comm_instance.winPosition = win.geometry()
+                    currentWidthHeight = [win.width(), win.height()]
+                    currentMaximized = win.isMaximized()
+                    channelfilter.usePopup = False
+                    win.menu_bar_qt.hide()
+                    if settings['playlistsep']:
+                        currentDockWidgetPos = sepplaylist_win.pos()
+                        print_with_time("Saved separate playlist position - QPoint({}, {})".format(
+                            currentDockWidgetPos.x(),
+                            currentDockWidgetPos.y()
+                        ))
+                        sepplaylist_win.hide()
+                    fullscreen = True
+                    #l1.show()
+                    #l1.setText2("{} F".format(_('exitfullscreen')))
+                    #time_stop = time.time() + 3
+                    dockWidget.hide()
+                    chan.hide()
+                    #progress.hide()
+                    #start_label.hide()
+                    #stop_label.hide()
+                    label11.hide()
+                    label12.hide()
+                    for lbl3 in hlayout2_btns:
+                        if lbl3 not in show_lbls_fullscreen:
+                            lbl3.hide()
+                    progress.hide()
+                    start_label.hide()
+                    stop_label.hide()
+                    dockWidget2.hide()
+                    dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
+                    win.update()
+                    del_sep_flag()
+                    win.showFullScreen()
+                    if settings['panelposition'] == 1:
+                        tvguide_close_lbl.move(
+                            get_curwindow_pos()[0] - tvguide_lbl.width() - 40,
+                            tvguide_lbl_offset
+                        )
+                    centerwidget(loading1)
+                    centerwidget(loading2, 50)
+                    AstronciaData.fullscreen_locked = False
             else:
                 # Leaving fullscreen
-                setShortcutState(False)
-                if l1.isVisible() and l1.text().startswith(_('volume')):
-                    l1.hide()
-                win.menu_bar_qt.show()
-                hide_playlist()
-                hide_controlpanel()
-                dockWidget.setWindowOpacity(1)
-                dockWidget.hide()
-                dockWidget2.setWindowOpacity(1)
-                dockWidget2.hide()
-                fullscreen = False
-                if l1.text().endswith('{} F'.format(_('exitfullscreen'))):
-                    l1.setText2('')
-                    if not gl_is_static:
+                if not AstronciaData.fullscreen_locked:
+                    AstronciaData.fullscreen_locked = True
+                    setShortcutState(False)
+                    if l1.isVisible() and l1.text().startswith(_('volume')):
                         l1.hide()
-                        win.update()
-                if not player.pause and playing and start_label.text():
-                    progress.show()
-                    start_label.show()
-                    stop_label.show()
-                    dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
-                label11.show()
-                label12.show()
-                for lbl3 in hlayout2_btns:
-                    if lbl3 not in show_lbls_fullscreen:
-                        lbl3.show()
-                dockWidget2.show()
-                if not settings["playlistsep"]:
-                    dockWidget.show()
-                chan.show()
-                win.update()
-                if not currentMaximized:
-                    win.showNormal()
-                else:
-                    win.showMaximized()
-                win.resize(currentWidthHeight[0], currentWidthHeight[1])
-                if comm_instance.winPosition:
-                    win.move(comm_instance.winPosition.x(), comm_instance.winPosition.y())
-                else:
-                    moveWindowToCenter(win, True)
-                if settings['playlistsep'] and currentDockWidgetPos != -1:
-                    comm_instance.moveSeparatePlaylist.emit(currentDockWidgetPos)
-                if not isPlaylistVisible:
-                    key_t()
-                if settings['panelposition'] == 1:
-                    tvguide_close_lbl.move(
-                        win.width() - tvguide_lbl.width() - 40,
-                        tvguide_lbl_offset
-                    )
-                centerwidget(loading1)
-                centerwidget(loading2, 50)
-                if isControlPanelVisible:
-                    dockWidget2.show()
-                else:
+                    win.menu_bar_qt.show()
+                    hide_playlist()
+                    hide_controlpanel()
+                    dockWidget.setWindowOpacity(1)
+                    dockWidget.hide()
+                    dockWidget2.setWindowOpacity(1)
                     dockWidget2.hide()
-                if AstronciaData.compact_mode:
-                    win.menu_bar_qt.hide()
-                    setShortcutState(True)
+                    fullscreen = False
+                    if l1.text().endswith('{} F'.format(_('exitfullscreen'))):
+                        l1.setText2('')
+                        if not gl_is_static:
+                            l1.hide()
+                            win.update()
+                    if not player.pause and playing and start_label.text():
+                        progress.show()
+                        start_label.show()
+                        stop_label.show()
+                        dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
+                    label11.show()
+                    label12.show()
+                    for lbl3 in hlayout2_btns:
+                        if lbl3 not in show_lbls_fullscreen:
+                            lbl3.show()
+                    dockWidget2.show()
+                    if not settings["playlistsep"]:
+                        dockWidget.show()
+                    chan.show()
+                    win.update()
+                    if not currentMaximized:
+                        win.showNormal()
+                    else:
+                        win.showMaximized()
+                    win.resize(currentWidthHeight[0], currentWidthHeight[1])
+                    if comm_instance.winPosition:
+                        win.move(comm_instance.winPosition.x(), comm_instance.winPosition.y())
+                    else:
+                        moveWindowToCenter(win, True)
+                    if settings['playlistsep'] and currentDockWidgetPos != -1:
+                        comm_instance.moveSeparatePlaylist.emit(currentDockWidgetPos)
+                    if not isPlaylistVisible:
+                        key_t()
+                    if settings['panelposition'] == 1:
+                        tvguide_close_lbl.move(
+                            win.width() - tvguide_lbl.width() - 40,
+                            tvguide_lbl_offset
+                        )
+                    centerwidget(loading1)
+                    centerwidget(loading2, 50)
+                    if isControlPanelVisible:
+                        dockWidget2.show()
+                    else:
+                        dockWidget2.hide()
+                    if AstronciaData.compact_mode:
+                        win.menu_bar_qt.hide()
+                        setShortcutState(True)
+                    AstronciaData.fullscreen_locked = False
 
         dockWidget_out = QtWidgets.QPushButton()
         dockWidget_out.clicked.connect(dockWidget_out_clicked)
