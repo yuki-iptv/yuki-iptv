@@ -4410,6 +4410,7 @@ if __name__ == '__main__':
                 # Entering fullscreen
                 if not AstronciaData.fullscreen_locked:
                     AstronciaData.fullscreen_locked = True
+                    print_with_time("Entering fullscreen started")
                     isControlPanelVisible = dockWidget2.isVisible()
                     if settings["playlistsep"]:
                         isPlaylistVisible = sepplaylist_win.isVisible()
@@ -4464,11 +4465,13 @@ if __name__ == '__main__':
                         )
                     centerwidget(loading1)
                     centerwidget(loading2, 50)
+                    print_with_time("Entering fullscreen ended")
                     AstronciaData.fullscreen_locked = False
             else:
                 # Leaving fullscreen
                 if not AstronciaData.fullscreen_locked:
                     AstronciaData.fullscreen_locked = True
+                    print_with_time("Leaving fullscreen started")
                     setShortcutState(False)
                     if l1.isVisible() and l1.text().startswith(_('volume')):
                         l1.hide()
@@ -4527,6 +4530,7 @@ if __name__ == '__main__':
                     if AstronciaData.compact_mode:
                         win.menu_bar_qt.hide()
                         setShortcutState(True)
+                    print_with_time("Leaving fullscreen ended")
                     AstronciaData.fullscreen_locked = False
 
         dockWidget_out = QtWidgets.QPushButton()
