@@ -29,7 +29,8 @@ uas = [
     'OnlineTvAppDroid',
     'smartlabs',
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5)',
-    'Mozilla/5.0'
+    'Mozilla/5.0',
+    'VLC/3.0.16 LibVLC/3.0.16'
 ]
 ua_names = [
     '',
@@ -40,7 +41,8 @@ ua_names = [
     'OnlineTvAppDroid',
     'Smartlabs',
     'Mac OS X',
-    'Mozilla/5.0'
+    'Mozilla/5.0',
+    'VLC'
 ]
 
 if 'HOME' in os.environ and os.path.isdir(os.environ['HOME']):
