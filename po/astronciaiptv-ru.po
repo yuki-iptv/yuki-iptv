@@ -949,6 +949,9 @@ msgstr "Не кэшировать EPG"
 msgid "nourlset"
 msgstr "Не указан URL!"
 
+msgid "updcurplaylist"
+msgstr "Обновить текущий плейлист"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, версия {}\n© kestral / astroncia < kestraly (at) gmail.com "

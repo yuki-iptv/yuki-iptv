@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-25 16:14+0000\n"
+"POT-Creation-Date: 2021-12-09 12:26+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -950,6 +950,9 @@ msgid "nocacheepg"
 msgstr ""
 
 msgid "nourlset"
+msgstr ""
+
+msgid "updcurplaylist"
 msgstr ""
 
 msgid "helptext"

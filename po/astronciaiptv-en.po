@@ -945,6 +945,9 @@ msgstr "Do not cache EPG"
 msgid "nourlset"
 msgstr "URL not specified!"
 
+msgid "updcurplaylist"
+msgstr "Update current playlist"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, version {}\n© kestral / astroncia < kestraly (at) gmail.com "
