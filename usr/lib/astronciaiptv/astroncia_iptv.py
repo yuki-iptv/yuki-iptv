@@ -812,6 +812,9 @@ if __name__ == '__main__':
         class EmptyClass: # pylint: disable=too-few-public-methods
             pass
 
+        class PlaylistsFail: # pylint: disable=too-few-public-methods
+            status_code = 0
+
         doSaveSettings = False
         m3uFailed = False
 
@@ -929,11 +932,16 @@ if __name__ == '__main__':
                                 show_exception(_('unknownencoding'))
                     else:
                         try:
-                            m3u_req = requests.get(
-                                settings['m3u'],
-                                headers={'User-Agent': uas[settings['useragent']]},
-                                timeout=3
-                            )
+                            try:
+                                m3u_req = requests.get(
+                                    settings['m3u'],
+                                    headers={'User-Agent': uas[settings['useragent']]},
+                                    timeout=3
+                                )
+                            except: # pylint: disable=bare-except
+                                m3u_req = PlaylistsFail()
+                                m3u_req.status_code = 400
+
                             if m3u_req.status_code != 200:
                                 print_with_time("Playlist load failed, trying empty user agent")
                                 m3u_req = requests.get(
@@ -941,6 +949,7 @@ if __name__ == '__main__':
                                     headers={'User-Agent': user_agent},
                                     timeout=3
                                 )
+
                             print_with_time("Status code: {}".format(m3u_req.status_code))
                             m3u = m3u_req.text
                         except: # pylint: disable=bare-except
