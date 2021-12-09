@@ -3524,6 +3524,12 @@ if __name__ == '__main__':
             else:
                 playlists_win.hide()
 
+        def reload_playlist():
+            print_with_time("Reloading playlist...")
+            if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
+                os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
+            save_settings()
+
         def playlists_selected():
             try:
                 prov_data = playlists_data.playlists_used[playlists_list.currentItem().text()]
@@ -3879,6 +3885,7 @@ if __name__ == '__main__':
                 show_tvguide_2,
                 enable_always_on_top,
                 disable_always_on_top,
+                reload_playlist,
                 str(Path(LOCAL_DIR, 'alwaysontop.json'))
             )
 
@@ -7923,6 +7930,7 @@ if __name__ == '__main__':
             "(lambda: set_playback_speed(1.00))": (lambda: set_playback_speed(1.00)),
             "app.quit": app.quit,
             "show_playlists": show_playlists,
+            "reload_playlist": reload_playlist,
             "force_update_epg": force_update_epg,
             "main_channel_settings": main_channel_settings,
             "show_m3u_editor": show_m3u_editor,
@@ -8040,6 +8048,9 @@ if __name__ == '__main__':
             ],
             "show_playlists": [
                 "Ctrl+O"
+            ],
+            "reload_playlist": [
+                "Ctrl+R"
             ],
             "show_scheduler": [
                 _enum(QtCore.Qt, 'Key.Key_D')

@@ -130,6 +130,10 @@ def init_menubar(data): # pylint: disable=too-many-statements
     AstronciaData.playlists.setShortcut(kbd("show_playlists"))
     AstronciaData.playlists.triggered.connect(lambda: AstronciaData.show_playlists())
 
+    AstronciaData.reloadPlaylist = qaction(_('updcurplaylist'), data)
+    AstronciaData.reloadPlaylist.setShortcut(kbd("reload_playlist"))
+    AstronciaData.reloadPlaylist.triggered.connect(lambda: AstronciaData.reload_playlist())
+
     AstronciaData.m3uEditor = qaction(_('menubar_m3ueditor') + AstronciaData.str_offset, data)
     AstronciaData.m3uEditor.setShortcut(kbd("show_m3u_editor"))
     AstronciaData.m3uEditor.triggered.connect(lambda: AstronciaData.show_m3u_editor())
@@ -372,6 +376,8 @@ def populate_menubar(
     file_menu = menubar.addMenu(_('menubar_title_file'))
     file_menu.addAction(AstronciaData.playlists)
     file_menu.addSeparator()
+    file_menu.addAction(AstronciaData.reloadPlaylist)
+    file_menu.addSeparator()
     file_menu.addAction(AstronciaData.m3uEditor)
     file_menu.addAction(AstronciaData.exitAction)
 
@@ -584,6 +590,7 @@ def init_menubar_player( # pylint: disable=too-many-arguments, too-many-locals
     show_tvguide_2,
     enable_always_on_top,
     disable_always_on_top,
+    reload_playlist,
     aot_file
 ):
     for func in locals().items():

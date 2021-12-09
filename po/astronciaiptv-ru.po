@@ -950,7 +950,7 @@ msgid "nourlset"
 msgstr "Не указан URL!"
 
 msgid "updcurplaylist"
-msgstr "Обновить текущий плейлист"
+msgstr "&Обновить текущий плейлист"
 
 msgid "helptext"
 msgstr ""
