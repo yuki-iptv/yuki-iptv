@@ -931,7 +931,7 @@ if __name__ == '__main__':
                         try:
                             m3u = requests.get(
                                 settings['m3u'],
-                                headers={'User-Agent': user_agent},
+                                headers={'User-Agent': uas[settings['useragent']]},
                                 timeout=3
                             ).text
                         except: # pylint: disable=bare-except
