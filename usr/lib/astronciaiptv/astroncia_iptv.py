@@ -929,11 +929,20 @@ if __name__ == '__main__':
                                 show_exception(_('unknownencoding'))
                     else:
                         try:
-                            m3u = requests.get(
+                            m3u_req = requests.get(
                                 settings['m3u'],
                                 headers={'User-Agent': uas[settings['useragent']]},
                                 timeout=3
-                            ).text
+                            )
+                            if m3u_req.status_code != 200:
+                                print_with_time("Playlist load failed, trying empty user agent")
+                                m3u_req = requests.get(
+                                    settings['m3u'],
+                                    headers={'User-Agent': user_agent},
+                                    timeout=3
+                                )
+                            print_with_time("Status code: {}".format(m3u_req.status_code))
+                            m3u = m3u_req.text
                         except: # pylint: disable=bare-except
                             m3u = ""
                             exp3 = traceback.format_exc()
