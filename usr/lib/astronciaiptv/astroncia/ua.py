@@ -30,7 +30,8 @@ uas = [
     'smartlabs',
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5)',
     'Mozilla/5.0',
-    'VLC/3.0.16 LibVLC/3.0.16'
+    'VLC/3.0.16 LibVLC/3.0.16',
+    'libmpv'
 ]
 ua_names = [
     '',
@@ -42,7 +43,8 @@ ua_names = [
     'Smartlabs',
     'Mac OS X',
     'Mozilla/5.0',
-    'VLC'
+    'VLC',
+    'libmpv'
 ]
 
 if 'HOME' in os.environ and os.path.isdir(os.environ['HOME']):
