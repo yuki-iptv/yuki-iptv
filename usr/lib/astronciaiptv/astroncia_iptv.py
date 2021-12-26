@@ -1716,8 +1716,8 @@ if __name__ == '__main__':
             # 0 - nothing to do
             if praction_choose.currentIndex() == 1: # 1 - Press Stop
                 mpv_stop()
-            if praction_choose.currentIndex() == 2: # 2 - Quit program
-                key_quit()
+            #if praction_choose.currentIndex() == 2: # 2 - Quit program
+            #    key_quit()
 
         def record_thread_2():
             try:
@@ -1853,7 +1853,7 @@ if __name__ == '__main__':
         praction_choose = QtWidgets.QComboBox()
         praction_choose.addItem(_('nothingtodo'))
         praction_choose.addItem(_('stoppress'))
-        praction_choose.addItem(_('exitprogram'))
+        #praction_choose.addItem(_('exitprogram'))
 
         schedulers = QtWidgets.QListWidget()
         activerec_list = QtWidgets.QListWidget()
