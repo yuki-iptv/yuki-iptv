@@ -4436,19 +4436,18 @@ if __name__ == '__main__':
                 if not AstronciaData.fullscreen_locked:
                     AstronciaData.fullscreen_locked = True
                     print_with_time("Entering fullscreen started")
+                    time01 = time.time()
                     isControlPanelVisible = dockWidget2.isVisible()
                     if settings["playlistsep"]:
                         isPlaylistVisible = sepplaylist_win.isVisible()
                     else:
                         isPlaylistVisible = dockWidget.isVisible()
-                    del_sep_flag()
                     if settings["playlistsep"]:
                         win.show()
                         win.raise_()
                         win.setFocus(_enum(QtCore.Qt, 'FocusReason.PopupFocusReason'))
                         win.activateWindow()
                     setShortcutState(True)
-                    del_sep_flag()
                     comm_instance.winPosition = win.geometry()
                     currentWidthHeight = [win.width(), win.height()]
                     currentMaximized = win.isMaximized()
@@ -4462,14 +4461,8 @@ if __name__ == '__main__':
                         ))
                         sepplaylist_win.hide()
                     fullscreen = True
-                    #l1.show()
-                    #l1.setText2("{} F".format(_('exitfullscreen')))
-                    #time_stop = time.time() + 3
                     dockWidget.hide()
                     chan.hide()
-                    #progress.hide()
-                    #start_label.hide()
-                    #stop_label.hide()
                     label11.hide()
                     label12.hide()
                     for lbl3 in hlayout2_btns:
@@ -4481,7 +4474,6 @@ if __name__ == '__main__':
                     dockWidget2.hide()
                     dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
                     win.update()
-                    del_sep_flag()
                     win.showFullScreen()
                     if settings['panelposition'] == 1:
                         tvguide_close_lbl.move(
@@ -4490,13 +4482,15 @@ if __name__ == '__main__':
                         )
                     centerwidget(loading1)
                     centerwidget(loading2, 50)
-                    print_with_time("Entering fullscreen ended")
+                    time02 = time.time() - time01
+                    print_with_time("Entering fullscreen ended, took {} seconds".format(time02))
                     AstronciaData.fullscreen_locked = False
             else:
                 # Leaving fullscreen
                 if not AstronciaData.fullscreen_locked:
                     AstronciaData.fullscreen_locked = True
                     print_with_time("Leaving fullscreen started")
+                    time03 = time.time()
                     setShortcutState(False)
                     if l1.isVisible() and l1.text().startswith(_('volume')):
                         l1.hide()
@@ -4555,7 +4549,8 @@ if __name__ == '__main__':
                     if AstronciaData.compact_mode:
                         win.menu_bar_qt.hide()
                         setShortcutState(True)
-                    print_with_time("Leaving fullscreen ended")
+                    time04 = time.time() - time03
+                    print_with_time("Leaving fullscreen ended, took {} seconds".format(time04))
                     AstronciaData.fullscreen_locked = False
 
         dockWidget_out = QtWidgets.QPushButton()
@@ -5611,7 +5606,6 @@ if __name__ == '__main__':
             if settings["playlistsep"] and \
             bool(sepplaylist_win.windowFlags() & xbhint0) and \
             not fullscreen:
-                del_sep_flag()
                 sepplaylist_win.show()
                 sepplaylist_win.raise_()
                 sepplaylist_win.setFocus(_enum(QtCore.Qt, 'FocusReason.PopupFocusReason'))
