@@ -573,9 +573,6 @@ msgstr "Дії"
 msgid "defaultchangevol"
 msgstr "типово:\nзміна гучності"
 
-msgid "foundproblem"
-msgstr "Знайшли проблему? Напишіть мені по e-mail"
-
 msgid "showplaylistmouse"
 msgstr "Показувати плейлист\nпід час руху миші"
 

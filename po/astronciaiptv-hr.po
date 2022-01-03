@@ -611,9 +611,6 @@ msgstr ""
 "po zadanome promijeni:\n"
 "glasnoću zvuka"
 
-msgid "foundproblem"
-msgstr "Pronašli ste problem? Javite mi e-poštom"
-
 msgid "showplaylistmouse"
 msgstr ""
 "Prikaži popis izvođenja\n"

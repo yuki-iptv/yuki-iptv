@@ -570,9 +570,6 @@ msgstr ""
 msgid "defaultchangevol"
 msgstr ""
 
-msgid "foundproblem"
-msgstr ""
-
 msgid "showplaylistmouse"
 msgstr ""
 

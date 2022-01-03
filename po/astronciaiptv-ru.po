@@ -565,9 +565,6 @@ msgstr "Действия"
 msgid "defaultchangevol"
 msgstr "по умолчанию:\nизменение громкости"
 
-msgid "foundproblem"
-msgstr "Нашли проблему? Напишите мне по e-mail"
-
 msgid "showplaylistmouse"
 msgstr "Показывать плейлист\nпри движении мыши"
 

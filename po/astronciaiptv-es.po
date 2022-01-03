@@ -563,9 +563,6 @@ msgstr "Acciones"
 msgid "defaultchangevol"
 msgstr "de forma predeterminada:\ncambiar el volumen"
 
-msgid "foundproblem"
-msgstr "¿Encontró un problema? Envíeme un correo electrónico a la dirección"
-
 msgid "showplaylistmouse"
 msgstr "Mostrar lista de reproducción\nal mover el ratón"
 

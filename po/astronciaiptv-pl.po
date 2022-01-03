@@ -555,9 +555,6 @@ msgstr "Działanie"
 msgid "defaultchangevol"
 msgstr "domyślnie:\nustawianie głośności"
 
-msgid "foundproblem"
-msgstr "Znalazłeś problem? Napisz do mnie na adres"
-
 msgid "showplaylistmouse"
 msgstr "Pokaż listę odtwarzania\nprzy ruchu myszki"
 

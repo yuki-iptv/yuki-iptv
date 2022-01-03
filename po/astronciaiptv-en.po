@@ -563,9 +563,6 @@ msgstr "Actions"
 msgid "defaultchangevol"
 msgstr "by default:\nchange volume"
 
-msgid "foundproblem"
-msgstr "Found problem? Email me to address"
-
 msgid "showplaylistmouse"
 msgstr "Show playlist\non mouse move"
 
