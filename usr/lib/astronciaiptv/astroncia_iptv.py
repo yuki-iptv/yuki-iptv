@@ -3750,9 +3750,14 @@ if __name__ == '__main__':
                 pass
 
             try:
-                player.title = 'Astroncia IPTV'
+                player.title = MAIN_WINDOW_TITLE
             except: # pylint: disable=bare-except
                 pass
+
+            try:
+                player['audio-client-name'] = 'astronciaiptv'
+            except: # pylint: disable=bare-except
+                print_with_time("mpv audio-client-name set failed")
 
             try:
                 mpv_version = player.mpv_version
@@ -4175,12 +4180,20 @@ if __name__ == '__main__':
 
         playing_url = ''
 
+        @idle_function
+        def set_mpv_title(arg11=None): # pylint: disable=unused-argument
+            try:
+                player.title = win.windowTitle()
+            except: # pylint: disable=bare-except
+                pass
+
         def setChanText(chanText):
             chTextStrip = chanText.strip()
             if chTextStrip:
                 win.setWindowTitle(chTextStrip + ' - ' + MAIN_WINDOW_TITLE)
             else:
                 win.setWindowTitle(MAIN_WINDOW_TITLE)
+            set_mpv_title()
             chan.setText(chanText)
 
         playing_archive = False
