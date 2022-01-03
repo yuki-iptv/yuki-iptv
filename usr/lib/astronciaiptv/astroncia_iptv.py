@@ -3750,6 +3750,11 @@ if __name__ == '__main__':
                 pass
 
             try:
+                player.title = 'Astroncia IPTV'
+            except: # pylint: disable=bare-except
+                pass
+
+            try:
                 mpv_version = player.mpv_version
                 if not mpv_version.startswith('mpv '):
                     mpv_version = 'mpv ' + mpv_version
