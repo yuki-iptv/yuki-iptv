@@ -34,7 +34,7 @@ def get_qt_library():
         if '--disable-qt6' in sys.argv:
             if not astroncia_data.qt6_disable_printed:
                 astroncia_data.qt6_disable_printed = True
-                #print_with_time("Qt6 force disabled\n")
+                print_with_time("Qt6 force disabled\n")
             raise Exception("")
         from PyQt6 import QtWidgets
         from PyQt6 import QtCore
