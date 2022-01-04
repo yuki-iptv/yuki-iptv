@@ -939,6 +939,7 @@ if __name__ == '__main__':
                                 )
 
                             print_with_time("Status code: {}".format(m3u_req.status_code))
+                            print_with_time("{} bytes".format(len(m3u_req.content)))
                             m3u = m3u_req.text
                         except: # pylint: disable=bare-except
                             m3u = ""
@@ -994,6 +995,9 @@ if __name__ == '__main__':
                     ch2['tvg-group'] = ch2['tvg-group'] if 'tvg-group' in \
                         ch2 else _('allchannels')
                     array[ch2['title']] = ch2
+
+            print_with_time("{} channels, {} groups".format(len(array), len(groups)))
+
             print_with_time(_('playlistloaddone'))
             if use_cache:
                 print_with_time(_('cachingplaylist'))
