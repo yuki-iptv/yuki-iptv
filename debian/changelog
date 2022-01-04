@@ -1,3 +1,16 @@
+astroncia-iptv (0.0.88) unstable; urgency=medium
+
+  * Update pyxtream library
+  * Add VLC and libmpv user agents
+  * Add feature: Update current playlist
+  * Fix user agent for loading playlist
+  * Fix some channel record with subtitles
+  * Set audio-client-name for pulseaudio
+  * Set media.role=video for pulseaudio
+  * Add check for empty playlists URL
+
+ -- Astroncia <kestraly@gmail.com>  Tue, 04 Jan 2022 23:06:37 +0300
+
 astroncia-iptv (0.0.87) unstable; urgency=medium
 
   * Minor bugfixes
