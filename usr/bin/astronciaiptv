@@ -1,7 +1,8 @@
 #!/bin/sh
 cd "$(dirname "$(readlink -f "$0")")/../lib/astronciaiptv/" || exit 1
+PULSE_PROP="media.role=video"
 LD_LIBRARY_PATH="$(./astroncia/pfs.py)"
+export PULSE_PROP
 export LD_LIBRARY_PATH
-export PULSE_PROP='media.role=video'
 exec /usr/bin/python3 ./astroncia_iptv.py "$@"
 exit "$?"
