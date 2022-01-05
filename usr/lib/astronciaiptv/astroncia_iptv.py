@@ -971,14 +971,6 @@ if __name__ == '__main__':
                 except: # pylint: disable=bare-except
                     print_with_time("Playlist parsing error!")
                     show_exception(_('playlistloaderror'))
-                    try:
-                        file10 = open(
-                            str(Path(LOCAL_DIR, 'failedplaylist.txt')), 'w', encoding="utf8"
-                        )
-                        file10.write(m3u)
-                        file10.close()
-                    except: # pylint: disable=bare-except
-                        pass
                     m3u = ""
                     array = {}
                     groups = []
