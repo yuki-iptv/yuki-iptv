@@ -536,7 +536,10 @@ _mpv_create = backend.mpv_create
 _handle_func('mpv_create_client',           [c_char_p],                                 MpvHandle, notnull_errcheck)
 _handle_func('mpv_client_name',             [],                                         c_char_p, errcheck=None)
 _handle_func('mpv_initialize',              [],                                         c_int, ec_errcheck)
-_handle_func('mpv_detach_destroy',          [],                                         None, errcheck=None)
+try:
+    _handle_func('mpv_detach_destroy',          [],                                         None, errcheck=None)
+except:
+    _handle_func('mpv_destroy',          [],                                         None, errcheck=None)
 _handle_func('mpv_terminate_destroy',       [],                                         None, errcheck=None)
 _handle_func('mpv_load_config_file',        [c_char_p],                                 c_int, ec_errcheck)
 _handle_func('mpv_get_time_us',             [],                                         c_ulonglong, errcheck=None)
@@ -568,7 +571,10 @@ _handle_func('mpv_request_log_messages',    [c_char_p],                         
 _handle_func('mpv_wait_event',              [c_double],                                 POINTER(MpvEvent), errcheck=None)
 _handle_func('mpv_wakeup',                  [],                                         None, errcheck=None)
 _handle_func('mpv_set_wakeup_callback',     [WakeupCallback, c_void_p],                 None, errcheck=None)
-_handle_func('mpv_get_wakeup_pipe',         [],                                         c_int, errcheck=None)
+try:
+    _handle_func('mpv_get_wakeup_pipe',         [],                                         c_int, errcheck=None)
+except:
+    pass
 
 _handle_func('mpv_stream_cb_add_ro',        [c_char_p, c_void_p, StreamOpenFn],         c_int, ec_errcheck)
 
@@ -889,7 +895,10 @@ class MPV(object):
                         self._message_handlers[target](*args)
 
                 if eid == MpvEventID.SHUTDOWN:
-                    _mpv_detach_destroy(self._event_handle)
+                    try:
+                        _mpv_detach_destroy(self._event_handle)
+                    except:
+                        _mpv_destroy(self._event_handle)
                     return
 
             except Exception as e:
