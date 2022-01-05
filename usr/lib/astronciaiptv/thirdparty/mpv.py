@@ -576,7 +576,10 @@ try:
 except:
     pass
 
-_handle_func('mpv_stream_cb_add_ro',        [c_char_p, c_void_p, StreamOpenFn],         c_int, ec_errcheck)
+try:
+    _handle_func('mpv_stream_cb_add_ro',        [c_char_p, c_void_p, StreamOpenFn],         c_int, ec_errcheck)
+except:
+    pass
 
 _handle_func('mpv_render_context_create',               [MpvRenderCtxHandle, MpvHandle, POINTER(MpvRenderParam)],   c_int, ec_errcheck,     ctx=None)
 _handle_func('mpv_render_context_set_parameter',        [MpvRenderParam],                                           c_int, ec_errcheck,     ctx=MpvRenderCtxHandle)
@@ -1649,7 +1652,10 @@ class MPV(object):
             if proto in self._stream_protocol_cbs:
                 raise KeyError('Stream protocol already registered')
             self._stream_protocol_cbs[proto] = [open_backend]
-            _mpv_stream_cb_add_ro(self.handle, proto.encode('utf-8'), c_void_p(), open_backend)
+            try:
+                _mpv_stream_cb_add_ro(self.handle, proto.encode('utf-8'), c_void_p(), open_backend)
+            except:
+                pass
 
             return open_fn
 
