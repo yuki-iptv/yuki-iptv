@@ -19,10 +19,11 @@ Copyright (C) 2021 Astroncia
 import sys
 from astroncia.time import print_with_time
 
-class astroncia_data: # pylint: disable=too-few-public-methods
+class AstronciaData: # pylint: disable=too-few-public-methods
     pass
 
-astroncia_data.qt6_disable_printed = False
+AstronciaData.qt6_disable_printed = False
+AstronciaData.qt5_warn_printed = False
 
 def get_qt_library():
     qt_library = "none"
@@ -32,8 +33,8 @@ def get_qt_library():
     QtGui = False
     try:
         if '--disable-qt6' in sys.argv:
-            if not astroncia_data.qt6_disable_printed:
-                astroncia_data.qt6_disable_printed = True
+            if not AstronciaData.qt6_disable_printed:
+                AstronciaData.qt6_disable_printed = True
                 print_with_time("Qt6 force disabled\n")
             raise Exception("")
         from PyQt6 import QtWidgets
@@ -47,4 +48,8 @@ def get_qt_library():
         from PyQt5 import QtGui
         QShortcut = QtWidgets.QShortcut
         qt_library = "PyQt5"
+        if not AstronciaData.qt5_warn_printed:
+            AstronciaData.qt5_warn_printed = True
+            print_with_time("Qt 5 is deprecated")
+            print_with_time("")
     return qt_library, QtWidgets, QtCore, QtGui, QShortcut
