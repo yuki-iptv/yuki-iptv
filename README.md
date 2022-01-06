@@ -5,7 +5,7 @@
 
 ## Download
 
-Downloads are available on [Releases](https://gitlab.com/astroncia/iptv/-/releases) page.  
+Downloads (deb/rpm/exe) are available on [Releases](https://gitlab.com/astroncia/iptv/-/releases) page.  
   
 For **Ubuntu** / **Linux Mint** recommended install from [Launchpad PPA - ppa:astroncia/iptv](https://launchpad.net/~astroncia/+archive/ubuntu/iptv):  
 ```sudo add-apt-repository -y ppa:astroncia/iptv```  
@@ -14,7 +14,8 @@ For **Ubuntu** / **Linux Mint** recommended install from [Launchpad PPA - ppa:as
   
 [Installation for **Debian**](https://software.opensuse.org/download/package?package=astronciaiptv&project=home%3Aastroncia)  
   
-[**Arch Linux** (AUR)](https://aur.archlinux.org/packages/astronciaiptv/)  
+[**Arch Linux** (AUR) - astronciaiptv](https://aur.archlinux.org/packages/astronciaiptv/)  
+[**Arch Linux** (AUR) - astronciaiptv-git](https://aur.archlinux.org/packages/astronciaiptv-git/)  
 
 ## Information
 
