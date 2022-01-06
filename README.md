@@ -54,11 +54,11 @@ Icons: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 
 ## Requirements
 
-- Qt 5 *(or Qt 6)*
-- libmpv1 (>= 0.27.2)
-- [ffmpeg](https://ffmpeg.org/)
-- Python 3 (>= 3.6)
-- [PyQt5](https://pypi.org/project/PyQt5/) *(or [PyQt6](https://pypi.org/project/PyQt6/))*
+- [Qt](https://www.qt.io/) 6.2.2 or newer *(or Qt 5.12 or newer)*
+- [libmpv1](https://mpv.io/) 0.27.2 or newer
+- [ffmpeg](https://ffmpeg.org/) 3.4.8 or newer
+- [Python](https://www.python.org/) 3.6 or newer
+- [PyQt6](https://pypi.org/project/PyQt6/) 6.2.2 or newer *(or [PyQt5](https://pypi.org/project/PyQt5/) 5.12 or newer)*
 - [Pillow](https://pypi.org/project/Pillow/) (python3-pil)
 - [pandas](https://pypi.org/project/pandas/) (python3-pandas)
 - [PyGObject](https://pypi.org/project/PyGObject/) (python3-gi)
