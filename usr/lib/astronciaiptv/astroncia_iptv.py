@@ -50,14 +50,15 @@ import requests
 import setproctitle
 from unidecode import unidecode
 from astroncia.qt import get_qt_library
-from astroncia.lang import lang, init_lang, _
+from astroncia.lang import lang, init_lang, _, __
 from astroncia.ua import user_agent, uas, ua_names
 from astroncia.epg import worker
 from astroncia.record import record, record_return, stop_record, \
     async_wait_process, make_ffmpeg_screenshot, is_ffmpeg_recording
 from astroncia.playlists import iptv_playlists
 from astroncia.menubar import init_astroncia_menubar, init_menubar_player, \
-    populate_menubar, update_menubar, get_active_vf_filters, get_first_run, get_seq
+    populate_menubar, update_menubar, get_active_vf_filters, get_first_run, get_seq, \
+    reload_menubar_shortcuts
 from astroncia.time import print_with_time, get_app_log, get_mpv_log, args_init
 from astroncia.epgurls import EPG_URLS
 from astroncia.xtreamtom3u import convert_xtream_to_m3u
@@ -151,6 +152,8 @@ class AstronciaData: # pylint: disable=too-few-public-methods
     playlist_hidden = False
     controlpanel_hidden = False
     fullscreen_locked = False
+    selected_shortcut_row = -1
+    shortcuts_state = False
 
 setproctitle.setproctitle("astronciaiptv")
 
@@ -355,7 +358,7 @@ if __name__ == '__main__':
     try:
         print_with_time("")
         print_with_time("{} {}...".format(MAIN_WINDOW_TITLE, _('starting')))
-        print_with_time("Copyright (C) Astroncia")
+        print_with_time("Copyright (c) 2021-{} Astroncia".format(datetime.datetime.now().year))
         print_with_time("")
         # Version debugging
         print_with_time("Current version: {}".format(APP_VERSION))
@@ -1119,6 +1122,105 @@ if __name__ == '__main__':
         settings_win.resize(720, 500)
         settings_win.setWindowTitle(_('settings'))
         settings_win.setWindowIcon(main_icon)
+
+        shortcuts_win = QtWidgets.QMainWindow()
+        shortcuts_win.resize(720, 500)
+        shortcuts_win.setWindowTitle(_('shortcuts'))
+        shortcuts_win.setWindowIcon(main_icon)
+
+        shortcuts_central_widget = QtWidgets.QWidget(shortcuts_win)
+        shortcuts_win.setCentralWidget(shortcuts_central_widget)
+
+        shortcuts_grid_layout = QtWidgets.QGridLayout()
+        shortcuts_central_widget.setLayout(shortcuts_grid_layout)
+
+        shortcuts_table = QtWidgets.QTableWidget(shortcuts_win)
+        #shortcuts_table.setColumnCount(3)
+        shortcuts_table.setColumnCount(2)
+
+        #shortcuts_table.setHorizontalHeaderLabels([_('desc'), _('shortcut'), "Header 3"])
+        shortcuts_table.setHorizontalHeaderLabels([_('desc'), _('shortcut')])
+
+        shortcuts_table.horizontalHeaderItem(0).setTextAlignment(
+            _enum(QtCore.Qt, 'AlignmentFlag.AlignHCenter')
+        )
+        shortcuts_table.horizontalHeaderItem(1).setTextAlignment(
+            _enum(QtCore.Qt, 'AlignmentFlag.AlignHCenter')
+        )
+        #shortcuts_table.horizontalHeaderItem(2).setTextAlignment(
+        #    _enum(QtCore.Qt, 'AlignmentFlag.AlignHCenter')
+        #)
+
+        shortcuts_grid_layout.addWidget(shortcuts_table, 0, 0)
+
+        class KeySequenceEdit(QtWidgets.QKeySequenceEdit): # pylint: disable=too-few-public-methods
+            def keyPressEvent(self, event):
+                super().keyPressEvent(event)
+                self.setKeySequence(QtGui.QKeySequence(self.keySequence()))
+
+        shortcuts_win_2 = QtWidgets.QMainWindow()
+        shortcuts_win_2.resize(300, 100)
+        shortcuts_win_2.setWindowTitle(_('modifyshortcut'))
+        shortcuts_win_2.setWindowIcon(main_icon)
+
+        keyseq = KeySequenceEdit()
+
+        bold_fnt_1 = QtGui.QFont()
+        bold_fnt_1.setBold(True)
+
+        la_sl = QtWidgets.QLabel()
+        la_sl.setFont(bold_fnt_1)
+        la_sl.setText(_('pressnewkey'))
+
+        def keyseq_ok_clicked():
+            if AstronciaData.selected_shortcut_row != -1:
+                sel_keyseq = keyseq.keySequence().toString()
+                search_value = shortcuts_table.item(AstronciaData.selected_shortcut_row, 0).text()
+                shortcut_taken = False
+                for sci1 in range(shortcuts_table.rowCount()):
+                    if sci1 != AstronciaData.selected_shortcut_row:
+                        if shortcuts_table.item(sci1, 1).text() == sel_keyseq:
+                            shortcut_taken = True
+                if not shortcut_taken:
+                    shortcuts_table.item(AstronciaData.selected_shortcut_row, 1).setText(sel_keyseq)
+                    for name55, value55 in main_keybinds_translations.items():
+                        if value55 == search_value:
+                            main_keybinds[name55] = sel_keyseq
+                            hotkeys_file = open(
+                                str(Path(LOCAL_DIR, 'hotkeys.json')), 'w', encoding="utf8"
+                            )
+                            hotkeys_file.write(json.dumps(main_keybinds))
+                            hotkeys_file.close()
+                            reload_keybinds()
+                    shortcuts_win_2.hide()
+                else:
+                    msg_shortcut_taken = QtWidgets.QMessageBox(
+                        qt_icon_warning,
+                        MAIN_WINDOW_TITLE,
+                        _('shortcutused'),
+                        _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
+                    )
+                    msg_shortcut_taken.exec()
+
+        keyseq_cancel = QtWidgets.QPushButton(_('cancel'))
+        keyseq_cancel.clicked.connect(shortcuts_win_2.hide)
+        keyseq_ok = QtWidgets.QPushButton(_('ok'))
+        keyseq_ok.clicked.connect(keyseq_ok_clicked)
+
+        shortcuts_win_2_widget_2 = QtWidgets.QWidget()
+        shortcuts_win_2_layout_2 = QtWidgets.QHBoxLayout()
+        shortcuts_win_2_layout_2.addWidget(keyseq_cancel)
+        shortcuts_win_2_layout_2.addWidget(keyseq_ok)
+        shortcuts_win_2_widget_2.setLayout(shortcuts_win_2_layout_2)
+
+        shortcuts_win_2_widget = QtWidgets.QWidget()
+        shortcuts_win_2_layout = QtWidgets.QVBoxLayout()
+        shortcuts_win_2_layout.addWidget(la_sl)
+        shortcuts_win_2_layout.addWidget(keyseq)
+        shortcuts_win_2_layout.addWidget(shortcuts_win_2_widget_2)
+        shortcuts_win_2_widget.setLayout(shortcuts_win_2_layout)
+
+        shortcuts_win_2.setCentralWidget(shortcuts_win_2_widget)
 
         selplaylist_win = QtWidgets.QMainWindow()
         selplaylist_win.setWindowTitle(MAIN_WINDOW_TITLE)
@@ -2684,6 +2786,8 @@ if __name__ == '__main__':
                 pass
             win.close()
             settings_win.close()
+            shortcuts_win.close()
+            shortcuts_win_2.close()
             help_win.close()
             streaminfo_win.close()
             license_win.close()
@@ -3476,6 +3580,46 @@ if __name__ == '__main__':
         btn_update = QtWidgets.QPushButton()
         btn_update.hide()
 
+        def shortcuts_table_clicked(row1, column1):
+            if column1 == 1: # keybind
+                sc1_text = shortcuts_table.item(row1, column1).text()
+                keyseq.setKeySequence(sc1_text)
+                AstronciaData.selected_shortcut_row = row1
+                keyseq.setFocus()
+                moveWindowToCenter(shortcuts_win_2)
+                shortcuts_win_2.show()
+
+        shortcuts_table.cellDoubleClicked.connect(shortcuts_table_clicked)
+
+        def get_widget_item(widget_str):
+            twi = QtWidgets.QTableWidgetItem(widget_str)
+            twi.setFlags(twi.flags() & ~_enum(QtCore.Qt, 'ItemFlag.ItemIsEditable'))
+            return twi
+
+        def show_shortcuts():
+            if not shortcuts_win.isVisible():
+                # start
+                shortcuts_table.setRowCount(len(main_keybinds))
+                keybind_i = -1
+                for keybind in main_keybinds:
+                    keybind_i += 1
+                    shortcuts_table.setItem(
+                        keybind_i, 0, get_widget_item(main_keybinds_translations[keybind])
+                    )
+                    if isinstance(main_keybinds[keybind], str):
+                        keybind_str = main_keybinds[keybind]
+                    else:
+                        keybind_str = QtGui.QKeySequence(main_keybinds[keybind]).toString()
+                    kbd_widget = get_widget_item(keybind_str)
+                    kbd_widget.setToolTip(_('shortcutchange'))
+                    shortcuts_table.setItem(keybind_i, 1, kbd_widget)
+                shortcuts_table.resizeColumnsToContents()
+                # end
+                moveWindowToCenter(shortcuts_win)
+                shortcuts_win.show()
+            else:
+                shortcuts_win.hide()
+
         def show_settings():
             if not settings_win.isVisible():
                 moveWindowToCenter(settings_win)
@@ -3880,6 +4024,7 @@ if __name__ == '__main__':
                 enable_always_on_top,
                 disable_always_on_top,
                 reload_playlist,
+                show_shortcuts,
                 str(Path(LOCAL_DIR, 'alwaysontop.json'))
             )
 
@@ -5495,12 +5640,12 @@ if __name__ == '__main__':
         win.listWidget.itemDoubleClicked.connect(itemClicked_event)
         def enterPressed():
             itemClicked_event(win.listWidget.currentItem())
-        shortcuts = []
-        shortcuts.append(QShortcut(
+        shortcuts = {}
+        shortcuts_return = QShortcut(
             QtGui.QKeySequence(_enum(QtCore.Qt, 'Key.Key_Return')),
             win.listWidget,
             activated=enterPressed
-        ))
+        )
         def channelfilter_do():
             btn_update.click()
         loading = QtWidgets.QLabel(_('loading'))
@@ -6585,7 +6730,7 @@ if __name__ == '__main__':
             qaction_prio = _enum(QtWidgets.QAction, 'Priority.HighPriority')
 
         def get_keybind(func1):
-            return main_keybinds[func1][0]
+            return main_keybinds[func1]
 
         def archive_all_clicked():
             chan_url = array[archive_channel.text()]['url']
@@ -7683,7 +7828,9 @@ if __name__ == '__main__':
                 applog_win.isActiveWindow() or \
                 mpvlog_win.isActiveWindow() or \
                 m3u_editor.isActiveWindow() or \
-                settings_win.isActiveWindow()
+                settings_win.isActiveWindow() or \
+                shortcuts_win.isActiveWindow() or \
+                shortcuts_win_2.isActiveWindow()
 
         def is_other_wins_has_focus():
             return sepplaylist_win.isActiveWindow() or \
@@ -7705,7 +7852,9 @@ if __name__ == '__main__':
                 applog_win.isActiveWindow() or \
                 mpvlog_win.isActiveWindow() or \
                 m3u_editor.isActiveWindow() or \
-                settings_win.isActiveWindow()
+                settings_win.isActiveWindow() or \
+                shortcuts_win.isActiveWindow() or \
+                shortcuts_win_2.isActiveWindow()
 
         menubar_st = False
         AstronciaData.playlist_state = sepplaylist_win.isVisible()
@@ -7844,6 +7993,8 @@ if __name__ == '__main__':
         # Key bindings
         def key_quit():
             settings_win.close()
+            shortcuts_win.close()
+            shortcuts_win_2.close()
             win.close()
             help_win.close()
             streaminfo_win.close()
@@ -7904,6 +8055,7 @@ if __name__ == '__main__':
             "key_t": key_t,
             "esc_handler": esc_handler,
             "mpv_fullscreen": mpv_fullscreen,
+            "mpv_fullscreen_2": mpv_fullscreen,
             "open_stream_info": open_stream_info,
             "mpv_mute": mpv_mute,
             "key_quit": key_quit,
@@ -7917,8 +8069,8 @@ if __name__ == '__main__':
             "show_clock": show_clock,
             # Yes, lambda is REALLY needed here
             # don't ask why
-            "(lambda: my_up_binding())": (lambda: my_up_binding()), # pylint: disable=undefined-variable, unnecessary-lambda
-            "(lambda: my_down_binding())": (lambda: my_down_binding()), # pylint: disable=undefined-variable, unnecessary-lambda
+            "(lambda: my_up_binding())": (lambda: my_up_binding_execute()), # pylint: disable=undefined-variable, unnecessary-lambda
+            "(lambda: my_down_binding())": (lambda: my_down_binding_execute()), # pylint: disable=undefined-variable, unnecessary-lambda
             "show_timeshift": show_timeshift,
             "show_scheduler": show_scheduler,
             "showhideeverything": showhideeverything,
@@ -7940,174 +8092,188 @@ if __name__ == '__main__':
             "(lambda: mpv_seek(600))": (lambda: mpv_seek(600)),
             "lowpanel_ch_1": lowpanel_ch_1,
             "show_tvguide_2": show_tvguide_2,
-            "alwaysontop": change_aot_mode
+            "alwaysontop": change_aot_mode,
+            # INTERNAL
+            "do_record_1_INTERNAL": do_record,
+            "mpv_mute_1_INTERNAL": mpv_mute,
+            "mpv_play_1_INTERNAL": mpv_play,
+            "mpv_play_2_INTERNAL": mpv_play,
+            "mpv_play_3_INTERNAL": mpv_play,
+            "mpv_play_4_INTERNAL": mpv_play,
+            "mpv_stop_1_INTERNAL": mpv_stop,
+            "mpv_stop_2_INTERNAL": mpv_stop,
+            "next_channel_1_INTERNAL": next_channel,
+            "prev_channel_1_INTERNAL": prev_channel,
+            # Yes, lambda is REALLY needed here
+            # don't ask why
+            "(lambda: my_up_binding())_INTERNAL": (lambda: my_up_binding_execute()), # pylint: disable=undefined-variable, unnecessary-lambda
+            "(lambda: my_down_binding())_INTERNAL": (lambda: my_down_binding_execute()) # pylint: disable=undefined-variable, unnecessary-lambda
         }
 
-        main_keybinds = {
-            "(lambda: mpv_seek(-10))": [
-                _enum(QtCore.Qt, 'Key.Key_Left')
-            ],
-            "(lambda: mpv_seek(-60))": [
-                _enum(QtCore.Qt, 'Key.Key_Down')
-            ],
-            "(lambda: mpv_seek(-600))": [
-                _enum(QtCore.Qt, 'Key.Key_PageDown')
-            ],
-            "(lambda: mpv_seek(10))": [
-                _enum(QtCore.Qt, 'Key.Key_Right')
-            ],
-            "(lambda: mpv_seek(60))": [
-                _enum(QtCore.Qt, 'Key.Key_Up')
-            ],
-            "(lambda: mpv_seek(600))": [
-                _enum(QtCore.Qt, 'Key.Key_PageUp')
-            ],
-            "(lambda: my_down_binding())": [
-                _enum(QtCore.Qt, 'Key.Key_VolumeDown')
-            ],
-            "(lambda: my_up_binding())": [
-                _enum(QtCore.Qt, 'Key.Key_VolumeUp')
-            ],
-            "(lambda: set_playback_speed(1.00))": [
-                _enum(QtCore.Qt, 'Key.Key_Backspace')
-            ],
-            "app.quit": [
-                "Ctrl+Q"
-            ],
-            "do_record": [
-                _enum(QtCore.Qt, 'Key.Key_R'),
-                _enum(QtCore.Qt, 'Key.Key_MediaRecord')
-            ],
-            "do_screenshot": [
-                _enum(QtCore.Qt, 'Key.Key_H')
-            ],
-            "esc_handler": [
-                _enum(QtCore.Qt, 'Key.Key_Escape')
-            ],
-            "force_update_epg": [
-                "Ctrl+U"
-            ],
-            "key_quit": [
-                _enum(QtCore.Qt, 'Key.Key_Q')
-            ],
-            "key_t": [
-                _enum(QtCore.Qt, 'Key.Key_T')
-            ],
-            "lowpanel_ch_1": [
-                _enum(QtCore.Qt, 'Key.Key_P')
-            ],
-            "main_channel_settings": [
-                "Ctrl+S"
-            ],
-            "mpv_fullscreen": [
-                _enum(QtCore.Qt, 'Key.Key_F'),
-                _enum(QtCore.Qt, 'Key.Key_F11')
-            ],
-            "mpv_mute": [
-                _enum(QtCore.Qt, 'Key.Key_M'),
-                _enum(QtCore.Qt, 'Key.Key_VolumeMute')
-            ],
-            "mpv_play": [
-                _enum(QtCore.Qt, 'Key.Key_Space'),
-                _enum(QtCore.Qt, 'Key.Key_MediaTogglePlayPause'),
-                _enum(QtCore.Qt, 'Key.Key_MediaPlay'),
-                _enum(QtCore.Qt, 'Key.Key_MediaPause'),
-                _enum(QtCore.Qt, 'Key.Key_Play')
-            ],
-            "mpv_stop": [
-                _enum(QtCore.Qt, 'Key.Key_S'),
-                _enum(QtCore.Qt, 'Key.Key_Stop'),
-                _enum(QtCore.Qt, 'Key.Key_MediaStop')
-            ],
-            "my_down_binding_execute": [
-                _enum(QtCore.Qt, 'Key.Key_9')
-            ],
-            "my_up_binding_execute": [
-                _enum(QtCore.Qt, 'Key.Key_0')
-            ],
-            "next_channel": [
-                _enum(QtCore.Qt, 'Key.Key_N'),
-                _enum(QtCore.Qt, 'Key.Key_MediaNext')
-            ],
-            "open_stream_info": [
-                _enum(QtCore.Qt, 'Key.Key_F2')
-            ],
-            "prev_channel": [
-                _enum(QtCore.Qt, 'Key.Key_B'),
-                _enum(QtCore.Qt, 'Key.Key_MediaPrevious')
-            ],
-            "show_clock": [
-                _enum(QtCore.Qt, 'Key.Key_O')
-            ],
-            "show_m3u_editor": [
-                "Ctrl+E"
-            ],
-            "show_playlists": [
-                "Ctrl+O"
-            ],
-            "reload_playlist": [
-                "Ctrl+R"
-            ],
-            "show_scheduler": [
-                _enum(QtCore.Qt, 'Key.Key_D')
-            ],
-            "show_settings": [
-                "Ctrl+P"
-            ],
-            "show_sort": [
-                _enum(QtCore.Qt, 'Key.Key_I')
-            ],
-            "show_timeshift": [
-                _enum(QtCore.Qt, 'Key.Key_E')
-            ],
-            "show_tvguide": [
-                _enum(QtCore.Qt, 'Key.Key_G')
-            ],
-            "showhideeverything": [
-                "Ctrl+C"
-            ],
-            "show_tvguide_2": [
-                _enum(QtCore.Qt, 'Key.Key_J')
-            ],
-            "alwaysontop": [
-                _enum(QtCore.Qt, 'Key.Key_A')
-            ]
+        main_keybinds_internal = {
+            "do_record_1_INTERNAL": _enum(QtCore.Qt, 'Key.Key_MediaRecord'),
+            "mpv_mute_1_INTERNAL": _enum(QtCore.Qt, 'Key.Key_VolumeMute'),
+            "mpv_play_1_INTERNAL": _enum(QtCore.Qt, 'Key.Key_MediaTogglePlayPause'),
+            "mpv_play_2_INTERNAL": _enum(QtCore.Qt, 'Key.Key_MediaPlay'),
+            "mpv_play_3_INTERNAL": _enum(QtCore.Qt, 'Key.Key_MediaPause'),
+            "mpv_play_4_INTERNAL": _enum(QtCore.Qt, 'Key.Key_Play'),
+            "mpv_stop_1_INTERNAL": _enum(QtCore.Qt, 'Key.Key_Stop'),
+            "mpv_stop_2_INTERNAL": _enum(QtCore.Qt, 'Key.Key_MediaStop'),
+            "next_channel_1_INTERNAL": _enum(QtCore.Qt, 'Key.Key_MediaNext'),
+            "prev_channel_1_INTERNAL": _enum(QtCore.Qt, 'Key.Key_MediaPrevious'),
+            "(lambda: my_down_binding())_INTERNAL": _enum(QtCore.Qt, 'Key.Key_VolumeDown'),
+            "(lambda: my_up_binding())_INTERNAL": _enum(QtCore.Qt, 'Key.Key_VolumeUp'),
         }
+
+        mki2 = []
+        for mki0 in (
+            (10, "seconds_plural", 10),
+            (1, "minutes_plural", 60),
+            (10, "minutes_plural", 600)
+        ):
+            for mki1 in ("-", "+"):
+                mki2.append("{}{} {}".format(mki1, mki0[0], __(mki0[1], "", mki0[0])))
+
+        main_keybinds_translations = {
+            "(lambda: mpv_seek(-10))": mki2[0],
+            "(lambda: mpv_seek(-60))": mki2[2],
+            "(lambda: mpv_seek(-600))": mki2[4],
+            "(lambda: mpv_seek(10))": mki2[1],
+            "(lambda: mpv_seek(60))": mki2[3],
+            "(lambda: mpv_seek(600))": mki2[5],
+            "(lambda: my_down_binding())": _('menubar_volumeminus').replace('&', ''),
+            "(lambda: my_up_binding())": _('menubar_volumeplus').replace('&', ''),
+            "(lambda: set_playback_speed(1.00))": _('menubar_normalspeed').replace('&', ''),
+            "app.quit": _('exitprogram') + ' (2)',
+            "do_record": _('record'),
+            "do_screenshot": _('screenshot').capitalize(),
+            "esc_handler": _('exitfullscreen2'),
+            "force_update_epg": _('menubar_updateepg').replace('&', ''),
+            "key_quit": _('exitprogram'),
+            "key_t": _('showhideplaylist'),
+            "lowpanel_ch_1": _('showhidectrlpanel'),
+            "main_channel_settings": _('menubar_csforchannel').replace('&', ''),
+            "mpv_fullscreen": _('menubar_fullscreen').replace('&', ''),
+            "mpv_fullscreen_2": _('menubar_fullscreen').replace('&', '') + ' (2)',
+            "mpv_mute": _('menubar_mute').replace('&', ''),
+            "mpv_play": _('menubar_playpause').replace('&', ''),
+            "mpv_stop": _('menubar_stop').replace('&', ''),
+            "my_down_binding_execute": _('menubar_volumeminus').replace('&', ''),
+            "my_up_binding_execute": _('menubar_volumeplus').replace('&', ''),
+            "next_channel": _('menubar_next').replace('&', ''),
+            "open_stream_info": _('Stream Information'),
+            "prev_channel": _('menubar_previous').replace('&', ''),
+            "show_clock": _('showclock'),
+            "show_m3u_editor": _('menubar_m3ueditor').replace('&', ''),
+            "show_playlists": _('menubar_playlists').replace('&', ''),
+            "reload_playlist": _('updcurplaylist').replace('&', ''),
+            "show_scheduler": _('smscheduler'),
+            "show_settings": _('settings'),
+            "show_sort": _('menubar_channelsort').replace('&', ' ').strip(),
+            "show_timeshift": _('timeshift'),
+            "show_tvguide": _('tvguide'),
+            "showhideeverything": _('menubar_compactmode').replace('&', ''),
+            "show_tvguide_2": _('tvguideforallchans'),
+            "alwaysontop": _('alwaysontop')
+        }
+
+        main_keybinds_default = {
+            "mpv_play": _enum(QtCore.Qt, 'Key.Key_Space'),
+            "mpv_stop": _enum(QtCore.Qt, 'Key.Key_S'),
+            "mpv_mute": _enum(QtCore.Qt, 'Key.Key_M'),
+            "my_down_binding_execute": _enum(QtCore.Qt, 'Key.Key_9'),
+            "my_up_binding_execute": _enum(QtCore.Qt, 'Key.Key_0'),
+            "prev_channel": _enum(QtCore.Qt, 'Key.Key_B'),
+            "next_channel": _enum(QtCore.Qt, 'Key.Key_N'),
+            "key_quit": _enum(QtCore.Qt, 'Key.Key_Q'),
+            "app.quit": "Ctrl+Q",
+            "do_record": _enum(QtCore.Qt, 'Key.Key_R'),
+            "do_screenshot": _enum(QtCore.Qt, 'Key.Key_H'),
+            "esc_handler": _enum(QtCore.Qt, 'Key.Key_Escape'),
+            "force_update_epg": "Ctrl+U",
+            "key_t": _enum(QtCore.Qt, 'Key.Key_T'),
+            "lowpanel_ch_1": _enum(QtCore.Qt, 'Key.Key_P'),
+            "main_channel_settings": "Ctrl+S",
+            "mpv_fullscreen": _enum(QtCore.Qt, 'Key.Key_F'),
+            "mpv_fullscreen_2": _enum(QtCore.Qt, 'Key.Key_F11'),
+            "open_stream_info": _enum(QtCore.Qt, 'Key.Key_F2'),
+            "show_clock": _enum(QtCore.Qt, 'Key.Key_O'),
+            "show_m3u_editor": "Ctrl+E",
+            "show_playlists": "Ctrl+O",
+            "reload_playlist": "Ctrl+R",
+            "show_scheduler": _enum(QtCore.Qt, 'Key.Key_D'),
+            "show_settings": "Ctrl+P",
+            "show_sort": _enum(QtCore.Qt, 'Key.Key_I'),
+            "show_timeshift": _enum(QtCore.Qt, 'Key.Key_E'),
+            "show_tvguide": _enum(QtCore.Qt, 'Key.Key_G'),
+            "showhideeverything": "Ctrl+C",
+            "show_tvguide_2": _enum(QtCore.Qt, 'Key.Key_J'),
+            "alwaysontop": _enum(QtCore.Qt, 'Key.Key_A'),
+            "(lambda: mpv_seek(-10))": _enum(QtCore.Qt, 'Key.Key_Left'),
+            "(lambda: mpv_seek(-60))": _enum(QtCore.Qt, 'Key.Key_Down'),
+            "(lambda: mpv_seek(-600))": _enum(QtCore.Qt, 'Key.Key_PageDown'),
+            "(lambda: mpv_seek(10))": _enum(QtCore.Qt, 'Key.Key_Right'),
+            "(lambda: mpv_seek(60))": _enum(QtCore.Qt, 'Key.Key_Up'),
+            "(lambda: mpv_seek(600))": _enum(QtCore.Qt, 'Key.Key_PageUp'),
+            "(lambda: set_playback_speed(1.00))": _enum(QtCore.Qt, 'Key.Key_Backspace')
+        }
+
+        if os.path.isfile(str(Path(LOCAL_DIR, 'hotkeys.json'))):
+            try:
+                with open(
+                    str(Path(LOCAL_DIR, 'hotkeys.json')), 'r', encoding="utf8"
+                ) as hotkeys_file_tmp:
+                    hotkeys_tmp = json.loads(hotkeys_file_tmp.read())
+                    main_keybinds = hotkeys_tmp
+                    print_with_time("hotkeys.json found, using it as hotkey settings")
+            except: # pylint: disable=bare-except
+                print_with_time("[WARNING] failed to read hotkeys.json, using default shortcuts")
+                main_keybinds = main_keybinds_default.copy()
+        else:
+            print_with_time("No hotkeys.json found, using default hotkeys")
+            main_keybinds = main_keybinds_default.copy()
 
         seq = get_seq()
 
         def setShortcutState(st1):
-            for shortcut in shortcuts:
-                if shortcut.key() in seq:
-                    shortcut.setEnabled(st1)
+            AstronciaData.shortcuts_state = st1
+            for shortcut_arr in shortcuts:
+                for shortcut in shortcuts[shortcut_arr]:
+                    if shortcut.key() in seq:
+                        shortcut.setEnabled(st1)
 
-        for kbd1 in main_keybinds:
-            for kbd in main_keybinds[kbd1]:
+        def reload_keybinds():
+            for shortcut_1 in shortcuts:
+                if not shortcut_1.endswith('_INTERNAL'):
+                    sc_new_keybind = QtGui.QKeySequence(get_keybind(shortcut_1))
+                    for shortcut_2 in shortcuts[shortcut_1]:
+                        shortcut_2.setKey(sc_new_keybind)
+            reload_menubar_shortcuts()
+
+        all_keybinds = main_keybinds.copy()
+        all_keybinds.update(main_keybinds_internal)
+        for kbd in all_keybinds:
+            shortcuts[kbd] = [
                 # Main window
-                shortcuts.append(QShortcut(
-                    QtGui.QKeySequence(kbd),
+                QShortcut(
+                    QtGui.QKeySequence(all_keybinds[kbd]),
                     win,
-                    activated=funcs[kbd1]
-                ))
+                    activated=funcs[kbd]
+                ),
                 # Control panel widget
-                shortcuts.append(QShortcut(
-                    QtGui.QKeySequence(kbd),
+                QShortcut(
+                    QtGui.QKeySequence(all_keybinds[kbd]),
                     controlpanel_widget,
-                    activated=funcs[kbd1]
-                ))
+                    activated=funcs[kbd]
+                ),
                 # Playlist widget
-                shortcuts.append(QShortcut(
-                    QtGui.QKeySequence(kbd),
+                QShortcut(
+                    QtGui.QKeySequence(all_keybinds[kbd]),
                     playlist_widget,
-                    activated=funcs[kbd1]
-                ))
-                #if settings["playlistsep"]:
-                #    # Separate playlist
-                #    QShortcut(
-                #        QtGui.QKeySequence(kbd),
-                #        sepplaylist_win,
-                #        activated=funcs[kbd1]
-                #    )
+                    activated=funcs[kbd]
+                ),
+            ]
+        all_keybinds = False
 
         setShortcutState(False)
 

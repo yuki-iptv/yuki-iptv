@@ -25,7 +25,6 @@ from functools import partial
 from astroncia.time import print_with_time
 from astroncia.qt import get_qt_library
 from astroncia.lang import _, __
-from astroncia.qt6compat import _enum
 qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
 
 class AstronciaData: # pylint: disable=too-few-public-methods
@@ -123,6 +122,44 @@ def alwaysontop_action():
         print_with_time("Always on top disabled now")
         AstronciaData.disable_always_on_top()
 
+def reload_menubar_shortcuts():
+    AstronciaData.playlists.setShortcut(kbd("show_playlists"))
+    AstronciaData.reloadPlaylist.setShortcut(kbd("reload_playlist"))
+    AstronciaData.m3uEditor.setShortcut(kbd("show_m3u_editor"))
+    AstronciaData.exitAction.setShortcut(kbd("app.quit"))
+    AstronciaData.playpause.setShortcut(kbd("mpv_play"))
+    AstronciaData.stop.setShortcut(kbd("mpv_stop"))
+    AstronciaData.normalSpeed.setShortcut(kbd("(lambda: set_playback_speed(1.00))"))
+    AstronciaData.prevchannel.setShortcut(kbd("prev_channel"))
+    AstronciaData.nextchannel.setShortcut(kbd("next_channel"))
+    AstronciaData.fullscreen.setShortcut(kbd("mpv_fullscreen"))
+    AstronciaData.compactmode.setShortcut(kbd("showhideeverything"))
+    AstronciaData.csforchannel.setShortcut(kbd("main_channel_settings"))
+    AstronciaData.screenshot.setShortcut(kbd("do_screenshot"))
+    AstronciaData.muteAction.setShortcut(kbd("mpv_mute"))
+    AstronciaData.volumeMinus.setShortcut(kbd("my_down_binding_execute"))
+    AstronciaData.volumePlus.setShortcut(kbd("my_up_binding_execute"))
+    AstronciaData.showhideplaylistAction.setShortcut(kbd("key_t"))
+    AstronciaData.showhidectrlpanelAction.setShortcut(kbd("lowpanel_ch_1"))
+    AstronciaData.alwaysontopAction.setShortcut(kbd("alwaysontop"))
+    AstronciaData.streaminformationAction.setShortcut(kbd("open_stream_info"))
+    AstronciaData.showepgAction.setShortcut(kbd("show_tvguide_2"))
+    AstronciaData.forceupdateepgAction.setShortcut(kbd("force_update_epg"))
+    AstronciaData.sortAction.setShortcut(kbd("show_sort"))
+    AstronciaData.settingsAction.setShortcut(kbd("show_settings"))
+    sec_keys_1 = [
+        kbd("(lambda: mpv_seek(-10))"),
+        kbd("(lambda: mpv_seek(10))"),
+        kbd("(lambda: mpv_seek(-60))"),
+        kbd("(lambda: mpv_seek(60))"),
+        kbd("(lambda: mpv_seek(-600))"),
+        kbd("(lambda: mpv_seek(600))")
+    ]
+    sec_i_1 = -1
+    for i_1 in AstronciaData.secs:
+        sec_i_1 += 1
+        i_1.setShortcut(qkeysequence(sec_keys_1[sec_i_1]))
+
 def init_menubar(data): # pylint: disable=too-many-statements
     # File
 
@@ -154,12 +191,12 @@ def init_menubar(data): # pylint: disable=too-many-statements
 
     AstronciaData.secs = []
     sec_keys = [
-        _enum(QtCore.Qt, 'Key.Key_Left'),
-        _enum(QtCore.Qt, 'Key.Key_Right'),
-        _enum(QtCore.Qt, 'Key.Key_Down'),
-        _enum(QtCore.Qt, 'Key.Key_Up'),
-        _enum(QtCore.Qt, 'Key.Key_PageDown'),
-        _enum(QtCore.Qt, 'Key.Key_PageUp')
+        kbd("(lambda: mpv_seek(-10))"),
+        kbd("(lambda: mpv_seek(10))"),
+        kbd("(lambda: mpv_seek(-60))"),
+        kbd("(lambda: mpv_seek(60))"),
+        kbd("(lambda: mpv_seek(-600))"),
+        kbd("(lambda: mpv_seek(600))")
     ]
     sec_i = -1
     for i in (
@@ -313,6 +350,9 @@ def init_menubar(data): # pylint: disable=too-many-statements
     AstronciaData.sortAction.triggered.connect(lambda: AstronciaData.show_sort())
     AstronciaData.sortAction.setShortcut(kbd("show_sort"))
 
+    AstronciaData.shortcutsAction = qaction('&' + _('shortcuts'), data)
+    AstronciaData.shortcutsAction.triggered.connect(lambda: AstronciaData.show_shortcuts())
+
     AstronciaData.settingsAction = qaction(_('menubar_settings'), data)
     AstronciaData.settingsAction.triggered.connect(lambda: AstronciaData.show_settings())
     AstronciaData.settingsAction.setShortcut(kbd("show_settings"))
@@ -377,6 +417,7 @@ def populate_menubar(
     file_menu.addAction(AstronciaData.playlists)
     file_menu.addSeparator()
     file_menu.addAction(AstronciaData.reloadPlaylist)
+    file_menu.addAction(AstronciaData.forceupdateepgAction)
     file_menu.addSeparator()
     file_menu.addAction(AstronciaData.m3uEditor)
     file_menu.addAction(AstronciaData.exitAction)
@@ -443,7 +484,6 @@ def populate_menubar(
     view_menu.addAction(AstronciaData.alwaysontopAction)
     view_menu.addAction(AstronciaData.streaminformationAction)
     view_menu.addAction(AstronciaData.showepgAction)
-    view_menu.addAction(AstronciaData.forceupdateepgAction)
     view_menu.addSection(_('logs'))
     view_menu.addAction(AstronciaData.applogAction)
     view_menu.addAction(AstronciaData.mpvlogAction)
@@ -453,6 +493,7 @@ def populate_menubar(
     options_menu = menubar.addMenu(_('menubar_options'))
     options_menu.addAction(AstronciaData.sortAction)
     options_menu.addSeparator()
+    options_menu.addAction(AstronciaData.shortcutsAction)
     options_menu.addAction(AstronciaData.settingsAction)
 
     # Help
@@ -591,6 +632,7 @@ def init_menubar_player( # pylint: disable=too-many-arguments, too-many-locals
     enable_always_on_top,
     disable_always_on_top,
     reload_playlist,
+    show_shortcuts,
     aot_file
 ):
     for func in locals().items():
