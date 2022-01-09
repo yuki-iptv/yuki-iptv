@@ -320,7 +320,7 @@ if os.name == 'nt':
     if args1.python:
         a0 = args1.python
     os.environ["QT_QPA_PLATFORM_PLUGIN_PATH"] = \
-        str(Path(os.path.dirname(a0), 'Lib', 'site-packages', 'PyQt5', 'Qt5', 'plugins'))
+        str(Path(os.path.dirname(a0), 'Lib', 'site-packages', 'PyQt6', 'Qt6', 'plugins'))
 
 if __name__ == '__main__':
     try:
@@ -383,7 +383,7 @@ if __name__ == '__main__':
 
         if os.name == 'nt':
             if not (os.path.isfile(str(Path(modules_path, 'ffmpeg.exe'))) and \
-                os.path.isfile(str(Path(modules_path, 'mpv-1.dll')))):
+                os.path.isfile(str(Path(modules_path, 'mpv-2.dll')))):
                 show_exception(_('binarynotfound'))
                 sys.exit(1)
 

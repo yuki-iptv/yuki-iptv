@@ -31,13 +31,13 @@ import traceback
 import platform
 
 if os.name == 'nt':
-    lib_path = 'mpv-1.dll'
+    lib_path = 'mpv-2.dll'
     dll = ctypes.util.find_library(lib_path)
     if dll is None:
-        raise OSError('Cannot find mpv-1.dll in your system %PATH%. One way to deal with this is to ship mpv-1.dll '
+        raise OSError('Cannot find mpv-2.dll in your system %PATH%. One way to deal with this is to ship mpv-2.dll '
                       'with your script and put the directory your script is in into %PATH% before "import mpv": '
                       'os.environ["PATH"] = os.path.dirname(__file__) + os.pathsep + os.environ["PATH"] '
-                      'If mpv-1.dll is located elsewhere, you can add that path to os.environ["PATH"].')
+                      'If mpv-2.dll is located elsewhere, you can add that path to os.environ["PATH"].')
     backend = CDLL(dll)
     fs_enc = 'utf-8'
 else:
