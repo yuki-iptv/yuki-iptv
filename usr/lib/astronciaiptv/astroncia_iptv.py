@@ -1189,7 +1189,7 @@ if __name__ == '__main__':
                             hotkeys_file = open(
                                 str(Path(LOCAL_DIR, 'hotkeys.json')), 'w', encoding="utf8"
                             )
-                            hotkeys_file.write(json.dumps(main_keybinds))
+                            hotkeys_file.write(json.dumps({"current_profile": main_keybinds}))
                             hotkeys_file.close()
                             reload_keybinds()
                     shortcuts_win_2.hide()
@@ -8229,7 +8229,7 @@ if __name__ == '__main__':
                 with open(
                     str(Path(LOCAL_DIR, 'hotkeys.json')), 'r', encoding="utf8"
                 ) as hotkeys_file_tmp:
-                    hotkeys_tmp = json.loads(hotkeys_file_tmp.read())
+                    hotkeys_tmp = json.loads(hotkeys_file_tmp.read())["current_profile"]
                     main_keybinds = hotkeys_tmp
                     print_with_time("hotkeys.json found, using it as hotkey settings")
             except: # pylint: disable=bare-except
