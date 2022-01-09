@@ -3144,7 +3144,7 @@ if __name__ == '__main__':
 
         shortcuts_button = QtWidgets.QPushButton()
         shortcuts_button.setText(_('shortcuts'))
-        shortcuts_button.clicked.connect((lambda: show_shortcuts())) # pylint: disable=undefined-variable, unnecessary-lambda
+        shortcuts_button.clicked.connect((lambda: show_shortcuts())) # pylint: disable=unnecessary-lambda
 
         hideplaylistleftclk_label = QtWidgets.QLabel("{}:".format(_('hideplaylistleftclk')))
         hideplaylistleftclk_flag = QtWidgets.QCheckBox()
@@ -8075,8 +8075,8 @@ if __name__ == '__main__':
             "show_clock": show_clock,
             # Yes, lambda is REALLY needed here
             # don't ask why
-            "(lambda: my_up_binding())": (lambda: my_up_binding_execute()), # pylint: disable=undefined-variable, unnecessary-lambda
-            "(lambda: my_down_binding())": (lambda: my_down_binding_execute()), # pylint: disable=undefined-variable, unnecessary-lambda
+            "(lambda: my_up_binding())": (lambda: my_up_binding_execute()), # pylint: disable=unnecessary-lambda
+            "(lambda: my_down_binding())": (lambda: my_down_binding_execute()), # pylint: disable=unnecessary-lambda
             "show_timeshift": show_timeshift,
             "show_scheduler": show_scheduler,
             "showhideeverything": showhideeverything,
@@ -8112,8 +8112,8 @@ if __name__ == '__main__':
             "prev_channel_1_INTERNAL": prev_channel,
             # Yes, lambda is REALLY needed here
             # don't ask why
-            "(lambda: my_up_binding())_INTERNAL": (lambda: my_up_binding_execute()), # pylint: disable=undefined-variable, unnecessary-lambda
-            "(lambda: my_down_binding())_INTERNAL": (lambda: my_down_binding_execute()) # pylint: disable=undefined-variable, unnecessary-lambda
+            "(lambda: my_up_binding())_INTERNAL": (lambda: my_up_binding_execute()), # pylint: disable=unnecessary-lambda
+            "(lambda: my_down_binding())_INTERNAL": (lambda: my_down_binding_execute()) # pylint: disable=unnecessary-lambda
         }
 
         main_keybinds_internal = {
