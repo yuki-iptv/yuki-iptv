@@ -3142,6 +3142,10 @@ if __name__ == '__main__':
         showcontrolsmouse_flag = QtWidgets.QCheckBox()
         showcontrolsmouse_flag.setChecked(settings['showcontrolsmouse'])
 
+        shortcuts_button = QtWidgets.QPushButton()
+        shortcuts_button.setText(_('shortcuts'))
+        shortcuts_button.clicked.connect((lambda: show_shortcuts())) # pylint: disable=undefined-variable, unnecessary-lambda
+
         hideplaylistleftclk_label = QtWidgets.QLabel("{}:".format(_('hideplaylistleftclk')))
         hideplaylistleftclk_flag = QtWidgets.QCheckBox()
         hideplaylistleftclk_flag.setChecked(settings['hideplaylistleftclk'])
@@ -3302,6 +3306,8 @@ if __name__ == '__main__':
         tab6.layout.addWidget(showplaylistmouse_flag, 3, 1)
         tab6.layout.addWidget(showcontrolsmouse_label, 4, 0)
         tab6.layout.addWidget(showcontrolsmouse_flag, 4, 1)
+        tab6.layout.addWidget(QtWidgets.QLabel(), 5, 0)
+        tab6.layout.addWidget(shortcuts_button, 6, 0)
         tab6.setLayout(tab6.layout)
 
         grid2 = QtWidgets.QVBoxLayout()
