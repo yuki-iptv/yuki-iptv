@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-23 21:22+0000\n"
-"PO-Revision-Date: 2021-11-24 11:48+0100\n"
+"POT-Creation-Date: 2022-01-08 23:56+0000\n"
+"PO-Revision-Date: 2022-01-09 13:06+0100\n"
 "Last-Translator: gogo <trebelnik2@gmail.com>\n"
 "Language-Team: Croatian <kde-i18n-doc@kde.org>\n"
 "Language: hr\n"
@@ -1002,6 +1002,50 @@ msgstr "Ne stvaraj podmape slika zaslona i snimanja"
 
 msgid "nocacheepg"
 msgstr "Ne stvaraj EPG predmemoriju"
+
+msgid "nourlset"
+msgstr "URL nije naveden!"
+
+msgid "updcurplaylist"
+msgstr "&Nadopuni trenutni popis izvođenja"
+
+msgid "shortcuts"
+msgstr "Prečaci"
+
+msgid "shortcut"
+msgstr "Prečac"
+
+msgid "desc"
+msgstr "Opis"
+
+msgid "exitfullscreen2"
+msgstr "Izlazak iz cjelozaslonskog prikaza"
+
+msgid "showclock"
+msgstr "Prikaži sat"
+
+msgid "tvguideforallchans"
+msgstr "TV vodič za sve programe"
+
+msgid "shortcutchange"
+msgstr "Dvostruki klik za promjenu"
+
+msgid "modifyshortcut"
+msgstr "Promjena prečaca"
+
+msgid "pressnewkey"
+msgstr ""
+"Pritisnite kombinaciju tipka\n"
+"koje želite dodijeliti"
+
+msgid "cancel"
+msgstr "Odustani"
+
+msgid "ok"
+msgstr "U redu"
+
+msgid "shortcutused"
+msgstr "Prečac se već koristi"
 
 msgid "helptext"
 msgstr ""
