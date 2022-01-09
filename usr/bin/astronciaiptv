@@ -4,5 +4,9 @@ PULSE_PROP="media.role=video"
 LD_LIBRARY_PATH="$(./astroncia/pfs.py)"
 export PULSE_PROP
 export LD_LIBRARY_PATH
+if [ "$WAYLAND_DISPLAY" != "" ] || [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+QT_QPA_PLATFORM=xcb
+export QT_QPA_PLATFORM
+fi
 exec /usr/bin/python3 ./astroncia_iptv.py "$@"
 exit "$?"
