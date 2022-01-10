@@ -1181,6 +1181,23 @@ if __name__ == '__main__':
                     if sci1 != AstronciaData.selected_shortcut_row:
                         if shortcuts_table.item(sci1, 1).text() == sel_keyseq:
                             shortcut_taken = True
+                forbidden_hotkeys = [
+                    "Return",
+                    "Key.Key_MediaNext",
+                    "Key.Key_MediaPause",
+                    "Key.Key_MediaPlay",
+                    "Key.Key_MediaPrevious",
+                    "Key.Key_MediaRecord",
+                    "Key.Key_MediaStop",
+                    "Key.Key_MediaTogglePlayPause",
+                    "Key.Key_Play",
+                    "Key.Key_Stop",
+                    "Key.Key_VolumeDown",
+                    "Key.Key_VolumeMute",
+                    "Key.Key_VolumeUp"
+                ]
+                if sel_keyseq in forbidden_hotkeys:
+                    shortcut_taken = True
                 if not shortcut_taken:
                     shortcuts_table.item(AstronciaData.selected_shortcut_row, 1).setText(sel_keyseq)
                     for name55, value55 in main_keybinds_translations.items():
