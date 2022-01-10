@@ -981,6 +981,9 @@ msgstr "OK"
 msgid "shortcutused"
 msgstr "Shortcut already used"
 
+msgid "resettodefaults"
+msgstr "Reset to defaults"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, version {}\n© kestral / astroncia < kestraly (at) gmail.com "
