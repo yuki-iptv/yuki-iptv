@@ -18,18 +18,18 @@ Copyright (C) 2021 Astroncia
 '''
 from astroncia.time import print_with_time
 
-def parse_extgrp(t):
+def parse_extgrp(m3u_string): # pylint: disable=too-many-branches
+    '''Parse EXTGRP M3U'''
     print_with_time("EXTGRP parsing...")
-    tlist = t
     name = '""'
     group = ""
     url = '""'
     logo = '""'
     result = ["#EXTM3U"]
 
-    for x in range(1, len(tlist)-1):
-        line = tlist[x]
-        nextline = tlist[x+1]
+    for x in range(1, len(m3u_string)-1):
+        line = m3u_string[x]
+        nextline = m3u_string[x+1]
         if "#EXTINF" in line and not "tvg-name-astroncia-iptv" in line:
             name = line.rpartition(",")[2]
             if 'group-title=' in line:
@@ -48,6 +48,10 @@ def parse_extgrp(t):
                 tvgurl = line.rpartition('tvg-url="')[2].partition('"')[0]
             else:
                 tvgurl = ""
+            if 'tvg-id=' in line:
+                tvgid = line.rpartition('tvg-id="')[2].partition('"')[0]
+            else:
+                tvgid = ""
             if 'url-tvg=' in line:
                 urltvg = line.rpartition('url-tvg="')[2].partition('"')[0]
             else:
@@ -58,7 +62,7 @@ def parse_extgrp(t):
                 url = nextline
             else:
                 group = nextline.partition('#EXTGRP:')[2]
-                url = tlist[x+2]
-            result.append('#EXTINF:-1 tvg-name="{}" tvg-name-astroncia-iptv="{}" group-title="{}" tvg-logo="{}" tvg-url="{}",{}\n{}'.format(tvgname, name, group, logo, tvgurl, name, url))
+                url = m3u_string[x+2]
+            result.append(f"#EXTINF:-1 tvg-id=\"{tvgid}\" tvg-name=\"{tvgname}\" tvg-name-astroncia-iptv=\"{name}\" group-title=\"{group}\" tvg-logo=\"{logo}\" tvg-url=\"{tvgurl}\",{name}\n{url}")
 
     return '\n'.join(result).split('\n')
