@@ -1131,7 +1131,7 @@ if __name__ == '__main__':
         shortcuts_central_widget = QtWidgets.QWidget(shortcuts_win)
         shortcuts_win.setCentralWidget(shortcuts_central_widget)
 
-        shortcuts_grid_layout = QtWidgets.QGridLayout()
+        shortcuts_grid_layout = QtWidgets.QVBoxLayout()
         shortcuts_central_widget.setLayout(shortcuts_grid_layout)
 
         shortcuts_table = QtWidgets.QTableWidget(shortcuts_win)
@@ -1151,7 +1151,55 @@ if __name__ == '__main__':
         #    _enum(QtCore.Qt, 'AlignmentFlag.AlignHCenter')
         #)
 
-        shortcuts_grid_layout.addWidget(shortcuts_table, 0, 0)
+        def resettodefaults_btn_clicked():
+            global main_keybinds
+            resettodefaults_btn_clicked_msg = QtWidgets.QMessageBox.question(
+                None,
+                MAIN_WINDOW_TITLE,
+                _('areyousure'),
+                _enum(QtWidgets.QMessageBox, 'StandardButton.Yes') | \
+                _enum(QtWidgets.QMessageBox, 'StandardButton.No'),
+                _enum(QtWidgets.QMessageBox, 'StandardButton.Yes')
+            )
+            if resettodefaults_btn_clicked_msg == _enum(
+                QtWidgets.QMessageBox, 'StandardButton.Yes'
+            ):
+                print_with_time("Restoring default keybinds")
+                main_keybinds = main_keybinds_default.copy()
+                shortcuts_table.setRowCount(len(main_keybinds))
+                keybind_i = -1
+                for keybind in main_keybinds:
+                    keybind_i += 1
+                    shortcuts_table.setItem(
+                        keybind_i, 0, get_widget_item(main_keybinds_translations[keybind])
+                    )
+                    if isinstance(main_keybinds[keybind], str):
+                        keybind_str = main_keybinds[keybind]
+                    else:
+                        keybind_str = QtGui.QKeySequence(main_keybinds[keybind]).toString()
+                    kbd_widget = get_widget_item(keybind_str)
+                    kbd_widget.setToolTip(_('shortcutchange'))
+                    shortcuts_table.setItem(keybind_i, 1, kbd_widget)
+                shortcuts_table.resizeColumnsToContents()
+                hotkeys_file_1 = open(
+                    str(Path(LOCAL_DIR, 'hotkeys.json')), 'w', encoding="utf8"
+                )
+                hotkeys_file_1.write(json.dumps(
+                    {
+                        "current_profile": {
+                            "keys": main_keybinds
+                        }
+                    }
+                ))
+                hotkeys_file_1.close()
+                reload_keybinds()
+
+        resettodefaults_btn = QtWidgets.QPushButton()
+        resettodefaults_btn.setText(_('resettodefaults'))
+        resettodefaults_btn.clicked.connect(resettodefaults_btn_clicked)
+
+        shortcuts_grid_layout.addWidget(shortcuts_table)
+        shortcuts_grid_layout.addWidget(resettodefaults_btn)
 
         class KeySequenceEdit(QtWidgets.QKeySequenceEdit): # pylint: disable=too-few-public-methods
             def keyPressEvent(self, event):
