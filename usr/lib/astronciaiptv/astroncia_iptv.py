@@ -1,4 +1,4 @@
-'''Astroncia IPTV - Cross platform IPTV player'''
+'''Astroncia IPTV'''
 # pylint: disable=invalid-name, global-statement, missing-docstring, wrong-import-position
 # pylint: disable=too-many-lines, ungrouped-imports, too-many-statements, broad-except
 #
