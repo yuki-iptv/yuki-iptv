@@ -5,7 +5,7 @@
 
 ## Download
 
-Downloads (deb/rpm/exe) are available on [Releases](https://gitlab.com/astroncia/iptv/-/releases) page.  
+Downloads (deb/rpm) are available on [Releases](https://gitlab.com/astroncia/iptv/-/releases) page.  
   
 For **Ubuntu** / **Linux Mint** recommended install from [Launchpad PPA - ppa:astroncia/iptv](https://launchpad.net/~astroncia/+archive/ubuntu/iptv):  
 ```sudo add-apt-repository -y ppa:astroncia/iptv```  
