@@ -23,7 +23,6 @@ class AstronciaData: # pylint: disable=too-few-public-methods
     pass
 
 AstronciaData.qt6_disable_printed = False
-AstronciaData.qt5_warn_printed = False
 
 def get_qt_library():
     qt_library = "none"
@@ -48,8 +47,4 @@ def get_qt_library():
         from PyQt5 import QtGui
         QShortcut = QtWidgets.QShortcut
         qt_library = "PyQt5"
-        if not AstronciaData.qt5_warn_printed:
-            AstronciaData.qt5_warn_printed = True
-            print_with_time("Qt 5 is deprecated")
-            print_with_time("")
     return qt_library, QtWidgets, QtCore, QtGui, QShortcut

@@ -25,8 +25,6 @@ from pathlib import Path
 class LangData: # pylint: disable=too-few-public-methods
     '''Class for not using globals'''
     delimiter = '/'
-    if os.name == 'nt':
-        delimiter = '\\'
 
 LangData.lang_folder = str(Path(os.getcwd(), '..', '..', 'share', 'locale'))
 #LangData.languages = os.listdir(LangData.lang_folder)

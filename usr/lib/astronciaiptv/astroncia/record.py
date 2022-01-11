@@ -45,13 +45,7 @@ def record(input_url, out_file, channel_name, http_referer):
     user_agent = get_user_agent_for_channel(channel_name)
     print_with_time("Using user agent '{}' for record channel '{}'".format(user_agent, channel_name))
     print_with_time("HTTP headers: '{}'".format(http_referer))
-    if os.name == 'nt':
-        ffmpeg_path = str(Path(os.getcwd(), '..', '..', '..', 'binary_windows', 'ffmpeg.exe'))
-    else:
-        if os.path.isfile(str(Path(os.getcwd(), 'ffmpeg'))):
-            ffmpeg_path = str(Path(os.getcwd(), 'ffmpeg'))
-        else:
-            ffmpeg_path = 'ffmpeg'
+    ffmpeg_path = 'ffmpeg'
     if input_url.startswith('http://') or input_url.startswith('https://'):
         arr = [
             ffmpeg_path,
@@ -79,15 +73,11 @@ def record(input_url, out_file, channel_name, http_referer):
             '-max_muxing_queue_size', '4096',
             out_file
         ]
-    startupinfo = None
-    if os.name == 'nt':
-        startupinfo = subprocess.STARTUPINFO()
-        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     astroncia_data.ffmpeg_proc = subprocess.Popen(
         arr,
         shell=False,
         start_new_session=True,
-        startupinfo=startupinfo
+        startupinfo=None
     )
 
 def record_return(input_url, out_file, channel_name, http_referer):
@@ -96,13 +86,7 @@ def record_return(input_url, out_file, channel_name, http_referer):
     user_agent = get_user_agent_for_channel(channel_name)
     print_with_time("Using user agent '{}' for record channel '{}'".format(user_agent, channel_name))
     print_with_time("HTTP headers: '{}'".format(http_referer))
-    if os.name == 'nt':
-        ffmpeg_path = str(Path(os.getcwd(), '..', '..', '..', 'binary_windows', 'ffmpeg.exe'))
-    else:
-        if os.path.isfile(str(Path(os.getcwd(), 'ffmpeg'))):
-            ffmpeg_path = str(Path(os.getcwd(), 'ffmpeg'))
-        else:
-            ffmpeg_path = 'ffmpeg'
+    ffmpeg_path = 'ffmpeg'
     if input_url.startswith('http://') or input_url.startswith('https://'):
         arr = [
             ffmpeg_path,
@@ -130,15 +114,11 @@ def record_return(input_url, out_file, channel_name, http_referer):
             '-max_muxing_queue_size', '4096',
             out_file
         ]
-    startupinfo = None
-    if os.name == 'nt':
-        startupinfo = subprocess.STARTUPINFO()
-        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     return subprocess.Popen(
         arr,
         shell=False,
         start_new_session=True,
-        startupinfo=startupinfo
+        startupinfo=None
     )
 
 # Used as a decorator to run things in the background
@@ -169,13 +149,7 @@ def make_ffmpeg_screenshot(input_url, out_file, channel_name, http_referer):
     user_agent = get_user_agent_for_channel(channel_name)
     print_with_time("Using user agent '{}' for screenshot channel '{}'".format(user_agent, channel_name))
     print_with_time("HTTP headers: '{}'".format(http_referer))
-    if os.name == 'nt':
-        ffmpeg_path = str(Path(os.getcwd(), '..', '..', '..', 'binary_windows', 'ffmpeg.exe'))
-    else:
-        if os.path.isfile(str(Path(os.getcwd(), 'ffmpeg'))):
-            ffmpeg_path = str(Path(os.getcwd(), 'ffmpeg'))
-        else:
-            ffmpeg_path = 'ffmpeg'
+    ffmpeg_path = 'ffmpeg'
     if input_url.startswith('http://') or input_url.startswith('https://'):
         arr = [
             ffmpeg_path,
@@ -203,15 +177,11 @@ def make_ffmpeg_screenshot(input_url, out_file, channel_name, http_referer):
             '-max_muxing_queue_size', '4096',
             out_file
         ]
-    startupinfo = None
-    if os.name == 'nt':
-        startupinfo = subprocess.STARTUPINFO()
-        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     astroncia_data.ffmpeg_proc_screenshot = subprocess.Popen(
         arr,
         shell=False,
         start_new_session=True,
-        startupinfo=startupinfo
+        startupinfo=None
     )
     try:
         async_wait_process(astroncia_data.ffmpeg_proc_screenshot)

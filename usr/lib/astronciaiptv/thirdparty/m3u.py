@@ -15,13 +15,7 @@ class M3uParser:
         self.udp_proxy = udp_proxy
         LANG_LOCALE = '?'
         try:
-            if os.name == 'nt':
-                try:
-                    loc = locale.windows_locale[ctypes.windll.kernel32.GetUserDefaultUILanguage()]
-                except: # pylint: disable=bare-except
-                    loc = locale.getdefaultlocale()[0]
-            else:
-                loc = locale.getdefaultlocale()[0]
+            loc = locale.getdefaultlocale()[0]
             LANG_LOCALE = loc.split("_")[0]
         except: # pylint: disable=bare-except
             pass

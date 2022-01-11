@@ -319,10 +319,7 @@ class XTream():
 
         # If the cache_path is still empty, use default
         if self.cache_path == "":
-            if osn == 'nt':
-                self.cache_path = str(Path(osp.dirname(__file__), '..', '..', '..', 'local', 'astroncia-xtream-cache'))
-            else:
-                self.cache_path = osp.expanduser("~/.cache/astroncia-xtream-cache/")
+            self.cache_path = osp.expanduser("~/.cache/astroncia-xtream-cache/")
             if not osp.isdir(self.cache_path):
                 makedirs(self.cache_path, exist_ok=True)
 
