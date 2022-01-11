@@ -991,6 +991,9 @@ msgstr "Восстановить значения по умолчанию"
 msgid "areyousure"
 msgstr "Вы уверены?"
 
+msgid "usingmode"
+msgstr "Используется режим"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, версия {}\n© kestral / astroncia < kestraly (at) gmail.com "
