@@ -52,6 +52,7 @@ Icons: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 - M3U playlist editor  
 - TV archive  
 - Internalization  
+- MPRIS support (and remote control using KDE Connect)  
 
 ## Requirements
 
