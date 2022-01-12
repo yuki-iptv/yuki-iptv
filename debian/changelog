@@ -1,3 +1,11 @@
+astroncia-iptv (0.0.90) unstable; urgency=medium
+
+  * Add support for custom shortcuts
+  * Fix video output with qt6-wayland
+  * Fix tvg-id parsing in extgrp.py
+
+ -- Astroncia <kestraly@gmail.com>  Wed, 12 Jan 2022 05:13:57 +0300
+
 astroncia-iptv (0.0.89) unstable; urgency=medium
 
   * Incomplete libmpv 2.0 API support
