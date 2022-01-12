@@ -7,7 +7,7 @@
 # The Font Awesome pictograms are licensed under the CC BY 4.0 License
 # https://creativecommons.org/licenses/by/4.0/
 #
-# Copyright (C) 2021 Astroncia
+# Copyright (c) 2021-2022 Astroncia
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by

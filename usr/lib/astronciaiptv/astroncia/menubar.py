@@ -1,7 +1,7 @@
 # pylint: disable=no-member, unnecessary-lambda, unused-argument, import-error
 # pylint: disable=missing-class-docstring, missing-function-docstring
 '''
-Copyright (C) 2021 Astroncia
+Copyright (c) 2021-2022 Astroncia
 
     This file is part of Astroncia IPTV.
 

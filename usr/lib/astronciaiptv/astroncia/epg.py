@@ -1,6 +1,6 @@
 '''Astroncia IPTV - EPG parsing'''
 '''
-Copyright (C) 2021 Astroncia
+Copyright (c) 2021-2022 Astroncia
 
     This file is part of Astroncia IPTV.
 

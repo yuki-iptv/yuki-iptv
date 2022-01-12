@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 from astroncia.lang import _
 from astroncia.time import print_with_time
 #
-# Copyright (C) 2021 Astroncia
+# Copyright (c) 2021-2022 Astroncia
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
