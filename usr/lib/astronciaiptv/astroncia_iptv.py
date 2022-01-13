@@ -99,7 +99,7 @@ try:
 except: # pylint: disable=bare-except
     print_with_time("Failed to init MPRIS libraries!")
     try:
-        print(traceback.format_exc())
+        print_with_time(traceback.format_exc())
     except: # pylint: disable=bare-except
         pass
 
@@ -549,7 +549,7 @@ if __name__ == '__main__':
                     file2.write(codecs.encode(bytes(json.dumps(
                         {
                             "tvguide_sets": clean_programme(),
-                            "tvguide_url": str(settings["epg"]),
+                            "current_url": [str(settings["m3u"]), str(settings["epg"])],
                             "prog_ids": prog_ids,
                             "epg_icons": epg_icons
                         }
@@ -615,35 +615,29 @@ if __name__ == '__main__':
         #    exInMainThread(epg_loading_hide)
         #    btn_update.click()
 
-        def load_tvguide_dat(epg_dict, settings_epg):
-            settings_epg_new = ''
+        def load_tvguide_dat(epg_dict, settings_m3u, settings_epg):
             try:
                 file_epg1 = open(str(Path(LOCAL_DIR, 'tvguide.dat')), 'rb')
                 file1_json = json.loads(
                     codecs.decode(codecs.decode(file_epg1.read(), 'zlib'), 'utf-8')
                 )
                 file_epg1.close()
-                tvguide_c1 = file1_json["tvguide_url"]
-                if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
-                    cm3uf1 = open(str(Path(LOCAL_DIR, 'playlist.json')), 'r', encoding="utf8")
-                    cm3u1 = json.loads(cm3uf1.read())
-                    cm3uf1.close()
-                    try:
-                        epg_url1 = cm3u1['epgurl']
-                        if not settings_epg:
-                            settings_epg_new = epg_url1
-                    except: # pylint: disable=bare-except
-                        pass
-                if tvguide_c1 != settings_epg:
+                current_url = ["", ""]
+                try:
+                    if 'current_url' in file1_json:
+                        current_url = file1_json['current_url']
+                except: # pylint: disable=bare-except
+                    pass
+                if not (
+                    current_url[0] == settings_m3u and current_url[1] == settings_epg
+                ):
                     # Ignoring tvguide.dat, EPG URL changed
-                    print("Ignoring tvguide.dat, EPG URL changed")
+                    print_with_time("Ignoring tvguide.dat, EPG URL changed")
                     os.remove(str(Path(LOCAL_DIR, 'tvguide.dat')))
-                    tvguide_c1 = ""
                     file1_json = {}
             except: # pylint: disable=bare-except
-                tvguide_c1 = ""
                 file1_json = {}
-            epg_dict['out'] = [file1_json, settings_epg_new]
+            epg_dict['out'] = [file1_json, '']
 
         def epg_loading_hide():
             epg_loading.hide()
@@ -668,7 +662,9 @@ if __name__ == '__main__':
                 manager_epg = Manager()
                 dict_epg = manager_epg.dict()
                 dict_epg['out'] = []
-                epg_process = Process(target=load_tvguide_dat, args=(dict_epg, settings['epg'],))
+                epg_process = Process(
+                    target=load_tvguide_dat, args=(dict_epg, settings['m3u'], settings['epg'],)
+                )
                 epg_process.start()
                 epg_process.join()
                 file1_json, settings_epg_new = dict_epg['out']
@@ -678,7 +674,7 @@ if __name__ == '__main__':
                 if file1_json:
                     tvguide_json = file1_json
                 else:
-                    tvguide_json = {"tvguide_sets": {}, "tvguide_url": "", "prog_ids": {}}
+                    tvguide_json = {"tvguide_sets": {}, "current_url": ["", ""], "prog_ids": {}}
                 file1_json = {}
                 tvguide_sets = tvguide_json["tvguide_sets"]
                 programmes_1 = {
@@ -1025,6 +1021,21 @@ if __name__ == '__main__':
 
         if m3uFailed and os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
             os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
+
+        try:
+            if os.path.isfile(str(Path(LOCAL_DIR, 'settings.json'))):
+                settings_file2 = open(str(Path(LOCAL_DIR, 'settings.json')), 'r', encoding="utf8")
+                settings_file2_json = json.loads(settings_file2.read())
+                settings_file2.close()
+                if settings['epg'] and not settings_file2_json['epg']:
+                    settings_file2_json['epg'] = settings['epg']
+                    settings_file4 = open(
+                        str(Path(LOCAL_DIR, 'settings.json')), 'w', encoding="utf8"
+                    )
+                    settings_file4.write(json.dumps(settings_file2_json))
+                    settings_file4.close()
+        except: # pylint: disable=bare-except
+            pass
 
         def sigint_handler(*args): # pylint: disable=unused-argument
             """Handler for the SIGINT signal."""
@@ -2060,8 +2071,11 @@ if __name__ == '__main__':
         archive_channel = QtWidgets.QLabel()
         archive_channel.setFont(archive_font)
 
+        archive_usingmode = QtWidgets.QLabel()
+
         archive_layout_main = QtWidgets.QVBoxLayout()
         archive_layout_main.addWidget(archive_channel)
+        archive_layout_main.addWidget(archive_usingmode)
         archive_layout_main.addWidget(archive_all)
 
         archive_widget_main = QtWidgets.QWidget()
@@ -2377,6 +2391,46 @@ if __name__ == '__main__':
             stream_info.video_bitrates.clear()
             stream_info.audio_bitrates.clear()
 
+        def parse_specifiers_now_url(url4):
+            print_with_time("")
+            print_with_time("orig spec url: {}".format(url4))
+            current_utc_str = int(time.time())
+            url4 = url4.replace('${lutc}', str(current_utc_str))
+            url4 = url4.replace('{lutc}', str(current_utc_str))
+
+            url4 = url4.replace('${now}', str(current_utc_str))
+            url4 = url4.replace('{now}', str(current_utc_str))
+
+            url4 = url4.replace('${timestamp}', str(current_utc_str))
+            url4 = url4.replace('{timestamp}', str(current_utc_str))
+
+            cur_utc_time = datetime.datetime.fromtimestamp(
+                current_utc_str
+            ).strftime("%Y-%m-%d-%H-%M-%S").split("-")
+
+            try:
+                specifiers_re_url = re.findall(
+                    r"((\$?){(lutc|now|timestamp):([YmdHMS])(-?)([YmdHMS]?)(-?)([YmdHMS]?)(-?)([YmdHMS]?)(-?)([YmdHMS]?)(-?)([YmdHMS]?)})", # pylint: disable=line-too-long
+                    url4
+                )
+                if specifiers_re_url:
+                    for specifiers_re_url_i in specifiers_re_url:
+                        spec_val_1 = str(specifiers_re_url_i[0].split(":")[1].split("}")[0])
+                        spec_val_1 = spec_val_1.replace('Y', str(cur_utc_time[0]))
+                        spec_val_1 = spec_val_1.replace('m', str(cur_utc_time[1]))
+                        spec_val_1 = spec_val_1.replace('d', str(cur_utc_time[2]))
+                        spec_val_1 = spec_val_1.replace('H', str(cur_utc_time[3]))
+                        spec_val_1 = spec_val_1.replace('M', str(cur_utc_time[4]))
+                        spec_val_1 = spec_val_1.replace('S', str(cur_utc_time[5]))
+                        url4 = url4.replace(specifiers_re_url_i[0], str(spec_val_1))
+            except: # pylint: disable=bare-except
+                print_with_time("parse_specifiers_now_url / specifiers_re_url parsing failed")
+                print_with_time(traceback.format_exc())
+
+            print_with_time("after spec url: {}".format(url4))
+            print_with_time("")
+            return url4
+
         def mpv_override_play(arg_override_play, ua1=''):
             global event_handler
             on_before_play()
@@ -2406,7 +2460,7 @@ if __name__ == '__main__':
                         player.http_header_fields = "Referer: {}".format(kodi_referer)
                 arg_override_play = arg_override_play.split('|')[0]
             #print_with_time("mpv_override_play called")
-            player.play(arg_override_play)
+            player.play(parse_specifiers_now_url(arg_override_play))
             if event_handler:
                 try:
                     event_handler.on_title()
@@ -4354,14 +4408,15 @@ if __name__ == '__main__':
             except: # pylint: disable=bare-except
                 pass
 
-        def setChanText(chanText):
+        def setChanText(chanText, do_chan_set=False):
             chTextStrip = chanText.strip()
             if chTextStrip:
                 win.setWindowTitle(chTextStrip + ' - ' + MAIN_WINDOW_TITLE)
             else:
                 win.setWindowTitle(MAIN_WINDOW_TITLE)
             set_mpv_title()
-            chan.setText(chanText)
+            if not do_chan_set:
+                chan.setText(chanText)
 
         playing_archive = False
 
@@ -6060,7 +6115,12 @@ if __name__ == '__main__':
                 l1.setText2("{}!".format(_('nochannelselected')))
                 time_stop = time.time() + 1
 
-        def update_tvguide(chan_1='', do_return=False, show_all_guides=False): # pylint: disable=too-many-branches, too-many-locals
+        def update_tvguide(
+            chan_1='',
+            do_return=False,
+            show_all_guides=False,
+            mark_integers=False
+        ): # pylint: disable=too-many-branches, too-many-locals
             global item_selected
             if not chan_1:
                 if item_selected:
@@ -6088,12 +6148,15 @@ if __name__ == '__main__':
                     else:
                         override_this = pr['stop'] > time.time() - 1
                     if override_this:
+                        def_placeholder = '%d.%m.%y %H:%M'
+                        if mark_integers:
+                            def_placeholder = '%d.%m.%Y %H:%M:%S'
                         start_2 = datetime.datetime.fromtimestamp(
                             pr['start']
-                        ).strftime('%d.%m.%y %H:%M') + ' - '
+                        ).strftime(def_placeholder) + ' - '
                         stop_2 = datetime.datetime.fromtimestamp(
                             pr['stop']
-                        ).strftime('%d.%m.%y %H:%M') + '\n'
+                        ).strftime(def_placeholder) + '\n'
                         try:
                             title_2 = pr['title'] if 'title' in pr else ''
                         except: # pylint: disable=bare-except
@@ -6102,6 +6165,13 @@ if __name__ == '__main__':
                             desc_2 = ('\n' + pr['desc'] + '\n') if 'desc' in pr else ''
                         except: # pylint: disable=bare-except
                             desc_2 = ''
+                        attach_1 = ''
+                        if mark_integers:
+                            try:
+                                marked_integer = prog.index(pr)
+                            except: # pylint: disable=bare-except
+                                marked_integer = -1
+                            attach_1 = ' ({})'.format(marked_integer)
                         start_symbl = ''
                         stop_symbl = ''
                         if settings["themecompat"]:
@@ -6109,7 +6179,7 @@ if __name__ == '__main__':
                             stop_symbl = '</span>'
                         txt += '<span style="color: green;">' + start_2 + stop_2 + '</span>' + \
                             start_symbl + '<b>' + title_2 + '</b>' + \
-                                desc_2 + stop_symbl + newline_symbol
+                                desc_2 + attach_1 + stop_symbl + newline_symbol
             if do_return:
                 return txt
             txt = txt.replace('\n', '<br>').replace('<br>', '', 1)
@@ -6758,39 +6828,274 @@ if __name__ == '__main__':
         def get_keybind(func1):
             return main_keybinds[func1]
 
-        def archive_all_clicked():
-            chan_url = array[archive_channel.text()]['url']
-            orig_time = archive_all.currentItem().text().split(' - ')[0]
-            print_with_time("orig time: {}".format(orig_time))
-            orig_timestamp = time.mktime(time.strptime(orig_time, '%d.%m.%y %H:%M'))
-            orig_timestamp_1 = datetime.datetime.fromtimestamp(
-                orig_timestamp
-            ).strftime('%Y-%m-%d-%H-%M-%S')
-            print_with_time("orig timestamp: {}".format(orig_timestamp))
-            print_with_time("orig timestamp 1: {}".format(orig_timestamp_1))
-            ts1 = time.time()
-            utc_offset = (
-                datetime.datetime.fromtimestamp(ts1) - datetime.datetime.utcfromtimestamp(ts1)
-            ).total_seconds()
-            print_with_time("calculated utc offset: {}".format(utc_offset))
-            utc_timestamp = int(
-                datetime.datetime.fromtimestamp(orig_timestamp).timestamp() - utc_offset - 30
-            )
-            print_with_time("utc timestamp: {}".format(utc_timestamp))
-            utc_converted = datetime.datetime.fromtimestamp(
-                utc_timestamp
-            ).strftime('%d.%m.%y %H:%M')
-            print_with_time("utc converted time: {}".format(utc_converted))
-            current_utc = int(datetime.datetime.strftime(datetime.datetime.utcnow(), "%s"))
-            print_with_time("current utc timestamp: {}".format(current_utc))
-            current_utc_date = datetime.datetime.fromtimestamp(
+        def format_placeholders(start_time, end_time, catchup_id, orig_url): # pylint: disable=too-many-locals, too-many-branches
+            print_with_time("")
+            print_with_time("orig placeholder url: {}".format(orig_url))
+            start_timestamp = int(time.mktime(time.strptime(start_time, '%d.%m.%Y %H:%M:%S')))
+            end_timestamp = int(time.mktime(time.strptime(end_time, '%d.%m.%Y %H:%M:%S')))
+            duration = int(end_timestamp - start_timestamp)
+
+            current_utc = int(time.time())
+            utcend = start_timestamp + duration
+            offset2 = int(current_utc - start_timestamp)
+
+            start_timestamp_1 = list(
+                reversed(start_time.split(" ")[0].split("."))
+            ) + start_time.split(" ")[1].split(":")
+
+            orig_url = orig_url.replace('${utc}', str(start_timestamp))
+            orig_url = orig_url.replace('{utc}', str(start_timestamp))
+
+            orig_url = orig_url.replace('${start}', str(start_timestamp))
+            orig_url = orig_url.replace('{start}', str(start_timestamp))
+
+            orig_url = orig_url.replace('${lutc}', str(current_utc))
+            orig_url = orig_url.replace('{lutc}', str(current_utc))
+
+            orig_url = orig_url.replace('${now}', str(current_utc))
+            orig_url = orig_url.replace('{now}', str(current_utc))
+
+            orig_url = orig_url.replace('${timestamp}', str(current_utc))
+            orig_url = orig_url.replace('{timestamp}', str(current_utc))
+
+            orig_url = orig_url.replace('${utcend}', str(utcend))
+            orig_url = orig_url.replace('{utcend}', str(utcend))
+
+            orig_url = orig_url.replace('${end}', str(utcend))
+            orig_url = orig_url.replace('{end}', str(utcend))
+
+            orig_url = orig_url.replace('${Y}', str(start_timestamp_1[0]))
+            orig_url = orig_url.replace('{Y}', str(start_timestamp_1[0]))
+
+            orig_url = orig_url.replace('${m}', str(start_timestamp_1[1]))
+            orig_url = orig_url.replace('{m}', str(start_timestamp_1[1]))
+
+            orig_url = orig_url.replace('${d}', str(start_timestamp_1[2]))
+            orig_url = orig_url.replace('{d}', str(start_timestamp_1[2]))
+
+            orig_url = orig_url.replace('${H}', str(start_timestamp_1[3]))
+            orig_url = orig_url.replace('{H}', str(start_timestamp_1[3]))
+
+            orig_url = orig_url.replace('${M}', str(start_timestamp_1[4]))
+            orig_url = orig_url.replace('{M}', str(start_timestamp_1[4]))
+
+            orig_url = orig_url.replace('${S}', str(start_timestamp_1[5]))
+            orig_url = orig_url.replace('{S}', str(start_timestamp_1[5]))
+
+            orig_url = orig_url.replace('${duration}', str(duration))
+            orig_url = orig_url.replace('{duration}', str(duration))
+
+            orig_url = orig_url.replace('${catchup-id}', str(catchup_id))
+            orig_url = orig_url.replace('{catchup-id}', str(catchup_id))
+
+            try:
+                duration_re = sorted(re.findall(r'\$?{duration:\d+}', orig_url))
+                if duration_re:
+                    for duration_re_i in duration_re:
+                        duration_re_i_parse = int(duration_re_i.split(':')[1].split('}')[0])
+                        orig_url = orig_url.replace(
+                            duration_re_i,
+                            str(int(duration / duration_re_i_parse))
+                        )
+            except: # pylint: disable=bare-except
+                print_with_time("format_placeholders / duration_re parsing failed")
+                print_with_time(traceback.format_exc())
+
+            try:
+                offset_re = sorted(re.findall(r'\$?{offset:\d+}', orig_url))
+                if offset_re:
+                    for offset_re_i in offset_re:
+                        offset_re_i_parse = int(offset_re_i.split(':')[1].split('}')[0])
+                        orig_url = orig_url.replace(
+                            offset_re_i,
+                            str(int(offset2 / offset_re_i_parse))
+                        )
+            except: # pylint: disable=bare-except
+                print_with_time("format_placeholders / offset_re parsing failed")
+                print_with_time(traceback.format_exc())
+
+            utc_time = datetime.datetime.fromtimestamp(
+                start_timestamp
+            ).strftime("%Y-%m-%d-%H-%M-%S").split("-")
+            lutc_time = datetime.datetime.fromtimestamp(
                 current_utc
-            ).strftime('%d.%m.%y %H:%M')
-            print_with_time("current utc timestamp (human-readable): {}".format(current_utc_date))
-            utc_string = "?utc={}&lutc={}&t={}".format(utc_timestamp, current_utc, orig_timestamp_1)
-            print_with_time("utc string: {}".format(utc_string))
-            play_url = chan_url + utc_string
+            ).strftime("%Y-%m-%d-%H-%M-%S").split("-")
+            utcend_time = datetime.datetime.fromtimestamp(
+                utcend
+            ).strftime("%Y-%m-%d-%H-%M-%S").split("-")
+
+            try:
+                specifiers_re = re.findall(
+                    r"((\$?){(utc|start|lutc|now|timestamp|utcend|end):([YmdHMS])(-?)([YmdHMS]?)(-?)([YmdHMS]?)(-?)([YmdHMS]?)(-?)([YmdHMS]?)(-?)([YmdHMS]?)})", # pylint: disable=line-too-long
+                    orig_url
+                )
+                if specifiers_re:
+                    for specifiers_re_i in specifiers_re:
+                        specifiers_re_i_o = specifiers_re_i[0]
+                        spec_name = str(specifiers_re_i_o.split("{")[1].split(":")[0])
+                        spec_val = str(specifiers_re_i_o.split(":")[1].split("}")[0])
+                        if spec_name in ('utc', 'start'):
+                            spec_val = spec_val.replace('Y', str(utc_time[0]))
+                            spec_val = spec_val.replace('m', str(utc_time[1]))
+                            spec_val = spec_val.replace('d', str(utc_time[2]))
+                            spec_val = spec_val.replace('H', str(utc_time[3]))
+                            spec_val = spec_val.replace('M', str(utc_time[4]))
+                            spec_val = spec_val.replace('S', str(utc_time[5]))
+                        elif spec_name in ('lutc', 'now', 'timestamp'):
+                            spec_val = spec_val.replace('Y', str(lutc_time[0]))
+                            spec_val = spec_val.replace('m', str(lutc_time[1]))
+                            spec_val = spec_val.replace('d', str(lutc_time[2]))
+                            spec_val = spec_val.replace('H', str(lutc_time[3]))
+                            spec_val = spec_val.replace('M', str(lutc_time[4]))
+                            spec_val = spec_val.replace('S', str(lutc_time[5]))
+                        elif spec_name in ('utcend', 'end'):
+                            spec_val = spec_val.replace('Y', str(utcend_time[0]))
+                            spec_val = spec_val.replace('m', str(utcend_time[1]))
+                            spec_val = spec_val.replace('d', str(utcend_time[2]))
+                            spec_val = spec_val.replace('H', str(utcend_time[3]))
+                            spec_val = spec_val.replace('M', str(utcend_time[4]))
+                            spec_val = spec_val.replace('S', str(utcend_time[5]))
+                        orig_url = orig_url.replace(specifiers_re_i_o, str(spec_val))
+            except: # pylint: disable=bare-except
+                print_with_time("format_placeholders / specifiers_re parsing failed")
+                print_with_time(traceback.format_exc())
+
+            print_with_time("formatted placeholder url: {}".format(orig_url))
+            print_with_time("")
+            return orig_url
+
+        def archive_all_clicked(): # pylint: disable=too-many-branches, too-many-locals
+            arr1 = array[archive_channel.text()]
+
+            if 'catchup' not in arr1:
+                arr1['catchup'] = 'default'
+            if 'catchup-source' not in arr1:
+                arr1['catchup-source'] = ''
+            if 'catchup-days' not in arr1:
+                arr1['catchup-days'] = '1'
+
+            if not arr1['catchup-source'] and \
+            arr1['catchup'] not in ('flussonic', 'flussonic-ts', 'fs', 'xc'):
+                arr1['catchup'] = 'shift'
+
+            if arr1['catchup-source']:
+                if not (
+                    arr1['catchup-source'].startswith("http://") or \
+                    arr1['catchup-source'].startswith("https://")
+                ):
+                    arr1['catchup'] = 'append'
+
+            chan_url = array[archive_channel.text()]['url']
+            start_time = archive_all.currentItem().text().split(' - ')[0].strip()
+            end_time = archive_all.currentItem().text().split(' - ')[1].split('\n')[0].strip()
+            prog_index = archive_all.currentItem().text().split("(")[-1].replace(')', '')
+
+            catchup_id = ""
+            try:
+                match1 = archive_channel.text().lower()
+                try:
+                    match1 = prog_match_arr[match1]
+                except: # pylint: disable=bare-except
+                    pass
+                if match1 in programmes:
+                    if programmes[match1]:
+                        if 'catchup-id' in programmes[match1][int(prog_index)]:
+                            catchup_id = programmes[match1][int(prog_index)]['catchup-id']
+            except: # pylint: disable=bare-except
+                print_with_time("archive_all_clicked / catchup_id parsing failed")
+                print_with_time(traceback.format_exc())
+
+            play_url = chan_url
+            if arr1['catchup'] == 'default':
+                play_url = format_placeholders(
+                    start_time, end_time, catchup_id, arr1['catchup-source']
+                )
+            elif arr1['catchup'] == 'append':
+                play_url = chan_url + format_placeholders(
+                    start_time, end_time, catchup_id, arr1['catchup-source']
+                )
+            elif arr1['catchup'] == 'shift':
+                if '?' in chan_url:
+                    play_url = chan_url + format_placeholders(
+                        start_time, end_time, catchup_id, '&utc={utc}&lutc={lutc}'
+                    )
+                else:
+                    play_url = chan_url + format_placeholders(
+                        start_time, end_time, catchup_id, '?utc={utc}&lutc={lutc}'
+                    )
+            elif arr1['catchup'] in ('flussonic', 'flussonic-ts', 'fs'):
+                fs_url = chan_url
+                print_with_time("")
+                print_with_time("orig fs url: {}".format(fs_url))
+                flussonic_re = re.findall(
+                    r"^(http[s]?://[^/]+)/(.*)/([^/]*)(mpegts|\.m3u8)(\?.+=.+)?$",
+                    chan_url
+                )
+                if flussonic_re:
+                    if len(flussonic_re[0]) == 5:
+                        fs_host = flussonic_re[0][0]
+                        fs_chanid = flussonic_re[0][1]
+                        fs_listtype = flussonic_re[0][2]
+                        fs_streamtype = flussonic_re[0][3]
+                        fs_urlappend = flussonic_re[0][4]
+                        if fs_streamtype == 'mpegts':
+                            fs_url = "{}/{}/timeshift_abs-{}.ts{}".format(
+                                fs_host,
+                                fs_chanid,
+                                '${start}',
+                                fs_urlappend
+                            )
+                        else:
+                            if fs_listtype == 'index':
+                                fs_url = "{}/{}/timeshift_rel-{}.m3u8{}".format(
+                                    fs_host,
+                                    fs_chanid,
+                                    '{offset:1}',
+                                    fs_urlappend
+                                )
+                            else:
+                                fs_url = "{}/{}/{}-timeshift_rel-{}.m3u8{}".format(
+                                    fs_host,
+                                    fs_chanid,
+                                    fs_listtype,
+                                    '{offset:1}',
+                                    fs_urlappend
+                                )
+                play_url = format_placeholders(
+                    start_time, end_time, catchup_id, fs_url
+                )
+            elif arr1['catchup'] == 'xc':
+                xc_url = chan_url
+                print_with_time("")
+                print_with_time("orig xc url: {}".format(xc_url))
+                xc_re = re.findall(
+                    r"^(http[s]?://[^/]+)/(?:live/)?([^/]+)/([^/]+)/([^/\.]+)(\.m3u[8]?)?$",
+                    chan_url
+                )
+                if xc_re:
+                    if len(xc_re[0]) == 5:
+                        xc_host = xc_re[0][0]
+                        xc_username = xc_re[0][1]
+                        xc_password = xc_re[0][2]
+                        xc_chanid = xc_re[0][3]
+                        xc_extension = xc_re[0][4]
+                        if not xc_extension:
+                            xc_extension = ".ts"
+                        xc_url = "{}/timeshift/{}/{}/{}/{}/{}{}".format(
+                            xc_host,
+                            xc_username,
+                            xc_password,
+                            '{duration:60}',
+                            '{Y}-{m}-{d}:{H}-{M}',
+                            xc_chanid,
+                            xc_extension
+                        )
+                play_url = format_placeholders(
+                    start_time, end_time, catchup_id, xc_url
+                )
+
             itemClicked_event(archive_channel.text(), play_url, True)
+            setChanText("({}) {}".format(_('timeshift'), archive_channel.text()), True)
             progress.hide()
             start_label.setText('')
             start_label.hide()
@@ -6801,17 +7106,37 @@ if __name__ == '__main__':
 
         def update_timeshift_programme():
             global playing_chan, item_selected, archive_all
-            #if playing_chan:
-            #    cur_name = playing_chan
-            #else:
             if item_selected:
                 cur_name = item_selected
             else:
                 cur_name = list(array)[0]
             archive_channel.setText(cur_name)
+            got_array = array[cur_name]
+
+            if 'catchup' not in got_array:
+                got_array['catchup'] = 'default'
+            if 'catchup-source' not in got_array:
+                got_array['catchup-source'] = ''
+            if 'catchup-days' not in got_array:
+                got_array['catchup-days'] = '1'
+
+            if not got_array['catchup-source'] and \
+            got_array['catchup'] not in ('flussonic', 'flussonic-ts', 'fs', 'xc'):
+                got_array['catchup'] = 'shift'
+
+            if got_array['catchup-source']:
+                if not (
+                    got_array['catchup-source'].startswith("http://") or \
+                    got_array['catchup-source'].startswith("https://")
+                ):
+                    got_array['catchup'] = 'append'
+
+            archive_usingmode.setText(
+                "{}: {}".format(_('usingmode'), got_array['catchup'])
+            )
             archive_all.clear()
             tvguide_got_1 = re.sub(
-                '<[^<]+?>', '', update_tvguide(cur_name, True, True)
+                '<[^<]+?>', '', update_tvguide(cur_name, True, True, True)
             ).split('!@#$%^^&*(')[2:]
             for tvguide_el_1 in tvguide_got_1:
                 if tvguide_el_1:

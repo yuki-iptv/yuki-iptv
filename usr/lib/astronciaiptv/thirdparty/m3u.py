@@ -70,7 +70,7 @@ class M3uParser:
                         pass
             self.epg_url = self.epg_url if self.epg_url != 'http://server/jtv.zip' else ''
             self.lines.pop(0)
-        self.lines = [x.rstrip() for x in self.lines if not x.startswith('#EXTVLCOPT:')]
+        self.lines = [x.rstrip() for x in self.lines if not x.startswith('#EXTVLCOPT:') and not x.startswith('#KODIPROP:') and not x.startswith('#EXT-X-PLAYLIST-TYPE:')]
         self.lines = ['#EXTM3U'] + [x0 for x0 in self.lines if x0]
         self.lines = parse_extgrp(self.lines)
         return len(self.lines)
@@ -101,6 +101,21 @@ class M3uParser:
                 logo = m.group(1)
             except AttributeError:
                 logo = ""
+            m = re.search("catchup=\"(.*?)\"", lineInfo)
+            try:
+                catchup = m.group(1)
+            except AttributeError:
+                catchup = "default"
+            m = re.search("catchup-source=\"(.*?)\"", lineInfo)
+            try:
+                catchupsource = m.group(1)
+            except AttributeError:
+                catchupsource = ""
+            m = re.search("catchup-days=\"(.*?)\"", lineInfo)
+            try:
+                catchupdays = m.group(1)
+            except AttributeError:
+                catchupdays = "1"
             m = re.search("tvg-url=\"(.*?)\"", lineInfo)
             try:
                 tvg_url = m.group(1)
@@ -131,6 +146,9 @@ class M3uParser:
                 "tvg-logo": logo,
                 "tvg-group": group,
                 "tvg-url": tvg_url,
+                "catchup": catchup,
+                "catchup-source": catchupsource,
+                "catchup-days": catchupdays,
                 "url": lineLink
             }
             self.files.append(test)

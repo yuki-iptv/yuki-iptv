@@ -52,6 +52,18 @@ def parse_extgrp(m3u_string): # pylint: disable=too-many-branches
                 tvgid = line.rpartition('tvg-id="')[2].partition('"')[0]
             else:
                 tvgid = ""
+            if 'catchup=' in line:
+                catchup = line.rpartition('catchup="')[2].partition('"')[0]
+            else:
+                catchup = "default"
+            if 'catchup-source=' in line:
+                catchupsource = line.rpartition('catchup-source="')[2].partition('"')[0]
+            else:
+                catchupsource = ""
+            if 'catchup-days=' in line:
+                catchupdays = line.rpartition('catchup-days="')[2].partition('"')[0]
+            else:
+                catchupdays = "1"
             if 'url-tvg=' in line:
                 urltvg = line.rpartition('url-tvg="')[2].partition('"')[0]
             else:
@@ -63,6 +75,6 @@ def parse_extgrp(m3u_string): # pylint: disable=too-many-branches
             else:
                 group = nextline.partition('#EXTGRP:')[2]
                 url = m3u_string[x+2]
-            result.append(f"#EXTINF:-1 tvg-id=\"{tvgid}\" tvg-name=\"{tvgname}\" tvg-name-astroncia-iptv=\"{name}\" group-title=\"{group}\" tvg-logo=\"{logo}\" tvg-url=\"{tvgurl}\",{name}\n{url}")
+            result.append(f"#EXTINF:-1 tvg-id=\"{tvgid}\" tvg-name=\"{tvgname}\" catchup=\"{catchup}\" catchup-source=\"{catchupsource}\" catchup-days=\"{catchupdays}\" tvg-name-astroncia-iptv=\"{name}\" group-title=\"{group}\" tvg-logo=\"{logo}\" tvg-url=\"{tvgurl}\",{name}\n{url}")
 
     return '\n'.join(result).split('\n')

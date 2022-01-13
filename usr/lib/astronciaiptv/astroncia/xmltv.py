@@ -70,6 +70,12 @@ def parse_as_xmltv(epg, settings):
             stop = 0
         try:
             chans = ids[programme.attrib['channel']]
+            catchup_id = ''
+            try:
+                if 'catchup-id' in programme.attrib:
+                    catchup_id = programme.attrib['catchup-id']
+            except: # pylint: disable=bare-except
+                pass
             for channel_epg_1 in chans:
                 day_start = (
                     datetime.datetime.now() - datetime.timedelta(days=1)
@@ -92,7 +98,8 @@ def parse_as_xmltv(epg, settings):
                         "start": start,
                         "stop": stop,
                         "title": prog_title,
-                        "desc": prog_desc
+                        "desc": prog_desc,
+                        'catchup-id': catchup_id
                     })
         except: # pylint: disable=bare-except
             pass
