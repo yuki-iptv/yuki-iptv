@@ -954,8 +954,8 @@ msgstr "Не створювати підтеки\nдля знімків екра
 
 msgid "helptext"
 msgstr ""
-"Astroncia IPTV, версія {}\n© kestral / astroncia < kestraly (at) gmail.com "
-">\nhttps://gitlab.com/astroncia\n\nПідтримка:\nhttps://unixforum.org/viewtopic"
+"Astroncia IPTV, версія {}\n© kestral / astroncia"
+"\nhttps://gitlab.com/astroncia\n\nПідтримка:\nhttps://unixforum.org/viewtopic"
 ".php?f=3&t=151801\n\nБагатоплатформовий плеєр\nдля перегляду"
 " інтернет-телебачення\n\nПідтримується телепрограма (EPG)\nтільки в форматах"
 " XMLTV и JTV!\n\nНе працює канал? Права кнопка миші відкриває налаштування"
