@@ -201,7 +201,7 @@ class Viewer(QtWidgets.QMainWindow):
         tb.addSeparator()
 
         del_btn = QtWidgets.QToolButton()
-        del_btn.setIcon(QtGui.QIcon(str(Path('astroncia', self.iconsFolder, 'trash.png'))))
+        del_btn.setIcon(QtGui.QIcon(str(Path('astroncia', self.iconsFolder, 'trash.svg'))))
         del_btn.setToolTip(get_translation('m3u_deleterow'))
         del_btn.clicked.connect(self.del_row)
         tb.addWidget(del_btn)
@@ -209,19 +209,19 @@ class Viewer(QtWidgets.QMainWindow):
         tb.addSeparator()
 
         add_btn = QtWidgets.QToolButton()
-        add_btn.setIcon(QtGui.QIcon(str(Path('astroncia', self.iconsFolder, 'plus.png'))))
+        add_btn.setIcon(QtGui.QIcon(str(Path('astroncia', self.iconsFolder, 'plus.svg'))))
         add_btn.setToolTip(get_translation('m3u_addrow'))
         add_btn.clicked.connect(self.add_row)
         tb.addWidget(add_btn)
 
         move_down_btn = QtWidgets.QToolButton()
-        move_down_btn.setIcon(QtGui.QIcon(str(Path('astroncia', self.iconsFolder, 'arrow-down.png'))))
+        move_down_btn.setIcon(QtGui.QIcon(str(Path('astroncia', self.iconsFolder, 'arrow-down.svg'))))
         move_down_btn.setToolTip(get_translation('m3u_movedown'))
         move_down_btn.clicked.connect(self.move_down)
         tb.addWidget(move_down_btn)
 
         move_up_up = QtWidgets.QToolButton()
-        move_up_up.setIcon(QtGui.QIcon(str(Path('astroncia', self.iconsFolder, 'arrow-up.png'))))
+        move_up_up.setIcon(QtGui.QIcon(str(Path('astroncia', self.iconsFolder, 'arrow-up.svg'))))
         move_up_up.setToolTip(get_translation('m3u_moveup'))
         move_up_up.clicked.connect(self.move_up)
         tb.addWidget(move_up_up)
