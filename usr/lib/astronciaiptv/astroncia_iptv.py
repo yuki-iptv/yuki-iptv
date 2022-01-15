@@ -600,6 +600,13 @@ if __name__ == '__main__':
             if not epg_updating:
                 first_boot = False
 
+        def force_update_epg_act():
+            global epg_failed
+            print_with_time("Force update EPG triggered")
+            if epg_failed:
+                epg_failed = False
+            force_update_epg()
+
         use_local_tvguide = True
         epg_ready = False
 
@@ -3045,7 +3052,7 @@ if __name__ == '__main__':
         sepgfile.clicked.connect(epg_select)
         sepgupd = QtWidgets.QPushButton()
         sepgupd.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'update.png'))))
-        sepgupd.clicked.connect(force_update_epg)
+        sepgupd.clicked.connect(force_update_epg_act)
         sepgupd.setToolTip(_('update'))
 
         sfolder = QtWidgets.QPushButton()
@@ -4110,7 +4117,7 @@ if __name__ == '__main__':
                 show_sort,
                 show_exception,
                 get_curwindow_pos,
-                force_update_epg,
+                force_update_epg_act,
                 get_keybind,
                 show_tvguide_2,
                 enable_always_on_top,
@@ -8425,7 +8432,7 @@ if __name__ == '__main__':
             "app.quit": app.quit,
             "show_playlists": show_playlists,
             "reload_playlist": reload_playlist,
-            "force_update_epg": force_update_epg,
+            "force_update_epg": force_update_epg_act,
             "main_channel_settings": main_channel_settings,
             "show_m3u_editor": show_m3u_editor,
             "my_down_binding_execute": my_down_binding_execute,
