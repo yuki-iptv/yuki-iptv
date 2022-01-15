@@ -17,6 +17,7 @@ Copyright (c) 2021-2022 Astroncia
     along with Astroncia IPTV.  If not, see <https://www.gnu.org/licenses/>.
 '''
 import gzip
+import lzma
 import datetime
 import xml.etree.ElementTree as ET
 from astroncia.time import print_with_time
@@ -27,8 +28,14 @@ def parse_as_xmltv(epg, settings):
     try:
         tree = ET.ElementTree(ET.fromstring(epg))
     except ET.ParseError:
-        print_with_time("gzip detected, unpacking...")
-        tree = ET.ElementTree(ET.fromstring(gzip.decompress(epg)))
+        try:
+            print_with_time("Trying to unpack as gzip...")
+            tree = ET.ElementTree(ET.fromstring(gzip.decompress(epg)))
+        except: # pylint: disable=bare-except
+            print_with_time("Trying to unpack as xz...")
+            tree = ET.ElementTree(ET.fromstring(
+                lzma.LZMADecompressor().decompress(epg)
+            ))
     ids = {}
     programmes_epg = {}
     icons = {}
