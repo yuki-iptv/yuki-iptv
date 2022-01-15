@@ -1,88 +1,108 @@
+'''JTV parser'''
 import zipfile
 import io
 import datetime
 import struct
 from astroncia.time import print_with_time
 
-def filetime_to_datetime(time, settings):
+def ft_to_dt(time, settings):
+    '''Convert filetime to datetime'''
     if len(time) == 8:
-        filetime = struct.unpack("<Q", time)[0]
-        timestamp = filetime / 10
-        return round((datetime.datetime(1601, 1, 1) + datetime.timedelta(microseconds=timestamp)).timestamp() + (3600 * settings["timezone"]))
+        datetime_ret = round(
+            (
+                datetime.datetime(1601, 1, 1) + datetime.timedelta(
+                    microseconds=struct.unpack("<Q", time)[0] / 10
+                )
+            ).timestamp() + (3600 * settings["timezone"])
+        )
     else:
         print_with_time("WARNING: broken JTV time detected!")
-        return 0
+        datetime_ret = 0
+    return datetime_ret
 
-def parse_titles(data, encoding="cp1251"):
-    jtv_headers = [b"JTV 3.x TV Program Data\x0a\x0a\x0a", b"JTV 3.x TV Program Data\xa0\xa0\xa0"]
-    if data[0:26] not in jtv_headers:
-        raise Exception('Invalid JTV format')
-    data = data[26:]
+def unpack_struct(inf1):
+    '''Unpack data struct'''
+    return struct.unpack('<H', inf1[0:2])[0]
+
+def parse_titles(inf1, encoding="cp1251"):
+    '''Parse titles'''
+    jtv_headers = [
+        b"JTV 3.x TV Program Data\x0a\x0a\x0a",
+        b"JTV 3.x TV Program Data\xa0\xa0\xa0"
+    ]
+    if inf1[0:26] not in jtv_headers:
+        raise Exception('Not a JTV')
+    inf1 = inf1[26:]
     titles = []
-    while data:
-        title_length = int(struct.unpack('<H', data[0:2])[0])
-        data = data[2:]
-        title = data[0:title_length].decode(encoding)
-        data = data[title_length:]
+    while inf1:
+        title_length = int(unpack_struct(inf1))
+        inf1 = inf1[2:]
+        title = inf1[0:title_length].decode(encoding)
+        inf1 = inf1[title_length:]
         titles.append(title)
     return titles
 
-def parse_schedule(data, settings):
+def parse_schedule(inf1, settings):
+    '''Parse schedule'''
     schedules = []
-    records_num = struct.unpack('<H', data[0:2])[0]
-    data = data[2:]
+    records_num = unpack_struct(inf1)
+    inf1 = inf1[2:]
     i = 0
     while i < records_num:
-        i = i + 1
-        record = data[0:12]
-        data = data[12:]
-        schedules.append(filetime_to_datetime(record[2:-2], settings))
+        i += 1
+        record = inf1[0:12]
+        inf1 = inf1[12:]
+        schedules.append(ft_to_dt(record[2:-2], settings))
     return schedules
 
 def fix_zip_filename(filename):
+    '''Fix zip filename (encoding)'''
     try:
-        unicode_name = str(bytes(filename, encoding='cp437'), encoding='cp866')
+        name_unicode = str(
+            bytes(filename, encoding='cp437'),
+            encoding='cp866'
+        )
     except UnicodeEncodeError:
-        unicode_name = filename
-    return unicode_name
+        name_unicode = filename
+    return name_unicode
 
-def parse_jtv(c, settings):
+def parse_jtv(jtv_inf1, settings):
+    '''Main parse function'''
     print_with_time("Trying parsing as JTV...")
-    zf = zipfile.ZipFile(io.BytesIO(c), "r")
+    zip_file = zipfile.ZipFile(io.BytesIO(jtv_inf1), "r")
     array = {}
-    tvguide_sets = {}
-    for fileinfo in zf.infolist():
-        fn = fix_zip_filename(fileinfo.filename)
-        if fn.endswith('.pdt'):
-            n = fn[0:-4].replace('_', ' ')
-            if not n in array:
-                array[n] = {}
+    for fileinfo in zip_file.infolist():
+        file_name = fix_zip_filename(fileinfo.filename)
+        if file_name.endswith('.pdt'):
+            file_name1 = file_name[0:-4].replace('_', ' ')
+            if not file_name1 in array:
+                array[file_name1] = {}
             try:
-                array[n]['titles'] = parse_titles(zf.read(fileinfo))
+                array[file_name1]['titles'] = parse_titles(zip_file.read(fileinfo))
             except: # pylint: disable=bare-except
                 # Support UTF-8 encoding
-                array[n]['titles'] = parse_titles(zf.read(fileinfo), 'utf-8')
-        if fn.endswith('.ndx'):
-            n = fn[0:-4].replace('_', ' ')
-            if not n in array:
-                array[n] = {}
-            array[n]['schedules'] = parse_schedule(zf.read(fileinfo), settings)
+                array[file_name1]['titles'] = parse_titles(zip_file.read(fileinfo), 'utf-8')
+        if file_name.endswith('.ndx'):
+            file_name1 = file_name[0:-4].replace('_', ' ')
+            if not file_name1 in array:
+                array[file_name1] = {}
+            array[file_name1]['schedules'] = parse_schedule(zip_file.read(fileinfo), settings)
     array_out = {}
     for chan in array:
         array_out[chan] = []
-        ic = -1
+        count1 = -1
         for title in array[chan]['titles']:
-            ic += 1
-            dt = array[chan]['schedules'][ic]
+            count1 += 1
+            start_dt = array[chan]['schedules'][count1]
             try:
-                dt2 = array[chan]['schedules'][ic+1]
+                stop_dt = array[chan]['schedules'][count1+1]
                 try:
                     title = bytes(title, 'cp1251').decode('utf-8')
                 except: # pylint: disable=bare-except
                     pass
                 array_out[chan].append({
-                    'start': dt,
-                    'stop': dt2,
+                    'start': start_dt,
+                    'stop': stop_dt,
                     'title': title,
                     'desc': ' '
                 })
