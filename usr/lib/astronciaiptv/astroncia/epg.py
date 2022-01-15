@@ -35,12 +35,14 @@ def load_epg(epg_url, user_agent):
         epg = epg_file.read()
         epg_file.close()
     else:
-        epg = requests.get(
+        epg_req = requests.get(
             epg_url,
             headers={'User-Agent': user_agent},
             stream=True,
             timeout=35
-        ).content
+        )
+        print_with_time("EPG URL status code: {}".format(epg_req.status_code))
+        epg = epg_req.content
     print_with_time("EPG loaded")
     return epg
 
