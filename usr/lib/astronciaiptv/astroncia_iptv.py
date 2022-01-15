@@ -545,7 +545,7 @@ if __name__ == '__main__':
         def save_tvguide_sets_proc(tvguide_sets_arg):
             if tvguide_sets_arg:
                 if not settings["nocacheepg"]:
-                    file2 = open(str(Path(LOCAL_DIR, 'tvguide.dat')), 'wb')
+                    file2 = open(str(Path(LOCAL_DIR, 'epg.cache')), 'wb')
                     file2.write(codecs.encode(bytes(json.dumps(
                         {
                             "tvguide_sets": clean_programme(),
@@ -594,8 +594,8 @@ if __name__ == '__main__':
 
         def force_update_epg():
             global use_local_tvguide, first_boot
-            if os.path.exists(str(Path(LOCAL_DIR, 'tvguide.dat'))):
-                os.remove(str(Path(LOCAL_DIR, 'tvguide.dat')))
+            if os.path.exists(str(Path(LOCAL_DIR, 'epg.cache'))):
+                os.remove(str(Path(LOCAL_DIR, 'epg.cache')))
             use_local_tvguide = False
             if not epg_updating:
                 first_boot = False
@@ -622,9 +622,9 @@ if __name__ == '__main__':
         #    exInMainThread(epg_loading_hide)
         #    btn_update.click()
 
-        def load_tvguide_dat(epg_dict, settings_m3u, settings_epg):
+        def load_epg_cache(epg_dict, settings_m3u, settings_epg):
             try:
-                file_epg1 = open(str(Path(LOCAL_DIR, 'tvguide.dat')), 'rb')
+                file_epg1 = open(str(Path(LOCAL_DIR, 'epg.cache')), 'rb')
                 file1_json = json.loads(
                     codecs.decode(codecs.decode(file_epg1.read(), 'zlib'), 'utf-8')
                 )
@@ -638,9 +638,9 @@ if __name__ == '__main__':
                 if not (
                     current_url[0] == settings_m3u and current_url[1] == settings_epg
                 ):
-                    # Ignoring tvguide.dat, EPG URL changed
-                    print_with_time("Ignoring tvguide.dat, EPG URL changed")
-                    os.remove(str(Path(LOCAL_DIR, 'tvguide.dat')))
+                    # Ignoring epg.cache, EPG URL changed
+                    print_with_time("Ignoring epg.cache, EPG URL changed")
+                    os.remove(str(Path(LOCAL_DIR, 'epg.cache')))
                     file1_json = {}
             except: # pylint: disable=bare-except
                 file1_json = {}
@@ -655,29 +655,29 @@ if __name__ == '__main__':
             if settings["nocacheepg"]:
                 print_with_time("No cache EPG active, deleting old EPG cache file")
                 try:
-                    if os.path.isfile(str(Path(LOCAL_DIR, 'tvguide.dat'))):
-                        os.remove(str(Path(LOCAL_DIR, 'tvguide.dat')))
+                    if os.path.isfile(str(Path(LOCAL_DIR, 'epg.cache'))):
+                        os.remove(str(Path(LOCAL_DIR, 'epg.cache')))
                 except: # pylint: disable=bare-except
                     pass
             print_with_time("Reading cached TV guide if exists...")
             tvguide_read_time = time.time()
             programmes_1 = {}
-            if not os.path.isfile(str(Path(LOCAL_DIR, 'tvguide.dat'))):
+            if not os.path.isfile(str(Path(LOCAL_DIR, 'epg.cache'))):
                 save_tvguide_sets()
             else:
-                # Disregard existed tvguide.dat if EPG url changes
+                # Disregard existed epg.cache if EPG url changes
                 manager_epg = Manager()
                 dict_epg = manager_epg.dict()
                 dict_epg['out'] = []
                 epg_process = Process(
-                    target=load_tvguide_dat, args=(dict_epg, settings['m3u'], settings['epg'],)
+                    target=load_epg_cache, args=(dict_epg, settings['m3u'], settings['epg'],)
                 )
                 epg_process.start()
                 epg_process.join()
                 file1_json, settings_epg_new = dict_epg['out']
                 if settings_epg_new:
                     settings['epg'] = settings_epg_new
-                # Loading tvguide.dat
+                # Loading epg.cache
                 if file1_json:
                     tvguide_json = file1_json
                 else:
@@ -2786,8 +2786,8 @@ if __name__ == '__main__':
                 if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
                     os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
             if settings["timezone"] != soffset.value():
-                if os.path.isfile(str(Path(LOCAL_DIR, 'tvguide.dat'))):
-                    os.remove(str(Path(LOCAL_DIR, 'tvguide.dat')))
+                if os.path.isfile(str(Path(LOCAL_DIR, 'epg.cache'))):
+                    os.remove(str(Path(LOCAL_DIR, 'epg.cache')))
             if sort_widget.currentIndex() != settings['sort']:
                 if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
                     os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
