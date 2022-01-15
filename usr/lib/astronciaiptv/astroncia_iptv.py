@@ -1899,10 +1899,25 @@ if __name__ == '__main__':
                 pass
 
         ffmpeg_processes = []
+        is_recording_old = False
+
+        @idle_function
+        def set_record_icon(arg11=None): # pylint: disable=unused-argument
+            label5_1.setIcon(record_icon)
+
+        @idle_function
+        def set_record_stop_icon(arg11=None): # pylint: disable=unused-argument
+            label5_1.setIcon(record_stop_icon)
 
         def record_thread():
             try:
-                global is_recording, ffmpeg_processes
+                global is_recording, is_recording_old, ffmpeg_processes
+                if is_recording != is_recording_old:
+                    is_recording_old = is_recording
+                    if is_recording:
+                        set_record_stop_icon()
+                    else:
+                        set_record_icon()
                 status = _('recnothing')
                 sch_items = [str(schedulers.item(i1).text()) for i1 in range(schedulers.count())]
                 i3 = -1
@@ -7368,6 +7383,9 @@ if __name__ == '__main__':
         def mpv_volume_set_custom():
             mpv_volume_set()
 
+        record_icon = QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'record.png')))
+        record_stop_icon = QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'stoprecord.png')))
+
         label3 = QtWidgets.QPushButton()
         label3.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'pause.png'))))
         label3.setToolTip(_('pause'))
@@ -7385,7 +7403,7 @@ if __name__ == '__main__':
         label5_0.setToolTip(_('openrecordingsfolder'))
         label5_0.clicked.connect(open_recording_folder)
         label5_1 = QtWidgets.QPushButton()
-        label5_1.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'record.png'))))
+        label5_1.setIcon(record_icon)
         label5_1.setToolTip(_("record"))
         label5_1.clicked.connect(do_record)
         label5_2 = QtWidgets.QPushButton()
