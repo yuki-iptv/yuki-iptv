@@ -45,11 +45,14 @@ def parse_as_xmltv(epg, settings):
                 ids[channel_epg.attrib['id']] = []
             ids[channel_epg.attrib['id']].append(display_name.text)
             try:
-                for icon in channel_epg.findall('./icon'):
-                    try:
-                        icons[display_name.text] = icon.attrib['src']
-                    except: # pylint: disable=bare-except
-                        pass
+                all_icons = channel_epg.findall('./icon')
+                if all_icons:
+                    for icon in all_icons:
+                        try:
+                            if 'src' in icon.attrib:
+                                icons[display_name.text] = icon.attrib['src']
+                        except: # pylint: disable=bare-except
+                            pass
             except: # pylint: disable=bare-except
                 pass
     for programme in tree.findall('./programme'):
