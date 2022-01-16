@@ -152,6 +152,7 @@ class AstronciaData: # pylint: disable=too-few-public-methods
     fullscreen_locked = False
     selected_shortcut_row = -1
     shortcuts_state = False
+    use_dark_theme = False
 
 setproctitle.setproctitle("astronciaiptv")
 
@@ -441,7 +442,6 @@ if __name__ == '__main__':
                 'movedragging': False,
                 'styleredefoff': True,
                 'volumechangestep': 1,
-                'themecompat': False,
                 'exp2': DOCK_WIDGET_WIDTH,
                 'mouseswitchchannels': False,
                 'autoreconnection': True,
@@ -496,8 +496,6 @@ if __name__ == '__main__':
             settings['styleredefoff'] = True
         if 'volumechangestep' not in settings:
             settings['volumechangestep'] = 1
-        if 'themecompat' not in settings:
-            settings['themecompat'] = False
         if 'exp2' not in settings:
             settings['exp2'] = DOCK_WIDGET_WIDTH
         if 'mouseswitchchannels' not in settings:
@@ -539,16 +537,18 @@ if __name__ == '__main__':
         else:
             print_with_time("{} {}".format(_('hwaccel').replace('\n', ' '), _('disabled')))
 
-        if not os.path.isfile(str(Path(LOCAL_DIR, 'settings.json'))):
-            print_with_time("Checking theme")
-            dark_label = QtWidgets.QLabel("Darkness test")
-            is_dark_theme = dark_label.palette().color(
-                _enum(QtGui.QPalette, 'ColorRole.WindowText')
-            ).value() > \
-            dark_label.palette().color(_enum(QtGui.QPalette, 'ColorRole.Window')).value()
-            if is_dark_theme:
-                print_with_time("Detected dark theme, applying icons compat")
-                settings["themecompat"] = True
+        print_with_time("Checking theme")
+        dark_label = QtWidgets.QLabel("Darkness test")
+        is_dark_theme = dark_label.palette().color(
+            _enum(QtGui.QPalette, 'ColorRole.WindowText')
+        ).value() > \
+        dark_label.palette().color(_enum(QtGui.QPalette, 'ColorRole.Window')).value()
+        if is_dark_theme:
+            print_with_time("Detected dark theme, applying icons compat")
+            AstronciaData.use_dark_theme = True
+        else:
+            print_with_time("Detected light theme")
+            AstronciaData.use_dark_theme = False
 
         if settings["catchupenable"]:
             print_with_time("Catchup enabled")
@@ -724,7 +724,7 @@ if __name__ == '__main__':
         # Updating EPG, async
         update_epg_func()
 
-        if settings["themecompat"]:
+        if AstronciaData.use_dark_theme:
             ICONS_FOLDER = str(Path('..', '..', '..', 'share', 'astronciaiptv', 'icons_dark'))
         else:
             ICONS_FOLDER = str(Path('..', '..', '..', 'share', 'astronciaiptv', 'icons'))
@@ -1083,7 +1083,7 @@ if __name__ == '__main__':
                 self.setWidgetResizable(True)
                 content = QtWidgets.QWidget(self)
                 bcolor_scrollabel = 'white'
-                if settings['themecompat']:
+                if AstronciaData.use_dark_theme:
                     bcolor_scrollabel = 'black'
                 content.setStyleSheet('background-color: ' + bcolor_scrollabel)
                 self.setWidget(content)
@@ -2870,7 +2870,6 @@ if __name__ == '__main__':
                 'movedragging': movedragging_flag.isChecked(),
                 'styleredefoff': styleredefoff_flag.isChecked(),
                 'volumechangestep': volumechangestep_choose.value(),
-                'themecompat': themecompat_flag.isChecked(),
                 'exp2': exp2_input.value(),
                 'mouseswitchchannels': mouseswitchchannels_flag.isChecked(),
                 'autoreconnection': autoreconnection_flag.isChecked(),
@@ -3210,10 +3209,6 @@ if __name__ == '__main__':
         styleredefoff_flag = QtWidgets.QCheckBox()
         styleredefoff_flag.setChecked(settings['styleredefoff'])
 
-        themecompat_label = QtWidgets.QLabel("{}:".format(_('themecompat')))
-        themecompat_flag = QtWidgets.QCheckBox()
-        themecompat_flag.setChecked(settings['themecompat'])
-
         exp_warning = QtWidgets.QLabel(_('expwarning'))
         exp_warning.setStyleSheet('color:red')
         exp2_label = QtWidgets.QLabel("{}:".format(_('exp2')))
@@ -3388,20 +3383,18 @@ if __name__ == '__main__':
         tab4.layout.addWidget(mpv_options, 0, 1)
         tab4.layout.addWidget(donot_label, 1, 0)
         tab4.layout.addWidget(donot_flag, 1, 1)
-        tab4.layout.addWidget(themecompat_label, 2, 0)
-        tab4.layout.addWidget(themecompat_flag, 2, 1)
-        tab4.layout.addWidget(hidempv_label, 3, 0)
-        tab4.layout.addWidget(hidempv_flag, 3, 1)
-        tab4.layout.addWidget(chaniconsfromepg_label, 4, 0)
-        tab4.layout.addWidget(chaniconsfromepg_flag, 4, 1)
-        tab4.layout.addWidget(volumechangestep_label, 5, 0)
-        tab4.layout.addWidget(volumechangestep_choose, 5, 1)
-        tab4.layout.addWidget(screenshot_label, 6, 0)
-        tab4.layout.addWidget(screenshot_choose, 6, 1)
-        tab4.layout.addWidget(hideplaylistleftclk_label, 7, 0)
-        tab4.layout.addWidget(hideplaylistleftclk_flag, 7, 1)
-        tab4.layout.addWidget(nocacheepg_label, 8, 0)
-        tab4.layout.addWidget(nocacheepg_flag, 8, 1)
+        tab4.layout.addWidget(hidempv_label, 2, 0)
+        tab4.layout.addWidget(hidempv_flag, 2, 1)
+        tab4.layout.addWidget(chaniconsfromepg_label, 3, 0)
+        tab4.layout.addWidget(chaniconsfromepg_flag, 3, 1)
+        tab4.layout.addWidget(volumechangestep_label, 4, 0)
+        tab4.layout.addWidget(volumechangestep_choose, 4, 1)
+        tab4.layout.addWidget(screenshot_label, 5, 0)
+        tab4.layout.addWidget(screenshot_choose, 5, 1)
+        tab4.layout.addWidget(hideplaylistleftclk_label, 6, 0)
+        tab4.layout.addWidget(hideplaylistleftclk_flag, 6, 1)
+        tab4.layout.addWidget(nocacheepg_label, 7, 0)
+        tab4.layout.addWidget(nocacheepg_flag, 7, 1)
         tab4.setLayout(tab4.layout)
 
         tab5.layout = QtWidgets.QGridLayout()
@@ -4953,7 +4946,7 @@ if __name__ == '__main__':
             QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'close.png'))).pixmap(32, 32)
         )
         tvguide_close_lbl.setStyleSheet(
-            "background-color: {};".format("black" if settings["themecompat"] else "white")
+            "background-color: {};".format("black" if AstronciaData.use_dark_theme else "white")
         )
         tvguide_close_lbl.resize(32, 32)
         if settings['panelposition'] == 0:
@@ -6240,7 +6233,7 @@ if __name__ == '__main__':
                             attach_1 = ' ({})'.format(marked_integer)
                         start_symbl = ''
                         stop_symbl = ''
-                        if settings["themecompat"]:
+                        if AstronciaData.use_dark_theme:
                             start_symbl = '<span style="color: white;">'
                             stop_symbl = '</span>'
                         txt += '<span style="color: green;">' + start_2 + stop_2 + '</span>' + \
