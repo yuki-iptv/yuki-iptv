@@ -6390,13 +6390,24 @@ if __name__ == '__main__':
             HWACCEL = 'no'
 
         # Wayland fix
+        is_apply_wayland_fix = False
         try:
             if 'WAYLAND_DISPLAY' in os.environ:
                 if os.environ['WAYLAND_DISPLAY']:
-                    print_with_time("[NOTE] Applying video output fix for Wayland")
-                    VIDEO_OUTPUT = 'x11'
+                    print_with_time("Found environ WAYLAND_DISPLAY")
+                    is_apply_wayland_fix = True
         except: # pylint: disable=bare-except
             pass
+        try:
+            if 'XDG_SESSION_TYPE' in os.environ:
+                if os.environ['XDG_SESSION_TYPE'] == 'wayland':
+                    print_with_time("Environ XDG_SESSION_TYPE == wayland")
+                    is_apply_wayland_fix = True
+        except: # pylint: disable=bare-except
+            pass
+        if is_apply_wayland_fix:
+            print_with_time("[NOTE] Applying video output fix for Wayland")
+            VIDEO_OUTPUT = 'x11'
 
         options = {
             'vo': VIDEO_OUTPUT,
