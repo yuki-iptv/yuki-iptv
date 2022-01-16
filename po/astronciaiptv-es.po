@@ -540,11 +540,6 @@ msgstr "¡No se encontraron listas de reproducción de Hypnotix!"
 msgid "theme"
 msgstr "Tema"
 
-msgid "themecompat"
-msgstr ""
-"Compatibilidad\n"
-"con temas oscuros"
-
 msgid "videoaspect"
 msgstr "Proporción de aspecto"
 

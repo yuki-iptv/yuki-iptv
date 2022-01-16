@@ -538,11 +538,6 @@ msgstr "Nie znaleziono listy odtwarzania Hypnotix!"
 msgid "theme"
 msgstr "Motyw"
 
-msgid "themecompat"
-msgstr ""
-"Ciemny motyw\n"
-"kompatybilny"
-
 msgid "videoaspect"
 msgstr "Współczynnik proporcji"
 

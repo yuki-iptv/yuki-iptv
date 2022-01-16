@@ -541,11 +541,6 @@ msgstr "No Hypnotix playlists found!"
 msgid "theme"
 msgstr "Theme"
 
-msgid "themecompat"
-msgstr ""
-"Dark theme\n"
-"compatibility"
-
 msgid "videoaspect"
 msgstr "Aspect ratio"
 

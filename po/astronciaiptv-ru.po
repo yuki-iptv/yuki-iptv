@@ -542,11 +542,6 @@ msgstr "Плейлисты Hypnotix не найдены!"
 msgid "theme"
 msgstr "Тема"
 
-msgid "themecompat"
-msgstr ""
-"Совместимость\n"
-"с темной темой"
-
 msgid "videoaspect"
 msgstr "Соотношение сторон"
 
