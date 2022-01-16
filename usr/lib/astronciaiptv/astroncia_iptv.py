@@ -564,6 +564,7 @@ if __name__ == '__main__':
         def save_tvguide_sets_proc(tvguide_sets_arg):
             if tvguide_sets_arg:
                 if not settings["nocacheepg"]:
+                    print_with_time("Writing EPG cache...")
                     file2 = open(str(Path(LOCAL_DIR, 'epg.cache')), 'wb')
                     file2.write(codecs.encode(bytes(json.dumps(
                         {
@@ -574,6 +575,7 @@ if __name__ == '__main__':
                         }
                     ), 'utf-8'), 'zlib'))
                     file2.close()
+                    print_with_time("Writing EPG cache done")
 
         epg_thread_2 = None
 
@@ -7154,6 +7156,7 @@ if __name__ == '__main__':
             start_label.hide()
             stop_label.setText('')
             stop_label.hide()
+            archive_win.hide()
 
         archive_all.itemDoubleClicked.connect(archive_all_clicked)
 
