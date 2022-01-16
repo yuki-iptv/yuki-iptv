@@ -450,6 +450,7 @@ if __name__ == '__main__':
                 'nocacheepg': False,
                 'scrrecnosubfolders': False,
                 'showcontrolsmouse': True,
+                'catchupenable': False,
                 'flpopacity': 0.7,
                 'panelposition': 0,
                 'playlistsep': False,
@@ -513,6 +514,8 @@ if __name__ == '__main__':
             settings['scrrecnosubfolders'] = False
         if 'showcontrolsmouse' not in settings:
             settings['showcontrolsmouse'] = True
+        if 'catchupenable' not in settings:
+            settings['catchupenable'] = False
         if 'flpopacity' not in settings:
             settings['flpopacity'] = 0.7
         if 'panelposition' not in settings:
@@ -535,6 +538,22 @@ if __name__ == '__main__':
             print_with_time("{} {}".format(_('hwaccel').replace('\n', ' '), _('enabled')))
         else:
             print_with_time("{} {}".format(_('hwaccel').replace('\n', ' '), _('disabled')))
+
+        if not os.path.isfile(str(Path(LOCAL_DIR, 'settings.json'))):
+            print_with_time("Checking theme")
+            dark_label = QtWidgets.QLabel("Darkness test")
+            is_dark_theme = dark_label.palette().color(
+                _enum(QtGui.QPalette, 'ColorRole.WindowText')
+            ).value() > \
+            dark_label.palette().color(_enum(QtGui.QPalette, 'ColorRole.Window')).value()
+            if is_dark_theme:
+                print_with_time("Detected dark theme, applying icons compat")
+                settings["themecompat"] = True
+
+        if settings["catchupenable"]:
+            print_with_time("Catchup enabled")
+        else:
+            print_with_time("Catchup disabled")
 
         # URL override for command line
         if args1.URL:
@@ -572,7 +591,7 @@ if __name__ == '__main__':
                 for prog2 in sets1:
                     sets1[prog2] = [x12 for x12 in sets1[prog2] if \
                         time.time() + 172800 > x12['start'] and \
-                            time.time() - 172800 < x12['stop']]
+                            time.time() - get_catchup_days(True) < x12['stop']]
             return sets1
 
         def is_program_actual(sets0, force=False):
@@ -615,12 +634,6 @@ if __name__ == '__main__':
                 return win.isVisible()
             except: # pylint: disable=bare-except
                 return False
-
-        #def btn_update_force():
-        #    while not mainwindow_isvisible():
-        #        time.sleep(0.05)
-        #    exInMainThread(epg_loading_hide)
-        #    btn_update.click()
 
         def load_epg_cache(epg_dict, settings_m3u, settings_epg):
             try:
@@ -705,7 +718,6 @@ if __name__ == '__main__':
             print_with_time(
                 "TV guide read done, took {} seconds".format(time.time() - tvguide_read_time)
             )
-            #btn_update_force()
 
         # Updating EPG, async
         update_epg_func()
@@ -2414,6 +2426,8 @@ if __name__ == '__main__':
             stream_info.audio_bitrates.clear()
 
         def parse_specifiers_now_url(url4):
+            if url4.endswith("/icons/main.png") or url4.endswith("/icons_dark/main.png"):
+                return url4
             print_with_time("")
             print_with_time("orig spec url: {}".format(url4))
             current_utc_str = int(time.time())
@@ -2792,6 +2806,7 @@ if __name__ == '__main__':
         # Settings window
         def save_settings(): # pylint: disable=too-many-branches
             global epg_thread, epg_thread_2, manager
+            settings_old = settings.copy()
             udp_proxy_text = sudp.text()
             udp_proxy_starts = udp_proxy_text.startswith('http://') or \
                 udp_proxy_text.startswith('https://')
@@ -2862,6 +2877,7 @@ if __name__ == '__main__':
                 'nocacheepg': nocacheepg_flag.isChecked(),
                 'scrrecnosubfolders': scrrecnosubfolders_flag.isChecked(),
                 'showcontrolsmouse': showcontrolsmouse_flag.isChecked(),
+                'catchupenable': catchupenable_flag.isChecked(),
                 'flpopacity': flpopacity_input.value(),
                 'panelposition': panelposition_choose.currentIndex(),
                 'playlistsep': playlistsep_flag.isChecked(),
@@ -2872,6 +2888,9 @@ if __name__ == '__main__':
                 'referer': referer_choose.text(),
                 'gui': gui_choose.currentIndex()
             }
+            if catchupenable_flag.isChecked() != settings_old['catchupenable']:
+                if os.path.exists(str(Path(LOCAL_DIR, 'epg.cache'))):
+                    os.remove(str(Path(LOCAL_DIR, 'epg.cache')))
             settings_file1 = open(str(Path(LOCAL_DIR, 'settings.json')), 'w', encoding="utf8")
             settings_file1.write(json.dumps(settings_arr))
             settings_file1.close()
@@ -3293,6 +3312,10 @@ if __name__ == '__main__':
         zoom_def_choose.setCurrentIndex(settings['zoom'])
         panscan_def_choose.setValue(settings['panscan'])
 
+        catchupenable_label = QtWidgets.QLabel("{}:".format(_('enablecatchup')))
+        catchupenable_flag = QtWidgets.QCheckBox()
+        catchupenable_flag.setChecked(settings['catchupenable'])
+
         tabs = QtWidgets.QTabWidget()
 
         tab1 = QtWidgets.QWidget()
@@ -3301,11 +3324,13 @@ if __name__ == '__main__':
         tab4 = QtWidgets.QWidget()
         tab5 = QtWidgets.QWidget()
         tab6 = QtWidgets.QWidget()
+        tab7 = QtWidgets.QWidget()
         tabs.addTab(tab1, _('tab_main'))
         tabs.addTab(tab2, _('tab_video'))
         tabs.addTab(tab3, _('tab_network'))
         tabs.addTab(tab5, _('tab_gui'))
         tabs.addTab(tab6, _('actions'))
+        tabs.addTab(tab7, _('catchup'))
         tabs.addTab(tab4, _('tab_other'))
         tab1.layout = QtWidgets.QGridLayout()
         tab1.layout.addWidget(lang_label, 0, 0)
@@ -3417,6 +3442,12 @@ if __name__ == '__main__':
         tab6.layout.addWidget(QtWidgets.QLabel(), 5, 0)
         tab6.layout.addWidget(shortcuts_button, 6, 0)
         tab6.setLayout(tab6.layout)
+
+        tab7.layout = QtWidgets.QGridLayout()
+        tab7.layout.addWidget(catchupenable_label, 0, 0)
+        tab7.layout.addWidget(catchupenable_flag, 0, 1)
+        tab7.layout.addWidget(QtWidgets.QLabel(), 0, 2)
+        tab7.setLayout(tab7.layout)
 
         grid2 = QtWidgets.QVBoxLayout()
         grid2.addWidget(tabs)
@@ -7428,6 +7459,8 @@ if __name__ == '__main__':
         label7_2.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'timeshift.png'))))
         label7_2.setToolTip(_('timeshift'))
         label7_2.clicked.connect(show_timeshift)
+        if not settings['catchupenable']:
+            label7_2.setVisible(False)
         label8 = QtWidgets.QPushButton()
         label8.setIcon(QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'settings.png'))))
         label8.setToolTip(_('settings'))
@@ -7766,6 +7799,23 @@ if __name__ == '__main__':
         waiting_for_epg = False
         epg_failed = False
 
+        def get_catchup_days(is_seconds=False):
+            try:
+                catchup_days1 = min(max(1, max([
+                    int(
+                        array[xc1]['catchup-days']
+                    ) for xc1 in array if 'catchup-days' in array[xc1]
+                ])), 7)
+            except: # pylint: disable=bare-except
+                catchup_days1 = 1
+            if not settings["catchupenable"]:
+                catchup_days1 = 1
+            if is_seconds:
+                catchup_days1 = 86400 * (catchup_days1 + 1)
+            return catchup_days1
+
+        print_with_time("catchup-days = {}".format(get_catchup_days()))
+
         def thread_tvguide():
             try: # pylint: disable=too-many-nested-blocks
                 global stopped, time_stop, first_boot, programmes, btn_update, \
@@ -7788,7 +7838,10 @@ if __name__ == '__main__':
                                 try:
                                     manager = Manager()
                                     return_dict = manager.dict()
-                                    p = Process(target=worker, args=(0, settings, return_dict))
+                                    p = Process(
+                                        target=worker,
+                                        args=(0, settings, get_catchup_days(), return_dict,)
+                                    )
                                     epg_thread = p
                                     p.start()
                                     waiting_for_epg = True

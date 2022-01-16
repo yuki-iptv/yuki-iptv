@@ -51,7 +51,7 @@ def merge_two_dicts(x, y):
     z.update(y)
     return z
 
-def fetch_epg(settings):
+def fetch_epg(settings, catchup_days1):
     '''Parsing EPG'''
     programmes_epg = {}
     prog_ids = {}
@@ -67,13 +67,13 @@ def fetch_epg(settings):
         try:
             epg = load_epg(epg_url_1, uas[settings["useragent"]])
             try:
-                pr_xmltv = parse_as_xmltv(epg, settings)
+                pr_xmltv = parse_as_xmltv(epg, settings, catchup_days1)
                 programmes_epg = merge_two_dicts(programmes_epg, pr_xmltv[0])
-                prog_ids = pr_xmltv[1]
+                prog_ids = merge_two_dicts(prog_ids, pr_xmltv[1])
             except: # pylint: disable=bare-except
                 programmes_epg = merge_two_dicts(programmes_epg, parse_jtv(epg, settings))
             try:
-                epg_icons = pr_xmltv[2]
+                epg_icons = merge_two_dicts(epg_icons, pr_xmltv[2])
             except: # pylint: disable=bare-except
                 pass
             epg_failures.append(False)
@@ -89,9 +89,9 @@ def fetch_epg(settings):
     print_with_time("Parsing EPG done!")
     return [{}, programmes_epg, epg_ok, exc, prog_ids, epg_icons]
 
-def worker(procnum, sys_settings, return_dict1): # pylint: disable=unused-argument
+def worker(procnum, sys_settings, catchup_days1, return_dict1): # pylint: disable=unused-argument
     '''Worker running from multiprocess'''
-    epg = fetch_epg(sys_settings)
+    epg = fetch_epg(sys_settings, catchup_days1)
     return_dict1[0] = epg[0]
     return_dict1[1] = epg[1]
     return_dict1[2] = True

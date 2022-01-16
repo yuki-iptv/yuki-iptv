@@ -22,9 +22,10 @@ import datetime
 import xml.etree.ElementTree as ET
 from astroncia.time import print_with_time
 
-def parse_as_xmltv(epg, settings):
+def parse_as_xmltv(epg, settings, catchup_days1): # pylint: disable=too-many-locals, too-many-branches, too-many-statements
     '''Load EPG file'''
     print_with_time("Trying parsing as XMLTV...")
+    print_with_time("catchup-days = {}".format(catchup_days1))
     try:
         tree = ET.ElementTree(ET.fromstring(epg))
     except ET.ParseError:
@@ -39,7 +40,7 @@ def parse_as_xmltv(epg, settings):
     ids = {}
     programmes_epg = {}
     icons = {}
-    for channel_epg in tree.findall('./channel'):
+    for channel_epg in tree.findall('./channel'): # pylint: disable=too-many-nested-blocks
         for display_name in channel_epg.findall('./display-name'):
             if not channel_epg.attrib['id'] in ids:
                 ids[channel_epg.attrib['id']] = []
@@ -88,11 +89,15 @@ def parse_as_xmltv(epg, settings):
                 pass
             for channel_epg_1 in chans:
                 day_start = (
-                    datetime.datetime.now() - datetime.timedelta(days=1)
-                ).replace(hour=0, minute=0, second=0).timestamp()- timezone_offset + (3600 * settings["timezone"])
+                    datetime.datetime.now() - datetime.timedelta(days=catchup_days1)
+                ).replace(
+                    hour=0, minute=0, second=0
+                ).timestamp() - timezone_offset + (3600 * settings["timezone"])
                 day_end = (
                     datetime.datetime.now() + datetime.timedelta(days=1)
-                ).replace(hour=23, minute=59, second=59).timestamp()- timezone_offset + (3600 * settings["timezone"])
+                ).replace(
+                    hour=23, minute=59, second=59
+                ).timestamp() - timezone_offset + (3600 * settings["timezone"])
                 if not channel_epg_1 in programmes_epg:
                     programmes_epg[channel_epg_1] = []
                 if start > day_start and stop < day_end:
