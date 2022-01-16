@@ -3857,14 +3857,25 @@ if __name__ == '__main__':
                     playlists_win_edit.show()
 
         def playlists_delete_do():
-            try:
-                currentItem_text = playlists_list.currentItem().text()
-            except: # pylint: disable=bare-except
-                currentItem_text = ""
-            if currentItem_text:
-                playlists_list.takeItem(playlists_list.currentRow())
-                playlists_data.playlists_used.pop(currentItem_text)
-                playlists_save_json()
+            resettodefaults_btn_clicked_msg_1 = QtWidgets.QMessageBox.question(
+                None,
+                MAIN_WINDOW_TITLE,
+                _('areyousure'),
+                _enum(QtWidgets.QMessageBox, 'StandardButton.Yes') | \
+                _enum(QtWidgets.QMessageBox, 'StandardButton.No'),
+                _enum(QtWidgets.QMessageBox, 'StandardButton.Yes')
+            )
+            if resettodefaults_btn_clicked_msg_1 == _enum(
+                QtWidgets.QMessageBox, 'StandardButton.Yes'
+            ):
+                try:
+                    currentItem_text = playlists_list.currentItem().text()
+                except: # pylint: disable=bare-except
+                    currentItem_text = ""
+                if currentItem_text:
+                    playlists_list.takeItem(playlists_list.currentRow())
+                    playlists_data.playlists_used.pop(currentItem_text)
+                    playlists_save_json()
 
         def playlists_add_do():
             playlists_edit_do(True)
