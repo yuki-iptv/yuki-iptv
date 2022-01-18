@@ -1,4 +1,3 @@
-'''Astroncia IPTV - EPG parsing'''
 '''
 Copyright (c) 2021-2022 Astroncia
 
@@ -19,7 +18,6 @@ Copyright (c) 2021-2022 Astroncia
 '''
 # pylint: disable=broad-except, too-many-locals, import-error
 import os
-import datetime
 import requests
 from astroncia.ua import uas
 from astroncia.jtv import parse_jtv
@@ -46,10 +44,11 @@ def load_epg(epg_url, user_agent):
     print_with_time("EPG loaded")
     return epg
 
-def merge_two_dicts(x, y):
-    z = x.copy()
-    z.update(y)
-    return z
+def merge_two_dicts(dict1, dict2):
+    ''' Merge two dictionaries'''
+    dict_new = dict1.copy()
+    dict_new.update(dict2)
+    return dict_new
 
 def fetch_epg(settings, catchup_days1):
     '''Parsing EPG'''
@@ -61,6 +60,8 @@ def fetch_epg(settings, catchup_days1):
     epg_exceptions = []
     epg_icons = {}
     epg_settings_url = [settings['epg']]
+    if ',' in epg_settings_url[0]:
+        epg_settings_url[0] = '^^::MULTIPLE::^^' + ':::^^^:::'.join(epg_settings_url[0].split(','))
     if epg_settings_url[0].startswith('^^::MULTIPLE::^^'):
         epg_settings_url = epg_settings_url[0].replace('^^::MULTIPLE::^^', '').split(':::^^^:::')
     for epg_url_1 in epg_settings_url:
@@ -83,7 +84,7 @@ def fetch_epg(settings, catchup_days1):
             print_with_time("Failed parsing EPG!")
             epg_failures.append(True)
             epg_exceptions.append(exc0)
-    if not False in epg_failures:
+    if False not in epg_failures:
         epg_ok = False
         exc = epg_exceptions[0]
     print_with_time("Parsing EPG done!")
