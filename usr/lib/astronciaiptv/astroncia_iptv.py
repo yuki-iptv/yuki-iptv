@@ -8201,8 +8201,15 @@ if __name__ == '__main__':
 
         def resizeandmove_controlpanel():
             lb2_width = 0
+            cur_screen = QtWidgets.QApplication.primaryScreen()
+            try:
+                cur_screen = win.screen()
+            except: # pylint: disable=bare-except
+                pass
+            cur_width = cur_screen.availableGeometry().width()
+            controlpanel_widget.setFixedWidth(cur_width)
             for lb2_wdg in show_lbls_fullscreen:
-                if hlayout2.indexOf(lb2_wdg) != -1:
+                if hlayout2.indexOf(lb2_wdg) != -1 and lb2_wdg.isVisible():
                     lb2_width += lb2_wdg.width() + 10
             controlpanel_widget.setFixedWidth(
                 #int(win.width() / 3) - 100
