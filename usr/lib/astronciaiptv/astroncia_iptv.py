@@ -437,6 +437,7 @@ if __name__ == '__main__':
                 'remembervol': True,
                 'hidempv': False,
                 'chaniconsfromepg': True,
+                'chaniconsfromplaylist': True,
                 'hideepgpercentage': False,
                 'hidebitrateinfo': False,
                 'movedragging': False,
@@ -486,6 +487,8 @@ if __name__ == '__main__':
             settings['hidempv'] = False
         if 'chaniconsfromepg' not in settings:
             settings['chaniconsfromepg'] = True
+        if 'chaniconsfromplaylist' not in settings:
+            settings['chaniconsfromplaylist'] = True
         if 'hideepgpercentage' not in settings:
             settings['hideepgpercentage'] = False
         if 'hidebitrateinfo' not in settings:
@@ -2865,6 +2868,7 @@ if __name__ == '__main__':
                 'remembervol': remembervol_flag.isChecked(),
                 'hidempv': hidempv_flag.isChecked(),
                 'chaniconsfromepg': chaniconsfromepg_flag.isChecked(),
+                'chaniconsfromplaylist': chaniconsfromplaylist_flag.isChecked(),
                 'hideepgpercentage': hideepgpercentage_flag.isChecked(),
                 'hidebitrateinfo': hidebitrateinfo_flag.isChecked(),
                 'movedragging': movedragging_flag.isChecked(),
@@ -3163,6 +3167,7 @@ if __name__ == '__main__':
         remembervol_label = QtWidgets.QLabel("{}:".format(_('remembervol')))
         hidempv_label = QtWidgets.QLabel("{}:".format(_('hidempv')))
         chaniconsfromepg_label = QtWidgets.QLabel("{}:".format(_('chaniconsfromepg')))
+        chaniconsfromplaylist_label = QtWidgets.QLabel("{}:".format(_('chaniconsfromplaylist')))
         hideepgpercentage_label = QtWidgets.QLabel("{}:".format(_('hideepgpercentage')))
         hidebitrateinfo_label = QtWidgets.QLabel("{}:".format(_('hidebitrateinfo')))
         movedragging_label = QtWidgets.QLabel("{}:".format(_('movedragging')))
@@ -3191,6 +3196,9 @@ if __name__ == '__main__':
 
         chaniconsfromepg_flag = QtWidgets.QCheckBox()
         chaniconsfromepg_flag.setChecked(settings['chaniconsfromepg'])
+
+        chaniconsfromplaylist_flag = QtWidgets.QCheckBox()
+        chaniconsfromplaylist_flag.setChecked(settings['chaniconsfromplaylist'])
 
         hideepgpercentage_flag = QtWidgets.QCheckBox()
         hideepgpercentage_flag.setChecked(settings['hideepgpercentage'])
@@ -3385,16 +3393,18 @@ if __name__ == '__main__':
         tab4.layout.addWidget(donot_flag, 1, 1)
         tab4.layout.addWidget(hidempv_label, 2, 0)
         tab4.layout.addWidget(hidempv_flag, 2, 1)
-        tab4.layout.addWidget(chaniconsfromepg_label, 3, 0)
-        tab4.layout.addWidget(chaniconsfromepg_flag, 3, 1)
-        tab4.layout.addWidget(volumechangestep_label, 4, 0)
-        tab4.layout.addWidget(volumechangestep_choose, 4, 1)
-        tab4.layout.addWidget(screenshot_label, 5, 0)
-        tab4.layout.addWidget(screenshot_choose, 5, 1)
-        tab4.layout.addWidget(hideplaylistleftclk_label, 6, 0)
-        tab4.layout.addWidget(hideplaylistleftclk_flag, 6, 1)
-        tab4.layout.addWidget(nocacheepg_label, 7, 0)
-        tab4.layout.addWidget(nocacheepg_flag, 7, 1)
+        tab4.layout.addWidget(chaniconsfromplaylist_label, 3, 0)
+        tab4.layout.addWidget(chaniconsfromplaylist_flag, 3, 1)
+        tab4.layout.addWidget(chaniconsfromepg_label, 4, 0)
+        tab4.layout.addWidget(chaniconsfromepg_flag, 4, 1)
+        tab4.layout.addWidget(volumechangestep_label, 5, 0)
+        tab4.layout.addWidget(volumechangestep_choose, 5, 1)
+        tab4.layout.addWidget(screenshot_label, 6, 0)
+        tab4.layout.addWidget(screenshot_choose, 6, 1)
+        tab4.layout.addWidget(hideplaylistleftclk_label, 7, 0)
+        tab4.layout.addWidget(hideplaylistleftclk_flag, 7, 1)
+        tab4.layout.addWidget(nocacheepg_label, 8, 0)
+        tab4.layout.addWidget(nocacheepg_flag, 8, 1)
         tab4.setLayout(tab4.layout)
 
         tab5.layout = QtWidgets.QGridLayout()
@@ -5300,7 +5310,10 @@ if __name__ == '__main__':
                 channel_icons_data.return_dict = channel_icons_data.manager_1.dict()
                 channel_icons_data_epg.manager_1 = Manager()
                 channel_icons_data_epg.return_dict = channel_icons_data_epg.manager_1.dict()
-                update_channel_icons()
+                if settings['chaniconsfromplaylist']:
+                    update_channel_icons()
+                else:
+                    print_with_time("Channel icons from playlist disabled")
                 update_channel_icons_epg()
             try:
                 idx = (page_box.value() - 1) * settings["channelsonpage"]
@@ -7834,7 +7847,7 @@ if __name__ == '__main__':
 
         print_with_time("catchup-days = {}".format(get_catchup_days()))
 
-        def thread_tvguide():
+        def thread_tvguide(): # pylint: disable=too-many-branches
             try: # pylint: disable=too-many-nested-blocks
                 global stopped, time_stop, first_boot, programmes, btn_update, \
                 epg_thread, static_text, manager, tvguide_sets, epg_updating, ic, \
@@ -7868,6 +7881,10 @@ if __name__ == '__main__':
                                     print_with_time(
                                         "[TV guide, part 1] Caught exception: " + str(e1)
                                     )
+                                    try:
+                                        print_with_time(traceback.format_exc())
+                                    except: # pylint: disable=bare-except
+                                        pass
                                     l1.setStatic2(False)
                                     l1.show()
                                     l1.setText2(_('tvguideupdatingerror'))
@@ -8032,6 +8049,10 @@ if __name__ == '__main__':
                         except Exception as e2:
                             epg_failed = True
                             print_with_time("[TV guide, part 2] Caught exception: " + str(e2))
+                            try:
+                                print_with_time(traceback.format_exc())
+                            except: # pylint: disable=bare-except
+                                pass
                             l1.setStatic2(False)
                             l1.show()
                             l1.setText2(_('tvguideupdatingerror'))
