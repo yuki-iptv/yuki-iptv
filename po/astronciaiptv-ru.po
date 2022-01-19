@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Astroncia <kestraly@gmail.com>\n"
-"PO-Revision-Date: 2022-01-18 06:14+0300\n"
+"PO-Revision-Date: 2022-01-19 08:02+0300\n"
 "Project-Id-Version: \n"
 "Language-Team: Russian <kde-i18n-doc@kde.org>\n"
 "Language: ru_RU\n"
@@ -1052,6 +1052,9 @@ msgstr "Включить архив каналов"
 
 msgid "chaniconsfromplaylist"
 msgstr "Загружать логотипы каналов из плейлиста"
+
+msgid "writingepgcache"
+msgstr "Идёт запись кэша EPG"
 
 msgid "helptext"
 msgstr ""

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Astroncia <kestraly@gmail.com>\n"
-"PO-Revision-Date: 2022-01-18 06:13+0300\n"
+"PO-Revision-Date: 2022-01-19 08:02+0300\n"
 "Project-Id-Version: \n"
 "Language-Team: English <kde-i18n-doc@kde.org>\n"
 "Language: en_US\n"
@@ -1047,6 +1047,9 @@ msgstr "Enable catchup"
 
 msgid "chaniconsfromplaylist"
 msgstr "Load channel icons from playlist"
+
+msgid "writingepgcache"
+msgstr "Writing EPG cache"
 
 msgid "helptext"
 msgstr ""
