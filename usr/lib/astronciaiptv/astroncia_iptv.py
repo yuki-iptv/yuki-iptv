@@ -1669,7 +1669,6 @@ if __name__ == '__main__':
         ext_win.setCentralWidget(ext_widget)
 
         playlists_saved = {}
-        playlists_saved_default = {}
 
         if os.path.isfile(str(Path(LOCAL_DIR, 'playlists.json'))):
             playlists_json = open(str(Path(LOCAL_DIR, 'playlists.json')), 'r', encoding="utf8")
