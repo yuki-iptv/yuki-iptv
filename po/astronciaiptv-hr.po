@@ -760,12 +760,6 @@ msgstr ""
 "Nova inačica je dostupna! Želite li posjetiti web stranicu kako bi ju "
 "instalirali?"
 
-msgid "setdefaultplaylist"
-msgstr "Odaberi zadani popis izvođenja (Free-TV)"
-
-msgid "ihaveplaylist"
-msgstr "Imam M3U / XSPF / XTream popis izvođenja"
-
 msgid "aboutqt"
 msgstr "O Qt-u"
 

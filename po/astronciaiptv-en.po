@@ -756,12 +756,6 @@ msgstr "Error retrieving latest version information"
 msgid "newversionavail"
 msgstr "New version available! Visit web page to install?"
 
-msgid "setdefaultplaylist"
-msgstr "Select default playlist (Free-TV)"
-
-msgid "ihaveplaylist"
-msgstr "I have M3U / XSPF / XTream playlist"
-
 msgid "aboutqt"
 msgstr "About Qt"
 

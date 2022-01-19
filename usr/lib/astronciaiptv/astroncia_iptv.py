@@ -1303,10 +1303,6 @@ if __name__ == '__main__':
 
         shortcuts_win_2.setCentralWidget(shortcuts_win_2_widget)
 
-        selplaylist_win = QtWidgets.QMainWindow()
-        selplaylist_win.setWindowTitle(MAIN_WINDOW_TITLE)
-        selplaylist_win.setWindowIcon(main_icon)
-
         streaminfo_win = QtWidgets.QMainWindow()
         streaminfo_win.setWindowIcon(main_icon)
 
@@ -1446,7 +1442,7 @@ if __name__ == '__main__':
         archive_win.setWindowIcon(main_icon)
 
         playlists_win = QtWidgets.QMainWindow()
-        playlists_win.resize(400, 590)
+        playlists_win.resize(500, 600)
         playlists_win.setWindowTitle(_('playlists'))
         playlists_win.setWindowIcon(main_icon)
 
@@ -1579,23 +1575,6 @@ if __name__ == '__main__':
         playlists_win_edit_widget.setLayout(playlists_win_edit_layout)
         playlists_win_edit.setCentralWidget(playlists_win_edit_widget)
 
-        def ihaveplaylist_btn_action():
-            selplaylist_win.close()
-            show_playlists()
-            playlists_win.raise_()
-            playlists_win.setFocus(_enum(QtCore.Qt, 'FocusReason.PopupFocusReason'))
-            playlists_win.activateWindow()
-
-        def setdefaultplaylist_action():
-            sprov.setCurrentIndex(1)
-            playlists_selected()
-            selplaylist_win.close()
-            save_settings()
-
-        ihaveplaylist_btn = QtWidgets.QPushButton(_('ihaveplaylist'))
-        ihaveplaylist_btn.clicked.connect(ihaveplaylist_btn_action)
-        setdefaultplaylist = QtWidgets.QPushButton(_('setdefaultplaylist'))
-        setdefaultplaylist.clicked.connect(setdefaultplaylist_action)
         astronciaiptv_icon = QtWidgets.QLabel()
         astronciaiptv_icon.setPixmap(TV_ICON.pixmap(QtCore.QSize(32, 32)))
         astronciaiptv_label = QtWidgets.QLabel()
@@ -1615,17 +1594,10 @@ if __name__ == '__main__':
         astronciaiptv_layout.addWidget(astronciaiptv_label)
         astronciaiptv_widget.setLayout(astronciaiptv_layout)
 
-        selplaylist_widget = QtWidgets.QWidget()
-        selplaylist_layout = QtWidgets.QVBoxLayout()
         astronciaiptv_layout.setAlignment(
             _enum(QtCore.Qt, 'AlignmentFlag.AlignHCenter') | \
             _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
         )
-        selplaylist_layout.addWidget(astronciaiptv_widget)
-        selplaylist_layout.addWidget(setdefaultplaylist)
-        selplaylist_layout.addWidget(ihaveplaylist_btn)
-        selplaylist_widget.setLayout(selplaylist_layout)
-        selplaylist_win.setCentralWidget(selplaylist_widget)
 
         def esw_input_edit():
             esw_input_text = esw_input.text().lower()
@@ -1696,32 +1668,10 @@ if __name__ == '__main__':
         ext_widget.setLayout(ext_layout)
         ext_win.setCentralWidget(ext_widget)
 
-        def_provider = 0
-        def_provider_name = list(iptv_playlists.keys())[def_provider].replace('[Worldwide] ', '')
         playlists_saved = {}
-
         playlists_saved_default = {}
-        playlists_saved_default[def_provider_name] = {
-            "m3u": list(iptv_playlists.values())[def_provider]['m3u'],
-            "offset": 0
-        }
-        try:
-            playlists_saved_default[def_provider_name]["epg"] = \
-                list(iptv_playlists.values())[def_provider]['epg']
-        except: # pylint: disable=bare-except
-            playlists_saved_default[def_provider_name]["epg"] = ""
 
-        if not os.path.isfile(str(Path(LOCAL_DIR, 'playlists.json'))):
-            playlists_saved[def_provider_name] = {
-                "m3u": list(iptv_playlists.values())[def_provider]['m3u'],
-                "offset": 0
-            }
-            try:
-                playlists_saved[def_provider_name]["epg"] = \
-                    list(iptv_playlists.values())[def_provider]['epg']
-            except: # pylint: disable=bare-except
-                playlists_saved[def_provider_name]["epg"] = ""
-        else:
+        if os.path.isfile(str(Path(LOCAL_DIR, 'playlists.json'))):
             playlists_json = open(str(Path(LOCAL_DIR, 'playlists.json')), 'r', encoding="utf8")
             playlists_saved = json.loads(playlists_json.read())
             playlists_json.close()
@@ -1733,7 +1683,6 @@ if __name__ == '__main__':
         playlists_edit = QtWidgets.QPushButton(_('provedit'))
         playlists_delete = QtWidgets.QPushButton(_('provdelete'))
         playlists_favourites = QtWidgets.QPushButton(_('favourite') + '+')
-        playlists_reset = QtWidgets.QPushButton(_('resetdefplaylists'))
         playlists_import = QtWidgets.QPushButton(_('importhypnotix'))
         playlists_settings = QtWidgets.QPushButton(_('settings'))
         playlists_settings.setStyleSheet('color: blue;')
@@ -1744,12 +1693,12 @@ if __name__ == '__main__':
         playlists_win_layout.addWidget(playlists_edit, 0, 1)
         playlists_win_layout.addWidget(playlists_delete, 0, 2)
         playlists_win_layout.addWidget(playlists_favourites, 1, 0)
-        playlists_win_layout.addWidget(playlists_reset, 1, 1)
-        playlists_win_layout.addWidget(playlists_import, 1, 2)
+        playlists_win_layout.addWidget(playlists_import, 1, 1)
         playlists_win_widget.setLayout(playlists_win_layout)
 
         playlists_win_widget_main = QtWidgets.QWidget()
         playlists_win_widget_main_layout = QtWidgets.QVBoxLayout()
+        playlists_win_widget_main_layout.addWidget(astronciaiptv_widget)
         playlists_win_widget_main_layout.addWidget(playlists_list)
         playlists_win_widget_main_layout.addWidget(playlists_select)
         playlists_win_widget_main_layout.addWidget(playlists_win_widget)
@@ -3933,17 +3882,6 @@ if __name__ == '__main__':
                 print_with_time("Failed fetching playlists from Hypnotix!")
                 hypnotix_import_ok = False
             if playlists_hypnotix and hypnotix_import_ok:
-                try:
-                    playlists_list.takeItem(
-                        playlists_list.row(
-                            playlists_list.findItems(
-                                def_provider_name, _enum(QtCore.Qt, 'MatchFlag.MatchExactly')
-                            )[0]
-                        )
-                    )
-                    playlists_data.playlists_used.pop(def_provider_name)
-                except: # pylint: disable=bare-except
-                    pass
                 playlists_data.playlists_used = playlists_hypnotix
                 playlists_saved = playlists_hypnotix
                 for prov_name_4 in playlists_data.playlists_used:
@@ -3964,22 +3902,12 @@ if __name__ == '__main__':
                 )
                 hypnotix_msg.exec()
 
-        def playlists_reset_do():
-            global playlists_saved
-            playlists_data.playlists_used = playlists_saved_default
-            playlists_saved = playlists_saved_default
-            playlists_save_json()
-            playlists_win.hide()
-            playlists_win_edit.hide()
-            save_settings()
-
         playlists_list.itemDoubleClicked.connect(playlists_selected)
         playlists_select.clicked.connect(playlists_selected)
         playlists_add.clicked.connect(playlists_add_do)
         playlists_edit.clicked.connect(playlists_edit_do)
         playlists_delete.clicked.connect(playlists_delete_do)
         playlists_import.clicked.connect(playlists_import_do)
-        playlists_reset.clicked.connect(playlists_reset_do)
         playlists_settings.clicked.connect(show_settings)
 
         fullscreen = False
@@ -8281,7 +8209,6 @@ if __name__ == '__main__':
             return win.isActiveWindow() or \
                 sepplaylist_win.isActiveWindow() or \
                 help_win.isActiveWindow() or \
-                selplaylist_win.isActiveWindow() or \
                 streaminfo_win.isActiveWindow() or \
                 license_win.isActiveWindow() or \
                 sort_win.isActiveWindow() or \
@@ -8305,7 +8232,6 @@ if __name__ == '__main__':
         def is_other_wins_has_focus():
             return sepplaylist_win.isActiveWindow() or \
                 help_win.isActiveWindow() or \
-                selplaylist_win.isActiveWindow() or \
                 streaminfo_win.isActiveWindow() or \
                 license_win.isActiveWindow() or \
                 sort_win.isActiveWindow() or \
@@ -8440,9 +8366,6 @@ if __name__ == '__main__':
                     else:
                         AstronciaData.playlist_hidden = False
                         sepplaylist_win.show()
-                        selplaylist_win.raise_()
-                        selplaylist_win.setFocus(_enum(QtCore.Qt, 'FocusReason.PopupFocusReason'))
-                        selplaylist_win.activateWindow()
                 else:
                     if dockWidget.isVisible():
                         AstronciaData.playlist_hidden = True
@@ -8892,17 +8815,12 @@ if __name__ == '__main__':
                 timers_array[timer].timeout.connect(timer)
                 timers_array[timer].start(timers[timer])
         else:
-            if not os.path.isfile(str(Path(LOCAL_DIR, 'settings.json'))):
-                selplaylist_win.show()
-                selplaylist_win.raise_()
-                selplaylist_win.setFocus(_enum(QtCore.Qt, 'FocusReason.PopupFocusReason'))
-                selplaylist_win.activateWindow()
-                moveWindowToCenter(selplaylist_win)
-            else:
-                show_playlists()
-                playlists_win.raise_()
-                playlists_win.setFocus(_enum(QtCore.Qt, 'FocusReason.PopupFocusReason'))
-                playlists_win.activateWindow()
+            show_playlists()
+            playlists_win.show()
+            playlists_win.raise_()
+            playlists_win.setFocus(_enum(QtCore.Qt, 'FocusReason.PopupFocusReason'))
+            playlists_win.activateWindow()
+            moveWindowToCenter(playlists_win)
 
         sys.exit(_exec(app))
     except Exception as e3:

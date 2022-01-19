@@ -755,12 +755,6 @@ msgstr "Se produjo un error al recuperar la información de la última versión"
 msgid "newversionavail"
 msgstr "¡Nueva versión disponible! ¡Visite la página web para instalar!"
 
-msgid "setdefaultplaylist"
-msgstr "Seleccionar lista de reproducción predeterminada (Free-TV)"
-
-msgid "ihaveplaylist"
-msgstr "Tengo una lista de reproducción M3U / XSPF / XTream"
-
 msgid "aboutqt"
 msgstr "Acerca de Qt"
 

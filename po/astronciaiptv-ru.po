@@ -757,12 +757,6 @@ msgstr "Ошибка получения информации о последне
 msgid "newversionavail"
 msgstr "Доступна новая версия! Посетить веб-страницу для установки?"
 
-msgid "setdefaultplaylist"
-msgstr "Выбрать плейлист по умолчанию (Free-TV)"
-
-msgid "ihaveplaylist"
-msgstr "У меня есть M3U / XSPF / XTream плейлист"
-
 msgid "aboutqt"
 msgstr "О Qt"
 

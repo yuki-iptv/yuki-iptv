@@ -17,8 +17,4 @@ Copyright (c) 2021-2022 Astroncia
     You should have received a copy of the GNU General Public License
     along with Astroncia IPTV.  If not, see <https://www.gnu.org/licenses/>.
 '''
-iptv_playlists = {
-    "[Worldwide] Free-TV": {
-        'm3u': 'https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8'
-    }
-}
+iptv_playlists = {}
