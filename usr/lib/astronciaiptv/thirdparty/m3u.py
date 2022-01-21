@@ -70,7 +70,7 @@ class M3uParser:
                         pass
             self.epg_url = self.epg_url if self.epg_url != 'http://server/jtv.zip' else ''
             self.lines.pop(0)
-        self.lines = [x.rstrip() for x in self.lines if not x.startswith('#EXTVLCOPT:') and not x.startswith('#KODIPROP:') and not x.startswith('#EXT-X-PLAYLIST-TYPE:') and not x.startswith('#EXTNAME:') and not x.startswith('#EXTTV:')]
+        self.lines = [x.rstrip() for x in self.lines if not x.startswith('#EXTVLCOPT:') and not x.startswith('#KODIPROP:') and not x.startswith('#EXT-X-PLAYLIST-TYPE:') and not x.startswith('#EXTNAME:') and not x.startswith('#EXTTV:') and not x.startswith('#EXTLOGO:')]
         self.lines = ['#EXTM3U'] + [x0 for x0 in self.lines if x0]
         self.lines = parse_extgrp(self.lines)
         return len(self.lines)
