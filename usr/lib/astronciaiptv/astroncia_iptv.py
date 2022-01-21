@@ -582,13 +582,37 @@ if __name__ == '__main__':
 
         epg_thread_2 = None
 
+        @idle_function
+        def start_epg_hdd_animation(arg11=None): # pylint: disable=unused-argument
+            try:
+                hdd_gif_label.setVisible(True)
+            except: # pylint: disable=bare-except
+                pass
+
+        @idle_function
+        def stop_epg_hdd_animation(arg11=None): # pylint: disable=unused-argument
+            try:
+                hdd_gif_label.setVisible(False)
+            except: # pylint: disable=bare-except
+                pass
+
+        @async_function
         def save_tvguide_sets():
             global epg_thread_2, tvguide_sets
+            try:
+                start_epg_hdd_animation()
+            except: # pylint: disable=bare-except
+                pass
             epg_thread_2 = Process(
                 target=save_tvguide_sets_proc,
                 args=(tvguide_sets,)
             )
             epg_thread_2.start()
+            epg_thread_2.join()
+            try:
+                stop_epg_hdd_animation()
+            except: # pylint: disable=bare-except
+                pass
 
         def clean_programme():
             sets1 = tvguide_sets.copy()
@@ -7467,6 +7491,15 @@ if __name__ == '__main__':
         myFont5.setPointSize(12)
         label13.setFont(myFont5)
 
+        hdd_gif_label = QtWidgets.QLabel()
+        hdd_gif_label.setPixmap(
+            QtGui.QIcon(
+                str(Path('astroncia', ICONS_FOLDER, 'hdd.png'))
+            ).pixmap(QtCore.QSize(32, 32))
+        )
+        hdd_gif_label.setToolTip('{}...'.format(_('writingepgcache')))
+        hdd_gif_label.setVisible(False)
+
         progress = QtWidgets.QProgressBar()
         progress.setValue(0)
         start_label = QtWidgets.QLabel()
@@ -7526,6 +7559,7 @@ if __name__ == '__main__':
         hlayout2.addStretch(1000000)
         hlayout2.addWidget(label11)
         hlayout2.addWidget(label12)
+        hlayout2.addWidget(hdd_gif_label)
 
         vlayout3.addLayout(hlayout2)
         hlayout2.addStretch(1)
