@@ -1,3 +1,4 @@
+# pylint: disable=missing-function-docstring
 '''
 Copyright (c) 2021-2022 Astroncia
 
@@ -19,13 +20,13 @@ Copyright (c) 2021-2022 Astroncia
 import os
 import json
 from pathlib import Path
-user_agent = ''
+user_agent = '' # pylint: disable=invalid-name
 uas = [
     '',
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36', # pylint: disable=line-too-long
     'Dalvik/2.1.0 (Linux; U; Android 10; AGS3-L09 Build/HUAWEIAGS3-L09)',
-    'Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
-    'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36',
+    'Mozilla/5.0 (iPhone; CPU iPhone OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148', # pylint: disable=line-too-long
+    'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36', # pylint: disable=line-too-long
     'OnlineTvAppDroid',
     'smartlabs',
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5)',
@@ -70,15 +71,15 @@ def get_default_user_agent():
     def_user_agent = uas[settings1['useragent']]
     return def_user_agent
 
-def get_user_agent_for_channel(ch):
+def get_user_agent_for_channel(channel):
     ua1 = get_default_user_agent()
     channel_sets1 = {}
     if os.path.isfile(str(Path(LOCAL_DIR, 'channels.json'))):
         file2 = open(str(Path(LOCAL_DIR, 'channels.json')), 'r', encoding="utf8")
         channel_sets1 = json.loads(file2.read())
         file2.close()
-    if ch in channel_sets1:
-        ch_data = channel_sets1[ch]
+    if channel in channel_sets1:
+        ch_data = channel_sets1[channel]
         if 'useragent' in ch_data:
             try:
                 ua1 = uas[ch_data['useragent']]

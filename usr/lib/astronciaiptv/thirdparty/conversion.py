@@ -1,12 +1,11 @@
-# pylint: disable=no-else-return, inconsistent-return-statements
-import math
-
-def format_bytes(bytes, hbnames):
-   idx = 0
-   while bytes >= 1024 and idx+1 < len(hbnames):
-      bytes = bytes / 1024
-      idx += 1
-   return f"{bytes:.1f} {hbnames[idx]}"
+'''conversion.py'''
+# pylint: disable=missing-function-docstring
+def format_bytes(bytes1, hbnames):
+    idx = 0
+    while bytes1 >= 1024 and idx+1 < len(hbnames):
+        bytes1 = bytes1 / 1024
+        idx += 1
+    return f"{bytes1:.1f} {hbnames[idx]}"
 
 def convert_size(size_bytes):
     return format_bytes(size_bytes, ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"])

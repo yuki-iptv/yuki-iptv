@@ -61,10 +61,10 @@ from astroncia.menubar import init_astroncia_menubar, init_menubar_player, \
 from astroncia.time import print_with_time, get_app_log, get_mpv_log, args_init
 from astroncia.epgurls import EPG_URLS
 from astroncia.xtreamtom3u import convert_xtream_to_m3u
+from astroncia.m3u import M3UParser
 from astroncia.xspf import parse_xspf
 from astroncia.qt6compat import globalPos, getX, getY, _exec, _enum
 from thirdparty.conversion import convert_size, format_bytes, human_secs
-from thirdparty.m3u import M3uParser
 from thirdparty.m3ueditor import Viewer
 from thirdparty.xtream import XTream
 #from thirdparty.levenshtein import damerau_levenshtein
@@ -408,8 +408,9 @@ if __name__ == '__main__':
             favourite_sets = json.loads(file1.read())
             file1.close()
 
-        tz_offset = time.timezone if (time.localtime().tm_isdst == 0) else time.altzone
-        DEF_TIMEZONE = tz_offset / 60 / 60 * -1
+        #tz_offset = time.timezone if (time.localtime().tm_isdst == 0) else time.altzone
+        #DEF_TIMEZONE = tz_offset / 60 / 60 * -1
+        DEF_TIMEZONE = 0
 
         if os.path.isfile(str(Path(LOCAL_DIR, 'settings.json'))):
             settings_file = open(str(Path(LOCAL_DIR, 'settings.json')), 'r', encoding="utf8")
@@ -425,7 +426,7 @@ if __name__ == '__main__':
                 "provider": "",
                 "nocache": True,
                 "lang": LANG_DEFAULT,
-                "timezone": DEF_TIMEZONE,
+                "epgoffset": DEF_TIMEZONE,
                 "hwaccel": True,
                 "sort": 0,
                 "cache_secs": 0,
@@ -469,8 +470,8 @@ if __name__ == '__main__':
             settings['sort'] = 0
         if 'cache_secs' not in settings:
             settings['cache_secs'] = 0
-        if 'timezone' not in settings:
-            settings['timezone'] = DEF_TIMEZONE
+        if "epgoffset" not in settings:
+            settings["epgoffset"] = DEF_TIMEZONE
         if 'useragent' not in settings:
             settings['useragent'] = 2
         if 'mpv_options' not in settings:
@@ -833,28 +834,28 @@ if __name__ == '__main__':
             use_cache = False
         if not use_cache:
             print_with_time(_('nocacheplaylist'))
-        if use_cache and os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
-            pj = open(str(Path(LOCAL_DIR, 'playlist.json')), 'r', encoding="utf8")
+        if use_cache and os.path.isfile(str(Path(LOCAL_DIR, 'playlist.cache.json'))):
+            pj = open(str(Path(LOCAL_DIR, 'playlist.cache.json')), 'r', encoding="utf8")
             pj1 = json.loads(pj.read())['url']
             pj.close()
             if pj1 != settings['m3u']:
-                os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
-        if (not use_cache) and os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
-            os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
-        if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
+                os.remove(str(Path(LOCAL_DIR, 'playlist.cache.json')))
+        if (not use_cache) and os.path.isfile(str(Path(LOCAL_DIR, 'playlist.cache.json'))):
+            os.remove(str(Path(LOCAL_DIR, 'playlist.cache.json')))
+        if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.cache.json'))):
             try:
                 playlist_load_tmp = open(
-                    str(Path(LOCAL_DIR, 'playlist.json')), 'r', encoding="utf8"
+                    str(Path(LOCAL_DIR, 'playlist.cache.json')), 'r', encoding="utf8"
                 )
                 playlist_load_tmp_data = playlist_load_tmp.read()
                 playlist_load_tmp.close()
                 playlist_load_tmp_data = json.loads(playlist_load_tmp_data)
                 if not playlist_load_tmp_data['m3u'] and not playlist_load_tmp_data['array']:
                     print_with_time("Cached playlist broken, ignoring and deleting")
-                    os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
+                    os.remove(str(Path(LOCAL_DIR, 'playlist.cache.json')))
             except: # pylint: disable=bare-except
                 pass
-        if not os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
+        if not os.path.isfile(str(Path(LOCAL_DIR, 'playlist.cache.json'))):
             print_with_time(_('loadingplaylist'))
             if settings['m3u']:
                 # Parsing m3u
@@ -970,7 +971,7 @@ if __name__ == '__main__':
                             show_exception(_('playlistloaderror'))
 
             doSaveSettings = False
-            m3u_parser = M3uParser(settings['udp_proxy'])
+            m3u_parser = M3UParser(settings['udp_proxy'], _('allchannels'))
             epg_url = ""
             m3uFailed = False
             if m3u:
@@ -978,7 +979,7 @@ if __name__ == '__main__':
                     is_xspf = '<?xml version="' in m3u and ('http://xspf.org/' in m3u or \
                     'https://xspf.org/' in m3u)
                     if not is_xspf:
-                        m3u_data0 = m3u_parser.readM3u(m3u)
+                        m3u_data0 = m3u_parser.parse_m3u(m3u)
                     else:
                         m3u_data0 = parse_xspf(m3u)
                     m3u_data = m3u_data0[0]
@@ -991,7 +992,7 @@ if __name__ == '__main__':
                         if not m3u_line['tvg-group'] in groups:
                             groups.append(m3u_line['tvg-group'])
                 except: # pylint: disable=bare-except
-                    print_with_time("Playlist parsing error!")
+                    print_with_time("Playlist parsing error!" + '\n' + traceback.format_exc())
                     show_exception(_('playlistloaderror'))
                     m3u = ""
                     array = {}
@@ -1022,13 +1023,13 @@ if __name__ == '__main__':
                     'm3u': m3u,
                     'epgurl': epg_url
                 })
-                cm3uf = open(str(Path(LOCAL_DIR, 'playlist.json')), 'w', encoding="utf8")
+                cm3uf = open(str(Path(LOCAL_DIR, 'playlist.cache.json')), 'w', encoding="utf8")
                 cm3uf.write(cm3u)
                 cm3uf.close()
                 print_with_time(_('playlistcached'))
         else:
             print_with_time(_('usingcachedplaylist'))
-            cm3uf = open(str(Path(LOCAL_DIR, 'playlist.json')), 'r', encoding="utf8")
+            cm3uf = open(str(Path(LOCAL_DIR, 'playlist.cache.json')), 'r', encoding="utf8")
             cm3u = json.loads(cm3uf.read())
             cm3uf.close()
             array = cm3u['array']
@@ -1067,8 +1068,8 @@ if __name__ == '__main__':
         else:
             icons = {}
 
-        if m3uFailed and os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
-            os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
+        if m3uFailed and os.path.isfile(str(Path(LOCAL_DIR, 'playlist.cache.json'))):
+            os.remove(str(Path(LOCAL_DIR, 'playlist.cache.json')))
 
         try:
             if os.path.isfile(str(Path(LOCAL_DIR, 'settings.json'))):
@@ -1504,7 +1505,7 @@ if __name__ == '__main__':
                     playlists_data.playlists_used[channel_text_prov] = {
                         "m3u": m3u_edit_1.text(),
                         "epg": epg_edit_1.text(),
-                        "offset": soffset_1.value()
+                        "epgoffset": soffset_1.value()
                     }
                 playlists_save_json()
                 playlists_win_edit.hide()
@@ -1562,8 +1563,6 @@ if __name__ == '__main__':
         save_btn_1 = QtWidgets.QPushButton(_('save'))
         save_btn_1.setStyleSheet('font-weight: bold; color: green;')
         save_btn_1.clicked.connect(playlists_win_save)
-        set_label_1 = QtWidgets.QLabel(_('jtvoffsetrecommendation'))
-        set_label_1.setStyleSheet('color: #666600')
         soffset_1 = QtWidgets.QDoubleSpinBox()
         soffset_1.setMinimum(-240)
         soffset_1.setMaximum(240)
@@ -1594,8 +1593,7 @@ if __name__ == '__main__':
         playlists_win_edit_layout.addWidget(epg_file_1, 3, 2)
         playlists_win_edit_layout.addWidget(offset_label_1, 4, 0)
         playlists_win_edit_layout.addWidget(soffset_1, 4, 1)
-        playlists_win_edit_layout.addWidget(set_label_1, 5, 1)
-        playlists_win_edit_layout.addWidget(save_btn_1, 6, 1)
+        playlists_win_edit_layout.addWidget(save_btn_1, 5, 1)
         playlists_win_edit_widget.setLayout(playlists_win_edit_layout)
         playlists_win_edit.setCentralWidget(playlists_win_edit_widget)
 
@@ -1825,7 +1823,7 @@ if __name__ == '__main__':
             return [
                 record_return(
                     record_url, out_file,
-                    ch_name, "Referer: {}".format(settings["referer"])
+                    ch_name, "Referer: {}".format(settings["referer"]), parse_url_ua
                 ),
                 time.time(), out_file, ch_name
             ]
@@ -2402,11 +2400,16 @@ if __name__ == '__main__':
             stream_info.video_bitrates.clear()
             stream_info.audio_bitrates.clear()
 
+        def format_url_clean(url5):
+            if '^^^^^^^^^^' in url5:
+                url5 = url5.split('^^^^^^^^^^')[0]
+            return url5
+
         def parse_specifiers_now_url(url4):
             if url4.endswith("/icons/main.png") or url4.endswith("/icons_dark/main.png"):
                 return url4
             print_with_time("")
-            print_with_time("orig spec url: {}".format(url4))
+            print_with_time("orig spec url: {}".format(format_url_clean(url4)))
             current_utc_str = int(time.time())
             url4 = url4.replace('${lutc}', str(current_utc_str))
             url4 = url4.replace('{lutc}', str(current_utc_str))
@@ -2440,22 +2443,19 @@ if __name__ == '__main__':
                 print_with_time("parse_specifiers_now_url / specifiers_re_url parsing failed")
                 print_with_time(traceback.format_exc())
 
-            print_with_time("after spec url: {}".format(url4))
+            print_with_time("after spec url: {}".format(format_url_clean(url4)))
             print_with_time("")
             return url4
 
-        def mpv_override_play(arg_override_play, ua1=''):
-            global event_handler
-            on_before_play()
-            # Parsing User-Agent and Referer in Kodi-like style
-            player.user_agent = ua1
-            if settings["referer"]:
-                player.http_header_fields = "Referer: {}".format(settings["referer"])
-            else:
-                player.http_header_fields = ""
-            if '|' in arg_override_play:
+        def parse_url_ua(url5):
+            ua_data = {
+                'ua': '',
+                'ref': ''
+            }
+            if '|' in url5:
+                print_with_time("")
                 print_with_time("Found Kodi-style arguments, parsing")
-                split_kodi = arg_override_play.split('|')[1]
+                split_kodi = url5.split('|')[1]
                 if '&' in split_kodi:
                     print_with_time("Multiple")
                     split_kodi = split_kodi.split('&')
@@ -2466,13 +2466,59 @@ if __name__ == '__main__':
                     if kodi_str.startswith('User-Agent='):
                         kodi_user_agent = kodi_str.replace('User-Agent=', '', 1)
                         print_with_time("Kodi-style User-Agent found: {}".format(kodi_user_agent))
-                        player.user_agent = kodi_user_agent
+                        ua_data['ua'] = kodi_user_agent
+                    if kodi_str.startswith('user-agent='):
+                        kodi_user_agent = kodi_str.replace('user-agent=', '', 1)
+                        print_with_time("Kodi-style User-Agent found: {}".format(kodi_user_agent))
+                        ua_data['ua'] = kodi_user_agent
                     if kodi_str.startswith('Referer='):
                         kodi_referer = kodi_str.replace('Referer=', '', 1)
                         print_with_time("Kodi-style Referer found: {}".format(kodi_referer))
-                        player.http_header_fields = "Referer: {}".format(kodi_referer)
-                arg_override_play = arg_override_play.split('|')[0]
+                        ua_data['ref'] = kodi_referer
+                    if kodi_str.startswith('referer='):
+                        kodi_referer = kodi_str.replace('referer=', '', 1)
+                        print_with_time("Kodi-style Referer found: {}".format(kodi_referer))
+                        ua_data['ref'] = kodi_referer
+                url5 = url5.split('|')[0]
+                print_with_time("")
+            if '^^^^^^^^^^' in url5:
+                if '^^^^^^^^^^useragent=' in url5:
+                    extvlcopt_ua = url5.split('^^^^^^^^^^useragent=')[1].split('@#@')[0]
+                    ua_data['ua'] = extvlcopt_ua
+                if '^^^^^^^^^^referer=' in url5:
+                    extvlcopt_ref = url5.split('^^^^^^^^^^referer=')[1].split('@#@')[0]
+                    ua_data['ref'] = extvlcopt_ref
+                url5 = url5.split('^^^^^^^^^^')[0]
+            return url5, ua_data
+
+        def mpv_override_play(arg_override_play, ua1=''): # pylint: disable=too-many-branches
+            global event_handler
+            on_before_play()
+            # Parsing User-Agent and Referer in Kodi-like style
+            player.user_agent = ua1
+            if settings["referer"]:
+                player.http_header_fields = "Referer: {}".format(settings["referer"])
+            else:
+                player.http_header_fields = ""
+            arg_override_play, ua_data = parse_url_ua(arg_override_play)
+            if ua_data['ua']:
+                player.user_agent = ua_data['ua']
+            if ua_data['ref']:
+                player.http_header_fields = "Referer: {}".format(ua_data['ref'])
             #print_with_time("mpv_override_play called")
+
+            if not arg_override_play.endswith('/main.png'):
+                print_with_time("Using User-Agent: {}".format(player.user_agent))
+                cur_ref = ""
+                try:
+                    for ref1 in player.http_header_fields:
+                        if ref1.startswith('Referer: '):
+                            ref1 = ref1.replace('Referer: ', '', 1)
+                            cur_ref = ref1
+                except: # pylint: disable=bare-except
+                    pass
+                print_with_time("Using HTTP Referer: {}".format(cur_ref))
+
             player.play(parse_specifiers_now_url(arg_override_play))
             if event_handler:
                 try:
@@ -2581,7 +2627,7 @@ if __name__ == '__main__':
         def doPlay(play_url1, ua_ch=def_user_agent, chan_name_0=''):
             comm_instance.do_play_args = (play_url1, ua_ch, chan_name_0)
             print_with_time("")
-            print_with_time("Playing '{}' ('{}')".format(chan_name_0, play_url1))
+            print_with_time("Playing '{}' ('{}')".format(chan_name_0, format_url_clean(play_url1)))
             # Loading
             loading.setText(_('loading'))
             loading.setStyleSheet('color: #778a30')
@@ -2609,10 +2655,6 @@ if __name__ == '__main__':
                     '-reconnect=1 -reconnect_at_eof=1 -reconnect_streamed=1 -reconnect_delay_max=2'
             except: # pylint: disable=bare-except
                 pass
-            # Print user agent
-            print_with_time("Using user-agent: {}".format(
-                ua_ch if isinstance(ua_ch, str) else uas[ua_ch]
-            ))
             # Set user agent and loop
             player.user_agent = ua_ch if isinstance(ua_ch, str) else uas[ua_ch]
             player.loop = True
@@ -2790,21 +2832,21 @@ if __name__ == '__main__':
             if udp_proxy_text and not udp_proxy_starts:
                 udp_proxy_text = 'http://' + udp_proxy_text
             if udp_proxy_text:
-                if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
-                    os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
-            if settings["timezone"] != soffset.value():
+                if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.cache.json'))):
+                    os.remove(str(Path(LOCAL_DIR, 'playlist.cache.json')))
+            if settings["epgoffset"] != soffset.value():
                 if os.path.isfile(str(Path(LOCAL_DIR, 'epg.cache'))):
                     os.remove(str(Path(LOCAL_DIR, 'epg.cache')))
             if sort_widget.currentIndex() != settings['sort']:
-                if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
-                    os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
+                if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.cache.json'))):
+                    os.remove(str(Path(LOCAL_DIR, 'playlist.cache.json')))
             lang1 = LANG_DEFAULT
             for lng1 in lang:
                 if lang[lng1]['strings']['name'] == slang.currentText():
                     lang1 = lng1
             if lang1 != settings["lang"]:
-                if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
-                    os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
+                if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.cache.json'))):
+                    os.remove(str(Path(LOCAL_DIR, 'playlist.cache.json')))
             sfld_text = sfld.text()
             HOME_SYMBOL = '~'
             try:
@@ -2828,7 +2870,7 @@ if __name__ == '__main__':
                     sprov.currentText() != '--{}--'.format(_('notselected')) else '',
                 "nocache": supdate.isChecked(),
                 "lang": lang1,
-                "timezone": soffset.value(),
+                "epgoffset": soffset.value(),
                 "hwaccel": shwaccel.isChecked(),
                 "sort": sort_widget.currentIndex(),
                 "cache_secs": scache1.value(),
@@ -2937,8 +2979,6 @@ if __name__ == '__main__':
         fld_label = QtWidgets.QLabel('{}:'.format(_('writefolder')))
         lang_label = QtWidgets.QLabel('{}:'.format(_('interfacelang')))
         offset_label = QtWidgets.QLabel('{}:'.format(_('tvguideoffset')))
-        #set_label = QtWidgets.QLabel(_('jtvoffsetrecommendation'))
-        #set_label.setStyleSheet('color: #666600')
         fastview_label = QtWidgets.QLabel()
         fastview_label.setTextFormat(_enum(QtCore.Qt, 'TextFormat.RichText'))
         fastview_label.setSizePolicy(
@@ -3046,8 +3086,8 @@ if __name__ == '__main__':
         sclose.clicked.connect(close_settings)
 
         def update_m3u():
-            if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
-                os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
+            if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.cache.json'))):
+                os.remove(str(Path(LOCAL_DIR, 'playlist.cache.json')))
             save_settings()
 
         sm3ufile = QtWidgets.QPushButton()
@@ -3075,7 +3115,7 @@ if __name__ == '__main__':
         soffset.setMaximum(240)
         soffset.setSingleStep(1)
         soffset.setDecimals(1)
-        soffset.setValue(settings["timezone"])
+        soffset.setValue(settings["epgoffset"])
 
         scache1 = QtWidgets.QSpinBox()
         scache1.setMinimum(0)
@@ -3776,8 +3816,8 @@ if __name__ == '__main__':
 
         def reload_playlist():
             print_with_time("Reloading playlist...")
-            if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.json'))):
-                os.remove(str(Path(LOCAL_DIR, 'playlist.json')))
+            if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.cache.json'))):
+                os.remove(str(Path(LOCAL_DIR, 'playlist.cache.json')))
             save_settings()
 
         def playlists_selected():
@@ -3785,9 +3825,11 @@ if __name__ == '__main__':
                 prov_data = playlists_data.playlists_used[playlists_list.currentItem().text()]
                 prov_m3u = prov_data['m3u']
                 prov_epg = ''
+                prov_offset = 0
                 if 'epg' in prov_data:
                     prov_epg = prov_data['epg']
-                prov_offset = prov_data['offset']
+                if 'epgoffset' in prov_data:
+                    prov_offset = prov_data['epgoffset']
                 sm3u.setText(prov_m3u)
                 sepg.setText(prov_epg if not prov_epg.startswith('^^::MULTIPLE::^^') else '')
                 soffset.setValue(prov_offset)
@@ -3822,7 +3864,10 @@ if __name__ == '__main__':
                         item_epg = playlists_data.playlists_used[currentItem_text]['epg']
                     except: # pylint: disable=bare-except
                         item_epg = ""
-                    item_offset = playlists_data.playlists_used[currentItem_text]['offset']
+                    try:
+                        item_offset = playlists_data.playlists_used[currentItem_text]['epgoffset']
+                    except: # pylint: disable=bare-except
+                        item_offset = 0
                     name_edit_1.setText(currentItem_text)
                     m3u_edit_1.setText(item_m3u)
                     epg_edit_1_settext(item_epg)
@@ -3897,7 +3942,7 @@ if __name__ == '__main__':
                         playlists_hypnotix[prov_name_2] = {
                             "m3u": prov_m3u_2,
                             "epg": prov_epg_2,
-                            "offset": DEF_TIMEZONE
+                            "epgoffset": DEF_TIMEZONE
                         }
             except: # pylint: disable=bare-except
                 print_with_time("")
@@ -6125,7 +6170,7 @@ if __name__ == '__main__':
                     else:
                         make_ffmpeg_screenshot(
                             playing_url, file_path,
-                            playing_chan, "Referer: {}".format(settings["referer"])
+                            playing_chan, "Referer: {}".format(settings["referer"]), parse_url_ua
                         )
                     l1.show()
                     l1.setText2(_('screenshotsaved'))
@@ -6289,7 +6334,10 @@ if __name__ == '__main__':
                         'recording_-_' + cur_time + '_-_' + ch + '.mkv'
                     ))
                 record_file = out_file
-                record(url3, out_file, orig_channel_name, "Referer: {}".format(settings["referer"]))
+                record(
+                    url3, out_file, orig_channel_name, "Referer: {}".format(settings["referer"]),
+                    parse_url_ua
+                )
             else:
                 is_recording = False
                 recording_time = 0
@@ -6772,6 +6820,8 @@ if __name__ == '__main__':
         @idle_function
         def end_file_callback(arg11=None): # pylint: disable=unused-argument
             if loading.isVisible():
+                mpv_stop()
+                chan.setText('')
                 loading.setText(_('playerror'))
                 loading.setStyleSheet('color: red')
                 showLoading()
@@ -7842,10 +7892,7 @@ if __name__ == '__main__':
                                     print_with_time(
                                         "[TV guide, part 1] Caught exception: " + str(e1)
                                     )
-                                    try:
-                                        print_with_time(traceback.format_exc())
-                                    except: # pylint: disable=bare-except
-                                        pass
+                                    print_with_time(traceback.format_exc())
                                     l1.setStatic2(False)
                                     l1.show()
                                     l1.setText2(_('tvguideupdatingerror'))
@@ -8010,10 +8057,7 @@ if __name__ == '__main__':
                         except Exception as e2:
                             epg_failed = True
                             print_with_time("[TV guide, part 2] Caught exception: " + str(e2))
-                            try:
-                                print_with_time(traceback.format_exc())
-                            except: # pylint: disable=bare-except
-                                pass
+                            print_with_time(traceback.format_exc())
                             l1.setStatic2(False)
                             l1.show()
                             l1.setText2(_('tvguideupdatingerror'))

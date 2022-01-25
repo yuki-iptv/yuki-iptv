@@ -1,30 +1,33 @@
-'''
-Copyright (c) 2021-2022 Astroncia
-
-    This file is part of Astroncia IPTV.
-
-    Astroncia IPTV is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Astroncia IPTV is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Astroncia IPTV.  If not, see <https://www.gnu.org/licenses/>.
-'''
+'''Qt loader'''
+# pylint: disable=no-member, c-extension-no-member, import-outside-toplevel, invalid-name
+#
+# Copyright (c) 2021-2022 Astroncia
+#
+#     This file is part of Astroncia IPTV.
+#
+#     Astroncia IPTV is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     Astroncia IPTV is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#
+#     You should have received a copy of the GNU General Public License
+#     along with Astroncia IPTV.  If not, see <https://www.gnu.org/licenses/>.
+#
 import sys
 from astroncia.time import print_with_time
 
-class AstronciaData: # pylint: disable=too-few-public-methods
+class AstronciaData: # pylint: disable=too-few-public-methods, missing-class-docstring
     pass
 
 AstronciaData.qt6_disable_printed = False
 
 def get_qt_library():
+    '''Get correct Qt library - PyQt6/5'''
     qt_library = "none"
     QShortcut = False
     QtWidgets = False

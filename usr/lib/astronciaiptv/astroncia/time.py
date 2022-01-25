@@ -1,3 +1,4 @@
+# pylint: disable=missing-function-docstring
 '''
 Copyright (c) 2021-2022 Astroncia
 
@@ -19,6 +20,7 @@ Copyright (c) 2021-2022 Astroncia
 import time
 
 class AppLog: # pylint: disable=too-few-public-methods
+    '''Data class'''
     app_log = ''
     mpv_log = ''
     args1 = None

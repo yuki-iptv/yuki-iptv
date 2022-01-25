@@ -13,7 +13,7 @@ def ft_to_dt(time, settings):
                 datetime.datetime(1601, 1, 1) + datetime.timedelta(
                     microseconds=struct.unpack("<Q", time)[0] / 10
                 )
-            ).timestamp() + (3600 * settings["timezone"])
+            ).timestamp() + (3600 * settings["epgoffset"])
         )
     else:
         print_with_time("WARNING: broken JTV time detected!")

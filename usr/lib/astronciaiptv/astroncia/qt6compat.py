@@ -1,3 +1,4 @@
+# pylint: disable=missing-function-docstring, no-else-return, invalid-name
 '''
 Copyright (c) 2021-2022 Astroncia
 
@@ -19,6 +20,7 @@ Copyright (c) 2021-2022 Astroncia
 from astroncia.time import print_with_time
 
 class AstronciaData: # pylint: disable=too-few-public-methods
+    '''Data class'''
     WRITTEN = False
     WRITTENQT = False
 

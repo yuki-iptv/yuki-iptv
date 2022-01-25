@@ -1,26 +1,31 @@
-'''
-Copyright (c) 2021-2022 Astroncia
-
-    This file is part of Astroncia IPTV.
-
-    Astroncia IPTV is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Astroncia IPTV is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Astroncia IPTV.  If not, see <https://www.gnu.org/licenses/>.
-'''
+# pylint: disable=missing-module-docstring
 import gzip
 import lzma
+import time
 import datetime
 import xml.etree.ElementTree as ET
 from astroncia.time import print_with_time
+
+def parse_xmltv_date(date_str):
+    '''Parse date - convert it to UTC and back to current timezone'''
+    time_zone = date_str[-5:]
+    dt_notz = date_str[:-6]
+    offset_tz = int(time_zone)
+    if offset_tz:
+        if offset_tz < 0:
+            sign_tz = -1
+            offset_tz = -offset_tz
+        else:
+            sign_tz = 1
+        offset_tz = sign_tz * ((offset_tz // 100) * 3600 + (offset_tz % 100) * 60)
+    time1 = datetime.datetime.strptime(dt_notz, '%Y%m%d%H%M%S')
+    time1 -= datetime.timedelta(seconds=offset_tz)
+    time1 = time1.timestamp() + (
+        3600 * (
+            (time.timezone if (time.localtime().tm_isdst == 0) else time.altzone) / 60 / 60 * -1
+        )
+    )
+    return time1
 
 def parse_as_xmltv(epg, settings, catchup_days1): # pylint: disable=too-many-locals, too-many-branches, too-many-statements
     '''Load EPG file'''
@@ -42,45 +47,31 @@ def parse_as_xmltv(epg, settings, catchup_days1): # pylint: disable=too-many-loc
     icons = {}
     for channel_epg in tree.findall('./channel'): # pylint: disable=too-many-nested-blocks
         for display_name in channel_epg.findall('./display-name'):
-            if not channel_epg.attrib['id'] in ids:
-                ids[channel_epg.attrib['id']] = []
-            ids[channel_epg.attrib['id']].append(display_name.text)
+            if not channel_epg.attrib['id'].strip() in ids:
+                ids[channel_epg.attrib['id'].strip()] = []
+            ids[channel_epg.attrib['id'].strip()].append(display_name.text.strip())
             try:
                 all_icons = channel_epg.findall('./icon')
                 if all_icons:
                     for icon in all_icons:
                         try:
                             if 'src' in icon.attrib:
-                                icons[display_name.text] = icon.attrib['src']
+                                icons[display_name.text.strip()] = icon.attrib['src'].strip()
                         except: # pylint: disable=bare-except
                             pass
             except: # pylint: disable=bare-except
                 pass
     for programme in tree.findall('./programme'):
-        timezone_offset = 0
         try:
-            timezone_parse = programme.attrib['start'].split(" ")[1]
-            timezone_hours = 3600 * int("{}{}".format(timezone_parse[1], timezone_parse[2]))
-            timezone_minutes = 60 * int("{}{}".format(timezone_parse[3], timezone_parse[4]))
-            timezone_offset = timezone_hours + timezone_minutes
-            if timezone_parse[0] == '-':
-                timezone_offset = timezone_offset * -1
-        except: # pylint: disable=bare-except
-            pass
-        try:
-            start = datetime.datetime.strptime(
-                programme.attrib['start'].split(" ")[0], '%Y%m%d%H%M%S'
-            ).timestamp() - timezone_offset + (3600 * settings["timezone"])
+            start = parse_xmltv_date(programme.attrib['start']) + (3600 * settings["epgoffset"])
         except: # pylint: disable=bare-except
             start = 0
         try:
-            stop = datetime.datetime.strptime(
-                programme.attrib['stop'].split(" ")[0], '%Y%m%d%H%M%S'
-            ).timestamp() - timezone_offset + (3600 * settings["timezone"])
+            stop = parse_xmltv_date(programme.attrib['stop']) + (3600 * settings["epgoffset"])
         except: # pylint: disable=bare-except
             stop = 0
         try:
-            chans = ids[programme.attrib['channel']]
+            chans = ids[programme.attrib['channel'].strip()]
             catchup_id = ''
             try:
                 if 'catchup-id' in programme.attrib:
@@ -92,12 +83,12 @@ def parse_as_xmltv(epg, settings, catchup_days1): # pylint: disable=too-many-loc
                     datetime.datetime.now() - datetime.timedelta(days=catchup_days1)
                 ).replace(
                     hour=0, minute=0, second=0
-                ).timestamp() - timezone_offset + (3600 * settings["timezone"])
+                ).timestamp() + (3600 * settings["epgoffset"])
                 day_end = (
                     datetime.datetime.now() + datetime.timedelta(days=1)
                 ).replace(
                     hour=23, minute=59, second=59
-                ).timestamp() - timezone_offset + (3600 * settings["timezone"])
+                ).timestamp() + (3600 * settings["epgoffset"])
                 if not channel_epg_1 in programmes_epg:
                     programmes_epg[channel_epg_1] = []
                 if start > day_start and stop < day_end:
