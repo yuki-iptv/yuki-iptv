@@ -364,9 +364,6 @@ msgstr "Gamma"
 msgid "timeshift"
 msgstr "Przesunięcie w czasie"
 
-msgid "jtvoffsetrecommendation"
-msgstr "Zaleca się ustawienie 0, jeśli używasz JTV"
-
 msgid "tab_main"
 msgstr "Główne Ustawienia"
 

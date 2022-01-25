@@ -369,9 +369,6 @@ msgstr "Гамма"
 msgid "timeshift"
 msgstr "Архів"
 
-msgid "jtvoffsetrecommendation"
-msgstr "Рекомендується вказати 0, якщо JTV"
-
 msgid "tab_main"
 msgstr "Загальні"
 

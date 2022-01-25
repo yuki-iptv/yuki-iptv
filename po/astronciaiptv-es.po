@@ -364,11 +364,6 @@ msgstr "Gama"
 msgid "timeshift"
 msgstr "Archivo"
 
-msgid "jtvoffsetrecommendation"
-msgstr ""
-"Se recomienda establecer 0 aquí si usa JTV\n"
-"(Se ignora la zona horaria de XMLTV)"
-
 msgid "tab_main"
 msgstr "Principal"
 

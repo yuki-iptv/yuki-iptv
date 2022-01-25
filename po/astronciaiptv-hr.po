@@ -366,12 +366,6 @@ msgstr "Gama"
 msgid "timeshift"
 msgstr "Arhiva programa"
 
-msgid "jtvoffsetrecommendation"
-msgstr ""
-"Preporučljivo je postavljenje na 0 ovdje ako koristite JTV\n"
-"\n"
-"(XMLTV vremenska zona je zanemarena)"
-
 msgid "tab_main"
 msgstr "Općenito"
 
