@@ -274,8 +274,8 @@ except: # pylint: disable=bare-except
 def show_exception(e, e_traceback="", prev=""):
     if e_traceback:
         e = e_traceback.strip()
-    message = "{}{}\n\n{}\n\n{}".format(
-        _('error2'), prev, 'os.name = "{}"'.format(os.name), str(e)
+    message = "{}{}\n\n{}".format(
+        _('error2'), prev, str(e)
     )
     msg = QtWidgets.QMessageBox(
         qt_icon_critical,
