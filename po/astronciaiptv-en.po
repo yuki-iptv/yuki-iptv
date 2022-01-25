@@ -1051,6 +1051,9 @@ msgstr "Movies"
 msgid "series"
 msgstr "Series"
 
+msgid "back"
+msgstr "Back"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, version {}\n"
