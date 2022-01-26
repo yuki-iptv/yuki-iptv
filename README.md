@@ -21,11 +21,6 @@ For **Ubuntu** / **Linux Mint** recommended install from [Launchpad PPA - ppa:as
 
 Software provided **as is**, no guarantees.  
 
-Repository mirrors:  
-[GitLab](https://gitlab.com/astroncia/iptv) (**main repository**)  
-[Bitbucket](https://bitbucket.org/astroncia/astronciaiptv/src/master/)  
-[Codeberg](https://codeberg.org/astroncia/iptv)  
-
 ## License
 
 Code: [GPLv3](https://gitlab.com/astroncia/iptv/-/blob/master/COPYING)  
