@@ -1057,6 +1057,9 @@ msgstr "Back"
 msgid "tvchannels"
 msgstr "TV channels"
 
+msgid "nothingfound"
+msgstr "Nothing found"
+
 msgid "helptext"
 msgstr ""
 "Astroncia IPTV, version {}\n"
