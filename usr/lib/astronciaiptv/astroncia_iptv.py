@@ -5467,6 +5467,7 @@ if __name__ == '__main__':
                     except: # pylint: disable=bare-except
                         print_with_time("Async EPG load problem, ignoring")
                 else:
+                    mycwdg.setTextDown("", "<b>{}</b>".format(i))
                     mycwdg.hideProgress()
                 i_icon = i.lower()
                 icons_l = {picon.lower(): icons[picon] for picon in icons}
