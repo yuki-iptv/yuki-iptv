@@ -5782,23 +5782,29 @@ if __name__ == '__main__':
         #            print_with_time(sorted(matches.items(), key=lambda x6: x6[1])[0][0][1])
 
         def show_context_menu(pos):
+            is_continue = True
             try:
-                global sel_item
-                self = win.listWidget
-                sel_item = self.selectedItems()[0]
-                itemSelected_event(sel_item)
-                menu = QtWidgets.QMenu()
-                menu.addAction(_('select'), select_context_menu)
-                menu.addSeparator()
-                menu.addAction(_('tvguide'), tvguide_context_menu)
-                menu.addAction(_('hidetvguide'), tvguide_hide)
-                menu.addAction(_('favourite'), tvguide_favourites_add)
-                menu.addAction(_('favoritesplaylistsep'), favoritesplaylistsep_add)
-                menu.addAction(_('openexternal'), open_external_player)
-                menu.addAction(_('startrecording'), tvguide_start_record)
-                menu.addAction(_('channelsettings'), settings_context_menu)
-                #menu.addAction(_('iaepgmatch'), iaepgmatch)
-                _exec(menu, self.mapToGlobal(pos))
+                is_continue = win.listWidget.selectedItems()[0].text() != _('nothingfound')
+            except: # pylint: disable=bare-except
+                pass
+            try:
+                if is_continue:
+                    global sel_item
+                    self = win.listWidget
+                    sel_item = self.selectedItems()[0]
+                    itemSelected_event(sel_item)
+                    menu = QtWidgets.QMenu()
+                    menu.addAction(_('select'), select_context_menu)
+                    menu.addSeparator()
+                    menu.addAction(_('tvguide'), tvguide_context_menu)
+                    menu.addAction(_('hidetvguide'), tvguide_hide)
+                    menu.addAction(_('favourite'), tvguide_favourites_add)
+                    menu.addAction(_('favoritesplaylistsep'), favoritesplaylistsep_add)
+                    menu.addAction(_('openexternal'), open_external_player)
+                    menu.addAction(_('startrecording'), tvguide_start_record)
+                    menu.addAction(_('channelsettings'), settings_context_menu)
+                    #menu.addAction(_('iaepgmatch'), iaepgmatch)
+                    _exec(menu, self.mapToGlobal(pos))
             except: # pylint: disable=bare-except
                 pass
 
