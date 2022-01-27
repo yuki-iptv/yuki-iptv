@@ -18,22 +18,23 @@
 #     You should have received a copy of the GNU General Public License
 #     along with Astroncia IPTV.  If not, see <https://www.gnu.org/licenses/>.
 #
-class AstronciaData: # pylint: disable=too-few-public-methods
-    pass
-
-AstronciaData.m3u = '#EXTM3U\n'
-
-def convert_xtream_to_m3u(data):
+def convert_xtream_to_m3u(_, data, skip_init=False, append_group=""):
+    output = '#EXTM3U\n' if not skip_init else ''
     for channel in data:
         name = channel.name
-        group = channel.group_title if channel.group_title else ''
+        try:
+            group = channel.group_title if channel.group_title else ''
+        except: # pylint: disable=bare-except
+            group = _('allchannels')
+        if append_group:
+            group = append_group + " " + group
         logo = channel.logo if channel.logo else ''
         url = channel.url
-        output = '#EXTINF:0'
+        line = '#EXTINF:0'
         if logo:
-            output += " tvg-logo=\"{}\"".format(logo)
+            line += " tvg-logo=\"{}\"".format(logo)
         if group:
-            output += " group-title=\"{}\"".format(group)
-        output += ",{}".format(name)
-        AstronciaData.m3u += output + '\n' + url + '\n'
-    return AstronciaData.m3u
+            line += " group-title=\"{}\"".format(group)
+        line += ",{}".format(name)
+        output += line + '\n' + url + '\n'
+    return output

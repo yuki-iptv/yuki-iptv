@@ -884,7 +884,7 @@ if __name__ == '__main__':
                     if xt.auth_data != {}:
                         xt.load_iptv()
                         try:
-                            m3u = convert_xtream_to_m3u(xt.channels)
+                            m3u = convert_xtream_to_m3u(_, xt.channels)
                         except Exception as e3: # pylint: disable=bare-except
                             message2 = "{}\n\n{}".format(
                                 _('error2'),
@@ -4575,48 +4575,57 @@ if __name__ == '__main__':
 
         def itemClicked_event(item, custom_url="", archived=False): # pylint: disable=too-many-branches
             global playing, playing_chan, item_selected, playing_url, playing_archive
-            #player.command('stop')
-            #player.wait_for_playback()
-            playing_archive = archived
+            is_ic_ok = True
             try:
-                j = item.data(_enum(QtCore.Qt, 'ItemDataRole.UserRole'))
-            except: # pylint: disable=bare-except
-                j = item
-            playing_chan = j
-            item_selected = j
-            play_url = array[j]['url']
-            MAX_CHAN_SIZE = 35
-            channel_name = j
-            if len(channel_name) > MAX_CHAN_SIZE:
-                channel_name = channel_name[:MAX_CHAN_SIZE - 3] + '...'
-            setChanText('  ' + channel_name)
-            current_prog = None
-            jlower = j.lower()
-            try:
-                jlower = prog_match_arr[jlower]
+                is_ic_ok = item.text() != _('nothingfound')
             except: # pylint: disable=bare-except
                 pass
-            if settings['epg'] and jlower in programmes:
-                for pr in programmes[jlower]:
-                    if time.time() > pr['start'] and time.time() < pr['stop']:
-                        current_prog = pr
-                        break
-            show_progress(current_prog)
-            if start_label.isVisible():
-                dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
-            else:
-                dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
-            playing = True
-            win.update()
-            playing_url = play_url
-            ua_choose = def_user_agent
-            if j in channel_sets:
-                ua_choose = channel_sets[j]['useragent']
-            if not custom_url:
-                doPlay(play_url, ua_choose, j)
-            else:
-                doPlay(custom_url, ua_choose, j)
-            btn_update.click()
+            if is_ic_ok:
+                #player.command('stop')
+                #player.wait_for_playback()
+                playing_archive = archived
+                try:
+                    j = item.data(_enum(QtCore.Qt, 'ItemDataRole.UserRole'))
+                except: # pylint: disable=bare-except
+                    j = item
+                playing_chan = j
+                item_selected = j
+                try:
+                    play_url = array[j]['url']
+                except: # pylint: disable=bare-except
+                    play_url = custom_url
+                MAX_CHAN_SIZE = 35
+                channel_name = j
+                if len(channel_name) > MAX_CHAN_SIZE:
+                    channel_name = channel_name[:MAX_CHAN_SIZE - 3] + '...'
+                setChanText('  ' + channel_name)
+                current_prog = None
+                jlower = j.lower()
+                try:
+                    jlower = prog_match_arr[jlower]
+                except: # pylint: disable=bare-except
+                    pass
+                if settings['epg'] and jlower in programmes:
+                    for pr in programmes[jlower]:
+                        if time.time() > pr['start'] and time.time() < pr['stop']:
+                            current_prog = pr
+                            break
+                show_progress(current_prog)
+                if start_label.isVisible():
+                    dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
+                else:
+                    dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
+                playing = True
+                win.update()
+                playing_url = play_url
+                ua_choose = def_user_agent
+                if j in channel_sets:
+                    ua_choose = channel_sets[j]['useragent']
+                if not custom_url:
+                    doPlay(play_url, ua_choose, j)
+                else:
+                    doPlay(custom_url, ua_choose, j)
+                btn_update.click()
 
         item_selected = ''
 
@@ -5520,12 +5529,15 @@ if __name__ == '__main__':
             row0 = win.listWidget.currentRow()
             val0 = win.listWidget.verticalScrollBar().value()
             win.listWidget.clear()
-            for channel_1 in channels_1.values():
-                #chan_3 = channels_1[channel_1]
-                chan_3 = channel_1
-                #c_name = chan_3[3]
-                win.listWidget.addItem(chan_3[0])
-                win.listWidget.setItemWidget(chan_3[0], chan_3[1])
+            if channels_1:
+                for channel_1 in channels_1.values():
+                    #chan_3 = channels_1[channel_1]
+                    chan_3 = channel_1
+                    #c_name = chan_3[3]
+                    win.listWidget.addItem(chan_3[0])
+                    win.listWidget.setItemWidget(chan_3[0], chan_3[1])
+            else:
+                win.listWidget.addItem(_('nothingfound'))
             win.listWidget.setCurrentRow(row0)
             win.listWidget.verticalScrollBar().setValue(val0)
 
