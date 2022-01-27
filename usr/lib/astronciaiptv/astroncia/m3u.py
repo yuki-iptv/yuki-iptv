@@ -21,9 +21,9 @@ import re
 
 class M3UParser:
     '''M3U parser'''
-    def __init__(self, udp_proxy, all_channels):
+    def __init__(self, udp_proxy, _):
         self.udp_proxy = udp_proxy
-        self.allchannels = all_channels
+        self._ = _
         self.epg_urls = []
         self.m3u_epg = ""
         self.epg_url_final = ""
@@ -53,9 +53,9 @@ class M3UParser:
         if not tvg_url and url_tvg:
             tvg_url = url_tvg
 
-        group = self.parse_regexp("group-title", line_info, self.allchannels)
+        group = self.parse_regexp("group-title", line_info, self._('allchannels'))
         if not group:
-            group = self.allchannels
+            group = self._('allchannels')
 
         ch_array = {
             "title": self.parse_regexp("[,](?!.*[,])(.*?)$", line_info, "", True),
@@ -73,6 +73,14 @@ class M3UParser:
         }
         for override in overrides:
             ch_array[override] = overrides[override]
+
+        if ch_array['tvg-group'].lower() == 'vod':
+            ch_array['tvg-group'] = '> ' + self._('movies')
+
+        if ch_array['tvg-group'].lower().startswith('vod '):
+            ch_array['tvg-group'] = re.sub(
+                "^vod ", '> ' + self._('movies') + ' > ', ch_array['tvg-group'], flags=re.I
+            )
 
         if ch_array['useragent']:
             ch_array['url'] += '^^^^^^^^^^useragent=' + ch_array['useragent'] + '@#@'

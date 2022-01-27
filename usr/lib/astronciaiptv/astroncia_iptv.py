@@ -885,6 +885,10 @@ if __name__ == '__main__':
                         xt.load_iptv()
                         try:
                             m3u = convert_xtream_to_m3u(_, xt.channels)
+                            try:
+                                m3u += convert_xtream_to_m3u(_, xt.movies, True, 'VOD')
+                            except: # pylint: disable=bare-except
+                                print_with_time("XTream movies parse FAILED")
                         except Exception as e3: # pylint: disable=bare-except
                             message2 = "{}\n\n{}".format(
                                 _('error2'),
@@ -971,7 +975,7 @@ if __name__ == '__main__':
                             show_exception(_('playlistloaderror'))
 
             doSaveSettings = False
-            m3u_parser = M3UParser(settings['udp_proxy'], _('allchannels'))
+            m3u_parser = M3UParser(settings['udp_proxy'], _)
             epg_url = ""
             m3uFailed = False
             if m3u:
@@ -6393,7 +6397,8 @@ if __name__ == '__main__':
                         itemClicked_event(lastfile_1_dat[0])
                         setChanText('  ' + lastfile_1_dat[0])
                         try:
-                            combobox.setCurrentIndex(lastfile_1_dat[3])
+                            if lastfile_1_dat[3] < combobox.count():
+                                combobox.setCurrentIndex(lastfile_1_dat[3])
                         except: # pylint: disable=bare-except
                             pass
                         try:
