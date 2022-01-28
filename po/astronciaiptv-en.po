@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Astroncia <kestraly@gmail.com>\n"
-"PO-Revision-Date: 2022-01-25 09:37+0000\n"
+"PO-Revision-Date: 2022-01-28 12:59+0000\n"
 "Project-Id-Version: \n"
 "Language-Team: English <kde-i18n-doc@kde.org>\n"
 "Language: en_US\n"
@@ -1059,6 +1059,12 @@ msgstr "TV channels"
 
 msgid "nothingfound"
 msgstr "Nothing found"
+
+msgid "searchmovie"
+msgstr "Search movie"
+
+msgid "searchserie"
+msgstr "Search series"
 
 msgid "helptext"
 msgstr ""

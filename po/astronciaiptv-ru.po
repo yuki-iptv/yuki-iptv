@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Astroncia <kestraly@gmail.com>\n"
-"PO-Revision-Date: 2022-01-25 09:37+0000\n"
+"PO-Revision-Date: 2022-01-28 12:59+0000\n"
 "Project-Id-Version: \n"
 "Language-Team: Russian <kde-i18n-doc@kde.org>\n"
 "Language: ru_RU\n"
@@ -1064,6 +1064,12 @@ msgstr "ТВ-каналы"
 
 msgid "nothingfound"
 msgstr "Ничего не найдено"
+
+msgid "searchmovie"
+msgstr "Поиск по фильмам"
+
+msgid "searchserie"
+msgstr "Поиск по сериалам"
 
 msgid "helptext"
 msgstr ""
