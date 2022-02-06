@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-28 12:58+0000\n"
+"POT-Creation-Date: 2022-02-06 09:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1016,6 +1016,9 @@ msgid "searchmovie"
 msgstr ""
 
 msgid "searchserie"
+msgstr ""
+
+msgid "hidetvprogram"
 msgstr ""
 
 msgid "helptext"
