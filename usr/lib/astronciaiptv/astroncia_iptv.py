@@ -64,8 +64,8 @@ from astroncia.xtreamtom3u import convert_xtream_to_m3u
 from astroncia.m3u import M3UParser
 from astroncia.xspf import parse_xspf
 from astroncia.qt6compat import globalPos, getX, getY, _exec, _enum
+from astroncia.m3u_editor import M3UEditor
 from thirdparty.conversion import convert_size, format_bytes, human_secs
-from thirdparty.m3ueditor import Viewer
 from thirdparty.xtream import XTream, Serie
 from thirdparty.series import parse_series
 #from thirdparty.levenshtein import damerau_levenshtein
@@ -767,7 +767,7 @@ if __name__ == '__main__':
         programmes = {}
 
         print_with_time("Init m3u editor")
-        m3u_editor = Viewer(lang=LANG, iconsFolder=ICONS_FOLDER)
+        m3u_editor = M3UEditor(_=_, icon=main_icon, icons_folder=ICONS_FOLDER, settings=settings)
         print_with_time("M3u editor init done")
 
         def show_m3u_editor():
