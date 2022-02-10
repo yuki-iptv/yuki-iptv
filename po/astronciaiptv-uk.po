@@ -1,5 +1,5 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the astroncia-iptv package.
+# This file is distributed under the same license as the astronciaiptv package.
 #
 # Serhii Kuznietsov <serhiy_k@meta.ua>, 2021.
 msgid ""
