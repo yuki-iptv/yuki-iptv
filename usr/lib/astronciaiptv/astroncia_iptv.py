@@ -38,7 +38,6 @@ import re
 import textwrap
 import hashlib
 import codecs
-import webbrowser
 import threading
 import traceback
 from multiprocessing import Process, Manager, freeze_support, active_children
@@ -116,9 +115,6 @@ DOCK_WIDGET2_HEIGHT_LOW = DOCK_WIDGET2_HEIGHT_HIGH - (DOCK_WIDGET2_HEIGHT_OFFSET
 DOCK_WIDGET_WIDTH = int((WINDOW_SIZE[0] / 2) - 200)
 TVGUIDE_WIDTH = int((WINDOW_SIZE[0] / 5))
 BCOLOR = "#A2A3A3"
-
-UPDATE_URL = "https://gitlab.com/api/v4/projects/25752124/releases/"
-UPDATE_RELEASES_URL = "https://gitlab.com/astroncia/iptv/-/releases"
 
 UPDATE_BR_INTERVAL = 5
 
@@ -3680,10 +3676,6 @@ if __name__ == '__main__':
 
         def exInMainThread_partial(m_func_2):
             comm_instance.mainThread_partial.emit(m_func_2)
-
-        @async_function
-        def async_webbrowser():
-            webbrowser.open(UPDATE_RELEASES_URL)
 
         def move_separate_playlist_func(seppl_qpoint):
             print_with_time("Moving separate playlist to QPoint({}, {})".format(
