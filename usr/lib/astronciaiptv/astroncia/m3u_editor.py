@@ -154,7 +154,7 @@ class M3UEditor(QtWidgets.QMainWindow):
                 save_file.write(m3u_str)
                 save_file.close()
                 self.table_changed = False
-                self.statusBar().showMessage('OK', 0)
+                self.statusBar().showMessage(self.data['_']('m3u_playlistsaved'), 0)
             except:
                 self.statusBar().showMessage(self.data['_']('error'), 0)
         # Cleaning memory
@@ -246,7 +246,7 @@ class M3UEditor(QtWidgets.QMainWindow):
                     )
                 # Set selection to new row
                 self.table.setCurrentCell(current_row2 + direction, current_column)
-                # Clear memory
+                # Cleaning memory
                 current_row_data = []
                 # Mark table as changed
                 self.table_changed = True
