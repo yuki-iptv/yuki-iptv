@@ -23,7 +23,7 @@ from pathlib import Path
 from unidecode import unidecode
 from astroncia.m3u import M3UParser
 from astroncia.xspf import parse_xspf
-from astroncia.qt6compat import _enum
+from astroncia.qt6compat import _enum, qaction
 from astroncia.qt import get_qt_library
 qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
 
@@ -32,13 +32,6 @@ try:
     HOME_FOLDER = os.environ['HOME']
 except:
     pass
-
-def qaction(arg1, arg2):
-    if qt_library == 'PyQt6':
-        func = QtGui.QAction
-    else:
-        func = QtWidgets.QAction
-    return func(arg1, arg2)
 
 class M3UEditor(QtWidgets.QMainWindow):
     def clear_table(self):

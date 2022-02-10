@@ -25,6 +25,7 @@ from functools import partial
 from astroncia.time import print_with_time
 from astroncia.qt import get_qt_library
 from astroncia.lang import _, __
+from astroncia.qt6compat import qaction
 qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
 
 class AstronciaData: # pylint: disable=too-few-public-methods
@@ -87,13 +88,6 @@ def apply_vf_filter(vf_filter, e_l):
         e4_traceback = traceback.format_exc()
         print_with_time(e4_traceback)
         AstronciaData.show_exception(e_4, e4_traceback, '\n\n' + _('errorvfapply'))
-
-def qaction(arg1, arg2):
-    if qt_library == 'PyQt6':
-        func = QtGui.QAction
-    else:
-        func = QtWidgets.QAction
-    return func(arg1, arg2)
 
 def get_seq():
     return AstronciaData.keyboard_sequences

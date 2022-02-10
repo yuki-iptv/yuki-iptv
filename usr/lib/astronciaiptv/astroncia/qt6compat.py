@@ -18,6 +18,8 @@ Copyright (c) 2021-2022 Astroncia
     along with Astroncia IPTV.  If not, see <https://www.gnu.org/licenses/>.
 '''
 from astroncia.time import print_with_time
+from astroncia.qt import get_qt_library
+qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
 
 class AstronciaData: # pylint: disable=too-few-public-methods
     '''Data class'''
@@ -61,3 +63,10 @@ def _enum(obj, name):
             AstronciaData.WRITTENQT = True
             print_with_time("Falling back to short names for Qt enums")
         return getattr(obj, child)
+
+def qaction(arg1, arg2):
+    if qt_library == 'PyQt6':
+        func = QtGui.QAction
+    else:
+        func = QtWidgets.QAction
+    return func(arg1, arg2)
