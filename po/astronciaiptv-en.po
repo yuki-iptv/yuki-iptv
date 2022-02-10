@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Astroncia <kestraly@gmail.com>\n"
-"PO-Revision-Date: 2022-02-06 09:46+0000\n"
+"PO-Revision-Date: 2022-02-10 21:56+0000\n"
 "Project-Id-Version: \n"
 "Language-Team: English <kde-i18n-doc@kde.org>\n"
 "Language: en_US\n"
@@ -1068,6 +1068,9 @@ msgstr "Search series"
 
 msgid "hidetvprogram"
 msgstr "Hide the current television program"
+
+msgid "m3u_playlistsaved"
+msgstr "Playlist successfully saved!"
 
 msgid "helptext"
 msgstr ""
