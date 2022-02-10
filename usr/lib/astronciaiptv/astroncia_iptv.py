@@ -5126,12 +5126,18 @@ if __name__ == '__main__':
 
             def __getstate__(self):
                 ba = QtCore.QByteArray()
-                stream = QtCore.QDataStream(ba, QtCore.QIODevice.WriteOnly)
+                try:
+                    stream = QtCore.QDataStream(ba, QtCore.QIODevice.WriteOnly)
+                except: # pylint: disable=bare-except
+                    stream = QtCore.QDataStream(ba, QtCore.QIODeviceBase.OpenModeFlag.WriteOnly)
                 stream << self # pylint: disable=pointless-statement
                 return ba
 
             def __setstate__(self, ba):
-                stream = QtCore.QDataStream(ba, QtCore.QIODevice.ReadOnly)
+                try:
+                    stream = QtCore.QDataStream(ba, QtCore.QIODevice.ReadOnly)
+                except: # pylint: disable=bare-except
+                    stream = QtCore.QDataStream(ba, QtCore.QIODeviceBase.OpenModeFlag.ReadOnly)
                 stream >> self # pylint: disable=pointless-statement
 
         def fetch_remote_channel_icon(chan_name, logo_url, return_dict_2):
