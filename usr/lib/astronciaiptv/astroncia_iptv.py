@@ -117,10 +117,6 @@ DOCK_WIDGET_WIDTH = int((WINDOW_SIZE[0] / 2) - 200)
 TVGUIDE_WIDTH = int((WINDOW_SIZE[0] / 5))
 BCOLOR = "#A2A3A3"
 
-# Set this option to False if you want to disable check updates button in menubar
-# for example, if you packaging this into (stable) repository
-CHECK_UPDATES_ENABLED = True
-
 UPDATE_URL = "https://gitlab.com/api/v4/projects/25752124/releases/"
 UPDATE_RELEASES_URL = "https://gitlab.com/astroncia/iptv/-/releases"
 
@@ -3675,7 +3671,6 @@ if __name__ == '__main__':
             do_play_args = ()
             j_save = None
             comboboxIndex = -1
-            repaintUpdates = Signal(object, object)
             moveSeparatePlaylist = Signal(object)
             mainThread = Signal(type(lambda x: None))
             mainThread_partial = Signal(type(partial(int, 2)))
@@ -3689,58 +3684,6 @@ if __name__ == '__main__':
         @async_function
         def async_webbrowser():
             webbrowser.open(UPDATE_RELEASES_URL)
-
-        def check_for_updates_pt2(last_avail_version_2, noWin):
-            if last_avail_version_2:
-                print_with_time("")
-                print_with_time("Current version: {}".format(APP_VERSION))
-                print_with_time("Latest version available: {}".format(last_avail_version_2))
-                print_with_time("")
-                if APP_VERSION == '__DEB' + '_VERSION__':
-                    fail_version_msg = QtWidgets.QMessageBox(
-                        qt_icon_critical,
-                        MAIN_WINDOW_TITLE,
-                        _('newversiongetfail'),
-                        _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
-                    )
-                    fail_version_msg.exec()
-                else:
-                    if APP_VERSION == last_avail_version_2:
-                        lastversion_installed_msg = QtWidgets.QMessageBox(
-                            qt_icon_information,
-                            MAIN_WINDOW_TITLE,
-                            _('gotlatestversion'),
-                            _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
-                        )
-                        lastversion_installed_msg.exec()
-                    else:
-                        newversion_avail_msg = QtWidgets.QMessageBox.question(
-                            None,
-                            MAIN_WINDOW_TITLE,
-                            _('newversionavail'),
-                            _enum(QtWidgets.QMessageBox, 'StandardButton.Yes') | \
-                            _enum(QtWidgets.QMessageBox, 'StandardButton.No'),
-                            _enum(QtWidgets.QMessageBox, 'StandardButton.Yes')
-                        )
-                        if newversion_avail_msg == _enum(
-                            QtWidgets.QMessageBox, 'StandardButton.Yes'
-                        ):
-                            async_webbrowser()
-            else:
-                fail_version_msg = QtWidgets.QMessageBox(
-                    qt_icon_critical,
-                    MAIN_WINDOW_TITLE,
-                    _('newversiongetfail'),
-                    _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
-                )
-                fail_version_msg.exec()
-            checkupdates_btn.setEnabled(True)
-            if not noWin:
-                moveWindowToCenter(help_win)
-                help_win.show()
-                help_win.raise_()
-                help_win.setFocus(_enum(QtCore.Qt, 'FocusReason.PopupFocusReason'))
-                help_win.activateWindow()
 
         def move_separate_playlist_func(seppl_qpoint):
             print_with_time("Moving separate playlist to QPoint({}, {})".format(
@@ -3757,31 +3700,9 @@ if __name__ == '__main__':
             th_func()
 
         comm_instance = Communicate()
-        comm_instance.repaintUpdates.connect(check_for_updates_pt2)
         comm_instance.moveSeparatePlaylist.connect(move_separate_playlist_func)
         comm_instance.mainThread.connect(comm_instance_main_thread)
         comm_instance.mainThread_partial.connect(comm_instance_main_thread)
-
-        @async_function
-        def check_for_updates(self, noWin): # pylint: disable=unused-argument
-            last_avail_version = False
-            try:
-                last_avail_version = json.loads(requests.get(
-                    UPDATE_URL,
-                    headers={'User-Agent': ''},
-                    timeout=2
-                ).text)[0]['name'].strip()
-            except: # pylint: disable=bare-except
-                pass
-            comm_instance.repaintUpdates.emit(last_avail_version, noWin)
-
-        def check_for_updates_0(noWin=False):
-            checkupdates_btn.setEnabled(False)
-            check_for_updates(None, noWin)
-
-        checkupdates_btn = QtWidgets.QPushButton()
-        checkupdates_btn.setText(_('checkforupdates'))
-        checkupdates_btn.clicked.connect(check_for_updates_0)
 
         license_btn = QtWidgets.QPushButton()
         license_btn.setText(_('license'))
@@ -3803,7 +3724,6 @@ if __name__ == '__main__':
 
         helpwin_widget_btns = QtWidgets.QWidget()
         helpwin_widget_btns_layout = QtWidgets.QHBoxLayout()
-        #helpwin_widget_btns_layout.addWidget(checkupdates_btn)
         helpwin_widget_btns_layout.addWidget(license_btn)
         helpwin_widget_btns_layout.addWidget(aboutqt_btn)
         helpwin_widget_btns_layout.addWidget(close_btn)
@@ -4165,12 +4085,10 @@ if __name__ == '__main__':
             aot_action1 = None
             try:
                 aot_action1 = populate_menubar(
-                    0, win.menu_bar_qt, win, player.track_list, playing_chan, get_keybind,
-                    CHECK_UPDATES_ENABLED
+                    0, win.menu_bar_qt, win, player.track_list, playing_chan, get_keybind
                 )
                 populate_menubar(
-                    1, right_click_menu, win, player.track_list, playing_chan, get_keybind,
-                    CHECK_UPDATES_ENABLED
+                    1, right_click_menu, win, player.track_list, playing_chan, get_keybind
                 )
             except: # pylint: disable=bare-except
                 print_with_time("WARNING: populate_menubar failed")
@@ -4244,7 +4162,6 @@ if __name__ == '__main__':
                 QtGui.QIcon(
                     QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'circle.png'))).pixmap(8, 8)
                 ),
-                check_for_updates_0,
                 my_up_binding_execute,
                 my_down_binding_execute,
                 show_m3u_editor,

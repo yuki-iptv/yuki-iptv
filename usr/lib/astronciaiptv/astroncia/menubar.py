@@ -359,14 +359,6 @@ def init_menubar(data): # pylint: disable=too-many-statements
 
     # Help
 
-    AstronciaData.checkUpdAction = qaction(
-        _('menubar_checkupdates') + AstronciaData.str_offset,
-        data
-    )
-    AstronciaData.checkUpdAction.triggered.connect(
-        partial(lambda arg: AstronciaData.check_for_updates_0(arg), True)
-    )
-
     AstronciaData.aboutAction = qaction(_('menubar_about'), data)
     AstronciaData.aboutAction.triggered.connect(lambda: AstronciaData.show_help())
 
@@ -399,7 +391,7 @@ def init_menubar(data): # pylint: disable=too-many-statements
 
 def populate_menubar(
     i, menubar, data, track_list=None, playing_chan=None,
-    get_keybind=None, check_updates_enabled=True
+    get_keybind=None
 ): # pylint: disable=too-many-statements, too-many-arguments, too-many-locals
     #print_with_time("populate_menubar called")
     # File
@@ -499,9 +491,6 @@ def populate_menubar(
     # Help
 
     help_menu = menubar.addMenu(_('menubar_help'))
-    if check_updates_enabled:
-        help_menu.addAction(AstronciaData.checkUpdAction)
-        help_menu.addSeparator()
     help_menu.addAction(AstronciaData.aboutAction)
 
     AstronciaData.menubars[i] = [video_track_menu, audio_track_menu]
@@ -618,7 +607,6 @@ def init_menubar_player( # pylint: disable=too-many-arguments, too-many-locals
     app_quit,
     redraw_menubar,
     circle_icon,
-    check_for_updates_0,
     my_up_binding_execute,
     my_down_binding_execute,
     show_m3u_editor,
