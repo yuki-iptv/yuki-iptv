@@ -74,14 +74,6 @@ class M3UParser:
         for override in overrides:
             ch_array[override] = overrides[override]
 
-        if ch_array['tvg-group'].lower() == 'vod':
-            ch_array['tvg-group'] = '> ' + self._('movies')
-
-        if ch_array['tvg-group'].lower().startswith('vod '):
-            ch_array['tvg-group'] = re.sub(
-                "^vod ", '> ' + self._('movies') + ' > ', ch_array['tvg-group'], flags=re.I
-            )
-
         if ch_array['useragent']:
             ch_array['url'] += '^^^^^^^^^^useragent=' + ch_array['useragent'] + '@#@'
         if ch_array['referer']:
@@ -144,12 +136,14 @@ class M3UParser:
                                     http_user_agent = extvlcopt.replace(
                                         'http-user-agent=', ''
                                     ).strip()
-                                    overrides['useragent'] = http_user_agent
+                                    if http_user_agent:
+                                        overrides['useragent'] = http_user_agent
                                 if extvlcopt.startswith('http-referrer='):
                                     http_referer = extvlcopt.replace(
                                         'http-referrer=', ''
                                     ).strip()
-                                    overrides['referer'] = http_referer
+                                    if http_referer:
+                                        overrides['referer'] = http_referer
                         if chan:
                             parsed_chan = self.parse_channel(chan, line, overrides)
                             if parsed_chan['tvg-url']:

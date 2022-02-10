@@ -66,7 +66,8 @@ from astroncia.xspf import parse_xspf
 from astroncia.qt6compat import globalPos, getX, getY, _exec, _enum
 from thirdparty.conversion import convert_size, format_bytes, human_secs
 from thirdparty.m3ueditor import Viewer
-from thirdparty.xtream import XTream
+from thirdparty.xtream import XTream, Serie
+from thirdparty.series import parse_series
 #from thirdparty.levenshtein import damerau_levenshtein
 
 qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
@@ -98,19 +99,12 @@ try:
     from thirdparty.mpris_server.server import Server
 except: # pylint: disable=bare-except
     print_with_time("Failed to init MPRIS libraries!")
-    try:
-        print_with_time(traceback.format_exc())
-    except: # pylint: disable=bare-except
-        pass
+    print_with_time(traceback.format_exc())
 
 APP_VERSION = '__DEB_VERSION__'
 
 if not sys.version_info >= (3, 6, 0):
     print_with_time("Incompatible Python version! Required >= 3.6")
-    sys.exit(1)
-
-if not os.name == 'posix':
-    print_with_time("Unsupported platform!")
     sys.exit(1)
 
 MAIN_WINDOW_TITLE = 'Astroncia IPTV'
@@ -153,6 +147,10 @@ class AstronciaData: # pylint: disable=too-few-public-methods
     selected_shortcut_row = -1
     shortcuts_state = False
     use_dark_theme = False
+    playmodeIndex = 0
+    serie_selected = False
+    movies = {}
+    series = {}
 
 setproctitle.setproctitle("astronciaiptv")
 
@@ -451,6 +449,7 @@ if __name__ == '__main__':
                 'hideplaylistleftclk': False,
                 'nocacheepg': False,
                 'scrrecnosubfolders': False,
+                'hidetvprogram': False,
                 'showcontrolsmouse': True,
                 'catchupenable': False,
                 'flpopacity': 0.7,
@@ -514,6 +513,8 @@ if __name__ == '__main__':
             settings['nocacheepg'] = False
         if 'scrrecnosubfolders' not in settings:
             settings['scrrecnosubfolders'] = False
+        if 'hidetvprogram' not in settings:
+            settings['hidetvprogram'] = False
         if 'showcontrolsmouse' not in settings:
             settings['showcontrolsmouse'] = True
         if 'catchupenable' not in settings:
@@ -817,6 +818,43 @@ if __name__ == '__main__':
                 except: # pylint: disable=bare-except
                     pass
 
+        def getArrayItem(arr_item):
+            arr_item_ret = None
+            if arr_item in array:
+                arr_item_ret = array[arr_item]
+            elif arr_item in AstronciaData.movies: # pylint: disable=too-many-nested-blocks
+                arr_item_ret = AstronciaData.movies[arr_item]
+            else:
+                try:
+                    if " ::: " in arr_item:
+                        arr_item_split = arr_item.split(" ::: ")
+                        for season_name in AstronciaData.series[arr_item_split[2]].seasons.keys():
+                            season = AstronciaData.series[arr_item_split[2]].seasons[season_name]
+                            if season.name == arr_item_split[1]:
+                                for episode_name in season.episodes.keys():
+                                    episode = season.episodes[episode_name]
+                                    if episode.title == arr_item_split[0]:
+                                        arr_item_ret = {
+                                            'title': episode.title,
+                                            'tvg-name': '',
+                                            'tvg-ID': '',
+                                            'tvg-logo': '',
+                                            'tvg-group': _('allchannels'),
+                                            'tvg-url': '',
+                                            'catchup': 'default',
+                                            'catchup-source': '',
+                                            'catchup-days': '1',
+                                            'useragent': '',
+                                            'referer': '',
+                                            'url': episode.url
+                                        }
+                                        break
+                                break
+                except: # pylint: disable=bare-except
+                    print_with_time("Exception in getArrayItem (series)")
+                    print_with_time(traceback.format_exc())
+            return arr_item_ret
+
         array = {}
         groups = []
 
@@ -889,6 +927,9 @@ if __name__ == '__main__':
                                 m3u += convert_xtream_to_m3u(_, xt.movies, True, 'VOD')
                             except: # pylint: disable=bare-except
                                 print_with_time("XTream movies parse FAILED")
+                            for movie1 in xt.series:
+                                if isinstance(movie1, Serie):
+                                    AstronciaData.series[movie1.name] = movie1
                         except Exception as e3: # pylint: disable=bare-except
                             message2 = "{}\n\n{}".format(
                                 _('error2'),
@@ -986,7 +1027,21 @@ if __name__ == '__main__':
                         m3u_data0 = m3u_parser.parse_m3u(m3u)
                     else:
                         m3u_data0 = parse_xspf(m3u)
-                    m3u_data = m3u_data0[0]
+                    m3u_data_got = m3u_data0[0]
+                    m3u_data = []
+
+                    for m3u_datai in m3u_data_got:
+                        if 'tvg-group' in m3u_datai:
+                            if m3u_datai['tvg-group'].lower() == 'vod' or \
+                            m3u_datai['tvg-group'].lower().startswith('vod '):
+                                AstronciaData.movies[m3u_datai['title']] = m3u_datai
+                            else:
+                                AstronciaData.series, is_matched = parse_series(
+                                    m3u_datai, AstronciaData.series
+                                )
+                                if not is_matched:
+                                    m3u_data.append(m3u_datai)
+
                     epg_url = m3u_data0[1]
                     if epg_url and not settings["epg"]:
                         settings["epg"] = epg_url
@@ -1015,7 +1070,9 @@ if __name__ == '__main__':
                         ch2 else _('allchannels')
                     array[ch2['title']] = ch2
 
-            print_with_time("{} channels, {} groups".format(len(array), len(groups)))
+            print_with_time("{} channels, {} groups, {} movies, {} series".format(
+                len(array), len(groups), len(AstronciaData.movies), len(AstronciaData.series)
+            ))
 
             print_with_time(_('playlistloaddone'))
             if use_cache:
@@ -1025,7 +1082,8 @@ if __name__ == '__main__':
                     'array': array,
                     'groups': groups,
                     'm3u': m3u,
-                    'epgurl': epg_url
+                    'epgurl': epg_url,
+                    'movies': AstronciaData.movies
                 })
                 cm3uf = open(str(Path(LOCAL_DIR, 'playlist.cache.json')), 'w', encoding="utf8")
                 cm3uf.write(cm3u)
@@ -1043,6 +1101,11 @@ if __name__ == '__main__':
                 epg_url = cm3u['epgurl']
                 if epg_url and not settings["epg"]:
                     settings["epg"] = epg_url
+            except: # pylint: disable=bare-except
+                pass
+            try:
+                if 'movies' in cm3u:
+                    AstronciaData.movies = cm3u['movies']
             except: # pylint: disable=bare-except
                 pass
 
@@ -1105,6 +1168,7 @@ if __name__ == '__main__':
         timer.timeout.connect(lambda: None)
 
         TV_ICON = QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'tv.png')))
+        MOVIE_ICON = QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'movie.png')))
         ICONS_CACHE = {}
         ICONS_CACHE_FETCHED = {}
         ICONS_CACHE_FETCHED_EPG = {}
@@ -1669,7 +1733,9 @@ if __name__ == '__main__':
             ext_player_file_1 = open(str(Path(LOCAL_DIR, 'extplayer.json')), 'w', encoding="utf8")
             ext_player_file_1.write(json.dumps({"player": ext_player_txt.text()}))
             ext_player_file_1.close()
-            subprocess.Popen(ext_player_txt.text().split(' ') + [array[item_selected]['url']])
+            subprocess.Popen(
+                ext_player_txt.text().split(' ') + [getArrayItem(item_selected)['url']]
+            )
             ext_win.close()
 
         ext_player_txt = QtWidgets.QLineEdit()
@@ -1823,7 +1889,7 @@ if __name__ == '__main__':
                     save_folder,
                     'recording_-_' + cur_time + '_-_' + ch + '.mkv'
                 ))
-            record_url = array[ch_name]['url']
+            record_url = getArrayItem(ch_name)['url']
             return [
                 record_return(
                     record_url, out_file,
@@ -2899,6 +2965,7 @@ if __name__ == '__main__':
                 'hideplaylistleftclk': hideplaylistleftclk_flag.isChecked(),
                 'nocacheepg': nocacheepg_flag.isChecked(),
                 'scrrecnosubfolders': scrrecnosubfolders_flag.isChecked(),
+                'hidetvprogram': hidetvprogram_flag.isChecked(),
                 'showcontrolsmouse': showcontrolsmouse_flag.isChecked(),
                 'catchupenable': catchupenable_flag.isChecked(),
                 'flpopacity': flpopacity_input.value(),
@@ -3306,6 +3373,10 @@ if __name__ == '__main__':
         scrrecnosubfolders_flag = QtWidgets.QCheckBox()
         scrrecnosubfolders_flag.setChecked(settings['scrrecnosubfolders'])
 
+        hidetvprogram_label = QtWidgets.QLabel("{}:".format(_('hidetvprogram')))
+        hidetvprogram_flag = QtWidgets.QCheckBox()
+        hidetvprogram_flag.setChecked(settings['hidetvprogram'])
+
         # Mark option as experimental
         hideplaylistleftclk_flag.setToolTip(_('expfunctionwarning'))
         hideplaylistleftclk_label.setToolTip(_('expfunctionwarning'))
@@ -3446,6 +3517,8 @@ if __name__ == '__main__':
         tab5.layout.addWidget(movedragging_flag, 7, 1)
         tab5.layout.addWidget(styleredefoff_label, 8, 0)
         tab5.layout.addWidget(styleredefoff_flag, 8, 1)
+        tab5.layout.addWidget(hidetvprogram_label, 9, 0)
+        tab5.layout.addWidget(hidetvprogram_flag, 9, 1)
         #tab5.layout.addWidget(QtWidgets.QLabel(), 8, 0)
         tab5.setLayout(tab5.layout)
 
@@ -4219,6 +4292,8 @@ if __name__ == '__main__':
                 self.windowHeight = self.height()
                 self.container = None
                 self.listWidget = None
+                self.moviesWidget = None
+                self.seriesWidget = None
                 self.latestWidth = 0
                 self.latestHeight = 0
                 self.createMenuBar_mw()
@@ -4443,7 +4518,7 @@ if __name__ == '__main__':
 
         def show_progress(prog):
             global playing_archive, fullscreen
-            if prog and not playing_archive:
+            if not settings['hidetvprogram'] and (prog and not playing_archive):
                 prog_percentage = round(
                     (time.time() - prog['start']) / (prog['stop'] - prog['start']) * 100
                 )
@@ -4942,7 +5017,10 @@ if __name__ == '__main__':
         dockWidget = QtWidgets.QDockWidget(win)
         if settings["playlistsep"]:
             dockWidget.hide()
+
         win.listWidget = QtWidgets.QListWidget()
+        win.moviesWidget = QtWidgets.QListWidget()
+        win.seriesWidget = QtWidgets.QListWidget()
 
         class ClickableLabel(QtWidgets.QLabel): # pylint: disable=too-few-public-methods
             def __init__(self, whenClicked, parent=None): # pylint: disable=unused-argument
@@ -5266,12 +5344,12 @@ if __name__ == '__main__':
             channel_icons_data.total = 0
 
             for chan_4 in array:
-                chan_4_logo = array[chan_4]['tvg-logo']
+                chan_4_logo = getArrayItem(chan_4)['tvg-logo']
                 if chan_4_logo:
                     channel_icons_data.total += 1
 
             for chan_4 in array:
-                chan_4_logo = array[chan_4]['tvg-logo']
+                chan_4_logo = getArrayItem(chan_4)['tvg-logo']
                 if chan_4_logo:
                     #fetching_str = "Fetching channel icon from URL '{}' for channel '{}'"
                     #print_with_time(fetching_str.format(chan_4_logo, chan_4))
@@ -5559,6 +5637,57 @@ if __name__ == '__main__':
 
         btn_update.clicked.connect(redraw_chans)
 
+        first_playmode_change = False
+
+        def playmode_change(self=False): # pylint: disable=unused-argument, too-many-branches
+            AstronciaData.playmodeIndex = playmode_selector.currentIndex()
+            global first_playmode_change
+            if not first_playmode_change:
+                first_playmode_change = True
+            else:
+                tv_widgets = [combobox, win.listWidget, widget4]
+                movies_widgets = [movies_combobox, win.moviesWidget]
+                series_widgets = [win.seriesWidget]
+                # Clear search text when play mode is changed (TV channels, movies, series)
+                try:
+                    channelfilter.setText('')
+                    channelfiltersearch.click()
+                except: # pylint: disable=bare-except
+                    pass
+                if playmode_selector.currentIndex() == 0:
+                    for lbl5 in movies_widgets:
+                        lbl5.hide()
+                    for lbl6 in series_widgets:
+                        lbl6.hide()
+                    for lbl4 in tv_widgets:
+                        lbl4.show()
+                    try:
+                        channelfilter.setPlaceholderText(_('chansearch'))
+                    except: # pylint: disable=bare-except
+                        pass
+                if playmode_selector.currentIndex() == 1:
+                    for lbl4 in tv_widgets:
+                        lbl4.hide()
+                    for lbl6 in series_widgets:
+                        lbl6.hide()
+                    for lbl5 in movies_widgets:
+                        lbl5.show()
+                    try:
+                        channelfilter.setPlaceholderText(_('searchmovie'))
+                    except: # pylint: disable=bare-except
+                        pass
+                if playmode_selector.currentIndex() == 2:
+                    for lbl4 in tv_widgets:
+                        lbl4.hide()
+                    for lbl5 in movies_widgets:
+                        lbl5.hide()
+                    for lbl6 in series_widgets:
+                        lbl6.show()
+                    try:
+                        channelfilter.setPlaceholderText(_('searchserie'))
+                    except: # pylint: disable=bare-except
+                        pass
+
         channels = gen_chans()
         modelA = []
         for channel in channels:
@@ -5715,7 +5844,7 @@ if __name__ == '__main__':
             ext_win.show()
 
         def tvguide_start_record():
-            url2 = array[item_selected]['url']
+            url2 = getArrayItem(item_selected)['url']
             if is_recording:
                 start_record("", "")
             start_record(item_selected, url2)
@@ -5732,7 +5861,7 @@ if __name__ == '__main__':
                 epg_win.hide()
 
         def favoritesplaylistsep_add():
-            ps_data = array[item_selected]
+            ps_data = getArrayItem(item_selected)
             str1 = "#EXTINF:-1"
             if ps_data['tvg-name']:
                 str1 += " tvg-name=\"{}\"".format(ps_data['tvg-name'])
@@ -5827,7 +5956,30 @@ if __name__ == '__main__':
             activated=enterPressed
         )
         def channelfilter_do():
-            btn_update.click()
+            try:
+                filter_txt1 = channelfilter.text()
+            except: # pylint: disable=bare-except
+                filter_txt1 = ""
+            if AstronciaData.playmodeIndex == 0: # TV channels
+                btn_update.click()
+            elif AstronciaData.playmodeIndex == 1: # Movies
+                for item3 in range(win.moviesWidget.count()):
+                    if unidecode(filter_txt1).lower().strip() in \
+                    unidecode(win.moviesWidget.item(item3).text()).lower().strip():
+                        win.moviesWidget.item(item3).setHidden(False)
+                    else:
+                        win.moviesWidget.item(item3).setHidden(True)
+            elif AstronciaData.playmodeIndex == 2: # Series
+                try:
+                    redraw_series()
+                except: # pylint: disable=bare-except
+                    print_with_time("redraw_series FAILED")
+                for item4 in range(win.seriesWidget.count()):
+                    if unidecode(filter_txt1).lower().strip() in \
+                    unidecode(win.seriesWidget.item(item4).text()).lower().strip():
+                        win.seriesWidget.item(item4).setHidden(False)
+                    else:
+                        win.seriesWidget.item(item4).setHidden(True)
         loading = QtWidgets.QLabel(_('loading'))
         loading.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
         loading.setStyleSheet('color: #778a30')
@@ -5847,6 +5999,111 @@ if __name__ == '__main__':
         combobox.currentIndexChanged.connect(group_change)
         for group in groups:
             combobox.addItem(group)
+
+        currentMoviesGroup = {}
+
+        def movies_group_change():
+            global currentMoviesGroup
+            if AstronciaData.movies:
+                current_movies_group = movies_combobox.currentText()
+                if current_movies_group:
+                    win.moviesWidget.clear()
+                    currentMoviesGroup = {}
+                    for movies1 in AstronciaData.movies:
+                        if 'tvg-group' in AstronciaData.movies[movies1]:
+                            if AstronciaData.movies[movies1]['tvg-group'] == current_movies_group:
+                                win.moviesWidget.addItem(AstronciaData.movies[movies1]['title'])
+                                currentMoviesGroup[
+                                    AstronciaData.movies[movies1]['title']
+                                ] = AstronciaData.movies[movies1]
+            else:
+                win.moviesWidget.clear()
+                win.moviesWidget.addItem(_('nothingfound'))
+
+        def movies_play(mov_item):
+            global playing_url
+            if mov_item.text() in currentMoviesGroup:
+                itemClicked_event(
+                    mov_item.text(), currentMoviesGroup[mov_item.text()]['url']
+                )
+
+        win.moviesWidget.itemDoubleClicked.connect(movies_play)
+
+        movies_groups = []
+        movies_combobox = QtWidgets.QComboBox()
+        for movie_combobox in AstronciaData.movies:
+            if 'tvg-group' in AstronciaData.movies[movie_combobox]:
+                if AstronciaData.movies[movie_combobox]['tvg-group'] not in movies_groups:
+                    movies_groups.append(AstronciaData.movies[movie_combobox]['tvg-group'])
+        for movie_group in movies_groups:
+            movies_combobox.addItem(movie_group)
+        movies_combobox.currentIndexChanged.connect(movies_group_change)
+        movies_group_change()
+
+        def redraw_series():
+            AstronciaData.serie_selected = False
+            win.seriesWidget.clear()
+            if AstronciaData.series:
+                for serie2 in AstronciaData.series:
+                    win.seriesWidget.addItem(serie2)
+            else:
+                win.seriesWidget.addItem(_('nothingfound'))
+
+        def series_change(series_item):
+            sel_serie = series_item.text()
+            if sel_serie == '< ' + _('back'):
+                redraw_series()
+            else:
+                if AstronciaData.serie_selected:
+                    try:
+                        serie_data = series_item.data(_enum(QtCore.Qt, 'ItemDataRole.UserRole'))
+                        if serie_data:
+                            series_name = serie_data.split(':::::::::::::::::::')[2]
+                            season_name = serie_data.split(':::::::::::::::::::')[1]
+                            serie_url = serie_data.split(':::::::::::::::::::')[0]
+                            itemClicked_event(
+                                sel_serie + " ::: " + season_name + " ::: " + series_name,
+                                serie_url
+                            )
+                    except: # pylint: disable=bare-except
+                        pass
+                else:
+                    print_with_time("Fetching data for serie '{}'".format(sel_serie))
+                    win.seriesWidget.clear()
+                    win.seriesWidget.addItem('< ' + _('back'))
+                    win.seriesWidget.item(0).setForeground(_enum(QtCore.Qt, 'GlobalColor.blue'))
+                    try:
+                        if not AstronciaData.series[sel_serie].seasons:
+                            xt.get_series_info_by_id(AstronciaData.series[sel_serie])
+                        for season_name in AstronciaData.series[sel_serie].seasons.keys():
+                            season = AstronciaData.series[sel_serie].seasons[season_name]
+                            season_item = QtWidgets.QListWidgetItem()
+                            season_item.setText('== ' + season.name + ' ==')
+                            season_item.setFont(bold_fnt_1)
+                            win.seriesWidget.addItem(season_item)
+                            for episode_name in season.episodes.keys():
+                                episode = season.episodes[episode_name]
+                                episode_item = QtWidgets.QListWidgetItem()
+                                episode_item.setText(episode.title)
+                                episode_item.setData(
+                                    _enum(QtCore.Qt, 'ItemDataRole.UserRole'),
+                                    episode.url + ':::::::::::::::::::' + season.name + \
+                                    ':::::::::::::::::::' + sel_serie
+                                )
+                                win.seriesWidget.addItem(episode_item)
+                        AstronciaData.serie_selected = True
+                        print_with_time("Fetching data for serie '{}' completed".format(sel_serie))
+                    except: # pylint: disable=bare-except
+                        print_with_time("Fetching data for serie '{}' FAILED".format(sel_serie))
+
+        win.seriesWidget.itemDoubleClicked.connect(series_change)
+
+        redraw_series()
+
+        playmode_selector = QtWidgets.QComboBox()
+        playmode_selector.currentIndexChanged.connect(playmode_change)
+        for playmode in [_('tvchannels'), _('movies'), _('series')]:
+            playmode_selector.addItem(playmode)
 
         def focusOutEvent_after(
                 playlist_widget_visible,
@@ -6101,9 +6358,22 @@ if __name__ == '__main__':
         widget = QtWidgets.QWidget()
         widget.setLayout(layout)
         widget.layout().addWidget(QtWidgets.QLabel())
+        widget.layout().addWidget(playmode_selector)
         widget.layout().addWidget(combobox)
+        # == Movies start ==
+        movies_combobox.hide()
+        widget.layout().addWidget(movies_combobox)
+        # == Movies end ==
         widget.layout().addWidget(widget3)
         widget.layout().addWidget(win.listWidget)
+        # Movies start
+        win.moviesWidget.hide()
+        widget.layout().addWidget(win.moviesWidget)
+        # Movies end
+        # Series start
+        win.seriesWidget.hide()
+        widget.layout().addWidget(win.seriesWidget)
+        # Series end
         widget.layout().addWidget(widget4)
         widget.layout().addWidget(chan)
         widget.layout().addWidget(loading)
@@ -7073,7 +7343,7 @@ if __name__ == '__main__':
             return orig_url
 
         def archive_all_clicked(): # pylint: disable=too-many-branches, too-many-locals
-            arr1 = array[archive_channel.text()]
+            arr1 = getArrayItem(archive_channel.text())
 
             if 'catchup' not in arr1:
                 arr1['catchup'] = 'default'
@@ -7093,7 +7363,7 @@ if __name__ == '__main__':
                 ):
                     arr1['catchup'] = 'append'
 
-            chan_url = array[archive_channel.text()]['url']
+            chan_url = getArrayItem(archive_channel.text())['url']
             start_time = archive_all.currentItem().text().split(' - ')[0].strip()
             end_time = archive_all.currentItem().text().split(' - ')[1].split('\n')[0].strip()
             prog_index = archive_all.currentItem().text().split("(")[-1].replace(')', '')
@@ -7220,7 +7490,7 @@ if __name__ == '__main__':
             else:
                 cur_name = list(array)[0]
             archive_channel.setText(cur_name)
-            got_array = array[cur_name]
+            got_array = getArrayItem(cur_name)
 
             if 'catchup' not in got_array:
                 got_array['catchup'] = 'default'
@@ -7695,7 +7965,7 @@ if __name__ == '__main__':
             return userAgent2
 
         def saveLastChannel():
-            if playing_url:
+            if playing_url and playmode_selector.currentIndex() == 0:
                 current_group_0 = 0
                 if combobox.currentIndex() != 0:
                     try:
