@@ -12,7 +12,7 @@ Downloads (deb/rpm) are available on [Releases](https://gitlab.com/astroncia/ipt
 For **Ubuntu** / **Linux Mint** recommended install from [Launchpad PPA - ppa:astroncia/iptv](https://launchpad.net/~astroncia/+archive/ubuntu/iptv):  
 ```sudo add-apt-repository -y ppa:astroncia/iptv```  
 ```sudo apt update```  
-```sudo apt install astroncia-iptv```  
+```sudo apt install astronciaiptv```  
   
 [Installation for **Debian**](https://software.opensuse.org/download/package?package=astronciaiptv&project=home%3Aastroncia)  
   
