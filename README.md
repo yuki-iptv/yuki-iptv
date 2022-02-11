@@ -25,7 +25,7 @@ Software provided **as is**, no guarantees.
 
 ## License
 
-Code: [GPLv3](https://gitlab.com/astroncia/iptv/-/blob/master/COPYING)  
+Code: [GPL-3.0-only](https://gitlab.com/astroncia/iptv/-/blob/master/COPYING)  
 Icons: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)  
   
 *Icons by [Font Awesome](https://fontawesome.com/)*  
