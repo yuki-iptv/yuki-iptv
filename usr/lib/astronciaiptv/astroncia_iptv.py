@@ -8428,7 +8428,7 @@ if __name__ == '__main__':
             controlpanel_widget.setFixedWidth(
                 #int(win.width() / 3) - 100
                 #650
-                lb2_width
+                lb2_width + 30
             )
             #p_3 = (get_curwindow_pos_actual().center() - controlpanel_widget.rect().center()).x()
             #controlpanel_widget.move(
