@@ -18,6 +18,7 @@
 #    along with Astroncia IPTV.  If not, see <https://www.gnu.org/licenses/>.
 #
 import re
+from astroncia.time import print_with_time
 
 class M3UParser:
     '''M3U parser'''
@@ -38,6 +39,16 @@ class M3UParser:
             res = re_match.group(1)
         except AttributeError:
             res = default
+        # catchup-days check start
+        if name == 'catchup-days':
+            try:
+                res = str(int(res))
+            except: # pylint: disable=bare-except
+                print_with_time(
+                    "M3U STANDARDS VIOLATION: catchup-days is not int (got '{}')".format(res)
+                )
+                res = default
+        # catchup-days check end
         res = res.strip()
         return res
 
