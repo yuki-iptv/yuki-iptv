@@ -1,3 +1,39 @@
+astronciaiptv (0.0.91) unstable; urgency=medium
+
+  * Add archive option
+  * Add load channel icons from playlist option
+  * Add support for XZ compression of XMLTV
+  * Ask before deleting playlist
+  * Better Wayland detection
+  * Change record icon
+  * Drop default playlist
+  * Drop updates check functionality
+  * Fix archive support
+  * Fix channel icons load in Qt 6
+  * Fix force update EPG button
+  * Fix fullscreen control panel width
+  * Fix multiple EPG URLs support
+  * Fix right click when nothing found
+  * Fix XMLTV timezone parsing
+  * Hide archive window after selecting catchup program
+  * Improve dark/light theme detection
+  * Increase control panel width in fullscreen mode
+  * l10n: Update translations
+  * M3U editor rewrite
+  * M3U editor: show localized message when saving playlist
+  * More verbose EPG loading
+  * Movies/series initial support
+  * packaging: rename to astronciaiptv
+  * packaging: replaces astroncia-iptv
+  * Rename EPG cache file
+  * Rewrite M3U parser
+  * Show channel name tooltip on hover
+  * Show icon when writing EPG cache
+  * Show if nothing found in channel search
+  * Update XMLTV icons parser
+
+ -- Astroncia <kestraly@gmail.com>  Sat, 12 Feb 2022 01:35:16 +0300
+
 astronciaiptv (0.0.90) unstable; urgency=medium
 
   * Add support for custom shortcuts
