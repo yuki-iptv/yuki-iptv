@@ -20,5 +20,7 @@ Depends: ffmpeg,
          python3-pydbus,
          python3-unidecode
 Recommends: yt-dlp | youtube-dl
+Breaks: astroncia-iptv (<< 0.0.91)
+Replaces: astroncia-iptv (<< 0.0.91)
 Description: IPTV player
  Simple IPTV player with EPG support.
