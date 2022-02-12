@@ -1118,17 +1118,6 @@ if __name__ == '__main__':
             groups.remove(_('allchannels'))
         groups = [_('allchannels'), _('favourite')] + groups
 
-        if os.path.isfile(str(Path('..', '..', 'share', 'astronciaiptv', 'channel_icons.json'))):
-            icons_file = open(
-                str(Path('..', '..', 'share', 'astronciaiptv', 'channel_icons.json')),
-                'r',
-                encoding="utf8"
-            )
-            icons = json.loads(icons_file.read())
-            icons_file.close()
-        else:
-            icons = {}
-
         if m3uFailed and os.path.isfile(str(Path(LOCAL_DIR, 'playlist.cache.json'))):
             os.remove(str(Path(LOCAL_DIR, 'playlist.cache.json')))
 
@@ -4044,15 +4033,7 @@ if __name__ == '__main__':
 
             print_with_time("Using {}".format(mpv_version))
 
-            textbox.setText(
-                format_about_text(
-                    "{} Qt {} ({}) {}\n{} {}\n\n".format(
-                        _('using'), qt_version, qt_library, QT_URL,
-                        _('using'), mpv_version.replace('mpv ', MPV_URL)
-                    ) + \
-                    _('helptext').format(APP_VERSION)
-                )
-            )
+            textbox.setText(format_about_text(_('helptext').format(APP_VERSION)))
 
             if settings["cache_secs"] != 0:
                 try:
@@ -5464,18 +5445,8 @@ if __name__ == '__main__':
                 else:
                     mycwdg.setTextDown("", "<b>{}</b>".format(i))
                     mycwdg.hideProgress()
-                i_icon = i.lower()
-                icons_l = {picon.lower(): icons[picon] for picon in icons}
-                if i_icon in icons_l:
-                    if not icons_l[i_icon] in ICONS_CACHE:
-                        ICONS_CACHE[icons_l[i_icon]] = \
-                            QtGui.QIcon(str(Path(
-                                '..', '..', 'share', 'astronciaiptv',
-                                'channel_icons', icons_l[i_icon]
-                            )))
-                    mycwdg.setIcon(ICONS_CACHE[icons_l[i_icon]])
-                else:
-                    mycwdg.setIcon(TV_ICON)
+
+                mycwdg.setIcon(TV_ICON)
 
                 # Icon from playlist
                 if i in channel_icons_data.return_dict and channel_icons_data.return_dict[i]:
