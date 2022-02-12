@@ -21,19 +21,9 @@
 #
 import gzip
 import lzma
-import time
 import datetime
 import xml.etree.ElementTree as ET
 from astroncia.time import print_with_time
-
-def get_tz_offset():
-    '''Get current timezone offset in seconds'''
-    current_timezone = (
-        3600 * (
-            (time.timezone if (time.localtime().tm_isdst == 0) else time.altzone) / 60 / 60 * -1
-        )
-    )
-    return current_timezone
 
 def parse_as_xmltv(epg, settings, catchup_days1): # pylint: disable=too-many-locals, too-many-branches, too-many-statements
     '''Load EPG file'''
@@ -70,26 +60,16 @@ def parse_as_xmltv(epg, settings, catchup_days1): # pylint: disable=too-many-loc
             except: # pylint: disable=bare-except
                 pass
     for programme in tree.findall('./programme'):
-        timezone_offset = 0
-        try:
-            timezone_parse = programme.attrib['start'].split(" ")[1]
-            timezone_hours = 3600 * int("{}{}".format(timezone_parse[1], timezone_parse[2]))
-            timezone_minutes = 60 * int("{}{}".format(timezone_parse[3], timezone_parse[4]))
-            timezone_offset = timezone_hours + timezone_minutes
-            if timezone_parse[0] == '-':
-                timezone_offset = timezone_offset * -1
-        except: # pylint: disable=bare-except
-            pass
         try:
             start = datetime.datetime.strptime(
-                programme.attrib['start'].split(" ")[0], '%Y%m%d%H%M%S'
-            ).timestamp() - timezone_offset + get_tz_offset() + (3600 * settings["epgoffset"])
+                programme.attrib['start'], '%Y%m%d%H%M%S %z'
+            ).timestamp() + (3600 * settings["epgoffset"])
         except: # pylint: disable=bare-except
             start = 0
         try:
             stop = datetime.datetime.strptime(
-                programme.attrib['stop'].split(" ")[0], '%Y%m%d%H%M%S'
-            ).timestamp() - timezone_offset + get_tz_offset() + (3600 * settings["epgoffset"])
+                programme.attrib['stop'], '%Y%m%d%H%M%S %z'
+            ).timestamp() + (3600 * settings["epgoffset"])
         except: # pylint: disable=bare-except
             stop = 0
         try:
@@ -105,12 +85,12 @@ def parse_as_xmltv(epg, settings, catchup_days1): # pylint: disable=too-many-loc
                     datetime.datetime.now() - datetime.timedelta(days=catchup_days1)
                 ).replace(
                     hour=0, minute=0, second=0
-                ).timestamp() - timezone_offset + get_tz_offset() + (3600 * settings["epgoffset"])
+                ).timestamp() + (3600 * settings["epgoffset"])
                 day_end = (
                     datetime.datetime.now() + datetime.timedelta(days=1)
                 ).replace(
                     hour=23, minute=59, second=59
-                ).timestamp() - timezone_offset + get_tz_offset() + (3600 * settings["epgoffset"])
+                ).timestamp() + (3600 * settings["epgoffset"])
                 if not channel_epg_1 in programmes_epg:
                     programmes_epg[channel_epg_1] = []
                 if start > day_start and stop < day_end:
