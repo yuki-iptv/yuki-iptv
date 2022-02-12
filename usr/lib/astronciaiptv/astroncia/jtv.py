@@ -1,4 +1,5 @@
 '''JTV parser'''
+# SPDX-License-Identifier: GPL-3.0-only
 import zipfile
 import io
 import datetime

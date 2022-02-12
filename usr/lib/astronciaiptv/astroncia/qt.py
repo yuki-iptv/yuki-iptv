@@ -1,6 +1,8 @@
 '''Qt loader'''
 # pylint: disable=no-member, c-extension-no-member, import-outside-toplevel, invalid-name
 #
+# SPDX-License-Identifier: GPL-3.0-only
+#
 # Copyright (c) 2021-2022 Astroncia
 #
 #     This file is part of Astroncia IPTV.

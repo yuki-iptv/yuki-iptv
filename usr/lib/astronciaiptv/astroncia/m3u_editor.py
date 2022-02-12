@@ -1,6 +1,8 @@
 '''M3U editor'''
 # pylint: disable=missing-function-docstring, missing-class-docstring, bare-except
 #
+# SPDX-License-Identifier: GPL-3.0-only
+#
 # Copyright (c) 2021-2022 Astroncia
 #
 #     This file is part of Astroncia IPTV.

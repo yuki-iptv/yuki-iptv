@@ -4,6 +4,8 @@ import xml.etree.ElementTree as ET
 from astroncia.lang import _
 from astroncia.time import print_with_time
 #
+# SPDX-License-Identifier: GPL-3.0-only
+#
 # Copyright (c) 2021-2022 Astroncia
 #
 #    This program is free software: you can redistribute it and/or modify

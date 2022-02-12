@@ -1,6 +1,8 @@
 '''Convert XTream to M3U playlist'''
 # pylint: disable=missing-class-docstring, missing-function-docstring
 #
+# SPDX-License-Identifier: GPL-3.0-only
+#
 # Copyright (c) 2021-2022 Astroncia
 #
 #     This file is part of Astroncia IPTV.

@@ -2,6 +2,8 @@
 # pylint: disable=invalid-name, global-statement, missing-docstring, wrong-import-position
 # pylint: disable=too-many-lines, ungrouped-imports, too-many-statements, broad-except
 #
+# SPDX-License-Identifier: GPL-3.0-only
+#
 # Icons by Font Awesome ( https://fontawesome.com/ ) ( https://fontawesome.com/license )
 #
 # The Font Awesome pictograms are licensed under the CC BY 4.0 License
