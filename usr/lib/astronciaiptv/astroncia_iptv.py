@@ -7264,7 +7264,7 @@ if __name__ == '__main__':
                 arr1['catchup-days'] = '1'
 
             if not arr1['catchup-source'] and \
-            arr1['catchup'] not in ('flussonic', 'flussonic-ts', 'fs', 'xc'):
+            arr1['catchup'] not in ('flussonic', 'flussonic-hls', 'flussonic-ts', 'fs', 'xc'):
                 arr1['catchup'] = 'shift'
 
             if arr1['catchup-source']:
@@ -7312,7 +7312,7 @@ if __name__ == '__main__':
                     play_url = chan_url + format_placeholders(
                         start_time, end_time, catchup_id, '?utc={utc}&lutc={lutc}'
                     )
-            elif arr1['catchup'] in ('flussonic', 'flussonic-ts', 'fs'):
+            elif arr1['catchup'] in ('flussonic', 'flussonic-hls', 'flussonic-ts', 'fs'):
                 fs_url = chan_url
                 print_with_time("")
                 print_with_time("orig fs url: {}".format(fs_url))
@@ -7411,7 +7411,7 @@ if __name__ == '__main__':
                 got_array['catchup-days'] = '1'
 
             if not got_array['catchup-source'] and \
-            got_array['catchup'] not in ('flussonic', 'flussonic-ts', 'fs', 'xc'):
+            got_array['catchup'] not in ('flussonic', 'flussonic-hls', 'flussonic-ts', 'fs', 'xc'):
                 got_array['catchup'] = 'shift'
 
             if got_array['catchup-source']:
