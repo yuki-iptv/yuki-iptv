@@ -1,3 +1,17 @@
+astronciaiptv (0.0.92) unstable; urgency=medium
+
+  * l10n: Update translations
+  * packaging: update description
+  * Update splash screen
+  * Add catchup-type tag support
+  * Add channel logos load option
+  * Fix XMLTV timezone issues
+  * Improve EPG name detection
+  * Improve flussonic catchup
+  * Update flussonic catchup types
+
+ -- Astroncia <kestraly@gmail.com>  Sun, 13 Feb 2022 01:45:04 +0300
+
 astronciaiptv (0.0.91) unstable; urgency=medium
 
   * Add archive option
