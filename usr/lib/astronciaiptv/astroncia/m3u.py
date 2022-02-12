@@ -70,6 +70,10 @@ class M3UParser:
         if not group:
             group = self._('allchannels')
 
+        catchup_tag = self.parse_regexp("catchup", line_info, "")
+        if not catchup_tag:
+            catchup_tag = self.parse_regexp("catchup-type", line_info, "default")
+
         ch_array = {
             "title": self.parse_regexp("[,](?!.*[,])(.*?)$", line_info, "", True),
             "tvg-name": self.parse_regexp("tvg-name", line_info),
@@ -77,7 +81,7 @@ class M3UParser:
             "tvg-logo": self.parse_regexp("tvg-logo", line_info),
             "tvg-group": group,
             "tvg-url": tvg_url,
-            "catchup": self.parse_regexp("catchup", line_info, "default"),
+            "catchup": catchup_tag,
             "catchup-source": self.parse_regexp("catchup-source", line_info),
             "catchup-days": self.parse_regexp("catchup-days", line_info, "1"),
             "useragent": "",
