@@ -1,7 +1,7 @@
 # Astroncia IPTV
 ### IPTV player with EPG support
 
-[![Screenshot](https://gitlab.com/astroncia/iptv/uploads/7d4430dcd5963dfb6dd697c24ca69224/astronciaiptv-screenshot-thumbnail.png)](https://gitlab.com/astroncia/iptv/uploads/d92355a868a0da5e9b2022410041db09/astronciaiptv-screenshot.png)  
+[![Screenshot](https://gitlab.com/astroncia/iptv/uploads/1bcd9ab8788478db414da977687e32e6/astronciaiptv-screenshot-thumbnail.png)](https://gitlab.com/astroncia/iptv/uploads/e0db4a3f40110bf948f65c13af8c6494/astronciaiptv-screenshot.png)  
   
 ⚠️ Note: Astroncia IPTV doesn't provide any playlists or other digital content. The channels and pictures in the screenshots are for demonstration purposes only.  
 
@@ -96,3 +96,7 @@ file:///home/user/Videos/SomeName_4/SomeName.S04E09.mp4
 #EXTINF:-1 tvg-name="SomeName S04E10 Season Title 4" group-title="SERIES SomeName",
 file:///home/user/Videos/SomeName_4/SomeName.S04E10.mp4
 ```
+
+## Disclaimer
+
+Astroncia IPTV doesn't provide any playlists or other digital content.  
