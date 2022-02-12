@@ -650,9 +650,6 @@ msgstr "Шаг регулировки громкости"
 msgid "hideepgpercentage"
 msgstr "Скрыть проценты телепрограммы"
 
-msgid "chaniconsfromepg"
-msgstr "Загружать логотипы каналов из EPG"
-
 msgid "xtreamnoconn"
 msgstr "Невозможно подключиться"
 
@@ -1043,9 +1040,6 @@ msgstr "Архив"
 
 msgid "enablecatchup"
 msgstr "Включить архив каналов"
-
-msgid "chaniconsfromplaylist"
-msgstr "Загружать логотипы каналов из плейлиста"
 
 msgid "writingepgcache"
 msgstr "Идёт запись кэша EPG"

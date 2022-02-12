@@ -649,9 +649,6 @@ msgstr "Volume change step"
 msgid "hideepgpercentage"
 msgstr "Hide EPG percentage"
 
-msgid "chaniconsfromepg"
-msgstr "Load channel icons from EPG"
-
 msgid "xtreamnoconn"
 msgstr "Could not connect"
 
@@ -1038,9 +1035,6 @@ msgstr "Catchup"
 
 msgid "enablecatchup"
 msgstr "Enable catchup"
-
-msgid "chaniconsfromplaylist"
-msgstr "Load channel icons from playlist"
 
 msgid "writingepgcache"
 msgstr "Writing EPG cache"

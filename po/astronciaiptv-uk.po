@@ -656,9 +656,6 @@ msgstr "Крок регулювання гучності"
 msgid "hideepgpercentage"
 msgstr "Приховати проценти телепрограми"
 
-msgid "chaniconsfromepg"
-msgstr "Завантажувати логотипи каналів з EPG"
-
 msgid "xtreamnoconn"
 msgstr "Неможливо під'єднатися"
 

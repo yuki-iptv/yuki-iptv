@@ -649,9 +649,6 @@ msgstr "Paso de cambio de volumen"
 msgid "hideepgpercentage"
 msgstr "Ocultar porcentaje de EPG"
 
-msgid "chaniconsfromepg"
-msgstr "Cargar iconos de canal de EPG"
-
 msgid "xtreamnoconn"
 msgstr "No se pudo conectar"
 

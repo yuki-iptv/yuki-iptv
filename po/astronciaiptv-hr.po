@@ -653,9 +653,6 @@ msgstr "Korak promjene glasnoće zvuka"
 msgid "hideepgpercentage"
 msgstr "Sakrij prikaz EPG napredka"
 
-msgid "chaniconsfromepg"
-msgstr "Učitaj ikone programa iz EPG vodiča"
-
 msgid "xtreamnoconn"
 msgstr "Nemoguće povezivanje"
 
@@ -1046,9 +1043,6 @@ msgstr "Hvatanje"
 
 msgid "enablecatchup"
 msgstr "Omogući hvatanje programa"
-
-msgid "chaniconsfromplaylist"
-msgstr "Učitaj ikone programa iz popisa izvođenja"
 
 msgid "writingepgcache"
 msgstr "Zapisivanje EPG predmemorije"

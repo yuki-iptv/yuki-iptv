@@ -609,9 +609,6 @@ msgstr ""
 msgid "hideepgpercentage"
 msgstr ""
 
-msgid "chaniconsfromepg"
-msgstr ""
-
 msgid "xtreamnoconn"
 msgstr ""
 
@@ -989,9 +986,6 @@ msgid "catchup"
 msgstr ""
 
 msgid "enablecatchup"
-msgstr ""
-
-msgid "chaniconsfromplaylist"
 msgstr ""
 
 msgid "writingepgcache"
