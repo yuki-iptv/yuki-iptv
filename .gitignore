@@ -1,0 +1,4 @@
+__pycache__
+usr/share/locale
+*.swo
+*.swp
