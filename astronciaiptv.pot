@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-10 21:55+0000\n"
+"POT-Creation-Date: 2022-02-12 16:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1022,6 +1022,21 @@ msgid "hidetvprogram"
 msgstr ""
 
 msgid "m3u_playlistsaved"
+msgstr ""
+
+msgid "channellogos"
+msgstr ""
+
+msgid "preferm3u"
+msgstr ""
+
+msgid "preferepg"
+msgstr ""
+
+msgid "donotloadfromepg"
+msgstr ""
+
+msgid "donotloadanylogos"
 msgstr ""
 
 msgid "helptext"

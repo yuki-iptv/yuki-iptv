@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Astroncia <kestraly@gmail.com>\n"
-"PO-Revision-Date: 2022-02-10 21:56+0000\n"
+"PO-Revision-Date: 2022-02-12 16:28+0000\n"
 "Project-Id-Version: \n"
 "Language-Team: English <kde-i18n-doc@kde.org>\n"
 "Language: en_US\n"
@@ -1071,6 +1071,21 @@ msgstr "Hide the current television program"
 
 msgid "m3u_playlistsaved"
 msgstr "Playlist successfully saved!"
+
+msgid "channellogos"
+msgstr "Channel logos"
+
+msgid "preferm3u"
+msgstr "Prefer M3U"
+
+msgid "preferepg"
+msgstr "Prefer EPG"
+
+msgid "donotloadfromepg"
+msgstr "Do not load from EPG"
+
+msgid "donotloadanylogos"
+msgstr "Do not load any logos"
 
 msgid "helptext"
 msgstr ""
