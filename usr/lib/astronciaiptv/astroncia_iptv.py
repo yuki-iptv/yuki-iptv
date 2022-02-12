@@ -5339,25 +5339,43 @@ if __name__ == '__main__':
                 k += 1
                 prog = ''
                 prog_desc = ''
-                prog_search = i.lower()
-                if array_filtered[i]['tvg-ID']:
-                    if str(array_filtered[i]['tvg-ID']) in prog_ids:
-                        prog_search_lst = prog_ids[str(array_filtered[i]['tvg-ID'])]
-                        if prog_search_lst:
-                            prog_search = prog_search_lst[0].lower()
+                is_epgname_found = False
 
-                # EPG name override for channel settings
-                orig_tvg_name = array_copy[i]['tvg-name']
+                # First, match EPG name from settings
                 if i in channel_sets:
                     if 'epgname' in channel_sets[i]:
                         if channel_sets[i]['epgname']:
-                            array_filtered[i]['tvg-name'] = channel_sets[i]['epgname']
-                        else:
-                            array_filtered[i]['tvg-name'] = orig_tvg_name
+                            epg_name = channel_sets[i]['epgname']
+                            if str(epg_name).lower() in programmes:
+                                prog_search = str(epg_name).lower()
+                                is_epgname_found = True
 
-                if array_filtered[i]['tvg-name']:
-                    if str(array_filtered[i]['tvg-name']).lower() in programmes:
-                        prog_search = str(array_filtered[i]['tvg-name']).lower()
+                # Second, match from tvg-id
+                if not is_epgname_found:
+                    if array_filtered[i]['tvg-ID']:
+                        if str(array_filtered[i]['tvg-ID']) in prog_ids:
+                            prog_search_lst = prog_ids[str(array_filtered[i]['tvg-ID'])]
+                            if prog_search_lst:
+                                prog_search = prog_search_lst[0].lower()
+                                is_epgname_found = True
+
+                # Third, match from tvg-name
+                if not is_epgname_found:
+                    if array_filtered[i]['tvg-name']:
+                        if str(array_filtered[i]['tvg-name']).lower() in programmes:
+                            prog_search = str(array_filtered[i]['tvg-name']).lower()
+                            is_epgname_found = True
+                        else:
+                            spaces_replaced_name = array_filtered[i]['tvg-name'].replace(' ', '_')
+                            if str(spaces_replaced_name).lower() in programmes:
+                                prog_search = str(spaces_replaced_name).lower()
+                                is_epgname_found = True
+
+                # Last, match from channel name
+                if not is_epgname_found:
+                    prog_search = i.lower()
+                    is_epgname_found = True
+
                 prog_match_arr[i.lower()] = prog_search
                 if prog_search in programmes:
                     current_prog = {
