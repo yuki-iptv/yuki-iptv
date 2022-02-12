@@ -23,4 +23,4 @@ Recommends: yt-dlp | youtube-dl
 Breaks: astroncia-iptv (<< 0.0.91)
 Replaces: astroncia-iptv (<< 0.0.91)
 Description: IPTV player
- Simple IPTV player with EPG support.
+ IPTV player with EPG support.
