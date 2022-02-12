@@ -7350,6 +7350,30 @@ if __name__ == '__main__':
                                     '{offset:1}',
                                     fs_urlappend
                                 )
+                else:
+                    flussonic_re_2 = re.findall(
+                        r"^(http[s]?://[^/]+)/(.*)/([^\\?]*)(\\?.+=.+)?$",
+                        chan_url
+                    )
+                    if flussonic_re_2:
+                        if len(flussonic_re_2[0]) == 4:
+                            fs_host = flussonic_re_2[0][0]
+                            fs_chanid = flussonic_re_2[0][1]
+                            fs_urlappend = flussonic_re_2[0][3]
+                            if arr1['catchup'] in ('flussonic-ts', 'fs'):
+                                fs_url = "{}/{}/timeshift_abs-{}.ts{}".format(
+                                    fs_host,
+                                    fs_chanid,
+                                    '${start}',
+                                    fs_urlappend
+                                )
+                            elif arr1['catchup'] in ('flussonic', 'flussonic-hls'):
+                                fs_url = "{}/{}/timeshift_rel-{}.m3u8{}".format(
+                                    fs_host,
+                                    fs_chanid,
+                                    '{offset:1}',
+                                    fs_urlappend
+                                )
                 play_url = format_placeholders(
                     start_time, end_time, catchup_id, fs_url
                 )
