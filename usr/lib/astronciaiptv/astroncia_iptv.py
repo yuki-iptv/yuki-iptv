@@ -429,8 +429,6 @@ if __name__ == '__main__':
                 'openprevchan': False,
                 'remembervol': True,
                 'hidempv': False,
-                'chaniconsfromepg': True,
-                'chaniconsfromplaylist': True,
                 'hideepgpercentage': False,
                 'hidebitrateinfo': False,
                 'movedragging': False,
@@ -441,6 +439,7 @@ if __name__ == '__main__':
                 'autoreconnection': True,
                 'showplaylistmouse': True,
                 'hideplaylistleftclk': False,
+                'channellogos': 0,
                 'nocacheepg': False,
                 'scrrecnosubfolders': False,
                 'hidetvprogram': False,
@@ -479,10 +478,6 @@ if __name__ == '__main__':
             settings['remembervol'] = True
         if 'hidempv' not in settings:
             settings['hidempv'] = False
-        if 'chaniconsfromepg' not in settings:
-            settings['chaniconsfromepg'] = True
-        if 'chaniconsfromplaylist' not in settings:
-            settings['chaniconsfromplaylist'] = True
         if 'hideepgpercentage' not in settings:
             settings['hideepgpercentage'] = False
         if 'hidebitrateinfo' not in settings:
@@ -503,6 +498,8 @@ if __name__ == '__main__':
             settings['showplaylistmouse'] = True
         if 'hideplaylistleftclk' not in settings:
             settings['hideplaylistleftclk'] = False
+        if 'channellogos' not in settings:
+            settings['channellogos'] = 0
         if 'nocacheepg' not in settings:
             settings['nocacheepg'] = False
         if 'scrrecnosubfolders' not in settings:
@@ -2934,8 +2931,6 @@ if __name__ == '__main__':
                 'openprevchan': openprevchan_flag.isChecked(),
                 'remembervol': remembervol_flag.isChecked(),
                 'hidempv': hidempv_flag.isChecked(),
-                'chaniconsfromepg': chaniconsfromepg_flag.isChecked(),
-                'chaniconsfromplaylist': chaniconsfromplaylist_flag.isChecked(),
                 'hideepgpercentage': hideepgpercentage_flag.isChecked(),
                 'hidebitrateinfo': hidebitrateinfo_flag.isChecked(),
                 'movedragging': movedragging_flag.isChecked(),
@@ -2946,6 +2941,7 @@ if __name__ == '__main__':
                 'autoreconnection': autoreconnection_flag.isChecked(),
                 'showplaylistmouse': showplaylistmouse_flag.isChecked(),
                 'hideplaylistleftclk': hideplaylistleftclk_flag.isChecked(),
+                'channellogos': channellogos_select.currentIndex(),
                 'nocacheepg': nocacheepg_flag.isChecked(),
                 'scrrecnosubfolders': scrrecnosubfolders_flag.isChecked(),
                 'hidetvprogram': hidetvprogram_flag.isChecked(),
@@ -3232,8 +3228,6 @@ if __name__ == '__main__':
         openprevchan_label = QtWidgets.QLabel("{}:".format(_('openprevchan')))
         remembervol_label = QtWidgets.QLabel("{}:".format(_('remembervol')))
         hidempv_label = QtWidgets.QLabel("{}:".format(_('hidempv')))
-        chaniconsfromepg_label = QtWidgets.QLabel("{}:".format(_('chaniconsfromepg')))
-        chaniconsfromplaylist_label = QtWidgets.QLabel("{}:".format(_('chaniconsfromplaylist')))
         hideepgpercentage_label = QtWidgets.QLabel("{}:".format(_('hideepgpercentage')))
         hidebitrateinfo_label = QtWidgets.QLabel("{}:".format(_('hidebitrateinfo')))
         movedragging_label = QtWidgets.QLabel("{}:".format(_('movedragging')))
@@ -3259,12 +3253,6 @@ if __name__ == '__main__':
 
         hidempv_flag = QtWidgets.QCheckBox()
         hidempv_flag.setChecked(settings['hidempv'])
-
-        chaniconsfromepg_flag = QtWidgets.QCheckBox()
-        chaniconsfromepg_flag.setChecked(settings['chaniconsfromepg'])
-
-        chaniconsfromplaylist_flag = QtWidgets.QCheckBox()
-        chaniconsfromplaylist_flag.setChecked(settings['chaniconsfromplaylist'])
 
         hideepgpercentage_flag = QtWidgets.QCheckBox()
         hideepgpercentage_flag.setChecked(settings['hideepgpercentage'])
@@ -3347,6 +3335,14 @@ if __name__ == '__main__':
         hideplaylistleftclk_label = QtWidgets.QLabel("{}:".format(_('hideplaylistleftclk')))
         hideplaylistleftclk_flag = QtWidgets.QCheckBox()
         hideplaylistleftclk_flag.setChecked(settings['hideplaylistleftclk'])
+
+        channellogos_label = QtWidgets.QLabel("{}:".format(_('channellogos')))
+        channellogos_select = QtWidgets.QComboBox()
+        channellogos_select.addItem(_('preferm3u'))
+        channellogos_select.addItem(_('preferepg'))
+        channellogos_select.addItem(_('donotloadfromepg'))
+        channellogos_select.addItem(_('donotloadanylogos'))
+        channellogos_select.setCurrentIndex(settings['channellogos'])
 
         nocacheepg_label = QtWidgets.QLabel("{}:".format(_('nocacheepg')))
         nocacheepg_flag = QtWidgets.QCheckBox()
@@ -3463,18 +3459,16 @@ if __name__ == '__main__':
         tab4.layout.addWidget(donot_flag, 1, 1)
         tab4.layout.addWidget(hidempv_label, 2, 0)
         tab4.layout.addWidget(hidempv_flag, 2, 1)
-        tab4.layout.addWidget(chaniconsfromplaylist_label, 3, 0)
-        tab4.layout.addWidget(chaniconsfromplaylist_flag, 3, 1)
-        tab4.layout.addWidget(chaniconsfromepg_label, 4, 0)
-        tab4.layout.addWidget(chaniconsfromepg_flag, 4, 1)
-        tab4.layout.addWidget(volumechangestep_label, 5, 0)
-        tab4.layout.addWidget(volumechangestep_choose, 5, 1)
-        tab4.layout.addWidget(screenshot_label, 6, 0)
-        tab4.layout.addWidget(screenshot_choose, 6, 1)
-        tab4.layout.addWidget(hideplaylistleftclk_label, 7, 0)
-        tab4.layout.addWidget(hideplaylistleftclk_flag, 7, 1)
-        tab4.layout.addWidget(nocacheepg_label, 8, 0)
-        tab4.layout.addWidget(nocacheepg_flag, 8, 1)
+        tab4.layout.addWidget(channellogos_label, 3, 0)
+        tab4.layout.addWidget(channellogos_select, 3, 1)
+        tab4.layout.addWidget(volumechangestep_label, 4, 0)
+        tab4.layout.addWidget(volumechangestep_choose, 4, 1)
+        tab4.layout.addWidget(screenshot_label, 5, 0)
+        tab4.layout.addWidget(screenshot_choose, 5, 1)
+        tab4.layout.addWidget(hideplaylistleftclk_label, 6, 0)
+        tab4.layout.addWidget(hideplaylistleftclk_flag, 6, 1)
+        tab4.layout.addWidget(nocacheepg_label, 7, 0)
+        tab4.layout.addWidget(nocacheepg_flag, 7, 1)
         tab4.setLayout(tab4.layout)
 
         tab5.layout = QtWidgets.QGridLayout()
@@ -5167,10 +5161,10 @@ if __name__ == '__main__':
                 if channel_icons_data.do_next_update:
                     channel_icons_data.do_next_update = False
                     btn_update.click()
-                    print_with_time("Channel icons updated")
+                    print_with_time("Channel logos updated")
                 try:
                     if len(channel_icons_data.return_dict) != channel_icons_data.total:
-                        print_with_time("Channel icons loaded: {}/{}".format(
+                        print_with_time("Channel logos loaded: {}/{}".format(
                             len(channel_icons_data.return_dict), channel_icons_data.total
                         ))
                         btn_update.click()
@@ -5178,7 +5172,7 @@ if __name__ == '__main__':
                         if not channel_icons_data.load_completed:
                             channel_icons_data.load_completed = True
                             channel_icons_data.do_next_update = True
-                            print_with_time("Channel icons loaded ({}/{}), took {} seconds".format(
+                            print_with_time("Channel logos loaded ({}/{}), took {} seconds".format(
                                 len(channel_icons_data.return_dict),
                                 channel_icons_data.total,
                                 time.time() - channel_icons_data.load_time
@@ -5193,10 +5187,10 @@ if __name__ == '__main__':
                 if channel_icons_data_epg.do_next_update:
                     channel_icons_data_epg.do_next_update = False
                     btn_update.click()
-                    print_with_time("Channel icons (EPG) updated")
+                    print_with_time("Channel logos (EPG) updated")
                 try:
                     if len(channel_icons_data_epg.return_dict) != channel_icons_data_epg.total:
-                        print_with_time("Channel icons (EPG) loaded: {}/{}".format(
+                        print_with_time("Channel logos (EPG) loaded: {}/{}".format(
                             len(channel_icons_data_epg.return_dict), channel_icons_data_epg.total
                         ))
                         btn_update.click()
@@ -5205,7 +5199,7 @@ if __name__ == '__main__':
                             channel_icons_data_epg.load_completed = True
                             channel_icons_data_epg.do_next_update = True
                             print_with_time(
-                                "Channel icons (EPG) loaded ({}/{}), took {} seconds".format(
+                                "Channel logos (EPG) loaded ({}/{}), took {} seconds".format(
                                     len(channel_icons_data_epg.return_dict),
                                     channel_icons_data_epg.total,
                                     time.time() - channel_icons_data_epg.load_time
@@ -5221,7 +5215,7 @@ if __name__ == '__main__':
 
         def epg_channel_icons_thread():
             global epg_icons, epg_icons_found, epg_icons_aldisabled
-            if settings['chaniconsfromepg']:
+            if settings['channellogos'] < 2:
                 if not epg_icons_found:
                     if epg_icons:
                         epg_icons_found = True
@@ -5235,7 +5229,7 @@ if __name__ == '__main__':
         def update_channel_icons():
             while not win.isVisible():
                 time.sleep(1)
-            print_with_time("Loading channel icons...")
+            print_with_time("Loading channel logos...")
             if not os.path.isdir(str(Path(LOCAL_DIR, 'channel_icons_cache'))):
                 os.mkdir(str(Path(LOCAL_DIR, 'channel_icons_cache')))
             channel_icons_data.load_time = time.time()
@@ -5262,7 +5256,7 @@ if __name__ == '__main__':
                 time.sleep(1)
             while not epg_icons_found:
                 time.sleep(1)
-            print_with_time("Loading channel icons (EPG)...")
+            print_with_time("Loading channel logos (EPG)...")
             if not os.path.isdir(str(Path(LOCAL_DIR, 'channel_icons_cache'))):
                 os.mkdir(str(Path(LOCAL_DIR, 'channel_icons_cache')))
             channel_icons_data_epg.load_time = time.time()
@@ -5295,10 +5289,10 @@ if __name__ == '__main__':
                 channel_icons_data.return_dict = channel_icons_data.manager_1.dict()
                 channel_icons_data_epg.manager_1 = Manager()
                 channel_icons_data_epg.return_dict = channel_icons_data_epg.manager_1.dict()
-                if settings['chaniconsfromplaylist']:
+                if settings['channellogos'] != 3:
                     update_channel_icons()
                 else:
-                    print_with_time("Channel icons from playlist disabled")
+                    print_with_time("Channel logos from playlist disabled")
                 update_channel_icons_epg()
             try:
                 idx = (page_box.value() - 1) * settings["channelsonpage"]
@@ -5448,24 +5442,53 @@ if __name__ == '__main__':
 
                 mycwdg.setIcon(TV_ICON)
 
-                # Icon from playlist
-                if i in channel_icons_data.return_dict and channel_icons_data.return_dict[i]:
-                    if i in ICONS_CACHE_FETCHED:
-                        fetched_icon = ICONS_CACHE_FETCHED[i]
-                    else:
-                        fetched_icon = channel_icons_data.return_dict[i][0]
-                        ICONS_CACHE_FETCHED[i] = fetched_icon
-                    mycwdg.setIcon(fetched_icon)
-
-                # Icon from EPG
-                if i in channel_icons_data_epg.return_dict and \
-                channel_icons_data_epg.return_dict[i]:
-                    if i in ICONS_CACHE_FETCHED_EPG:
-                        fetched_icon_epg = ICONS_CACHE_FETCHED_EPG[i]
-                    else:
-                        fetched_icon_epg = channel_icons_data_epg.return_dict[i][0]
-                        ICONS_CACHE_FETCHED_EPG[i] = fetched_icon_epg
-                    mycwdg.setIcon(fetched_icon_epg)
+                if settings['channellogos'] == 0:
+                    # Prefer M3U
+                    if i in channel_icons_data.return_dict and channel_icons_data.return_dict[i]:
+                        # Icon from playlist
+                        if i in ICONS_CACHE_FETCHED:
+                            fetched_icon = ICONS_CACHE_FETCHED[i]
+                        else:
+                            fetched_icon = channel_icons_data.return_dict[i][0]
+                            ICONS_CACHE_FETCHED[i] = fetched_icon
+                        mycwdg.setIcon(fetched_icon)
+                    elif i in channel_icons_data_epg.return_dict and \
+                    channel_icons_data_epg.return_dict[i]:
+                        # Icon from EPG
+                        if i in ICONS_CACHE_FETCHED_EPG:
+                            fetched_icon_epg = ICONS_CACHE_FETCHED_EPG[i]
+                        else:
+                            fetched_icon_epg = channel_icons_data_epg.return_dict[i][0]
+                            ICONS_CACHE_FETCHED_EPG[i] = fetched_icon_epg
+                        mycwdg.setIcon(fetched_icon_epg)
+                elif settings['channellogos'] == 1:
+                    # Prefer EPG
+                    if i in channel_icons_data_epg.return_dict and \
+                    channel_icons_data_epg.return_dict[i]:
+                        if i in ICONS_CACHE_FETCHED_EPG:
+                            fetched_icon_epg = ICONS_CACHE_FETCHED_EPG[i]
+                        else:
+                            fetched_icon_epg = channel_icons_data_epg.return_dict[i][0]
+                            ICONS_CACHE_FETCHED_EPG[i] = fetched_icon_epg
+                        mycwdg.setIcon(fetched_icon_epg)
+                    elif i in channel_icons_data.return_dict and channel_icons_data.return_dict[i]:
+                        # Icon from playlist
+                        if i in ICONS_CACHE_FETCHED:
+                            fetched_icon = ICONS_CACHE_FETCHED[i]
+                        else:
+                            fetched_icon = channel_icons_data.return_dict[i][0]
+                            ICONS_CACHE_FETCHED[i] = fetched_icon
+                        mycwdg.setIcon(fetched_icon)
+                elif settings['channellogos'] == 2:
+                    # Do not load from EPG
+                    # Icon from playlist
+                    if i in channel_icons_data.return_dict and channel_icons_data.return_dict[i]:
+                        if i in ICONS_CACHE_FETCHED:
+                            fetched_icon = ICONS_CACHE_FETCHED[i]
+                        else:
+                            fetched_icon = channel_icons_data.return_dict[i][0]
+                            ICONS_CACHE_FETCHED[i] = fetched_icon
+                        mycwdg.setIcon(fetched_icon)
 
                 # Create QListWidgetItem
                 myQListWidgetItem = QtWidgets.QListWidgetItem()
