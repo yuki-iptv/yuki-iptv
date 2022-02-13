@@ -2,7 +2,7 @@ from typing import Optional
 from abc import ABC
 import logging
 
-from pydbus.generic import signal
+from thirdparty.astpydbus.generic import signal
 
 from .base import NAME, INTERFACE as MPRIS_INTERFACE
 

@@ -1,7 +1,7 @@
 import logging
 
 from gi.repository import GLib
-import pydbus
+import thirdparty.astpydbus
 
 from .player import Player
 from .playlists import Playlists
@@ -41,10 +41,10 @@ class Server:
     logger.debug(f"Connecting to D-Bus {bus_type} bus...")
 
     if bus_type == "system":
-      bus = pydbus.SystemBus()
+      bus = thirdparty.astpydbus.SystemBus()
 
     else:
-      bus = pydbus.SessionBus()
+      bus = thirdparty.astpydbus.SessionBus()
 
     logger.info(f"MPRIS server connected to D-Bus {bus_type} bus")
 

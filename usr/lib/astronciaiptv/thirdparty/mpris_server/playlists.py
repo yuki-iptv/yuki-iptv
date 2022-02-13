@@ -2,7 +2,7 @@ from typing import Union, List, Tuple
 import base64
 import logging
 
-from pydbus.generic import signal
+from thirdparty.astpydbus.generic import signal
 
 from .base import PlaylistEntry, PlaylistValidity
 from .interface import MprisInterface

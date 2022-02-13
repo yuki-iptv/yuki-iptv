@@ -60,7 +60,6 @@ Icons: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 - [PyQt6](https://pypi.org/project/PyQt6/) 6.2.2 or newer *(or [PyQt5](https://pypi.org/project/PyQt5/) 5.12 or newer)*
 - [Pillow](https://pypi.org/project/Pillow/) (python3-pil)
 - [PyGObject](https://pypi.org/project/PyGObject/) (python3-gi)
-- [pydbus](https://pypi.org/project/pydbus/) (python3-pydbus)
 - [Unidecode](https://pypi.org/project/Unidecode/) (python3-unidecode)
 - [requests](https://pypi.org/project/requests/) (python3-requests)
 - [chardet](https://pypi.org/project/chardet/) (python3-chardet)
