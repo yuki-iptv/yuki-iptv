@@ -9,21 +9,6 @@
 # The Font Awesome pictograms are licensed under the CC BY 4.0 License
 # https://creativecommons.org/licenses/by/4.0/
 #
-# Copyright (c) 2021-2022 Astroncia
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#
 from pathlib import Path
 import sys
 import os
@@ -55,7 +40,6 @@ from astroncia.ua import user_agent, uas, ua_names
 from astroncia.epg import worker
 from astroncia.record import record, record_return, stop_record, \
     async_wait_process, make_ffmpeg_screenshot, is_ffmpeg_recording
-from astroncia.playlists import iptv_playlists
 from astroncia.menubar import init_astroncia_menubar, init_menubar_player, \
     populate_menubar, update_menubar, get_active_vf_filters, get_first_run, get_seq, \
     reload_menubar_shortcuts
@@ -157,6 +141,8 @@ stream_info.audio_bitrates = []
 
 DOCK_WIDGET2_HEIGHT = max(DOCK_WIDGET2_HEIGHT, 0)
 DOCK_WIDGET_WIDTH = max(DOCK_WIDGET_WIDTH, 0)
+
+iptv_playlists = {}
 
 parser = argparse.ArgumentParser(description=MAIN_WINDOW_TITLE)
 parser.add_argument('--python')
