@@ -18,7 +18,7 @@ Depends: ffmpeg,
          python3-pil,
          python3-gi,
          python3-unidecode
-Recommends: yt-dlp | youtube-dl
+Recommends: dconf-cli, yt-dlp | youtube-dl
 Breaks: astroncia-iptv (<< 0.0.91)
 Replaces: astroncia-iptv (<< 0.0.91)
 Description: IPTV player
