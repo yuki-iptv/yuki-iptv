@@ -1,7 +1,7 @@
 # Astroncia IPTV
 ### IPTV player with EPG support
 
-[![Screenshot](https://gitlab.com/astroncia/iptv/uploads/c957ba718b47c66438a0d235cb60b916/astronciaiptv-screenshot-thumbnail.png)](https://gitlab.com/astroncia/iptv/uploads/f66fa1d13439dd4b084f73a3f7e7008e/astronciaiptv-screenshot.png)  
+[![Screenshot](https://gitlab.com/astroncia/iptv/uploads/3af0979a9fcf688332b995475689a60f/astronciaiptv-screenshot-thumbnail.png)](https://gitlab.com/astroncia/iptv/uploads/5d36d4b259c0d2a5781603867d0f2454/astronciaiptv-screenshot.png)  
   
 ⚠️ Note: Astroncia IPTV doesn't provide any playlists or other digital content. The channels and pictures in the screenshots are for demonstration purposes only.  
 
