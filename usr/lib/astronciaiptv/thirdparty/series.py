@@ -1,7 +1,4 @@
-# pylint: disable=missing-class-docstring, missing-function-docstring
-'''
-Source: https://github.com/linuxmint/hypnotix/blob/master/usr/lib/hypnotix/common.py
-'''
+# pylint: disable=missing-class-docstring, missing-function-docstring, missing-module-docstring
 import re
 from astroncia.time import print_with_time
 

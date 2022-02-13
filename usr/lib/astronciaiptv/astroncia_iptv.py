@@ -50,6 +50,7 @@ from astroncia.m3u import M3UParser
 from astroncia.xspf import parse_xspf
 from astroncia.catchup import get_catchup_url, parse_specifiers_now_url, format_url_clean, \
     format_catchup_array
+from astroncia.hypnotix_import import import_from_hypnotix
 from astroncia.qt6compat import globalPos, getX, getY, _exec, _enum
 from astroncia.m3u_editor import M3UEditor
 from thirdparty.conversion import convert_size, format_bytes, human_secs
@@ -3817,53 +3818,7 @@ if __name__ == '__main__':
 
         def playlists_import_do():
             global playlists_saved
-            playlists_hypnotix = {}
-            hypnotix_import_ok = True
-            print_with_time("Fetching playlists from Hypnotix...")
-            try: # pylint: disable=too-many-nested-blocks
-                hypnotix_cmd = "dconf dump /org/x/hypnotix/ 2>/dev/null | grep" + \
-                    " '^providers=' | sed 's/^providers=/{\"hypnotix\": /g'" + \
-                    " | sed 's/$/}/g' | sed \"s/'/\\\"/g\""
-                hypnotix_cmd_eval = subprocess.check_output(
-                    hypnotix_cmd, shell=True, text=True
-                ).strip()
-                if hypnotix_cmd_eval:
-                    hypnotix_cmd_eval = json.loads(hypnotix_cmd_eval)['hypnotix']
-                    print_with_time("Hypnotix JSON output: {}".format(hypnotix_cmd_eval))
-                    print_with_time("")
-                    for provider_2 in hypnotix_cmd_eval:
-                        provider_2 = provider_2.replace(':' * 9, '^' * 9).split(':::')
-                        provider_2[2] = provider_2[2].split('^' * 9)
-                        print_with_time("{}".format(provider_2))
-                        prov_name_2 = provider_2[0]
-                        prov_m3u_2 = provider_2[2][0]
-                        # XTream API parse
-                        if provider_2[1] == 'xtream':
-                            prov_m3u_2 = "XTREAM::::::::::::::" + \
-                            "{}::::::::::::::{}::::::::::::::{}".format(
-                                provider_2[3], # username
-                                provider_2[4], # password
-                                provider_2[2][0] # url
-                            )
-                            prov_epg_2 = provider_2[5]
-                        else:
-                            # Local or remote URL
-                            prov_epg_2 = provider_2[2][1]
-                            # Local
-                            if provider_2[1] == 'local':
-                                if provider_2[2][0].startswith('file://'):
-                                    provider_2[2][0] = provider_2[2][0].replace('file://', '')
-                                prov_m3u_2 = provider_2[2][0]
-                        playlists_hypnotix[prov_name_2] = {
-                            "m3u": prov_m3u_2,
-                            "epg": prov_epg_2,
-                            "epgoffset": DEF_TIMEZONE
-                        }
-            except: # pylint: disable=bare-except
-                print_with_time("")
-                print_with_time(traceback.format_exc())
-                print_with_time("Failed fetching playlists from Hypnotix!")
-                hypnotix_import_ok = False
+            playlists_hypnotix, hypnotix_import_ok = import_from_hypnotix()
             if playlists_hypnotix and hypnotix_import_ok:
                 playlists_data.playlists_used = playlists_hypnotix
                 playlists_saved = playlists_hypnotix
