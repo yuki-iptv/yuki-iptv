@@ -10,3 +10,9 @@ buildmo:
 
 clean:
 	rm -rf usr/share/locale
+
+lint:
+	pylint usr/lib/astronciaiptv/thirdparty/conversion.py
+	pylint usr/lib/astronciaiptv/thirdparty/series.py
+	pylint usr/lib/astronciaiptv/astroncia/
+	pylint usr/lib/astronciaiptv/astroncia_iptv.py
