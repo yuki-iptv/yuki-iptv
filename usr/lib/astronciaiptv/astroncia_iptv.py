@@ -2680,7 +2680,7 @@ if __name__ == '__main__':
                     os.remove(str(Path(LOCAL_DIR, 'playlist.cache.json')))
             lang1 = LANG_DEFAULT
             for lng1 in lang:
-                if lang[lng1]['strings']['name'] == slang.currentText():
+                if lang[lng1]['strings']['name'] == slang.currentText().split(' (')[0]:
                     lang1 = lng1
             if lang1 != settings["lang"]:
                 if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.cache.json'))):
@@ -2888,7 +2888,7 @@ if __name__ == '__main__':
         lng0 = -1
         for lng in lang:
             lng0 += 1
-            slang.addItem(lang[lng]['strings']['name'])
+            slang.addItem(lang[lng]['strings']['name'] + ' ({})'.format(lng))
             if lang[lng]['strings']['name'] == LANG_NAME:
                 slang.setCurrentIndex(lng0)
         def close_settings():
