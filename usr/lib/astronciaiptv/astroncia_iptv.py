@@ -1,6 +1,6 @@
 '''Astroncia IPTV'''
 # pylint: disable=invalid-name, global-statement, missing-docstring
-# pylint: disable=too-many-lines, too-many-statements, broad-except
+# pylint: disable=too-many-lines, too-many-statements, broad-except, bare-except
 #
 # SPDX-License-Identifier: GPL-3.0-only
 #
@@ -35,7 +35,7 @@ from unidecode import unidecode
 
 try:
     from gi.repository import GLib
-except: # pylint: disable=bare-except
+except:
     pass
 
 from astroncia.qt import get_qt_library
@@ -56,6 +56,8 @@ from astroncia.catchup import get_catchup_url, parse_specifiers_now_url, format_
     format_catchup_array
 from astroncia.hypnotix_import import import_from_hypnotix
 from astroncia.settings import parse_settings
+from astroncia.interface import init_interface_widgets, cwdg, cwdg_simple, \
+    settings_scrollable_window, ClickableLabel, KeySequenceEdit
 from astroncia.qt6compat import globalPos, getX, getY, _exec, _enum
 from astroncia.m3u_editor import M3UEditor
 from thirdparty.conversion import convert_size, format_bytes, human_secs
@@ -69,7 +71,7 @@ try:
       Microseconds, VolumeDecimal, RateDecimal, Track, DEFAULT_RATE
     from thirdparty.mpris_server.events import EventAdapter
     from thirdparty.mpris_server.server import Server
-except: # pylint: disable=bare-except
+except:
     print_with_time("Failed to init MPRIS libraries!")
     print_with_time(traceback.format_exc())
 
@@ -183,12 +185,12 @@ if 'HOME' in os.environ and os.path.isdir(os.environ['HOME']):
     try:
         if not os.path.isdir(str(Path(os.environ['HOME'], '.config'))):
             os.mkdir(str(Path(os.environ['HOME'], '.config')))
-    except: # pylint: disable=bare-except
+    except:
         pass
     try:
         if not os.path.isdir(str(Path(os.environ['HOME'], '.cache'))):
             os.mkdir(str(Path(os.environ['HOME'], '.cache')))
-    except: # pylint: disable=bare-except
+    except:
         pass
     try:
         if os.path.isdir(str(Path(os.environ['HOME'], '.AstronciaIPTV'))):
@@ -196,7 +198,7 @@ if 'HOME' in os.environ and os.path.isdir(os.environ['HOME']):
                 str(Path(os.environ['HOME'], '.AstronciaIPTV')),
                 str(Path(os.environ['HOME'], '.config', 'astronciaiptv'))
             )
-    except: # pylint: disable=bare-except
+    except:
         pass
     LOCAL_DIR = str(Path(os.environ['HOME'], '.config', 'astronciaiptv'))
     SAVE_FOLDER_DEFAULT = str(Path(os.environ['HOME'], '.config', 'astronciaiptv', 'saves'))
@@ -214,7 +216,7 @@ LANG_LOCALE = '?'
 try:
     loc = locale.getdefaultlocale()[0]
     LANG_LOCALE = loc.split("_")[0]
-except: # pylint: disable=bare-except
+except:
     pass
 print_with_time("System locale: {}".format(LANG_LOCALE))
 LANG_DEFAULT = LANG_LOCALE if LANG_LOCALE in lang else 'en'
@@ -222,13 +224,13 @@ try:
     settings_file0 = open(str(Path(LOCAL_DIR, 'settings.json')), 'r', encoding="utf8")
     settings_lang0 = json.loads(settings_file0.read())['lang']
     settings_file0.close()
-except: # pylint: disable=bare-except
+except:
     settings_lang0 = LANG_DEFAULT
 
 try:
     LANG = lang[settings_lang0]['strings'] if settings_lang0 in \
         lang else lang[LANG_DEFAULT]['strings']
-except: # pylint: disable=bare-except
+except:
     print_with_time("")
     print_with_time("ERROR: No locales found!")
     print_with_time("Execute 'make' for create locale files.")
@@ -249,7 +251,7 @@ try:
         cpuinfo_file.close()
         if 'Raspberry' in cpuinfo_file_contents:
             DEF_DEINTERLACE = False
-except: # pylint: disable=bare-except
+except:
     pass
 
 def show_exception(e, e_traceback="", prev=""):
@@ -285,14 +287,14 @@ def qt_version_pt1():
 def qt_version_pt2():
     try:
         qt_version_1 = QtCore.qVersion()
-    except: # pylint: disable=bare-except
+    except:
         qt_version_1 = "UNKNOWN"
     return qt_version_1
 
 if __name__ == '__main__':
     try:
         os.setpgrp()
-    except: # pylint: disable=bare-except
+    except:
         pass
     print_with_time("Qt init...")
     app = QtWidgets.QApplication(sys.argv)
@@ -306,7 +308,7 @@ if __name__ == '__main__':
                 settings_tmp_json = json.loads(settings_tmp.read())
                 if 'styleredefoff' in settings_tmp_json:
                     setAppFusion = settings_tmp_json['styleredefoff']
-    except: # pylint: disable=bare-except
+    except:
         print_with_time("[WARNING] failed to read settings.json")
 
     try:
@@ -315,7 +317,7 @@ if __name__ == '__main__':
             print_with_time('app.setStyle("fusion") OK')
         else:
             print_with_time("fusion style turned OFF")
-    except: # pylint: disable=bare-except
+    except:
         print_with_time('[WARNING] app.setStyle("fusion") FAILED')
 
     # This is necessary since PyQT stomps over the locale settings needed by libmpv.
@@ -335,7 +337,7 @@ if __name__ == '__main__':
         print_with_time("Qt library: {}".format(qt_library))
         try:
             qt_version = qt_version_pt1()
-        except: # pylint: disable=bare-except
+        except:
             qt_version = qt_version_pt2()
         print_with_time("Qt version: {}".format(qt_version))
         print_with_time("")
@@ -347,7 +349,7 @@ if __name__ == '__main__':
 
         try:
             from thirdparty import mpv
-        except: # pylint: disable=bare-except
+        except:
             print_with_time("Falling back to old mpv library...")
             from thirdparty import mpv_old as mpv
 
@@ -398,6 +400,8 @@ if __name__ == '__main__':
         if not settings_loaded:
             m3u = ""
 
+        init_interface_widgets(settings)
+
         if settings['hwaccel']:
             print_with_time("{} {}".format(_('hwaccel').replace('\n', ' '), _('enabled')))
         else:
@@ -424,6 +428,7 @@ if __name__ == '__main__':
         # URL override for command line
         if args1.URL:
             settings["m3u"] = args1.URL
+            settings["epg"] = ""
 
         tvguide_sets = {}
 
@@ -449,14 +454,14 @@ if __name__ == '__main__':
         def start_epg_hdd_animation(arg11=None): # pylint: disable=unused-argument
             try:
                 hdd_gif_label.setVisible(True)
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         @idle_function
         def stop_epg_hdd_animation(arg11=None): # pylint: disable=unused-argument
             try:
                 hdd_gif_label.setVisible(False)
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         @async_function
@@ -464,7 +469,7 @@ if __name__ == '__main__':
             global epg_thread_2, tvguide_sets
             try:
                 start_epg_hdd_animation()
-            except: # pylint: disable=bare-except
+            except:
                 pass
             epg_thread_2 = Process(
                 target=save_tvguide_sets_proc,
@@ -474,7 +479,7 @@ if __name__ == '__main__':
             epg_thread_2.join()
             try:
                 stop_epg_hdd_animation()
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         def clean_programme():
@@ -489,7 +494,6 @@ if __name__ == '__main__':
         def is_program_actual(sets0, force=False):
             global epg_ready
             if not epg_ready and not force:
-                #print_with_time("is_program_actual override (EPG not ready)")
                 return True
             found_prog = False
             if sets0:
@@ -524,7 +528,7 @@ if __name__ == '__main__':
         def mainwindow_isvisible():
             try:
                 return win.isVisible()
-            except: # pylint: disable=bare-except
+            except:
                 return False
 
         def load_epg_cache(epg_dict, settings_m3u, settings_epg):
@@ -538,7 +542,7 @@ if __name__ == '__main__':
                 try:
                     if 'current_url' in file1_json:
                         current_url = file1_json['current_url']
-                except: # pylint: disable=bare-except
+                except:
                     pass
                 if not (
                     current_url[0] == settings_m3u and current_url[1] == settings_epg
@@ -547,14 +551,13 @@ if __name__ == '__main__':
                     print_with_time("Ignoring epg.cache, EPG URL changed")
                     os.remove(str(Path(LOCAL_DIR, 'epg.cache')))
                     file1_json = {}
-            except: # pylint: disable=bare-except
+            except:
                 file1_json = {}
             epg_dict['out'] = [file1_json, '']
 
         def epg_loading_hide():
             epg_loading.hide()
 
-        #@async_function
         def update_epg_func():
             global settings, tvguide_sets, prog_ids, epg_icons, programmes, epg_ready
             if settings["nocacheepg"]:
@@ -562,7 +565,7 @@ if __name__ == '__main__':
                 try:
                     if os.path.isfile(str(Path(LOCAL_DIR, 'epg.cache'))):
                         os.remove(str(Path(LOCAL_DIR, 'epg.cache')))
-                except: # pylint: disable=bare-except
+                except:
                     pass
             print_with_time("Reading cached TV guide if exists...")
             tvguide_read_time = time.time()
@@ -594,11 +597,11 @@ if __name__ == '__main__':
                 }
                 try:
                     prog_ids = tvguide_json["prog_ids"]
-                except: # pylint: disable=bare-except
+                except:
                     pass
                 try:
                     epg_icons = tvguide_json["epg_icons"]
-                except: # pylint: disable=bare-except
+                except:
                     pass
             if not is_program_actual(tvguide_sets, force=True):
                 print_with_time("EPG cache expired, updating...")
@@ -650,13 +653,13 @@ if __name__ == '__main__':
                 settings_file3 = open(str(Path(LOCAL_DIR, 'settings.json')), 'w', encoding="utf8")
                 settings_file3.write(json.dumps(settings))
                 settings_file3.close()
-        except: # pylint: disable=bare-except
+        except:
             pass
 
         if not os.path.isdir(str(Path(save_folder))):
             try:
                 os.mkdir(str(Path(save_folder)))
-            except: # pylint: disable=bare-except
+            except:
                 print_with_time("Failed to create save folder!")
                 save_folder = SAVE_FOLDER_DEFAULT
                 if not os.path.isdir(str(Path(save_folder))):
@@ -671,12 +674,12 @@ if __name__ == '__main__':
             if os.path.isdir(str(Path(save_folder, 'screenshots'))):
                 try:
                     os.rmdir(str(Path(save_folder, 'screenshots')))
-                except: # pylint: disable=bare-except
+                except:
                     pass
             if os.path.isdir(str(Path(save_folder, 'recordings'))):
                 try:
                     os.rmdir(str(Path(save_folder, 'recordings')))
-                except: # pylint: disable=bare-except
+                except:
                     pass
 
         def getArrayItem(arr_item):
@@ -711,7 +714,7 @@ if __name__ == '__main__':
                                         }
                                         break
                                 break
-                except: # pylint: disable=bare-except
+                except:
                     print_with_time("Exception in getArrayItem (series)")
                     print_with_time(traceback.format_exc())
             return arr_item_ret
@@ -725,7 +728,6 @@ if __name__ == '__main__':
         class PlaylistsFail: # pylint: disable=too-few-public-methods
             status_code = 0
 
-        doSaveSettings = False
         m3uFailed = False
 
         use_cache = settings['m3u'].startswith('http://') or settings['m3u'].startswith('https://')
@@ -752,7 +754,7 @@ if __name__ == '__main__':
                 if not playlist_load_tmp_data['m3u'] and not playlist_load_tmp_data['array']:
                     print_with_time("Cached playlist broken, ignoring and deleting")
                     os.remove(str(Path(LOCAL_DIR, 'playlist.cache.json')))
-            except: # pylint: disable=bare-except
+            except:
                 pass
         if not os.path.isfile(str(Path(LOCAL_DIR, 'playlist.cache.json'))):
             print_with_time(_('loadingplaylist'))
@@ -776,7 +778,7 @@ if __name__ == '__main__':
                             xtream_url,
                             ''
                         )
-                    except: # pylint: disable=bare-except
+                    except:
                         print_with_time("XTream init failure")
                         xt = EmptyClass()
                         xt.auth_data = {} # pylint: disable=attribute-defined-outside-init
@@ -786,12 +788,12 @@ if __name__ == '__main__':
                             m3u = convert_xtream_to_m3u(_, xt.channels)
                             try:
                                 m3u += convert_xtream_to_m3u(_, xt.movies, True, 'VOD')
-                            except: # pylint: disable=bare-except
+                            except:
                                 print_with_time("XTream movies parse FAILED")
                             for movie1 in xt.series:
                                 if isinstance(movie1, Serie):
                                     AstronciaData.series[movie1.name] = movie1
-                        except Exception as e3: # pylint: disable=bare-except
+                        except Exception as e3:
                             message2 = "{}\n\n{}".format(
                                 _('error2'),
                                 str("XTream API: {}\n\n{}".format(_('procerror'), str(e3)))
@@ -821,7 +823,7 @@ if __name__ == '__main__':
                             file = open(settings['m3u'], 'r', encoding="utf8")
                             m3u = file.read()
                             file.close()
-                        except: # pylint: disable=bare-except
+                        except:
                             print_with_time("Playlist is not UTF-8 encoding")
                             print_with_time("Trying to detect encoding...")
                             file_222_encoding = ''
@@ -829,7 +831,7 @@ if __name__ == '__main__':
                                 file_222 = open(settings['m3u'], 'rb')
                                 file_222_encoding = chardet.detect(file_222.read())['encoding']
                                 file_222.close()
-                            except: # pylint: disable=bare-except
+                            except:
                                 pass
                             if file_222_encoding:
                                 print_with_time("Guessed encoding: {}".format(file_222_encoding))
@@ -841,7 +843,7 @@ if __name__ == '__main__':
                                     )
                                     m3u = file_111.read()
                                     file_111.close()
-                                except: # pylint: disable=bare-except
+                                except:
                                     print_with_time("Wrong encoding guess!")
                                     show_exception(_('unknownencoding'))
                             else:
@@ -855,7 +857,7 @@ if __name__ == '__main__':
                                     headers={'User-Agent': uas[settings['useragent']]},
                                     timeout=3
                                 )
-                            except: # pylint: disable=bare-except
+                            except:
                                 m3u_req = PlaylistsFail()
                                 m3u_req.status_code = 400
 
@@ -870,13 +872,12 @@ if __name__ == '__main__':
                             print_with_time("Status code: {}".format(m3u_req.status_code))
                             print_with_time("{} bytes".format(len(m3u_req.content)))
                             m3u = m3u_req.text
-                        except: # pylint: disable=bare-except
+                        except:
                             m3u = ""
                             exp3 = traceback.format_exc()
                             print_with_time("Playlist URL loading error!" + '\n' + exp3)
                             show_exception(_('playlistloaderror'))
 
-            doSaveSettings = False
             m3u_parser = M3UParser(settings['udp_proxy'], _)
             epg_url = ""
             m3uFailed = False
@@ -906,12 +907,11 @@ if __name__ == '__main__':
                     epg_url = m3u_data0[1]
                     if epg_url and not settings["epg"]:
                         settings["epg"] = epg_url
-                        doSaveSettings = True
                     for m3u_line in m3u_data:
                         array[m3u_line['title']] = m3u_line
                         if not m3u_line['tvg-group'] in groups:
                             groups.append(m3u_line['tvg-group'])
-                except: # pylint: disable=bare-except
+                except:
                     print_with_time("Playlist parsing error!" + '\n' + traceback.format_exc())
                     show_exception(_('playlistloaderror'))
                     m3u = ""
@@ -962,12 +962,12 @@ if __name__ == '__main__':
                 epg_url = cm3u['epgurl']
                 if epg_url and not settings["epg"]:
                     settings["epg"] = epg_url
-            except: # pylint: disable=bare-except
+            except:
                 pass
             try:
                 if 'movies' in cm3u:
                     AstronciaData.movies = cm3u['movies']
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         for ch3 in array.copy():
@@ -1000,7 +1000,7 @@ if __name__ == '__main__':
                     )
                     settings_file4.write(json.dumps(settings_file2_json))
                     settings_file4.close()
-        except: # pylint: disable=bare-except
+        except:
             pass
 
         def sigint_handler(*args): # pylint: disable=unused-argument
@@ -1022,6 +1022,12 @@ if __name__ == '__main__':
         ICONS_CACHE = {}
         ICONS_CACHE_FETCHED = {}
         ICONS_CACHE_FETCHED_EPG = {}
+
+        def get_current_time():
+            return time.strftime('%d.%m.%y %H:%M', time.localtime())
+
+        def empty_function(arg1): # pylint: disable=unused-argument
+            pass
 
         class ScrollLabel(QtWidgets.QScrollArea):
             def __init__(self, *args, **kwargs):
@@ -1048,28 +1054,6 @@ if __name__ == '__main__':
 
             def getLabelHeight(self):
                 return self.label.height()
-
-        def get_current_time():
-            return time.strftime('%d.%m.%y %H:%M', time.localtime())
-
-        class settings_scrollable_window(QtWidgets.QMainWindow): # pylint: disable=too-few-public-methods
-            def __init__(self):
-                super().__init__()
-                self.initScroll()
-
-            def initScroll(self):
-                self.scroll = QtWidgets.QScrollArea()
-                self.scroll.setVerticalScrollBarPolicy(
-                    _enum(QtCore.Qt, 'ScrollBarPolicy.ScrollBarAlwaysOn')
-                )
-                self.scroll.setHorizontalScrollBarPolicy(
-                    _enum(QtCore.Qt, 'ScrollBarPolicy.ScrollBarAlwaysOn')
-                )
-                self.scroll.setWidgetResizable(True)
-                self.setCentralWidget(self.scroll)
-
-        def empty_function(arg1): # pylint: disable=unused-argument
-            pass
 
         settings_win = settings_scrollable_window()
         settings_win.resize(720, 500)
@@ -1153,11 +1137,6 @@ if __name__ == '__main__':
 
         shortcuts_grid_layout.addWidget(shortcuts_table)
         shortcuts_grid_layout.addWidget(resettodefaults_btn)
-
-        class KeySequenceEdit(QtWidgets.QKeySequenceEdit): # pylint: disable=too-few-public-methods
-            def keyPressEvent(self, event):
-                super().keyPressEvent(event)
-                self.setKeySequence(QtGui.QKeySequence(self.keySequence()))
 
         shortcuts_win_2 = QtWidgets.QMainWindow()
         shortcuts_win_2.resize(300, 100)
@@ -1299,8 +1278,6 @@ if __name__ == '__main__':
         ext_win.setWindowTitle(_('openexternal'))
         ext_win.setWindowIcon(main_icon)
 
-        # epg_win
-
         epg_win = QtWidgets.QMainWindow()
         epg_win.resize(400, 600)
         epg_win.setWindowTitle(_('tvguide'))
@@ -1312,8 +1289,6 @@ if __name__ == '__main__':
         epg_win_layout.addWidget(tvguide_lbl_2)
         epg_win_widget.setLayout(epg_win_layout)
         epg_win.setCentralWidget(epg_win_widget)
-
-        # epg_win_2
 
         epg_win_2 = QtWidgets.QMainWindow()
         epg_win_2.resize(600, 600)
@@ -1330,7 +1305,7 @@ if __name__ == '__main__':
                     '<span style="color: green;">', '<span style="color: red;">', 1
                 )
                 tvguide_lbl_3.setText(ch_3_guide)
-            except: # pylint: disable=bare-except
+            except:
                 print_with_time("[WARNING] Exception in epg_win_2_checkbox_changed")
 
         def showonlychplaylist_chk_clk():
@@ -1414,7 +1389,7 @@ if __name__ == '__main__':
                     )
                 )
                 playlists_data.playlists_used.pop(playlists_data.oldName)
-            except: # pylint: disable=bare-except
+            except:
                 pass
             if m3u_edit_1.text():
                 channel_text_prov = name_edit_1.text()
@@ -1672,7 +1647,7 @@ if __name__ == '__main__':
             if not force:
                 try:
                     used_screen = win.screen()
-                except: # pylint: disable=bare-except
+                except:
                     pass
             qr0 = win_arg.frameGeometry()
             qr0.moveCenter(
@@ -1687,7 +1662,6 @@ if __name__ == '__main__':
         settings_win_l = qr.topLeft()
         origY = settings_win_l.y() - 150
         settings_win_l.setY(origY)
-        #settings_win.move(settings_win_l)
         settings_win.move(qr.topLeft())
 
         def convert_time(times_1):
@@ -1755,7 +1729,7 @@ if __name__ == '__main__':
                     ffmpeg_process.terminate()
                     try:
                         async_wait_process(ffmpeg_process)
-                    except: # pylint: disable=bare-except
+                    except:
                         pass
                     ffmpeg_process = None
 
@@ -1771,8 +1745,6 @@ if __name__ == '__main__':
             # 0 - nothing to do
             if praction_choose.currentIndex() == 1: # 1 - Press Stop
                 mpv_stop()
-            #if praction_choose.currentIndex() == 2: # 2 - Quit program
-            #    key_quit()
 
         def record_thread_2():
             try:
@@ -1802,7 +1774,7 @@ if __name__ == '__main__':
                     recViaScheduler = False
                     if lbl2.text() == pl_text:
                         lbl2.hide()
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         ffmpeg_processes = []
@@ -1833,7 +1805,6 @@ if __name__ == '__main__':
                     status = _('recwaiting')
                     sch_item = [i2.split(': ')[1] for i2 in sch_item.split('\n') if i2]
                     channel_name_rec = sch_item[0]
-                    #ch_url = array[channel_name_rec]['url']
                     current_time = time.strftime('%d.%m.%y %H:%M', time.localtime())
                     start_time_1 = sch_item[1]
                     end_time_1 = sch_item[2]
@@ -1863,7 +1834,7 @@ if __name__ == '__main__':
                     if sch_recordings:
                         status = _('recrecording')
                 statusrec_lbl.setText('{}: {}'.format(_('status'), status))
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         def delrecord_clicked():
@@ -1923,7 +1894,6 @@ if __name__ == '__main__':
         praction_choose = QtWidgets.QComboBox()
         praction_choose.addItem(_('nothingtodo'))
         praction_choose.addItem(_('stoppress'))
-        #praction_choose.addItem(_('exitprogram'))
 
         schedulers = QtWidgets.QListWidget()
         activerec_list = QtWidgets.QListWidget()
@@ -2053,7 +2023,7 @@ if __name__ == '__main__':
         home_folder = ""
         try:
             home_folder = os.environ['HOME']
-        except: # pylint: disable=bare-except
+        except:
             pass
 
         def m3u_select():
@@ -2217,7 +2187,7 @@ if __name__ == '__main__':
                 else:
                     stream_info.audio_properties[_("general")][_("Average Bitrate")] = \
                     ("%.f " + _('bitrate2')) % br
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         def on_video_params(property1, params): # pylint: disable=unused-argument
@@ -2240,7 +2210,7 @@ if __name__ == '__main__':
                 if "average-bpp" in params:
                     stream_info.video_properties[_("colour")][_("Bits Per Pixel")] = \
                         params["average-bpp"]
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         def on_video_format(property1, vformat): # pylint: disable=unused-argument
@@ -2248,7 +2218,7 @@ if __name__ == '__main__':
                 if not vformat:
                     return
                 stream_info.video_properties[_("general")][_("Codec")] = vformat
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         def on_audio_params(property1, params): # pylint: disable=unused-argument
@@ -2270,7 +2240,7 @@ if __name__ == '__main__':
                 if "channel-count" in params:
                     stream_info.audio_properties[_("layout")][_("Channel Count")] = \
                         params["channel-count"]
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         def on_audio_codec(property1, codec): # pylint: disable=unused-argument
@@ -2278,7 +2248,7 @@ if __name__ == '__main__':
                 if not codec:
                     return
                 stream_info.audio_properties[_("general")][_("Codec")] = codec.split()[0]
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         @async_function
@@ -2291,7 +2261,7 @@ if __name__ == '__main__':
                 player.observe_property("audio-codec", on_audio_codec)
                 player.observe_property("video-bitrate", on_bitrate)
                 player.observe_property("audio-bitrate", on_bitrate)
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         def hideLoading():
@@ -2378,7 +2348,6 @@ if __name__ == '__main__':
                 player.user_agent = ua_data['ua']
             if ua_data['ref']:
                 player.http_header_fields = "Referer: {}".format(ua_data['ref'])
-            #print_with_time("mpv_override_play called")
 
             if not arg_override_play.endswith('/main.png'):
                 print_with_time("Using User-Agent: {}".format(player.user_agent))
@@ -2388,7 +2357,7 @@ if __name__ == '__main__':
                         if ref1.startswith('Referer: '):
                             ref1 = ref1.replace('Referer: ', '', 1)
                             cur_ref = ref1
-                except: # pylint: disable=bare-except
+                except:
                     pass
                 print_with_time("Using HTTP Referer: {}".format(cur_ref))
 
@@ -2396,20 +2365,19 @@ if __name__ == '__main__':
             if event_handler:
                 try:
                     event_handler.on_title()
-                except: # pylint: disable=bare-except
+                except:
                     pass
                 try:
                     event_handler.on_options()
-                except: # pylint: disable=bare-except
+                except:
                     pass
                 try:
                     event_handler.on_playback()
-                except: # pylint: disable=bare-except
+                except:
                     pass
 
         def mpv_override_stop(ignore=False):
             global event_handler
-            #print_with_time("mpv_override_stop called")
             player.command('stop')
             if not ignore:
                 print_with_time("Disabling deinterlace for main.png")
@@ -2418,22 +2386,21 @@ if __name__ == '__main__':
             if event_handler:
                 try:
                     event_handler.on_title()
-                except: # pylint: disable=bare-except
+                except:
                     pass
                 try:
                     event_handler.on_options()
-                except: # pylint: disable=bare-except
+                except:
                     pass
                 try:
                     event_handler.on_ended()
-                except: # pylint: disable=bare-except
+                except:
                     pass
 
         firstVolRun = True
 
         def mpv_override_volume(volume_val):
             global event_handler, firstVolRun
-            #print_with_time("mpv_override_volume called")
             player.volume = volume_val
             if settings["remembervol"] and not firstVolRun:
                 volfile = open(str(Path(LOCAL_DIR, 'volume.json')), 'w', encoding="utf8")
@@ -2442,33 +2409,31 @@ if __name__ == '__main__':
             if event_handler:
                 try:
                     event_handler.on_volume()
-                except: # pylint: disable=bare-except
+                except:
                     pass
 
         def mpv_override_mute(mute_val):
             global event_handler
-            #print_with_time("mpv_override_mute called")
             player.mute = mute_val
             if event_handler:
                 try:
                     event_handler.on_volume()
-                except: # pylint: disable=bare-except
+                except:
                     pass
 
         def mpv_override_pause(pause_val):
             global event_handler
-            #print_with_time("mpv_override_pause called")
             player.pause = pause_val
             if event_handler:
                 try:
                     event_handler.on_playpause()
-                except: # pylint: disable=bare-except
+                except:
                     pass
 
         def stopPlayer(ignore=False):
             try:
                 mpv_override_stop(ignore)
-            except: # pylint: disable=bare-except
+            except:
                 player.loop = True
                 mpv_override_play(str(Path('astroncia', ICONS_FOLDER, 'main.png')))
 
@@ -2477,11 +2442,11 @@ if __name__ == '__main__':
                 va = -1
             try:
                 player.video_aspect_override = va
-            except: # pylint: disable=bare-except
+            except:
                 pass
             try:
                 player.video_aspect = va
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         def setZoom(zm):
@@ -2493,7 +2458,7 @@ if __name__ == '__main__':
         def getVideoAspect():
             try:
                 va1 = player.video_aspect_override
-            except: # pylint: disable=bare-except
+            except:
                 va1 = player.video_aspect
             return va1
 
@@ -2521,12 +2486,12 @@ if __name__ == '__main__':
                     player['video-sync'] = 'audio'
                     player['interpolation'] = False
                     player['video-latency-hacks'] = True
-                except: # pylint: disable=bare-except
+                except:
                     print_with_time("Failed to set multicast optimized settings!")
             try:
                 player.stream_lavf_o = \
                     '-reconnect=1 -reconnect_at_eof=1 -reconnect_streamed=1 -reconnect_delay_max=2'
-            except: # pylint: disable=bare-except
+            except:
                 pass
             # Set user agent and loop
             player.user_agent = ua_ch if isinstance(ua_ch, str) else uas[ua_ch]
@@ -2725,13 +2690,13 @@ if __name__ == '__main__':
             try:
                 if 'HOME' in os.environ:
                     HOME_SYMBOL = os.environ['HOME']
-            except: # pylint: disable=bare-except
+            except:
                 pass
             try:
                 if sfld_text:
                     if sfld_text[0] == '~':
                         sfld_text = sfld_text.replace('~', HOME_SYMBOL, 1)
-            except: # pylint: disable=bare-except
+            except:
                 pass
             settings_arr = {
                 "m3u": sm3u.text(),
@@ -2790,29 +2755,29 @@ if __name__ == '__main__':
             if epg_thread:
                 try:
                     epg_thread.kill()
-                except: # pylint: disable=bare-except
+                except:
                     epg_thread.terminate()
             if epg_thread_2:
                 try:
                     epg_thread_2.kill()
-                except: # pylint: disable=bare-except
+                except:
                     epg_thread_2.terminate()
             for process_3 in active_children():
                 try:
                     process_3.kill()
-                except: # pylint: disable=bare-except
+                except:
                     process_3.terminate()
             if manager:
                 manager.shutdown()
             try:
                 if channel_icons_data.manager_1:
                     channel_icons_data.manager_1.shutdown()
-            except: # pylint: disable=bare-except
+            except:
                 pass
             try:
                 if channel_icons_data_epg.manager_1:
                     channel_icons_data_epg.manager_1.shutdown()
-            except: # pylint: disable=bare-except
+            except:
                 pass
             win.close()
             settings_win.close()
@@ -2952,7 +2917,7 @@ if __name__ == '__main__':
             if prov_d and prov_d != -1:
                 try:
                     sprov.setCurrentIndex(prov_d)
-                except: # pylint: disable=bare-except
+                except:
                     pass
         sclose = QtWidgets.QPushButton(_('close'))
         sclose.setStyleSheet('color: red;')
@@ -3302,7 +3267,6 @@ if __name__ == '__main__':
         tab5.layout.addWidget(QtWidgets.QLabel(), 0, 4)
         tab5.layout.addWidget(channels_label, 1, 0)
         tab5.layout.addWidget(channels_box, 1, 1)
-        #tab5.layout.addWidget(QtWidgets.QLabel(), 3, 0)
         tab5.layout.addWidget(panelposition_label, 2, 0)
         tab5.layout.addWidget(panelposition_choose, 2, 1)
         tab5.layout.addWidget(playlistsep_label, 3, 0)
@@ -3319,7 +3283,6 @@ if __name__ == '__main__':
         tab5.layout.addWidget(styleredefoff_flag, 8, 1)
         tab5.layout.addWidget(hidetvprogram_label, 9, 0)
         tab5.layout.addWidget(hidetvprogram_flag, 9, 1)
-        #tab5.layout.addWidget(QtWidgets.QLabel(), 8, 0)
         tab5.setLayout(tab5.layout)
 
         tab6.layout = QtWidgets.QGridLayout()
@@ -3364,7 +3327,6 @@ if __name__ == '__main__':
         layout2.addLayout(grid3)
 
         wid2.setLayout(layout2)
-        #settings_win.setCentralWidget(wid2)
         settings_win.scroll.setWidget(wid2)
 
         def xtream_save_btn_action():
@@ -3479,9 +3441,6 @@ if __name__ == '__main__':
             mainThread = Signal(type(lambda x: None))
             mainThread_partial = Signal(type(partial(int, 2)))
 
-        #def exInMainThread(m_func):
-        #    comm_instance.mainThread.emit(m_func)
-
         def exInMainThread_partial(m_func_2):
             comm_instance.mainThread_partial.emit(m_func_2)
 
@@ -3492,9 +3451,6 @@ if __name__ == '__main__':
             ))
             sepplaylist_win.move(seppl_qpoint)
             sepplaylist_win.show()
-            #sepplaylist_win.raise_()
-            #sepplaylist_win.setFocus(_enum(QtCore.Qt, 'FocusReason.PopupFocusReason'))
-            #sepplaylist_win.activateWindow()
 
         def comm_instance_main_thread(th_func):
             th_func()
@@ -3635,7 +3591,7 @@ if __name__ == '__main__':
                 playlists_win.hide()
                 playlists_win_edit.hide()
                 save_settings()
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         def playlists_save_json():
@@ -3644,7 +3600,7 @@ if __name__ == '__main__':
         def playlists_edit_do(ignore0=False):
             try:
                 currentItem_text = playlists_list.currentItem().text()
-            except: # pylint: disable=bare-except
+            except:
                 currentItem_text = ""
             if ignore0:
                 name_edit_1.setText("")
@@ -3659,11 +3615,11 @@ if __name__ == '__main__':
                     item_m3u = playlists_data.playlists_used[currentItem_text]['m3u']
                     try:
                         item_epg = playlists_data.playlists_used[currentItem_text]['epg']
-                    except: # pylint: disable=bare-except
+                    except:
                         item_epg = ""
                     try:
                         item_offset = playlists_data.playlists_used[currentItem_text]['epgoffset']
-                    except: # pylint: disable=bare-except
+                    except:
                         item_offset = 0
                     name_edit_1.setText(currentItem_text)
                     m3u_edit_1.setText(item_m3u)
@@ -3687,7 +3643,7 @@ if __name__ == '__main__':
             ):
                 try:
                     currentItem_text = playlists_list.currentItem().text()
-                except: # pylint: disable=bare-except
+                except:
                     currentItem_text = ""
                 if currentItem_text:
                     playlists_list.takeItem(playlists_list.currentRow())
@@ -3746,7 +3702,7 @@ if __name__ == '__main__':
                     log_handler=my_log,
                     loglevel='info' # debug
                 )
-            except: # pylint: disable=bare-except
+            except:
                 print_with_time("mpv init with ytdl failed")
                 try:
                     player = mpv.MPV(
@@ -3758,7 +3714,7 @@ if __name__ == '__main__':
                         log_handler=my_log,
                         loglevel='info' # debug
                     )
-                except: # pylint: disable=bare-except
+                except:
                     print_with_time("mpv init with osc failed")
                     player = mpv.MPV(
                         **options,
@@ -3769,37 +3725,37 @@ if __name__ == '__main__':
             if settings["hidempv"]:
                 try:
                     player.osc = False
-                except: # pylint: disable=bare-except
+                except:
                     print_with_time("player.osc set failed")
             try:
                 player['force-seekable'] = True
-            except: # pylint: disable=bare-except
+            except:
                 pass
             if not settings['hwaccel']:
                 try:
                     player['x11-bypass-compositor'] = 'yes'
-                except: # pylint: disable=bare-except
+                except:
                     pass
             try:
                 player['network-timeout'] = 5
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
             try:
                 player.title = MAIN_WINDOW_TITLE
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
             try:
                 player['audio-client-name'] = 'astronciaiptv'
-            except: # pylint: disable=bare-except
+            except:
                 print_with_time("mpv audio-client-name set failed")
 
             try:
                 mpv_version = player.mpv_version
                 if not mpv_version.startswith('mpv '):
                     mpv_version = 'mpv ' + mpv_version
-            except: # pylint: disable=bare-except
+            except:
                 mpv_version = "unknown mpv version"
 
             print_with_time("Using {}".format(mpv_version))
@@ -3810,12 +3766,12 @@ if __name__ == '__main__':
                 try:
                     player['demuxer-readahead-secs'] = settings["cache_secs"]
                     print_with_time('Demuxer cache set to {}s'.format(settings["cache_secs"]))
-                except: # pylint: disable=bare-except
+                except:
                     pass
                 try:
                     player['cache-secs'] = settings["cache_secs"]
                     print_with_time('Cache set to {}s'.format(settings["cache_secs"]))
-                except: # pylint: disable=bare-except
+                except:
                     pass
             else:
                 print_with_time("Using default cache settings")
@@ -3836,7 +3792,7 @@ if __name__ == '__main__':
                 populate_menubar(
                     1, right_click_menu, win, player.track_list, playing_chan, get_keybind
                 )
-            except: # pylint: disable=bare-except
+            except:
                 print_with_time("WARNING: populate_menubar failed")
                 show_exception("WARNING: populate_menubar failed\n\n" + traceback.format_exc())
             redraw_menubar()
@@ -3862,7 +3818,7 @@ if __name__ == '__main__':
                 @player.on_key_press('MOUSE_MOVE')
                 def mouse_move_event(): # pylint: disable=unused-variable
                     mouse_move_event_callback()
-            except: # pylint: disable=bare-except
+            except:
                 print_with_time("Failed to set up mouse move callbacks")
 
             @player.on_key_press('MBTN_LEFT_DBL')
@@ -3984,7 +3940,7 @@ if __name__ == '__main__':
                         f = QtCore.QPoint(globalPos(s) - self.oldpos)
                         self.move(getX(self) + getX(f), getY(self) + getY(f))
                         self.oldpos = globalPos(s)
-                    except: # pylint: disable=bare-except
+                    except:
                         pass
             def updateWindowSize(self):
                 if self.width() != self.latestWidth or self.height() != self.latestHeight:
@@ -4059,13 +4015,13 @@ if __name__ == '__main__':
                         "x": win.pos().x(),
                         "y": win.pos().y()
                     }
-                except: # pylint: disable=bare-except
+                except:
                     pass
                 QtWidgets.QMainWindow.moveEvent(self, event)
             def resizeEvent(self, event):
                 try:
                     self.update()
-                except: # pylint: disable=bare-except
+                except:
                     pass
                 QtWidgets.QMainWindow.resizeEvent(self, event)
             def closeEvent(self, event1): # pylint: disable=unused-argument, no-self-use
@@ -4091,7 +4047,7 @@ if __name__ == '__main__':
                 ws_file_1_out = json.loads(ws_file_1.read())
                 ws_file_1.close()
                 win.resize(ws_file_1_out['w'], ws_file_1_out['h'])
-            except: # pylint: disable=bare-except
+            except:
                 win.resize(WINDOW_SIZE[0], WINDOW_SIZE[1])
         else:
             win.resize(WINDOW_SIZE[0], WINDOW_SIZE[1])
@@ -4105,7 +4061,7 @@ if __name__ == '__main__':
         def get_curwindow_pos():
             try:
                 win_geometry = win.screen().availableGeometry()
-            except: # pylint: disable=bare-except
+            except:
                 win_geometry = QtWidgets.QDesktopWidget().screenGeometry(win)
             win_width = win_geometry.width()
             win_height = win_geometry.height()
@@ -4115,7 +4071,7 @@ if __name__ == '__main__':
         def get_curwindow_pos_actual():
             try:
                 win_geometry_1 = win.screen().availableGeometry()
-            except: # pylint: disable=bare-except
+            except:
                 win_geometry_1 = QtWidgets.QDesktopWidget().screenGeometry(win)
             return win_geometry_1
 
@@ -4212,7 +4168,7 @@ if __name__ == '__main__':
         def set_mpv_title(arg11=None): # pylint: disable=unused-argument
             try:
                 player.title = win.windowTitle()
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         def setChanText(chanText, do_chan_set=False):
@@ -4234,7 +4190,7 @@ if __name__ == '__main__':
                 print_with_time("setPlayerSettings waiting for channel load...")
                 try:
                     player.wait_until_playing()
-                except: # pylint: disable=bare-except
+                except:
                     pass
                 if j == playing_chan:
                     print_with_time("setPlayerSettings '{}'".format(j))
@@ -4245,7 +4201,7 @@ if __name__ == '__main__':
                             d['useragent'] = settings['useragent']
                         try:
                             d['useragent'] = uas.index(d['useragent'])
-                        except: # pylint: disable=bare-except
+                        except:
                             pass
                         if 'contrast' in d:
                             player.contrast = d['contrast']
@@ -4312,7 +4268,7 @@ if __name__ == '__main__':
                     print_with_time("Video aspect: {}".format(getVideoAspect()))
                     print_with_time("Zoom: {}".format(player.video_zoom))
                     print_with_time("Panscan: {}".format(player.panscan))
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         def itemClicked_event(item, custom_url="", archived=False): # pylint: disable=too-many-branches
@@ -4320,21 +4276,19 @@ if __name__ == '__main__':
             is_ic_ok = True
             try:
                 is_ic_ok = item.text() != _('nothingfound')
-            except: # pylint: disable=bare-except
+            except:
                 pass
             if is_ic_ok:
-                #player.command('stop')
-                #player.wait_for_playback()
                 playing_archive = archived
                 try:
                     j = item.data(_enum(QtCore.Qt, 'ItemDataRole.UserRole'))
-                except: # pylint: disable=bare-except
+                except:
                     j = item
                 playing_chan = j
                 item_selected = j
                 try:
                     play_url = array[j]['url']
-                except: # pylint: disable=bare-except
+                except:
                     play_url = custom_url
                 MAX_CHAN_SIZE = 35
                 channel_name = j
@@ -4345,7 +4299,7 @@ if __name__ == '__main__':
                 jlower = j.lower()
                 try:
                     jlower = prog_match_arr[jlower]
-                except: # pylint: disable=bare-except
+                except:
                     pass
                 if settings['epg'] and jlower in programmes:
                     for pr in programmes[jlower]:
@@ -4377,7 +4331,7 @@ if __name__ == '__main__':
                 n_1 = item.data(_enum(QtCore.Qt, 'ItemDataRole.UserRole'))
                 item_selected = n_1
                 update_tvguide(n_1)
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         def mpv_play():
@@ -4467,7 +4421,7 @@ if __name__ == '__main__':
                 aot_f1_data = json.loads(aot_f1.read())["alwaysontop"]
                 aot_f1.close()
                 is_aot = aot_f1_data
-            except: # pylint: disable=bare-except
+            except:
                 pass
         if is_aot:
             print_with_time("Always on top enabled")
@@ -4685,14 +4639,6 @@ if __name__ == '__main__':
         win.moviesWidget = QtWidgets.QListWidget()
         win.seriesWidget = QtWidgets.QListWidget()
 
-        class ClickableLabel(QtWidgets.QLabel): # pylint: disable=too-few-public-methods
-            def __init__(self, whenClicked, parent=None): # pylint: disable=unused-argument
-                QtWidgets.QLabel.__init__(self, win)
-                self._whenClicked = whenClicked
-
-            def mouseReleaseEvent(self, event):
-                self._whenClicked(event)
-
         def tvguide_close_lbl_func(arg): # pylint: disable=unused-argument
             hide_tvguide()
 
@@ -4701,7 +4647,7 @@ if __name__ == '__main__':
         tvguide_lbl.setFixedWidth(TVGUIDE_WIDTH)
         tvguide_lbl.hide()
 
-        tvguide_close_lbl = ClickableLabel(tvguide_close_lbl_func)
+        tvguide_close_lbl = ClickableLabel(tvguide_close_lbl_func, win)
         tvguide_close_lbl.setPixmap(
             QtGui.QIcon(str(Path('astroncia', ICONS_FOLDER, 'close.png'))).pixmap(32, 32)
         )
@@ -4716,126 +4662,6 @@ if __name__ == '__main__':
             lbl2.move(tvguide_lbl.width() + lbl2.width(), lbl2_offset)
         tvguide_close_lbl.hide()
 
-        class cwdg(QtWidgets.QWidget): # pylint: disable=too-many-instance-attributes
-            def __init__(self, parent=None):
-                super(cwdg, self).__init__(parent) # pylint: disable=super-with-arguments
-                self.tooltip = ""
-                self.textQVBoxLayout = QtWidgets.QVBoxLayout()      # QtWidgets
-                self.textUpQLabel = QtWidgets.QLabel()         # QtWidgets
-                myFont = QtGui.QFont()
-                myFont.setBold(True)
-                self.textUpQLabel.setFont(myFont)
-                self.textDownQLabel = QtWidgets.QLabel()         # QtWidgets
-                self.textQVBoxLayout.addWidget(self.textUpQLabel)
-                self.textQVBoxLayout.addWidget(self.textDownQLabel)
-                self.textQVBoxLayout.setSpacing(5)
-                self.allQHBoxLayout = QtWidgets.QGridLayout()      # QtWidgets
-                self.iconQLabel = QtWidgets.QLabel()         # QtWidgets
-                self.progressLabel = QtWidgets.QLabel()
-                self.progressBar = QtWidgets.QProgressBar()
-                self.progressBar.setFixedHeight(15)
-                self.endLabel = QtWidgets.QLabel()
-                self.op = QtWidgets.QGraphicsOpacityEffect()
-                self.op.setOpacity(100)
-                self.allQHBoxLayout.addWidget(self.iconQLabel, 0, 0)
-                self.allQHBoxLayout.addLayout(self.textQVBoxLayout, 0, 1)
-                self.allQHBoxLayout.addWidget(self.progressLabel, 3, 0)
-                self.allQHBoxLayout.addWidget(self.progressBar, 3, 1)
-                self.allQHBoxLayout.addWidget(self.endLabel, 3, 2)
-                self.allQHBoxLayout.setSpacing(10)
-                self.setLayout(self.allQHBoxLayout)
-                # setStyleSheet
-                #self.textUpQLabel.setStyleSheet('''
-                #    color: rgb(0, 0, 255);
-                #''')
-                #self.textDownQLabel.setStyleSheet('''
-                #    color: rgb(255, 0, 0);
-                #''')
-                self.progressBar.setStyleSheet('''
-                  background-color: #C0C6CA;
-                  border: 0px;
-                  padding: 0px;
-                  height: 5px;
-                ''')
-                self.setStyleSheet('''
-                  QProgressBar::chunk {
-                    background: #7D94B0;
-                    width:5px
-                  }
-                ''')
-
-            #def enterEvent(self, event):
-            #    print_with_time("hovered", self.tooltip)
-            #    QtWidgets.QToolTip.showText(QtGui.QCursor.pos(), self.tooltip, win.container)
-
-            #def leaveEvent(self, event):
-            #    print_with_time("left")
-
-            def setTextUp(self, text):
-                self.textUpQLabel.setText(text)
-
-            def setTextDown(self, text, tooltip):
-                progTooltip = tooltip
-                self.tooltip = progTooltip
-                self.setToolTip(progTooltip)
-                self.textDownQLabel.setText(text)
-
-            def setTextProgress(self, text):
-                self.progressLabel.setText(text)
-
-            def setTextEnd(self, text):
-                self.endLabel.setText(text)
-
-            def setIcon(self, image):
-                self.iconQLabel.setPixmap(image.pixmap(QtCore.QSize(32, 32)))
-
-            def setProgress(self, progress_val):
-                self.op.setOpacity(100)
-                self.progressBar.setGraphicsEffect(self.op)
-                self.progressBar.setFormat('')
-                self.progressBar.setValue(progress_val)
-
-            def hideProgress(self):
-                self.op.setOpacity(0)
-                self.progressBar.setGraphicsEffect(self.op)
-
-        class cwdg_simple(QtWidgets.QWidget): # pylint: disable=too-many-instance-attributes
-            def __init__(self, parent=None):
-                super(cwdg_simple, self).__init__(parent) # pylint: disable=super-with-arguments
-                self.textQHBoxLayout = QtWidgets.QHBoxLayout()      # QtWidgets
-                self.textUpQLabel = QtWidgets.QLabel()         # QtWidgets
-                myFont = QtGui.QFont()
-                myFont.setBold(True)
-                self.textUpQLabel.setFont(myFont)
-                self.iconQLabel = QtWidgets.QLabel()         # QtWidgets
-                if settings['gui'] == 1:
-                    self.textQHBoxLayout.addWidget(self.iconQLabel)
-                self.textQHBoxLayout.addWidget(self.textUpQLabel)
-                self.textQHBoxLayout.addStretch()
-                self.textQHBoxLayout.setSpacing(15)
-                self.setLayout(self.textQHBoxLayout)
-
-            def setTextUp(self, text):
-                self.textUpQLabel.setText(text)
-
-            def setTextDown(self, text, tooltip):
-                pass
-
-            def setTextProgress(self, text):
-                pass
-
-            def setTextEnd(self, text):
-                pass
-
-            def setIcon(self, image):
-                self.iconQLabel.setPixmap(image.pixmap(QtCore.QSize(32, 20)))
-
-            def setProgress(self, progress_val):
-                pass
-
-            def hideProgress(self):
-                pass
-
         current_group = _('allchannels')
 
         channel_sort = {}
@@ -4847,7 +4673,7 @@ if __name__ == '__main__':
         def sort_custom(sub):
             try:
                 return channel_sort.index(sub)
-            except: # pylint: disable=bare-except
+            except:
                 return 0
 
         def doSort(arr0):
@@ -4860,7 +4686,7 @@ if __name__ == '__main__':
             if settings['sort'] == 3:
                 try:
                     return sorted(arr0, reverse=False, key=sort_custom)
-                except: # pylint: disable=bare-except
+                except:
                     return arr0
             return arr0
 
@@ -4882,7 +4708,7 @@ if __name__ == '__main__':
                 ba = QtCore.QByteArray()
                 try:
                     stream = QtCore.QDataStream(ba, QtCore.QIODevice.WriteOnly)
-                except: # pylint: disable=bare-except
+                except:
                     stream = QtCore.QDataStream(ba, QtCore.QIODeviceBase.OpenModeFlag.WriteOnly)
                 stream << self # pylint: disable=pointless-statement
                 return ba
@@ -4890,7 +4716,7 @@ if __name__ == '__main__':
             def __setstate__(self, ba):
                 try:
                     stream = QtCore.QDataStream(ba, QtCore.QIODevice.ReadOnly)
-                except: # pylint: disable=bare-except
+                except:
                     stream = QtCore.QDataStream(ba, QtCore.QIODeviceBase.OpenModeFlag.ReadOnly)
                 stream >> self # pylint: disable=pointless-statement
 
@@ -4916,7 +4742,7 @@ if __name__ == '__main__':
                     cache_file_2 = open(cache_file, 'wb')
                     cache_file_2.write(req_data)
                     cache_file_2.close()
-                except: # pylint: disable=bare-except
+                except:
                     req_data = None
             try:
                 qp_1 = QtGui.QPixmap()
@@ -4924,7 +4750,7 @@ if __name__ == '__main__':
                 qp_1 = qp_1.scaled(64, 64, _enum(QtCore.Qt, 'AspectRatioMode.KeepAspectRatio'))
                 fetched_icon = Pickable_QIcon(qp_1)
                 return_dict_2[chan_name] = [fetched_icon]
-            except: # pylint: disable=bare-except
+            except:
                 return_dict_2[chan_name] = None
 
         channel_icons_data.load_completed = False
@@ -4954,9 +4780,9 @@ if __name__ == '__main__':
                                 channel_icons_data.total,
                                 time.time() - channel_icons_data.load_time
                             ))
-                except: # pylint: disable=bare-except
+                except:
                     pass
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         def channel_icons_thread_epg():
@@ -4982,9 +4808,9 @@ if __name__ == '__main__':
                                     time.time() - channel_icons_data_epg.load_time
                                 )
                             )
-                except: # pylint: disable=bare-except
+                except:
                     pass
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         epg_icons_found = False
@@ -5072,11 +4898,11 @@ if __name__ == '__main__':
                 update_channel_icons_epg()
             try:
                 idx = (page_box.value() - 1) * settings["channelsonpage"]
-            except: # pylint: disable=bare-except
+            except:
                 idx = 0
             try:
                 filter_txt = channelfilter.text()
-            except: # pylint: disable=bare-except
+            except:
                 filter_txt = ""
 
             # Group and favourites filter
@@ -5105,7 +4931,7 @@ if __name__ == '__main__':
                     page_box.setMaximum(round(len(array_filtered) / settings["channelsonpage"]) + 1)
                     of_lbl.setText('{} {}'.format(_('of'), \
                         round(len(array_filtered) / settings["channelsonpage"]) + 1))
-            except: # pylint: disable=bare-except
+            except:
                 pass
             res = {}
             l = -1
@@ -5186,7 +5012,7 @@ if __name__ == '__main__':
                                 prog_desc = '\n\n' + textwrap.fill(current_prog['desc'], 100)
                             else:
                                 prog_desc = ''
-                        except: # pylint: disable=bare-except
+                        except:
                             prog_desc = ''
                     else:
                         start_time = ''
@@ -5228,7 +5054,7 @@ if __name__ == '__main__':
                             mycwdg.setProgress(int(percentage))
                         else:
                             mycwdg.hideProgress()
-                    except: # pylint: disable=bare-except
+                    except:
                         print_with_time("Async EPG load problem, ignoring")
                 else:
                     mycwdg.setTextDown("", "<b>{}</b>".format(i))
@@ -5293,7 +5119,7 @@ if __name__ == '__main__':
             j1 = playing_chan.lower()
             try:
                 j1 = prog_match_arr[j1]
-            except: # pylint: disable=bare-except
+            except:
                 pass
             if j1:
                 current_chan = None
@@ -5303,7 +5129,7 @@ if __name__ == '__main__':
                         if time.time() > pr['start'] and time.time() < pr['stop']:
                             current_chan = pr
                             break
-                except: # pylint: disable=bare-except
+                except:
                     pass
                 show_progress(current_chan)
             return res
@@ -5319,9 +5145,7 @@ if __name__ == '__main__':
             win.listWidget.clear()
             if channels_1:
                 for channel_1 in channels_1.values():
-                    #chan_3 = channels_1[channel_1]
                     chan_3 = channel_1
-                    #c_name = chan_3[3]
                     win.listWidget.addItem(chan_3[0])
                     win.listWidget.setItemWidget(chan_3[0], chan_3[1])
             else:
@@ -5357,7 +5181,7 @@ if __name__ == '__main__':
                 try:
                     channelfilter.setText('')
                     channelfiltersearch.click()
-                except: # pylint: disable=bare-except
+                except:
                     pass
                 if playmode_selector.currentIndex() == 0:
                     for lbl5 in movies_widgets:
@@ -5368,7 +5192,7 @@ if __name__ == '__main__':
                         lbl4.show()
                     try:
                         channelfilter.setPlaceholderText(_('chansearch'))
-                    except: # pylint: disable=bare-except
+                    except:
                         pass
                 if playmode_selector.currentIndex() == 1:
                     for lbl4 in tv_widgets:
@@ -5379,7 +5203,7 @@ if __name__ == '__main__':
                         lbl5.show()
                     try:
                         channelfilter.setPlaceholderText(_('searchmovie'))
-                    except: # pylint: disable=bare-except
+                    except:
                         pass
                 if playmode_selector.currentIndex() == 2:
                     for lbl4 in tv_widgets:
@@ -5390,7 +5214,7 @@ if __name__ == '__main__':
                         lbl6.show()
                     try:
                         channelfilter.setPlaceholderText(_('searchserie'))
-                    except: # pylint: disable=bare-except
+                    except:
                         pass
 
         channels = gen_chans()
@@ -5459,54 +5283,54 @@ if __name__ == '__main__':
                 deinterlace_chk.setChecked(channel_sets[item_selected]['deinterlace'])
                 try:
                     useragent_choose.setCurrentIndex(channel_sets[item_selected]['useragent'])
-                except: # pylint: disable=bare-except
+                except:
                     useragent_choose.setCurrentIndex(settings['useragent'])
                 try:
                     group_text.setText(channel_sets[item_selected]['group'])
-                except: # pylint: disable=bare-except
+                except:
                     group_text.setText('')
                 try:
                     hidden_chk.setChecked(channel_sets[item_selected]['hidden'])
-                except: # pylint: disable=bare-except
+                except:
                     hidden_chk.setChecked(False)
                 try:
                     contrast_choose.setValue(channel_sets[item_selected]['contrast'])
-                except: # pylint: disable=bare-except
+                except:
                     contrast_choose.setValue(0)
                 try:
                     brightness_choose.setValue(channel_sets[item_selected]['brightness'])
-                except: # pylint: disable=bare-except
+                except:
                     brightness_choose.setValue(0)
                 try:
                     hue_choose.setValue(channel_sets[item_selected]['hue'])
-                except: # pylint: disable=bare-except
+                except:
                     hue_choose.setValue(0)
                 try:
                     saturation_choose.setValue(channel_sets[item_selected]['saturation'])
-                except: # pylint: disable=bare-except
+                except:
                     saturation_choose.setValue(0)
                 try:
                     gamma_choose.setValue(channel_sets[item_selected]['gamma'])
-                except: # pylint: disable=bare-except
+                except:
                     gamma_choose.setValue(0)
                 try:
                     videoaspect_choose.setCurrentIndex(channel_sets[item_selected]['videoaspect'])
-                except: # pylint: disable=bare-except
+                except:
                     videoaspect_choose.setCurrentIndex(0)
                 try:
                     zoom_choose.setCurrentIndex(channel_sets[item_selected]['zoom'])
-                except: # pylint: disable=bare-except
+                except:
                     zoom_choose.setCurrentIndex(0)
                 try:
                     panscan_choose.setValue(channel_sets[item_selected]['panscan'])
-                except: # pylint: disable=bare-except
+                except:
                     panscan_choose.setValue(0)
                 try:
                     epgname_saved = channel_sets[item_selected]['epgname']
                     if not epgname_saved:
                         epgname_saved = _('default')
                     epgname_lbl.setText(epgname_saved)
-                except: # pylint: disable=bare-except
+                except:
                     epgname_lbl.setText(_('default'))
             else:
                 deinterlace_chk.setChecked(settings['deinterlace'])
@@ -5624,7 +5448,7 @@ if __name__ == '__main__':
             is_continue = True
             try:
                 is_continue = win.listWidget.selectedItems()[0].text() != _('nothingfound')
-            except: # pylint: disable=bare-except
+            except:
                 pass
             try:
                 if is_continue:
@@ -5644,7 +5468,7 @@ if __name__ == '__main__':
                     menu.addAction(_('channelsettings'), settings_context_menu)
                     #menu.addAction(_('iaepgmatch'), iaepgmatch)
                     _exec(menu, self.mapToGlobal(pos))
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         win.listWidget.setContextMenuPolicy(_enum(QtCore.Qt, 'ContextMenuPolicy.CustomContextMenu'))
@@ -5663,7 +5487,7 @@ if __name__ == '__main__':
         def channelfilter_do():
             try:
                 filter_txt1 = channelfilter.text()
-            except: # pylint: disable=bare-except
+            except:
                 filter_txt1 = ""
             if AstronciaData.playmodeIndex == 0: # TV channels
                 btn_update.click()
@@ -5677,7 +5501,7 @@ if __name__ == '__main__':
             elif AstronciaData.playmodeIndex == 2: # Series
                 try:
                     redraw_series()
-                except: # pylint: disable=bare-except
+                except:
                     print_with_time("redraw_series FAILED")
                 for item4 in range(win.seriesWidget.count()):
                     if unidecode(filter_txt1).lower().strip() in \
@@ -5770,7 +5594,7 @@ if __name__ == '__main__':
                                 sel_serie + " ::: " + season_name + " ::: " + series_name,
                                 serie_url
                             )
-                    except: # pylint: disable=bare-except
+                    except:
                         pass
                 else:
                     print_with_time("Fetching data for serie '{}'".format(sel_serie))
@@ -5798,7 +5622,7 @@ if __name__ == '__main__':
                                 win.seriesWidget.addItem(episode_item)
                         AstronciaData.serie_selected = True
                         print_with_time("Fetching data for serie '{}' completed".format(sel_serie))
-                    except: # pylint: disable=bare-except
+                    except:
                         print_with_time("Fetching data for serie '{}' FAILED".format(sel_serie))
 
         win.seriesWidget.itemDoubleClicked.connect(series_change)
@@ -5820,20 +5644,17 @@ if __name__ == '__main__':
                 _enum(QtCore.Qt, 'WindowType.CustomizeWindowHint') | \
                 _enum(QtCore.Qt, 'WindowType.FramelessWindowHint') | \
                 _enum(QtCore.Qt, 'WindowType.X11BypassWindowManagerHint')
-                #| _enum(QtCore.Qt, 'WindowType.Popup')
             )
             controlpanel_widget.setWindowFlags(
                 _enum(QtCore.Qt, 'WindowType.CustomizeWindowHint') | \
                 _enum(QtCore.Qt, 'WindowType.FramelessWindowHint') | \
                 _enum(QtCore.Qt, 'WindowType.X11BypassWindowManagerHint')
-                #| _enum(QtCore.Qt, 'WindowType.Popup')
             )
             if playlist_widget_visible:
                 playlist_widget.show()
             if controlpanel_widget_visible:
                 controlpanel_widget.show()
             if channelfiltersearch_has_focus:
-                #channelfiltersearch.setDisabled(False)
                 channelfiltersearch.click()
 
         @async_function
@@ -5942,7 +5763,7 @@ if __name__ == '__main__':
                     tvguide_many_chans_names.append(tvguide_m_chan)
             tvguide_many_table.setRowCount(len(tvguide_many_chans))
             tvguide_many_table.setVerticalHeaderLabels(tvguide_many_chans_names)
-            print_with_time(tvguide_many_table.horizontalHeader()) #.setMinimumSectionSize(300)
+            print_with_time(tvguide_many_table.horizontalHeader())
             a_1_len_array = []
             a_1_array = {}
             for chan_6 in tvguide_many_chans:
@@ -5959,21 +5780,18 @@ if __name__ == '__main__':
                     start_3_many = datetime.datetime.fromtimestamp(
                         a_3['start']
                     ).strftime('%H:%M') + ' - '
-                    #).strftime('%d.%m.%y %H:%M') + ' - '
                     stop_3_many = datetime.datetime.fromtimestamp(
                         a_3['stop']
                     ).strftime('%H:%M') + '\n'
-                    #).strftime('%d.%m.%y %H:%M') + '\n'
                     try:
                         title_3_many = a_3['title'] if 'title' in a_3 else ''
-                    except: # pylint: disable=bare-except
+                    except:
                         title_3_many = ''
                     try:
                         desc_3_many = ('\n' + a_3['desc'] + '\n') if 'desc' in a_3 else ''
-                    except: # pylint: disable=bare-except
+                    except:
                         desc_3_many = ''
                     a_3_text = start_3_many + stop_3_many + title_3_many + desc_3_many
-                    #a_3_text = title_3_many
                     tvguide_many_table.setItem(
                         tvguide_many_i2,
                         a_3_i,
@@ -5983,7 +5801,6 @@ if __name__ == '__main__':
                 time.strftime('%H:%M', time.localtime()),
                 time.strftime('%H:%M', time.localtime())
             ])
-            #tvguide_many_table.resizeColumnsToContents()
             if not tvguide_many_win.isVisible():
                 moveWindowToCenter(tvguide_many_win)
                 tvguide_many_win.show()
@@ -6053,7 +5870,6 @@ if __name__ == '__main__':
         layout4.addWidget(page_lbl)
         layout4.addWidget(page_box)
         layout4.addWidget(of_lbl)
-        #layout4.addWidget(tvguide_widget)
         widget4.setLayout(layout4)
         layout = QtWidgets.QGridLayout()
         layout.setVerticalSpacing(0)
@@ -6109,7 +5925,7 @@ if __name__ == '__main__':
                         compactstate_file_0_read = compactstate_file_0.read()
                         compactstate_file_0.close()
                         playlistHiddenFlag = json.loads(compactstate_file_0_read)["playlist_hidden"]
-            except: # pylint: disable=bare-except
+            except:
                 pass
             if not playlistHiddenFlag:
                 if args1.debug:
@@ -6127,7 +5943,7 @@ if __name__ == '__main__':
                     )
                     seppl_data = json.loads(sepplheight_file_0.read())
                     sepplheight_file_0.close()
-                except: # pylint: disable=bare-except
+                except:
                     pass
             RESIZE_WIDTH = dockWidget.width()
             RESIZE_HEIGHT = win.height()
@@ -6172,7 +5988,7 @@ if __name__ == '__main__':
                         )
                     l1.show()
                     l1.setText2(_('screenshotsaved'))
-                except: # pylint: disable=bare-except
+                except:
                     l1.show()
                     l1.setText2(_('screenshotsaveerror'))
                 time_stop = time.time() + 1
@@ -6202,7 +6018,7 @@ if __name__ == '__main__':
                 newline_symbol = '!@#$%^^&*('
             try:
                 chan_3 = prog_match_arr[chan_2]
-            except: # pylint: disable=bare-except
+            except:
                 chan_3 = chan_2
             if chan_3 in programmes:
                 txt = newline_symbol
@@ -6225,17 +6041,17 @@ if __name__ == '__main__':
                         ).strftime(def_placeholder) + '\n'
                         try:
                             title_2 = pr['title'] if 'title' in pr else ''
-                        except: # pylint: disable=bare-except
+                        except:
                             title_2 = ''
                         try:
                             desc_2 = ('\n' + pr['desc'] + '\n') if 'desc' in pr else ''
-                        except: # pylint: disable=bare-except
+                        except:
                             desc_2 = ''
                         attach_1 = ''
                         if mark_integers:
                             try:
                                 marked_integer = prog.index(pr)
-                            except: # pylint: disable=bare-except
+                            except:
                                 marked_integer = -1
                             attach_1 = ' ({})'.format(marked_integer)
                         start_symbl = ''
@@ -6375,13 +6191,13 @@ if __name__ == '__main__':
                         try:
                             if lastfile_1_dat[3] < combobox.count():
                                 combobox.setCurrentIndex(lastfile_1_dat[3])
-                        except: # pylint: disable=bare-except
+                        except:
                             pass
                         try:
                             win.listWidget.setCurrentRow(lastfile_1_dat[4])
-                        except: # pylint: disable=bare-except
+                        except:
                             pass
-                except: # pylint: disable=bare-except
+                except:
                     if os.path.isfile(str(Path(LOCAL_DIR, 'lastchannels.json'))):
                         os.remove(str(Path(LOCAL_DIR, 'lastchannels.json')))
             return isPlayingLast
@@ -6400,14 +6216,14 @@ if __name__ == '__main__':
                 if os.environ['WAYLAND_DISPLAY']:
                     print_with_time("Found environ WAYLAND_DISPLAY")
                     is_apply_wayland_fix = True
-        except: # pylint: disable=bare-except
+        except:
             pass
         try:
             if 'XDG_SESSION_TYPE' in os.environ:
                 if os.environ['XDG_SESSION_TYPE'] == 'wayland':
                     print_with_time("Environ XDG_SESSION_TYPE == wayland")
                     is_apply_wayland_fix = True
-        except: # pylint: disable=bare-except
+        except:
             pass
         if is_apply_wayland_fix:
             print_with_time("[NOTE] Applying video output fix for Wayland")
@@ -6437,7 +6253,7 @@ if __name__ == '__main__':
         try:
             test_options = mpv.MPV(**options_2)
             print_with_time("mpv options OK")
-        except: # pylint: disable=bare-except
+        except:
             print_with_time("mpv options test failed, ignoring them")
             msg_wrongmpvoptions = QtWidgets.QMessageBox(
                 qt_icon_warning,
@@ -6495,7 +6311,7 @@ if __name__ == '__main__':
             if not fullscreen:
                 try:
                     key_t()
-                except: # pylint: disable=bare-except
+                except:
                     pass
 
         @idle_function
@@ -6504,7 +6320,7 @@ if __name__ == '__main__':
             if not fullscreen:
                 try:
                     lowpanel_ch()
-                except: # pylint: disable=bare-except
+                except:
                     pass
 
         def showhideeverything():
@@ -6583,7 +6399,7 @@ if __name__ == '__main__':
                         stream_info.data['audio'][0].setText(
                             stream_info.data['audio'][1][_("Average Bitrate")]
                         )
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         def open_stream_info():
@@ -6651,7 +6467,7 @@ if __name__ == '__main__':
                     applog_fname_file = open(applog_fname, 'w', encoding="utf8")
                     applog_fname_file.write(applog_textarea.toPlainText())
                     applog_fname_file.close()
-                except: # pylint: disable=bare-except
+                except:
                     pass
 
         applog_save = QtWidgets.QPushButton()
@@ -6703,7 +6519,7 @@ if __name__ == '__main__':
                     mpvlog_fname_file = open(mpvlog_fname, 'w', encoding="utf8")
                     mpvlog_fname_file.write(mpvlog_textarea.toPlainText())
                     mpvlog_fname_file.close()
-                except: # pylint: disable=bare-except
+                except:
                     pass
 
         mpvlog_save = QtWidgets.QPushButton()
@@ -6742,7 +6558,7 @@ if __name__ == '__main__':
                     if mpvlog_textarea.toPlainText() != mpvlog_textarea_new:
                         mpvlog_textarea.setPlainText(mpvlog_textarea_new)
                         mpvlog_textarea.moveCursor(_enum(QtGui.QTextCursor, 'MoveOperation.End'))
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         def show_app_log():
@@ -6780,7 +6596,7 @@ if __name__ == '__main__':
                     f = QtCore.QPoint(globalPos1 - win.oldpos)
                     win.move(win.x() + f.x(), win.y() + f.y())
                     win.oldpos = globalPos1
-                except: # pylint: disable=bare-except
+                except:
                     pass
 
         force_turnoff_osc = False
@@ -6793,7 +6609,7 @@ if __name__ == '__main__':
                     force_turnoff_osc = True
                     try:
                         player.osc = False
-                    except: # pylint: disable=bare-except
+                    except:
                         pass
                 else:
                     win.oldpos = None
@@ -6801,7 +6617,6 @@ if __name__ == '__main__':
 
         def redraw_menubar():
             global playing_chan
-            #print_with_time("redraw_menubar called")
             try:
                 update_menubar(
                     player.track_list,
@@ -6810,7 +6625,7 @@ if __name__ == '__main__':
                     str(Path(LOCAL_DIR, 'menubar.json')),
                     str(Path(LOCAL_DIR, 'alwaysontop.json'))
                 )
-            except: # pylint: disable=bare-except
+            except:
                 print_with_time("WARNING: redraw_menubar failed")
                 show_exception("WARNING: redraw_menubar failed\n\n" + traceback.format_exc())
 
@@ -6925,13 +6740,13 @@ if __name__ == '__main__':
                 match1 = archive_channel.text().lower()
                 try:
                     match1 = prog_match_arr[match1]
-                except: # pylint: disable=bare-except
+                except:
                     pass
                 if match1 in programmes:
                     if programmes[match1]:
                         if 'catchup-id' in programmes[match1][int(prog_index)]:
                             catchup_id = programmes[match1][int(prog_index)]['catchup-id']
-            except: # pylint: disable=bare-except
+            except:
                 print_with_time("archive_all_clicked / catchup_id parsing failed")
                 print_with_time(traceback.format_exc())
 
@@ -7134,13 +6949,13 @@ if __name__ == '__main__':
                     try:
                         mpris.publish()
                         mpris_loop.run()
-                    except: # pylint: disable=bare-except
+                    except:
                         print_with_time("Failed to start MPRIS loop!")
 
             mpris_loop = GLib.MainLoop()
             mpris_thread = threading.Thread(target=mpris_loop_start)
             mpris_thread.start()
-        except Exception as mpris_e: # pylint: disable=bare-except
+        except Exception as mpris_e:
             print_with_time(mpris_e)
             print_with_time("Failed to set up MPRIS!")
 
@@ -7168,20 +6983,6 @@ if __name__ == '__main__':
                     choosechannel_ch.setCurrentIndex(channel_list.index(item_selected))
                 choosechannel_ch.currentIndexChanged.connect(update_scheduler_programme)
                 update_scheduler_programme()
-                #starttime_w.setDateTime(
-                #    QtCore.QDateTime.fromString(
-                #        time.strftime(
-                #            '%d.%m.%Y %H:%M', time.localtime()
-                #        ), 'd.M.yyyy hh:mm'
-                #    )
-                #)
-                #endtime_w.setDateTime(
-                #    QtCore.QDateTime.fromString(
-                #        time.strftime(
-                #            '%d.%m.%Y %H:%M', time.localtime(time.time() + 60)
-                #        ), 'd.M.yyyy hh:mm'
-                #    )
-                #)
                 moveWindowToCenter(scheduler_win)
                 scheduler_win.show()
 
@@ -7300,7 +7101,6 @@ if __name__ == '__main__':
         vlayout3 = QtWidgets.QVBoxLayout()
         hlayout1 = QtWidgets.QHBoxLayout()
         hlayout2 = QtWidgets.QHBoxLayout()
-        #hlayout3 = QtWidgets.QHBoxLayout()
 
         hlayout1.addWidget(start_label)
         hlayout1.addWidget(progress)
@@ -7408,7 +7208,7 @@ if __name__ == '__main__':
         def getUserAgent():
             try:
                 userAgent2 = player.user_agent
-            except: # pylint: disable=bare-except
+            except:
                 userAgent2 = def_user_agent
             return userAgent2
 
@@ -7418,12 +7218,12 @@ if __name__ == '__main__':
                 if combobox.currentIndex() != 0:
                     try:
                         current_group_0 = groups.index(array[playing_chan]['tvg-group'])
-                    except: # pylint: disable=bare-except
+                    except:
                         pass
                 current_channel_0 = 0
                 try:
                     current_channel_0 = win.listWidget.currentRow()
-                except: # pylint: disable=bare-except
+                except:
                     pass
                 lastfile = open(str(Path(LOCAL_DIR, 'lastchannels.json')), 'w', encoding="utf8")
                 lastfile.write(json.dumps(
@@ -7469,7 +7269,7 @@ if __name__ == '__main__':
                     }))
                     vf_filters_file.close()
                     print_with_time("Active vf filters saved")
-            except: # pylint: disable=bare-except
+            except:
                 pass
             try:
                 print_with_time("Saving main window position...")
@@ -7484,7 +7284,7 @@ if __name__ == '__main__':
                 )
                 windowpos_file.close()
                 print_with_time("Main window position saved")
-            except: # pylint: disable=bare-except
+            except:
                 pass
             try:
                 print_with_time("Saving main window width / height...")
@@ -7495,7 +7295,7 @@ if __name__ == '__main__':
                 ws_file.write(json.dumps(window_size))
                 ws_file.close()
                 print_with_time("Main window width / height saved")
-            except: # pylint: disable=bare-except
+            except:
                 pass
             if settings['playlistsep']:
                 try:
@@ -7509,7 +7309,7 @@ if __name__ == '__main__':
                         sepplaylist_win.size().height()
                     ]))
                     sepplheight_file.close()
-                except: # pylint: disable=bare-except
+                except:
                     pass
             try:
                 expheight_file = open(
@@ -7524,7 +7324,7 @@ if __name__ == '__main__':
                     })
                 )
                 expheight_file.close()
-            except: # pylint: disable=bare-except
+            except:
                 pass
             try:
                 with open(str(Path(LOCAL_DIR, 'compactstate.json')), 'w', encoding="utf8") \
@@ -7535,7 +7335,7 @@ if __name__ == '__main__':
                         "controlpanel_hidden": AstronciaData.controlpanel_hidden
                     }))
                     compactstate_file.close()
-            except: # pylint: disable=bare-except
+            except:
                 pass
             saveLastChannel()
             stop_record()
@@ -7547,29 +7347,29 @@ if __name__ == '__main__':
             if epg_thread:
                 try:
                     epg_thread.kill()
-                except: # pylint: disable=bare-except
+                except:
                     epg_thread.terminate()
             if epg_thread_2:
                 try:
                     epg_thread_2.kill()
-                except: # pylint: disable=bare-except
+                except:
                     epg_thread_2.terminate()
             for process_3 in active_children():
                 try:
                     process_3.kill()
-                except: # pylint: disable=bare-except
+                except:
                     process_3.terminate()
             if manager:
                 manager.shutdown()
             try:
                 if channel_icons_data.manager_1:
                     channel_icons_data.manager_1.shutdown()
-            except: # pylint: disable=bare-except
+            except:
                 pass
             try:
                 if channel_icons_data_epg.manager_1:
                     channel_icons_data_epg.manager_1.shutdown()
-            except: # pylint: disable=bare-except
+            except:
                 pass
             print_with_time("Stopped")
             # Stopping all childs
@@ -7590,7 +7390,7 @@ if __name__ == '__main__':
                         array[xc1]['catchup-days']
                     ) for xc1 in array if 'catchup-days' in array[xc1]
                 ])), 7)
-            except: # pylint: disable=bare-except
+            except:
                 catchup_days1 = 1
             if not settings["catchupenable"]:
                 catchup_days1 = 1
@@ -7648,7 +7448,7 @@ if __name__ == '__main__':
                                 prog0.lower(): tvguide_sets[prog0] for prog0 in tvguide_sets
                             }
                             btn_update.click() # start update in main thread
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
             ic += 0.1 # pylint: disable=undefined-variable
@@ -7684,7 +7484,7 @@ if __name__ == '__main__':
                         win.update()
                     else:
                         l1.setText2("")
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         x_conn = None
@@ -7695,7 +7495,7 @@ if __name__ == '__main__':
                 print_with_time("Reconnecting to stream")
                 try:
                     doPlay(*comm_instance.do_play_args)
-                except: # pylint: disable=bare-except
+                except:
                     print_with_time("Failed reconnecting to stream - no known URL")
             x_conn = None
 
@@ -7715,7 +7515,7 @@ if __name__ == '__main__':
                             x_conn = QtCore.QTimer()
                             x_conn.timeout.connect(do_reconnect)
                             x_conn.start(5000)
-                except: # pylint: disable=bare-except
+                except:
                     print_with_time("Failed to set connection loss detector!")
             else:
                 if not AstronciaData.connprinted:
@@ -7735,17 +7535,17 @@ if __name__ == '__main__':
                         video_bitrate = " - " + str(format_bytes(player.video_bitrate, bitrate_arr))
                     else:
                         video_bitrate = ""
-                except: # pylint: disable=bare-except
+                except:
                     video_bitrate = ""
                 try:
                     audio_codec = player.audio_codec.split(" ")[0]
-                except: # pylint: disable=bare-except
+                except:
                     audio_codec = 'no audio'
                 try:
                     codec = player.video_codec.split(" ")[0]
                     width = player.width
                     height = player.height
-                except: # pylint: disable=bare-except
+                except:
                     codec = 'png'
                     width = 800
                     height = 600
@@ -7767,7 +7567,7 @@ if __name__ == '__main__':
                     if not epg_updating:
                         if not is_program_actual(programmes):
                             force_update_epg()
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         thread_4_lock = False
@@ -7807,7 +7607,7 @@ if __name__ == '__main__':
                         epg_updating = False
                         waiting_for_epg = False
                     thread_4_lock = False
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         def thread_update_time():
@@ -7815,7 +7615,7 @@ if __name__ == '__main__':
                 if label11 and clockOn:
                     label11.setText('  ' + time.strftime('%H:%M:%S', time.localtime()))
                 scheduler_clock.setText(get_current_time())
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         def thread_osc():
@@ -7828,14 +7628,14 @@ if __name__ == '__main__':
                                 player.osc = True
                             else:
                                 player.osc = False
-                        except: # pylint: disable=bare-except
+                        except:
                             pass
                 else:
                     try:
                         player.osc = False
-                    except: # pylint: disable=bare-except
+                    except:
                         pass
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         dockWidgetVisible = False
@@ -7869,12 +7669,12 @@ if __name__ == '__main__':
                         win.container.unsetCursor()
                     else:
                         win.container.setCursor(_enum(QtCore.Qt, 'CursorShape.BlankCursor'))
-                except: # pylint: disable=bare-except
+                except:
                     pass
             else:
                 try:
                     win.container.unsetCursor()
-                except: # pylint: disable=bare-except
+                except:
                     pass
 
         def resizeCallback(cal_width):
@@ -7931,7 +7731,6 @@ if __name__ == '__main__':
                 _enum(QtCore.Qt, 'WindowType.CustomizeWindowHint') | \
                 _enum(QtCore.Qt, 'WindowType.FramelessWindowHint') | \
                 _enum(QtCore.Qt, 'WindowType.X11BypassWindowManagerHint')
-                #| _enum(QtCore.Qt, 'WindowType.Popup')
             )
             pl_layout.addWidget(widget)
             playlist_widget.show()
@@ -7951,7 +7750,7 @@ if __name__ == '__main__':
             cur_screen = QtWidgets.QApplication.primaryScreen()
             try:
                 cur_screen = win.screen()
-            except: # pylint: disable=bare-except
+            except:
                 pass
             cur_width = cur_screen.availableGeometry().width()
             controlpanel_widget.setFixedWidth(cur_width)
@@ -7959,15 +7758,8 @@ if __name__ == '__main__':
                 if hlayout2.indexOf(lb2_wdg) != -1 and lb2_wdg.isVisible():
                     lb2_width += lb2_wdg.width() + 10
             controlpanel_widget.setFixedWidth(
-                #int(win.width() / 3) - 100
-                #650
                 lb2_width + 30
             )
-            #p_3 = (get_curwindow_pos_actual().center() - controlpanel_widget.rect().center()).x()
-            #controlpanel_widget.move(
-            #    p_3,
-            #    maptoglobal(0, win.height() - 100).y()
-            #)
             p_3 = win.container.frameGeometry().center() - QtCore.QRect(
                 QtCore.QPoint(), controlpanel_widget.sizeHint()
             ).center()
@@ -7993,9 +7785,7 @@ if __name__ == '__main__':
                     _enum(QtCore.Qt, 'WindowType.CustomizeWindowHint') | \
                     _enum(QtCore.Qt, 'WindowType.FramelessWindowHint') | \
                     _enum(QtCore.Qt, 'WindowType.X11BypassWindowManagerHint')
-                    #| _enum(QtCore.Qt, 'WindowType.Popup')
                 )
-            #cp_layout.addWidget(fs_widget)
             cp_layout.addWidget(widget2)
             resizeandmove_controlpanel()
             controlpanel_widget.show()
@@ -8019,7 +7809,7 @@ if __name__ == '__main__':
                         showLoading2()
                     else:
                         hideLoading2()
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         win_has_focus = False
@@ -8097,7 +7887,7 @@ if __name__ == '__main__':
                                 if not AstronciaData.playlist_state:
                                     AstronciaData.fcstate = False
                                 sepplaylist_win.hide()
-            except: # pylint: disable=bare-except
+            except:
                 pass
             try:
                 if not fullscreen:
@@ -8108,7 +7898,7 @@ if __name__ == '__main__':
                             setShortcutState(False)
                         else:
                             setShortcutState(True)
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         def thread_fullscreen_sepplaylist_very_bad_workaround():
@@ -8118,18 +7908,16 @@ if __name__ == '__main__':
                     if fullscreen and sepplaylist_win.isVisible():
                         print_with_time("Applied workaround for separate playlist in fullscreen")
                         sepplaylist_win.hide()
-                    #if (not fullscreen) and (not sepplaylist_win.isVisible()):
-                    #    pass
                 if fullscreen:
                     resizeandmove_controlpanel()
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         def thread_mouse(): # pylint: disable=too-many-branches
             try:
                 player['cursor-autohide'] = 1000
                 player['force-window'] = True
-            except: # pylint: disable=bare-except
+            except:
                 pass
             try: # pylint: disable=too-many-nested-blocks
                 global fullscreen, key_t_visible, dockWidgetVisible, \
@@ -8137,7 +7925,6 @@ if __name__ == '__main__':
                 if l1.isVisible() and l1.text().startswith(_('volume')) and \
                   not is_show_volume():
                     l1.hide()
-                #label13.setText("{}: {}%".format(_('volumeshort'), int(player.volume)))
                 label13.setText("{}%".format(int(player.volume)))
                 if fullscreen:
                     dockWidget.setFixedWidth(settings['exp2'])
@@ -8171,7 +7958,7 @@ if __name__ == '__main__':
                         else:
                             dockWidget2Visible = False
                             hide_controlpanel()
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         key_t_visible = False
@@ -8229,7 +8016,7 @@ if __name__ == '__main__':
                 else:
                     if dockWidget2.height() != DOCK_WIDGET2_HEIGHT_LOW:
                         dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         def set_playback_speed(spd):
@@ -8238,7 +8025,7 @@ if __name__ == '__main__':
                 if playing_chan:
                     print_with_time("Set speed to {}".format(spd))
                     player.speed = spd
-            except: # pylint: disable=bare-except
+            except:
                 print_with_time("WARNING: set_playback_speed failed")
 
         def mpv_seek(secs):
@@ -8247,7 +8034,7 @@ if __name__ == '__main__':
                 if playing_chan:
                     print_with_time("Seeking to {} seconds".format(secs))
                     player.command('seek', secs)
-            except: # pylint: disable=bare-except
+            except:
                 print_with_time("WARNING: mpv_seek failed")
 
         def change_aot_mode():
@@ -8438,7 +8225,7 @@ if __name__ == '__main__':
                     hotkeys_tmp = json.loads(hotkeys_file_tmp.read())["current_profile"]["keys"]
                     main_keybinds = hotkeys_tmp
                     print_with_time("hotkeys.json found, using it as hotkey settings")
-            except: # pylint: disable=bare-except
+            except:
                 print_with_time("[WARNING] failed to read hotkeys.json, using default shortcuts")
                 main_keybinds = main_keybinds_default.copy()
         else:
@@ -8497,13 +8284,10 @@ if __name__ == '__main__':
                 volfile_1 = open(str(Path(LOCAL_DIR, 'volume.json')), 'r', encoding="utf8")
                 volfile_1_out = int(json.loads(volfile_1.read())["volume"])
                 volfile_1.close()
-            except: # pylint: disable=bare-except
+            except:
                 volfile_1_out = 100
             vol_remembered = volfile_1_out
         firstVolRun = False
-
-        #if doSaveSettings:
-        #    save_settings()
 
         def restore_compact_state():
             if os.path.isfile(str(Path(LOCAL_DIR, 'compactstate.json'))):
@@ -8523,7 +8307,7 @@ if __name__ == '__main__':
                                     key_t()
                             if compactstate["controlpanel_hidden"]:
                                 lowpanel_ch()
-                except: # pylint: disable=bare-except
+                except:
                     pass
 
         def read_expheight_json():
@@ -8560,10 +8344,10 @@ if __name__ == '__main__':
                         newdockWidgetHeight = expheight_file_0_read["expplaylistheight"]
                         try:
                             newdockWidgetPosition = expheight_file_0_read["expplaylistposition"]
-                        except: # pylint: disable=bare-except
+                        except:
                             pass
                     expheight_file_0.close()
-            except: # pylint: disable=bare-except
+            except:
                 pass
 
         if settings['m3u'] and m3u:
@@ -8583,7 +8367,7 @@ if __name__ == '__main__':
                     windowpos_file_1_json = json.loads(windowpos_file_1_out)
                     win.move(windowpos_file_1_json['x'], windowpos_file_1_json['y'])
                     print_with_time("Main window position restored")
-                except: # pylint: disable=bare-except
+                except:
                     pass
             if os.path.isfile(str(Path(LOCAL_DIR, 'comboboxindex.json'))):
                 try:
@@ -8596,7 +8380,7 @@ if __name__ == '__main__':
                     if combobox_index_file_1_json['m3u'] == settings['m3u']:
                         if combobox_index_file_1_json['index'] < combobox.count():
                             combobox.setCurrentIndex(combobox_index_file_1_json['index'])
-                except: # pylint: disable=bare-except
+                except:
                     pass
             read_expheight_json()
             if not playLastChannel():
