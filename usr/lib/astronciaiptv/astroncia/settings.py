@@ -1,23 +1,24 @@
 '''settings.json parser'''
 # SPDX-License-Identifier: GPL-3.0-only
-# pylint: disable=missing-function-docstring, invalid-name
+# pylint: disable=missing-function-docstring
 import os
 import json
 from pathlib import Path
 
 def parse_settings( # pylint: disable=too-many-arguments
-    LOCAL_DIR, DEF_DEINTERLACE, SAVE_FOLDER_DEFAULT, LANG_DEFAULT, DEF_TIMEZONE, DOCK_WIDGET_WIDTH
+    local_dir, def_deinterlace, save_folder_default,
+    lang_default, def_timezone, dock_widget_width
 ):
     settings_default = {
         "m3u": "",
         "epg": "",
-        "deinterlace": DEF_DEINTERLACE,
+        "deinterlace": def_deinterlace,
         "udp_proxy": "",
-        "save_folder": SAVE_FOLDER_DEFAULT,
+        "save_folder": save_folder_default,
         "provider": "",
         "nocache": True,
-        "lang": LANG_DEFAULT,
-        "epgoffset": DEF_TIMEZONE,
+        "lang": lang_default,
+        "epgoffset": def_timezone,
         "hwaccel": True,
         "sort": 0,
         "cache_secs": 0,
@@ -33,7 +34,7 @@ def parse_settings( # pylint: disable=too-many-arguments
         'movedragging': False,
         'styleredefoff': True,
         'volumechangestep': 1,
-        'exp2': DOCK_WIDGET_WIDTH,
+        'exp2': dock_widget_width,
         'mouseswitchchannels': False,
         'autoreconnection': True,
         'showplaylistmouse': True,
@@ -58,8 +59,8 @@ def parse_settings( # pylint: disable=too-many-arguments
     settings = settings_default
     settings_loaded = False
 
-    if os.path.isfile(str(Path(LOCAL_DIR, 'settings.json'))):
-        settings_file = open(str(Path(LOCAL_DIR, 'settings.json')), 'r', encoding="utf8")
+    if os.path.isfile(str(Path(local_dir, 'settings.json'))):
+        settings_file = open(str(Path(local_dir, 'settings.json')), 'r', encoding="utf8")
         settings = json.loads(settings_file.read())
         settings_file.close()
 
