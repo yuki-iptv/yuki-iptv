@@ -27,7 +27,7 @@ import hashlib
 import codecs
 import threading
 import traceback
-from multiprocessing import Process, Manager, freeze_support, active_children
+from multiprocessing import Process, Manager, active_children
 from functools import partial
 import chardet
 import requests
@@ -73,8 +73,6 @@ try:
 except: # pylint: disable=bare-except
     print_with_time("Failed to init MPRIS libraries!")
     print_with_time(traceback.format_exc())
-
-freeze_support()
 
 qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
 
