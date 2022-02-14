@@ -1,6 +1,6 @@
 '''Astroncia IPTV'''
-# pylint: disable=invalid-name, global-statement, missing-docstring, wrong-import-position
-# pylint: disable=too-many-lines, ungrouped-imports, too-many-statements, broad-except
+# pylint: disable=invalid-name, global-statement, missing-docstring
+# pylint: disable=too-many-lines, too-many-statements, broad-except
 #
 # SPDX-License-Identifier: GPL-3.0-only
 #
@@ -28,12 +28,17 @@ import codecs
 import threading
 import traceback
 from multiprocessing import Process, Manager, freeze_support, active_children
-freeze_support()
 from functools import partial
 import chardet
 import requests
 import setproctitle
 from unidecode import unidecode
+
+try:
+    from gi.repository import GLib
+except: # pylint: disable=bare-except
+    pass
+
 from astroncia.qt import get_qt_library
 from astroncia.lang import lang, init_lang, _, __
 from astroncia.ua import user_agent, uas, ua_names
@@ -57,19 +62,26 @@ from astroncia.m3u_editor import M3UEditor
 from thirdparty.conversion import convert_size, format_bytes, human_secs
 from thirdparty.xtream import XTream, Serie
 from thirdparty.series import parse_series
+from thirdparty.resizablewindow import ResizableWindow
 #from thirdparty.levenshtein import damerau_levenshtein
 
+try:
+    from thirdparty.mpris_server.adapters import PlayState, MprisAdapter, \
+      Microseconds, VolumeDecimal, RateDecimal, Track, DEFAULT_RATE
+    from thirdparty.mpris_server.events import EventAdapter
+    from thirdparty.mpris_server.server import Server
+except: # pylint: disable=bare-except
+    print_with_time("Failed to init MPRIS libraries!")
+    print_with_time(traceback.format_exc())
+
+freeze_support()
+
 qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
-if qt_library == 'none' or not QtWidgets:
-    print_with_time("ERROR: No Qt library found!")
-    sys.exit(1)
 
 if 'PyQt6' in sys.modules or 'PyQt5' in sys.modules:
     Signal = QtCore.pyqtSignal
 else:
     Signal = QtCore.Signal
-
-from thirdparty.resizablewindow import ResizableWindow
 
 if qt_library == 'PyQt5':
     qt_icon_critical = 3
@@ -79,16 +91,6 @@ else:
     qt_icon_critical = QtWidgets.QMessageBox.Icon.Critical
     qt_icon_warning = QtWidgets.QMessageBox.Icon.Warning
     qt_icon_information = QtWidgets.QMessageBox.Icon.Information
-
-try:
-    from gi.repository import GLib
-    from thirdparty.mpris_server.adapters import PlayState, MprisAdapter, \
-      Microseconds, VolumeDecimal, RateDecimal, Track, DEFAULT_RATE
-    from thirdparty.mpris_server.events import EventAdapter
-    from thirdparty.mpris_server.server import Server
-except: # pylint: disable=bare-except
-    print_with_time("Failed to init MPRIS libraries!")
-    print_with_time(traceback.format_exc())
 
 APP_VERSION = '__DEB_VERSION__'
 
