@@ -51,6 +51,7 @@ from astroncia.xspf import parse_xspf
 from astroncia.catchup import get_catchup_url, parse_specifiers_now_url, format_url_clean, \
     format_catchup_array
 from astroncia.hypnotix_import import import_from_hypnotix
+from astroncia.settings import parse_settings
 from astroncia.qt6compat import globalPos, getX, getY, _exec, _enum
 from astroncia.m3u_editor import M3UEditor
 from thirdparty.conversion import convert_size, format_bytes, human_secs
@@ -389,134 +390,15 @@ if __name__ == '__main__':
             favourite_sets = json.loads(file1.read())
             file1.close()
 
-        #tz_offset = time.timezone if (time.localtime().tm_isdst == 0) else time.altzone
-        #DEF_TIMEZONE = tz_offset / 60 / 60 * -1
         DEF_TIMEZONE = 0
 
-        if os.path.isfile(str(Path(LOCAL_DIR, 'settings.json'))):
-            settings_file = open(str(Path(LOCAL_DIR, 'settings.json')), 'r', encoding="utf8")
-            settings = json.loads(settings_file.read())
-            settings_file.close()
-        else:
-            settings = {
-                "m3u": "",
-                "epg": "",
-                "deinterlace": DEF_DEINTERLACE,
-                "udp_proxy": "",
-                "save_folder": SAVE_FOLDER_DEFAULT,
-                "provider": "",
-                "nocache": True,
-                "lang": LANG_DEFAULT,
-                "epgoffset": DEF_TIMEZONE,
-                "hwaccel": True,
-                "sort": 0,
-                "cache_secs": 0,
-                "useragent": 2,
-                "mpv_options": '',
-                'donotupdateepg': False,
-                'channelsonpage': 100,
-                'openprevchan': False,
-                'remembervol': True,
-                'hidempv': False,
-                'hideepgpercentage': False,
-                'hidebitrateinfo': False,
-                'movedragging': False,
-                'styleredefoff': True,
-                'volumechangestep': 1,
-                'exp2': DOCK_WIDGET_WIDTH,
-                'mouseswitchchannels': False,
-                'autoreconnection': True,
-                'showplaylistmouse': True,
-                'hideplaylistleftclk': False,
-                'channellogos': 0,
-                'nocacheepg': False,
-                'scrrecnosubfolders': False,
-                'hidetvprogram': False,
-                'showcontrolsmouse': True,
-                'catchupenable': False,
-                'flpopacity': 0.7,
-                'panelposition': 0,
-                'playlistsep': False,
-                'screenshot': 0,
-                'videoaspect': 0,
-                'zoom': 0,
-                'panscan': 0.0,
-                'referer': '',
-                'gui': 0
-            }
+        settings, settings_loaded = parse_settings(
+            LOCAL_DIR, DEF_DEINTERLACE, SAVE_FOLDER_DEFAULT,
+            LANG_DEFAULT, DEF_TIMEZONE, DOCK_WIDGET_WIDTH
+        )
+        if not settings_loaded:
             m3u = ""
-        if 'hwaccel' not in settings:
-            settings['hwaccel'] = True
-        if 'sort' not in settings:
-            settings['sort'] = 0
-        if 'cache_secs' not in settings:
-            settings['cache_secs'] = 0
-        if "epgoffset" not in settings:
-            settings["epgoffset"] = DEF_TIMEZONE
-        if 'useragent' not in settings:
-            settings['useragent'] = 2
-        if 'mpv_options' not in settings:
-            settings['mpv_options'] = ''
-        if 'donotupdateepg' not in settings:
-            settings['donotupdateepg'] = False
-        if 'channelsonpage' not in settings:
-            settings['channelsonpage'] = 100
-        if 'openprevchan' not in settings:
-            settings['openprevchan'] = False
-        if 'remembervol' not in settings:
-            settings['remembervol'] = True
-        if 'hidempv' not in settings:
-            settings['hidempv'] = False
-        if 'hideepgpercentage' not in settings:
-            settings['hideepgpercentage'] = False
-        if 'hidebitrateinfo' not in settings:
-            settings['hidebitrateinfo'] = False
-        if 'movedragging' not in settings:
-            settings['movedragging'] = False
-        if 'styleredefoff' not in settings:
-            settings['styleredefoff'] = True
-        if 'volumechangestep' not in settings:
-            settings['volumechangestep'] = 1
-        if 'exp2' not in settings:
-            settings['exp2'] = DOCK_WIDGET_WIDTH
-        if 'mouseswitchchannels' not in settings:
-            settings['mouseswitchchannels'] = False
-        if 'autoreconnection' not in settings:
-            settings['autoreconnection'] = True
-        if 'showplaylistmouse' not in settings:
-            settings['showplaylistmouse'] = True
-        if 'hideplaylistleftclk' not in settings:
-            settings['hideplaylistleftclk'] = False
-        if 'channellogos' not in settings:
-            settings['channellogos'] = 0
-        if 'nocacheepg' not in settings:
-            settings['nocacheepg'] = False
-        if 'scrrecnosubfolders' not in settings:
-            settings['scrrecnosubfolders'] = False
-        if 'hidetvprogram' not in settings:
-            settings['hidetvprogram'] = False
-        if 'showcontrolsmouse' not in settings:
-            settings['showcontrolsmouse'] = True
-        if 'catchupenable' not in settings:
-            settings['catchupenable'] = False
-        if 'flpopacity' not in settings:
-            settings['flpopacity'] = 0.7
-        if 'panelposition' not in settings:
-            settings['panelposition'] = 0
-        if 'playlistsep' not in settings:
-            settings['playlistsep'] = False
-        if 'screenshot' not in settings:
-            settings['screenshot'] = 0
-        if 'videoaspect' not in settings:
-            settings['videoaspect'] = 0
-        if 'zoom' not in settings:
-            settings['zoom'] = 0
-        if 'panscan' not in settings:
-            settings['panscan'] = 0.0
-        if 'gui' not in settings:
-            settings['gui'] = 0
-        if 'referer' not in settings:
-            settings['referer'] = ''
+
         if settings['hwaccel']:
             print_with_time("{} {}".format(_('hwaccel').replace('\n', ' '), _('enabled')))
         else:
