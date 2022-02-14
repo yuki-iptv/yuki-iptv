@@ -20,7 +20,6 @@ import signal
 import base64
 import argparse
 import subprocess
-import copy
 import re
 import textwrap
 import hashlib
@@ -5054,7 +5053,6 @@ if __name__ == '__main__':
                         chan_5, chan_5_logo, channel_icons_data_epg.return_dict
                     )
 
-        array_copy = copy.deepcopy(array)
         prog_match_arr = {}
 
         first_gen_chans = True
