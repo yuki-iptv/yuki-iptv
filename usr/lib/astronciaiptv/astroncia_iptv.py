@@ -3405,9 +3405,11 @@ if __name__ == '__main__':
                 license_win.hide()
 
         license_str = "GPLv3"
-        if os.path.isfile(str(Path('astroncia', 'license.txt'))):
+        if os.path.isfile(str(Path('..', '..', 'share', 'astronciaiptv', 'license.txt'))):
             license_file = open(
-                str(Path('astroncia', 'license.txt')), 'r', encoding="utf8"
+                str(Path('..', '..', 'share', 'astronciaiptv', 'license.txt')),
+                'r',
+                encoding="utf8"
             )
             license_str = license_file.read()
             license_file.close()
