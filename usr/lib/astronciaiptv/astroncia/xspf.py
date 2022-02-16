@@ -1,5 +1,4 @@
 '''xspf compatibility'''
-import re
 import xml.etree.ElementTree as ET
 from astroncia.lang import _
 from astroncia.time import print_with_time
