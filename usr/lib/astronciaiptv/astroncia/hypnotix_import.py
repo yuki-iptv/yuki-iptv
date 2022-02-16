@@ -41,8 +41,6 @@ def import_from_hypnotix():
                     prov_epg_2 = provider_2[2][1]
                     # Local
                     if provider_2[1] == 'local':
-                        if provider_2[2][0].startswith('file://'):
-                            provider_2[2][0] = provider_2[2][0].replace('file://', '')
                         prov_m3u_2 = provider_2[2][0]
                 playlists_hypnotix[prov_name_2] = {
                     "m3u": prov_m3u_2,
