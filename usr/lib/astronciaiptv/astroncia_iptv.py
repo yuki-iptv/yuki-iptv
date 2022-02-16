@@ -935,7 +935,8 @@ if __name__ == '__main__':
                     array[ch2['title']] = ch2
 
             print_with_time("{} channels, {} groups, {} movies, {} series".format(
-                len(array), len(groups), len(AstronciaData.movies), len(AstronciaData.series)
+                len(array), len([group2 for group2 in groups if group2 != _('allchannels')]),
+                len(AstronciaData.movies), len(AstronciaData.series)
             ))
 
             print_with_time(_('playlistloaddone'))
