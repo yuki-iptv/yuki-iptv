@@ -1258,7 +1258,7 @@ if __name__ == '__main__':
 
         help_win = QtWidgets.QMainWindow()
         help_win.resize(400, 600)
-        help_win.setWindowTitle(_('help'))
+        help_win.setWindowTitle(_('menubar_about').replace('&', ''))
         help_win.setWindowIcon(main_icon)
 
         license_win = QtWidgets.QMainWindow()
