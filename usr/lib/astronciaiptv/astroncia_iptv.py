@@ -147,8 +147,11 @@ DOCK_WIDGET_WIDTH = max(DOCK_WIDGET_WIDTH, 0)
 
 iptv_playlists = {}
 
-parser = argparse.ArgumentParser(description=MAIN_WINDOW_TITLE)
-parser.add_argument('--python')
+parser = argparse.ArgumentParser(prog="astronciaiptv", description=MAIN_WINDOW_TITLE)
+parser.add_argument(
+    '--python',
+    help='Internal argument, do not use'
+)
 parser.add_argument(
     '--version',
     action='store_true',
@@ -3056,6 +3059,18 @@ if __name__ == '__main__':
         movedragging_label.setToolTip(_('expfunctionwarning'))
         movedragging_label.setStyleSheet('color: #cf9e17')
 
+        # Turn off move dragging if separate playlist enabled
+        if settings["playlistsep"]:
+            settings['movedragging'] = False
+            movedragging_flag.setChecked(False)
+            movedragging_flag.setDisabled(True)
+            movedragging_flag.setToolTip(
+                _('incompatiblewithspw') + '\n\n' + _('expfunctionwarning')
+            )
+            movedragging_label.setToolTip(
+                _('incompatiblewithspw') + '\n\n' + _('expfunctionwarning')
+            )
+
         styleredefoff_flag = QtWidgets.QCheckBox()
         styleredefoff_flag.setChecked(settings['styleredefoff'])
 
@@ -3404,7 +3419,7 @@ if __name__ == '__main__':
             else:
                 license_win.hide()
 
-        license_str = "GPLv3"
+        license_str = "GPL-3.0-only"
         if os.path.isfile(str(Path('..', '..', 'share', 'astronciaiptv', 'license.txt'))):
             license_file = open(
                 str(Path('..', '..', 'share', 'astronciaiptv', 'license.txt')),
@@ -4494,6 +4509,14 @@ if __name__ == '__main__':
                         )
                     centerwidget(loading1)
                     centerwidget(loading2, 50)
+                    try:
+                        if settings["playlistsep"] and sepplaylist_win.isVisible():
+                            print_with_time(
+                                "Applied workaround for separate playlist in fullscreen"
+                            )
+                            sepplaylist_win.hide()
+                    except:
+                        pass
                     time02 = time.time() - time01
                     print_with_time("Entering fullscreen ended, took {} seconds".format(time02))
                     AstronciaData.fullscreen_locked = False
@@ -6228,6 +6251,7 @@ if __name__ == '__main__':
         except:
             pass
         if is_apply_wayland_fix:
+            print_with_time("")
             print_with_time("[NOTE] Applying video output fix for Wayland")
             VIDEO_OUTPUT = 'x11'
 
@@ -7791,6 +7815,7 @@ if __name__ == '__main__':
             cp_layout.addWidget(widget2)
             resizeandmove_controlpanel()
             controlpanel_widget.show()
+            resizeandmove_controlpanel()
 
         def hide_controlpanel():
             if LABEL7_WIDTH:
@@ -7906,12 +7931,11 @@ if __name__ == '__main__':
         def thread_fullscreen_sepplaylist_very_bad_workaround():
             global fullscreen
             try:
-                if settings["playlistsep"]:
-                    if fullscreen and sepplaylist_win.isVisible():
-                        print_with_time("Applied workaround for separate playlist in fullscreen")
-                        sepplaylist_win.hide()
-                if fullscreen:
-                    resizeandmove_controlpanel()
+                if fullscreen and settings["playlistsep"] and sepplaylist_win.isVisible():
+                    print_with_time(
+                        "Applied workaround for separate playlist in fullscreen (thread)"
+                    )
+                    sepplaylist_win.hide()
             except:
                 pass
 
