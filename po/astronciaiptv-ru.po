@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Astroncia <kestraly@gmail.com>\n"
-"PO-Revision-Date: 2022-02-12 16:28+0000\n"
+"PO-Revision-Date: 2022-02-16 02:17+0000\n"
 "Project-Id-Version: \n"
 "Language-Team: Russian <kde-i18n-doc@kde.org>\n"
 "Language: ru_RU\n"
@@ -1085,6 +1085,15 @@ msgstr "Не загружать из EPG"
 
 msgid "donotloadanylogos"
 msgstr "Не загружать любые логотипы"
+
+msgid "subtitles"
+msgstr "Субтитры"
+
+msgid "off"
+msgstr "Отключены"
+
+msgid "incompatiblewithspw"
+msgstr "Несовместимо с настройкой Плейлист в отдельном окне"
 
 msgid "helptext"
 msgstr ""

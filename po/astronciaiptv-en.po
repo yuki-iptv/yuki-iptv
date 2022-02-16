@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Astroncia <kestraly@gmail.com>\n"
-"PO-Revision-Date: 2022-02-12 16:28+0000\n"
+"PO-Revision-Date: 2022-02-16 02:17+0000\n"
 "Project-Id-Version: \n"
 "Language-Team: English <kde-i18n-doc@kde.org>\n"
 "Language: en_US\n"
@@ -1080,6 +1080,15 @@ msgstr "Do not load from EPG"
 
 msgid "donotloadanylogos"
 msgstr "Do not load any logos"
+
+msgid "subtitles"
+msgstr "Subtitles"
+
+msgid "off"
+msgstr "Off"
+
+msgid "incompatiblewithspw"
+msgstr "Incompatible with option Playlist in separate window"
 
 msgid "helptext"
 msgstr ""
