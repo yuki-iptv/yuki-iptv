@@ -41,6 +41,7 @@ class M3UParser:
             ch_url = self.udp_proxy + \
             "/" + ch_url.replace("udp://", "udp/").replace("rtp://", "rtp/")
             ch_url = ch_url.replace('//udp/', '/udp/').replace('//rtp/', '/rtp/')
+            ch_url = ch_url.replace('@', '')
 
         tvg_url = self.parse_regexp("tvg-url", line_info)
         url_tvg = self.parse_regexp("url-tvg", line_info)
