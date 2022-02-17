@@ -36,8 +36,10 @@ def ast_trackset(track, type1):
     print_with_time("Set {} track to {}".format(type1, track))
     if type1 == 'vid':
         AstronciaData.player.vid = track
-    else:
+    elif type1 == 'aid':
         AstronciaData.player.aid = track
+    elif type1 == 'sid':
+        AstronciaData.player.sid = track
     AstronciaData.redraw_menubar()
 
 def send_mpv_command(name, act, cmd):
@@ -344,6 +346,8 @@ def init_menubar(data): # pylint: disable=too-many-statements
     AstronciaData.empty_action.setEnabled(False)
     AstronciaData.empty_action1 = qaction('<{}>'.format(_('empty_sm')), data)
     AstronciaData.empty_action1.setEnabled(False)
+    AstronciaData.empty_action2 = qaction('<{}>'.format(_('empty_sm')), data)
+    AstronciaData.empty_action2.setEnabled(False)
 
     # Filters mapping
     AstronciaData.filter_mapping = {
@@ -445,6 +449,11 @@ def populate_menubar(
     audio_menu.addAction(AstronciaData.volumeMinus)
     audio_menu.addAction(AstronciaData.volumePlus)
 
+    # Subtitles
+    subtitles_menu = menubar.addMenu(_('menubar_subtitles'))
+    sub_track_menu = subtitles_menu.addMenu(_('menubar_track'))
+    sub_track_menu.clear()
+
     # View
 
     view_menu = menubar.addMenu(_('menubar_view'))
@@ -470,7 +479,7 @@ def populate_menubar(
     help_menu = menubar.addMenu(_('menubar_help'))
     help_menu.addAction(AstronciaData.aboutAction)
 
-    AstronciaData.menubars[i] = [video_track_menu, audio_track_menu]
+    AstronciaData.menubars[i] = [video_track_menu, audio_track_menu, sub_track_menu]
 
     return aot_action
 
@@ -497,7 +506,7 @@ def recursive_filter_setstate(state):
 def get_first_run():
     return AstronciaData.first_run
 
-def update_menubar(track_list, playing_chan, m3u, file, aot_file): # pylint: disable=too-many-branches, too-many-statements
+def update_menubar(track_list, playing_chan, m3u, file, aot_file): # pylint: disable=too-many-branches, too-many-statements, too-many-locals
     # Filters enable / disable
     if playing_chan:
         recursive_filter_setstate(True)
@@ -536,13 +545,21 @@ def update_menubar(track_list, playing_chan, m3u, file, aot_file): # pylint: dis
     for i in AstronciaData.menubars:
         clear_menu(AstronciaData.menubars[i][0])
         clear_menu(AstronciaData.menubars[i][1])
+        clear_menu(AstronciaData.menubars[i][2])
         AstronciaData.menubars[i][0].clear()
         AstronciaData.menubars[i][1].clear()
+        AstronciaData.menubars[i][2].clear()
         if track_list and playing_chan:
             if not [x for x in track_list if x['type'] == 'video']:
                 AstronciaData.menubars[i][0].addAction(AstronciaData.empty_action)
             if not [x for x in track_list if x['type'] == 'audio']:
                 AstronciaData.menubars[i][1].addAction(AstronciaData.empty_action1)
+            # Subtitles off
+            sub_off_action = qaction(_('off'), AstronciaData.data)
+            if AstronciaData.player.sid == 'no' or not AstronciaData.player.sid:
+                sub_off_action.setIcon(AstronciaData.circle_icon)
+            sub_off_action.triggered.connect(partial(ast_trackset, 'no', 'sid'))
+            AstronciaData.menubars[i][2].addAction(sub_off_action)
             for track in track_list:
                 if track['type'] == 'video':
                     trk = qaction(str(track['id']), AstronciaData.data)
@@ -556,9 +573,22 @@ def update_menubar(track_list, playing_chan, m3u, file, aot_file): # pylint: dis
                         trk1.setIcon(AstronciaData.circle_icon)
                     trk1.triggered.connect(partial(ast_trackset, track['id'], 'aid'))
                     AstronciaData.menubars[i][1].addAction(trk1)
+                if track['type'] == 'sub':
+                    if 'lang' in track:
+                        trk2 = qaction(
+                            '{} ({})'.format(track['id'], track['lang']),
+                            AstronciaData.data
+                        )
+                    else:
+                        trk2 = qaction(str(track['id']), AstronciaData.data)
+                    if track['id'] == AstronciaData.player.sid:
+                        trk2.setIcon(AstronciaData.circle_icon)
+                    trk2.triggered.connect(partial(ast_trackset, track['id'], 'sid'))
+                    AstronciaData.menubars[i][2].addAction(trk2)
         else:
             AstronciaData.menubars[i][0].addAction(AstronciaData.empty_action)
             AstronciaData.menubars[i][1].addAction(AstronciaData.empty_action1)
+            AstronciaData.menubars[i][2].addAction(AstronciaData.empty_action2)
 
 def init_astroncia_menubar(data, app, menubar):
     AstronciaData.data = data
