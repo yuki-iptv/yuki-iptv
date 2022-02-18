@@ -6235,7 +6235,7 @@ if __name__ == '__main__':
 
         if settings['hwaccel']:
             VIDEO_OUTPUT = 'gpu,vdpau,opengl,xv,x11'
-            HWACCEL = 'auto'
+            HWACCEL = 'auto-safe'
         else:
             VIDEO_OUTPUT = 'xv,x11'
             HWACCEL = 'no'
