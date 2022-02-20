@@ -5444,14 +5444,26 @@ if __name__ == '__main__':
                 file04.close()
             else:
                 if str1 in file03_contents:
-                    new_data = file03_contents.replace(str1, '')
-                    if new_data == '#EXTM3U\n':
-                        new_data = '#EXTM3U\n#EXTINF:-1,{}\nhttp://255.255.255.255\n'.format('-')
-                    file05 = open(
-                        str(Path(LOCAL_DIR, 'playlist_separate.m3u')), 'w', encoding="utf8"
+                    playlistsep_del_msg = QtWidgets.QMessageBox.question(
+                    None,
+                    MAIN_WINDOW_TITLE,
+                    _('areyousure'),
+                    _enum(QtWidgets.QMessageBox, 'StandardButton.Yes') | \
+                    _enum(QtWidgets.QMessageBox, 'StandardButton.No'),
+                    _enum(QtWidgets.QMessageBox, 'StandardButton.Yes')
                     )
-                    file05.write(new_data)
-                    file05.close()
+                    if playlistsep_del_msg == _enum(
+                    QtWidgets.QMessageBox, 'StandardButton.Yes'
+                    ):
+                        new_data = file03_contents.replace(str1, '')
+                        if new_data == '#EXTM3U\n':
+                            new_data = \
+                            '#EXTM3U\n#EXTINF:-1,{}\nhttp://255.255.255.255\n'.format('-')
+                        file05 = open(
+                            str(Path(LOCAL_DIR, 'playlist_separate.m3u')), 'w', encoding="utf8"
+                        )
+                        file05.write(new_data)
+                        file05.close()
                 else:
                     file02 = open(
                         str(Path(LOCAL_DIR, 'playlist_separate.m3u')), 'w', encoding="utf8"
