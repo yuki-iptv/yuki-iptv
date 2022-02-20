@@ -5,5 +5,5 @@ EPG_URLS = [
     "https://iptvx.one/EPG_LITE",
     "http://programtv.ru/xmltv.xml.gz",
     "http://epg.it999.ru/edem.xml.gz",
-    "https://iptv-org.github.io/epg/guides/tv.yandex.ru.guide.xml"
+    "https://iptv-org.github.io/epg/guides/ru/tv.yandex.ru.epg.xml"
 ]
