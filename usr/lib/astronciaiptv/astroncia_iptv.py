@@ -1275,7 +1275,7 @@ if __name__ == '__main__':
 
         chan_win = QtWidgets.QMainWindow()
         chan_win.resize(400, 250)
-        chan_win.setWindowTitle(_('channelsettings'))
+        chan_win.setWindowTitle(_('videosettings'))
         chan_win.setWindowIcon(main_icon)
 
         ext_win = QtWidgets.QMainWindow()
@@ -2073,7 +2073,7 @@ if __name__ == '__main__':
         useragent_lbl = QtWidgets.QLabel("{}:".format(_('useragent')))
         group_lbl = QtWidgets.QLabel("{}:".format(_('group')))
         group_text = QtWidgets.QLineEdit()
-        hidden_lbl = QtWidgets.QLabel("{}:".format(_('hide')))
+        hidden_lbl = QtWidgets.QLabel("{}:".format(_('hidech')))
         deinterlace_chk = QtWidgets.QCheckBox()
         hidden_chk = QtWidgets.QCheckBox()
         useragent_choose = QtWidgets.QComboBox()
@@ -2514,7 +2514,7 @@ if __name__ == '__main__':
             player.observe_property('track-list', on_track_list_change)
 
         def chan_set_save():
-            chan_3 = title.text().replace("{}: ".format(_('channel')), "")
+            chan_3 = title.text()
             channel_sets[chan_3] = {
                 "deinterlace": deinterlace_chk.isChecked(),
                 "useragent": useragent_choose.currentIndex(),
@@ -5310,7 +5310,7 @@ if __name__ == '__main__':
         def settings_context_menu(): # pylint: disable=too-many-branches
             if chan_win.isVisible():
                 chan_win.close()
-            title.setText(("{}: " + item_selected).format(_('channel')))
+            title.setText(str(item_selected))
             if item_selected in channel_sets:
                 deinterlace_chk.setChecked(channel_sets[item_selected]['deinterlace'])
                 try:
@@ -5497,7 +5497,7 @@ if __name__ == '__main__':
                     menu.addAction(_('favoritesplaylistsep'), favoritesplaylistsep_add)
                     menu.addAction(_('openexternal'), open_external_player)
                     menu.addAction(_('startrecording'), tvguide_start_record)
-                    menu.addAction(_('channelsettings'), settings_context_menu)
+                    menu.addAction(_('videosettings'), settings_context_menu)
                     #menu.addAction(_('iaepgmatch'), iaepgmatch)
                     _exec(menu, self.mapToGlobal(pos))
             except:
