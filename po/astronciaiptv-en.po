@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Astroncia <kestraly@gmail.com>\n"
-"PO-Revision-Date: 2022-02-17 16:02+0000\n"
+"PO-Revision-Date: 2022-02-20 00:45+0000\n"
 "Project-Id-Version: \n"
 "Language-Team: English <kde-i18n-doc@kde.org>\n"
 "Language: en_US\n"
@@ -1092,6 +1092,12 @@ msgstr "Incompatible with option Playlist in separate window"
 
 msgid "menubar_subtitles"
 msgstr "&Subtitles"
+
+msgid "videosettings"
+msgstr "Video settings"
+
+msgid "hidech"
+msgstr "Hide"
 
 msgid "helptext"
 msgstr ""

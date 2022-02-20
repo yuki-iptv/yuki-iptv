@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Astroncia <kestraly@gmail.com>\n"
-"PO-Revision-Date: 2022-02-17 16:02+0000\n"
+"PO-Revision-Date: 2022-02-20 00:45+0000\n"
 "Project-Id-Version: \n"
 "Language-Team: Russian <kde-i18n-doc@kde.org>\n"
 "Language: ru_RU\n"
@@ -1097,6 +1097,12 @@ msgstr "Несовместимо с настройкой Плейлист в о�
 
 msgid "menubar_subtitles"
 msgstr "&Субтитры"
+
+msgid "videosettings"
+msgstr "Настройки видео"
+
+msgid "hidech"
+msgstr "Скрыть"
 
 msgid "helptext"
 msgstr ""
