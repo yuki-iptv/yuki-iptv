@@ -4311,7 +4311,7 @@ if __name__ == '__main__':
                 playing_chan = j
                 item_selected = j
                 try:
-                    play_url = array[j]['url']
+                    play_url = getArrayItem(j)['url']
                 except:
                     play_url = custom_url
                 MAX_CHAN_SIZE = 35
