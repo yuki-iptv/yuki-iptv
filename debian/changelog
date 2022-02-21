@@ -1,3 +1,19 @@
+astronciaiptv (0.0.93) unstable; urgency=medium
+
+  * l10n: Update translations
+  * packaging: add dconf-cli to recommends
+  * Add subtitles selector
+  * Ask before deleting from separate favourites
+  * Fix udp proxy parsing
+  * Inline pydbus
+  * More detailed language name in settings
+  * Turn off move dragging if separate playlist enabled
+  * Update EPG URLs
+  * Update splash screen
+  * Use auto-safe hwdec
+
+ -- Astroncia <kestraly@gmail.com>  Mon, 21 Feb 2022 05:02:07 +0300
+
 astronciaiptv (0.0.92) unstable; urgency=medium
 
   * l10n: Update translations
