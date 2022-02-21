@@ -221,7 +221,9 @@ def init_menubar(data): # pylint: disable=too-many-statements
     AstronciaData.compactmode.triggered.connect(lambda: AstronciaData.showhideeverything())
     AstronciaData.compactmode.setShortcut(kbd("showhideeverything"))
 
-    AstronciaData.csforchannel = qaction(_('menubar_csforchannel') + AstronciaData.str_offset, data)
+    AstronciaData.csforchannel = qaction(
+        _('menubar_videosettings') + AstronciaData.str_offset, data
+    )
     AstronciaData.csforchannel.triggered.connect(lambda: AstronciaData.main_channel_settings())
     AstronciaData.csforchannel.setShortcut(kbd("main_channel_settings"))
 

@@ -8181,7 +8181,7 @@ if __name__ == '__main__':
             "key_quit": _('exitprogram'),
             "key_t": _('showhideplaylist'),
             "lowpanel_ch_1": _('showhidectrlpanel'),
-            "main_channel_settings": _('menubar_csforchannel').replace('&', ''),
+            "main_channel_settings": _('menubar_videosettings').replace('&', ''),
             "mpv_fullscreen": _('menubar_fullscreen').replace('&', ''),
             "mpv_fullscreen_2": _('menubar_fullscreen').replace('&', '') + ' (2)',
             "mpv_mute": _('menubar_mute').replace('&', ''),
