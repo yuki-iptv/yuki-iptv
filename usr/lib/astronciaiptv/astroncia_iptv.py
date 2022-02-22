@@ -351,11 +351,14 @@ if __name__ == '__main__':
         m3u = ""
         clockOn = False
 
+        DEFAULT_HWACCEL = "auto-safe"
+
         try:
             from thirdparty import mpv
         except:
             print_with_time("Falling back to old mpv library...")
             from thirdparty import mpv_old as mpv
+            DEFAULT_HWACCEL = "auto"
 
         if not os.path.isdir(LOCAL_DIR):
             os.mkdir(LOCAL_DIR)
@@ -6243,7 +6246,7 @@ if __name__ == '__main__':
 
         if settings['hwaccel']:
             VIDEO_OUTPUT = 'gpu,vdpau,opengl,xv,x11'
-            HWACCEL = 'auto-safe'
+            HWACCEL = DEFAULT_HWACCEL
         else:
             VIDEO_OUTPUT = 'xv,x11'
             HWACCEL = 'no'
