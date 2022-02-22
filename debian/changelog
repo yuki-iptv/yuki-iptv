@@ -1,3 +1,9 @@
+astronciaiptv (0.0.95) unstable; urgency=medium
+
+  * Fix hwdec in older mpv versions
+
+ -- Astroncia <kestraly@gmail.com>  Tue, 22 Feb 2022 23:48:20 +0300
+
 astronciaiptv (0.0.94) unstable; urgency=medium
 
   * Revert Add subtitles selector
