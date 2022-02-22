@@ -1,3 +1,9 @@
+astronciaiptv (0.0.94) unstable; urgency=medium
+
+  * Revert Add subtitles selector
+
+ -- Astroncia <kestraly@gmail.com>  Tue, 22 Feb 2022 22:42:49 +0300
+
 astronciaiptv (0.0.93) unstable; urgency=medium
 
   * l10n: Update translations
