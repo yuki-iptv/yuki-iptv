@@ -2467,9 +2467,6 @@ if __name__ == '__main__':
                 va1 = player.video_aspect
             return va1
 
-        def on_track_list_change(prop, event): # pylint: disable=unused-argument
-            file_loaded_callback()
-
         def doPlay(play_url1, ua_ch=def_user_agent, chan_name_0=''):
             comm_instance.do_play_args = (play_url1, ua_ch, chan_name_0)
             print_with_time("")
@@ -2510,8 +2507,6 @@ if __name__ == '__main__':
             setPlayerSettings(chan_name_0)
             # Monitor playback (for stream information)
             monitor_playback()
-            # Monitor track list change
-            player.observe_property('track-list', on_track_list_change)
 
         def chan_set_save():
             chan_3 = title.text()
@@ -3715,14 +3710,13 @@ if __name__ == '__main__':
 
         def init_mpv_player(): # pylint: disable=too-many-branches
             global player
-            mpv_script_opts = 'osc-layout=slimbox,osc-seekbarstyle=bar,' + \
-                'osc-deadzonesize=0,osc-minmousemove=3'
             try:
                 player = mpv.MPV(
                     **options,
                     wid=str(int(win.container.winId())),
                     osc=True,
-                    script_opts=mpv_script_opts,
+                    script_opts='osc-layout=box,osc-seekbarstyle=bar,' + \
+                        'osc-deadzonesize=0,osc-minmousemove=3',
                     ytdl=True,
                     log_handler=my_log,
                     loglevel='info' # debug
@@ -3734,7 +3728,8 @@ if __name__ == '__main__':
                         **options,
                         wid=str(int(win.container.winId())),
                         osc=True,
-                        script_opts=mpv_script_opts,
+                        script_opts='osc-layout=box,osc-seekbarstyle=bar,' + \
+                            'osc-deadzonesize=0,osc-minmousemove=3',
                         log_handler=my_log,
                         loglevel='info' # debug
                     )
