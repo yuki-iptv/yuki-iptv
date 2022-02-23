@@ -3,7 +3,8 @@
 
 [![Screenshot](https://gitlab.com/astroncia/iptv/uploads/3af0979a9fcf688332b995475689a60f/astronciaiptv-screenshot-thumbnail.png)](https://gitlab.com/astroncia/iptv/uploads/5d36d4b259c0d2a5781603867d0f2454/astronciaiptv-screenshot.png)  
   
-⚠️ Note: Astroncia IPTV doesn't provide any playlists or other digital content. The channels and pictures in the screenshots are for demonstration purposes only.  
+⚠️ Disclaimer: Astroncia IPTV doesn't provide any playlists or other digital content.  
+The channels and pictures in the screenshots are for demonstration purposes only.  
 
 ## Download
 
@@ -47,23 +48,9 @@ Icons: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 - Video settings for each channel - contrast, brightness, hue, saturation, gamma  
 - Change user agent for each channel  
 - M3U playlist editor  
-- TV archive  
+- TV archive / catchup  
 - Internalization  
-- MPRIS support (and remote control using KDE Connect)  
-
-## Requirements
-
-- [Qt](https://www.qt.io/) 6.2.2 or newer *(or Qt 5.12 or newer)*
-- [libmpv1](https://mpv.io/) 0.27.2 or newer
-- [ffmpeg](https://ffmpeg.org/) 3.4.8 or newer
-- [Python](https://www.python.org/) 3.6 or newer
-- [PyQt6](https://pypi.org/project/PyQt6/) 6.2.2 or newer *(or [PyQt5](https://pypi.org/project/PyQt5/) 5.12 or newer)*
-- [Pillow](https://pypi.org/project/Pillow/) (python3-pil)
-- [PyGObject](https://pypi.org/project/PyGObject/) (python3-gi)
-- [Unidecode](https://pypi.org/project/Unidecode/) (python3-unidecode)
-- [requests](https://pypi.org/project/requests/) (python3-requests)
-- [chardet](https://pypi.org/project/chardet/) (python3-chardet)
-- [setproctitle](https://pypi.org/project/setproctitle/) (python3-setproctitle)
+- MPRIS support  
 
 ## HowTo make playlists for movies/series
   
@@ -95,7 +82,3 @@ file:///home/user/Videos/SomeName_4/SomeName.S04E09.mp4
 #EXTINF:-1 tvg-name="SomeName S04E10 Season Title 4" group-title="SERIES SomeName",
 file:///home/user/Videos/SomeName_4/SomeName.S04E10.mp4
 ```
-
-## Disclaimer
-
-Astroncia IPTV doesn't provide any playlists or other digital content.  
