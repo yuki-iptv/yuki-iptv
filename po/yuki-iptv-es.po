@@ -1,0 +1,994 @@
+# This file is distributed under the same license as the yuki-iptv package.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Astroncia <kestraly@gmail.com>\n"
+"PO-Revision-Date: 2022-01-25 09:37+0000\n"
+"Project-Id-Version: \n"
+"Language-Team: Spanish <kde-i18n-doc@kde.org>\n"
+"Language: es_EC\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"POT-Creation-Date: \n"
+"X-Generator: Poedit 2.4.2\n"
+
+msgid "name"
+msgstr "Español"
+
+msgid "m3u_ready"
+msgstr "Listo"
+
+msgid "m3u_m3ueditor"
+msgstr "Editor m3u"
+
+msgid "m3u_noname"
+msgstr "Sin Nombre"
+
+msgid "m3u_waschanged"
+msgstr "El documento fue editado.<br>¿Quieres guardar los cambios?"
+
+msgid "m3u_saveconfirm"
+msgstr "Confirmación de guardado"
+
+msgid "m3u_file"
+msgstr "Archivo"
+
+msgid "m3u_loadm3u"
+msgstr "Cargar M3U"
+
+msgid "m3u_saveas"
+msgstr "Guardar como"
+
+msgid "m3u_find"
+msgstr "buscar"
+
+msgid "m3u_replacewith"
+msgstr "reemplazar con"
+
+msgid "m3u_replaceall"
+msgstr "reemplazar todos"
+
+msgid "m3u_deleterow"
+msgstr "borrar fila"
+
+msgid "m3u_addrow"
+msgstr "añadir fila"
+
+msgid "m3u_movedown"
+msgstr "mover hacia abajo"
+
+msgid "m3u_moveup"
+msgstr "mover hacia arriba"
+
+msgid "m3u_filtergroup"
+msgstr "filtrar grupo (presione Enter)"
+
+msgid "m3u_searchterm"
+msgstr ""
+"inserte el término de búsqueda y presione enter\n"
+" use el Selector → para elegir la columna para buscar"
+
+msgid "m3u_choosecolumn"
+msgstr "elija la columna para buscar"
+
+msgid "m3u_openfile"
+msgstr "Abrir Archivo"
+
+msgid "m3u_playlists"
+msgstr "Listas de reproducción (*.m3u)"
+
+msgid "m3u_loaded"
+msgstr "cargado"
+
+msgid "m3u_savefile"
+msgstr "Guardar el archivo"
+
+msgid "m3u_m3ufiles"
+msgstr "Listas de reproducción (*.m3u, *.xspf)"
+
+msgid "error"
+msgstr "Error"
+
+msgid "playerror"
+msgstr "Error de reproducción"
+
+msgid "error2"
+msgstr "Error de yuki-iptv"
+
+msgid "starting"
+msgstr "iniciando"
+
+msgid "binarynotfound"
+msgstr "¡No se encontraron módulos binarios!"
+
+msgid "nocacheplaylist"
+msgstr "Caché de lista de reproducción desactivada"
+
+msgid "loadingplaylist"
+msgstr "Cargando lista de reproducción..."
+
+msgid "playlistloaderror"
+msgstr "¡Error al cargar la lista de reproducción!"
+
+msgid "playlistloaddone"
+msgstr "¡Carga de la lista de reproducción completada!"
+
+msgid "cachingplaylist"
+msgstr "Almacenando en caché la lista de reproducción..."
+
+msgid "playlistcached"
+msgstr "¡Guardado en caché la lista de reproducción!"
+
+msgid "usingcachedplaylist"
+msgstr "Usando la lista de reproducción en caché"
+
+msgid "settings"
+msgstr "Ajustes"
+
+msgid "help"
+msgstr "Ayuda"
+
+msgid "channelsettings"
+msgstr "Ajustes de canal"
+
+msgid "selectplaylist"
+msgstr "Seleccionar lista de reproducción m3u"
+
+msgid "selectepg"
+msgstr "Seleccionar archivo EPG (XMLTV o JTV EPG)"
+
+msgid "selectwritefolder"
+msgstr "Seleccionar carpeta para grabaciones y capturas de pantalla"
+
+msgid "deinterlace"
+msgstr "Desentrelazar"
+
+msgid "useragent"
+msgstr "Agente de usuario"
+
+msgid "empty"
+msgstr "Ninguno"
+
+msgid "channel"
+msgstr "Chanal"
+
+msgid "savesettings"
+msgstr "Guardar ajustes"
+
+msgid "save"
+msgstr "Guardar"
+
+msgid "m3uplaylist"
+msgstr "Lista de reproducción M3U / XSPF"
+
+msgid "updateatboot"
+msgstr ""
+"Actualizar la lista de reproducción\n"
+"al iniciar"
+
+msgid "epgaddress"
+msgstr ""
+"Dirección\n"
+"de la guía de televisión\n"
+"(XMLTV o JTV)"
+
+msgid "udpproxy"
+msgstr "Proxy UDP"
+
+msgid "writefolder"
+msgstr ""
+"Carpeta para grabaciones\n"
+"y capturas de pantalla"
+
+msgid "orselectyourprovider"
+msgstr "O seleccione proveedor"
+
+msgid "resetchannelsettings"
+msgstr "Restablecer la configuración y la clasificación de canales"
+
+msgid "notselected"
+msgstr "No seleccionado"
+
+msgid "close"
+msgstr "Cerrar"
+
+msgid "nochannelselected"
+msgstr "Ningún canal seleccionado"
+
+msgid "pause"
+msgstr "Pausar"
+
+msgid "play"
+msgstr "reproducir"
+
+msgid "exitfullscreen"
+msgstr "Para salir del modo de pantalla completa presione"
+
+msgid "volume"
+msgstr "Volumen"
+
+msgid "volumeoff"
+msgstr "Volumen apagado"
+
+msgid "select"
+msgstr "Seleccione"
+
+msgid "tvguide"
+msgstr "Guía de televisión"
+
+msgid "startrecording"
+msgstr "Iniciar la grabación"
+
+msgid "loading"
+msgstr "Cargando..."
+
+msgid "doingscreenshot"
+msgstr "Haciendo captura de pantalla..."
+
+msgid "screenshotsaved"
+msgstr "¡Captura de pantalla guardada!"
+
+msgid "screenshotsaveerror"
+msgstr "¡Error al guardar la captura de pantalla!"
+
+msgid "notvguideforchannel"
+msgstr "No hay guía de TV para el canal"
+
+msgid "preparingrecord"
+msgstr "Preparando la grabación"
+
+msgid "nochannelselforrecord"
+msgstr "Ningún canal seleccionado para grabar"
+
+msgid "stop"
+msgstr "detener"
+
+msgid "fullscreen"
+msgstr "Pantalla completa"
+
+msgid "openrecordingsfolder"
+msgstr "Abrir carpeta de grabaciones"
+
+msgid "record"
+msgstr "Grabar"
+
+msgid "screenshot"
+msgstr "Captura de pantalla"
+
+msgid "prevchannel"
+msgstr "Canal anterior"
+
+msgid "nextchannel"
+msgstr "Siguiente canal"
+
+msgid "tvguideupdating"
+msgstr "Actualizando la guía de TV..."
+
+msgid "tvguideupdatingerror"
+msgstr "¡Error de actualización de la guía de TV!"
+
+msgid "tvguideupdatingdone"
+msgstr "¡Actualización de la guía de TV completada!"
+
+msgid "recordwaiting"
+msgstr "Esperando para grabar"
+
+msgid "allchannels"
+msgstr "Todos los canales"
+
+msgid "favourite"
+msgstr "Favoritos"
+
+msgid "interfacelang"
+msgstr "Lenguaje de interfaz"
+
+msgid "tvguideoffset"
+msgstr "Desplazamiento de guía de TV"
+
+msgid "hours"
+msgstr "horas"
+
+msgid "hwaccel"
+msgstr ""
+"Aceleración\n"
+"de Hardware"
+
+msgid "sort"
+msgstr ""
+"Clasificación\n"
+"de canales"
+
+msgid "sortitems1"
+msgstr "como en la lista de reproducción"
+
+msgid "sortitems2"
+msgstr "orden alfabético"
+
+msgid "sortitems3"
+msgstr "orden alfabético inverso"
+
+msgid "sortitems4"
+msgstr "personalizada"
+
+msgid "donotforgetsort"
+msgstr ""
+"¡No olvide establecer un orden de\n"
+"clasificación personalizado en los ajustes!"
+
+msgid "moresettings"
+msgstr "Más ajustes"
+
+msgid "lesssettings"
+msgstr "Menos ajustes"
+
+msgid "enabled"
+msgstr "habilitado"
+
+msgid "disabled"
+msgstr "deshabilitado"
+
+msgid "seconds"
+msgstr "segundos."
+
+msgid "cache"
+msgstr "Caché"
+
+msgid "chansearch"
+msgstr "Buscar canal"
+
+msgid "reconnecting"
+msgstr "Reconectando..."
+
+msgid "group"
+msgstr "Grupo"
+
+msgid "hide"
+msgstr "Ocultar canal"
+
+msgid "contrast"
+msgstr "Contraste"
+
+msgid "brightness"
+msgstr "Brillo"
+
+msgid "hue"
+msgstr "tinte"
+
+msgid "saturation"
+msgstr "Saturación"
+
+msgid "gamma"
+msgstr "Gama"
+
+msgid "timeshift"
+msgstr "Archivo"
+
+msgid "tab_main"
+msgstr "Principal"
+
+msgid "tab_video"
+msgstr "Video"
+
+msgid "tab_network"
+msgstr "Red"
+
+msgid "tab_other"
+msgstr "Otros"
+
+msgid "mpv_options"
+msgstr "Opciones de mpv "
+
+msgid "donotupdateepg"
+msgstr ""
+"No actualice\n"
+"EPG al arrancar"
+
+msgid "search"
+msgstr "Buscar"
+
+msgid "tab_gui"
+msgstr "GUI"
+
+msgid "epg_gui"
+msgstr ""
+"Interfaz\n"
+"de la guía de TV"
+
+msgid "classic"
+msgstr "Clásica"
+
+msgid "simple"
+msgstr "Sencilla"
+
+msgid "simple_noicons"
+msgstr "Sencilla (sin iconos)"
+
+msgid "update"
+msgstr "Actualizar"
+
+msgid "scheduler"
+msgstr "Programador de grabaciones"
+
+msgid "choosechannel"
+msgstr "Elegir canal"
+
+msgid "bitrate1"
+msgstr "bps"
+
+msgid "bitrate2"
+msgstr "kbps"
+
+msgid "bitrate3"
+msgstr "Mbps"
+
+msgid "bitrate4"
+msgstr "Gbps"
+
+msgid "bitrate5"
+msgstr "Tbps"
+
+msgid "starttime"
+msgstr "Hora de inicio de grabación"
+
+msgid "endtime"
+msgstr "Hora de final de grabación"
+
+msgid "addrecord"
+msgstr "Agregar"
+
+msgid "delrecord"
+msgstr "Eliminar"
+
+msgid "plannedrec"
+msgstr "Grabaciones programadas"
+
+msgid "warningstr"
+msgstr "¡No está disponible la grabación de dos canales simultáneamente!"
+
+msgid "status"
+msgstr "Estado"
+
+msgid "recnothing"
+msgstr "No hay grabaciones programadas"
+
+msgid "recwaiting"
+msgstr "Esperando para grabar"
+
+msgid "recrecording"
+msgstr "Grabando"
+
+msgid "activerec"
+msgstr "Grabaciones activas"
+
+msgid "page"
+msgstr "Página"
+
+msgid "fasterview"
+msgstr ""
+"Para una carga de canales más rápida, configure la caché\n"
+"por 1 o más segundos en el ajuste de la red"
+
+msgid "playlists"
+msgstr "Listas de reproducción"
+
+msgid "provselect"
+msgstr "Seleccione"
+
+msgid "provadd"
+msgstr "Agregar"
+
+msgid "provedit"
+msgstr "Editar"
+
+msgid "provdelete"
+msgstr "Eliminar"
+
+msgid "provname"
+msgstr "Nombre"
+
+msgid "of"
+msgstr "de"
+
+msgid "importhypnotix"
+msgstr "Importar desde Hypnotix"
+
+msgid "channelsonpage"
+msgstr ""
+"Canales en la\n"
+"página"
+
+msgid "resetdefplaylists"
+msgstr "Restablecer los valores predeterminados"
+
+msgid "license"
+msgstr "Licencia"
+
+msgid "openprevchan"
+msgstr ""
+"Abrir canal anterior\n"
+"al inicio"
+
+msgid "smscheduler"
+msgstr "Programador"
+
+msgid "praction"
+msgstr ""
+"Acción posterior\n"
+"a la grabación"
+
+msgid "nothingtodo"
+msgstr "Nada que hacer"
+
+msgid "stoppress"
+msgstr "Presione Detener"
+
+msgid "turnoffpc"
+msgstr "Apaguar la PC"
+
+msgid "exitprogram"
+msgstr "Cerrar el programa"
+
+msgid "nohypnotixpf"
+msgstr "¡No se encontraron listas de reproducción de Hypnotix!"
+
+msgid "theme"
+msgstr "Tema"
+
+msgid "videoaspect"
+msgstr "Proporción de aspecto"
+
+msgid "default"
+msgstr "Predeterminado"
+
+msgid "zoom"
+msgstr "Escala / Zoom"
+
+msgid "openexternal"
+msgstr "Abrir en reproductor externo"
+
+msgid "open"
+msgstr "Abrir"
+
+msgid "remembervol"
+msgstr "Recordar el volumen"
+
+msgid "hidempv"
+msgstr "Ocultar el panel de mpv"
+
+msgid "filepath"
+msgstr "Ruta de acceso al archivo o URL"
+
+msgid "panscan"
+msgstr "Panorámica y exploración"
+
+msgid "tab_exp"
+msgstr "Experimental"
+
+msgid "exp1"
+msgstr ""
+"Ajuste del panel\n"
+"flotante lateral"
+
+msgid "exp2"
+msgstr ""
+"Ancho de la lista de reproducción\n"
+"en modo de pantalla completa"
+
+msgid "exp3"
+msgstr ""
+"Altura de la lista de reproducción\n"
+"en modo de pantalla completa"
+
+msgid "expwarning"
+msgstr ""
+"¡Los ajustes aquí\n"
+"pueden ser inestables!"
+
+msgid "mouseswitchchannels"
+msgstr ""
+"Cambiar de canal con\n"
+"la rueda del ratón"
+
+msgid "actions"
+msgstr "Acciones"
+
+msgid "defaultchangevol"
+msgstr ""
+"de forma predeterminada:\n"
+"cambiar el volumen"
+
+msgid "showplaylistmouse"
+msgstr ""
+"Mostrar lista de reproducción\n"
+"al mover el ratón"
+
+msgid "showcontrolsmouse"
+msgstr ""
+"Mostrar controles\n"
+"al mover el ratón"
+
+msgid "volumeshort"
+msgstr "Vol"
+
+msgid "hidetvguide"
+msgstr "Ocultar guía de TV"
+
+msgid "flpopacity"
+msgstr "Opacidad de paneles flotantes"
+
+msgid "showhideplaylist"
+msgstr "Mostrar/ocultar lista de reproducción"
+
+msgid "showhidectrlpanel"
+msgstr "Mostrar/ocultar panel de controles"
+
+msgid "mininterface"
+msgstr "Interfaz mínima"
+
+msgid "panelposition"
+msgstr ""
+"Posición del\n"
+"panel flotante"
+
+msgid "left"
+msgstr "Izquierda"
+
+msgid "right"
+msgstr "Derecha"
+
+msgid "doscreenshotsvia"
+msgstr "Tomar capturas de pantalla a través de"
+
+msgid "playlistsep"
+msgstr "Lista de reproducción en una ventana separada"
+
+msgid "volumechangestep"
+msgstr "Paso de cambio de volumen"
+
+msgid "hideepgpercentage"
+msgstr "Ocultar porcentaje de EPG"
+
+msgid "xtreamnoconn"
+msgstr "No se pudo conectar"
+
+msgid "procerror"
+msgstr "Error de proceso"
+
+msgid "username"
+msgstr "Nombre de usuario"
+
+msgid "password"
+msgstr "Contraseña"
+
+msgid "url"
+msgstr "URL"
+
+msgid "multipleplnote"
+msgstr ""
+"Puede especificar varias listas de reproducción haciendo clic\n"
+"en el botón Archivo - Listas de reproducción (después de guardar los ajustes)"
+
+msgid "favoritesplaylistsep"
+msgstr "Favoritos (lista de reproducción separada)"
+
+msgid "nochannels"
+msgstr "Sin canales"
+
+msgid "epgname"
+msgstr "Nombre de EPG"
+
+msgid "epgid"
+msgstr "ID de EPG"
+
+msgid "iaepgmatch"
+msgstr "Coincidencia incorrecta de EPG"
+
+msgid "using"
+msgstr "Utilizando"
+
+msgid "Aspect"
+msgstr "Aspecto"
+
+msgid "Average Bitrate"
+msgstr "Tasa de bits promedio"
+
+msgid "Channel Count"
+msgstr "Cantidad de canales"
+
+msgid "Channels"
+msgstr "Canales"
+
+msgid "Codec"
+msgstr "Códec"
+
+msgid "colour"
+msgstr "Color"
+
+msgid "Dimensions"
+msgstr "Dimensiones"
+
+msgid "Format"
+msgstr "Formato"
+
+msgid "Gamma"
+msgstr "Gama"
+
+msgid "general"
+msgstr "General"
+
+msgid "layout"
+msgstr "Diseño"
+
+msgid "Pixel Format"
+msgstr "Formato de Píxel"
+
+msgid "Sample Rate"
+msgstr "Frecuencia de Muestreo"
+
+msgid "Stream Information"
+msgstr "Información de Transmisión"
+
+msgid "Video"
+msgstr "Video"
+
+msgid "Audio"
+msgstr "Audio"
+
+msgid "checkforupdates"
+msgstr "Buscar actualizaciones"
+
+msgid "gotlatestversion"
+msgstr "¡Tienes la última versión disponible!"
+
+msgid "newversiongetfail"
+msgstr "Se produjo un error al recuperar la información de la última versión"
+
+msgid "newversionavail"
+msgstr "¡Nueva versión disponible! ¡Visite la página web para instalar!"
+
+msgid "aboutqt"
+msgstr "Acerca de Qt"
+
+msgid "applog"
+msgstr "Registro de yuki-iptv"
+
+msgid "mpvlog"
+msgstr "Registro de mpv"
+
+msgid "copytoclipboard"
+msgstr "Copiar al portapapeles"
+
+msgid "choosesavefilename"
+msgstr "Elija un nombre de archivo para guardar"
+
+msgid "logs"
+msgstr "Registros"
+
+msgid "Bits Per Pixel"
+msgstr "Bits por píxel"
+
+msgid "epgloading"
+msgstr "Cargando EPG..."
+
+msgid "unknownencoding"
+msgstr "Error al cargar la lista de reproducción: ¡codificación desconocida! Utilice listas de reproducción en codificación UTF-8."
+
+msgid "menubar_exit"
+msgstr "&Salir"
+
+msgid "menubar_title_file"
+msgstr "&Archivo"
+
+msgid "menubar_title_play"
+msgstr "&Reproducir"
+
+msgid "menubar_playpause"
+msgstr "&Reproducir / Pausar"
+
+msgid "menubar_stop"
+msgstr "&Detener"
+
+msgid "minutes_plural"
+msgid_plural ""
+msgstr[0] "minuto"
+msgstr[1] "minutos"
+
+msgid "seconds_plural"
+msgid_plural ""
+msgstr[0] "segundo"
+msgstr[1] "segundos"
+
+msgid "menubar_previous"
+msgstr "&Anterior"
+
+msgid "menubar_next"
+msgstr "&Siguiente"
+
+msgid "speed"
+msgstr "Velocidad"
+
+msgid "menubar_normalspeed"
+msgstr "&Velocidad normal"
+
+msgid "menubar_video"
+msgstr "&Video"
+
+msgid "menubar_audio"
+msgstr "&Audio"
+
+msgid "menubar_fullscreen"
+msgstr "&Pantalla completa"
+
+msgid "menubar_compactmode"
+msgstr "&Modo compacto"
+
+msgid "menubar_csforchannel"
+msgstr "&Ajuste del canal "
+
+msgid "menubar_view"
+msgstr "Vist&a"
+
+msgid "menubar_options"
+msgstr "&Opciones"
+
+msgid "menubar_settings"
+msgstr "&Ajustes"
+
+msgid "menubar_about"
+msgstr "&Acerca de yuki-iptv"
+
+msgid "menubar_help"
+msgstr "&Ayuda"
+
+msgid "menubar_screenshot"
+msgstr "&Captura de pantalla"
+
+msgid "menubar_mute"
+msgstr "&Silenciar el audio"
+
+msgid "menubar_track"
+msgstr "&Pista"
+
+msgid "empty_sm"
+msgstr "vacío"
+
+msgid "menubar_checkupdates"
+msgstr "&Buscar actualizaciones"
+
+msgid "ffmpeg_processing"
+msgstr "Procesando grabación..."
+
+msgid "menubar_volumeminus"
+msgstr "V&olumen -"
+
+msgid "menubar_volumeplus"
+msgstr "Vo&lumen +"
+
+msgid "list"
+msgstr "lista"
+
+msgid "menubar_m3ueditor"
+msgstr "Editor &m3u"
+
+msgid "menubar_playlists"
+msgstr "&Listas de reproducción"
+
+msgid "menubar_channelsort"
+msgstr "&Clasificación de canales"
+
+msgid "menubar_filters"
+msgstr "F&iltros"
+
+msgid "menubar_postproc"
+msgstr "&Postprocesamiento"
+
+msgid "menubar_deblock"
+msgstr "&Deblock"
+
+msgid "menubar_dering"
+msgstr "De&ring"
+
+msgid "menubar_debanding"
+msgstr "Debanding (&gradfun)"
+
+msgid "menubar_noise"
+msgstr "Añadir r&uido"
+
+msgid "menubar_black"
+msgstr "Añadir &bordes negros"
+
+msgid "menubar_phase"
+msgstr "&Fase de detección automática"
+
+msgid "menubar_extrastereo"
+msgstr "&Extrastereo"
+
+msgid "menubar_karaoke"
+msgstr "&Karaoke"
+
+msgid "menubar_earvax"
+msgstr "&Optimización de auriculares"
+
+msgid "menubar_volnorm"
+msgstr "&Normalización de volumen"
+
+msgid "errorvfapply"
+msgstr "Error al aplicar filtros"
+
+msgid "menubar_softscaling"
+msgstr "Escalado por Soft&ware"
+
+msgid "menubar_updateepg"
+msgstr "&Actualizar guía de televisión"
+
+msgid "playername"
+msgstr "Reproductor de IPTV"
+
+msgid "hidebitrateinfo"
+msgstr "Ocultar la velocidad de bits/información de video"
+
+msgid "movedragging"
+msgstr "Mover la ventana arrastrándola"
+
+msgid "playlist"
+msgstr "lista de reproducción"
+
+msgid "ignoringmpvoptions"
+msgstr "Opciones personalizadas de MPV no son válidas, ignorándolas"
+
+msgid "showonlychplaylist"
+msgstr "Mostrar solo canales en la lista de reproducción"
+
+msgid "channels"
+msgstr "canales"
+
+msgid "hideplaylistleftclk"
+msgstr "Ocultar lista de reproducción haciendo clic con el botón izquierdo"
+
+msgid "styleredefoff"
+msgstr "Habilitar la redefinición de estilos"
+
+msgid "alwaysontop"
+msgstr "Ventana siempre en la parte superior"
+
+msgid "expfunctionwarning"
+msgstr "ADVERTENCIA: función experimental, trabaja con problemas"
+
+msgid "menubar_expfunction"
+msgstr "función experimental"
+
+msgid "autoreconnection"
+msgstr ""
+"Reconexión\n"
+"automática"
+
+msgid "customua"
+msgstr "- personalizado -"
+
+msgid "deletefromfav"
+msgstr "Eliminar de favoritos"
+
+msgid "scrrecnosubfolders"
+msgstr ""
+"No crear subcarpetas de\n"
+"capturas de pantalla y grabaciones"
+
+msgid "helptext"
+msgstr ""
+"yuki-iptv, versión {}\n"
+"\n"
+"© 2021-2022 Astroncia\n"
+"© 2023 yuki-chan-nya\n"
+"https://github.com/yuki-chan-nya\n"
+"\n"
+"Reproductor IPTV\n"
+"\n"
+"¡Soporta guía de TV (EPG) solo en formato XMLTV y JTV!\n"
+"\n"
+"¿El canal no funciona?\n"
+"Botón derecho del ratón abre los ajustes del canal\n"
+"\n"
+"Iconos de Font Awesome ( https://fontawesome.com/ )\n"
+"Iconos con licencia CC BY 4.0\n"
+"( https://creativecommons.org/licenses/by/4.0/ )"

@@ -1,24 +1,15 @@
-# Astroncia IPTV
-### IPTV player with EPG support
+# yuki-iptv
+### IPTV player with EPG support (Astroncia IPTV fork)
 
-[![Screenshot](https://gitlab.com/astroncia/iptv/uploads/3af0979a9fcf688332b995475689a60f/astronciaiptv-screenshot-thumbnail.png)](https://gitlab.com/astroncia/iptv/uploads/5d36d4b259c0d2a5781603867d0f2454/astronciaiptv-screenshot.png)  
+[![Screenshot](https://gist.githubusercontent.com/yuki-chan-nya/c37f80c2cb00afbdbd98959186e1ab80/raw/71a5c9c177130154a7bd1ad31d7465096cc102bb/yuki-iptv.png)](https://gist.githubusercontent.com/yuki-chan-nya/c37f80c2cb00afbdbd98959186e1ab80/raw/71a5c9c177130154a7bd1ad31d7465096cc102bb/yuki-iptv.png)  
   
-⚠️ Disclaimer: Astroncia IPTV doesn't provide any playlists or other digital content.  
+⚠️ Disclaimer: yuki-iptv doesn't provide any playlists or other digital content.  
 The channels and pictures in the screenshots are for demonstration purposes only.  
 
 ## Download
 
-Downloads (deb/rpm) are available on [Releases](https://gitlab.com/astroncia/iptv/-/releases) page.  
-  
-For **Ubuntu** / **Linux Mint** recommended install from [Launchpad PPA - ppa:astroncia/iptv](https://launchpad.net/~astroncia/+archive/ubuntu/iptv):  
-```sudo add-apt-repository -y ppa:astroncia/iptv```  
-```sudo apt update```  
-```sudo apt install astronciaiptv```  
-  
-[Installation for **Debian**](https://software.opensuse.org/download/package?package=astronciaiptv&project=home%3Aastroncia)  
-  
-[**Arch Linux** (AUR) - astronciaiptv](https://aur.archlinux.org/packages/astronciaiptv/)  
-[**Arch Linux** (AUR) - astronciaiptv-git](https://aur.archlinux.org/packages/astronciaiptv-git/)  
+[Ubuntu Launchpad PPA (stable)](https://launchpad.net/~yuki-chan-nya/+archive/ubuntu/yuki-iptv-stable) **(recommended)**  
+[Ubuntu Launchpad PPA (develop)](https://launchpad.net/~yuki-chan-nya/+archive/ubuntu/yuki-iptv-develop)
 
 ## Information
 
@@ -26,7 +17,7 @@ Software provided **as is**, no guarantees.
 
 ## License
 
-Code: [GPL-3.0-only](https://gitlab.com/astroncia/iptv/-/blob/master/COPYING)  
+Code: [GPL-3.0-only](https://github.com/yuki-chan-nya/yuki-iptv/blob/stable/COPYING)  
 Icons: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)  
   
 *Icons by [Font Awesome](https://fontawesome.com/)*  

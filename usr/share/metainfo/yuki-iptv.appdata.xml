@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2021-2022 Astroncia <kestraly@gmail.com> -->
+<!-- Copyright 2023 yuki-chan-nya -->
+<component type="desktop-application">
+  <id>com.yuki.iptv</id>
+  <metadata_license>FSFAP</metadata_license>
+  <project_license>GPL-3.0</project_license>
+  <name>yuki-iptv</name>
+  <summary>IPTV player</summary>
+
+  <description>
+    <p>
+      IPTV player with EPG support
+    </p>
+  </description>
+
+  <launchable type="desktop-id">yuki-iptv.desktop</launchable>
+
+  <screenshots>
+    <screenshot type="default">
+      <image>https://gist.githubusercontent.com/yuki-chan-nya/c37f80c2cb00afbdbd98959186e1ab80/raw/71a5c9c177130154a7bd1ad31d7465096cc102bb/yuki-iptv.png</image>
+    </screenshot>
+  </screenshots>
+
+  <url type="homepage">https://github.com/yuki-chan-nya/yuki-iptv</url>
+  <url type="bugtracker">https://github.com/yuki-chan-nya/yuki-iptv/issues</url>
+
+  <provides>
+    <binary>yuki-iptv</binary>
+  </provides>
+</component>
