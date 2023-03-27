@@ -1096,6 +1096,9 @@ msgstr "Hide"
 msgid "menubar_videosettings"
 msgstr "&Video settings"
 
+msgid "noemptyname"
+msgstr "Name should not be empty!"
+
 msgid "helptext"
 msgstr ""
 "yuki-iptv, version {}\n"
