@@ -8349,6 +8349,7 @@ if __name__ == '__main__':
                 timers_array[timer].timeout.connect(timer)
                 timers_array[timer].start(timers[timer])
         else:
+            shortcuts_button.hide()
             show_playlists()
             playlists_win.show()
             playlists_win.raise_()
