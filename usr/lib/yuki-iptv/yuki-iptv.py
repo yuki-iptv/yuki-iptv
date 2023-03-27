@@ -261,6 +261,8 @@ def show_exception(e, e_traceback="", prev=""):
         _('error'), message, _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
     )
     msg.exec()
+    # REALLY make sure process is stopped
+    os.system('kill -9 $(pidof yuki-iptv)')
 
 # Used as a decorator to run things in the main loop, from another thread
 def idle_function(func):
