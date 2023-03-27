@@ -3,10 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-08 23:56+0000\n"
-"PO-Revision-Date: 2022-01-25 09:37+0000\n"
-"POT-Creation-Date: 2022-01-28 12:58+0000\n"
-"PO-Revision-Date: 2022-01-29 18:00+0100\n"
+"POT-Creation-Date: 2022-02-21 01:49+0000\n"
+"PO-Revision-Date: 2022-03-04 15:19+0100\n"
 "Last-Translator: gogo <trebelnik2@gmail.com>\n"
 "Language-Team: Croatian <kde-i18n-doc@kde.org>\n"
 "Language: hr\n"
@@ -24,7 +22,7 @@ msgid "m3u_ready"
 msgstr "Spremno"
 
 msgid "m3u_m3ueditor"
-msgstr "m3u Uređivač"
+msgstr "m3u uređivač"
 
 msgid "m3u_noname"
 msgstr "Bezimeno"
@@ -1067,6 +1065,48 @@ msgstr "Pretraži film"
 
 msgid "searchserie"
 msgstr "Pretraži seriju"
+
+msgid "hidetvprogram"
+msgstr "Sakrij trenutni televizijski program"
+
+msgid "m3u_playlistsaved"
+msgstr "Popis izvođenja je uspješno spremljen!"
+
+msgid "channellogos"
+msgstr "Logotipi programa"
+
+msgid "preferm3u"
+msgstr "Preferiraj iz M3U popisa izvođenja"
+
+msgid "preferepg"
+msgstr "Preferiraj iz EPG vodiča"
+
+msgid "donotloadfromepg"
+msgstr "Ne učitavaj iz EPG vodiča"
+
+msgid "donotloadanylogos"
+msgstr "Ne učitavaj logotipe"
+
+msgid "subtitles"
+msgstr "Podnaslovi"
+
+msgid "off"
+msgstr "Isključi"
+
+msgid "incompatiblewithspw"
+msgstr "Nekompatibilno s mogućnošću: Popis izvođenja u zasebnom prozoru"
+
+msgid "menubar_subtitles"
+msgstr "&Podnaslovi"
+
+msgid "videosettings"
+msgstr "Postavke programa"
+
+msgid "hidech"
+msgstr "Sakrij"
+
+msgid "menubar_videosettings"
+msgstr "&Postavke programa"
 
 msgid "helptext"
 msgstr ""
