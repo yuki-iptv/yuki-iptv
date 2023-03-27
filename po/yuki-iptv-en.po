@@ -490,9 +490,6 @@ msgstr "Name"
 msgid "of"
 msgstr "of"
 
-msgid "importhypnotix"
-msgstr "Import from Hypnotix"
-
 msgid "channelsonpage"
 msgstr ""
 "Channels on\n"
@@ -528,9 +525,6 @@ msgstr "Turn off PC"
 
 msgid "exitprogram"
 msgstr "Quit the program"
-
-msgid "nohypnotixpf"
-msgstr "No Hypnotix playlists found!"
 
 msgid "theme"
 msgstr "Theme"
