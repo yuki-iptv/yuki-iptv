@@ -218,10 +218,10 @@ else:
 
 LANG_LOCALE = '?'
 try:
-    loc = locale.getdefaultlocale()[0]
-    LANG_LOCALE = loc.split("_")[0]
+    locale.setlocale(locale.LC_ALL, "")
+    LANG_LOCALE = locale.getlocale(locale.LC_MESSAGES)[0].split("_")[0]
 except:
-    pass
+    print_with_time("Failed to determine system locale, using default (en)")
 print_with_time("System locale: {}".format(LANG_LOCALE))
 LANG_DEFAULT = LANG_LOCALE if LANG_LOCALE in lang else 'en'
 try:
