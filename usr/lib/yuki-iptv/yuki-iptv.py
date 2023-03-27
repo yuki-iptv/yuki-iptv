@@ -48,7 +48,6 @@ from yuki_iptv.menubar import init_yuki_iptv_menubar, init_menubar_player, \
     populate_menubar, update_menubar, get_active_vf_filters, get_first_run, get_seq, \
     reload_menubar_shortcuts
 from yuki_iptv.time import print_with_time, get_app_log, get_mpv_log, args_init
-from yuki_iptv.epgurls import EPG_URLS
 from yuki_iptv.xtreamtom3u import convert_xtream_to_m3u
 from yuki_iptv.m3u import M3UParser
 from yuki_iptv.xspf import parse_xspf
@@ -1399,14 +1398,6 @@ if __name__ == '__main__':
                 )
                 nourlset_msg.exec()
 
-        def epg_edit_1_settext(txt1):
-            sepgcombox_1.clear()
-            sepgcombox_1.addItems(
-                [txt1 if not \
-                    txt1.startswith('^^::MULTIPLE::^^') else ''] + EPG_URLS
-            )
-            epg_edit_1.setText(txt1)
-
         def m3u_file_1_clicked():
             fname_1 = QtWidgets.QFileDialog.getOpenFileName(
                 playlists_win_edit,
@@ -1423,7 +1414,7 @@ if __name__ == '__main__':
                 home_folder
             )[0]
             if fname_2:
-                epg_edit_1_settext(fname_2)
+                epg_edit_1.setText(fname_2)
 
         name_label_1 = QtWidgets.QLabel('{}:'.format(_('provname')))
         m3u_label_1 = QtWidgets.QLabel('{}:'.format(_('m3uplaylist')))
@@ -1433,8 +1424,6 @@ if __name__ == '__main__':
         m3u_edit_1.setPlaceholderText(_('filepath'))
         epg_edit_1 = QtWidgets.QLineEdit()
         epg_edit_1.setPlaceholderText(_('filepath'))
-        sepgcombox_1 = QtWidgets.QComboBox()
-        sepgcombox_1.setLineEdit(epg_edit_1)
         m3u_file_1 = QtWidgets.QPushButton()
         m3u_file_1.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'file.png'))))
         m3u_file_1.clicked.connect(m3u_file_1_clicked)
@@ -1470,7 +1459,7 @@ if __name__ == '__main__':
         playlists_win_edit_layout.addWidget(m3u_file_1, 1, 2)
         playlists_win_edit_layout.addWidget(xtream_btn_1, 2, 0)
         playlists_win_edit_layout.addWidget(epg_label_1, 3, 0)
-        playlists_win_edit_layout.addWidget(sepgcombox_1, 3, 1)
+        playlists_win_edit_layout.addWidget(epg_edit_1, 3, 1)
         playlists_win_edit_layout.addWidget(epg_file_1, 3, 2)
         playlists_win_edit_layout.addWidget(offset_label_1, 4, 0)
         playlists_win_edit_layout.addWidget(soffset_1, 4, 1)
@@ -2825,9 +2814,6 @@ if __name__ == '__main__':
         def reset_prov():
             if sprov.currentText() != '--{}--'.format(_('notselected')):
                 sprov.setCurrentIndex(0)
-        def combo_reset():
-            if sepgcombox.currentIndex() != 0:
-                reset_prov()
 
         sm3u = QtWidgets.QLineEdit()
         sm3u.setPlaceholderText(_('filepath'))
@@ -2837,13 +2823,6 @@ if __name__ == '__main__':
         sepg.setPlaceholderText(_('filepath'))
         sepg.setText(settings['epg'] if not settings['epg'].startswith('^^::MULTIPLE::^^') else '')
         sepg.textEdited.connect(reset_prov)
-        sepgcombox = QtWidgets.QComboBox()
-        sepgcombox.setLineEdit(sepg)
-        sepgcombox.addItems(
-            [settings['epg'] if not \
-                settings['epg'].startswith('^^::MULTIPLE::^^') else ''] + EPG_URLS
-        )
-        sepgcombox.currentIndexChanged.connect(combo_reset)
         sudp = QtWidgets.QLineEdit()
         sudp.setText(settings['udp_proxy'])
         sdei = QtWidgets.QCheckBox()
@@ -3609,7 +3588,7 @@ if __name__ == '__main__':
             if ignore0:
                 name_edit_1.setText("")
                 m3u_edit_1.setText("")
-                epg_edit_1_settext("")
+                epg_edit_1.setText("")
                 soffset_1.setValue(DEF_TIMEZONE)
                 playlists_data.oldName = ""
                 moveWindowToCenter(playlists_win_edit)
@@ -3627,7 +3606,7 @@ if __name__ == '__main__':
                         item_offset = 0
                     name_edit_1.setText(currentItem_text)
                     m3u_edit_1.setText(item_m3u)
-                    epg_edit_1_settext(item_epg)
+                    epg_edit_1.setText(item_epg)
                     soffset_1.setValue(item_offset)
                     playlists_data.oldName = currentItem_text
                     moveWindowToCenter(playlists_win_edit)
