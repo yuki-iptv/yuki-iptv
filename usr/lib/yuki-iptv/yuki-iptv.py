@@ -1,5 +1,5 @@
 '''yuki-iptv'''
-# pylint: disable=invalid-name, global-statement, missing-docstring
+# pylint: disable=invalid-name, global-statement, missing-docstring, c-extension-no-member
 # pylint: disable=too-many-lines, too-many-statements, broad-except, bare-except
 #
 # SPDX-License-Identifier: GPL-3.0-only
