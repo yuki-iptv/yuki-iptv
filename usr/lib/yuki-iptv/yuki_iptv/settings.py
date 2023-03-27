@@ -48,7 +48,6 @@ def parse_settings( # pylint: disable=too-many-arguments
         'flpopacity': 0.7,
         'panelposition': 0,
         'playlistsep': False,
-        'screenshot': 0,
         'videoaspect': 0,
         'zoom': 0,
         'panscan': 0.0,

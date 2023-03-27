@@ -151,7 +151,3 @@ def stop_record():
         except: # pylint: disable=bare-except
             pass
         #YukiData.ffmpeg_proc = None
-
-def make_ffmpeg_screenshot(input_url, out_file, channel_name, http_referer, parse_url_ua):
-    '''Create screenshot using ffmpeg'''
-    record(input_url, out_file, channel_name, http_referer, parse_url_ua, False, True)

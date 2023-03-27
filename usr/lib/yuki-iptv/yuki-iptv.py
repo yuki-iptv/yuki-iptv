@@ -43,7 +43,7 @@ from yuki_iptv.lang import lang, init_lang, _, __
 from yuki_iptv.ua import user_agent, uas, ua_names
 from yuki_iptv.epg import worker
 from yuki_iptv.record import record, record_return, stop_record, \
-    async_wait_process, make_ffmpeg_screenshot, is_ffmpeg_recording
+    async_wait_process, is_ffmpeg_recording
 from yuki_iptv.menubar import init_yuki_iptv_menubar, init_menubar_player, \
     populate_menubar, update_menubar, get_active_vf_filters, get_first_run, get_seq, \
     reload_menubar_shortcuts
@@ -2723,7 +2723,6 @@ if __name__ == '__main__':
                 'flpopacity': flpopacity_input.value(),
                 'panelposition': panelposition_choose.currentIndex(),
                 'playlistsep': playlistsep_flag.isChecked(),
-                'screenshot': screenshot_choose.currentIndex(),
                 'videoaspect': videoaspect_def_choose.currentIndex(),
                 'zoom': zoom_def_choose.currentIndex(),
                 'panscan': panscan_def_choose.value(),
@@ -3081,12 +3080,6 @@ if __name__ == '__main__':
         playlistsep_label.setToolTip(_('expfunctionwarning'))
         playlistsep_label.setStyleSheet('color: #cf9e17')
 
-        screenshot_label = QtWidgets.QLabel("{}:".format(_('doscreenshotsvia')))
-        screenshot_choose = QtWidgets.QComboBox()
-        screenshot_choose.addItem('mpv')
-        screenshot_choose.addItem('ffmpeg')
-        screenshot_choose.setCurrentIndex(settings['screenshot'])
-
         mouseswitchchannels_label = QtWidgets.QLabel("{}:".format(_('mouseswitchchannels')))
         autoreconnection_label = QtWidgets.QLabel("{}:".format(_('autoreconnection')))
         defaultchangevol_label = QtWidgets.QLabel("({})".format(_('defaultchangevol')))
@@ -3243,8 +3236,6 @@ if __name__ == '__main__':
         tab4.layout.addWidget(channellogos_select, 3, 1)
         tab4.layout.addWidget(volumechangestep_label, 4, 0)
         tab4.layout.addWidget(volumechangestep_choose, 4, 1)
-        tab4.layout.addWidget(screenshot_label, 5, 0)
-        tab4.layout.addWidget(screenshot_choose, 5, 1)
         tab4.layout.addWidget(hideplaylistleftclk_label, 6, 0)
         tab4.layout.addWidget(hideplaylistleftclk_flag, 6, 1)
         tab4.layout.addWidget(nocacheepg_label, 7, 0)
@@ -5967,14 +5958,8 @@ if __name__ == '__main__':
                 else:
                     file_path = str(Path(save_folder, file_name))
                 try:
-                    if settings['screenshot'] == 0:
-                        pillow_img = player.screenshot_raw()
-                        pillow_img.save(file_path)
-                    else:
-                        make_ffmpeg_screenshot(
-                            playing_url, file_path,
-                            playing_chan, "Referer: {}".format(settings["referer"]), parse_url_ua
-                        )
+                    pillow_img = player.screenshot_raw(includes='subtitles')
+                    pillow_img.save(file_path)
                     l1.show()
                     l1.setText2(_('screenshotsaved'))
                 except:
