@@ -1,0 +1,10 @@
+#!/bin/sh
+cd "$(dirname "$(realpath "$0")")/../lib/yuki-iptv/" || exit 1
+PULSE_PROP="media.role=video"
+export PULSE_PROP
+if [ "$WAYLAND_DISPLAY" != "" ] || [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+QT_QPA_PLATFORM=xcb
+export QT_QPA_PLATFORM
+fi
+exec python3 ./yuki-iptv.py "$@"
+exit "$?"
