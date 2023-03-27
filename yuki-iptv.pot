@@ -1048,5 +1048,8 @@ msgstr ""
 msgid "menubar_videosettings"
 msgstr ""
 
+msgid "noemptyname"
+msgstr ""
+
 msgid "helptext"
 msgstr ""

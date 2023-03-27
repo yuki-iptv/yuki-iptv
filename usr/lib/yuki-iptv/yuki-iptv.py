@@ -1367,28 +1367,37 @@ if __name__ == '__main__':
         playlists_data.oldName = ""
 
         def playlists_win_save():
-            try:
-                playlists_list.takeItem(
-                    playlists_list.row(
-                        playlists_list.findItems(
-                            playlists_data.oldName, _enum(QtCore.Qt, 'MatchFlag.MatchExactly')
-                        )[0]
-                    )
-                )
-                playlists_data.playlists_used.pop(playlists_data.oldName)
-            except:
-                pass
             if m3u_edit_1.text():
                 channel_text_prov = name_edit_1.text()
                 if channel_text_prov:
+                    try:
+                        playlists_list.takeItem(
+                            playlists_list.row(
+                                playlists_list.findItems(
+                                    playlists_data.oldName,
+                                    _enum(QtCore.Qt, 'MatchFlag.MatchExactly')
+                                )[0]
+                            )
+                        )
+                        playlists_data.playlists_used.pop(playlists_data.oldName)
+                    except:
+                        pass
                     playlists_list.addItem(channel_text_prov)
                     playlists_data.playlists_used[channel_text_prov] = {
                         "m3u": m3u_edit_1.text(),
                         "epg": epg_edit_1.text(),
                         "epgoffset": soffset_1.value()
                     }
-                playlists_save_json()
-                playlists_win_edit.hide()
+                    playlists_save_json()
+                    playlists_win_edit.hide()
+                else:
+                    noemptyname_msg = QtWidgets.QMessageBox(
+                        qt_icon_warning,
+                        MAIN_WINDOW_TITLE,
+                        _('noemptyname'),
+                        _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
+                    )
+                    noemptyname_msg.exec()
             else:
                 nourlset_msg = QtWidgets.QMessageBox(
                     qt_icon_warning,
