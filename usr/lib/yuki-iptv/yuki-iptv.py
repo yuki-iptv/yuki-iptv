@@ -54,7 +54,6 @@ from yuki_iptv.m3u import M3UParser
 from yuki_iptv.xspf import parse_xspf
 from yuki_iptv.catchup import get_catchup_url, parse_specifiers_now_url, format_url_clean, \
     format_catchup_array
-from yuki_iptv.hypnotix_import import import_from_hypnotix
 from yuki_iptv.settings import parse_settings
 from yuki_iptv.interface import init_interface_widgets, cwdg, cwdg_simple, \
     settings_scrollable_window, ClickableLabel, KeySequenceEdit
@@ -1587,7 +1586,6 @@ if __name__ == '__main__':
         playlists_edit = QtWidgets.QPushButton(_('provedit'))
         playlists_delete = QtWidgets.QPushButton(_('provdelete'))
         playlists_favourites = QtWidgets.QPushButton(_('favourite') + '+')
-        playlists_import = QtWidgets.QPushButton(_('importhypnotix'))
         playlists_settings = QtWidgets.QPushButton(_('settings'))
         playlists_settings.setStyleSheet('color: blue;')
 
@@ -1597,7 +1595,6 @@ if __name__ == '__main__':
         playlists_win_layout.addWidget(playlists_edit, 0, 1)
         playlists_win_layout.addWidget(playlists_delete, 0, 2)
         playlists_win_layout.addWidget(playlists_favourites, 1, 0)
-        playlists_win_layout.addWidget(playlists_import, 1, 1)
         playlists_win_widget.setLayout(playlists_win_layout)
 
         playlists_win_widget_main = QtWidgets.QWidget()
@@ -3660,36 +3657,11 @@ if __name__ == '__main__':
         def playlists_add_do():
             playlists_edit_do(True)
 
-        def playlists_import_do():
-            global playlists_saved
-            playlists_hypnotix, hypnotix_import_ok = import_from_hypnotix()
-            if playlists_hypnotix and hypnotix_import_ok:
-                playlists_data.playlists_used = playlists_hypnotix
-                playlists_saved = playlists_hypnotix
-                for prov_name_4 in playlists_data.playlists_used:
-                    playlists_list.addItem(prov_name_4)
-                playlists_save_json()
-                print_with_time("")
-                print_with_time("Successfully imported playlists from Hypnotix!")
-                playlists_win.hide()
-                playlists_win_edit.hide()
-                save_settings()
-            else:
-                print_with_time("No Hypnotix playlists found!")
-                hypnotix_msg = QtWidgets.QMessageBox(
-                    qt_icon_information,
-                    MAIN_WINDOW_TITLE,
-                    _('nohypnotixpf'),
-                    _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
-                )
-                hypnotix_msg.exec()
-
         playlists_list.itemDoubleClicked.connect(playlists_selected)
         playlists_select.clicked.connect(playlists_selected)
         playlists_add.clicked.connect(playlists_add_do)
         playlists_edit.clicked.connect(playlists_edit_do)
         playlists_delete.clicked.connect(playlists_delete_do)
-        playlists_import.clicked.connect(playlists_import_do)
         playlists_settings.clicked.connect(show_settings)
 
         fullscreen = False

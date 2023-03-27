@@ -492,9 +492,6 @@ msgstr "Naziv"
 msgid "of"
 msgstr "od"
 
-msgid "importhypnotix"
-msgstr "Uvezi iz Hypnotixa"
-
 msgid "channelsonpage"
 msgstr ""
 "Programa na\n"
@@ -530,9 +527,6 @@ msgstr "Isključi PC"
 
 msgid "exitprogram"
 msgstr "Zatvori program"
-
-msgid "nohypnotixpf"
-msgstr "Nema pronađenih Hypnotix popisa izvođenja!"
 
 msgid "theme"
 msgstr "Tema"

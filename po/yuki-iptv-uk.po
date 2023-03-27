@@ -495,9 +495,6 @@ msgstr "Назва"
 msgid "of"
 msgstr "з"
 
-msgid "importhypnotix"
-msgstr "Імпортувати з Hypnotix"
-
 msgid "channelsonpage"
 msgstr ""
 "Каналів на\n"
@@ -533,9 +530,6 @@ msgstr "вимкнути ПК"
 
 msgid "exitprogram"
 msgstr "вийти з програми"
-
-msgid "nohypnotixpf"
-msgstr "Плейлисти Hypnotix не знайдені!"
 
 msgid "theme"
 msgstr "Тема"

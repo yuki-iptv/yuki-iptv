@@ -18,6 +18,6 @@ Depends: ffmpeg (>= 3.4.8),
          python3-pil,
          python3-gi,
          python3-unidecode
-Recommends: dconf-cli, yt-dlp | youtube-dl
+Recommends: yt-dlp | youtube-dl
 Description: IPTV player
  IPTV player with EPG support.

@@ -474,9 +474,6 @@ msgstr ""
 msgid "of"
 msgstr ""
 
-msgid "importhypnotix"
-msgstr ""
-
 msgid "channelsonpage"
 msgstr ""
 
@@ -505,9 +502,6 @@ msgid "turnoffpc"
 msgstr ""
 
 msgid "exitprogram"
-msgstr ""
-
-msgid "nohypnotixpf"
 msgstr ""
 
 msgid "theme"

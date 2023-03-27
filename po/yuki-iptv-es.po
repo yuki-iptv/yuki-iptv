@@ -490,9 +490,6 @@ msgstr "Nombre"
 msgid "of"
 msgstr "de"
 
-msgid "importhypnotix"
-msgstr "Importar desde Hypnotix"
-
 msgid "channelsonpage"
 msgstr ""
 "Canales en la\n"
@@ -528,9 +525,6 @@ msgstr "Apaguar la PC"
 
 msgid "exitprogram"
 msgstr "Cerrar el programa"
-
-msgid "nohypnotixpf"
-msgstr "¡No se encontraron listas de reproducción de Hypnotix!"
 
 msgid "theme"
 msgstr "Tema"
