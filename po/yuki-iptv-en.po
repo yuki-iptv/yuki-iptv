@@ -376,6 +376,9 @@ msgstr "Network"
 msgid "tab_other"
 msgstr "Other"
 
+msgid "tab_debug"
+msgstr "Debug"
+
 msgid "mpv_options"
 msgstr "mpv options"
 

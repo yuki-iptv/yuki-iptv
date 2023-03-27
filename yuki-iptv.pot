@@ -366,6 +366,9 @@ msgstr ""
 msgid "tab_other"
 msgstr ""
 
+msgid "tab_debug"
+msgstr ""
+
 msgid "mpv_options"
 msgstr ""
 
