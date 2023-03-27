@@ -36,7 +36,7 @@ def parse_settings( # pylint: disable=too-many-arguments
         'volumechangestep': 1,
         'exp2': dock_widget_width,
         'mouseswitchchannels': False,
-        'autoreconnection': True,
+        'autoreconnection': False,
         'showplaylistmouse': True,
         'hideplaylistleftclk': False,
         'channellogos': 0,

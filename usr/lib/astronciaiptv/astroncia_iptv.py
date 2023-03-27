@@ -3129,6 +3129,11 @@ if __name__ == '__main__':
         autoreconnection_flag = QtWidgets.QCheckBox()
         autoreconnection_flag.setChecked(settings['autoreconnection'])
 
+        # Mark option as experimental
+        autoreconnection_flag.setToolTip(_('expfunctionwarning'))
+        autoreconnection_label.setToolTip(_('expfunctionwarning'))
+        autoreconnection_label.setStyleSheet('color: #cf9e17')
+
         showplaylistmouse_label = QtWidgets.QLabel("{}:".format(_('showplaylistmouse')))
         showplaylistmouse_flag = QtWidgets.QCheckBox()
         showplaylistmouse_flag.setChecked(settings['showplaylistmouse'])
