@@ -99,7 +99,7 @@ if not sys.version_info >= (3, 6, 0):
     print_with_time("Incompatible Python version! Required >= 3.6")
     sys.exit(1)
 
-IS_STABLE = True
+IS_STABLE = False
 
 VERSION_APPEND = 'stable' if IS_STABLE else 'develop'
 MAIN_WINDOW_TITLE = f'yuki-iptv ({VERSION_APPEND})'
