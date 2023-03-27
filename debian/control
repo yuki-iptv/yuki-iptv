@@ -9,7 +9,7 @@ Rules-Requires-Root: no
 Package: astronciaiptv
 Architecture: all
 Depends: ffmpeg (>= 3.4.8),
-         libmpv1 (>= 0.27.2-1),
+         libmpv2 | libmpv1 (>= 0.27.2-1),
          python3 (>= 3.6.0-1),
          python3-requests,
          python3-chardet,
