@@ -737,7 +737,7 @@ msgstr "Канали"
 msgid "Codec"
 msgstr "Кодек"
 
-msgid "Colour"
+msgid "Color"
 msgstr "Колір"
 
 msgid "Dimensions"

@@ -732,7 +732,7 @@ msgstr "Kanali"
 msgid "Codec"
 msgstr "Kôdek"
 
-msgid "Colour"
+msgid "Color"
 msgstr "Boja"
 
 msgid "Dimensions"
