@@ -2,14 +2,15 @@
 # pylint: disable=missing-module-docstring, missing-class-docstring, missing-function-docstring
 # SPDX-License-Identifier: GPL-3.0-only
 import os
+import gettext
 import json
 import traceback
 from functools import partial
 from yuki_iptv.time import print_with_time
 from yuki_iptv.qt import get_qt_library
-from yuki_iptv.lang import _, ngettext
 from yuki_iptv.qt6compat import qaction
 qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
+_ = gettext.gettext
 
 class YukiData: # pylint: disable=too-few-public-methods
     menubar_ready = False
@@ -175,6 +176,14 @@ def init_menubar(data): # pylint: disable=too-many-statements
         kbd("(lambda: mpv_seek(-600))"),
         kbd("(lambda: mpv_seek(600))")
     ]
+    sec_i18n = [
+        gettext.ngettext("-%d second", "-%d seconds", 10) % 10,
+        gettext.ngettext("+%d second", "+%d seconds", 10) % 10,
+        gettext.ngettext("-%d minute", "-%d minutes", 1) % 1,
+        gettext.ngettext("+%d minute", "+%d minutes", 1) % 1,
+        gettext.ngettext("-%d minute", "-%d minutes", 10) % 10,
+        gettext.ngettext("+%d minute", "+%d minutes", 10) % 10,
+    ]
     sec_i = -1
     for i in (
         (10, "seconds", 10),
@@ -184,7 +193,7 @@ def init_menubar(data): # pylint: disable=too-many-statements
         for k in ("-", "+"):
             sec_i += 1
             sec = qaction(
-                "{}{} {}".format(k, i[0], ngettext(i[1], "", i[0])),
+                sec_i18n[sec_i],
                 data
             )
             sec.setShortcut(qkeysequence(sec_keys[sec_i]))

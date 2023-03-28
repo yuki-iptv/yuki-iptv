@@ -1344,13 +1344,3 @@ msgstr "&Options"
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:472
 msgid "&Help"
 msgstr "&Help"
-
-msgid "minutes"
-msgid_plural ""
-msgstr[0] "minute"
-msgstr[1] "minutes"
-
-msgid "seconds"
-msgid_plural ""
-msgstr[0] "second"
-msgstr[1] "seconds"

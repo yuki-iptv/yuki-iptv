@@ -1019,13 +1019,3 @@ msgstr ""
 "Iconos de Font Awesome ( https://fontawesome.com/ )\n"
 "Iconos con licencia CC BY 4.0\n"
 "( https://creativecommons.org/licenses/by/4.0/ )"
-
-msgid "minutes"
-msgid_plural ""
-msgstr[0] "minuto"
-msgstr[1] "minutos"
-
-msgid "seconds"
-msgid_plural ""
-msgstr[0] "segundo"
-msgstr[1] "segundos"

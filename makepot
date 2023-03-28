@@ -1,5 +1,3 @@
 #!/bin/sh
-set -e
 cd "$(dirname "$(realpath "$0")")" || exit 1
-/usr/share/doc/python"$(python3 -c 'import sys; print(f"{sys.version_info[0]}.{sys.version_info[1]}")')"-dev/examples/i18n/pygettext.py -d yuki-iptv -o yuki-iptv.pot usr
-printf 'msgid "minutes"\nmsgid_plural ""\nmsgstr[0] ""\nmsgstr[1] ""\n\nmsgid "seconds"\nmsgid_plural ""\nmsgstr[0] ""\nmsgstr[1] ""\n\n' >> yuki-iptv.pot
+xgettext --language=Python --keyword=_ --package-name=yuki-iptv --output=yuki-iptv.pot usr/lib/yuki-iptv/yuki-iptv.py usr/lib/yuki-iptv/yuki_iptv/*.py
