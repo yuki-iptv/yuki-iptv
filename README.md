@@ -5,6 +5,8 @@
   
 ⚠️ Disclaimer: yuki-iptv doesn't provide any playlists or other digital content.  
 The channels and pictures in the screenshots are for demonstration purposes only.  
+  
+**Looking for testers and translators!**
 
 ## Download
 
@@ -21,10 +23,6 @@ sudo add-apt-repository ppa:yuki-chan-nya/yuki-iptv-develop
 sudo apt update
 sudo apt install yuki-iptv
 ```
-
-## Information
-
-Software provided **as is**, no guarantees.  
 
 ## License
 
