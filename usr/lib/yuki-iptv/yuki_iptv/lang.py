@@ -16,6 +16,8 @@ def init_lang():
     lang = 'en'
 
     local_dir = Path(os.environ['HOME'], '.config', 'yuki-iptv')
+    if not os.path.isdir(local_dir):
+        os.mkdir(local_dir)
     if not os.path.isfile(Path(local_dir, 'locale.txt')):
         locale_txt = open(Path(local_dir, 'locale.txt'), 'w', encoding='utf-8')
         locale_txt.write(lang + "\n")
