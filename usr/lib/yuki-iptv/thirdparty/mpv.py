@@ -24,20 +24,17 @@ import sys
 from warnings import warn
 from functools import partial, wraps
 from contextlib import contextmanager
-from pathlib import Path
 import collections
 import re
 import traceback
-import platform
 
 if os.name == 'nt':
-    lib_path = 'mpv-2.dll'
-    dll = ctypes.util.find_library(lib_path)
+    dll = ctypes.util.find_library('mpv-1.dll')
     if dll is None:
-        raise OSError('Cannot find mpv-2.dll in your system %PATH%. One way to deal with this is to ship mpv-2.dll '
+        raise OSError('Cannot find mpv-1.dll in your system %PATH%. One way to deal with this is to ship mpv-1.dll '
                       'with your script and put the directory your script is in into %PATH% before "import mpv": '
                       'os.environ["PATH"] = os.path.dirname(__file__) + os.pathsep + os.environ["PATH"] '
-                      'If mpv-2.dll is located elsewhere, you can add that path to os.environ["PATH"].')
+                      'If mpv-1.dll is located elsewhere, you can add that path to os.environ["PATH"].')
     backend = CDLL(dll)
     fs_enc = 'utf-8'
 else:
@@ -48,8 +45,6 @@ else:
     locale.setlocale(locale.LC_NUMERIC, 'C')
 
     sofile = ctypes.util.find_library('mpv')
-    if sofile is None and os.path.isfile('libmpv.so.1'):
-        sofile = Path(os.getcwd(), 'libmpv.so.1')
     if sofile is None:
         raise OSError("Cannot find libmpv in the usual places. Depending on your distro, you may try installing an "
                 "mpv-devel or mpv-libs package. If you have libmpv around but this script can't find it, consult "
@@ -230,9 +225,6 @@ class MpvRenderParam(Structure):
         elif cons is bool:
             self.value = c_int(int(bool(value)))
             self.data = cast(pointer(self.value), c_void_p)
-        elif cons is c_void_p:
-            self.value = value
-            self.data = cast(self.value, c_void_p)
         else:
             self.value = cons(**value)
             self.data = cast(pointer(self.value), c_void_p)
@@ -533,13 +525,12 @@ _mpv_free_node_contents = backend.mpv_free_node_contents
 backend.mpv_create.restype = MpvHandle
 _mpv_create = backend.mpv_create
 
+_API_VER = _mpv_client_api_version()[0]
+
+_handle_func('mpv_destroy' if _API_VER > 1 else 'mpv_detach_destroy', [], None, errcheck=None)
 _handle_func('mpv_create_client',           [c_char_p],                                 MpvHandle, notnull_errcheck)
 _handle_func('mpv_client_name',             [],                                         c_char_p, errcheck=None)
 _handle_func('mpv_initialize',              [],                                         c_int, ec_errcheck)
-try:
-    _handle_func('mpv_detach_destroy',          [],                                         None, errcheck=None)
-except:
-    _handle_func('mpv_destroy',          [],                                         None, errcheck=None)
 _handle_func('mpv_terminate_destroy',       [],                                         None, errcheck=None)
 _handle_func('mpv_load_config_file',        [c_char_p],                                 c_int, ec_errcheck)
 _handle_func('mpv_get_time_us',             [],                                         c_ulonglong, errcheck=None)
@@ -606,7 +597,7 @@ if hasattr(backend, 'mpv_get_sub_api'):
 def _mpv_coax_proptype(value, proptype=str):
     """Intelligently coax the given python value into something that can be understood as a proptype property."""
     if type(value) is bytes:
-        return value;
+        return value
     elif type(value) is bool:
         return b'yes' if value else b'no'
     elif proptype in (str, int, float):
@@ -614,29 +605,29 @@ def _mpv_coax_proptype(value, proptype=str):
     else:
         raise TypeError('Cannot coax value of type {} into property type {}'.format(type(value), proptype))
 
-def _make_node_str_list(l):
+def _make_node_str_list(pl):
     """Take a list of python objects and make a MPV string node array from it.
 
-    As an example, the python list ``l = [ "foo", 23, false ]`` will result in the following MPV node object::
+    As an example, the python list ``pl = [ "foo", 23, false ]`` will result in the following MPV node object::
 
         struct mpv_node {
             .format = MPV_NODE_ARRAY,
             .u.list = *(struct mpv_node_array){
                 .num = len(l),
                 .keys = NULL,
-                .values = struct mpv_node[len(l)] {
-                    { .format = MPV_NODE_STRING, .u.string = l[0] },
-                    { .format = MPV_NODE_STRING, .u.string = l[1] },
+                .values = struct mpv_node[len(pl)] {
+                    { .format = MPV_NODE_STRING, .u.string = pl[0] },
+                    { .format = MPV_NODE_STRING, .u.string = pl[1] },
                     ...
                 }
             }
         }
     """
-    char_ps = [ c_char_p(_mpv_coax_proptype(e, str)) for e in l ]
+    char_ps = [ c_char_p(_mpv_coax_proptype(e, str)) for e in pl ]
     node_list = MpvNodeList(
-        num=len(l),
+        num=len(pl),
         keys=None,
-        values=( MpvNode * len(l))( *[ MpvNode(
+        values=( MpvNode * len(pl))( *[ MpvNode(
                 format=MpvFormat.STRING,
                 val=MpvNodeUnion(string=p))
             for p in char_ps ]))
@@ -761,7 +752,7 @@ class ImageOverlay:
             self._buf = create_string_buffer(w*h*4)
             self._size = img.size
 
-        ctypes.memmove(self._buf, out.tobytes('raw', 'BGRA'), w*h*4)
+        self._buf[:] = out.tobytes('raw', 'BGRA')
         source = '&' + str(addressof(self._buf))
 
         self.m.overlay_add(self.overlay_id, x, y, source, 0, 'bgra', w, h, stride)
@@ -898,13 +889,10 @@ class MPV(object):
                         self._message_handlers[target](*args)
 
                 if eid == MpvEventID.SHUTDOWN:
-                    try:
-                        _mpv_detach_destroy(self._event_handle)
-                    except:
-                        _mpv_destroy(self._event_handle)
+                    _mpv_destroy(self._event_handle) if _API_VER > 1 else _mpv_detach_destroy(self._event_handle)
                     return
 
-            except Exception as e:
+            except Exception:
                 print('Exception inside python-mpv event loop:', file=sys.stderr)
                 traceback.print_exc()
 
@@ -1075,7 +1063,7 @@ class MPV(object):
 
     def revert_seek(self):
         """Mapped mpv revert_seek command, see man mpv(1)."""
-        self.command('revert_seek');
+        self.command('revert_seek')
 
     def frame_step(self):
         """Mapped mpv frame-step command, see man mpv(1)."""
@@ -1287,7 +1275,7 @@ class MPV(object):
         """Mapped mpv discnav command, see man mpv(1)."""
         self.command('discnav', command)
 
-    def mouse(x, y, button=None, mode='single'):
+    def mouse(self, x, y, button=None, mode='single'):
         """Mapped mpv mouse command, see man mpv(1)."""
         if button is None:
             self.command('mouse', x, y, mode)
@@ -1764,7 +1752,7 @@ class MPV(object):
         self._python_stream_catchall = cb
         def unregister():
             if self._python_stream_catchall is not cb:
-                    raise RuntimeError('This catch-all python stream has already been unregistered')
+                raise RuntimeError('This catch-all python stream has already been unregistered')
             self._python_stream_catchall = None
         cb.unregister = unregister
         return cb
@@ -1784,7 +1772,7 @@ class MPV(object):
                 return rv
             else:
                 raise TypeError('_get_property only supports NODE and OSD_STRING formats.')
-        except PropertyUnavailableError as ex:
+        except PropertyUnavailableError:
             return None
 
     def _set_property(self, name, value):
@@ -1800,13 +1788,13 @@ class MPV(object):
         return self._get_property(_py_to_mpv(name), lazy_decoder)
 
     def __setattr__(self, name, value):
-            try:
-                if name != 'handle' and not name.startswith('_'):
-                    self._set_property(_py_to_mpv(name), value)
-                else:
-                    super().__setattr__(name, value)
-            except AttributeError:
+        try:
+            if name != 'handle' and not name.startswith('_'):
+                self._set_property(_py_to_mpv(name), value)
+            else:
                 super().__setattr__(name, value)
+        except AttributeError:
+            super().__setattr__(name, value)
 
     def __dir__(self):
         return super().__dir__() + [ name.replace('-', '_') for name in self.property_list ]
