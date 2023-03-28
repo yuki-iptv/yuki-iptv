@@ -2164,12 +2164,12 @@ if __name__ == '__main__':
                     stream_info.video_properties[_("General")][_("Aspect")] = \
                     "%s" % aspect
                 if "pixelformat" in params:
-                    stream_info.video_properties[_("Colour")][_("Pixel Format")] = \
+                    stream_info.video_properties[_("Color")][_("Pixel Format")] = \
                     params["pixelformat"]
                 if "gamma" in params:
-                    stream_info.video_properties[_("Colour")][_("Gamma")] = params["gamma"]
+                    stream_info.video_properties[_("Color")][_("Gamma")] = params["gamma"]
                 if "average-bpp" in params:
-                    stream_info.video_properties[_("Colour")][_("Bits Per Pixel")] = \
+                    stream_info.video_properties[_("Color")][_("Bits Per Pixel")] = \
                         params["average-bpp"]
             except:
                 pass
@@ -2242,7 +2242,7 @@ if __name__ == '__main__':
             streaminfo_win.hide()
             stream_info.video_properties.clear()
             stream_info.video_properties[_("General")] = {}
-            stream_info.video_properties[_("Colour")] = {}
+            stream_info.video_properties[_("Color")] = {}
 
             stream_info.audio_properties.clear()
             stream_info.audio_properties[_("General")] = {}
@@ -6351,7 +6351,7 @@ if __name__ == '__main__':
                     layout36.itemAt(stream_info_i).widget().setParent(None)
 
                 stream_props = [stream_info.video_properties[_("General")], \
-                    stream_info.video_properties[_("Colour")], \
+                    stream_info.video_properties[_("Color")], \
                     stream_info.audio_properties[_("General")], \
                     stream_info.audio_properties[_("Layout")]]
 
@@ -6363,7 +6363,7 @@ if __name__ == '__main__':
                 stream_info_video_lbl.setFont(bold_fnt_2)
                 layout36.addWidget(stream_info_video_lbl, 0, 0)
                 dat_count = process_stream_info(dat_count, _("General"), stream_props[0], "")
-                dat_count = process_stream_info(dat_count, _("Colour"), stream_props[1], "")
+                dat_count = process_stream_info(dat_count, _("Color"), stream_props[1], "")
                 dat_count = process_stream_info(
                     dat_count,
                     _("General"),

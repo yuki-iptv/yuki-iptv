@@ -731,7 +731,7 @@ msgstr "Canales"
 msgid "Codec"
 msgstr "Códec"
 
-msgid "Colour"
+msgid "Color"
 msgstr "Color"
 
 msgid "Dimensions"
