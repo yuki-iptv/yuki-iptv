@@ -4,324 +4,335 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-02-21 01:49+0000\n"
-"PO-Revision-Date: 2022-03-04 15:19+0100\n"
+"PO-Revision-Date: 2023-03-28 00:48+0000\n"
 "Last-Translator: gogo <trebelnik2@gmail.com>\n"
 "Language-Team: Croatian <kde-i18n-doc@kde.org>\n"
 "Language: hr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
-"X-Generator: Poedit 2.3\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"X-Generator: Poedit 2.4.2\n"
 
-msgid "name"
-msgstr "Hrvatski"
-
-msgid "m3u_ready"
+msgid "Ready"
 msgstr "Spremno"
 
-msgid "m3u_m3ueditor"
+msgid "m3u Editor"
 msgstr "m3u uređivač"
 
-msgid "m3u_noname"
+msgid "No Name"
 msgstr "Bezimeno"
 
-msgid "m3u_waschanged"
+msgid "The document was changed.<br>Do you want to save the changes?"
 msgstr "Dokument je promijenjen.<br>Želite li spremiti promjene?"
 
-msgid "m3u_saveconfirm"
+msgid "Save Confirmation"
 msgstr "Potvrda spremanja"
 
-msgid "m3u_file"
+msgid "File"
 msgstr "Datoteka"
 
-msgid "m3u_loadm3u"
+msgid "Load M3U"
 msgstr "Učitaj M3U"
 
-msgid "m3u_saveas"
+msgid "Save as"
 msgstr "Spremi kao"
 
-msgid "m3u_find"
+msgid "find"
 msgstr "potraži"
 
-msgid "m3u_replacewith"
+msgid "replace with"
 msgstr "zamijeni s"
 
-msgid "m3u_replaceall"
+msgid "replace all"
 msgstr "zamijeni sve"
 
-msgid "m3u_deleterow"
+msgid "delete row"
 msgstr "obriši redak"
 
-msgid "m3u_addrow"
+msgid "add row"
 msgstr "dodaj redak"
 
-msgid "m3u_movedown"
+msgid "move down"
 msgstr "pomakni dolje"
 
-msgid "m3u_moveup"
+msgid "move up"
 msgstr "pomakni gore"
 
-msgid "m3u_filtergroup"
+msgid "filter group (press Enter)"
 msgstr "filtriraj grupu (pritisni Enter)"
 
-msgid "m3u_searchterm"
+msgid ""
+"insert search term and press enter\n"
+" use Selector → to choose column to search"
 msgstr ""
 "upišite izraz pretrage i pritisnite enter\n"
 " koristite rezultate → za odabir željenog stupca"
 
-msgid "m3u_choosecolumn"
+msgid "choose column to search"
 msgstr "odaberite stupac za pretragu"
 
-msgid "m3u_openfile"
+msgid "Open File"
 msgstr "Otvori datoteku"
 
-msgid "m3u_playlists"
+msgid "Playlists (*.m3u)"
 msgstr "Popisi izvođenja (*.m3u)"
 
-msgid "m3u_loaded"
+msgid "loaded"
 msgstr "učitano"
 
-msgid "m3u_savefile"
+msgid "Save File"
 msgstr "Spremi datoteku"
 
-msgid "m3u_m3ufiles"
+msgid "Playlists (*.m3u, *.xspf)"
 msgstr "Popisi izvođenja (*.m3u, *.xspf)"
 
-msgid "error"
+msgid "Error"
 msgstr "Greška"
 
-msgid "playerror"
+msgid "Playing error"
 msgstr "Greška reprodukcije"
 
-msgid "error2"
+msgid "yuki-iptv error"
 msgstr "yuki-iptv greška"
 
 msgid "starting"
 msgstr "pokretanje"
 
-msgid "binarynotfound"
+msgid "Binary modules not found!"
 msgstr "Binarni moduli nisu pronađeni!"
 
-msgid "nocacheplaylist"
+msgid "Playlist caching off"
 msgstr "Predmemorija popisa izvođenja isključena"
 
-msgid "loadingplaylist"
+msgid "Loading playlist..."
 msgstr "Učitavanje popisa izvođenja..."
 
-msgid "playlistloaderror"
+msgid "Playlist loading error!"
 msgstr "Greška učitavanja popisa izvođenja!"
 
-msgid "playlistloaddone"
+msgid "Playling loading done!"
 msgstr "Učitavanje popisa izvođenja završeno!"
 
-msgid "cachingplaylist"
+msgid "Caching playlist..."
 msgstr "Stvaranje predmemorije popisa izvođenja..."
 
-msgid "playlistcached"
+msgid "Playlist cache saved!"
 msgstr "Predmemorija popisa izvođenja spremljena!"
 
-msgid "usingcachedplaylist"
+msgid "Using cached playlist"
 msgstr "Koristi se predmemorija popisa izvođenja"
 
-msgid "settings"
+msgid "Settings"
 msgstr "Postavke"
 
-msgid "help"
+msgid "Help"
 msgstr "Pomoć"
 
-msgid "channelsettings"
+msgid "Channel settings"
 msgstr "Postavke programa"
 
-msgid "selectplaylist"
+msgid "Select m3u playlist"
 msgstr "Odaberi m3u popis izvođenja"
 
-msgid "selectepg"
+msgid "Select EPG file (XMLTV or JTV EPG)"
 msgstr "Odaberi EPG datoteku (XMLTV ili JTV EPG)"
 
-msgid "selectwritefolder"
+msgid "Select folder for recordings and screenshots"
 msgstr "Odaberi mape za snimanje i slike zaslona"
 
-msgid "deinterlace"
+msgid "Deinterlace"
 msgstr "Raspletanje"
 
-msgid "useragent"
+msgid "User agent"
 msgstr "Korisnički agent"
 
-msgid "empty"
+msgid "None"
 msgstr "Nijedan"
 
-msgid "channel"
+msgid "Channel"
 msgstr "Program"
 
-msgid "savesettings"
+msgid "Save settings"
 msgstr "Spremi postavke"
 
-msgid "save"
+msgid "Save"
 msgstr "Spremi"
 
-msgid "m3uplaylist"
+msgid "M3U / XSPF playlist"
 msgstr "M3U / XSPF popis izvođenja"
 
-msgid "updateatboot"
+msgid ""
+"Update playlist\n"
+"at launch"
 msgstr ""
 "Nadopuni popis izvođenja\n"
 "pri pokretanju"
 
-msgid "epgaddress"
+msgid ""
+"TV guide\n"
+"address\n"
+"(XMLTV or JTV)"
 msgstr ""
 "Adresa\n"
 "TV vodiča\n"
 "(XMLTV ili JTV)"
 
-msgid "udpproxy"
+msgid "UDP proxy"
 msgstr "UDP proxy"
 
-msgid "writefolder"
+msgid ""
+"Folder for recordings\n"
+"and screenshots"
 msgstr ""
 "Mapa za snimanje\n"
 "i slike zaslona"
 
-msgid "orselectyourprovider"
+msgid "Or select provider"
 msgstr "Ili odaberite pružatelja usluge"
 
-msgid "resetchannelsettings"
+msgid "Reset channel settings and sorting"
 msgstr "Vrati izvorne postavke i poredak programa"
 
-msgid "notselected"
+msgid "Not selected"
 msgstr "Nije odabrano"
 
-msgid "close"
+msgid "Close"
 msgstr "Zatvori"
 
-msgid "nochannelselected"
+msgid "No channel selected"
 msgstr "Nema odabranog programa"
 
-msgid "pause"
+msgid "Pause"
 msgstr "Pauza"
 
-msgid "play"
+msgid "Play"
 msgstr "Reprodukcija"
 
-msgid "exitfullscreen"
+msgid "To exit fullscreen mode press"
 msgstr "Za izlazak iz cjelozaslonskog prikaza pritisnite"
 
-msgid "volume"
+msgid "Volume"
 msgstr "Glasnoća zvuka"
 
-msgid "volumeoff"
+msgid "Volume off"
 msgstr "Utišano"
 
-msgid "select"
+msgid "Select"
 msgstr "Gledaj"
 
-msgid "tvguide"
+msgid "TV guide"
 msgstr "TV vodič"
 
-msgid "startrecording"
+msgid "Start recording"
 msgstr "Pokreni snimanje"
 
-msgid "loading"
+msgid "Loading..."
 msgstr "Učitavanje..."
 
-msgid "doingscreenshot"
+msgid "Doing screenshot..."
 msgstr "Stvaranje slike zaslona..."
 
-msgid "screenshotsaved"
+msgid "Screenshot saved!"
 msgstr "Slika zaslona spremljena!"
 
-msgid "screenshotsaveerror"
+msgid "Screenshot saving error!"
 msgstr "Greška spremanja slike zaslona!"
 
-msgid "notvguideforchannel"
+msgid "No TV guide for channel"
 msgstr "Nema TV vodiča za program"
 
-msgid "preparingrecord"
+msgid "Preparing record"
 msgstr "Pripremanje snimanja"
 
-msgid "nochannelselforrecord"
+msgid "No channel selected for record"
 msgstr "Nema odabranog programa za snimanje"
 
-msgid "stop"
+msgid "Stop"
 msgstr "Zaustavi"
 
-msgid "fullscreen"
+msgid "Fullscreen"
 msgstr "Cjelozaslonski prikaz"
 
-msgid "openrecordingsfolder"
+msgid "Open recordings folder"
 msgstr "Otvori mapu snimanja"
 
-msgid "record"
+msgid "Record"
 msgstr "Snimi"
 
-msgid "screenshot"
+msgid "Screenshot"
 msgstr "Slika zaslona"
 
-msgid "prevchannel"
+msgid "Previous channel"
 msgstr "Prijašnji program"
 
-msgid "nextchannel"
+msgid "Next channel"
 msgstr "Sljedeći program"
 
-msgid "tvguideupdating"
+msgid "Updating TV guide..."
 msgstr "Nadopuna TV vodiča..."
 
-msgid "tvguideupdatingerror"
+msgid "TV guide update error!"
 msgstr "Greška nadopune TV vodiča!"
 
-msgid "tvguideupdatingdone"
+msgid "TV guide update done!"
 msgstr "Nadopuna TV vodiča završena!"
 
-msgid "recordwaiting"
+msgid "Waiting for record"
 msgstr "Čekanje snimanja"
 
-msgid "allchannels"
+msgid "All channels"
 msgstr "Svi programi"
 
-msgid "favourite"
+msgid "Favourites"
 msgstr "Omiljeni"
 
-msgid "interfacelang"
+msgid "Interface language"
 msgstr "Jezik sučelja"
 
-msgid "tvguideoffset"
+msgid "TV guide offset"
 msgstr "Pomak TV vodiča"
 
 msgid "hours"
 msgstr "sata"
 
-msgid "hwaccel"
+msgid ""
+"Hardware\n"
+"acceleration"
 msgstr ""
 "Hardversko\n"
 "ubrzanje"
 
-msgid "sort"
+msgid ""
+"Channel\n"
+"sort"
 msgstr ""
 "Poredak\n"
 "programa"
 
-msgid "sortitems1"
+msgid "as in playlist"
 msgstr "kao u popisu izvođenja"
 
-msgid "sortitems2"
+msgid "alphabetical order"
 msgstr "abecedni poredak"
 
-msgid "sortitems3"
+msgid "reverse alphabetical order"
 msgstr "obrnuti abecedni poredak"
 
-msgid "sortitems4"
+msgid "custom"
 msgstr "prilagođeni"
 
-msgid "donotforgetsort"
+msgid ""
+"Do not forget\n"
+"to set custom sort order in settings!"
 msgstr ""
 "Ne zaboravite postaviti\n"
 "prilagođeni poredak u postavkama!"
 
-msgid "moresettings"
+msgid "More settings"
 msgstr "Više postavki"
 
-msgid "lesssettings"
+msgid "Less settings"
 msgstr "Manje postavki"
 
 msgid "enabled"
@@ -330,357 +341,380 @@ msgstr "omogućeno"
 msgid "disabled"
 msgstr "onemogućeno"
 
-msgid "seconds"
+msgid "seconds."
 msgstr "sekunde."
 
-msgid "cache"
+msgid "Cache"
 msgstr "Predmemorija"
 
-msgid "chansearch"
+msgid "Search channel"
 msgstr "Potraži program"
 
-msgid "reconnecting"
+msgid "Reconnecting..."
 msgstr "Ponovno povezivanje..."
 
-msgid "group"
+msgid "Group"
 msgstr "Grupa"
 
-msgid "hide"
+msgid "Hide channel"
 msgstr "Sakrij program"
 
-msgid "contrast"
+msgid "Contrast"
 msgstr "Kontrast"
 
-msgid "brightness"
+msgid "Brightness"
 msgstr "Svjetlina"
 
-msgid "hue"
+msgid "Hue"
 msgstr "Nijansa"
 
-msgid "saturation"
+msgid "Saturation"
 msgstr "Zasićenje"
 
-msgid "gamma"
+msgid "Gamma"
 msgstr "Gama"
 
-msgid "timeshift"
+msgid "Archive"
 msgstr "Arhiva programa"
 
-msgid "tab_main"
+msgid "Main"
 msgstr "Općenito"
 
-msgid "tab_video"
+msgid "Video"
 msgstr "Slika"
 
-msgid "tab_network"
+msgid "Network"
 msgstr "Mreža"
 
-msgid "tab_other"
+msgid "Other"
 msgstr "Ostalo"
 
-msgid "mpv_options"
+msgid "mpv options"
 msgstr "mpv mogućnosti"
 
-msgid "donotupdateepg"
+msgid ""
+"Do not update\n"
+"EPG at boot"
 msgstr ""
 "Ne nadopunjuj\n"
 "EPG pri pokretanju"
 
-msgid "search"
+msgid "Search"
 msgstr "Pretraži"
 
-msgid "tab_gui"
+msgid "GUI"
 msgstr "Korisničko sučelje"
 
-msgid "epg_gui"
+msgid ""
+"TV guide\n"
+"interface"
 msgstr ""
 "Sučelje\n"
 "TV vodiča"
 
-msgid "classic"
+msgid "Classic"
 msgstr "Klasično"
 
-msgid "simple"
+msgid "Simple"
 msgstr "Jednostavno"
 
-msgid "simple_noicons"
+msgid "Simple (no icons)"
 msgstr "Jednostavno (bez ikona)"
 
-msgid "update"
+msgid "Update"
 msgstr "Nadopuni"
 
-msgid "scheduler"
+msgid "Recording scheduler"
 msgstr "Raspored snimanja"
 
-msgid "choosechannel"
+msgid "Choose channel"
 msgstr "Odaberi program"
 
-msgid "bitrate1"
+msgid "bps"
 msgstr "bps"
 
-msgid "bitrate2"
+msgid "kbps"
 msgstr "kbps"
 
-msgid "bitrate3"
+msgid "Mbps"
 msgstr "Mbps"
 
-msgid "bitrate4"
+msgid "Gbps"
 msgstr "Gbps"
 
-msgid "bitrate5"
+msgid "Tbps"
 msgstr "Tbps"
 
-msgid "starttime"
+msgid "Start record time"
 msgstr "Vrijeme početka snimanja"
 
-msgid "endtime"
+msgid "End record time"
 msgstr "Vrijeme završetka snimanja"
 
-msgid "addrecord"
+msgid "Add"
 msgstr "Dodaj"
 
-msgid "delrecord"
+msgid "Remove"
 msgstr "Ukloni"
 
-msgid "plannedrec"
+msgid "Planned recordings"
 msgstr "Planirana snimanja"
 
-msgid "warningstr"
+msgid "Recording of two channels simultaneously is not available!"
 msgstr "Snimanje dva programa istovremeno nije moguće!"
 
-msgid "status"
+msgid "Status"
 msgstr "Stanje"
 
-msgid "recnothing"
+msgid "No planned recordings"
 msgstr "Nema planiranih snimanja"
 
-msgid "recwaiting"
-msgstr "Čekanje snimanja"
-
-msgid "recrecording"
+msgid "Recording"
 msgstr "Snimanje"
 
-msgid "activerec"
+msgid "Active recordings"
 msgstr "Aktivna snimanja"
 
-msgid "page"
+msgid "Page"
 msgstr "Stranica"
 
-msgid "fasterview"
+msgid ""
+"For faster channel loading, set the cache\n"
+"for 1 or more seconds in the network settings"
 msgstr ""
 "Za brže učitavanje programa, postavite predmemoriju\n"
 "na 1 ili više sekundi u mrežnim postavkama"
 
-msgid "playlists"
+msgid "Playlists"
 msgstr "Popisi izvođenja"
 
-msgid "provselect"
-msgstr "Odaberi"
-
-msgid "provadd"
-msgstr "Dodaj"
-
-msgid "provedit"
+msgid "Edit"
 msgstr "Uredi"
 
-msgid "provdelete"
+msgid "Delete"
 msgstr "Obriši"
 
-msgid "provname"
+msgid "Name"
 msgstr "Naziv"
 
 msgid "of"
 msgstr "od"
 
-msgid "channelsonpage"
+msgid ""
+"Channels on\n"
+"page"
 msgstr ""
 "Programa na\n"
 "stranici"
 
-msgid "resetdefplaylists"
+msgid "Reset to defaults"
 msgstr "Vrati izvorno"
 
-msgid "license"
+msgid "License"
 msgstr "Licenca"
 
-msgid "openprevchan"
+msgid ""
+"Open previous channel\n"
+"at startup"
 msgstr ""
 "Otvori posljednji program\n"
 "pri pokretanju"
 
-msgid "smscheduler"
+msgid "Scheduler"
 msgstr "Raspored"
 
-msgid "praction"
+msgid ""
+"Post-recording\n"
+"action"
 msgstr ""
 "Radnja nakon\n"
 "završetka snimanja"
 
-msgid "nothingtodo"
+msgid "Nothing to do"
 msgstr "Ne čini ništa"
 
-msgid "stoppress"
+msgid "Press Stop"
 msgstr "Zaustavi snimanje"
 
-msgid "turnoffpc"
+msgid "Turn off PC"
 msgstr "Isključi PC"
 
-msgid "exitprogram"
+msgid "Quit the program"
 msgstr "Zatvori program"
 
-msgid "theme"
+msgid "Theme"
 msgstr "Tema"
 
-msgid "videoaspect"
+msgid "Aspect ratio"
 msgstr "Omjer slike"
 
-msgid "default"
+msgid "Default"
 msgstr "Zadano"
 
-msgid "zoom"
+msgid "Scale / Zoom"
 msgstr "Razmjer / Zumiranje"
 
-msgid "openexternal"
+msgid "Open in external player"
 msgstr "Otvori u vanjskom reproduktoru"
 
-msgid "open"
+msgid "Open"
 msgstr "Otvori"
 
-msgid "remembervol"
+msgid "Remember volume"
 msgstr "Zapamti glasnoću zvuka"
 
-msgid "hidempv"
+msgid "Hide mpv panel"
 msgstr "Sakrij mpv panel"
 
-msgid "filepath"
+msgid "Path to file or URL"
 msgstr "Putanja do datoteke ili URL-a"
 
-msgid "panscan"
+msgid "Pan and scan"
 msgstr "Obreži i prilagodi"
 
-msgid "tab_exp"
+msgid "Experimental"
 msgstr "Eksperimentalno"
 
-msgid "exp1"
+msgid ""
+"Side floating\n"
+"panel adjustment"
 msgstr ""
 "Prilagodba bočnog\n"
 "lebdećeg panela"
 
-msgid "exp2"
+msgid ""
+"Playlist width\n"
+"in full screen mode"
 msgstr ""
 "Širina popisa izvođenja\n"
 "u cjelozaslonskom prikazu"
 
-msgid "exp3"
+msgid ""
+"Playlist height\n"
+"in full screen mode"
 msgstr ""
 "Visina popisa izvođenja\n"
 "u cjelozaslonskom prikazu"
 
-msgid "expwarning"
+msgid ""
+"The settings here\n"
+"may be unstable!"
 msgstr ""
 "Ove postavke\n"
 "možda su nestabilne!"
 
-msgid "mouseswitchchannels"
+msgid ""
+"Switch channels with\n"
+"the mouse wheel"
 msgstr ""
 "Prebaci program\n"
 "kotačićem miša"
 
-msgid "actions"
+msgid "Actions"
 msgstr "Radnje"
 
-msgid "defaultchangevol"
+msgid ""
+"by default:\n"
+"change volume"
 msgstr ""
 "po zadanome promijeni:\n"
 "glasnoću zvuka"
 
-msgid "showplaylistmouse"
+msgid ""
+"Show playlist\n"
+"on mouse move"
 msgstr ""
 "Prikaži popis izvođenja\n"
 "pri pomaku miša"
 
-msgid "showcontrolsmouse"
+msgid ""
+"Show controls\n"
+"on mouse move"
 msgstr ""
 "Prikaži upravljanja\n"
 "pri pomaku miša"
 
-msgid "volumeshort"
+msgid "Vol"
 msgstr "Glasnoća"
 
-msgid "hidetvguide"
+msgid "Hide TV guide"
 msgstr "Sakrij TV vodič"
 
-msgid "flpopacity"
+msgid "Floating panels opacity"
 msgstr "Prozirnost lebdećih panela"
 
-msgid "showhideplaylist"
+msgid "Show/hide playlist"
 msgstr "Prikaži/Sakrij popis izvođenja"
 
-msgid "showhidectrlpanel"
+msgid "Show/hide controls panel"
 msgstr "Prikaži/Sakrij panel upravljanja"
 
-msgid "mininterface"
+msgid "Minimal interface"
 msgstr "Jednostavno sučelje"
 
-msgid "panelposition"
+msgid ""
+"Floating panel\n"
+"position"
 msgstr ""
 "Položaj lebdećeg\n"
 "panela"
 
-msgid "left"
+msgid "Left"
 msgstr "Lijevo"
 
-msgid "right"
+msgid "Right"
 msgstr "Desno"
 
-msgid "doscreenshotsvia"
+msgid "Take screenshots via"
 msgstr "Uslikaj sliku zaslona koristeći"
 
-msgid "playlistsep"
+msgid "Playlist in separate window"
 msgstr "Popis izvođenja u zasebnom prozoru"
 
-msgid "volumechangestep"
+msgid "Volume change step"
 msgstr "Korak promjene glasnoće zvuka"
 
-msgid "hideepgpercentage"
+msgid "Hide EPG percentage"
 msgstr "Sakrij prikaz EPG napredka"
 
-msgid "xtreamnoconn"
+msgid "Could not connect"
 msgstr "Nemoguće povezivanje"
 
-msgid "procerror"
+msgid "Processing error"
 msgstr "Greška obrade"
 
-msgid "username"
+msgid "Username"
 msgstr "Korisničko ime"
 
-msgid "password"
+msgid "Password"
 msgstr "Lozinka"
 
-msgid "url"
+msgid "URL"
 msgstr "URL"
 
-msgid "multipleplnote"
+msgid ""
+"You can specify multiple playlists by clicking\n"
+"the File - Playlists button (after saving the settings)"
 msgstr ""
 "Možete postaviti više popisa izvođenja klikom \n"
 "na Datoteka - tipku Popisi izvođenja (nakon spremanja postavki)"
 
-msgid "favoritesplaylistsep"
+msgid "Favourites (separate playlist)"
 msgstr "Omiljeni (zasebni popis izvođenja)"
 
-msgid "nochannels"
+msgid "No channels"
 msgstr "Nema programa"
 
-msgid "epgname"
+msgid "EPG name"
 msgstr "EPG naziv"
 
-msgid "epgid"
+msgid "EPG id"
 msgstr "EPG id"
 
-msgid "iaepgmatch"
+msgid "Inaccurate EPG matching"
 msgstr "Netočno EPG podudaranje"
 
-msgid "using"
+msgid "Using"
 msgstr "Koristi se"
 
 msgid "Aspect"
@@ -698,22 +732,16 @@ msgstr "Kanali"
 msgid "Codec"
 msgstr "Kôdek"
 
-msgid "colour"
+msgid "Colour"
 msgstr "Boja"
 
 msgid "Dimensions"
 msgstr "Razlučivost"
 
-msgid "Format"
-msgstr "Format"
-
-msgid "Gamma"
-msgstr "Gama"
-
-msgid "general"
+msgid "General"
 msgstr "Općenito"
 
-msgid "layout"
+msgid "Layout"
 msgstr "Izgled"
 
 msgid "Pixel Format"
@@ -725,384 +753,381 @@ msgstr "Frekvencija"
 msgid "Stream Information"
 msgstr "Informacije strujanja"
 
-msgid "Video"
-msgstr "Slika"
-
 msgid "Audio"
 msgstr "Zvuk"
 
-msgid "checkforupdates"
+msgid "Check for updates"
 msgstr "Provjera nadopuna"
 
-msgid "gotlatestversion"
+msgid "You have the latest available version!"
 msgstr "Imate najnoviju dostupnu inačicu!"
 
-msgid "newversiongetfail"
+msgid "Error retrieving latest version information"
 msgstr "Greška preuzimanja informacija najnovije inačice"
 
-msgid "newversionavail"
-msgstr ""
-"Nova inačica je dostupna! Želite li posjetiti web stranicu kako bi ju "
-"instalirali?"
+msgid "New version available! Visit web page to install?"
+msgstr "Nova inačica je dostupna! Želite li posjetiti web stranicu kako bi ju instalirali?"
 
-msgid "aboutqt"
+msgid "About Qt"
 msgstr "O Qt-u"
 
-msgid "applog"
+msgid "yuki-iptv log"
 msgstr "yuki-iptv zapis"
 
-msgid "mpvlog"
+msgid "mpv log"
 msgstr "mpv zapis"
 
-msgid "copytoclipboard"
+msgid "Copy to clipboard"
 msgstr "Kopiraj u međuspremnik"
 
-msgid "choosesavefilename"
+msgid "Choose a filename to save under"
 msgstr "Odaberi naziv datoteke za spremanje"
 
-msgid "logs"
+msgid "Logs"
 msgstr "Zapisi"
 
 msgid "Bits Per Pixel"
 msgstr "Bita po pikselu"
 
-msgid "epgloading"
+msgid "EPG loading..."
 msgstr "EPG učitavanje..."
 
-msgid "unknownencoding"
-msgstr ""
-"Neuspjelo učitavanje popisa izvođenja - nepoznato kôdiranje! Koristite popis "
-"izvođenja u UTF-8 kôdiranju."
+msgid "Failed to load playlist - unknown encoding! Please use playlists in UTF-8 encoding."
+msgstr "Neuspjelo učitavanje popisa izvođenja - nepoznato kôdiranje! Koristite popis izvođenja u UTF-8 kôdiranju."
 
-msgid "menubar_exit"
+msgid "&Exit"
 msgstr "&Zatvori"
 
-msgid "menubar_title_file"
+msgid "&File"
 msgstr "&Datoteka"
 
-msgid "menubar_title_play"
+msgid "&Play"
 msgstr "&Reprodukcija"
 
-msgid "menubar_playpause"
+msgid "&Play / Pause"
 msgstr "&Gledaj / Pauziraj"
 
-msgid "menubar_stop"
+msgid "&Stop"
 msgstr "&Zaustavi"
 
-msgid "minutes_plural"
-msgid_plural ""
-msgstr[0] "minuta"
-msgstr[1] "minute"
-msgstr[2] "minuta"
-
-msgid "seconds_plural"
-msgid_plural ""
-msgstr[0] "sekunda"
-msgstr[1] "sekunde"
-msgstr[2] "sekundi"
-
-msgid "menubar_previous"
+msgid "&Previous"
 msgstr "&Prijašnji program"
 
-msgid "menubar_next"
+msgid "&Next"
 msgstr "&Sljedeći program"
 
-msgid "speed"
+msgid "Speed"
 msgstr "Brzina"
 
-msgid "menubar_normalspeed"
+msgid "&Normal speed"
 msgstr "&Normalna brzina"
 
-msgid "menubar_video"
+msgid "&Video"
 msgstr "&Slika"
 
-msgid "menubar_audio"
+msgid "&Audio"
 msgstr "&Zvuk"
 
-msgid "menubar_fullscreen"
+msgid "&Fullscreen"
 msgstr "&Cjelozaslonski prikaz"
 
-msgid "menubar_compactmode"
+msgid "&Compact mode"
 msgstr "&Jednostavniji prikaz"
 
-msgid "menubar_csforchannel"
+msgid "&Settings for channel"
 msgstr "&Postavke programa"
 
-msgid "menubar_view"
+msgid "Vie&w"
 msgstr "Pog&led"
 
-msgid "menubar_options"
+msgid "&Options"
 msgstr "&Mogućnosti"
 
-msgid "menubar_settings"
+msgid "&Settings"
 msgstr "&Postavke"
 
-msgid "menubar_about"
+msgid "&About yuki-iptv"
 msgstr "&O yuki-iptv"
 
-msgid "menubar_help"
+msgid "&Help"
 msgstr "&Pomoć"
 
-msgid "menubar_screenshot"
+msgid "&Screenshot"
 msgstr "&Uslikaj zaslon"
 
-msgid "menubar_mute"
+msgid "&Mute audio"
 msgstr "&Utišaj zvuk"
 
-msgid "menubar_track"
+msgid "&Track"
 msgstr "&Zapis"
 
-msgid "empty_sm"
+msgid "empty"
 msgstr "prazno"
 
-msgid "menubar_checkupdates"
+msgid "&Check for updates"
 msgstr "&Provjeri nadopune"
 
-msgid "ffmpeg_processing"
+msgid "Processing record..."
 msgstr "Obrada snimanja..."
 
-msgid "menubar_volumeminus"
+msgid "V&olume -"
 msgstr "Glasno&ća zvuka -"
 
-msgid "menubar_volumeplus"
+msgid "Vo&lume +"
 msgstr "Glasno&ća zvuka +"
 
 msgid "list"
 msgstr "popis"
 
-msgid "menubar_m3ueditor"
+msgid "&m3u Editor"
 msgstr "&m3u uređivač"
 
-msgid "menubar_playlists"
+msgid "&Playlists"
 msgstr "&Popis izvođenja"
 
-msgid "menubar_channelsort"
+msgid "&Channel sort"
 msgstr "&Poredak programa"
 
-msgid "menubar_filters"
+msgid "F&ilters"
 msgstr "F&iltriranje"
 
-msgid "menubar_postproc"
+msgid "&Postprocessing"
 msgstr "&Dodatna obrada"
 
-msgid "menubar_deblock"
+msgid "&Deblock"
 msgstr "&Deblokiraj"
 
-msgid "menubar_dering"
+msgid "De&ring"
 msgstr "De&ring"
 
-msgid "menubar_debanding"
+msgid "Debanding (&gradfun)"
 msgstr "Debanding (&gradfun)"
 
-msgid "menubar_noise"
+msgid "Add n&oise"
 msgstr "Dodaj za&sićenje"
 
-msgid "menubar_black"
+msgid "Add &black borders"
 msgstr "Dodaj &crne obrube"
 
-msgid "menubar_phase"
+msgid "&Autodetect phase"
 msgstr "&Automatsko otkrivanje faze"
 
-msgid "menubar_extrastereo"
+msgid "&Extrastereo"
 msgstr "&Dodatni stereo"
 
-msgid "menubar_karaoke"
+msgid "&Karaoke"
 msgstr "&Karaoke"
 
-msgid "menubar_earvax"
+msgid "&Headphone optimization"
 msgstr "&Optimizacija za slušalice"
 
-msgid "menubar_volnorm"
+msgid "Volume &normalization"
 msgstr "Normalizacije &glasnoće zvuka"
 
-msgid "errorvfapply"
+msgid "Error applying filters"
 msgstr "Greška primjene filtra"
 
-msgid "menubar_softscaling"
+msgid "Soft&ware scaling"
 msgstr "Soft&verska prilagodba"
 
-msgid "menubar_updateepg"
+msgid "&Update TV guide"
 msgstr "&Nadopuni TV vodič"
 
-msgid "playername"
+msgid "IPTV player"
 msgstr "IPTV reproduktor"
 
-msgid "hidebitrateinfo"
+msgid "Hide bitrate / video info"
 msgstr "Sakrij brzinu prijenosa / video informacije"
 
-msgid "movedragging"
+msgid "Move window by dragging"
 msgstr "Pomiči prozor povlačenjem"
 
 msgid "playlist"
 msgstr "popis izvođenja"
 
-msgid "ignoringmpvoptions"
+msgid "Custom MPV options invalid, ignoring them"
 msgstr "Prilagođene MPV mogućnosti nevaljane, zanemarujem ih"
 
-msgid "showonlychplaylist"
+msgid "Show only channels in playlist"
 msgstr "Prikaži samo programe u popisu izvođenja"
 
 msgid "channels"
 msgstr "programi"
 
-msgid "hideplaylistleftclk"
+msgid "Hide playlist by left click"
 msgstr "Sakrij popis izvođenja lijevim klikom"
 
-msgid "styleredefoff"
+msgid "Enable styles redefinition"
 msgstr "Omogući redefiniranje izgleda"
 
-msgid "alwaysontop"
+msgid "Window always on top"
 msgstr "Uvijek na vrhu"
 
-msgid "expfunctionwarning"
+msgid "WARNING: experimental function, working with problems"
 msgstr "UPOZORENJE: eksperimentalna funkcija, radi s problemima"
 
-msgid "menubar_expfunction"
+msgid "experimental function"
 msgstr "eksperimentalna funkcija"
 
-msgid "autoreconnection"
+msgid ""
+"Automatic\n"
+"reconnection"
 msgstr ""
 "Automatsko ponovno\n"
 "povezivanje"
 
-msgid "customua"
+msgid "- custom -"
 msgstr "- prilagođeno -"
 
-msgid "deletefromfav"
+msgid "Delete from favourites"
 msgstr "Ukloni iz omiljenih"
 
-msgid "scrrecnosubfolders"
+msgid ""
+"Do not create screenshots\n"
+"and recordings subfolders"
 msgstr "Ne stvaraj podmape slika zaslona i snimanja"
 
-msgid "nocacheepg"
+msgid "Do not cache EPG"
 msgstr "Ne stvaraj EPG predmemoriju"
 
-msgid "nourlset"
+msgid "URL not specified!"
 msgstr "URL nije naveden!"
 
-msgid "updcurplaylist"
+msgid "&Update current playlist"
 msgstr "&Nadopuni trenutni popis izvođenja"
 
-msgid "shortcuts"
+msgid "Shortcuts"
 msgstr "Prečaci"
 
-msgid "shortcut"
+msgid "Shortcut"
 msgstr "Prečac"
 
-msgid "desc"
+msgid "Description"
 msgstr "Opis"
 
-msgid "exitfullscreen2"
+msgid "Exit fullscreen"
 msgstr "Izlazak iz cjelozaslonskog prikaza"
 
-msgid "showclock"
+msgid "Show clock"
 msgstr "Prikaži sat"
 
-msgid "tvguideforallchans"
+msgid "TV guide for all channels"
 msgstr "TV vodič za sve programe"
 
-msgid "shortcutchange"
+msgid "Double click to change"
 msgstr "Dvostruki klik za promjenu"
 
-msgid "modifyshortcut"
+msgid "Modify shortcut"
 msgstr "Promjena prečaca"
 
-msgid "pressnewkey"
+msgid ""
+"Press the key combination\n"
+"you want to assign"
 msgstr ""
 "Pritisnite kombinaciju tipka\n"
 "koje želite dodijeliti"
 
-msgid "cancel"
+msgid "Cancel"
 msgstr "Odustani"
 
-msgid "ok"
+msgid "OK"
 msgstr "U redu"
 
-msgid "shortcutused"
+msgid "Shortcut already used"
 msgstr "Prečac se već koristi"
 
-msgid "resettodefaults"
-msgstr "Vrati izvorno"
-
-msgid "areyousure"
+msgid "Are you sure?"
 msgstr "Jeste li sigurni?"
 
-msgid "usingmode"
+msgid "Using mode"
 msgstr "Način korištenja"
 
-msgid "catchup"
+msgid "Catchup"
 msgstr "Hvatanje"
 
-msgid "enablecatchup"
+msgid "Enable catchup"
 msgstr "Omogući hvatanje programa"
 
-msgid "writingepgcache"
+msgid "Writing EPG cache"
 msgstr "Zapisivanje EPG predmemorije"
 
-msgid "movies"
+msgid "Movies"
 msgstr "Filmovi"
 
-msgid "series"
+msgid "Series"
 msgstr "Serije"
 
-msgid "back"
+msgid "Back"
 msgstr "Natrag"
 
-msgid "tvchannels"
+msgid "TV channels"
 msgstr "TV programi"
 
-msgid "nothingfound"
+msgid "Nothing found"
 msgstr "Ništa nije pronađeno"
 
-msgid "searchmovie"
+msgid "Search movie"
 msgstr "Pretraži film"
 
-msgid "searchserie"
+msgid "Search series"
 msgstr "Pretraži seriju"
 
-msgid "hidetvprogram"
+msgid "Hide the current television program"
 msgstr "Sakrij trenutni televizijski program"
 
-msgid "m3u_playlistsaved"
+msgid "Playlist successfully saved!"
 msgstr "Popis izvođenja je uspješno spremljen!"
 
-msgid "channellogos"
+msgid "Channel logos"
 msgstr "Logotipi programa"
 
-msgid "preferm3u"
+msgid "Prefer M3U"
 msgstr "Preferiraj iz M3U popisa izvođenja"
 
-msgid "preferepg"
+msgid "Prefer EPG"
 msgstr "Preferiraj iz EPG vodiča"
 
-msgid "donotloadfromepg"
+msgid "Do not load from EPG"
 msgstr "Ne učitavaj iz EPG vodiča"
 
-msgid "donotloadanylogos"
+msgid "Do not load any logos"
 msgstr "Ne učitavaj logotipe"
 
-msgid "subtitles"
+msgid "Subtitles"
 msgstr "Podnaslovi"
 
-msgid "off"
+msgid "Off"
 msgstr "Isključi"
 
-msgid "incompatiblewithspw"
+msgid "Incompatible with option Playlist in separate window"
 msgstr "Nekompatibilno s mogućnošću: Popis izvođenja u zasebnom prozoru"
 
-msgid "menubar_subtitles"
+msgid "&Subtitles"
 msgstr "&Podnaslovi"
 
-msgid "videosettings"
+msgid "Video settings"
 msgstr "Postavke programa"
 
-msgid "hidech"
+msgid "Hide"
 msgstr "Sakrij"
 
-msgid "menubar_videosettings"
+msgid "&Video settings"
 msgstr "&Postavke programa"
 
-msgid "helptext"
+msgid ""
+"yuki-iptv, version {}\n"
+"\n"
+"© 2021-2022 Astroncia\n"
+"© 2023 yuki-chan-nya\n"
+"https://github.com/yuki-chan-nya\n"
+"\n"
+"IPTV player\n"
+"\n"
+"Supports TV guide (EPG) only in XMLTV and JTV formats!\n"
+"\n"
+"Icons by Font Awesome ( https://fontawesome.com/ )\n"
+"Icons licensed under the CC BY 4.0 License\n"
+"( https://creativecommons.org/licenses/by/4.0/ )"
 msgstr ""
 "yuki-iptv, inačica {}\n"
 "\n"
@@ -1120,3 +1145,15 @@ msgstr ""
 "Ikone od Font Awesome ( https://fontawesome.com/ )\n"
 "Ikone su licencirane pod CC BY 4.0 Licencom\n"
 "( https://creativecommons.org/licenses/by/4.0/ )"
+
+msgid "minutes"
+msgid_plural ""
+msgstr[0] "minuta"
+msgstr[1] "minute"
+msgstr[2] "minuta"
+
+msgid "seconds"
+msgid_plural ""
+msgstr[0] "sekunda"
+msgstr[1] "sekunde"
+msgstr[2] "sekundi"

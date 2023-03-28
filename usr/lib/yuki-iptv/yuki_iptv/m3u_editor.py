@@ -326,7 +326,7 @@ class M3UEditor(QtWidgets.QMainWindow):
             'useragent', 'referer', 'url'
         ]
 
-        self.setWindowTitle(_('m3u_m3ueditor'))
+        self.setWindowTitle(_('m3u Editor'))
         self.setWindowIcon(icon)
         self.setGeometry(0, 0, 1200, 600)
         self.populate_menubar()

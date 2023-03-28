@@ -12,315 +12,327 @@ msgstr ""
 "Language: de\n"
 "X-Generator: Poedit 2.4.2\n"
 
-msgid "name"
-msgstr "Deutsch"
-
-msgid "m3u_ready"
+msgid "Ready"
 msgstr "Bereit"
 
-msgid "m3u_m3ueditor"
+msgid "m3u Editor"
 msgstr "m3u Editor"
 
-msgid "m3u_noname"
+msgid "No Name"
 msgstr "Unbenannt"
 
-msgid "m3u_waschanged"
+msgid "The document was changed.<br>Do you want to save the changes?"
 msgstr "Das Dokument wurde geändert.<br>Wollen Sie die Änderungen speichern?"
 
-msgid "m3u_saveconfirm"
+msgid "Save Confirmation"
 msgstr "Speichern"
 
-msgid "m3u_file"
+msgid "File"
 msgstr "Datei"
 
-msgid "m3u_loadm3u"
+msgid "Load M3U"
 msgstr "M3U öffnen"
 
-msgid "m3u_saveas"
+msgid "Save as"
 msgstr "Speichern als ..."
 
-msgid "m3u_find"
+msgid "find"
 msgstr "suchen"
 
-msgid "m3u_replacewith"
+msgid "replace with"
 msgstr "ersetzen mit"
 
-msgid "m3u_replaceall"
+msgid "replace all"
 msgstr "alles ersetzen"
 
-msgid "m3u_deleterow"
+msgid "delete row"
 msgstr "Zeile löschen"
 
-msgid "m3u_addrow"
+msgid "add row"
 msgstr "Zeile hinzufügen"
 
-msgid "m3u_movedown"
+msgid "move down"
 msgstr "nach unten bewegen"
 
-msgid "m3u_moveup"
+msgid "move up"
 msgstr "nach oben bewegen"
 
-msgid "m3u_filtergroup"
+msgid "filter group (press Enter)"
 msgstr "Filter (Enter drücken)"
 
-msgid "m3u_searchterm"
+msgid ""
+"insert search term and press enter\n"
+" use Selector → to choose column to search"
 msgstr ""
 "Suchbegriff einfügen und Enter drücken\n"
 "Spalte zum Suchen auswählen →"
 
-msgid "m3u_choosecolumn"
+msgid "choose column to search"
 msgstr "Spalte zum Suchen auswählen"
 
-msgid "m3u_openfile"
+msgid "Open File"
 msgstr "Datei öffnen"
 
-msgid "m3u_playlists"
+msgid "Playlists (*.m3u)"
 msgstr "Wiedergabeliste (*.m3u)"
 
-msgid "m3u_loaded"
+msgid "loaded"
 msgstr "geladen"
 
-msgid "m3u_savefile"
+msgid "Save File"
 msgstr "Datei speichern"
 
-msgid "m3u_m3ufiles"
+msgid "Playlists (*.m3u, *.xspf)"
 msgstr "Dateien (*.m3u, *.xspf)"
 
-msgid "error"
+msgid "Error"
 msgstr "Fehler"
 
-msgid "playerror"
+msgid "Playing error"
 msgstr "Wiedergabefehler"
 
-msgid "error2"
+msgid "yuki-iptv error"
 msgstr "yuki-iptv Fehler"
 
 msgid "starting"
 msgstr "starte"
 
-msgid "binarynotfound"
+msgid "Binary modules not found!"
 msgstr "Module nicht gefunden!"
 
-msgid "nocacheplaylist"
+msgid "Playlist caching off"
 msgstr "Playlist zwischenspeichern aus"
 
-msgid "loadingplaylist"
+msgid "Loading playlist..."
 msgstr "Lade Playlist..."
 
-msgid "playlistloaderror"
+msgid "Playlist loading error!"
 msgstr "Fehler beim Laden der Wiedergabeliste!"
 
-msgid "playlistloaddone"
+msgid "Playling loading done!"
 msgstr "Wiedergabeliste geladen!"
 
-msgid "cachingplaylist"
+msgid "Caching playlist..."
 msgstr "Playlist zwischenspeichern..."
 
-msgid "playlistcached"
+msgid "Playlist cache saved!"
 msgstr "Playlist Cache gespeichert!"
 
-msgid "usingcachedplaylist"
+msgid "Using cached playlist"
 msgstr "Benutze zwischengespeicherte Wiedergabeliste"
 
-msgid "settings"
+msgid "Settings"
 msgstr "Einstellungen"
 
-msgid "help"
+msgid "Help"
 msgstr "Hilfe"
 
-msgid "channelsettings"
+msgid "Channel settings"
 msgstr "Kanaleinstellungen"
 
-msgid "selectplaylist"
+msgid "Select m3u playlist"
 msgstr "Wähle m3u Wiedergabeliste"
 
-msgid "selectepg"
+msgid "Select EPG file (XMLTV or JTV EPG)"
 msgstr "Wähle EPG Datei (XMLTV or JTV EPG)"
 
-msgid "selectwritefolder"
+msgid "Select folder for recordings and screenshots"
 msgstr "Wähle Ordner für Aufnahmen und Screenshots"
 
-msgid "deinterlace"
+msgid "Deinterlace"
 msgstr "Deinterlace"
 
-msgid "useragent"
+msgid "User agent"
 msgstr "User Agent"
 
-msgid "empty"
+msgid "None"
 msgstr "Leer"
 
-msgid "channel"
+msgid "Channel"
 msgstr "Kanal"
 
-msgid "savesettings"
+msgid "Save settings"
 msgstr "Einstellungen speichern"
 
-msgid "save"
+msgid "Save"
 msgstr "Speichern"
 
-msgid "m3uplaylist"
+msgid "M3U / XSPF playlist"
 msgstr "M3U / XSPF Wiedergabeliste"
 
-msgid "updateatboot"
+msgid ""
+"Update playlist\n"
+"at launch"
 msgstr ""
 "Update\n"
 "beim Start"
 
-msgid "epgaddress"
+msgid ""
+"TV guide\n"
+"address\n"
+"(XMLTV or JTV)"
 msgstr ""
 "TV-Pogramm(EPG)\n"
 "Adresse\n"
 "(XMLTV or JTV)"
 
-msgid "udpproxy"
+msgid "UDP proxy"
 msgstr "UDP proxy"
 
-msgid "writefolder"
+msgid ""
+"Folder for recordings\n"
+"and screenshots"
 msgstr ""
 "Ordner für Aufnahmen\n"
 "und Screenshots"
 
-msgid "orselectyourprovider"
+msgid "Or select provider"
 msgstr ""
 "oder wähle\n"
 "Provider"
 
-msgid "resetchannelsettings"
+msgid "Reset channel settings and sorting"
 msgstr "Kanaleinstellungen und Sortierung zurücksetzen"
 
-msgid "notselected"
+msgid "Not selected"
 msgstr "Nicht ausgewählt"
 
-msgid "close"
+msgid "Close"
 msgstr "Schließen"
 
-msgid "nochannelselected"
+msgid "No channel selected"
 msgstr "Kein Kanal ausgewählt"
 
-msgid "pause"
+msgid "Pause"
 msgstr "Pause"
 
-msgid "play"
+msgid "Play"
 msgstr "Wiedergabe"
 
-msgid "exitfullscreen"
+msgid "To exit fullscreen mode press"
 msgstr "Um den Vollbildmodus zu verlassen drücke"
 
-msgid "volume"
+msgid "Volume"
 msgstr "Lautstärke"
 
-msgid "volumeoff"
+msgid "Volume off"
 msgstr "Stumm"
 
-msgid "select"
+msgid "Select"
 msgstr "Wähle"
 
-msgid "tvguide"
+msgid "TV guide"
 msgstr "TV EPG"
 
-msgid "startrecording"
+msgid "Start recording"
 msgstr "Starte Aufnahme"
 
-msgid "loading"
+msgid "Loading..."
 msgstr "Lade..."
 
-msgid "doingscreenshot"
+msgid "Doing screenshot..."
 msgstr "Doing screenshot..."
 
-msgid "screenshotsaved"
+msgid "Screenshot saved!"
 msgstr "Screenshot gespeichert!"
 
-msgid "screenshotsaveerror"
+msgid "Screenshot saving error!"
 msgstr "Fehler beim Speichern des Screenshots!"
 
-msgid "notvguideforchannel"
+msgid "No TV guide for channel"
 msgstr "Kein TV-Programm für diesen Kanal"
 
-msgid "preparingrecord"
+msgid "Preparing record"
 msgstr "Aufzeichnung vorbereiten"
 
-msgid "nochannelselforrecord"
+msgid "No channel selected for record"
 msgstr "Kein Kanal für die Aufnahme ausgewählt"
 
-msgid "stop"
+msgid "Stop"
 msgstr "Stop"
 
-msgid "fullscreen"
+msgid "Fullscreen"
 msgstr "Vollbildmodus"
 
-msgid "openrecordingsfolder"
+msgid "Open recordings folder"
 msgstr "Öffne Aufnahmeordner"
 
-msgid "record"
+msgid "Record"
 msgstr "Aufnahme"
 
-msgid "screenshot"
+msgid "Screenshot"
 msgstr "Bildschirmfoto"
 
-msgid "prevchannel"
+msgid "Previous channel"
 msgstr "Vorheriger Kanal"
 
-msgid "nextchannel"
+msgid "Next channel"
 msgstr "Nächster Kanal"
 
-msgid "tvguideupdating"
+msgid "Updating TV guide..."
 msgstr "Aktualisierung des EPG..."
 
-msgid "tvguideupdatingerror"
+msgid "TV guide update error!"
 msgstr "Fehler beim Aktualisieren des EPG!"
 
-msgid "tvguideupdatingdone"
+msgid "TV guide update done!"
 msgstr "EPG-Update fertig!"
 
-msgid "recordwaiting"
+msgid "Waiting for record"
 msgstr "Warten auf Aufzeichnung"
 
-msgid "allchannels"
+msgid "All channels"
 msgstr "Alle Kanäle"
 
-msgid "favourite"
+msgid "Favourites"
 msgstr "Favoriten"
 
-msgid "interfacelang"
+msgid "Interface language"
 msgstr "Programmsprache"
 
-msgid "tvguideoffset"
+msgid "TV guide offset"
 msgstr "EPG Versatz"
 
 msgid "hours"
 msgstr "Stunden"
 
-msgid "hwaccel"
+msgid ""
+"Hardware\n"
+"acceleration"
 msgstr ""
 "Hardware\n"
 "Beschleunigung"
 
-msgid "sort"
+msgid ""
+"Channel\n"
+"sort"
 msgstr ""
 "Kanal\n"
 "Sortierung"
 
-msgid "sortitems1"
+msgid "as in playlist"
 msgstr "wie in der Wiedergabeliste"
 
-msgid "sortitems2"
+msgid "alphabetical order"
 msgstr "alphabetische Reihenfolge"
 
-msgid "sortitems3"
+msgid "reverse alphabetical order"
 msgstr "umgekehrte alphabetische Reihenfolge"
 
-msgid "sortitems4"
+msgid "custom"
 msgstr "Benutzerdefiniert"
 
-msgid "donotforgetsort"
+msgid ""
+"Do not forget\n"
+"to set custom sort order in settings!"
 msgstr ""
 "Nicht vergessen\n"
 "um die benutzerdefinierte Sortierreihenfolge in den Einstellungen festzulegen!"
 
-msgid "moresettings"
+msgid "More settings"
 msgstr "mehr Einstellungen"
 
-msgid "lesssettings"
+msgid "Less settings"
 msgstr "weniger Einstellungen"
 
 msgid "enabled"
@@ -329,137 +341,151 @@ msgstr "aktiviert"
 msgid "disabled"
 msgstr "deaktiviert"
 
-msgid "seconds"
+msgid "seconds."
 msgstr "Sekunden."
 
-msgid "cache"
+msgid "Cache"
 msgstr "Zwischenspeicher"
 
-msgid "chansearch"
+msgid "Search channel"
 msgstr "suche Kanal"
 
-msgid "reconnecting"
+msgid "Reconnecting..."
 msgstr "Wiederverbindung..."
 
-msgid "group"
+msgid "Group"
 msgstr "Gruppe"
 
-msgid "hide"
+msgid "Hide channel"
 msgstr "Kanal ausblenden"
 
-msgid "contrast"
+msgid "Contrast"
 msgstr "Kontrast"
 
-msgid "brightness"
+msgid "Brightness"
 msgstr "Helligkeit"
 
-msgid "hue"
+msgid "Hue"
 msgstr "Farbton"
 
-msgid "saturation"
+msgid "Saturation"
 msgstr "Sättigung"
 
-msgid "gamma"
+msgid "Gamma"
 msgstr "Gamma"
 
-msgid "timeshift"
+msgid "Archive"
 msgstr "Timeshift"
 
-msgid "tab_main"
+msgid "Main"
 msgstr "Allgemein"
 
-msgid "tab_video"
+msgid "Video"
 msgstr "Video"
 
-msgid "tab_network"
+msgid "Network"
 msgstr "Netzwerk"
 
-msgid "tab_other"
+msgid "Other"
 msgstr "Andere"
 
-msgid "mpv_options"
+msgid "mpv options"
 msgstr "mpv Optionen"
 
-msgid "donotupdateepg"
+msgid ""
+"Do not update\n"
+"EPG at boot"
 msgstr ""
 "EPG nicht updaten\n"
 "beim Start"
 
-msgid "search"
+msgid "Search"
 msgstr "Suche"
 
-msgid "tab_gui"
+msgid "GUI"
 msgstr "Fenster"
 
-msgid "epg_gui"
+msgid ""
+"TV guide\n"
+"interface"
 msgstr ""
 "EPG\n"
 "Schnittstelle"
 
-msgid "classic"
+msgid "Classic"
 msgstr "Klassisch"
 
-msgid "simple"
+msgid "Simple"
 msgstr "Einfach"
 
-msgid "simple_noicons"
+msgid "Simple (no icons)"
 msgstr "Einfach (keine Icons)"
 
-msgid "update"
+msgid "Update"
 msgstr "Aktualisierung"
 
-msgid "scheduler"
+msgid "Recording scheduler"
 msgstr "Aufnahmeplaner"
 
-msgid "choosechannel"
+msgid "Choose channel"
 msgstr "Kanal auswählen"
 
-msgid "bitrate1"
+msgid "bps"
 msgstr "bps"
 
-msgid "bitrate2"
+msgid "kbps"
 msgstr "kbps"
 
-msgid "bitrate3"
+msgid "Mbps"
 msgstr "Mbps"
 
-msgid "bitrate4"
+msgid "Gbps"
 msgstr "Gbps"
 
-msgid "bitrate5"
+msgid "Tbps"
 msgstr "Tbps"
 
-msgid "starttime"
+msgid "Start record time"
 msgstr "Aufnahmebeginn"
 
-msgid "endtime"
+msgid "End record time"
 msgstr "Aufnahmeende"
 
-msgid "addrecord"
+msgid "Add"
 msgstr "hinzufügen"
 
-msgid "delrecord"
+msgid "Remove"
 msgstr "entfernen"
 
-msgid "plannedrec"
+msgid "Planned recordings"
 msgstr "Geplante Aufnahmen"
 
-msgid "warningstr"
+msgid "Recording of two channels simultaneously is not available!"
 msgstr "Die gleichzeitige Aufnahme von zwei Kanälen ist nicht möglich!"
 
-msgid "status"
+msgid "Status"
 msgstr "Status"
 
-msgid "recnothing"
+msgid "No planned recordings"
 msgstr "Keine geplanten Aufnahmen"
 
-msgid "recwaiting"
-msgstr "Warten auf Aufzeichnung"
-
-msgid "recrecording"
+msgid "Recording"
 msgstr "Aufnahme"
 
-msgid "helptext"
+msgid ""
+"yuki-iptv, version {}\n"
+"\n"
+"© 2021-2022 Astroncia\n"
+"© 2023 yuki-chan-nya\n"
+"https://github.com/yuki-chan-nya\n"
+"\n"
+"IPTV player\n"
+"\n"
+"Supports TV guide (EPG) only in XMLTV and JTV formats!\n"
+"\n"
+"Icons by Font Awesome ( https://fontawesome.com/ )\n"
+"Icons licensed under the CC BY 4.0 License\n"
+"( https://creativecommons.org/licenses/by/4.0/ )"
 msgstr ""
 "yuki-iptv, Version {}\n"
 "\n"

@@ -7,7 +7,7 @@ from pathlib import Path
 
 def parse_settings( # pylint: disable=too-many-arguments
     local_dir, def_deinterlace, save_folder_default,
-    lang_default, def_timezone, dock_widget_width
+    def_timezone, dock_widget_width
 ):
     settings_default = {
         "m3u": "",
@@ -17,7 +17,6 @@ def parse_settings( # pylint: disable=too-many-arguments
         "save_folder": save_folder_default,
         "provider": "",
         "nocache": True,
-        "lang": lang_default,
         "epgoffset": def_timezone,
         "hwaccel": True,
         "sort": 0,

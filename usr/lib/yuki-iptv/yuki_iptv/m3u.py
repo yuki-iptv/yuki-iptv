@@ -48,9 +48,9 @@ class M3UParser:
         if not tvg_url and url_tvg:
             tvg_url = url_tvg
 
-        group = self.parse_regexp("group-title", line_info, self._('allchannels'))
+        group = self.parse_regexp("group-title", line_info, self._('All channels'))
         if not group:
-            group = self._('allchannels')
+            group = self._('All channels')
 
         catchup_tag = self.parse_regexp("catchup", line_info, "")
         if not catchup_tag:
