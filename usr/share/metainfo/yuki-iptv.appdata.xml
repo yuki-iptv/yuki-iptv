@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright 2021-2022 Astroncia <kestraly@gmail.com> -->
 <!-- Copyright 2023 yuki-chan-nya -->
-<component type="desktop-application">
-  <id>com.yuki.iptv</id>
+<component type="desktop">
+  <id>yuki-iptv.desktop</id>
   <metadata_license>FSFAP</metadata_license>
   <project_license>GPL-3.0</project_license>
   <name>yuki-iptv</name>
@@ -24,8 +24,6 @@
 
   <url type="homepage">https://github.com/yuki-chan-nya/yuki-iptv</url>
   <url type="bugtracker">https://github.com/yuki-chan-nya/yuki-iptv/issues</url>
-
-  <provides>
-    <binary>yuki-iptv</binary>
-  </provides>
+  <developer_name>yuki-chan-nya</developer_name>
+  <translation type="gettext">yuki-iptv</translation>
 </component>
