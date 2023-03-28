@@ -8,8 +8,19 @@ The channels and pictures in the screenshots are for demonstration purposes only
 
 ## Download
 
-[Ubuntu Launchpad PPA (stable)](https://launchpad.net/~yuki-chan-nya/+archive/ubuntu/yuki-iptv-stable) **(recommended)**  
-[Ubuntu Launchpad PPA (develop)](https://launchpad.net/~yuki-chan-nya/+archive/ubuntu/yuki-iptv-develop)
+[Ubuntu Launchpad PPA (stable)](https://launchpad.net/~yuki-chan-nya/+archive/ubuntu/yuki-iptv-stable) **(recommended)**:  
+```
+sudo add-apt-repository ppa:yuki-chan-nya/yuki-iptv-stable
+sudo apt update
+sudo apt install yuki-iptv
+```
+
+[Ubuntu Launchpad PPA (develop)](https://launchpad.net/~yuki-chan-nya/+archive/ubuntu/yuki-iptv-develop):  
+```
+sudo add-apt-repository ppa:yuki-chan-nya/yuki-iptv-develop
+sudo apt update
+sudo apt install yuki-iptv
+```
 
 ## Information
 
