@@ -16,6 +16,7 @@ import time
 import datetime
 import json
 import locale
+import gettext
 import signal
 import base64
 import argparse
@@ -39,7 +40,7 @@ except:
     pass
 
 from yuki_iptv.qt import get_qt_library
-from yuki_iptv.lang import _, ngettext, LOCALE_CHANGED
+from yuki_iptv.lang import LOCALE_CHANGED
 from yuki_iptv.ua import user_agent, uas, ua_names
 from yuki_iptv.epg import worker
 from yuki_iptv.record import record, record_return, stop_record, \
@@ -97,6 +98,16 @@ if not sys.version_info >= (3, 6, 0):
     print_with_time("Incompatible Python version! Required >= 3.6")
     sys.exit(1)
 
+setproctitle.setproctitle("yuki-iptv")
+
+# i18n
+APP = "yuki-iptv"
+LOCALE_DIR = str(Path(os.getcwd(), '..', '..', 'share', 'locale'))
+locale.bindtextdomain(APP, LOCALE_DIR)
+gettext.bindtextdomain(APP, LOCALE_DIR)
+gettext.textdomain(APP)
+_ = gettext.gettext
+
 MAIN_WINDOW_TITLE = 'yuki-iptv'
 WINDOW_SIZE = (1200, 600)
 DOCK_WIDGET2_HEIGHT = int(WINDOW_SIZE[1] / 10)
@@ -134,8 +145,6 @@ class YukiData: # pylint: disable=too-few-public-methods
     serie_selected = False
     movies = {}
     series = {}
-
-setproctitle.setproctitle("yuki-iptv")
 
 stream_info.video_properties = {}
 stream_info.audio_properties = {}
@@ -286,13 +295,16 @@ if __name__ == '__main__':
     except:
         print_with_time('[WARNING] app.setStyle("fusion") FAILED')
 
+    # dummy, for xgettext
+    PLAYERNAME = _('IPTV player')
+
     # This is necessary since PyQT stomps over the locale settings needed by libmpv.
     # This needs to happen after importing PyQT before creating the first mpv.MPV instance.
     locale.setlocale(locale.LC_NUMERIC, 'C')
 
     try:
         print_with_time("")
-        print_with_time("{} {}...".format(MAIN_WINDOW_TITLE, _('starting')))
+        print_with_time("{} starting...".format(MAIN_WINDOW_TITLE))
         print_with_time("Copyright (c) 2021-2022 Astroncia")
         print_with_time("Copyright (c) 2023 yuki-chan-nya")
         print_with_time("")
@@ -373,9 +385,9 @@ if __name__ == '__main__':
         init_interface_widgets(settings)
 
         if settings['hwaccel']:
-            print_with_time("{} {}".format(_('Hardware\nacceleration').replace('\n', ' '), _('enabled'))) # pylint: disable=line-too-long
+            print_with_time(_('Hardware acceleration enabled'))
         else:
-            print_with_time("{} {}".format(_('Hardware\nacceleration').replace('\n', ' '), _('disabled'))) # pylint: disable=line-too-long
+            print_with_time(_('Hardware acceleration disabled'))
 
         print_with_time("Checking theme")
         dark_label = QtWidgets.QLabel("Darkness test")
@@ -2120,6 +2132,8 @@ if __name__ == '__main__':
         def_user_agent = uas[settings['useragent']]
         print_with_time("Default user agent: {}".format(def_user_agent))
 
+        YukiData.bitrate_failed = False
+
         def on_bitrate(prop, bitrate):
             try:
                 if not bitrate or prop not in ["video-bitrate", "audio-bitrate"]:
@@ -2146,7 +2160,10 @@ if __name__ == '__main__':
                     stream_info.audio_properties[_("General")][_("Average Bitrate")] = \
                     ("%.f " + _('kbps')) % br
             except:
-                pass
+                if not YukiData.bitrate_failed:
+                    YukiData.bitrate_failed = True
+                    print_with_time("on_bitrate FAILED with exception!")
+                    print_with_time(traceback.format_exc())
 
         def on_video_params(property1, params): # pylint: disable=unused-argument
             try:
@@ -2775,7 +2792,6 @@ if __name__ == '__main__':
         fastview_label.setText(
             '<span style="color:#1D877C;">' + _('For faster channel loading, set the cache\nfor 1 or more seconds in the network settings') + '</span><br>' # pylint: disable=line-too-long
         )
-        hours_label = QtWidgets.QLabel(_('hours'))
 
         def reset_channel_settings():
             if os.path.isfile(str(Path(LOCAL_DIR, 'channels.json'))):
@@ -2807,7 +2823,9 @@ if __name__ == '__main__':
         supdate.setChecked(settings['nocache'])
         sfld = QtWidgets.QLineEdit()
         sfld.setText(settings['save_folder'])
-        scache = QtWidgets.QLabel(_('seconds.'))
+        scache = QtWidgets.QLabel(
+            (gettext.ngettext("%d second", "%d seconds", 0) % 0).replace('0 ', '')
+        )
         sselect = QtWidgets.QLabel("{}:".format(_('Or select provider')))
         sselect.setStyleSheet('color: #00008B;')
         ssave = QtWidgets.QPushButton(_('Save settings'))
@@ -4812,6 +4830,9 @@ if __name__ == '__main__':
                         chan_5, chan_5_logo, channel_icons_data_epg.return_dict
                     )
 
+        def get_of_txt(of_num):
+            return gettext.ngettext("of %d", "", of_num) % of_num
+
         prog_match_arr = {}
 
         first_gen_chans = True
@@ -4858,12 +4879,14 @@ if __name__ == '__main__':
             try:
                 if filter_txt:
                     page_box.setMaximum(round(len(ch_array) / settings["channelsonpage"]) + 1)
-                    of_lbl.setText('{} {}'.format(_('of'), \
-                        round(len(ch_array) / settings["channelsonpage"]) + 1))
+                    of_lbl.setText(get_of_txt(
+                        round(len(ch_array) / settings["channelsonpage"]) + 1
+                    ))
                 else:
                     page_box.setMaximum(round(len(array_filtered) / settings["channelsonpage"]) + 1)
-                    of_lbl.setText('{} {}'.format(_('of'), \
-                        round(len(array_filtered) / settings["channelsonpage"]) + 1))
+                    of_lbl.setText(get_of_txt(
+                        round(len(array_filtered) / settings["channelsonpage"]) + 1
+                    ))
             except:
                 pass
             res = {}
@@ -5781,7 +5804,7 @@ if __name__ == '__main__':
             _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
         )
         page_lbl = QtWidgets.QLabel('{}:'.format(_('Page')))
-        of_lbl = QtWidgets.QLabel('{}'.format(_('of')))
+        of_lbl = QtWidgets.QLabel()
         page_box = QtWidgets.QSpinBox()
         page_box.setSuffix('        ')
         page_box.setMinimum(1)
@@ -5806,8 +5829,7 @@ if __name__ == '__main__':
             }
         ''')
         page_box.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
-        of_lbl.setText('{} {}'.format(_('of'), \
-            round(len(array) / settings["channelsonpage"]) + 1))
+        of_lbl.setText(get_of_txt(round(len(array) / settings["channelsonpage"]) + 1))
         def page_change():
             win.listWidget.verticalScrollBar().setValue(0)
             redraw_chans()
@@ -8049,13 +8071,12 @@ if __name__ == '__main__':
         }
 
         mki2 = []
-        for mki0 in (
-            (10, "seconds", 10),
-            (1, "minutes", 60),
-            (10, "minutes", 600)
-        ):
-            for mki1 in ("-", "+"):
-                mki2.append("{}{} {}".format(mki1, mki0[0], ngettext(mki0[1], "", mki0[0])))
+        mki2.append(gettext.ngettext("-%d second", "-%d seconds", 10) % 10)
+        mki2.append(gettext.ngettext("+%d second", "+%d seconds", 10) % 10)
+        mki2.append(gettext.ngettext("-%d minute", "-%d minutes", 1) % 1)
+        mki2.append(gettext.ngettext("+%d minute", "+%d minutes", 1) % 1)
+        mki2.append(gettext.ngettext("-%d minute", "-%d minutes", 10) % 10)
+        mki2.append(gettext.ngettext("+%d minute", "+%d minutes", 10) % 10)
 
         main_keybinds_translations = {
             "(lambda: mpv_seek(-10))": mki2[0],

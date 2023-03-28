@@ -1,8 +1,11 @@
-'''xspf compatibility'''
-import xml.etree.ElementTree as ET
-from yuki_iptv.lang import _
-from yuki_iptv.time import print_with_time
 # SPDX-License-Identifier: GPL-3.0-only
+'''xspf compatibility'''
+import gettext
+import xml.etree.ElementTree as ET
+from yuki_iptv.time import print_with_time
+
+_ = gettext.gettext
+
 def parse_xspf(xspf): # pylint: disable=missing-function-docstring
     print_with_time("Trying parsing as XSPF...")
     array = []

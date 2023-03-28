@@ -3,16 +3,12 @@
 import os
 import os.path
 import locale
-import gettext
 from pathlib import Path
 from yuki_iptv.time import print_with_time
 
-class LangData: # pylint: disable=too-few-public-methods
-    '''Class for not using globals'''
-    LOCALE_CHANGED = False
-
-def init_lang():
+def detect_locale_changed():
     '''Set global lang to specified'''
+    locale_changed = False
     lang = 'en'
 
     local_dir = Path(os.environ['HOME'], '.config', 'yuki-iptv')
@@ -34,30 +30,14 @@ def init_lang():
         locale.setlocale(locale.LC_ALL, "")
         lang = locale.getlocale(locale.LC_MESSAGES)[0]
     except: # pylint: disable=bare-except
-        print_with_time("Failed to determine system locale, using default (en)")
+        print_with_time("Failed to determine system locale")
 
     if lang != old_locale:
         locale_txt = open(Path(local_dir, 'locale.txt'), 'w', encoding='utf-8')
         locale_txt.write(lang + "\n")
         locale_txt.close()
-        LangData.LOCALE_CHANGED = True
+        locale_changed = True
 
-    print_with_time("Locale: {}".format(lang))
+    return locale_changed
 
-    # i18n
-    app = "yuki-iptv"
-    locale_dir = str(Path(os.getcwd(), '..', '..', 'share', 'locale'))
-    locale.bindtextdomain(app, locale_dir)
-    gettext.bindtextdomain(app, locale_dir)
-    gettext.textdomain(app)
-
-init_lang()
-
-LOCALE_CHANGED = LangData.LOCALE_CHANGED
-_ = gettext.gettext
-
-def ngettext(str2, str3, num1):
-    ret = gettext.ngettext(str2, str3, num1)
-    if not ret:
-        ret = str2
-    return ret
+LOCALE_CHANGED = detect_locale_changed()
