@@ -15,7 +15,7 @@ sudo apt update
 sudo apt install yuki-iptv
 ```
 
-[Ubuntu Launchpad PPA (develop)](https://launchpad.net/~yuki-chan-nya/+archive/ubuntu/yuki-iptv-develop):  
+[Ubuntu Launchpad PPA (develop)](https://launchpad.net/~yuki-chan-nya/+archive/ubuntu/yuki-iptv-develop) (bleeding edge):  
 ```
 sudo add-apt-repository ppa:yuki-chan-nya/yuki-iptv-develop
 sudo apt update
