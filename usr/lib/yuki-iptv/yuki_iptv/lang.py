@@ -44,20 +44,20 @@ def init_lang():
 
     print_with_time("Locale: {}".format(lang))
 
-    LangData.el = gettext.translation(
-        'yuki-iptv',
-        str(Path(os.getcwd(), '..', '..', 'share', 'locale')),
-        languages=[lang]
-    )
-    LangData.el.install()
+    # i18n
+    app = "yuki-iptv"
+    locale_dir = str(Path(os.getcwd(), '..', '..', 'share', 'locale'))
+    locale.bindtextdomain(app, locale_dir)
+    gettext.bindtextdomain(app, locale_dir)
+    gettext.textdomain(app)
 
 init_lang()
 
 LOCALE_CHANGED = LangData.LOCALE_CHANGED
-_ = LangData.el.gettext
+_ = gettext.gettext
 
 def ngettext(str2, str3, num1):
-    ret = LangData.el.ngettext(str2, str3, num1)
+    ret = gettext.ngettext(str2, str3, num1)
     if not ret:
         ret = str2
     return ret

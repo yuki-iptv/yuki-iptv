@@ -13,7 +13,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: en\n"
 "X-Generator: Poedit 2.4.2\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
