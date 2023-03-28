@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Astroncia <kestraly@gmail.com>\n"
-"PO-Revision-Date: 2022-01-25 09:37+0000\n"
+"PO-Revision-Date: 2023-03-28 00:48+0000\n"
 "Project-Id-Version: \n"
 "Language-Team: Spanish <kde-i18n-doc@kde.org>\n"
 "Language: es_EC\n"
@@ -13,313 +13,325 @@ msgstr ""
 "POT-Creation-Date: \n"
 "X-Generator: Poedit 2.4.2\n"
 
-msgid "name"
-msgstr "Español"
-
-msgid "m3u_ready"
+msgid "Ready"
 msgstr "Listo"
 
-msgid "m3u_m3ueditor"
+msgid "m3u Editor"
 msgstr "Editor m3u"
 
-msgid "m3u_noname"
+msgid "No Name"
 msgstr "Sin Nombre"
 
-msgid "m3u_waschanged"
+msgid "The document was changed.<br>Do you want to save the changes?"
 msgstr "El documento fue editado.<br>¿Quieres guardar los cambios?"
 
-msgid "m3u_saveconfirm"
+msgid "Save Confirmation"
 msgstr "Confirmación de guardado"
 
-msgid "m3u_file"
+msgid "File"
 msgstr "Archivo"
 
-msgid "m3u_loadm3u"
+msgid "Load M3U"
 msgstr "Cargar M3U"
 
-msgid "m3u_saveas"
+msgid "Save as"
 msgstr "Guardar como"
 
-msgid "m3u_find"
+msgid "find"
 msgstr "buscar"
 
-msgid "m3u_replacewith"
+msgid "replace with"
 msgstr "reemplazar con"
 
-msgid "m3u_replaceall"
+msgid "replace all"
 msgstr "reemplazar todos"
 
-msgid "m3u_deleterow"
+msgid "delete row"
 msgstr "borrar fila"
 
-msgid "m3u_addrow"
+msgid "add row"
 msgstr "añadir fila"
 
-msgid "m3u_movedown"
+msgid "move down"
 msgstr "mover hacia abajo"
 
-msgid "m3u_moveup"
+msgid "move up"
 msgstr "mover hacia arriba"
 
-msgid "m3u_filtergroup"
+msgid "filter group (press Enter)"
 msgstr "filtrar grupo (presione Enter)"
 
-msgid "m3u_searchterm"
+msgid ""
+"insert search term and press enter\n"
+" use Selector → to choose column to search"
 msgstr ""
 "inserte el término de búsqueda y presione enter\n"
 " use el Selector → para elegir la columna para buscar"
 
-msgid "m3u_choosecolumn"
+msgid "choose column to search"
 msgstr "elija la columna para buscar"
 
-msgid "m3u_openfile"
+msgid "Open File"
 msgstr "Abrir Archivo"
 
-msgid "m3u_playlists"
+msgid "Playlists (*.m3u)"
 msgstr "Listas de reproducción (*.m3u)"
 
-msgid "m3u_loaded"
+msgid "loaded"
 msgstr "cargado"
 
-msgid "m3u_savefile"
+msgid "Save File"
 msgstr "Guardar el archivo"
 
-msgid "m3u_m3ufiles"
+msgid "Playlists (*.m3u, *.xspf)"
 msgstr "Listas de reproducción (*.m3u, *.xspf)"
 
-msgid "error"
+msgid "Error"
 msgstr "Error"
 
-msgid "playerror"
+msgid "Playing error"
 msgstr "Error de reproducción"
 
-msgid "error2"
+msgid "yuki-iptv error"
 msgstr "Error de yuki-iptv"
 
 msgid "starting"
 msgstr "iniciando"
 
-msgid "binarynotfound"
+msgid "Binary modules not found!"
 msgstr "¡No se encontraron módulos binarios!"
 
-msgid "nocacheplaylist"
+msgid "Playlist caching off"
 msgstr "Caché de lista de reproducción desactivada"
 
-msgid "loadingplaylist"
+msgid "Loading playlist..."
 msgstr "Cargando lista de reproducción..."
 
-msgid "playlistloaderror"
+msgid "Playlist loading error!"
 msgstr "¡Error al cargar la lista de reproducción!"
 
-msgid "playlistloaddone"
+msgid "Playling loading done!"
 msgstr "¡Carga de la lista de reproducción completada!"
 
-msgid "cachingplaylist"
+msgid "Caching playlist..."
 msgstr "Almacenando en caché la lista de reproducción..."
 
-msgid "playlistcached"
+msgid "Playlist cache saved!"
 msgstr "¡Guardado en caché la lista de reproducción!"
 
-msgid "usingcachedplaylist"
+msgid "Using cached playlist"
 msgstr "Usando la lista de reproducción en caché"
 
-msgid "settings"
+msgid "Settings"
 msgstr "Ajustes"
 
-msgid "help"
+msgid "Help"
 msgstr "Ayuda"
 
-msgid "channelsettings"
+msgid "Channel settings"
 msgstr "Ajustes de canal"
 
-msgid "selectplaylist"
+msgid "Select m3u playlist"
 msgstr "Seleccionar lista de reproducción m3u"
 
-msgid "selectepg"
+msgid "Select EPG file (XMLTV or JTV EPG)"
 msgstr "Seleccionar archivo EPG (XMLTV o JTV EPG)"
 
-msgid "selectwritefolder"
+msgid "Select folder for recordings and screenshots"
 msgstr "Seleccionar carpeta para grabaciones y capturas de pantalla"
 
-msgid "deinterlace"
+msgid "Deinterlace"
 msgstr "Desentrelazar"
 
-msgid "useragent"
+msgid "User agent"
 msgstr "Agente de usuario"
 
-msgid "empty"
+msgid "None"
 msgstr "Ninguno"
 
-msgid "channel"
+msgid "Channel"
 msgstr "Chanal"
 
-msgid "savesettings"
+msgid "Save settings"
 msgstr "Guardar ajustes"
 
-msgid "save"
+msgid "Save"
 msgstr "Guardar"
 
-msgid "m3uplaylist"
+msgid "M3U / XSPF playlist"
 msgstr "Lista de reproducción M3U / XSPF"
 
-msgid "updateatboot"
+msgid ""
+"Update playlist\n"
+"at launch"
 msgstr ""
 "Actualizar la lista de reproducción\n"
 "al iniciar"
 
-msgid "epgaddress"
+msgid ""
+"TV guide\n"
+"address\n"
+"(XMLTV or JTV)"
 msgstr ""
 "Dirección\n"
 "de la guía de televisión\n"
 "(XMLTV o JTV)"
 
-msgid "udpproxy"
+msgid "UDP proxy"
 msgstr "Proxy UDP"
 
-msgid "writefolder"
+msgid ""
+"Folder for recordings\n"
+"and screenshots"
 msgstr ""
 "Carpeta para grabaciones\n"
 "y capturas de pantalla"
 
-msgid "orselectyourprovider"
+msgid "Or select provider"
 msgstr "O seleccione proveedor"
 
-msgid "resetchannelsettings"
+msgid "Reset channel settings and sorting"
 msgstr "Restablecer la configuración y la clasificación de canales"
 
-msgid "notselected"
+msgid "Not selected"
 msgstr "No seleccionado"
 
-msgid "close"
+msgid "Close"
 msgstr "Cerrar"
 
-msgid "nochannelselected"
+msgid "No channel selected"
 msgstr "Ningún canal seleccionado"
 
-msgid "pause"
+msgid "Pause"
 msgstr "Pausar"
 
-msgid "play"
+msgid "Play"
 msgstr "reproducir"
 
-msgid "exitfullscreen"
+msgid "To exit fullscreen mode press"
 msgstr "Para salir del modo de pantalla completa presione"
 
-msgid "volume"
+msgid "Volume"
 msgstr "Volumen"
 
-msgid "volumeoff"
+msgid "Volume off"
 msgstr "Volumen apagado"
 
-msgid "select"
+msgid "Select"
 msgstr "Seleccione"
 
-msgid "tvguide"
+msgid "TV guide"
 msgstr "Guía de televisión"
 
-msgid "startrecording"
+msgid "Start recording"
 msgstr "Iniciar la grabación"
 
-msgid "loading"
+msgid "Loading..."
 msgstr "Cargando..."
 
-msgid "doingscreenshot"
+msgid "Doing screenshot..."
 msgstr "Haciendo captura de pantalla..."
 
-msgid "screenshotsaved"
+msgid "Screenshot saved!"
 msgstr "¡Captura de pantalla guardada!"
 
-msgid "screenshotsaveerror"
+msgid "Screenshot saving error!"
 msgstr "¡Error al guardar la captura de pantalla!"
 
-msgid "notvguideforchannel"
+msgid "No TV guide for channel"
 msgstr "No hay guía de TV para el canal"
 
-msgid "preparingrecord"
+msgid "Preparing record"
 msgstr "Preparando la grabación"
 
-msgid "nochannelselforrecord"
+msgid "No channel selected for record"
 msgstr "Ningún canal seleccionado para grabar"
 
-msgid "stop"
+msgid "Stop"
 msgstr "detener"
 
-msgid "fullscreen"
+msgid "Fullscreen"
 msgstr "Pantalla completa"
 
-msgid "openrecordingsfolder"
+msgid "Open recordings folder"
 msgstr "Abrir carpeta de grabaciones"
 
-msgid "record"
+msgid "Record"
 msgstr "Grabar"
 
-msgid "screenshot"
+msgid "Screenshot"
 msgstr "Captura de pantalla"
 
-msgid "prevchannel"
+msgid "Previous channel"
 msgstr "Canal anterior"
 
-msgid "nextchannel"
+msgid "Next channel"
 msgstr "Siguiente canal"
 
-msgid "tvguideupdating"
+msgid "Updating TV guide..."
 msgstr "Actualizando la guía de TV..."
 
-msgid "tvguideupdatingerror"
+msgid "TV guide update error!"
 msgstr "¡Error de actualización de la guía de TV!"
 
-msgid "tvguideupdatingdone"
+msgid "TV guide update done!"
 msgstr "¡Actualización de la guía de TV completada!"
 
-msgid "recordwaiting"
+msgid "Waiting for record"
 msgstr "Esperando para grabar"
 
-msgid "allchannels"
+msgid "All channels"
 msgstr "Todos los canales"
 
-msgid "favourite"
+msgid "Favourites"
 msgstr "Favoritos"
 
-msgid "interfacelang"
+msgid "Interface language"
 msgstr "Lenguaje de interfaz"
 
-msgid "tvguideoffset"
+msgid "TV guide offset"
 msgstr "Desplazamiento de guía de TV"
 
 msgid "hours"
 msgstr "horas"
 
-msgid "hwaccel"
+msgid ""
+"Hardware\n"
+"acceleration"
 msgstr ""
 "Aceleración\n"
 "de Hardware"
 
-msgid "sort"
+msgid ""
+"Channel\n"
+"sort"
 msgstr ""
 "Clasificación\n"
 "de canales"
 
-msgid "sortitems1"
+msgid "as in playlist"
 msgstr "como en la lista de reproducción"
 
-msgid "sortitems2"
+msgid "alphabetical order"
 msgstr "orden alfabético"
 
-msgid "sortitems3"
+msgid "reverse alphabetical order"
 msgstr "orden alfabético inverso"
 
-msgid "sortitems4"
+msgid "custom"
 msgstr "personalizada"
 
-msgid "donotforgetsort"
+msgid ""
+"Do not forget\n"
+"to set custom sort order in settings!"
 msgstr ""
 "¡No olvide establecer un orden de\n"
 "clasificación personalizado en los ajustes!"
 
-msgid "moresettings"
+msgid "More settings"
 msgstr "Más ajustes"
 
-msgid "lesssettings"
+msgid "Less settings"
 msgstr "Menos ajustes"
 
 msgid "enabled"
@@ -328,357 +340,380 @@ msgstr "habilitado"
 msgid "disabled"
 msgstr "deshabilitado"
 
-msgid "seconds"
+msgid "seconds."
 msgstr "segundos."
 
-msgid "cache"
+msgid "Cache"
 msgstr "Caché"
 
-msgid "chansearch"
+msgid "Search channel"
 msgstr "Buscar canal"
 
-msgid "reconnecting"
+msgid "Reconnecting..."
 msgstr "Reconectando..."
 
-msgid "group"
+msgid "Group"
 msgstr "Grupo"
 
-msgid "hide"
+msgid "Hide channel"
 msgstr "Ocultar canal"
 
-msgid "contrast"
+msgid "Contrast"
 msgstr "Contraste"
 
-msgid "brightness"
+msgid "Brightness"
 msgstr "Brillo"
 
-msgid "hue"
+msgid "Hue"
 msgstr "tinte"
 
-msgid "saturation"
+msgid "Saturation"
 msgstr "Saturación"
 
-msgid "gamma"
+msgid "Gamma"
 msgstr "Gama"
 
-msgid "timeshift"
+msgid "Archive"
 msgstr "Archivo"
 
-msgid "tab_main"
+msgid "Main"
 msgstr "Principal"
 
-msgid "tab_video"
+msgid "Video"
 msgstr "Video"
 
-msgid "tab_network"
+msgid "Network"
 msgstr "Red"
 
-msgid "tab_other"
+msgid "Other"
 msgstr "Otros"
 
-msgid "mpv_options"
+msgid "mpv options"
 msgstr "Opciones de mpv "
 
-msgid "donotupdateepg"
+msgid ""
+"Do not update\n"
+"EPG at boot"
 msgstr ""
 "No actualice\n"
 "EPG al arrancar"
 
-msgid "search"
+msgid "Search"
 msgstr "Buscar"
 
-msgid "tab_gui"
+msgid "GUI"
 msgstr "GUI"
 
-msgid "epg_gui"
+msgid ""
+"TV guide\n"
+"interface"
 msgstr ""
 "Interfaz\n"
 "de la guía de TV"
 
-msgid "classic"
+msgid "Classic"
 msgstr "Clásica"
 
-msgid "simple"
+msgid "Simple"
 msgstr "Sencilla"
 
-msgid "simple_noicons"
+msgid "Simple (no icons)"
 msgstr "Sencilla (sin iconos)"
 
-msgid "update"
+msgid "Update"
 msgstr "Actualizar"
 
-msgid "scheduler"
+msgid "Recording scheduler"
 msgstr "Programador de grabaciones"
 
-msgid "choosechannel"
+msgid "Choose channel"
 msgstr "Elegir canal"
 
-msgid "bitrate1"
+msgid "bps"
 msgstr "bps"
 
-msgid "bitrate2"
+msgid "kbps"
 msgstr "kbps"
 
-msgid "bitrate3"
+msgid "Mbps"
 msgstr "Mbps"
 
-msgid "bitrate4"
+msgid "Gbps"
 msgstr "Gbps"
 
-msgid "bitrate5"
+msgid "Tbps"
 msgstr "Tbps"
 
-msgid "starttime"
+msgid "Start record time"
 msgstr "Hora de inicio de grabación"
 
-msgid "endtime"
+msgid "End record time"
 msgstr "Hora de final de grabación"
 
-msgid "addrecord"
+msgid "Add"
 msgstr "Agregar"
 
-msgid "delrecord"
+msgid "Remove"
 msgstr "Eliminar"
 
-msgid "plannedrec"
+msgid "Planned recordings"
 msgstr "Grabaciones programadas"
 
-msgid "warningstr"
+msgid "Recording of two channels simultaneously is not available!"
 msgstr "¡No está disponible la grabación de dos canales simultáneamente!"
 
-msgid "status"
+msgid "Status"
 msgstr "Estado"
 
-msgid "recnothing"
+msgid "No planned recordings"
 msgstr "No hay grabaciones programadas"
 
-msgid "recwaiting"
-msgstr "Esperando para grabar"
-
-msgid "recrecording"
+msgid "Recording"
 msgstr "Grabando"
 
-msgid "activerec"
+msgid "Active recordings"
 msgstr "Grabaciones activas"
 
-msgid "page"
+msgid "Page"
 msgstr "Página"
 
-msgid "fasterview"
+msgid ""
+"For faster channel loading, set the cache\n"
+"for 1 or more seconds in the network settings"
 msgstr ""
 "Para una carga de canales más rápida, configure la caché\n"
 "por 1 o más segundos en el ajuste de la red"
 
-msgid "playlists"
+msgid "Playlists"
 msgstr "Listas de reproducción"
 
-msgid "provselect"
-msgstr "Seleccione"
-
-msgid "provadd"
-msgstr "Agregar"
-
-msgid "provedit"
+msgid "Edit"
 msgstr "Editar"
 
-msgid "provdelete"
+msgid "Delete"
 msgstr "Eliminar"
 
-msgid "provname"
+msgid "Name"
 msgstr "Nombre"
 
 msgid "of"
 msgstr "de"
 
-msgid "channelsonpage"
+msgid ""
+"Channels on\n"
+"page"
 msgstr ""
 "Canales en la\n"
 "página"
 
-msgid "resetdefplaylists"
+msgid "Reset to defaults"
 msgstr "Restablecer los valores predeterminados"
 
-msgid "license"
+msgid "License"
 msgstr "Licencia"
 
-msgid "openprevchan"
+msgid ""
+"Open previous channel\n"
+"at startup"
 msgstr ""
 "Abrir canal anterior\n"
 "al inicio"
 
-msgid "smscheduler"
+msgid "Scheduler"
 msgstr "Programador"
 
-msgid "praction"
+msgid ""
+"Post-recording\n"
+"action"
 msgstr ""
 "Acción posterior\n"
 "a la grabación"
 
-msgid "nothingtodo"
+msgid "Nothing to do"
 msgstr "Nada que hacer"
 
-msgid "stoppress"
+msgid "Press Stop"
 msgstr "Presione Detener"
 
-msgid "turnoffpc"
+msgid "Turn off PC"
 msgstr "Apaguar la PC"
 
-msgid "exitprogram"
+msgid "Quit the program"
 msgstr "Cerrar el programa"
 
-msgid "theme"
+msgid "Theme"
 msgstr "Tema"
 
-msgid "videoaspect"
+msgid "Aspect ratio"
 msgstr "Proporción de aspecto"
 
-msgid "default"
+msgid "Default"
 msgstr "Predeterminado"
 
-msgid "zoom"
+msgid "Scale / Zoom"
 msgstr "Escala / Zoom"
 
-msgid "openexternal"
+msgid "Open in external player"
 msgstr "Abrir en reproductor externo"
 
-msgid "open"
+msgid "Open"
 msgstr "Abrir"
 
-msgid "remembervol"
+msgid "Remember volume"
 msgstr "Recordar el volumen"
 
-msgid "hidempv"
+msgid "Hide mpv panel"
 msgstr "Ocultar el panel de mpv"
 
-msgid "filepath"
+msgid "Path to file or URL"
 msgstr "Ruta de acceso al archivo o URL"
 
-msgid "panscan"
+msgid "Pan and scan"
 msgstr "Panorámica y exploración"
 
-msgid "tab_exp"
+msgid "Experimental"
 msgstr "Experimental"
 
-msgid "exp1"
+msgid ""
+"Side floating\n"
+"panel adjustment"
 msgstr ""
 "Ajuste del panel\n"
 "flotante lateral"
 
-msgid "exp2"
+msgid ""
+"Playlist width\n"
+"in full screen mode"
 msgstr ""
 "Ancho de la lista de reproducción\n"
 "en modo de pantalla completa"
 
-msgid "exp3"
+msgid ""
+"Playlist height\n"
+"in full screen mode"
 msgstr ""
 "Altura de la lista de reproducción\n"
 "en modo de pantalla completa"
 
-msgid "expwarning"
+msgid ""
+"The settings here\n"
+"may be unstable!"
 msgstr ""
 "¡Los ajustes aquí\n"
 "pueden ser inestables!"
 
-msgid "mouseswitchchannels"
+msgid ""
+"Switch channels with\n"
+"the mouse wheel"
 msgstr ""
 "Cambiar de canal con\n"
 "la rueda del ratón"
 
-msgid "actions"
+msgid "Actions"
 msgstr "Acciones"
 
-msgid "defaultchangevol"
+msgid ""
+"by default:\n"
+"change volume"
 msgstr ""
 "de forma predeterminada:\n"
 "cambiar el volumen"
 
-msgid "showplaylistmouse"
+msgid ""
+"Show playlist\n"
+"on mouse move"
 msgstr ""
 "Mostrar lista de reproducción\n"
 "al mover el ratón"
 
-msgid "showcontrolsmouse"
+msgid ""
+"Show controls\n"
+"on mouse move"
 msgstr ""
 "Mostrar controles\n"
 "al mover el ratón"
 
-msgid "volumeshort"
+msgid "Vol"
 msgstr "Vol"
 
-msgid "hidetvguide"
+msgid "Hide TV guide"
 msgstr "Ocultar guía de TV"
 
-msgid "flpopacity"
+msgid "Floating panels opacity"
 msgstr "Opacidad de paneles flotantes"
 
-msgid "showhideplaylist"
+msgid "Show/hide playlist"
 msgstr "Mostrar/ocultar lista de reproducción"
 
-msgid "showhidectrlpanel"
+msgid "Show/hide controls panel"
 msgstr "Mostrar/ocultar panel de controles"
 
-msgid "mininterface"
+msgid "Minimal interface"
 msgstr "Interfaz mínima"
 
-msgid "panelposition"
+msgid ""
+"Floating panel\n"
+"position"
 msgstr ""
 "Posición del\n"
 "panel flotante"
 
-msgid "left"
+msgid "Left"
 msgstr "Izquierda"
 
-msgid "right"
+msgid "Right"
 msgstr "Derecha"
 
-msgid "doscreenshotsvia"
+msgid "Take screenshots via"
 msgstr "Tomar capturas de pantalla a través de"
 
-msgid "playlistsep"
+msgid "Playlist in separate window"
 msgstr "Lista de reproducción en una ventana separada"
 
-msgid "volumechangestep"
+msgid "Volume change step"
 msgstr "Paso de cambio de volumen"
 
-msgid "hideepgpercentage"
+msgid "Hide EPG percentage"
 msgstr "Ocultar porcentaje de EPG"
 
-msgid "xtreamnoconn"
+msgid "Could not connect"
 msgstr "No se pudo conectar"
 
-msgid "procerror"
+msgid "Processing error"
 msgstr "Error de proceso"
 
-msgid "username"
+msgid "Username"
 msgstr "Nombre de usuario"
 
-msgid "password"
+msgid "Password"
 msgstr "Contraseña"
 
-msgid "url"
+msgid "URL"
 msgstr "URL"
 
-msgid "multipleplnote"
+msgid ""
+"You can specify multiple playlists by clicking\n"
+"the File - Playlists button (after saving the settings)"
 msgstr ""
 "Puede especificar varias listas de reproducción haciendo clic\n"
 "en el botón Archivo - Listas de reproducción (después de guardar los ajustes)"
 
-msgid "favoritesplaylistsep"
+msgid "Favourites (separate playlist)"
 msgstr "Favoritos (lista de reproducción separada)"
 
-msgid "nochannels"
+msgid "No channels"
 msgstr "Sin canales"
 
-msgid "epgname"
+msgid "EPG name"
 msgstr "Nombre de EPG"
 
-msgid "epgid"
+msgid "EPG id"
 msgstr "ID de EPG"
 
-msgid "iaepgmatch"
+msgid "Inaccurate EPG matching"
 msgstr "Coincidencia incorrecta de EPG"
 
-msgid "using"
+msgid "Using"
 msgstr "Utilizando"
 
 msgid "Aspect"
@@ -696,7 +731,7 @@ msgstr "Canales"
 msgid "Codec"
 msgstr "Códec"
 
-msgid "colour"
+msgid "Colour"
 msgstr "Color"
 
 msgid "Dimensions"
@@ -705,13 +740,10 @@ msgstr "Dimensiones"
 msgid "Format"
 msgstr "Formato"
 
-msgid "Gamma"
-msgstr "Gama"
-
-msgid "general"
+msgid "General"
 msgstr "General"
 
-msgid "layout"
+msgid "Layout"
 msgstr "Diseño"
 
 msgid "Pixel Format"
@@ -723,252 +755,253 @@ msgstr "Frecuencia de Muestreo"
 msgid "Stream Information"
 msgstr "Información de Transmisión"
 
-msgid "Video"
-msgstr "Video"
-
-msgid "Audio"
-msgstr "Audio"
-
-msgid "checkforupdates"
+msgid "Check for updates"
 msgstr "Buscar actualizaciones"
 
-msgid "gotlatestversion"
+msgid "You have the latest available version!"
 msgstr "¡Tienes la última versión disponible!"
 
-msgid "newversiongetfail"
+msgid "Error retrieving latest version information"
 msgstr "Se produjo un error al recuperar la información de la última versión"
 
-msgid "newversionavail"
+msgid "New version available! Visit web page to install?"
 msgstr "¡Nueva versión disponible! ¡Visite la página web para instalar!"
 
-msgid "aboutqt"
+msgid "About Qt"
 msgstr "Acerca de Qt"
 
-msgid "applog"
+msgid "yuki-iptv log"
 msgstr "Registro de yuki-iptv"
 
-msgid "mpvlog"
+msgid "mpv log"
 msgstr "Registro de mpv"
 
-msgid "copytoclipboard"
+msgid "Copy to clipboard"
 msgstr "Copiar al portapapeles"
 
-msgid "choosesavefilename"
+msgid "Choose a filename to save under"
 msgstr "Elija un nombre de archivo para guardar"
 
-msgid "logs"
+msgid "Logs"
 msgstr "Registros"
 
 msgid "Bits Per Pixel"
 msgstr "Bits por píxel"
 
-msgid "epgloading"
+msgid "EPG loading..."
 msgstr "Cargando EPG..."
 
-msgid "unknownencoding"
+msgid "Failed to load playlist - unknown encoding! Please use playlists in UTF-8 encoding."
 msgstr "Error al cargar la lista de reproducción: ¡codificación desconocida! Utilice listas de reproducción en codificación UTF-8."
 
-msgid "menubar_exit"
+msgid "&Exit"
 msgstr "&Salir"
 
-msgid "menubar_title_file"
+msgid "&File"
 msgstr "&Archivo"
 
-msgid "menubar_title_play"
+msgid "&Play"
 msgstr "&Reproducir"
 
-msgid "menubar_playpause"
+msgid "&Play / Pause"
 msgstr "&Reproducir / Pausar"
 
-msgid "menubar_stop"
+msgid "&Stop"
 msgstr "&Detener"
 
-msgid "minutes_plural"
-msgid_plural ""
-msgstr[0] "minuto"
-msgstr[1] "minutos"
-
-msgid "seconds_plural"
-msgid_plural ""
-msgstr[0] "segundo"
-msgstr[1] "segundos"
-
-msgid "menubar_previous"
+msgid "&Previous"
 msgstr "&Anterior"
 
-msgid "menubar_next"
+msgid "&Next"
 msgstr "&Siguiente"
 
-msgid "speed"
+msgid "Speed"
 msgstr "Velocidad"
 
-msgid "menubar_normalspeed"
+msgid "&Normal speed"
 msgstr "&Velocidad normal"
 
-msgid "menubar_video"
+msgid "&Video"
 msgstr "&Video"
 
-msgid "menubar_audio"
+msgid "&Audio"
 msgstr "&Audio"
 
-msgid "menubar_fullscreen"
+msgid "&Fullscreen"
 msgstr "&Pantalla completa"
 
-msgid "menubar_compactmode"
+msgid "&Compact mode"
 msgstr "&Modo compacto"
 
-msgid "menubar_csforchannel"
+msgid "&Settings for channel"
 msgstr "&Ajuste del canal "
 
-msgid "menubar_view"
+msgid "Vie&w"
 msgstr "Vist&a"
 
-msgid "menubar_options"
+msgid "&Options"
 msgstr "&Opciones"
 
-msgid "menubar_settings"
+msgid "&Settings"
 msgstr "&Ajustes"
 
-msgid "menubar_about"
+msgid "&About yuki-iptv"
 msgstr "&Acerca de yuki-iptv"
 
-msgid "menubar_help"
+msgid "&Help"
 msgstr "&Ayuda"
 
-msgid "menubar_screenshot"
+msgid "&Screenshot"
 msgstr "&Captura de pantalla"
 
-msgid "menubar_mute"
+msgid "&Mute audio"
 msgstr "&Silenciar el audio"
 
-msgid "menubar_track"
+msgid "&Track"
 msgstr "&Pista"
 
-msgid "empty_sm"
+msgid "empty"
 msgstr "vacío"
 
-msgid "menubar_checkupdates"
+msgid "&Check for updates"
 msgstr "&Buscar actualizaciones"
 
-msgid "ffmpeg_processing"
+msgid "Processing record..."
 msgstr "Procesando grabación..."
 
-msgid "menubar_volumeminus"
+msgid "V&olume -"
 msgstr "V&olumen -"
 
-msgid "menubar_volumeplus"
+msgid "Vo&lume +"
 msgstr "Vo&lumen +"
 
 msgid "list"
 msgstr "lista"
 
-msgid "menubar_m3ueditor"
+msgid "&m3u Editor"
 msgstr "Editor &m3u"
 
-msgid "menubar_playlists"
+msgid "&Playlists"
 msgstr "&Listas de reproducción"
 
-msgid "menubar_channelsort"
+msgid "&Channel sort"
 msgstr "&Clasificación de canales"
 
-msgid "menubar_filters"
+msgid "F&ilters"
 msgstr "F&iltros"
 
-msgid "menubar_postproc"
+msgid "&Postprocessing"
 msgstr "&Postprocesamiento"
 
-msgid "menubar_deblock"
+msgid "&Deblock"
 msgstr "&Deblock"
 
-msgid "menubar_dering"
+msgid "De&ring"
 msgstr "De&ring"
 
-msgid "menubar_debanding"
+msgid "Debanding (&gradfun)"
 msgstr "Debanding (&gradfun)"
 
-msgid "menubar_noise"
+msgid "Add n&oise"
 msgstr "Añadir r&uido"
 
-msgid "menubar_black"
+msgid "Add &black borders"
 msgstr "Añadir &bordes negros"
 
-msgid "menubar_phase"
+msgid "&Autodetect phase"
 msgstr "&Fase de detección automática"
 
-msgid "menubar_extrastereo"
+msgid "&Extrastereo"
 msgstr "&Extrastereo"
 
-msgid "menubar_karaoke"
+msgid "&Karaoke"
 msgstr "&Karaoke"
 
-msgid "menubar_earvax"
+msgid "&Headphone optimization"
 msgstr "&Optimización de auriculares"
 
-msgid "menubar_volnorm"
+msgid "Volume &normalization"
 msgstr "&Normalización de volumen"
 
-msgid "errorvfapply"
+msgid "Error applying filters"
 msgstr "Error al aplicar filtros"
 
-msgid "menubar_softscaling"
+msgid "Soft&ware scaling"
 msgstr "Escalado por Soft&ware"
 
-msgid "menubar_updateepg"
+msgid "&Update TV guide"
 msgstr "&Actualizar guía de televisión"
 
-msgid "playername"
+msgid "IPTV player"
 msgstr "Reproductor de IPTV"
 
-msgid "hidebitrateinfo"
+msgid "Hide bitrate / video info"
 msgstr "Ocultar la velocidad de bits/información de video"
 
-msgid "movedragging"
+msgid "Move window by dragging"
 msgstr "Mover la ventana arrastrándola"
 
 msgid "playlist"
 msgstr "lista de reproducción"
 
-msgid "ignoringmpvoptions"
+msgid "Custom MPV options invalid, ignoring them"
 msgstr "Opciones personalizadas de MPV no son válidas, ignorándolas"
 
-msgid "showonlychplaylist"
+msgid "Show only channels in playlist"
 msgstr "Mostrar solo canales en la lista de reproducción"
 
 msgid "channels"
 msgstr "canales"
 
-msgid "hideplaylistleftclk"
+msgid "Hide playlist by left click"
 msgstr "Ocultar lista de reproducción haciendo clic con el botón izquierdo"
 
-msgid "styleredefoff"
+msgid "Enable styles redefinition"
 msgstr "Habilitar la redefinición de estilos"
 
-msgid "alwaysontop"
+msgid "Window always on top"
 msgstr "Ventana siempre en la parte superior"
 
-msgid "expfunctionwarning"
+msgid "WARNING: experimental function, working with problems"
 msgstr "ADVERTENCIA: función experimental, trabaja con problemas"
 
-msgid "menubar_expfunction"
+msgid "experimental function"
 msgstr "función experimental"
 
-msgid "autoreconnection"
+msgid ""
+"Automatic\n"
+"reconnection"
 msgstr ""
 "Reconexión\n"
 "automática"
 
-msgid "customua"
+msgid "- custom -"
 msgstr "- personalizado -"
 
-msgid "deletefromfav"
+msgid "Delete from favourites"
 msgstr "Eliminar de favoritos"
 
-msgid "scrrecnosubfolders"
+msgid ""
+"Do not create screenshots\n"
+"and recordings subfolders"
 msgstr ""
 "No crear subcarpetas de\n"
 "capturas de pantalla y grabaciones"
 
-msgid "helptext"
+msgid ""
+"yuki-iptv, version {}\n"
+"\n"
+"© 2021-2022 Astroncia\n"
+"© 2023 yuki-chan-nya\n"
+"https://github.com/yuki-chan-nya\n"
+"\n"
+"IPTV player\n"
+"\n"
+"Supports TV guide (EPG) only in XMLTV and JTV formats!\n"
+"\n"
+"Icons by Font Awesome ( https://fontawesome.com/ )\n"
+"Icons licensed under the CC BY 4.0 License\n"
+"( https://creativecommons.org/licenses/by/4.0/ )"
 msgstr ""
 "yuki-iptv, versión {}\n"
 "\n"
@@ -986,3 +1019,13 @@ msgstr ""
 "Iconos de Font Awesome ( https://fontawesome.com/ )\n"
 "Iconos con licencia CC BY 4.0\n"
 "( https://creativecommons.org/licenses/by/4.0/ )"
+
+msgid "minutes"
+msgid_plural ""
+msgstr[0] "minuto"
+msgstr[1] "minutos"
+
+msgid "seconds"
+msgid_plural ""
+msgstr[0] "segundo"
+msgstr[1] "segundos"

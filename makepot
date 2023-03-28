@@ -1,9 +1,5 @@
 #!/bin/sh
-# Don't touch this if you creating new translation
-# This is ONLY for developers
 set -e
-cd "$(dirname "$(readlink -f "$0")")" || exit 1
-msgfilter -i ./po/yuki-iptv-en.po -o ./yuki-iptv.pot true
-sed -i -E \
--e "s/# This file is distributed under the same license as the yuki-iptv package./# SOME DESCRIPTIVE TITLE.\n# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER\n# This file is distributed under the same license as the yuki-iptv package.\n# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.\n#\n#, fuzzy/" \
--e '0,/msgstr ""/s//msgstr ""\n"Project-Id-Version: PACKAGE VERSION\\n"\n"Report-Msgid-Bugs-To: \\n"\n"POT-Creation-Date: 2022-02-21 01:49+0000\\n"\n"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\\n"\n"Last-Translator: FULL NAME <EMAIL@ADDRESS>\\n"\n"Language-Team: LANGUAGE <LL@li.org>\\n"\n"Language: \\n"\n"MIME-Version: 1.0\\n"\n"Content-Type: text\/plain; charset=CHARSET\\n"\n"Content-Transfer-Encoding: 8bit\\n"\n"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\\n"/' ./yuki-iptv.pot
+cd "$(dirname "$(realpath "$0")")" || exit 1
+/usr/share/doc/python"$(python3 -c 'import sys; print(f"{sys.version_info[0]}.{sys.version_info[1]}")')"-dev/examples/i18n/pygettext.py -d yuki-iptv -o yuki-iptv.pot usr
+printf 'msgid "minutes"\nmsgid_plural ""\nmsgstr[0] ""\nmsgstr[1] ""\n\nmsgid "seconds"\nmsgid_plural ""\nmsgstr[0] ""\nmsgstr[1] ""\n\n' >> yuki-iptv.pot

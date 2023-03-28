@@ -8,7 +8,7 @@ def convert_xtream_to_m3u(_, data, skip_init=False, append_group=""):
         try:
             group = channel.group_title if channel.group_title else ''
         except: # pylint: disable=bare-except
-            group = _('allchannels')
+            group = _('All channels')
         if append_group:
             group = append_group + " " + group
         logo = channel.logo if channel.logo else ''

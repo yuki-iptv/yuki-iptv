@@ -1,54 +1,59 @@
-# pylint: disable=missing-module-docstring
+# pylint: disable=missing-module-docstring, missing-function-docstring
 # SPDX-License-Identifier: GPL-3.0-only
 import os
-import glob
+import os.path
+import locale
 import gettext
 from pathlib import Path
-#from yuki_iptv.time import print_with_time
+from yuki_iptv.time import print_with_time
 
 class LangData: # pylint: disable=too-few-public-methods
     '''Class for not using globals'''
-    delimiter = '/'
+    LOCALE_CHANGED = False
 
-LangData.lang_folder = str(Path(os.getcwd(), '..', '..', 'share', 'locale'))
-#LangData.languages = os.listdir(LangData.lang_folder)
-LangData.languages = [l1.split(LangData.delimiter)[::-1][2] for l1 in \
-    glob.glob(str(Path(LangData.lang_folder, '*', 'LC_MESSAGES', 'yuki-iptv.mo')))]
-#print_with_time("Available languages: {}".format(str(LangData.languages)))
-#print_with_time("")
-LangData.current_lang = 'en'
-lang = {}
-
-LangData.en = None
-try:
-    LangData.en = gettext.translation('yuki-iptv', LangData.lang_folder, languages=['en'])
-except: # pylint: disable=bare-except
-    pass
-
-for language in LangData.languages:
-    t = gettext.translation('yuki-iptv', LangData.lang_folder, languages=[language])
-    lang[language] = {'strings': {
-        "lang_id": language,
-        "lang_gettext": t,
-        "name": t.gettext("name")
-    }}
-
-def init_lang(lng):
+def init_lang():
     '''Set global lang to specified'''
-    LangData.current_lang = lng
+    lang = 'en'
 
-def _(str1):
-    gettext_output = lang[LangData.current_lang]['strings']['lang_gettext'].gettext(str1)
-    if LangData.en:
-        if str1 == gettext_output:
-            gettext_output = LangData.en.gettext(str1)
-    return gettext_output
+    local_dir = Path(os.environ['HOME'], '.config', 'yuki-iptv')
+    if not os.path.isfile(Path(local_dir, 'locale.txt')):
+        locale_txt = open(Path(local_dir, 'locale.txt'), 'w', encoding='utf-8')
+        locale_txt.write(lang + "\n")
+        locale_txt.close()
+        old_locale = lang
+    else:
+        locale_txt = open(Path(local_dir, 'locale.txt'), 'r', encoding='utf-8')
+        old_locale = locale_txt.read().strip()
+        locale_txt.close()
 
-def __(str2, str3, num1):
-    gettext_output = lang[LangData.current_lang]['strings']['lang_gettext'].ngettext(
-        str2, str3, num1
+    try:
+        locale.setlocale(locale.LC_ALL, "")
+        lang = locale.getlocale(locale.LC_MESSAGES)[0]
+    except: # pylint: disable=bare-except
+        print_with_time("Failed to determine system locale, using default (en)")
+
+    if lang != old_locale:
+        locale_txt = open(Path(local_dir, 'locale.txt'), 'w', encoding='utf-8')
+        locale_txt.write(lang + "\n")
+        locale_txt.close()
+        LangData.LOCALE_CHANGED = True
+
+    print_with_time("Locale: {}".format(lang))
+
+    LangData.el = gettext.translation(
+        'yuki-iptv',
+        str(Path(os.getcwd(), '..', '..', 'share', 'locale')),
+        languages=[lang]
     )
-    if LangData.en:
-        if str2 == gettext_output or not gettext_output:
-            gettext_output = LangData.en.ngettext(str2, str3, num1)
-    return gettext_output
+    LangData.el.install()
+
+init_lang()
+
+LOCALE_CHANGED = LangData.LOCALE_CHANGED
+_ = LangData.el.gettext
+
+def ngettext(str2, str3, num1):
+    ret = LangData.el.ngettext(str2, str3, num1)
+    if not ret:
+        ret = str2
+    return ret

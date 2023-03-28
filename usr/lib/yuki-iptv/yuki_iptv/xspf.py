@@ -15,7 +15,7 @@ def parse_xspf(xspf): # pylint: disable=missing-function-docstring
             'tvg-name': '',
             'tvg-ID': '',
             'tvg-logo': '',
-            'tvg-group': _('allchannels'),
+            'tvg-group': _('All channels'),
             'tvg-url': '',
             'catchup': 'default',
             'catchup-source': '',

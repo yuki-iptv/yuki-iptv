@@ -3,324 +3,335 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Astroncia <kestraly@gmail.com>\n"
-"PO-Revision-Date: 2022-02-21 01:50+0000\n"
+"PO-Revision-Date: 2023-03-28 00:48+0000\n"
 "Project-Id-Version: \n"
 "Language-Team: Russian <kde-i18n-doc@kde.org>\n"
 "Language: ru_RU\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n"
-"%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
 "POT-Creation-Date: \n"
 "X-Generator: Poedit 2.4.2\n"
 
-msgid "name"
-msgstr "Русский"
-
-msgid "m3u_ready"
+msgid "Ready"
 msgstr "Готов"
 
-msgid "m3u_m3ueditor"
+msgid "m3u Editor"
 msgstr "Редактор плейлистов m3u"
 
-msgid "m3u_noname"
+msgid "No Name"
 msgstr "Нет имени"
 
-msgid "m3u_waschanged"
+msgid "The document was changed.<br>Do you want to save the changes?"
 msgstr "Плейлист был изменён.<br>Вы хотите сохранить изменения?"
 
-msgid "m3u_saveconfirm"
+msgid "Save Confirmation"
 msgstr "Подтверждение сохранения"
 
-msgid "m3u_file"
+msgid "File"
 msgstr "Файл"
 
-msgid "m3u_loadm3u"
+msgid "Load M3U"
 msgstr "Открыть плейлист M3U"
 
-msgid "m3u_saveas"
+msgid "Save as"
 msgstr "Сохранить как"
 
-msgid "m3u_find"
+msgid "find"
 msgstr "найти"
 
-msgid "m3u_replacewith"
+msgid "replace with"
 msgstr "заменить"
 
-msgid "m3u_replaceall"
+msgid "replace all"
 msgstr "заменить всё"
 
-msgid "m3u_deleterow"
+msgid "delete row"
 msgstr "удалить строку"
 
-msgid "m3u_addrow"
+msgid "add row"
 msgstr "добавить строку"
 
-msgid "m3u_movedown"
+msgid "move down"
 msgstr "вниз"
 
-msgid "m3u_moveup"
+msgid "move up"
 msgstr "наверх"
 
-msgid "m3u_filtergroup"
+msgid "filter group (press Enter)"
 msgstr "фильтр по группам (нажмите Enter)"
 
-msgid "m3u_searchterm"
+msgid ""
+"insert search term and press enter\n"
+" use Selector → to choose column to search"
 msgstr ""
 "введите запрос поиска и нажмите enter\n"
 " используйте селектор → чтобы выбрать строку для поиска"
 
-msgid "m3u_choosecolumn"
+msgid "choose column to search"
 msgstr "выберите строку для поиска"
 
-msgid "m3u_openfile"
+msgid "Open File"
 msgstr "Открыть файл"
 
-msgid "m3u_playlists"
+msgid "Playlists (*.m3u)"
 msgstr "Плейлисты (*.m3u)"
 
-msgid "m3u_loaded"
+msgid "loaded"
 msgstr "загружен"
 
-msgid "m3u_savefile"
+msgid "Save File"
 msgstr "Сохранить файл"
 
-msgid "m3u_m3ufiles"
+msgid "Playlists (*.m3u, *.xspf)"
 msgstr "Плейлисты (*.m3u, *.xspf)"
 
-msgid "error"
+msgid "Error"
 msgstr "Ошибка"
 
-msgid "playerror"
+msgid "Playing error"
 msgstr "Ошибка проигрывания"
 
-msgid "error2"
+msgid "yuki-iptv error"
 msgstr "Ошибка yuki-iptv"
 
 msgid "starting"
 msgstr "запускается"
 
-msgid "binarynotfound"
+msgid "Binary modules not found!"
 msgstr "Не найдены бинарные модули!"
 
-msgid "nocacheplaylist"
+msgid "Playlist caching off"
 msgstr "Кэширование плейлиста отключено"
 
-msgid "loadingplaylist"
+msgid "Loading playlist..."
 msgstr "Идёт загрузка плейлиста..."
 
-msgid "playlistloaderror"
+msgid "Playlist loading error!"
 msgstr "Ошибка загрузки плейлиста!"
 
-msgid "playlistloaddone"
+msgid "Playling loading done!"
 msgstr "Загрузка плейлиста завершена!"
 
-msgid "cachingplaylist"
+msgid "Caching playlist..."
 msgstr "Кэширую плейлист..."
 
-msgid "playlistcached"
+msgid "Playlist cache saved!"
 msgstr "Кэш плейлиста сохранён!"
 
-msgid "usingcachedplaylist"
+msgid "Using cached playlist"
 msgstr "Использую кэшированный плейлист"
 
-msgid "settings"
+msgid "Settings"
 msgstr "Настройки"
 
-msgid "help"
+msgid "Help"
 msgstr "Помощь"
 
-msgid "channelsettings"
+msgid "Channel settings"
 msgstr "Настройки канала"
 
-msgid "selectplaylist"
+msgid "Select m3u playlist"
 msgstr "Выберите m3u плейлист"
 
-msgid "selectepg"
+msgid "Select EPG file (XMLTV or JTV EPG)"
 msgstr "Выберите файл телепрограммы (XMLTV / JTV EPG)"
 
-msgid "selectwritefolder"
+msgid "Select folder for recordings and screenshots"
 msgstr "Выберите папку для записи и снимков экрана"
 
-msgid "deinterlace"
+msgid "Deinterlace"
 msgstr "Деинтерлейс"
 
-msgid "useragent"
+msgid "User agent"
 msgstr "User agent"
 
-msgid "empty"
+msgid "None"
 msgstr "Пустой"
 
-msgid "channel"
+msgid "Channel"
 msgstr "Канал"
 
-msgid "savesettings"
+msgid "Save settings"
 msgstr "Сохранить настройки"
 
-msgid "save"
+msgid "Save"
 msgstr "Сохранить"
 
-msgid "m3uplaylist"
+msgid "M3U / XSPF playlist"
 msgstr "M3U / XSPF плейлист"
 
-msgid "updateatboot"
+msgid ""
+"Update playlist\n"
+"at launch"
 msgstr ""
 "Обновлять плейлист\n"
 "при запуске"
 
-msgid "epgaddress"
+msgid ""
+"TV guide\n"
+"address\n"
+"(XMLTV or JTV)"
 msgstr ""
 "Адрес\n"
 "телепрограммы\n"
 "(XMLTV / JTV)"
 
-msgid "udpproxy"
+msgid "UDP proxy"
 msgstr "UDP прокси"
 
-msgid "writefolder"
+msgid ""
+"Folder for recordings\n"
+"and screenshots"
 msgstr ""
 "Папка для записей\n"
 "и снимков экрана"
 
-msgid "orselectyourprovider"
+msgid "Or select provider"
 msgstr "Или выберите провайдера"
 
-msgid "resetchannelsettings"
+msgid "Reset channel settings and sorting"
 msgstr "Сбросить настройки каналов и сортировку"
 
-msgid "notselected"
+msgid "Not selected"
 msgstr "не выбрано"
 
-msgid "close"
+msgid "Close"
 msgstr "Закрыть"
 
-msgid "nochannelselected"
+msgid "No channel selected"
 msgstr "Не выбран канал"
 
-msgid "pause"
+msgid "Pause"
 msgstr "Пауза"
 
-msgid "play"
+msgid "Play"
 msgstr "Воспроизвести"
 
-msgid "exitfullscreen"
+msgid "To exit fullscreen mode press"
 msgstr "Для выхода из полноэкранного режима нажмите клавишу"
 
-msgid "volume"
+msgid "Volume"
 msgstr "Громкость"
 
-msgid "volumeoff"
+msgid "Volume off"
 msgstr "Громкость выкл."
 
-msgid "select"
+msgid "Select"
 msgstr "Выбрать"
 
-msgid "tvguide"
+msgid "TV guide"
 msgstr "Телепрограмма"
 
-msgid "startrecording"
+msgid "Start recording"
 msgstr "Начать запись"
 
-msgid "loading"
+msgid "Loading..."
 msgstr "Загрузка..."
 
-msgid "doingscreenshot"
+msgid "Doing screenshot..."
 msgstr "Делаю снимок экрана..."
 
-msgid "screenshotsaved"
+msgid "Screenshot saved!"
 msgstr "снимок экрана сохранён!"
 
-msgid "screenshotsaveerror"
+msgid "Screenshot saving error!"
 msgstr "Ошибка создания снимка экрана!"
 
-msgid "notvguideforchannel"
+msgid "No TV guide for channel"
 msgstr "Нет телепрограммы для канала"
 
-msgid "preparingrecord"
+msgid "Preparing record"
 msgstr "Подготовка записи"
 
-msgid "nochannelselforrecord"
+msgid "No channel selected for record"
 msgstr "Не выбран канал для записи"
 
-msgid "stop"
+msgid "Stop"
 msgstr "Стоп"
 
-msgid "fullscreen"
+msgid "Fullscreen"
 msgstr "Полный экран"
 
-msgid "openrecordingsfolder"
+msgid "Open recordings folder"
 msgstr "Открыть папку записей"
 
-msgid "record"
+msgid "Record"
 msgstr "Запись"
 
-msgid "screenshot"
+msgid "Screenshot"
 msgstr "снимок экрана"
 
-msgid "prevchannel"
+msgid "Previous channel"
 msgstr "Предыдущий канал"
 
-msgid "nextchannel"
+msgid "Next channel"
 msgstr "Следующий канал"
 
-msgid "tvguideupdating"
+msgid "Updating TV guide..."
 msgstr "Обновление телепрограммы..."
 
-msgid "tvguideupdatingerror"
+msgid "TV guide update error!"
 msgstr "Ошибка обновления телепрограммы!"
 
-msgid "tvguideupdatingdone"
+msgid "TV guide update done!"
 msgstr "Обновление телепрограммы завершено!"
 
-msgid "recordwaiting"
+msgid "Waiting for record"
 msgstr "Ожидание записи"
 
-msgid "allchannels"
+msgid "All channels"
 msgstr "Все каналы"
 
-msgid "favourite"
+msgid "Favourites"
 msgstr "Избранное"
 
-msgid "interfacelang"
+msgid "Interface language"
 msgstr "Язык интерфейса"
 
-msgid "tvguideoffset"
+msgid "TV guide offset"
 msgstr "Общая поправка"
 
 msgid "hours"
 msgstr "часов"
 
-msgid "hwaccel"
+msgid ""
+"Hardware\n"
+"acceleration"
 msgstr ""
 "Аппаратное\n"
 "ускорение"
 
-msgid "sort"
+msgid ""
+"Channel\n"
+"sort"
 msgstr ""
 "Сортировка\n"
 "каналов"
 
-msgid "sortitems1"
+msgid "as in playlist"
 msgstr "как в плейлисте"
 
-msgid "sortitems2"
+msgid "alphabetical order"
 msgstr "по алфавиту"
 
-msgid "sortitems3"
+msgid "reverse alphabetical order"
 msgstr "по алфавиту в обратном порядке"
 
-msgid "sortitems4"
+msgid "custom"
 msgstr "пользовательская"
 
-msgid "donotforgetsort"
+msgid ""
+"Do not forget\n"
+"to set custom sort order in settings!"
 msgstr ""
 "Не забудьте указать\n"
 "пользовательскую сортировку в настройках!"
 
-msgid "moresettings"
+msgid "More settings"
 msgstr "Больше настроек!"
 
-msgid "lesssettings"
+msgid "Less settings"
 msgstr "Меньше настроек!"
 
 msgid "enabled"
@@ -329,357 +340,380 @@ msgstr "включено"
 msgid "disabled"
 msgstr "выключено"
 
-msgid "seconds"
+msgid "seconds."
 msgstr "секунд."
 
-msgid "cache"
+msgid "Cache"
 msgstr "Кэш"
 
-msgid "chansearch"
+msgid "Search channel"
 msgstr "Поиск по каналам"
 
-msgid "reconnecting"
+msgid "Reconnecting..."
 msgstr "Переподключение..."
 
-msgid "group"
+msgid "Group"
 msgstr "Группа"
 
-msgid "hide"
+msgid "Hide channel"
 msgstr "Скрыть канал"
 
-msgid "contrast"
+msgid "Contrast"
 msgstr "Контрастность"
 
-msgid "brightness"
+msgid "Brightness"
 msgstr "Яркость"
 
-msgid "hue"
+msgid "Hue"
 msgstr "Оттенок"
 
-msgid "saturation"
+msgid "Saturation"
 msgstr "Насыщенность"
 
-msgid "gamma"
+msgid "Gamma"
 msgstr "Гамма"
 
-msgid "timeshift"
+msgid "Archive"
 msgstr "Архив"
 
-msgid "tab_main"
+msgid "Main"
 msgstr "Общие"
 
-msgid "tab_video"
+msgid "Video"
 msgstr "Видео"
 
-msgid "tab_network"
+msgid "Network"
 msgstr "Сеть"
 
-msgid "tab_other"
+msgid "Other"
 msgstr "Прочее"
 
-msgid "mpv_options"
+msgid "mpv options"
 msgstr "mpv опции"
 
-msgid "donotupdateepg"
+msgid ""
+"Do not update\n"
+"EPG at boot"
 msgstr ""
 "Не обновлять\n"
 "EPG при запуске"
 
-msgid "search"
+msgid "Search"
 msgstr "Поиск"
 
-msgid "tab_gui"
+msgid "GUI"
 msgstr "Интерфейс"
 
-msgid "epg_gui"
+msgid ""
+"TV guide\n"
+"interface"
 msgstr ""
 "Вид\n"
 "телепрограммы"
 
-msgid "classic"
+msgid "Classic"
 msgstr "Классический"
 
-msgid "simple"
+msgid "Simple"
 msgstr "Упрощённый"
 
-msgid "simple_noicons"
+msgid "Simple (no icons)"
 msgstr "Упрощённый (без логотипов)"
 
-msgid "update"
+msgid "Update"
 msgstr "Обновить"
 
-msgid "scheduler"
+msgid "Recording scheduler"
 msgstr "Планировщик записи"
 
-msgid "choosechannel"
+msgid "Choose channel"
 msgstr "Выберите канал"
 
-msgid "bitrate1"
+msgid "bps"
 msgstr "бит/с"
 
-msgid "bitrate2"
+msgid "kbps"
 msgstr "Кбит/с"
 
-msgid "bitrate3"
+msgid "Mbps"
 msgstr "Мбит/с"
 
-msgid "bitrate4"
+msgid "Gbps"
 msgstr "Гбит/с"
 
-msgid "bitrate5"
+msgid "Tbps"
 msgstr "Тбит/с"
 
-msgid "starttime"
+msgid "Start record time"
 msgstr "Начало записи"
 
-msgid "endtime"
+msgid "End record time"
 msgstr "Окончание записи"
 
-msgid "addrecord"
+msgid "Add"
 msgstr "Добавить"
 
-msgid "delrecord"
+msgid "Remove"
 msgstr "Удалить"
 
-msgid "plannedrec"
+msgid "Planned recordings"
 msgstr "Запланированные записи"
 
-msgid "warningstr"
+msgid "Recording of two channels simultaneously is not available!"
 msgstr "Запись двух каналов одновременно недоступна!"
 
-msgid "status"
+msgid "Status"
 msgstr "Статус"
 
-msgid "recnothing"
+msgid "No planned recordings"
 msgstr "Нет запланированных записей"
 
-msgid "recwaiting"
-msgstr "Ожидание записи"
-
-msgid "recrecording"
+msgid "Recording"
 msgstr "Идёт запись"
 
-msgid "activerec"
+msgid "Active recordings"
 msgstr "Активные записи"
 
-msgid "page"
+msgid "Page"
 msgstr "Страница"
 
-msgid "fasterview"
+msgid ""
+"For faster channel loading, set the cache\n"
+"for 1 or more seconds in the network settings"
 msgstr ""
 "Для более быстрой загрузки каналов установите\n"
 "в настройках сети кэш 1 или более секунд"
 
-msgid "playlists"
+msgid "Playlists"
 msgstr "Плейлисты"
 
-msgid "provselect"
-msgstr "Выбрать"
-
-msgid "provadd"
-msgstr "Добавить"
-
-msgid "provedit"
+msgid "Edit"
 msgstr "Редактировать"
 
-msgid "provdelete"
+msgid "Delete"
 msgstr "Удалить"
 
-msgid "provname"
+msgid "Name"
 msgstr "Название"
 
 msgid "of"
 msgstr "из"
 
-msgid "channelsonpage"
+msgid ""
+"Channels on\n"
+"page"
 msgstr ""
 "Каналов на\n"
 "страницу"
 
-msgid "resetdefplaylists"
+msgid "Reset to defaults"
 msgstr "Сброс по умолчанию"
 
-msgid "license"
+msgid "License"
 msgstr "Лицензия"
 
-msgid "openprevchan"
+msgid ""
+"Open previous channel\n"
+"at startup"
 msgstr ""
 "Открывать предыдущий\n"
 "канал при запуске"
 
-msgid "smscheduler"
+msgid "Scheduler"
 msgstr "Планировщик"
 
-msgid "praction"
+msgid ""
+"Post-recording\n"
+"action"
 msgstr ""
 "Действие по\n"
 "окончанию записи"
 
-msgid "nothingtodo"
+msgid "Nothing to do"
 msgstr "Ничего не делать"
 
-msgid "stoppress"
+msgid "Press Stop"
 msgstr "Нажать на Стоп"
 
-msgid "turnoffpc"
+msgid "Turn off PC"
 msgstr "Выключить ПК"
 
-msgid "exitprogram"
+msgid "Quit the program"
 msgstr "Выйти из программы"
 
-msgid "theme"
+msgid "Theme"
 msgstr "Тема"
 
-msgid "videoaspect"
+msgid "Aspect ratio"
 msgstr "Соотношение сторон"
 
-msgid "default"
+msgid "Default"
 msgstr "По умолчанию"
 
-msgid "zoom"
+msgid "Scale / Zoom"
 msgstr "Зум"
 
-msgid "openexternal"
+msgid "Open in external player"
 msgstr "Открыть во внешнем плеере"
 
-msgid "open"
+msgid "Open"
 msgstr "Открыть"
 
-msgid "remembervol"
+msgid "Remember volume"
 msgstr "Запоминать громкость"
 
-msgid "hidempv"
+msgid "Hide mpv panel"
 msgstr "Скрыть панель mpv"
 
-msgid "filepath"
+msgid "Path to file or URL"
 msgstr "Путь к файлу или ссылка"
 
-msgid "panscan"
+msgid "Pan and scan"
 msgstr "Пансканирование"
 
-msgid "tab_exp"
+msgid "Experimental"
 msgstr "Экспериментальное"
 
-msgid "exp1"
+msgid ""
+"Side floating\n"
+"panel adjustment"
 msgstr ""
 "Регулировка боковой\n"
 "плавающей панели"
 
-msgid "exp2"
+msgid ""
+"Playlist width\n"
+"in full screen mode"
 msgstr ""
 "Ширина плейлиста\n"
 "в полноэкранном режиме"
 
-msgid "exp3"
+msgid ""
+"Playlist height\n"
+"in full screen mode"
 msgstr ""
 "Высота плейлиста\n"
 "в полноэкранном режиме"
 
-msgid "expwarning"
+msgid ""
+"The settings here\n"
+"may be unstable!"
 msgstr ""
 "Настройки тут могут\n"
 "быть нестабильны!"
 
-msgid "mouseswitchchannels"
+msgid ""
+"Switch channels with\n"
+"the mouse wheel"
 msgstr ""
 "Переключать каналы\n"
 "колесом мыши"
 
-msgid "actions"
+msgid "Actions"
 msgstr "Действия"
 
-msgid "defaultchangevol"
+msgid ""
+"by default:\n"
+"change volume"
 msgstr ""
 "по умолчанию:\n"
 "изменение громкости"
 
-msgid "showplaylistmouse"
+msgid ""
+"Show playlist\n"
+"on mouse move"
 msgstr ""
 "Показывать плейлист\n"
 "при движении мыши"
 
-msgid "showcontrolsmouse"
+msgid ""
+"Show controls\n"
+"on mouse move"
 msgstr ""
 "Показывать панель управления\n"
 "при движении мыши"
 
-msgid "volumeshort"
+msgid "Vol"
 msgstr "Звук"
 
-msgid "hidetvguide"
+msgid "Hide TV guide"
 msgstr "Скрыть телепрограмму"
 
-msgid "flpopacity"
+msgid "Floating panels opacity"
 msgstr "Прозрачность плавающих панелей"
 
-msgid "showhideplaylist"
+msgid "Show/hide playlist"
 msgstr "Показать/скрыть плейлист"
 
-msgid "showhidectrlpanel"
+msgid "Show/hide controls panel"
 msgstr "Показать/скрыть панель управления"
 
-msgid "mininterface"
+msgid "Minimal interface"
 msgstr "Минимальный интерфейс"
 
-msgid "panelposition"
+msgid ""
+"Floating panel\n"
+"position"
 msgstr ""
 "Расположение\n"
 "плавающей панели"
 
-msgid "left"
+msgid "Left"
 msgstr "Слева"
 
-msgid "right"
+msgid "Right"
 msgstr "Справа"
 
-msgid "doscreenshotsvia"
+msgid "Take screenshots via"
 msgstr "Делать снимки экрана через"
 
-msgid "playlistsep"
+msgid "Playlist in separate window"
 msgstr "Плейлист в отдельном окне"
 
-msgid "volumechangestep"
+msgid "Volume change step"
 msgstr "Шаг регулировки громкости"
 
-msgid "hideepgpercentage"
+msgid "Hide EPG percentage"
 msgstr "Скрыть проценты телепрограммы"
 
-msgid "xtreamnoconn"
+msgid "Could not connect"
 msgstr "Невозможно подключиться"
 
-msgid "procerror"
+msgid "Processing error"
 msgstr "Ошибка обработки"
 
-msgid "username"
+msgid "Username"
 msgstr "Логин"
 
-msgid "password"
+msgid "Password"
 msgstr "Пароль"
 
-msgid "url"
+msgid "URL"
 msgstr "URL адрес"
 
-msgid "multipleplnote"
+msgid ""
+"You can specify multiple playlists by clicking\n"
+"the File - Playlists button (after saving the settings)"
 msgstr ""
 "Вы можете указать несколько плейлистов по\n"
 "кнопке Файл - Плейлисты (после сохранения настроек)"
 
-msgid "favoritesplaylistsep"
+msgid "Favourites (separate playlist)"
 msgstr "Избранное (отдельный плейлист)"
 
-msgid "nochannels"
+msgid "No channels"
 msgstr "Нет каналов"
 
-msgid "epgname"
+msgid "EPG name"
 msgstr "EPG название"
 
-msgid "epgid"
+msgid "EPG id"
 msgstr "EPG id"
 
-msgid "iaepgmatch"
+msgid "Inaccurate EPG matching"
 msgstr "Неточное сопоставление телепрограммы"
 
-msgid "using"
+msgid "Using"
 msgstr "Используется"
 
 msgid "Aspect"
@@ -697,7 +731,7 @@ msgstr "Каналы"
 msgid "Codec"
 msgstr "Кодек"
 
-msgid "colour"
+msgid "Colour"
 msgstr "Цвет"
 
 msgid "Dimensions"
@@ -706,13 +740,10 @@ msgstr "Размеры"
 msgid "Format"
 msgstr "Формат"
 
-msgid "Gamma"
-msgstr "Гамма"
-
-msgid "general"
+msgid "General"
 msgstr "Общие"
 
-msgid "layout"
+msgid "Layout"
 msgstr "Компоновка"
 
 msgid "Pixel Format"
@@ -724,384 +755,383 @@ msgstr "Частота дискретизации"
 msgid "Stream Information"
 msgstr "Информация о потоке"
 
-msgid "Video"
-msgstr "Видео"
-
 msgid "Audio"
 msgstr "Звук"
 
-msgid "checkforupdates"
+msgid "Check for updates"
 msgstr "Проверить обновления"
 
-msgid "gotlatestversion"
+msgid "You have the latest available version!"
 msgstr "У вас установлена последняя доступная версия!"
 
-msgid "newversiongetfail"
+msgid "Error retrieving latest version information"
 msgstr "Ошибка получения информации о последней версии"
 
-msgid "newversionavail"
+msgid "New version available! Visit web page to install?"
 msgstr "Доступна новая версия! Посетить веб-страницу для установки?"
 
-msgid "aboutqt"
+msgid "About Qt"
 msgstr "О Qt"
 
-msgid "applog"
+msgid "yuki-iptv log"
 msgstr "Журнал yuki-iptv"
 
-msgid "mpvlog"
+msgid "mpv log"
 msgstr "Журнал mpv"
 
-msgid "copytoclipboard"
+msgid "Copy to clipboard"
 msgstr "Копировать в буфер обмена"
 
-msgid "choosesavefilename"
+msgid "Choose a filename to save under"
 msgstr "Выберите имя файла для сохранения"
 
-msgid "logs"
+msgid "Logs"
 msgstr "Журналы"
 
 msgid "Bits Per Pixel"
 msgstr "Битов на пиксель"
 
-msgid "epgloading"
+msgid "EPG loading..."
 msgstr "Телепрограмма загружается..."
 
-msgid "unknownencoding"
+msgid "Failed to load playlist - unknown encoding! Please use playlists in UTF-8 encoding."
 msgstr "Не удалось загрузить плейлист - неизвестная кодировка! Пожалуйста, используйте плейлисты в кодировке UTF-8."
 
-msgid "menubar_exit"
+msgid "&Exit"
 msgstr "&Выход"
 
-msgid "menubar_title_file"
+msgid "&File"
 msgstr "&Файл"
 
-msgid "menubar_title_play"
+msgid "&Play"
 msgstr "&Воспроизведение"
 
-msgid "menubar_playpause"
+msgid "&Play / Pause"
 msgstr "&Воспроизвести / Пауза"
 
-msgid "menubar_stop"
+msgid "&Stop"
 msgstr "&Стоп"
 
-msgid "minutes_plural"
-msgid_plural ""
-msgstr[0] "минута"
-msgstr[1] "минуты"
-msgstr[2] "минут"
-msgstr[3] ""
-
-msgid "seconds_plural"
-msgid_plural ""
-msgstr[0] "секунда"
-msgstr[1] "секунды"
-msgstr[2] "секунд"
-msgstr[3] ""
-
-msgid "menubar_previous"
+msgid "&Previous"
 msgstr "&Предыдущий"
 
-msgid "menubar_next"
+msgid "&Next"
 msgstr "&Следующий"
 
-msgid "speed"
+msgid "Speed"
 msgstr "Скорость"
 
-msgid "menubar_normalspeed"
+msgid "&Normal speed"
 msgstr "&Нормальная скорость"
 
-msgid "menubar_video"
+msgid "&Video"
 msgstr "В&идео"
 
-msgid "menubar_audio"
+msgid "&Audio"
 msgstr "&Аудио"
 
-msgid "menubar_fullscreen"
+msgid "&Fullscreen"
 msgstr "Полный &экран"
 
-msgid "menubar_compactmode"
+msgid "&Compact mode"
 msgstr "&Компактный режим"
 
-msgid "menubar_csforchannel"
+msgid "&Settings for channel"
 msgstr "&Настройки для канала"
 
-msgid "menubar_view"
+msgid "Vie&w"
 msgstr "Ви&д"
 
-msgid "menubar_options"
+msgid "&Options"
 msgstr "&Параметры"
 
-msgid "menubar_settings"
+msgid "&Settings"
 msgstr "&Настройки"
 
-msgid "menubar_about"
+msgid "&About yuki-iptv"
 msgstr "О&б yuki-iptv"
 
-msgid "menubar_help"
+msgid "&Help"
 msgstr "Сп&равка"
 
-msgid "menubar_screenshot"
+msgid "&Screenshot"
 msgstr "С&нимок экрана"
 
-msgid "menubar_mute"
+msgid "&Mute audio"
 msgstr "&Приглушить звук"
 
-msgid "menubar_track"
+msgid "&Track"
 msgstr "&Дорожка"
 
-msgid "empty_sm"
+msgid "empty"
 msgstr "пусто"
 
-msgid "menubar_checkupdates"
+msgid "&Check for updates"
 msgstr "&Проверить обновления"
 
-msgid "ffmpeg_processing"
+msgid "Processing record..."
 msgstr "Обработка записи..."
 
-msgid "menubar_volumeminus"
+msgid "V&olume -"
 msgstr "Г&ромкость -"
 
-msgid "menubar_volumeplus"
+msgid "Vo&lume +"
 msgstr "Гр&омкость +"
 
 msgid "list"
 msgstr "список"
 
-msgid "menubar_m3ueditor"
+msgid "&m3u Editor"
 msgstr "&Редактор плейлистов m3u"
 
-msgid "menubar_playlists"
+msgid "&Playlists"
 msgstr "&Плейлисты"
 
-msgid "menubar_channelsort"
+msgid "&Channel sort"
 msgstr "&Сортировка каналов"
 
-msgid "menubar_filters"
+msgid "F&ilters"
 msgstr "Ф&ильтры"
 
-msgid "menubar_postproc"
+msgid "&Postprocessing"
 msgstr "Включить &постобработку"
 
-msgid "menubar_deblock"
+msgid "&Deblock"
 msgstr "Смазывать границы &квадратов"
 
-msgid "menubar_dering"
+msgid "De&ring"
 msgstr "Удалять к&раевые артефакты"
 
-msgid "menubar_debanding"
+msgid "Debanding (&gradfun)"
 msgstr "Убрать &ступенчатость (gradfun)"
 
-msgid "menubar_noise"
+msgid "Add n&oise"
 msgstr "Добавить &шумы"
 
-msgid "menubar_black"
+msgid "Add &black borders"
 msgstr "Добавить &чёрные полосы"
 
-msgid "menubar_phase"
+msgid "&Autodetect phase"
 msgstr "&Автоопределять фазу"
 
-msgid "menubar_extrastereo"
+msgid "&Extrastereo"
 msgstr "&Расширенное стерео"
 
-msgid "menubar_karaoke"
+msgid "&Karaoke"
 msgstr "&Караоке (подавление голоса)"
 
-msgid "menubar_earvax"
+msgid "&Headphone optimization"
 msgstr "&Оптимизация для наушников (earvax)"
 
-msgid "menubar_volnorm"
+msgid "Volume &normalization"
 msgstr "&Нормализация громкости"
 
-msgid "errorvfapply"
+msgid "Error applying filters"
 msgstr "Ошибка применения фильтров"
 
-msgid "menubar_softscaling"
+msgid "Soft&ware scaling"
 msgstr "Масштабировать про&граммно"
 
-msgid "menubar_updateepg"
+msgid "&Update TV guide"
 msgstr "&Обновить телепрограмму"
 
-msgid "playername"
+msgid "IPTV player"
 msgstr "IPTV плеер"
 
-msgid "hidebitrateinfo"
+msgid "Hide bitrate / video info"
 msgstr "Скрыть информацию о битрейте / видео"
 
-msgid "movedragging"
+msgid "Move window by dragging"
 msgstr "Перемещать окно мышью"
 
 msgid "playlist"
 msgstr "список воспроизведения"
 
-msgid "ignoringmpvoptions"
+msgid "Custom MPV options invalid, ignoring them"
 msgstr "Неверные опции MPV игнорируются"
 
-msgid "showonlychplaylist"
+msgid "Show only channels in playlist"
 msgstr "Показывать только каналы из плейлиста"
 
 msgid "channels"
 msgstr "каналов"
 
-msgid "hideplaylistleftclk"
+msgid "Hide playlist by left click"
 msgstr "Скрывать плейлист левым кликом"
 
-msgid "styleredefoff"
+msgid "Enable styles redefinition"
 msgstr "Включить переопределение стилей"
 
-msgid "alwaysontop"
+msgid "Window always on top"
 msgstr "Окно всегда наверху"
 
-msgid "expfunctionwarning"
+msgid "WARNING: experimental function, working with problems"
 msgstr "ВНИМАНИЕ: экспериментальная функция, работает с проблемами"
 
-msgid "menubar_expfunction"
+msgid "experimental function"
 msgstr "экспериментальная функция"
 
-msgid "autoreconnection"
+msgid ""
+"Automatic\n"
+"reconnection"
 msgstr ""
 "Автоматическое\n"
 "переподключение"
 
-msgid "customua"
+msgid "- custom -"
 msgstr "- пользовательский -"
 
-msgid "deletefromfav"
+msgid "Delete from favourites"
 msgstr "Удалить из избранного"
 
-msgid "scrrecnosubfolders"
+msgid ""
+"Do not create screenshots\n"
+"and recordings subfolders"
 msgstr ""
 "Не создавать подпапки\n"
 "для скриншотов и записей"
 
-msgid "nocacheepg"
+msgid "Do not cache EPG"
 msgstr "Не кэшировать EPG"
 
-msgid "nourlset"
+msgid "URL not specified!"
 msgstr "Не указан URL!"
 
-msgid "updcurplaylist"
+msgid "&Update current playlist"
 msgstr "&Обновить текущий плейлист"
 
-msgid "shortcuts"
+msgid "Shortcuts"
 msgstr "Горячие клавиши"
 
-msgid "shortcut"
+msgid "Shortcut"
 msgstr "Сочетание клавиш"
 
-msgid "desc"
+msgid "Description"
 msgstr "Описание"
 
-msgid "exitfullscreen2"
+msgid "Exit fullscreen"
 msgstr "Выйти из полноэкранного режима"
 
-msgid "showclock"
+msgid "Show clock"
 msgstr "Показать часы"
 
-msgid "tvguideforallchans"
+msgid "TV guide for all channels"
 msgstr "Телепрограмма для всех каналов"
 
-msgid "shortcutchange"
+msgid "Double click to change"
 msgstr "Щёлкните дважды для изменения"
 
-msgid "modifyshortcut"
+msgid "Modify shortcut"
 msgstr "Изменить сочетание клавиш"
 
-msgid "pressnewkey"
+msgid ""
+"Press the key combination\n"
+"you want to assign"
 msgstr ""
 "Нажмите клавиши, сочетание\n"
 "которых вы хотите использовать"
 
-msgid "cancel"
+msgid "Cancel"
 msgstr "Отменить"
 
-msgid "ok"
+msgid "OK"
 msgstr "ОК"
 
-msgid "shortcutused"
+msgid "Shortcut already used"
 msgstr "Сочетание клавиш уже использовано"
 
-msgid "resettodefaults"
-msgstr "Восстановить значения по умолчанию"
-
-msgid "areyousure"
+msgid "Are you sure?"
 msgstr "Вы уверены?"
 
-msgid "usingmode"
+msgid "Using mode"
 msgstr "Используется режим"
 
-msgid "catchup"
+msgid "Catchup"
 msgstr "Архив"
 
-msgid "enablecatchup"
+msgid "Enable catchup"
 msgstr "Включить архив каналов"
 
-msgid "writingepgcache"
+msgid "Writing EPG cache"
 msgstr "Идёт запись кэша EPG"
 
-msgid "movies"
+msgid "Movies"
 msgstr "Фильмы"
 
-msgid "series"
+msgid "Series"
 msgstr "Сериалы"
 
-msgid "back"
+msgid "Back"
 msgstr "Назад"
 
-msgid "tvchannels"
+msgid "TV channels"
 msgstr "ТВ-каналы"
 
-msgid "nothingfound"
+msgid "Nothing found"
 msgstr "Ничего не найдено"
 
-msgid "searchmovie"
+msgid "Search movie"
 msgstr "Поиск по фильмам"
 
-msgid "searchserie"
+msgid "Search series"
 msgstr "Поиск по сериалам"
 
-msgid "hidetvprogram"
+msgid "Hide the current television program"
 msgstr "Скрыть текущую телепередачу"
 
-msgid "m3u_playlistsaved"
+msgid "Playlist successfully saved!"
 msgstr "Плейлист успешно сохранён!"
 
-msgid "channellogos"
+msgid "Channel logos"
 msgstr "Логотипы каналов"
 
-msgid "preferm3u"
+msgid "Prefer M3U"
 msgstr "Предпочитать M3U"
 
-msgid "preferepg"
+msgid "Prefer EPG"
 msgstr "Предпочитать EPG"
 
-msgid "donotloadfromepg"
+msgid "Do not load from EPG"
 msgstr "Не загружать из EPG"
 
-msgid "donotloadanylogos"
+msgid "Do not load any logos"
 msgstr "Не загружать любые логотипы"
 
-msgid "subtitles"
+msgid "Subtitles"
 msgstr "Субтитры"
 
-msgid "off"
+msgid "Off"
 msgstr "Отключены"
 
-msgid "incompatiblewithspw"
+msgid "Incompatible with option Playlist in separate window"
 msgstr "Несовместимо с настройкой Плейлист в отдельном окне"
 
-msgid "menubar_subtitles"
+msgid "&Subtitles"
 msgstr "&Субтитры"
 
-msgid "videosettings"
+msgid "Video settings"
 msgstr "Настройки видео"
 
-msgid "hidech"
+msgid "Hide"
 msgstr "Скрыть"
 
-msgid "menubar_videosettings"
+msgid "&Video settings"
 msgstr "&Настройки видео"
 
-msgid "helptext"
+msgid ""
+"yuki-iptv, version {}\n"
+"\n"
+"© 2021-2022 Astroncia\n"
+"© 2023 yuki-chan-nya\n"
+"https://github.com/yuki-chan-nya\n"
+"\n"
+"IPTV player\n"
+"\n"
+"Supports TV guide (EPG) only in XMLTV and JTV formats!\n"
+"\n"
+"Icons by Font Awesome ( https://fontawesome.com/ )\n"
+"Icons licensed under the CC BY 4.0 License\n"
+"( https://creativecommons.org/licenses/by/4.0/ )"
 msgstr ""
 "yuki-iptv, версия {}\n"
 "\n"
@@ -1119,3 +1149,17 @@ msgstr ""
 "только в форматах XMLTV и JTV!\n"
 "\n"
 "После указания группы канала в настройках переоткройте приложение."
+
+msgid "minutes"
+msgid_plural ""
+msgstr[0] "минута"
+msgstr[1] "минуты"
+msgstr[2] "минут"
+msgstr[3] ""
+
+msgid "seconds"
+msgid_plural ""
+msgstr[0] "секунда"
+msgstr[1] "секунды"
+msgstr[2] "секунд"
+msgstr[3] ""
