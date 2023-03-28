@@ -97,10 +97,7 @@ if not sys.version_info >= (3, 6, 0):
     print_with_time("Incompatible Python version! Required >= 3.6")
     sys.exit(1)
 
-IS_STABLE = False
-
-VERSION_APPEND = 'stable' if IS_STABLE else 'develop'
-MAIN_WINDOW_TITLE = f'yuki-iptv ({VERSION_APPEND})'
+MAIN_WINDOW_TITLE = 'yuki-iptv'
 WINDOW_SIZE = (1200, 600)
 DOCK_WIDGET2_HEIGHT = int(WINDOW_SIZE[1] / 10)
 DOCK_WIDGET2_HEIGHT_OFFSET = 10
@@ -300,7 +297,7 @@ if __name__ == '__main__':
         print_with_time("Copyright (c) 2023 yuki-chan-nya")
         print_with_time("")
         # Version debugging
-        print_with_time("Current version: {} ({})".format(APP_VERSION, VERSION_APPEND))
+        print_with_time("Current version: {}".format(APP_VERSION))
         print_with_time("")
         print_with_time("Using Python {}".format(sys.version.replace('\n', '')))
         # Qt library debugging
