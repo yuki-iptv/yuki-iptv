@@ -129,6 +129,7 @@ else:
     qt_icon_information = QtWidgets.QMessageBox.Icon.Information
 
 APP_VERSION = '__DEB_VERSION__'
+VERSION_CODENAME = 'Turning Point'
 
 if not sys.version_info >= (3, 6, 0):
     logger.error("Incompatible Python version! Required >= 3.6")
@@ -193,7 +194,7 @@ DOCK_WIDGET_WIDTH = max(DOCK_WIDGET_WIDTH, 0)
 iptv_playlists = {}
 
 if args1.version:
-    print("{} {}".format(MAIN_WINDOW_TITLE, APP_VERSION))
+    print("{} {} ({})".format(MAIN_WINDOW_TITLE, APP_VERSION, VERSION_CODENAME))
     sys.exit(0)
 
 try:
@@ -309,7 +310,7 @@ if __name__ == '__main__':
         logger.info("Copyright (c) 2023 yuki-chan-nya")
         logger.info("")
         # Version debugging
-        logger.info("Current version: {}".format(APP_VERSION))
+        logger.info("Current version: {} ({})".format(APP_VERSION, VERSION_CODENAME))
         logger.info("")
         logger.info("Using Python {}".format(sys.version.replace('\n', '')))
         # Qt library debugging
@@ -1228,7 +1229,7 @@ if __name__ == '__main__':
         sepplaylist_win.setWindowIcon(main_icon)
 
         help_win = QtWidgets.QMainWindow()
-        help_win.resize(400, 600)
+        help_win.resize(500, 600)
         help_win.setWindowTitle(_('&About yuki-iptv').replace('&', ''))
         help_win.setWindowIcon(main_icon)
 
@@ -3703,7 +3704,7 @@ if __name__ == '__main__':
 
             logger.info("Using {}".format(mpv_version))
 
-            textbox.setText(format_about_text(_('yuki-iptv, version {}\n\n© 2021-2022 Astroncia\n© 2023 yuki-chan-nya\nhttps://github.com/yuki-chan-nya\n\nIPTV player\n\nSupports TV guide (EPG) only in XMLTV and JTV formats!\n\nIcons by Font Awesome ( https://fontawesome.com/ )\nIcons licensed under the CC BY 4.0 License\n( https://creativecommons.org/licenses/by/4.0/ )').format(APP_VERSION))) # pylint: disable=line-too-long
+            textbox.setText(format_about_text(_('yuki-iptv\nversion: {}\ncodename: {}\n\n© 2021-2022 Astroncia\n© 2023 yuki-chan-nya\nhttps://github.com/yuki-chan-nya\n\nIPTV player\n\nSupports TV guide (EPG) only in XMLTV and JTV formats!\n\nIcons by Font Awesome ( https://fontawesome.com/ )\nIcons licensed under the CC BY 4.0 License\n( https://creativecommons.org/licenses/by/4.0/ )').format(APP_VERSION, VERSION_CODENAME))) # pylint: disable=line-too-long
 
             if settings["cache_secs"] != 0:
                 try:
