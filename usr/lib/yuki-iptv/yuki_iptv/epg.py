@@ -1,16 +1,19 @@
 # SPDX-License-Identifier: GPL-3.0-only
 # pylint: disable=broad-except, too-many-locals, import-error, missing-module-docstring
+# pylint: disable=logging-format-interpolation
 import os
+import logging
 import requests
 from yuki_iptv.ua import uas
 from yuki_iptv.jtv import parse_jtv
 from yuki_iptv.xmltv import parse_as_xmltv
-from yuki_iptv.time import print_with_time
+
+logger = logging.getLogger(__name__)
 
 def load_epg(epg_url, user_agent):
     '''Load EPG file'''
-    print_with_time("Loading EPG...")
-    print_with_time("Address: '{}'".format(epg_url))
+    logger.info("Loading EPG...")
+    logger.info("Address: '{}'".format(epg_url))
     if os.path.isfile(epg_url):
         epg_file = open(epg_url, 'rb')
         epg = epg_file.read()
@@ -22,9 +25,9 @@ def load_epg(epg_url, user_agent):
             stream=True,
             timeout=35
         )
-        print_with_time("EPG URL status code: {}".format(epg_req.status_code))
+        logger.info("EPG URL status code: {}".format(epg_req.status_code))
         epg = epg_req.content
-    print_with_time("EPG loaded")
+    logger.info("EPG loaded")
     return epg
 
 def merge_two_dicts(dict1, dict2):
@@ -61,16 +64,16 @@ def fetch_epg(settings, catchup_days1):
             except: # pylint: disable=bare-except
                 pass
             epg_failures.append(False)
-            print_with_time("Parsing done!")
-            print_with_time("Parsing EPG...")
+            logger.info("Parsing done!")
+            logger.info("Parsing EPG...")
         except Exception as exc0:
-            print_with_time("Failed parsing EPG!")
+            logger.warning("Failed parsing EPG!")
             epg_failures.append(True)
             epg_exceptions.append(exc0)
     if False not in epg_failures:
         epg_ok = False
         exc = epg_exceptions[0]
-    print_with_time("Parsing EPG done!")
+    logger.info("Parsing EPG done!")
     return [{}, programmes_epg, epg_ok, exc, prog_ids, epg_icons]
 
 def worker(procnum, sys_settings, catchup_days1, return_dict1): # pylint: disable=unused-argument

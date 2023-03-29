@@ -1,13 +1,14 @@
 # SPDX-License-Identifier: GPL-3.0-only
 '''xspf compatibility'''
+import logging
 import gettext
 import xml.etree.ElementTree as ET
-from yuki_iptv.time import print_with_time
 
+logger = logging.getLogger(__name__)
 _ = gettext.gettext
 
 def parse_xspf(xspf): # pylint: disable=missing-function-docstring
-    print_with_time("Trying parsing as XSPF...")
+    logger.info("Trying parsing as XSPF...")
     array = []
     tree = ET.ElementTree(ET.fromstring(xspf)).getroot()
     for track in tree.findall("{*}trackList/{*}track"):

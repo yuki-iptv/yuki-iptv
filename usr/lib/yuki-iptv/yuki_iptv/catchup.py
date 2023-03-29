@@ -1,10 +1,13 @@
 '''Catchup'''
 # pylint: disable=missing-function-docstring
+# pylint: disable=logging-format-interpolation
 import time
 import datetime
 import re
 import traceback
-from yuki_iptv.time import print_with_time
+import logging
+
+logger = logging.getLogger(__name__)
 
 def format_catchup_array(array0):
     if 'catchup' not in array0:
@@ -27,8 +30,8 @@ def format_catchup_array(array0):
     return array0
 
 def format_placeholders(start_time, end_time, catchup_id, orig_url): # pylint: disable=too-many-locals, too-many-branches, too-many-statements
-    print_with_time("")
-    print_with_time("orig placeholder url: {}".format(orig_url))
+    logger.info("")
+    logger.info("orig placeholder url: {}".format(orig_url))
     start_timestamp = int(time.mktime(time.strptime(start_time, '%d.%m.%Y %H:%M:%S')))
     end_timestamp = int(time.mktime(time.strptime(end_time, '%d.%m.%Y %H:%M:%S')))
     duration = int(end_timestamp - start_timestamp)
@@ -96,8 +99,8 @@ def format_placeholders(start_time, end_time, catchup_id, orig_url): # pylint: d
                     str(int(duration / duration_re_i_parse))
                 )
     except: # pylint: disable=bare-except
-        print_with_time("format_placeholders / duration_re parsing failed")
-        print_with_time(traceback.format_exc())
+        logger.warning("format_placeholders / duration_re parsing failed")
+        logger.warning(traceback.format_exc())
 
     try:
         offset_re = sorted(re.findall(r'\$?{offset:\d+}', orig_url))
@@ -109,8 +112,8 @@ def format_placeholders(start_time, end_time, catchup_id, orig_url): # pylint: d
                     str(int(offset2 / offset_re_i_parse))
                 )
     except: # pylint: disable=bare-except
-        print_with_time("format_placeholders / offset_re parsing failed")
-        print_with_time(traceback.format_exc())
+        logger.warning("format_placeholders / offset_re parsing failed")
+        logger.warning(traceback.format_exc())
 
     utc_time = datetime.datetime.fromtimestamp(
         start_timestamp
@@ -155,11 +158,11 @@ def format_placeholders(start_time, end_time, catchup_id, orig_url): # pylint: d
                     spec_val = spec_val.replace('S', str(utcend_time[5]))
                 orig_url = orig_url.replace(specifiers_re_i_o, str(spec_val))
     except: # pylint: disable=bare-except
-        print_with_time("format_placeholders / specifiers_re parsing failed")
-        print_with_time(traceback.format_exc())
+        logger.warning("format_placeholders / specifiers_re parsing failed")
+        logger.warning(traceback.format_exc())
 
-    print_with_time("formatted placeholder url: {}".format(orig_url))
-    print_with_time("")
+    logger.info("formatted placeholder url: {}".format(orig_url))
+    logger.info("")
     return orig_url
 
 def get_catchup_url(chan_url, arr1, start_time, end_time, catchup_id): # pylint: disable=too-many-locals, too-many-branches, too-many-statements
@@ -183,8 +186,8 @@ def get_catchup_url(chan_url, arr1, start_time, end_time, catchup_id): # pylint:
             )
     elif arr1['catchup'] in ('flussonic', 'flussonic-hls', 'flussonic-ts', 'fs'):
         fs_url = chan_url
-        print_with_time("")
-        print_with_time("orig fs url: {}".format(fs_url))
+        logger.info("")
+        logger.info("orig fs url: {}".format(fs_url))
         flussonic_re = re.findall(
             r"^(http[s]?://[^/]+)/(.*)/([^/]*)(mpegts|\.m3u8)(\?.+=.+)?$",
             chan_url
@@ -248,8 +251,8 @@ def get_catchup_url(chan_url, arr1, start_time, end_time, catchup_id): # pylint:
         )
     elif arr1['catchup'] == 'xc':
         xc_url = chan_url
-        print_with_time("")
-        print_with_time("orig xc url: {}".format(xc_url))
+        logger.info("")
+        logger.info("orig xc url: {}".format(xc_url))
         xc_re = re.findall(
             r"^(http[s]?://[^/]+)/(?:live/)?([^/]+)/([^/]+)/([^/\.]+)(\.m3u[8]?)?$",
             chan_url
@@ -285,8 +288,8 @@ def format_url_clean(url5):
 def parse_specifiers_now_url(url4):
     if url4.endswith("/icons/main.png") or url4.endswith("/icons_dark/main.png"):
         return url4
-    print_with_time("")
-    print_with_time("orig spec url: {}".format(format_url_clean(url4)))
+    logger.info("")
+    logger.info("orig spec url: {}".format(format_url_clean(url4)))
     current_utc_str = int(time.time())
     url4 = url4.replace('${lutc}', str(current_utc_str))
     url4 = url4.replace('{lutc}', str(current_utc_str))
@@ -317,9 +320,9 @@ def parse_specifiers_now_url(url4):
                 spec_val_1 = spec_val_1.replace('S', str(cur_utc_time[5]))
                 url4 = url4.replace(specifiers_re_url_i[0], str(spec_val_1))
     except: # pylint: disable=bare-except
-        print_with_time("parse_specifiers_now_url / specifiers_re_url parsing failed")
-        print_with_time(traceback.format_exc())
+        logger.warning("parse_specifiers_now_url / specifiers_re_url parsing failed")
+        logger.warning(traceback.format_exc())
 
-    print_with_time("after spec url: {}".format(format_url_clean(url4)))
-    print_with_time("")
+    logger.info("after spec url: {}".format(format_url_clean(url4)))
+    logger.info("")
     return url4

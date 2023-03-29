@@ -1,9 +1,12 @@
 # pylint: disable=missing-module-docstring
+# pylint: disable=logging-format-interpolation
 # SPDX-License-Identifier: GPL-3.0-only
+import logging
 import subprocess
 import threading
 from yuki_iptv.ua import get_user_agent_for_channel
-from yuki_iptv.time import print_with_time
+
+logger = logging.getLogger(__name__)
 
 class YukiData: # pylint: disable=too-few-public-methods
     '''Main class'''
@@ -53,10 +56,10 @@ def record( # pylint: disable=inconsistent-return-statements
     action = 'record'
     if is_screenshot:
         action = 'screenshot'
-    print_with_time("Using user agent '{}' for {} channel '{}'".format(
+    logger.info("Using user agent '{}' for {} channel '{}'".format(
         user_agent, action, channel_name
     ))
-    print_with_time("HTTP headers: '{}'".format(http_referer))
+    logger.info("HTTP headers: '{}'".format(http_referer))
     if input_url.startswith('http://') or input_url.startswith('https://'):
         arr = [
             'ffmpeg',

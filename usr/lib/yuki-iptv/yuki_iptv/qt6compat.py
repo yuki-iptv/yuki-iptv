@@ -1,8 +1,10 @@
 # pylint: disable=missing-module-docstring, missing-function-docstring, no-else-return, invalid-name
 # SPDX-License-Identifier: GPL-3.0-only
-from yuki_iptv.time import print_with_time
+import logging
 from yuki_iptv.qt import get_qt_library
 qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
+
+logger = logging.getLogger(__name__)
 
 class YukiData: # pylint: disable=too-few-public-methods
     '''Data class'''
@@ -15,7 +17,7 @@ def globalPos(arg):
     except: # pylint: disable=bare-except
         if not YukiData.WRITTEN:
             YukiData.WRITTEN = True
-            print_with_time("Qt 5 (globalPos) compatibility enabled")
+            logger.warning("Qt 5 (globalPos) compatibility enabled")
         ret = arg.globalPos()
     return ret
 
@@ -44,7 +46,7 @@ def _enum(obj, name):
     except: # pylint: disable=bare-except
         if not YukiData.WRITTENQT:
             YukiData.WRITTENQT = True
-            print_with_time("Falling back to short names for Qt enums")
+            logger.warning("Falling back to short names for Qt enums")
         return getattr(obj, child)
 
 def qaction(arg1, arg2):

@@ -1,6 +1,7 @@
 '''yuki-iptv'''
 # pylint: disable=invalid-name, global-statement, missing-docstring, c-extension-no-member
 # pylint: disable=too-many-lines, too-many-statements, broad-except, bare-except
+# pylint: disable=logging-format-interpolation, logging-not-lazy
 #
 # SPDX-License-Identifier: GPL-3.0-only
 #
@@ -17,6 +18,7 @@ import datetime
 import json
 import locale
 import gettext
+import logging
 import signal
 import base64
 import argparse
@@ -48,7 +50,6 @@ from yuki_iptv.record import record, record_return, stop_record, \
 from yuki_iptv.menubar import init_yuki_iptv_menubar, init_menubar_player, \
     populate_menubar, update_menubar, get_active_vf_filters, get_first_run, get_seq, \
     reload_menubar_shortcuts
-from yuki_iptv.time import print_with_time, get_app_log, get_mpv_log, args_init
 from yuki_iptv.xtreamtom3u import convert_xtream_to_m3u
 from yuki_iptv.m3u import M3UParser
 from yuki_iptv.xspf import parse_xspf
@@ -67,14 +68,49 @@ from thirdparty.series import parse_series
 from thirdparty.resizablewindow import ResizableWindow
 #from thirdparty.levenshtein import damerau_levenshtein
 
+parser = argparse.ArgumentParser(prog="yuki-iptv", description="yuki-iptv")
+parser.add_argument(
+    '--python',
+    help='Internal argument, do not use'
+)
+parser.add_argument(
+    '--version',
+    action='store_true',
+    help='Show version'
+)
+parser.add_argument(
+    '--loglevel',
+    action='store',
+    help='Log level (CRITICAL, ERROR, WARNING, INFO, DEBUG) default: INFO'
+)
+parser.add_argument(
+    'URL',
+    help='Playlist URL or file',
+    nargs='?'
+)
+args1 = parser.parse_args()
+
+loglevel = args1.loglevel if args1.loglevel else 'INFO'
+numeric_level = getattr(logging, loglevel.upper(), None)
+if not isinstance(numeric_level, int):
+    raise ValueError('Invalid log level: %s' % loglevel)
+
+logging.basicConfig(
+    format='%(asctime)s %(name)s %(levelname)s: %(message)s',
+    level=numeric_level,
+    datefmt='%H:%M:%S'
+)
+logger = logging.getLogger("yuki-iptv")
+mpv_logger = logging.getLogger("libmpv")
+
 try:
     from thirdparty.mpris_server.adapters import PlayState, MprisAdapter, \
       Microseconds, VolumeDecimal, RateDecimal, Track, DEFAULT_RATE
     from thirdparty.mpris_server.events import EventAdapter
     from thirdparty.mpris_server.server import Server
 except:
-    print_with_time("Failed to init MPRIS libraries!")
-    print_with_time(traceback.format_exc())
+    logger.warning("Failed to init MPRIS libraries!")
+    logger.warning(traceback.format_exc())
 
 qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
 
@@ -95,7 +131,7 @@ else:
 APP_VERSION = '__DEB_VERSION__'
 
 if not sys.version_info >= (3, 6, 0):
-    print_with_time("Incompatible Python version! Required >= 3.6")
+    logger.error("Incompatible Python version! Required >= 3.6")
     sys.exit(1)
 
 setproctitle.setproctitle("yuki-iptv")
@@ -156,39 +192,6 @@ DOCK_WIDGET_WIDTH = max(DOCK_WIDGET_WIDTH, 0)
 
 iptv_playlists = {}
 
-parser = argparse.ArgumentParser(prog="yuki-iptv", description=MAIN_WINDOW_TITLE)
-parser.add_argument(
-    '--python',
-    help='Internal argument, do not use'
-)
-parser.add_argument(
-    '--version',
-    action='store_true',
-    help='Show version'
-)
-parser.add_argument(
-    '--disable-qt6',
-    action='store_true',
-    help='Force use Qt 5'
-)
-parser.add_argument(
-    '--silent',
-    action='store_true',
-    help='Do not output to console'
-)
-parser.add_argument(
-    '--debug',
-    action='store_true',
-    help='More debugging output'
-)
-parser.add_argument(
-    'URL',
-    help='Playlist URL or file',
-    nargs='?'
-)
-args1 = parser.parse_args()
-args_init(args1)
-
 if args1.version:
     print("{} {}".format(MAIN_WINDOW_TITLE, APP_VERSION))
     sys.exit(0)
@@ -237,9 +240,6 @@ def show_exception(e, e_traceback="", prev=""):
         _('Error'), message, _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
     )
     msg.exec()
-    # REALLY make sure process is stopped
-    os.killpg(0, signal.SIGKILL)
-    sys.exit(0)
 
 # Used as a decorator to run things in the main loop, from another thread
 def idle_function(func):
@@ -271,10 +271,10 @@ if __name__ == '__main__':
         os.setpgrp()
     except:
         pass
-    print_with_time("Qt init...")
+    logger.info("Qt init...")
     app = QtWidgets.QApplication(sys.argv)
-    print_with_time("Qt init successful")
-    print_with_time("")
+    logger.info("Qt init successful")
+    logger.info("")
 
     setAppFusion = True
     try:
@@ -284,16 +284,16 @@ if __name__ == '__main__':
                 if 'styleredefoff' in settings_tmp_json:
                     setAppFusion = settings_tmp_json['styleredefoff']
     except:
-        print_with_time("[WARNING] failed to read settings.json")
+        logger.warning("failed to read settings.json")
 
     try:
         if setAppFusion:
             app.setStyle("fusion")
-            print_with_time('app.setStyle("fusion") OK')
+            logger.info('app.setStyle("fusion") OK')
         else:
-            print_with_time("fusion style turned OFF")
+            logger.info("fusion style turned OFF")
     except:
-        print_with_time('[WARNING] app.setStyle("fusion") FAILED')
+        logger.warning('app.setStyle("fusion") FAILED')
 
     # dummy, for xgettext
     PLAYERNAME = _('IPTV player')
@@ -303,23 +303,23 @@ if __name__ == '__main__':
     locale.setlocale(locale.LC_NUMERIC, 'C')
 
     try:
-        print_with_time("")
-        print_with_time("{} starting...".format(MAIN_WINDOW_TITLE))
-        print_with_time("Copyright (c) 2021-2022 Astroncia")
-        print_with_time("Copyright (c) 2023 yuki-chan-nya")
-        print_with_time("")
+        logger.info("")
+        logger.info("{} starting...".format(MAIN_WINDOW_TITLE))
+        logger.info("Copyright (c) 2021-2022 Astroncia")
+        logger.info("Copyright (c) 2023 yuki-chan-nya")
+        logger.info("")
         # Version debugging
-        print_with_time("Current version: {}".format(APP_VERSION))
-        print_with_time("")
-        print_with_time("Using Python {}".format(sys.version.replace('\n', '')))
+        logger.info("Current version: {}".format(APP_VERSION))
+        logger.info("")
+        logger.info("Using Python {}".format(sys.version.replace('\n', '')))
         # Qt library debugging
-        print_with_time("Qt library: {}".format(qt_library))
+        logger.info("Qt library: {}".format(qt_library))
         try:
             qt_version = qt_version_pt1()
         except:
             qt_version = qt_version_pt2()
-        print_with_time("Qt version: {}".format(qt_version))
-        print_with_time("")
+        logger.info("Qt version: {}".format(qt_version))
+        logger.info("")
 
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
@@ -331,7 +331,7 @@ if __name__ == '__main__':
         try:
             from thirdparty import mpv
         except:
-            print_with_time("Falling back to old mpv library...")
+            logger.warning("Falling back to old mpv library...")
             from thirdparty import mpv_old as mpv
             DEFAULT_HWACCEL = "auto"
 
@@ -385,27 +385,27 @@ if __name__ == '__main__':
         init_interface_widgets(settings)
 
         if settings['hwaccel']:
-            print_with_time(_('Hardware acceleration enabled'))
+            logger.info(_('Hardware acceleration enabled'))
         else:
-            print_with_time(_('Hardware acceleration disabled'))
+            logger.info(_('Hardware acceleration disabled'))
 
-        print_with_time("Checking theme")
+        logger.info("Checking theme")
         dark_label = QtWidgets.QLabel("Darkness test")
         is_dark_theme = dark_label.palette().color(
             _enum(QtGui.QPalette, 'ColorRole.WindowText')
         ).value() > \
         dark_label.palette().color(_enum(QtGui.QPalette, 'ColorRole.Window')).value()
         if is_dark_theme:
-            print_with_time("Detected dark theme, applying icons compat")
+            logger.info("Detected dark theme, applying icons compat")
             YukiData.use_dark_theme = True
         else:
-            print_with_time("Detected light theme")
+            logger.info("Detected light theme")
             YukiData.use_dark_theme = False
 
         if settings["catchupenable"]:
-            print_with_time("Catchup enabled")
+            logger.info("Catchup enabled")
         else:
-            print_with_time("Catchup disabled")
+            logger.info("Catchup disabled")
 
         # URL override for command line
         if args1.URL:
@@ -417,7 +417,7 @@ if __name__ == '__main__':
         def save_tvguide_sets_proc(tvguide_sets_arg):
             if tvguide_sets_arg:
                 if not settings["nocacheepg"]:
-                    print_with_time("Writing EPG cache...")
+                    logger.info("Writing EPG cache...")
                     file2 = open(str(Path(LOCAL_DIR, 'epg.cache')), 'wb')
                     file2.write(codecs.encode(bytes(json.dumps(
                         {
@@ -428,7 +428,7 @@ if __name__ == '__main__':
                         }
                     ), 'utf-8'), 'zlib'))
                     file2.close()
-                    print_with_time("Writing EPG cache done")
+                    logger.info("Writing EPG cache done")
 
         epg_thread_2 = None
 
@@ -499,7 +499,7 @@ if __name__ == '__main__':
 
         def force_update_epg_act():
             global epg_failed
-            print_with_time("Force update EPG triggered")
+            logger.info("Force update EPG triggered")
             if epg_failed:
                 epg_failed = False
             force_update_epg()
@@ -530,7 +530,7 @@ if __name__ == '__main__':
                     current_url[0] == settings_m3u and current_url[1] == settings_epg
                 ):
                     # Ignoring epg.cache, EPG URL changed
-                    print_with_time("Ignoring epg.cache, EPG URL changed")
+                    logger.info("Ignoring epg.cache, EPG URL changed")
                     os.remove(str(Path(LOCAL_DIR, 'epg.cache')))
                     file1_json = {}
             except:
@@ -543,13 +543,13 @@ if __name__ == '__main__':
         def update_epg_func():
             global settings, tvguide_sets, prog_ids, epg_icons, programmes, epg_ready
             if settings["nocacheepg"]:
-                print_with_time("No cache EPG active, deleting old EPG cache file")
+                logger.info("No cache EPG active, deleting old EPG cache file")
                 try:
                     if os.path.isfile(str(Path(LOCAL_DIR, 'epg.cache'))):
                         os.remove(str(Path(LOCAL_DIR, 'epg.cache')))
                 except:
                     pass
-            print_with_time("Reading cached TV guide if exists...")
+            logger.info("Reading cached TV guide if exists...")
             tvguide_read_time = time.time()
             programmes_1 = {}
             if not os.path.isfile(str(Path(LOCAL_DIR, 'epg.cache'))):
@@ -586,13 +586,13 @@ if __name__ == '__main__':
                 except:
                     pass
             if not is_program_actual(tvguide_sets, force=True):
-                print_with_time("EPG cache expired, updating...")
+                logger.info("EPG cache expired, updating...")
                 epg_ready = True
                 force_update_epg()
             programmes = programmes_1
             programmes_1 = {}
             epg_ready = True
-            print_with_time(
+            logger.info(
                 "TV guide read done, took {} seconds".format(time.time() - tvguide_read_time)
             )
 
@@ -610,9 +610,9 @@ if __name__ == '__main__':
         channels = {}
         programmes = {}
 
-        print_with_time("Init m3u editor")
+        logger.info("Init m3u editor")
         m3u_editor = M3UEditor(_=_, icon=main_icon, icons_folder=ICONS_FOLDER, settings=settings)
-        print_with_time("M3u editor init done")
+        logger.info("M3u editor init done")
 
         def show_m3u_editor():
             if m3u_editor.isVisible():
@@ -628,7 +628,7 @@ if __name__ == '__main__':
             try:
                 os.mkdir(str(Path(save_folder)))
             except:
-                print_with_time("Failed to create save folder!")
+                logger.warning("Failed to create save folder!")
                 save_folder = SAVE_FOLDER_DEFAULT
                 if not os.path.isdir(str(Path(save_folder))):
                     os.mkdir(str(Path(save_folder)))
@@ -683,8 +683,8 @@ if __name__ == '__main__':
                                         break
                                 break
                 except:
-                    print_with_time("Exception in getArrayItem (series)")
-                    print_with_time(traceback.format_exc())
+                    logger.warning("Exception in getArrayItem (series)")
+                    logger.warning(traceback.format_exc())
             return arr_item_ret
 
         array = {}
@@ -697,7 +697,7 @@ if __name__ == '__main__':
             status_code = 0
 
         if LOCALE_CHANGED:
-            print_with_time("System locale changed from last run")
+            logger.info("System locale changed from last run")
             if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.cache.json'))):
                 os.remove(str(Path(LOCAL_DIR, 'playlist.cache.json')))
 
@@ -707,7 +707,7 @@ if __name__ == '__main__':
         if settings['nocache']:
             use_cache = False
         if not use_cache:
-            print_with_time(_('Playlist caching off'))
+            logger.info(_('Playlist caching off'))
         if use_cache and os.path.isfile(str(Path(LOCAL_DIR, 'playlist.cache.json'))):
             pj = open(str(Path(LOCAL_DIR, 'playlist.cache.json')), 'r', encoding="utf8")
             pj1 = json.loads(pj.read())['url']
@@ -725,17 +725,17 @@ if __name__ == '__main__':
                 playlist_load_tmp.close()
                 playlist_load_tmp_data = json.loads(playlist_load_tmp_data)
                 if not playlist_load_tmp_data['m3u'] and not playlist_load_tmp_data['array']:
-                    print_with_time("Cached playlist broken, ignoring and deleting")
+                    logger.warning("Cached playlist broken, ignoring and deleting")
                     os.remove(str(Path(LOCAL_DIR, 'playlist.cache.json')))
             except:
                 pass
         if not os.path.isfile(str(Path(LOCAL_DIR, 'playlist.cache.json'))):
-            print_with_time(_('Loading playlist...'))
+            logger.info(_('Loading playlist...'))
             if settings['m3u']:
                 # Parsing m3u
                 if settings['m3u'].startswith('XTREAM::::::::::::::'):
                     # XTREAM::::::::::::::username::::::::::::::password::::::::::::::url
-                    print_with_time("Using XTream API")
+                    logger.info("Using XTream API")
                     xtream_sha512 = hashlib.sha512(settings['m3u'].encode('utf-8')).hexdigest()
                     xtream_split = settings['m3u'].split('::::::::::::::')
                     xtream_username = xtream_split[1]
@@ -752,7 +752,7 @@ if __name__ == '__main__':
                             ''
                         )
                     except:
-                        print_with_time("XTream init failure")
+                        logger.warning("XTream init failure")
                         xt = EmptyClass()
                         xt.auth_data = {} # pylint: disable=attribute-defined-outside-init
                     if xt.auth_data != {}:
@@ -762,7 +762,7 @@ if __name__ == '__main__':
                             try:
                                 m3u += convert_xtream_to_m3u(_, xt.movies, True, 'VOD')
                             except:
-                                print_with_time("XTream movies parse FAILED")
+                                logger.warning("XTream movies parse FAILED")
                             for movie1 in xt.series:
                                 if isinstance(movie1, Serie):
                                     YukiData.series[movie1.name] = movie1
@@ -797,8 +797,8 @@ if __name__ == '__main__':
                             m3u = file.read()
                             file.close()
                         except:
-                            print_with_time("Playlist is not UTF-8 encoding")
-                            print_with_time("Trying to detect encoding...")
+                            logger.warning("Playlist is not UTF-8 encoding")
+                            logger.info("Trying to detect encoding...")
                             file_222_encoding = ''
                             try:
                                 file_222 = open(settings['m3u'], 'rb')
@@ -807,7 +807,7 @@ if __name__ == '__main__':
                             except:
                                 pass
                             if file_222_encoding:
-                                print_with_time("Guessed encoding: {}".format(file_222_encoding))
+                                logger.info("Guessed encoding: {}".format(file_222_encoding))
                                 try:
                                     file_111 = open(
                                         settings['m3u'],
@@ -817,10 +817,10 @@ if __name__ == '__main__':
                                     m3u = file_111.read()
                                     file_111.close()
                                 except:
-                                    print_with_time("Wrong encoding guess!")
+                                    logger.warning("Wrong encoding guess!")
                                     show_exception(_('Failed to load playlist - unknown encoding! Please use playlists in UTF-8 encoding.')) # pylint: disable=line-too-long
                             else:
-                                print_with_time("Unknown encoding!")
+                                logger.warning("Unknown encoding!")
                                 show_exception(_('Failed to load playlist - unknown encoding! Please use playlists in UTF-8 encoding.')) # pylint: disable=line-too-long
                     else:
                         try:
@@ -835,20 +835,20 @@ if __name__ == '__main__':
                                 m3u_req.status_code = 400
 
                             if m3u_req.status_code != 200:
-                                print_with_time("Playlist load failed, trying empty user agent")
+                                logger.warning("Playlist load failed, trying empty user agent")
                                 m3u_req = requests.get(
                                     settings['m3u'],
                                     headers={'User-Agent': user_agent},
                                     timeout=3
                                 )
 
-                            print_with_time("Status code: {}".format(m3u_req.status_code))
-                            print_with_time("{} bytes".format(len(m3u_req.content)))
+                            logger.info("Status code: {}".format(m3u_req.status_code))
+                            logger.info("{} bytes".format(len(m3u_req.content)))
                             m3u = m3u_req.text
                         except:
                             m3u = ""
                             exp3 = traceback.format_exc()
-                            print_with_time("Playlist URL loading error!" + '\n' + exp3)
+                            logger.warning("Playlist URL loading error!" + '\n' + exp3)
                             show_exception(_('Playlist loading error!'))
 
             m3u_parser = M3UParser(settings['udp_proxy'], _)
@@ -885,7 +885,7 @@ if __name__ == '__main__':
                         if not m3u_line['tvg-group'] in groups:
                             groups.append(m3u_line['tvg-group'])
                 except:
-                    print_with_time("Playlist parsing error!" + '\n' + traceback.format_exc())
+                    logger.warning("Playlist parsing error!" + '\n' + traceback.format_exc())
                     show_exception(_('Playlist loading error!'))
                     m3u = ""
                     array = {}
@@ -904,14 +904,14 @@ if __name__ == '__main__':
                         ch2 else _('All channels')
                     array[ch2['title']] = ch2
 
-            print_with_time("{} channels, {} groups, {} movies, {} series".format(
+            logger.info("{} channels, {} groups, {} movies, {} series".format(
                 len(array), len([group2 for group2 in groups if group2 != _('All channels')]),
                 len(YukiData.movies), len(YukiData.series)
             ))
 
-            print_with_time(_('Playling loading done!'))
+            logger.info(_('Playling loading done!'))
             if use_cache:
-                print_with_time(_('Caching playlist...'))
+                logger.info(_('Caching playlist...'))
                 cm3u = json.dumps({
                     'url': settings['m3u'],
                     'array': array,
@@ -923,9 +923,9 @@ if __name__ == '__main__':
                 cm3uf = open(str(Path(LOCAL_DIR, 'playlist.cache.json')), 'w', encoding="utf8")
                 cm3uf.write(cm3u)
                 cm3uf.close()
-                print_with_time(_('Playlist cache saved!'))
+                logger.info(_('Playlist cache saved!'))
         else:
-            print_with_time(_('Using cached playlist'))
+            logger.info(_('Using cached playlist'))
             cm3uf = open(str(Path(LOCAL_DIR, 'playlist.cache.json')), 'r', encoding="utf8")
             cm3u = json.loads(cm3uf.read())
             cm3uf.close()
@@ -1075,7 +1075,7 @@ if __name__ == '__main__':
             if resettodefaults_btn_clicked_msg == _enum(
                 QtWidgets.QMessageBox, 'StandardButton.Yes'
             ):
-                print_with_time("Restoring default keybinds")
+                logger.info("Restoring default keybinds")
                 main_keybinds = main_keybinds_default.copy()
                 shortcuts_table.setRowCount(len(main_keybinds))
                 keybind_i = -1
@@ -1280,7 +1280,7 @@ if __name__ == '__main__':
                 )
                 tvguide_lbl_3.setText(ch_3_guide)
             except:
-                print_with_time("[WARNING] Exception in epg_win_2_checkbox_changed")
+                logger.warning("Exception in epg_win_2_checkbox_changed")
 
         def showonlychplaylist_chk_clk():
             update_tvguide_2()
@@ -1711,7 +1711,7 @@ if __name__ == '__main__':
                 if is_recording_func() is True:
                     break
                 time.sleep(1)
-            print_with_time("Record via scheduler ended, executing post-action...")
+            logger.info("Record via scheduler ended, executing post-action...")
             # 0 - nothing to do
             if praction_choose.currentIndex() == 1: # 1 - Press Stop
                 mpv_stop()
@@ -1737,7 +1737,7 @@ if __name__ == '__main__':
                     lbl2.show()
                 else:
                     if recViaScheduler:
-                        print_with_time(
+                        logger.info(
                             "Record via scheduler ended, waiting for ffmpeg process completion..."
                         )
                         record_post_action()
@@ -1785,7 +1785,7 @@ if __name__ == '__main__':
                             st_planned = \
                                 "Starting planned record" + \
                                     " (start_time='{}' end_time='{}' channel='{}')"
-                            print_with_time(
+                            logger.info(
                                 st_planned.format(start_time_1, end_time_1, channel_name_rec)
                             )
                             sch_recordings[array_name] = do_start_record(array_name)
@@ -1796,7 +1796,7 @@ if __name__ == '__main__':
                             stop_planned = \
                                 "Stopping planned record" + \
                                     " (start_time='{}' end_time='{}' channel='{}')"
-                            print_with_time(
+                            logger.info(
                                 stop_planned.format(start_time_1, end_time_1, channel_name_rec)
                             )
                             do_stop_record(array_name)
@@ -2130,7 +2130,7 @@ if __name__ == '__main__':
         panscan_choose.setDecimals(1)
 
         def_user_agent = uas[settings['useragent']]
-        print_with_time("Default user agent: {}".format(def_user_agent))
+        logger.info("Default user agent: {}".format(def_user_agent))
 
         YukiData.bitrate_failed = False
 
@@ -2162,8 +2162,8 @@ if __name__ == '__main__':
             except:
                 if not YukiData.bitrate_failed:
                     YukiData.bitrate_failed = True
-                    print_with_time("on_bitrate FAILED with exception!")
-                    print_with_time(traceback.format_exc())
+                    logger.warning("on_bitrate FAILED with exception!")
+                    logger.warning(traceback.format_exc())
 
         def on_video_params(property1, params): # pylint: disable=unused-argument
             try:
@@ -2271,34 +2271,34 @@ if __name__ == '__main__':
                 'ref': ''
             }
             if '|' in url5:
-                print_with_time("")
-                print_with_time("Found Kodi-style arguments, parsing")
+                logger.info("")
+                logger.info("Found Kodi-style arguments, parsing")
                 split_kodi = url5.split('|')[1]
                 if '&' in split_kodi:
-                    print_with_time("Multiple")
+                    logger.info("Multiple")
                     split_kodi = split_kodi.split('&')
                 else:
-                    print_with_time("Single")
+                    logger.info("Single")
                     split_kodi = [split_kodi]
                 for kodi_str in split_kodi:
                     if kodi_str.startswith('User-Agent='):
                         kodi_user_agent = kodi_str.replace('User-Agent=', '', 1)
-                        print_with_time("Kodi-style User-Agent found: {}".format(kodi_user_agent))
+                        logger.info("Kodi-style User-Agent found: {}".format(kodi_user_agent))
                         ua_data['ua'] = kodi_user_agent
                     if kodi_str.startswith('user-agent='):
                         kodi_user_agent = kodi_str.replace('user-agent=', '', 1)
-                        print_with_time("Kodi-style User-Agent found: {}".format(kodi_user_agent))
+                        logger.info("Kodi-style User-Agent found: {}".format(kodi_user_agent))
                         ua_data['ua'] = kodi_user_agent
                     if kodi_str.startswith('Referer='):
                         kodi_referer = kodi_str.replace('Referer=', '', 1)
-                        print_with_time("Kodi-style Referer found: {}".format(kodi_referer))
+                        logger.info("Kodi-style Referer found: {}".format(kodi_referer))
                         ua_data['ref'] = kodi_referer
                     if kodi_str.startswith('referer='):
                         kodi_referer = kodi_str.replace('referer=', '', 1)
-                        print_with_time("Kodi-style Referer found: {}".format(kodi_referer))
+                        logger.info("Kodi-style Referer found: {}".format(kodi_referer))
                         ua_data['ref'] = kodi_referer
                 url5 = url5.split('|')[0]
-                print_with_time("")
+                logger.info("")
             if '^^^^^^^^^^' in url5:
                 if '^^^^^^^^^^useragent=' in url5:
                     extvlcopt_ua = url5.split('^^^^^^^^^^useragent=')[1].split('@#@')[0]
@@ -2325,7 +2325,7 @@ if __name__ == '__main__':
                 player.http_header_fields = "Referer: {}".format(ua_data['ref'])
 
             if not arg_override_play.endswith('/main.png'):
-                print_with_time("Using User-Agent: {}".format(player.user_agent))
+                logger.info("Using User-Agent: {}".format(player.user_agent))
                 cur_ref = ""
                 try:
                     for ref1 in player.http_header_fields:
@@ -2334,7 +2334,7 @@ if __name__ == '__main__':
                             cur_ref = ref1
                 except:
                     pass
-                print_with_time("Using HTTP Referer: {}".format(cur_ref))
+                logger.info("Using HTTP Referer: {}".format(cur_ref))
 
             player.play(parse_specifiers_now_url(arg_override_play))
             if event_handler:
@@ -2355,7 +2355,7 @@ if __name__ == '__main__':
             global event_handler
             player.command('stop')
             if not ignore:
-                print_with_time("Disabling deinterlace for main.png")
+                logger.info("Disabling deinterlace for main.png")
                 player.deinterlace = False
             player.play(str(Path('yuki_iptv', ICONS_FOLDER, 'main.png')))
             if event_handler:
@@ -2439,8 +2439,8 @@ if __name__ == '__main__':
 
         def doPlay(play_url1, ua_ch=def_user_agent, chan_name_0=''):
             comm_instance.do_play_args = (play_url1, ua_ch, chan_name_0)
-            print_with_time("")
-            print_with_time("Playing '{}' ('{}')".format(chan_name_0, format_url_clean(play_url1)))
+            logger.info("")
+            logger.info("Playing '{}' ('{}')".format(chan_name_0, format_url_clean(play_url1)))
             # Loading
             loading.setText(_('Loading...'))
             loading.setStyleSheet('color: #778a30')
@@ -2450,7 +2450,7 @@ if __name__ == '__main__':
             if play_url1.startswith("udp://") or play_url1.startswith("rtp://"):
                 try:
                     # For low latency on multicast
-                    print_with_time("Using multicast optimized settings")
+                    logger.info("Using multicast optimized settings")
                     player.cache = 'no'
                     player.untimed = True
                     player['cache-pause'] = False
@@ -2462,7 +2462,7 @@ if __name__ == '__main__':
                     player['interpolation'] = False
                     player['video-latency-hacks'] = True
                 except:
-                    print_with_time("Failed to set multicast optimized settings!")
+                    logger.warning("Failed to set multicast optimized settings!")
             try:
                 player.stream_lavf_o = \
                     '-reconnect=1 -reconnect_at_eof=1 -reconnect_streamed=1 -reconnect_delay_max=2'
@@ -3413,7 +3413,7 @@ if __name__ == '__main__':
             comm_instance.mainThread_partial.emit(m_func_2)
 
         def move_separate_playlist_func(seppl_qpoint):
-            print_with_time("Moving separate playlist to QPoint({}, {})".format(
+            logger.info("Moving separate playlist to QPoint({}, {})".format(
                 seppl_qpoint.x(),
                 seppl_qpoint.y()
             ))
@@ -3536,7 +3536,7 @@ if __name__ == '__main__':
                 playlists_win.hide()
 
         def reload_playlist():
-            print_with_time("Reloading playlist...")
+            logger.info("Reloading playlist...")
             if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.cache.json'))):
                 os.remove(str(Path(LOCAL_DIR, 'playlist.cache.json')))
             save_settings()
@@ -3646,7 +3646,7 @@ if __name__ == '__main__':
                     loglevel='info' # debug
                 )
             except:
-                print_with_time("mpv init with ytdl failed")
+                logger.warning("mpv init with ytdl failed")
                 try:
                     player = mpv.MPV(
                         **options,
@@ -3658,7 +3658,7 @@ if __name__ == '__main__':
                         loglevel='info' # debug
                     )
                 except:
-                    print_with_time("mpv init with osc failed")
+                    logger.warning("mpv init with osc failed")
                     player = mpv.MPV(
                         **options,
                         wid=str(int(win.container.winId())),
@@ -3669,7 +3669,7 @@ if __name__ == '__main__':
                 try:
                     player.osc = False
                 except:
-                    print_with_time("player.osc set failed")
+                    logger.warning("player.osc set failed")
             try:
                 player['force-seekable'] = True
             except:
@@ -3692,7 +3692,7 @@ if __name__ == '__main__':
             try:
                 player['audio-client-name'] = 'yuki-iptv'
             except:
-                print_with_time("mpv audio-client-name set failed")
+                logger.warning("mpv audio-client-name set failed")
 
             try:
                 mpv_version = player.mpv_version
@@ -3701,29 +3701,29 @@ if __name__ == '__main__':
             except:
                 mpv_version = "unknown mpv version"
 
-            print_with_time("Using {}".format(mpv_version))
+            logger.info("Using {}".format(mpv_version))
 
             textbox.setText(format_about_text(_('yuki-iptv, version {}\n\n© 2021-2022 Astroncia\n© 2023 yuki-chan-nya\nhttps://github.com/yuki-chan-nya\n\nIPTV player\n\nSupports TV guide (EPG) only in XMLTV and JTV formats!\n\nIcons by Font Awesome ( https://fontawesome.com/ )\nIcons licensed under the CC BY 4.0 License\n( https://creativecommons.org/licenses/by/4.0/ )').format(APP_VERSION))) # pylint: disable=line-too-long
 
             if settings["cache_secs"] != 0:
                 try:
                     player['demuxer-readahead-secs'] = settings["cache_secs"]
-                    print_with_time('Demuxer cache set to {}s'.format(settings["cache_secs"]))
+                    logger.info('Demuxer cache set to {}s'.format(settings["cache_secs"]))
                 except:
                     pass
                 try:
                     player['cache-secs'] = settings["cache_secs"]
-                    print_with_time('Cache set to {}s'.format(settings["cache_secs"]))
+                    logger.info('Cache set to {}s'.format(settings["cache_secs"]))
                 except:
                     pass
             else:
-                print_with_time("Using default cache settings")
+                logger.info("Using default cache settings")
             player.user_agent = def_user_agent
             if settings["referer"]:
                 player.http_header_fields = "Referer: {}".format(settings["referer"])
-                print_with_time("HTTP referer: '{}'".format(settings["referer"]))
+                logger.info("HTTP referer: '{}'".format(settings["referer"]))
             else:
-                print_with_time("No HTTP referer set up")
+                logger.info("No HTTP referer set up")
             mpv_override_volume(100)
             player.loop = True
 
@@ -3736,8 +3736,8 @@ if __name__ == '__main__':
                     1, right_click_menu, win, player.track_list, playing_chan, get_keybind
                 )
             except:
-                print_with_time("WARNING: populate_menubar failed")
-                show_exception("WARNING: populate_menubar failed\n\n" + traceback.format_exc())
+                logger.warning("populate_menubar failed")
+                show_exception("populate_menubar failed\n\n" + traceback.format_exc())
             redraw_menubar()
 
             @player.event_callback('file-loaded')
@@ -3762,7 +3762,7 @@ if __name__ == '__main__':
                 def mouse_move_event(): # pylint: disable=unused-variable
                     mouse_move_event_callback()
             except:
-                print_with_time("Failed to set up mouse move callbacks")
+                logger.warning("Failed to set up mouse move callbacks")
 
             @player.on_key_press('MBTN_LEFT_DBL')
             def my_leftdbl_binding(): # pylint: disable=unused-variable
@@ -3793,8 +3793,6 @@ if __name__ == '__main__':
                 mpv_fullscreen,
                 showhideeverything,
                 main_channel_settings,
-                show_app_log,
-                show_mpv_log,
                 show_settings,
                 show_help,
                 do_screenshot,
@@ -3825,7 +3823,7 @@ if __name__ == '__main__':
             )
 
             if settings["remembervol"] and os.path.isfile(str(Path(LOCAL_DIR, 'volume.json'))):
-                print_with_time("Set volume to {}".format(vol_remembered))
+                logger.info("Set volume to {}".format(vol_remembered))
                 label7.setValue(vol_remembered)
                 mpv_volume_set()
             else:
@@ -3972,10 +3970,6 @@ if __name__ == '__main__':
                     streaminfo_win.hide()
                 if sepplaylist_win.isVisible():
                     sepplaylist_win.hide()
-                if applog_win.isVisible():
-                    applog_win.hide()
-                if mpvlog_win.isVisible():
-                    mpvlog_win.hide()
             def createMenuBar_mw(self):
                 self.menu_bar_qt = self.menuBar()
                 init_yuki_iptv_menubar(self, app, self.menu_bar_qt)
@@ -4008,7 +4002,7 @@ if __name__ == '__main__':
                 win_geometry = QtWidgets.QDesktopWidget().screenGeometry(win)
             win_width = win_geometry.width()
             win_height = win_geometry.height()
-            print_with_time("Screen size: {}x{}".format(win_width, win_height))
+            logger.info("Screen size: {}x{}".format(win_width, win_height))
             return (win_width, win_height,)
 
         def get_curwindow_pos_actual():
@@ -4130,13 +4124,13 @@ if __name__ == '__main__':
         def setPlayerSettings(j): # pylint: disable=too-many-branches
             global playing_chan
             try:
-                print_with_time("setPlayerSettings waiting for channel load...")
+                logger.info("setPlayerSettings waiting for channel load...")
                 try:
                     player.wait_until_playing()
                 except:
                     pass
                 if j == playing_chan:
-                    print_with_time("setPlayerSettings '{}'".format(j))
+                    logger.info("setPlayerSettings '{}'".format(j))
                     if j in channel_sets:
                         d = channel_sets[j]
                         player.deinterlace = d['deinterlace']
@@ -4200,17 +4194,17 @@ if __name__ == '__main__':
                         player.contrast = 0
                     # Print settings
                     if player.deinterlace:
-                        print_with_time("Deinterlace: enabled")
+                        logger.info("Deinterlace: enabled")
                     else:
-                        print_with_time("Deinterlace: disabled")
-                    print_with_time("Contrast: {}".format(player.contrast))
-                    print_with_time("Brightness: {}".format(player.brightness))
-                    print_with_time("Hue: {}".format(player.hue))
-                    print_with_time("Saturation: {}".format(player.saturation))
-                    print_with_time("Gamma: {}".format(player.gamma))
-                    print_with_time("Video aspect: {}".format(getVideoAspect()))
-                    print_with_time("Zoom: {}".format(player.video_zoom))
-                    print_with_time("Panscan: {}".format(player.panscan))
+                        logger.info("Deinterlace: disabled")
+                    logger.info("Contrast: {}".format(player.contrast))
+                    logger.info("Brightness: {}".format(player.brightness))
+                    logger.info("Hue: {}".format(player.hue))
+                    logger.info("Saturation: {}".format(player.saturation))
+                    logger.info("Gamma: {}".format(player.gamma))
+                    logger.info("Video aspect: {}".format(getVideoAspect()))
+                    logger.info("Zoom: {}".format(player.video_zoom))
+                    logger.info("Panscan: {}".format(player.panscan))
             except:
                 pass
 
@@ -4323,14 +4317,12 @@ if __name__ == '__main__':
         def set_always_on_top(aot_state):
             global cur_aot_state
             cur_aot_state = aot_state
-            if args1.debug:
-                print_with_time("[DEBUG] set_always_on_top: {}".format(aot_state))
+            logger.debug("set_always_on_top: {}".format(aot_state))
             whint1 = _enum(QtCore.Qt, 'WindowType.WindowStaysOnTopHint')
             if ( (aot_state and (win.windowFlags() & whint1)) or \
                 (not aot_state and (not win.windowFlags() & whint1)) ):
-                if args1.debug:
-                    print_with_time("[DEBUG] set_always_on_top: nothing to do")
-                    return
+                logger.debug("set_always_on_top: nothing to do")
+                return
             winIsVisible = win.isVisible()
             winPos1 = win.pos()
             if aot_state:
@@ -4367,10 +4359,10 @@ if __name__ == '__main__':
             except:
                 pass
         if is_aot:
-            print_with_time("Always on top enabled")
+            logger.info("Always on top enabled")
             enable_always_on_top()
         else:
-            print_with_time("Always on top disabled")
+            logger.info("Always on top disabled")
 
         cur_aot_state = is_aot
 
@@ -4388,7 +4380,7 @@ if __name__ == '__main__':
                 # Entering fullscreen
                 if not YukiData.fullscreen_locked:
                     YukiData.fullscreen_locked = True
-                    print_with_time("Entering fullscreen started")
+                    logger.info("Entering fullscreen started")
                     time01 = time.time()
                     isControlPanelVisible = dockWidget2.isVisible()
                     if settings["playlistsep"]:
@@ -4408,7 +4400,7 @@ if __name__ == '__main__':
                     win.menu_bar_qt.hide()
                     if settings['playlistsep']:
                         currentDockWidgetPos = sepplaylist_win.pos()
-                        print_with_time("Saved separate playlist position - QPoint({}, {})".format(
+                        logger.info("Saved separate playlist position - QPoint({}, {})".format(
                             currentDockWidgetPos.x(),
                             currentDockWidgetPos.y()
                         ))
@@ -4437,20 +4429,20 @@ if __name__ == '__main__':
                     centerwidget(loading2, 50)
                     try:
                         if settings["playlistsep"] and sepplaylist_win.isVisible():
-                            print_with_time(
+                            logger.info(
                                 "Applied workaround for separate playlist in fullscreen"
                             )
                             sepplaylist_win.hide()
                     except:
                         pass
                     time02 = time.time() - time01
-                    print_with_time("Entering fullscreen ended, took {} seconds".format(time02))
+                    logger.info("Entering fullscreen ended, took {} seconds".format(time02))
                     YukiData.fullscreen_locked = False
             else:
                 # Leaving fullscreen
                 if not YukiData.fullscreen_locked:
                     YukiData.fullscreen_locked = True
-                    print_with_time("Leaving fullscreen started")
+                    logger.info("Leaving fullscreen started")
                     time03 = time.time()
                     setShortcutState(False)
                     if l1.isVisible() and l1.text().startswith(_('Volume')):
@@ -4511,7 +4503,7 @@ if __name__ == '__main__':
                         win.menu_bar_qt.hide()
                         setShortcutState(True)
                     time04 = time.time() - time03
-                    print_with_time("Leaving fullscreen ended, took {} seconds".format(time04))
+                    logger.info("Leaving fullscreen ended, took {} seconds".format(time04))
                     YukiData.fullscreen_locked = False
 
         dockWidget_out = QtWidgets.QPushButton()
@@ -4715,10 +4707,10 @@ if __name__ == '__main__':
                 if channel_icons_data.do_next_update:
                     channel_icons_data.do_next_update = False
                     btn_update.click()
-                    print_with_time("Channel logos updated")
+                    logger.info("Channel logos updated")
                 try:
                     if len(channel_icons_data.return_dict) != channel_icons_data.total:
-                        print_with_time("Channel logos loaded: {}/{}".format(
+                        logger.info("Channel logos loaded: {}/{}".format(
                             len(channel_icons_data.return_dict), channel_icons_data.total
                         ))
                         btn_update.click()
@@ -4726,7 +4718,7 @@ if __name__ == '__main__':
                         if not channel_icons_data.load_completed:
                             channel_icons_data.load_completed = True
                             channel_icons_data.do_next_update = True
-                            print_with_time("Channel logos loaded ({}/{}), took {} seconds".format(
+                            logger.info("Channel logos loaded ({}/{}), took {} seconds".format(
                                 len(channel_icons_data.return_dict),
                                 channel_icons_data.total,
                                 time.time() - channel_icons_data.load_time
@@ -4741,10 +4733,10 @@ if __name__ == '__main__':
                 if channel_icons_data_epg.do_next_update:
                     channel_icons_data_epg.do_next_update = False
                     btn_update.click()
-                    print_with_time("Channel logos (EPG) updated")
+                    logger.info("Channel logos (EPG) updated")
                 try:
                     if len(channel_icons_data_epg.return_dict) != channel_icons_data_epg.total:
-                        print_with_time("Channel logos (EPG) loaded: {}/{}".format(
+                        logger.info("Channel logos (EPG) loaded: {}/{}".format(
                             len(channel_icons_data_epg.return_dict), channel_icons_data_epg.total
                         ))
                         btn_update.click()
@@ -4752,7 +4744,7 @@ if __name__ == '__main__':
                         if not channel_icons_data_epg.load_completed:
                             channel_icons_data_epg.load_completed = True
                             channel_icons_data_epg.do_next_update = True
-                            print_with_time(
+                            logger.info(
                                 "Channel logos (EPG) loaded ({}/{}), took {} seconds".format(
                                     len(channel_icons_data_epg.return_dict),
                                     channel_icons_data_epg.total,
@@ -4773,17 +4765,17 @@ if __name__ == '__main__':
                 if not epg_icons_found:
                     if epg_icons:
                         epg_icons_found = True
-                        print_with_time("EPG icons ready")
+                        logger.info("EPG icons ready")
             else:
                 if not epg_icons_aldisabled:
                     epg_icons_aldisabled = True
-                    print_with_time("EPG icons disabled")
+                    logger.info("EPG icons disabled")
 
         @async_function
         def update_channel_icons():
             while not win.isVisible():
                 time.sleep(1)
-            print_with_time("Loading channel logos...")
+            logger.info("Loading channel logos...")
             if not os.path.isdir(str(Path(LOCAL_DIR, 'channel_icons_cache'))):
                 os.mkdir(str(Path(LOCAL_DIR, 'channel_icons_cache')))
             channel_icons_data.load_time = time.time()
@@ -4798,7 +4790,7 @@ if __name__ == '__main__':
                 chan_4_logo = getArrayItem(chan_4)['tvg-logo']
                 if chan_4_logo:
                     #fetching_str = "Fetching channel icon from URL '{}' for channel '{}'"
-                    #print_with_time(fetching_str.format(chan_4_logo, chan_4))
+                    #logger.info(fetching_str.format(chan_4_logo, chan_4))
                     fetch_remote_channel_icon(
                         chan_4, chan_4_logo, channel_icons_data.return_dict
                     )
@@ -4810,7 +4802,7 @@ if __name__ == '__main__':
                 time.sleep(1)
             while not epg_icons_found:
                 time.sleep(1)
-            print_with_time("Loading channel logos (EPG)...")
+            logger.info("Loading channel logos (EPG)...")
             if not os.path.isdir(str(Path(LOCAL_DIR, 'channel_icons_cache'))):
                 os.mkdir(str(Path(LOCAL_DIR, 'channel_icons_cache')))
             channel_icons_data_epg.load_time = time.time()
@@ -4825,7 +4817,7 @@ if __name__ == '__main__':
                 chan_5_logo = epg_icons[chan_5]
                 if chan_5_logo:
                     #fetching_str_2 = "Fetching channel icon from URL '{}' for channel '{}'"
-                    #print_with_time(fetching_str_2.format(chan_5_logo, chan_5))
+                    #logger.info(fetching_str_2.format(chan_5_logo, chan_5))
                     fetch_remote_channel_icon(
                         chan_5, chan_5_logo, channel_icons_data_epg.return_dict
                     )
@@ -4848,7 +4840,7 @@ if __name__ == '__main__':
                 if settings['channellogos'] != 3:
                     update_channel_icons()
                 else:
-                    print_with_time("Channel logos from playlist disabled")
+                    logger.info("Channel logos from playlist disabled")
                 update_channel_icons_epg()
             try:
                 idx = (page_box.value() - 1) * settings["channelsonpage"]
@@ -5011,7 +5003,7 @@ if __name__ == '__main__':
                         else:
                             mycwdg.hideProgress()
                     except:
-                        print_with_time("Async EPG load problem, ignoring")
+                        logger.warning("Async EPG load problem, ignoring")
                 else:
                     mycwdg.setTextDown("", "<b>{}</b>".format(i))
                     mycwdg.hideProgress()
@@ -5404,13 +5396,13 @@ if __name__ == '__main__':
         #                prog_ids_1.append(x3)
         #    for x4_chan in [x3 for x3 in array]: # pylint: disable=unnecessary-comprehension
         #        if x4_chan.lower() not in programmes:
-        #            print_with_time("Parsing channel '{}'...".format(x4_chan))
+        #            logger.info("Parsing channel '{}'...".format(x4_chan))
         #            matches = {}
         #            for x4 in prog_ids_1:
         #                x5 = x4.strip().lower()
         #                x5_chan = x4_chan.strip().lower()
         #                matches[(x4_chan, x4)] = damerau_levenshtein(x5_chan, x5)
-        #            print_with_time(sorted(matches.items(), key=lambda x6: x6[1])[0][0][1])
+        #            logger.info(sorted(matches.items(), key=lambda x6: x6[1])[0][0][1])
 
         def show_context_menu(pos):
             is_continue = True
@@ -5470,7 +5462,7 @@ if __name__ == '__main__':
                 try:
                     redraw_series()
                 except:
-                    print_with_time("redraw_series FAILED")
+                    logger.warning("redraw_series FAILED")
                 for item4 in range(win.seriesWidget.count()):
                     if unidecode(filter_txt1).lower().strip() in \
                     unidecode(win.seriesWidget.item(item4).text()).lower().strip():
@@ -5565,7 +5557,7 @@ if __name__ == '__main__':
                     except:
                         pass
                 else:
-                    print_with_time("Fetching data for serie '{}'".format(sel_serie))
+                    logger.info("Fetching data for serie '{}'".format(sel_serie))
                     win.seriesWidget.clear()
                     win.seriesWidget.addItem('< ' + _('Back'))
                     win.seriesWidget.item(0).setForeground(_enum(QtCore.Qt, 'GlobalColor.blue'))
@@ -5589,9 +5581,9 @@ if __name__ == '__main__':
                                 )
                                 win.seriesWidget.addItem(episode_item)
                         YukiData.serie_selected = True
-                        print_with_time("Fetching data for serie '{}' completed".format(sel_serie))
+                        logger.info("Fetching data for serie '{}' completed".format(sel_serie))
                     except:
-                        print_with_time("Fetching data for serie '{}' FAILED".format(sel_serie))
+                        logger.warning("Fetching data for serie '{}' FAILED".format(sel_serie))
 
         win.seriesWidget.itemDoubleClicked.connect(series_change)
 
@@ -5731,7 +5723,7 @@ if __name__ == '__main__':
                     tvguide_many_chans_names.append(tvguide_m_chan)
             tvguide_many_table.setRowCount(len(tvguide_many_chans))
             tvguide_many_table.setVerticalHeaderLabels(tvguide_many_chans_names)
-            print_with_time(tvguide_many_table.horizontalHeader())
+            logger.info(tvguide_many_table.horizontalHeader())
             a_1_len_array = []
             a_1_array = {}
             for chan_6 in tvguide_many_chans:
@@ -5895,12 +5887,10 @@ if __name__ == '__main__':
             except:
                 pass
             if not playlistHiddenFlag:
-                if args1.debug:
-                    print_with_time("playlistHiddenFlag = False")
+                logger.debug("playlistHiddenFlag = False")
                 sepplaylist_win.show()
             else:
-                if args1.debug:
-                    print_with_time("playlistHiddenFlag = True")
+                logger.debug("playlistHiddenFlag = True")
                 sepplaylist_win.hide()
             seppl_data = False
             if os.path.isfile(str(Path(LOCAL_DIR, 'sepplheight.json'))):
@@ -6129,8 +6119,10 @@ if __name__ == '__main__':
                 l1.show()
                 l1.setText2(_('No channel selected for record'))
 
-        def my_log(loglevel, component, message):
-            print_with_time('[{}] {}: {}'.format(loglevel, component, message), log_mpv=True)
+        def my_log(mpv_loglevel, component, message):
+            mpv_log_str = '[{}] {}: {}'.format(mpv_loglevel, component, message)
+            if 'Invalid video timestamp: ' not in str(mpv_log_str):
+                mpv_logger.info(str(mpv_log_str))
 
         def playLastChannel():
             global playing_url, playing_chan, combobox, m3u
@@ -6175,20 +6167,20 @@ if __name__ == '__main__':
         try:
             if 'WAYLAND_DISPLAY' in os.environ:
                 if os.environ['WAYLAND_DISPLAY']:
-                    print_with_time("Found environ WAYLAND_DISPLAY")
+                    logger.info("Found environ WAYLAND_DISPLAY")
                     is_apply_wayland_fix = True
         except:
             pass
         try:
             if 'XDG_SESSION_TYPE' in os.environ:
                 if os.environ['XDG_SESSION_TYPE'] == 'wayland':
-                    print_with_time("Environ XDG_SESSION_TYPE == wayland")
+                    logger.info("Environ XDG_SESSION_TYPE == wayland")
                     is_apply_wayland_fix = True
         except:
             pass
         if is_apply_wayland_fix:
-            print_with_time("")
-            print_with_time("[NOTE] Applying video output fix for Wayland")
+            logger.info("")
+            logger.info("[NOTE] Applying video output fix for Wayland")
             VIDEO_OUTPUT = 'x11'
 
         options = {
@@ -6208,15 +6200,15 @@ if __name__ == '__main__':
                     options[key.replace('--', '')] = value
                     options_2[key.replace('--', '')] = value
         except Exception as e1:
-            print_with_time("Could not parse MPV options!")
-            print_with_time(e1)
-        print_with_time("Testing custom mpv options...")
-        print_with_time(options_2)
+            logger.warning("Could not parse MPV options!")
+            logger.warning(e1)
+        logger.info("Testing custom mpv options...")
+        logger.info(options_2)
         try:
             test_options = mpv.MPV(**options_2)
-            print_with_time("mpv options OK")
+            logger.info("mpv options OK")
         except:
-            print_with_time("mpv options test failed, ignoring them")
+            logger.warning("mpv options test failed, ignoring them")
             msg_wrongmpvoptions = QtWidgets.QMessageBox(
                 qt_icon_warning,
                 MAIN_WINDOW_TITLE,
@@ -6226,7 +6218,7 @@ if __name__ == '__main__':
             msg_wrongmpvoptions.exec()
             options = options_orig
 
-        print_with_time("Using mpv options: {}".format(json.dumps(options)))
+        logger.info("Using mpv options: {}".format(json.dumps(options)))
 
         player = None
 
@@ -6247,9 +6239,9 @@ if __name__ == '__main__':
                 )
             return about_txt
 
-        #print_with_time("")
-        #print_with_time("M3U: '{}' EPG: '{}'".format(settings["m3u"], settings["epg"]))
-        #print_with_time("")
+        #logger.info("")
+        #logger.info("M3U: '{}' EPG: '{}'".format(settings["m3u"], settings["epg"]))
+        #logger.info("")
 
         def main_channel_settings():
             global item_selected, autoclosemenu_time, playing_chan
@@ -6403,131 +6395,6 @@ if __name__ == '__main__':
 
         streaminfo_win.setWindowTitle(_('Stream Information'))
 
-        applog_win = QtWidgets.QMainWindow()
-        applog_win.setWindowTitle(_('yuki-iptv log'))
-        applog_win.setWindowIcon(main_icon)
-        applog_win.resize(700, 500)
-        moveWindowToCenter(applog_win)
-        applog_textarea = QtWidgets.QPlainTextEdit()
-        applog_textarea.setReadOnly(True)
-
-        def applog_clipcopy_clicked():
-            clip = QtWidgets.QApplication.clipboard()
-            clip.clear(mode=_enum(clip, 'Mode.Clipboard'))
-            clip.setText(applog_textarea.toPlainText(), mode=_enum(clip, 'Mode.Clipboard'))
-
-        def applog_save_clicked():
-            applog_fname = QtWidgets.QFileDialog.getSaveFileName(
-                applog_win,
-                _('Choose a filename to save under'),
-                home_folder,
-                '{} (*.log *.txt)'.format(_('Logs'))
-            )[0]
-            if applog_fname:
-                try:
-                    applog_fname_file = open(applog_fname, 'w', encoding="utf8")
-                    applog_fname_file.write(applog_textarea.toPlainText())
-                    applog_fname_file.close()
-                except:
-                    pass
-
-        applog_save = QtWidgets.QPushButton()
-        applog_save.setText(_('Save'))
-        applog_save.clicked.connect(applog_save_clicked)
-        applog_clipcopy = QtWidgets.QPushButton()
-        applog_clipcopy.setText(_('Copy to clipboard'))
-        applog_clipcopy.clicked.connect(applog_clipcopy_clicked)
-        applog_closebtn = QtWidgets.QPushButton()
-        applog_closebtn.setText(_('Close'))
-        applog_closebtn.clicked.connect(applog_win.hide)
-
-        applog_widget2 = QtWidgets.QWidget()
-        applog_layout2 = QtWidgets.QHBoxLayout()
-        applog_layout2.addWidget(applog_save)
-        applog_layout2.addWidget(applog_clipcopy)
-        applog_layout2.addWidget(applog_closebtn)
-        applog_widget2.setLayout(applog_layout2)
-
-        applog_widget = QtWidgets.QWidget()
-        applog_layout = QtWidgets.QVBoxLayout()
-        applog_layout.addWidget(applog_textarea)
-        applog_layout.addWidget(applog_widget2)
-        applog_widget.setLayout(applog_layout)
-        applog_win.setCentralWidget(applog_widget)
-
-        mpvlog_win = QtWidgets.QMainWindow()
-        mpvlog_win.setWindowTitle(_('mpv log'))
-        mpvlog_win.setWindowIcon(main_icon)
-        mpvlog_win.resize(700, 500)
-        moveWindowToCenter(mpvlog_win)
-        mpvlog_textarea = QtWidgets.QPlainTextEdit()
-        mpvlog_textarea.setReadOnly(True)
-
-        def mpvlog_clipcopy_clicked():
-            clip = QtWidgets.QApplication.clipboard()
-            clip.clear(mode=_enum(clip, 'Mode.Clipboard'))
-            clip.setText(mpvlog_textarea.toPlainText(), mode=_enum(clip, 'Mode.Clipboard'))
-
-        def mpvlog_save_clicked():
-            mpvlog_fname = QtWidgets.QFileDialog.getSaveFileName(
-                mpvlog_win,
-                _('Choose a filename to save under'),
-                home_folder,
-                '{} (*.log *.txt)'.format(_('Logs'))
-            )[0]
-            if mpvlog_fname:
-                try:
-                    mpvlog_fname_file = open(mpvlog_fname, 'w', encoding="utf8")
-                    mpvlog_fname_file.write(mpvlog_textarea.toPlainText())
-                    mpvlog_fname_file.close()
-                except:
-                    pass
-
-        mpvlog_save = QtWidgets.QPushButton()
-        mpvlog_save.setText(_('Save'))
-        mpvlog_save.clicked.connect(mpvlog_save_clicked)
-        mpvlog_clipcopy = QtWidgets.QPushButton()
-        mpvlog_clipcopy.setText(_('Copy to clipboard'))
-        mpvlog_clipcopy.clicked.connect(mpvlog_clipcopy_clicked)
-        mpvlog_closebtn = QtWidgets.QPushButton()
-        mpvlog_closebtn.setText(_('Close'))
-        mpvlog_closebtn.clicked.connect(mpvlog_win.hide)
-
-        mpvlog_widget2 = QtWidgets.QWidget()
-        mpvlog_layout2 = QtWidgets.QHBoxLayout()
-        mpvlog_layout2.addWidget(mpvlog_save)
-        mpvlog_layout2.addWidget(mpvlog_clipcopy)
-        mpvlog_layout2.addWidget(mpvlog_closebtn)
-        mpvlog_widget2.setLayout(mpvlog_layout2)
-
-        mpvlog_widget = QtWidgets.QWidget()
-        mpvlog_layout = QtWidgets.QVBoxLayout()
-        mpvlog_layout.addWidget(mpvlog_textarea)
-        mpvlog_layout.addWidget(mpvlog_widget2)
-        mpvlog_widget.setLayout(mpvlog_layout)
-        mpvlog_win.setCentralWidget(mpvlog_widget)
-
-        def thread_applog():
-            try:
-                if applog_win.isVisible():
-                    applog_textarea_new = get_app_log()
-                    if applog_textarea.toPlainText() != applog_textarea_new:
-                        applog_textarea.setPlainText(applog_textarea_new)
-                        applog_textarea.moveCursor(_enum(QtGui.QTextCursor, 'MoveOperation.End'))
-                if mpvlog_win.isVisible():
-                    mpvlog_textarea_new = get_mpv_log()
-                    if mpvlog_textarea.toPlainText() != mpvlog_textarea_new:
-                        mpvlog_textarea.setPlainText(mpvlog_textarea_new)
-                        mpvlog_textarea.moveCursor(_enum(QtGui.QTextCursor, 'MoveOperation.End'))
-            except:
-                pass
-
-        def show_app_log():
-            applog_win.show()
-
-        def show_mpv_log():
-            mpvlog_win.show()
-
         def is_recording_func():
             global ffmpeg_processes
             ret_code_rec = False
@@ -6587,8 +6454,8 @@ if __name__ == '__main__':
                     str(Path(LOCAL_DIR, 'alwaysontop.json'))
                 )
             except:
-                print_with_time("WARNING: redraw_menubar failed")
-                show_exception("WARNING: redraw_menubar failed\n\n" + traceback.format_exc())
+                logger.warning("redraw_menubar failed")
+                show_exception("redraw_menubar failed\n\n" + traceback.format_exc())
 
         right_click_menu = QtWidgets.QMenu()
 
@@ -6708,8 +6575,8 @@ if __name__ == '__main__':
                         if 'catchup-id' in programmes[match1][int(prog_index)]:
                             catchup_id = programmes[match1][int(prog_index)]['catchup-id']
             except:
-                print_with_time("archive_all_clicked / catchup_id parsing failed")
-                print_with_time(traceback.format_exc())
+                logger.warning("archive_all_clicked / catchup_id parsing failed")
+                logger.warning(traceback.format_exc())
 
             play_url = get_catchup_url(chan_url, arr1, start_time, end_time, catchup_id)
 
@@ -6906,19 +6773,19 @@ if __name__ == '__main__':
                 global stopped
                 wait_until()
                 if not stopped:
-                    print_with_time("Starting MPRIS loop")
+                    logger.info("Starting MPRIS loop")
                     try:
                         mpris.publish()
                         mpris_loop.run()
                     except:
-                        print_with_time("Failed to start MPRIS loop!")
+                        logger.warning("Failed to start MPRIS loop!")
 
             mpris_loop = GLib.MainLoop()
             mpris_thread = threading.Thread(target=mpris_loop_start)
             mpris_thread.start()
         except Exception as mpris_e:
-            print_with_time(mpris_e)
-            print_with_time("Failed to set up MPRIS!")
+            logger.warning(mpris_e)
+            logger.warning("Failed to set up MPRIS!")
 
         def update_scheduler_programme():
             channel_list_2 = [chan_name for chan_name in doSort(array)] # pylint: disable=unnecessary-comprehension
@@ -7221,7 +7088,7 @@ if __name__ == '__main__':
                 combobox_index_file.close()
             try:
                 if get_first_run():
-                    print_with_time("Saving active vf filters...")
+                    logger.info("Saving active vf filters...")
                     vf_filters_file = open(
                         str(Path(LOCAL_DIR, 'menubar.json')), 'w', encoding="utf8"
                     )
@@ -7229,11 +7096,11 @@ if __name__ == '__main__':
                         "vf_filters": get_active_vf_filters()
                     }))
                     vf_filters_file.close()
-                    print_with_time("Active vf filters saved")
+                    logger.info("Active vf filters saved")
             except:
                 pass
             try:
-                print_with_time("Saving main window position...")
+                logger.info("Saving main window position...")
                 windowpos_file = open(
                     str(Path(LOCAL_DIR, 'windowpos.json')), 'w', encoding="utf8"
                 )
@@ -7244,18 +7111,18 @@ if __name__ == '__main__':
                     })
                 )
                 windowpos_file.close()
-                print_with_time("Main window position saved")
+                logger.info("Main window position saved")
             except:
                 pass
             try:
-                print_with_time("Saving main window width / height...")
+                logger.info("Saving main window width / height...")
                 window_size = {'w': win.width(), 'h': win.height()}
                 ws_file = open(
                     str(Path(LOCAL_DIR, 'windowsize.json')), 'w', encoding="utf8"
                 )
                 ws_file.write(json.dumps(window_size))
                 ws_file.close()
-                print_with_time("Main window width / height saved")
+                logger.info("Main window width / height saved")
             except:
                 pass
             if settings['playlistsep']:
@@ -7332,7 +7199,7 @@ if __name__ == '__main__':
                     channel_icons_data_epg.manager_1.shutdown()
             except:
                 pass
-            print_with_time("Stopped")
+            logger.info("Stopped")
             # Stopping all childs
             os.killpg(0, signal.SIGKILL)
 
@@ -7359,7 +7226,7 @@ if __name__ == '__main__':
                 catchup_days1 = 86400 * (catchup_days1 + 1)
             return catchup_days1
 
-        print_with_time("catchup-days = {}".format(get_catchup_days()))
+        logger.info("catchup-days = {}".format(get_catchup_days()))
 
         def thread_tvguide(): # pylint: disable=too-many-branches
             try: # pylint: disable=too-many-nested-blocks
@@ -7392,17 +7259,17 @@ if __name__ == '__main__':
                                     waiting_for_epg = True
                                 except Exception as e1:
                                     epg_failed = True
-                                    print_with_time(
+                                    logger.warning(
                                         "[TV guide, part 1] Caught exception: " + str(e1)
                                     )
-                                    print_with_time(traceback.format_exc())
+                                    logger.warning(traceback.format_exc())
                                     l1.setStatic2(False)
                                     l1.show()
                                     l1.setText2(_('TV guide update error!'))
                                     time_stop = time.time() + 3
                                     epg_updating = False
                             else:
-                                print_with_time("EPG update at boot disabled")
+                                logger.info("EPG update at boot disabled")
                             first_boot_1 = False
                         else:
                             programmes = {
@@ -7453,11 +7320,11 @@ if __name__ == '__main__':
         def do_reconnect():
             global x_conn
             if (playing_chan and not loading.isVisible()) and (player.cache_buffering_state == 0):
-                print_with_time("Reconnecting to stream")
+                logger.info("Reconnecting to stream")
                 try:
                     doPlay(*comm_instance.do_play_args)
                 except:
-                    print_with_time("Failed reconnecting to stream - no known URL")
+                    logger.warning("Failed reconnecting to stream - no known URL")
             x_conn = None
 
         YukiData.connprinted = False
@@ -7467,21 +7334,21 @@ if __name__ == '__main__':
             if settings['autoreconnection']:
                 if not YukiData.connprinted:
                     YukiData.connprinted = True
-                    print_with_time("Connection loss detector enabled")
+                    logger.info("Connection loss detector enabled")
                 try:
                     if (playing_chan and not loading.isVisible()) and \
                     (player.cache_buffering_state == 0):
                         if not x_conn:
-                            print_with_time("Connection to stream lost, waiting 5 secs...")
+                            logger.info("Connection to stream lost, waiting 5 secs...")
                             x_conn = QtCore.QTimer()
                             x_conn.timeout.connect(do_reconnect)
                             x_conn.start(5000)
                 except:
-                    print_with_time("Failed to set connection loss detector!")
+                    logger.warning("Failed to set connection loss detector!")
             else:
                 if not YukiData.connprinted:
                     YukiData.connprinted = True
-                    print_with_time("Connection loss detector DISABLED")
+                    logger.info("Connection loss detector DISABLED")
 
         def thread_check_tvguide_obsolete(): # pylint: disable=too-many-branches
             try:
@@ -7559,8 +7426,8 @@ if __name__ == '__main__':
                             btn_update.click() # start update in main thread
                         except Exception as e2:
                             epg_failed = True
-                            print_with_time("[TV guide, part 2] Caught exception: " + str(e2))
-                            print_with_time(traceback.format_exc())
+                            logger.warning("[TV guide, part 2] Caught exception: " + str(e2))
+                            logger.warning(traceback.format_exc())
                             l1.setStatic2(False)
                             l1.show()
                             l1.setText2(_('TV guide update error!'))
@@ -7793,8 +7660,6 @@ if __name__ == '__main__':
                 playlists_win_edit.isActiveWindow() or \
                 epg_select_win.isActiveWindow() or \
                 tvguide_many_win.isActiveWindow() or \
-                applog_win.isActiveWindow() or \
-                mpvlog_win.isActiveWindow() or \
                 m3u_editor.isActiveWindow() or \
                 settings_win.isActiveWindow() or \
                 shortcuts_win.isActiveWindow() or \
@@ -7816,8 +7681,6 @@ if __name__ == '__main__':
                 playlists_win_edit.isActiveWindow() or \
                 epg_select_win.isActiveWindow() or \
                 tvguide_many_win.isActiveWindow() or \
-                applog_win.isActiveWindow() or \
-                mpvlog_win.isActiveWindow() or \
                 m3u_editor.isActiveWindow() or \
                 settings_win.isActiveWindow() or \
                 shortcuts_win.isActiveWindow() or \
@@ -7833,8 +7696,7 @@ if __name__ == '__main__':
                     cur_has_focus = is_win_has_focus()
                     if cur_has_focus != win_has_focus:
                         win_has_focus = cur_has_focus
-                        if args1.debug:
-                            print_with_time("win_has_focus changed to {}".format(win_has_focus))
+                        logger.debug("win_has_focus changed to {}".format(win_has_focus))
                         if win_has_focus:
                             if not fullscreen:
                                 if YukiData.playlist_state:
@@ -7867,7 +7729,7 @@ if __name__ == '__main__':
             global fullscreen
             try:
                 if fullscreen and settings["playlistsep"] and sepplaylist_win.isVisible():
-                    print_with_time(
+                    logger.info(
                         "Applied workaround for separate playlist in fullscreen (thread)"
                     )
                     sepplaylist_win.hide()
@@ -7984,29 +7846,29 @@ if __name__ == '__main__':
             global playing_chan
             try:
                 if playing_chan:
-                    print_with_time("Set speed to {}".format(spd))
+                    logger.info("Set speed to {}".format(spd))
                     player.speed = spd
             except:
-                print_with_time("WARNING: set_playback_speed failed")
+                logger.warning("set_playback_speed failed")
 
         def mpv_seek(secs):
             global playing_chan
             try:
                 if playing_chan:
-                    print_with_time("Seeking to {} seconds".format(secs))
+                    logger.info("Seeking to {} seconds".format(secs))
                     player.command('seek', secs)
             except:
-                print_with_time("WARNING: mpv_seek failed")
+                logger.warning("mpv_seek failed")
 
         def change_aot_mode():
             global aot_action, fullscreen
             if not fullscreen:
                 if aot_action.isChecked():
-                    print_with_time("change_aot_mode to False")
+                    logger.info("change_aot_mode to False")
                     aot_action.setChecked(False)
                     disable_always_on_top()
                 else:
-                    print_with_time("change_aot_mode to True")
+                    logger.info("change_aot_mode to True")
                     aot_action.setChecked(True)
                     enable_always_on_top()
 
@@ -8128,12 +7990,12 @@ if __name__ == '__main__':
                 ) as hotkeys_file_tmp:
                     hotkeys_tmp = json.loads(hotkeys_file_tmp.read())["current_profile"]["keys"]
                     main_keybinds = hotkeys_tmp
-                    print_with_time("hotkeys.json found, using it as hotkey settings")
+                    logger.info("hotkeys.json found, using it as hotkey settings")
             except:
-                print_with_time("[WARNING] failed to read hotkeys.json, using default shortcuts")
+                logger.warning("failed to read hotkeys.json, using default shortcuts")
                 main_keybinds = main_keybinds_default.copy()
         else:
-            print_with_time("No hotkeys.json found, using default hotkeys")
+            logger.info("No hotkeys.json found, using default hotkeys")
             main_keybinds = main_keybinds_default.copy()
 
         seq = get_seq()
@@ -8218,11 +8080,11 @@ if __name__ == '__main__':
             global newdockWidgetHeight, newdockWidgetPosition
             try:
                 if os.path.isfile(str(Path(LOCAL_DIR, 'expheight.json'))):
-                    print_with_time("Loading expheight.json...")
+                    logger.info("Loading expheight.json...")
 
                     cur_w_width = cur_win_width()
                     cur_w_height = cur_win_height()
-                    print_with_time(
+                    logger.info(
                         "Current width / height: {}x{}".format(cur_w_width, cur_w_height)
                     )
 
@@ -8235,13 +8097,13 @@ if __name__ == '__main__':
                     if 'w_width' in expheight_file_0_read and 'w_height' in expheight_file_0_read:
                         read_w_width = expheight_file_0_read['w_width']
                         read_w_height = expheight_file_0_read['w_height']
-                        print_with_time(
+                        logger.info(
                             "Remembered width / height: {}x{}".format(read_w_width, read_w_height)
                         )
                         if read_w_width == cur_w_width and read_w_height == cur_w_height:
-                            print_with_time("Matched, continue")
+                            logger.info("Matched, continue")
                         else:
-                            print_with_time("Resolution changed, ignoring old settings")
+                            logger.info("Resolution changed, ignoring old settings")
                             expheight_read_continue = False
 
                     if expheight_read_continue:
@@ -8262,7 +8124,7 @@ if __name__ == '__main__':
             win.activateWindow()
             if os.path.isfile(str(Path(LOCAL_DIR, 'windowpos.json'))):
                 try:
-                    print_with_time("Restoring main window position...")
+                    logger.info("Restoring main window position...")
                     windowpos_file_1 = open(
                         str(Path(LOCAL_DIR, 'windowpos.json')), 'r', encoding="utf8"
                     )
@@ -8270,7 +8132,7 @@ if __name__ == '__main__':
                     windowpos_file_1.close()
                     windowpos_file_1_json = json.loads(windowpos_file_1_out)
                     win.move(windowpos_file_1_json['x'], windowpos_file_1_json['y'])
-                    print_with_time("Main window position restored")
+                    logger.info("Main window position restored")
                 except:
                     pass
             if os.path.isfile(str(Path(LOCAL_DIR, 'comboboxindex.json'))):
@@ -8288,10 +8150,10 @@ if __name__ == '__main__':
                     pass
             read_expheight_json()
             if not playLastChannel():
-                print_with_time("Show splash")
+                logger.info("Show splash")
                 mpv_override_play(str(Path('yuki_iptv', ICONS_FOLDER, 'main.png')))
             else:
-                print_with_time("Playing last channel, splash turned off")
+                logger.info("Playing last channel, splash turned off")
             restore_compact_state()
 
             ic, ic1, ic2 = 0, 0, 0
@@ -8301,7 +8163,6 @@ if __name__ == '__main__':
                 thread_fullscreen_sepplaylist_very_bad_workaround: 25,
                 thread_mouse: 50,
                 thread_cursor: 50,
-                thread_applog: 50,
                 thread_tvguide: 100,
                 thread_record: 100,
                 thread_osc: 100,
@@ -8332,9 +8193,9 @@ if __name__ == '__main__':
 
         sys.exit(_exec(app))
     except Exception as e3:
-        print_with_time("ERROR")
-        print_with_time("")
+        logger.warning("ERROR")
+        logger.warning("")
         e3_traceback = traceback.format_exc()
-        print_with_time(e3_traceback)
+        logger.warning(e3_traceback)
         show_exception(e3, e3_traceback)
         sys.exit(1)

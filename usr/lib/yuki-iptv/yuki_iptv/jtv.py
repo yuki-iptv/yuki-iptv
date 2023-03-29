@@ -1,9 +1,11 @@
 '''JTV parser'''
+import logging
 import zipfile
 import io
 import datetime
 import struct
-from yuki_iptv.time import print_with_time
+
+logger = logging.getLogger(__name__)
 
 def ft_to_dt(time, settings):
     '''Convert filetime to datetime'''
@@ -16,7 +18,7 @@ def ft_to_dt(time, settings):
             ).timestamp() + (3600 * settings["epgoffset"])
         )
     else:
-        print_with_time("WARNING: broken JTV time detected!")
+        logger.warning("broken JTV time detected!")
         datetime_ret = 0
     return datetime_ret
 
@@ -68,7 +70,7 @@ def fix_zip_filename(filename):
 
 def parse_jtv(jtv_inf1, settings):
     '''Main parse function'''
-    print_with_time("Trying parsing as JTV...")
+    logger.info("Trying parsing as JTV...")
     zip_file = zipfile.ZipFile(io.BytesIO(jtv_inf1), "r")
     array = {}
     for fileinfo in zip_file.infolist():

@@ -3,15 +3,17 @@
 # pylint: disable=missing-function-docstring, bare-except
 import os
 import os.path
+import logging
 import json
 import shutil
 from pathlib import Path
-from yuki_iptv.time import print_with_time
+
+logger = logging.getLogger(__name__)
 
 def ast_settings_import():
     if os.path.isfile(Path(os.environ['HOME'], '.config', 'astronciaiptv', 'settings.json')) \
     and not os.path.isfile(Path(os.environ['HOME'], '.config', 'yuki-iptv', 'settings.json')):
-        print_with_time("Importing settings from Astroncia IPTV...")
+        logger.info("Importing settings from Astroncia IPTV...")
         try:
             for file in Path(os.environ['HOME'], '.config', 'astronciaiptv').glob('*'):
                 if os.path.isfile(file):
@@ -41,8 +43,8 @@ def ast_settings_import():
             ) as new_settings_file:
                 new_settings_file.write(json.dumps(settings))
 
-            print_with_time("Importing settings from Astroncia IPTV - OK")
-            print_with_time("")
+            logger.info("Importing settings from Astroncia IPTV - OK")
+            logger.info("")
         except:
-            print_with_time("Importing settings from Astroncia IPTV - FAILED!")
-            print_with_time("")
+            logger.warning("Importing settings from Astroncia IPTV - FAILED!")
+            logger.warning("")

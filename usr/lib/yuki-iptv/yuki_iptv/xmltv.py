@@ -1,23 +1,26 @@
 '''XMLTV parser'''
 # SPDX-License-Identifier: GPL-3.0-only
+# pylint: disable=logging-format-interpolation
+import logging
 import gzip
 import lzma
 import datetime
 import xml.etree.ElementTree as ET
-from yuki_iptv.time import print_with_time
+
+logger = logging.getLogger(__name__)
 
 def parse_as_xmltv(epg, settings, catchup_days1): # pylint: disable=too-many-locals, too-many-branches, too-many-statements
     '''Load EPG file'''
-    print_with_time("Trying parsing as XMLTV...")
-    print_with_time("catchup-days = {}".format(catchup_days1))
+    logger.info("Trying parsing as XMLTV...")
+    logger.info("catchup-days = {}".format(catchup_days1))
     try:
         tree = ET.ElementTree(ET.fromstring(epg))
     except ET.ParseError:
         try:
-            print_with_time("Trying to unpack as gzip...")
+            logger.info("Trying to unpack as gzip...")
             tree = ET.ElementTree(ET.fromstring(gzip.decompress(epg)))
         except: # pylint: disable=bare-except
-            print_with_time("Trying to unpack as xz...")
+            logger.info("Trying to unpack as xz...")
             tree = ET.ElementTree(ET.fromstring(
                 lzma.LZMADecompressor().decompress(epg)
             ))

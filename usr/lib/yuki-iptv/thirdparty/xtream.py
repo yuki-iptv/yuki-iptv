@@ -19,7 +19,7 @@ Github: superolmo
 __version__ = "0.5.0"
 __author__ = "Claudio Olmi"
 
-from yuki_iptv.time import print_with_time
+import logging
 import json
 import re  # used for URL validation
 import time
@@ -29,6 +29,8 @@ from timeit import default_timer as timer  # Timing xtream json downloads
 from typing import List, Tuple
 
 import requests
+
+logger = logging.getLogger(__name__)
 
 
 class Channel:
@@ -59,7 +61,7 @@ class Channel:
             stream_type = "live"
 
         if stream_type != "live" and stream_type != "movie":
-            print_with_time("Error the channel has unknown stream type `{}`\n`{}`".format(
+            logger.error("Error the channel has unknown stream type `{}`\n`{}`".format(
                 stream_type, stream_info
             ))
         else:
@@ -110,7 +112,7 @@ class Channel:
 
             # Check that the constructed URL is valid
             if not xtream._validate_url(self.url):
-                print_with_time("{} - Bad URL? `{}`".format(self.name, self.url))
+                logger.warning("{} - Bad URL? `{}`".format(self.name, self.url))
 
     def export_json(self):
         jsondata = {}
@@ -149,7 +151,7 @@ class Group:
         elif "Live":
             self.group_type = TV_GROUP
         else:
-            print_with_time("Unrecognized stream type `{}` for `{}`".format(
+            logger.warning("Unrecognized stream type `{}` for `{}`".format(
                 stream_type, group_info
             ))
 
@@ -195,7 +197,7 @@ class Episode:
 
         # Check that the constructed URL is valid
         if not xtream._validate_url(self.url):
-            print_with_time("{} - Bad URL? `{}`".format(self.name, self.url))
+            logger.warning("{} - Bad URL? `{}`".format(self.name, self.url))
 
 
 class Serie:
@@ -322,7 +324,7 @@ class XTream:
         if self.cache_path != "":
             # If the cache_path is not a directory, clear it
             if not osp.isdir(self.cache_path):
-                print_with_time(" - Cache Path is not a directory, using default '~/.cache/yuki-iptv-xtream-cache/'")
+                logger.warning(" - Cache Path is not a directory, using default '~/.cache/yuki-iptv-xtream-cache/'")
                 self.cache_path == ""
 
         # If the cache_path is still empty, use default
@@ -352,24 +354,24 @@ class XTream:
         else:
             regex = re.compile(keyword)
 
-        print_with_time("Checking {} movies".format(len(self.movies)))
+        logger.info("Checking {} movies".format(len(self.movies)))
         for stream in self.movies:
             if re.match(regex, stream.name) is not None:
                 search_result.append(stream.export_json())
 
-        print_with_time("Checking {} channels".format(len(self.channels)))
+        logger.info("Checking {} channels".format(len(self.channels)))
         for stream in self.channels:
             if re.match(regex, stream.name) is not None:
                 search_result.append(stream.export_json())
 
-        print_with_time("Checking {} series".format(len(self.series)))
+        logger.info("Checking {} series".format(len(self.series)))
         for stream in self.series:
             if re.match(regex, stream.name) is not None:
                 search_result.append(stream.export_json())
 
         if return_type == "JSON":
             if search_result is not None:
-                print_with_time("Found {} results `{}`".format(len(search_result), keyword))
+                logger.info("Found {} results `{}`".format(len(search_result), keyword))
                 return json.dumps(search_result, ensure_ascii=False)
         else:
             return search_result
@@ -440,10 +442,10 @@ class XTream:
                     }
                     self.state["authenticated"] = True
                 else:
-                    print_with_time("Provider `{}` could not be loaded. Reason: `{} {}`".format(self.name, r.status_code, r.reason))
+                    logger.warning("Provider `{}` could not be loaded. Reason: `{} {}`".format(self.name, r.status_code, r.reason))
             except requests.exceptions.ConnectionError:
                 # If connection refused
-                print_with_time("{} - Connection refused URL: {}".format(self.name, self.server))
+                logger.warning("{} - Connection refused URL: {}".format(self.name, self.server))
 
     def _load_from_file(self, filename) -> dict:
         """Try to load the dictionary from file
@@ -477,7 +479,7 @@ class XTream:
                         if len(my_data) == 0:
                             my_data = None
                 except Exception as e:
-                    print_with_time(" - Could not load from file `{}`: e=`{}`".format(
+                    logger.warning(" - Could not load from file `{}`: e=`{}`".format(
                         full_filename, e
                     ))
             return my_data
@@ -509,7 +511,7 @@ class XTream:
                 with open(full_filename, mode="wt", encoding="utf-8") as myfile:
                     myfile.write(json_data)
             except Exception as e:
-                print_with_time(" - Could not save to file `{}`: e=`{}`".format(
+                logger.warning(" - Could not save to file `{}`: e=`{}`".format(
                     full_filename, e
                 ))
                 return False
@@ -554,7 +556,7 @@ class XTream:
 
                     # If we got the GROUPS data, show the statistics and load GROUPS
                     if all_cat is not None:
-                        print_with_time("Loaded {} {} Groups in {:.3f} seconds".format(
+                        logger.info("Loaded {} {} Groups in {:.3f} seconds".format(
                             len(all_cat), loading_stream_type, dt
                         ))
                         ## Add GROUPS to dictionaries
@@ -574,7 +576,7 @@ class XTream:
                         # Sort Categories
                         self.groups.sort(key=lambda x: x.name)
                     else:
-                        print_with_time(" - Could not load {} Groups".format(loading_stream_type))
+                        logger.warning(" - Could not load {} Groups".format(loading_stream_type))
                         break
 
                     ## Get Streams
@@ -596,7 +598,7 @@ class XTream:
 
                     # If we got the STREAMS data, show the statistics and load Streams
                     if all_streams is not None:
-                        print_with_time("Loaded {} {} Streams in {:.3f} seconds".format(
+                        logger.info("Loaded {} {} Streams in {:.3f} seconds".format(
                             len(all_streams), loading_stream_type, dt
                         ))
                         ## Add Streams to dictionaries
@@ -621,7 +623,7 @@ class XTream:
                                         skipped_adult_content = skipped_adult_content + 1
                                         self._save_to_file_skipped_streams(stream_channel)
                                 except Exception:
-                                    print_with_time(" - Stream does not have `is_adult` key:\n\t`{}`".format(json.dumps(stream_channel)))
+                                    logger.warning(" - Stream does not have `is_adult` key:\n\t`{}`".format(json.dumps(stream_channel)))
                                     pass
 
                             if not skip_stream:
@@ -661,7 +663,7 @@ class XTream:
                                     )
 
                                 if new_channel.group_id == "9999":
-                                    print_with_time(" - xEverythingElse Channel -> {} - {}".format(new_channel.name,new_channel.stream_type))
+                                    logger.info(" - xEverythingElse Channel -> {} - {}".format(new_channel.name,new_channel.stream_type))
 
                                 # Save the new channel to the local list of channels
                                 if loading_stream_type == self.live_type:
@@ -678,22 +680,22 @@ class XTream:
                                     else:
                                         the_group.series.append(new_series)
                                 else:
-                                    print_with_time(" - Group not found `{}`".format(stream_channel["name"]))
+                                    logger.warning(" - Group not found `{}`".format(stream_channel["name"]))
 
                         # Print information of which streams have been skipped
                         if self.hide_adult_content:
-                            print_with_time(" - Skipped {} adult {} streams".format(skipped_adult_content, loading_stream_type))
+                            logger.info(" - Skipped {} adult {} streams".format(skipped_adult_content, loading_stream_type))
                         if skipped_no_name_content > 0:
-                            print_with_time(" - Skipped {} unprintable {} streams".format(skipped_no_name_content, loading_stream_type))
+                            logger.info(" - Skipped {} unprintable {} streams".format(skipped_no_name_content, loading_stream_type))
                     else:
-                        print_with_time(" - Could not load {} Streams".format(loading_stream_type))
+                        logger.warning(" - Could not load {} Streams".format(loading_stream_type))
 
                     self.state["loaded"] = True
 
             else:
-                print_with_time("Warning, data has already been loaded.")
+                logger.warning("Warning, data has already been loaded.")
         else:
-            print_with_time("Warning, cannot load steams since authorization failed")
+            logger.warning("Warning, cannot load steams since authorization failed")
 
     def _save_to_file_skipped_streams(self, stream_channel: Channel):
 
@@ -706,7 +708,7 @@ class XTream:
             with open(full_filename, mode="a", encoding="utf-8") as myfile:
                 myfile.writelines(json_data)
         except Exception as e:
-            print_with_time(" - Could not save to skipped stream file `{}`: e=`{}`".format(
+            logger.warning(" - Could not save to skipped stream file `{}`: e=`{}`".format(
                 full_filename, e
             ))
             return False
@@ -720,7 +722,7 @@ class XTream:
         start = timer()
         series_seasons = self._load_series_info_by_id_from_provider(get_series.series_id)
         dt = timer() - start
-        # print_with_time("Loaded in {:.3f} sec".format(dt))
+        # logger.info("Loaded in {:.3f} sec".format(dt))
         for series_info in series_seasons["seasons"]:
             season_name = series_info["name"]
             season_key = series_info["season_number"]
@@ -750,16 +752,16 @@ class XTream:
                 return r.json()
 
         except requests.exceptions.ConnectionError:
-            print_with_time(" - Connection Error")
+            logger.warning(" - Connection Error")
 
         except requests.exceptions.HTTPError:
-            print_with_time(" - HTTP Error")
+            logger.warning(" - HTTP Error")
 
         except requests.exceptions.TooManyRedirects:
-            print_with_time(" - TooManyRedirects")
+            logger.warning(" - TooManyRedirects")
 
         except requests.exceptions.ReadTimeout:
-            print_with_time(" - Timeout while loading data")
+            logger.warning(" - Timeout while loading data")
 
         return None
 

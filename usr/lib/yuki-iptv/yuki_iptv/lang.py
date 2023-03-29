@@ -2,9 +2,11 @@
 # SPDX-License-Identifier: GPL-3.0-only
 import os
 import os.path
+import logging
 import locale
 from pathlib import Path
-from yuki_iptv.time import print_with_time
+
+logger = logging.getLogger(__name__)
 
 def detect_locale_changed():
     '''Set global lang to specified'''
@@ -30,7 +32,7 @@ def detect_locale_changed():
         locale.setlocale(locale.LC_ALL, "")
         lang = locale.getlocale(locale.LC_MESSAGES)[0]
     except: # pylint: disable=bare-except
-        print_with_time("Failed to determine system locale")
+        logger.warning("Failed to determine system locale")
 
     if lang != old_locale:
         locale_txt = open(Path(local_dir, 'locale.txt'), 'w', encoding='utf-8')
