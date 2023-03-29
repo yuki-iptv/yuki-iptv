@@ -1,15 +1,18 @@
 # pylint: disable=no-member, unnecessary-lambda, unused-argument, import-error
 # pylint: disable=missing-module-docstring, missing-class-docstring, missing-function-docstring
+# pylint: disable=logging-format-interpolation
 # SPDX-License-Identifier: GPL-3.0-only
 import os
+import logging
 import gettext
 import json
 import traceback
 from functools import partial
-from yuki_iptv.time import print_with_time
 from yuki_iptv.qt import get_qt_library
 from yuki_iptv.qt6compat import qaction
+
 qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
+logger = logging.getLogger(__name__)
 _ = gettext.gettext
 
 class YukiData: # pylint: disable=too-few-public-methods
@@ -26,15 +29,15 @@ class YukiData: # pylint: disable=too-few-public-methods
         str_offset = ''
 
 def ast_mpv_seek(secs):
-    print_with_time("Seeking to {} seconds".format(secs))
+    logger.info("Seeking to {} seconds".format(secs))
     YukiData.player.command('seek', secs)
 
 def ast_mpv_speed(spd):
-    print_with_time("Set speed to {}".format(spd))
+    logger.info("Set speed to {}".format(spd))
     YukiData.player.speed = spd
 
 def ast_trackset(track, type1):
-    print_with_time("Set {} track to {}".format(type1, track))
+    logger.info("Set {} track to {}".format(type1, track))
     if type1 == 'vid':
         YukiData.player.vid = track
     else:
@@ -50,7 +53,7 @@ def send_mpv_command(name, act, cmd):
     if cmd == '__AST_SOFTSCALING__':
         cur_window_pos = YukiData.get_curwindow_pos()
         cmd = 'lavfi=[scale={}:-2]'.format(cur_window_pos[0])
-    print_with_time("Sending mpv command: \"{} {} \\\"{}\\\"\"".format(name, act, cmd))
+    logger.info("Sending mpv command: \"{} {} \\\"{}\\\"\"".format(name, act, cmd))
     YukiData.player.command(name, act, cmd)
 
 def get_active_vf_filters():
@@ -67,10 +70,10 @@ def apply_vf_filter(vf_filter, e_l):
             )
             YukiData.cur_vf_filters.remove(vf_filter)
     except Exception as e_4: # pylint: disable=broad-except
-        print_with_time("ERROR in vf-filter apply")
-        print_with_time("")
+        logger.error("ERROR in vf-filter apply")
+        logger.error("")
         e4_traceback = traceback.format_exc()
-        print_with_time(e4_traceback)
+        logger.error(e4_traceback)
         YukiData.show_exception(e_4, e4_traceback, '\n\n' + _('Error applying filters'))
 
 def get_seq():
@@ -94,10 +97,10 @@ def alwaysontop_action():
     except: # pylint: disable=bare-except
         pass
     if YukiData.alwaysontopAction.isChecked():
-        print_with_time("Always on top enabled now")
+        logger.info("Always on top enabled now")
         YukiData.enable_always_on_top()
     else:
-        print_with_time("Always on top disabled now")
+        logger.info("Always on top disabled now")
         YukiData.disable_always_on_top()
 
 def reload_menubar_shortcuts():
@@ -326,12 +329,6 @@ def init_menubar(data): # pylint: disable=too-many-statements
     )
     YukiData.forceupdateepgAction.setShortcut(kbd("force_update_epg"))
 
-    YukiData.applogAction = qaction(_('yuki-iptv log'), data)
-    YukiData.applogAction.triggered.connect(lambda: YukiData.show_app_log())
-
-    YukiData.mpvlogAction = qaction(_('mpv log'), data)
-    YukiData.mpvlogAction.triggered.connect(lambda: YukiData.show_mpv_log())
-
     # Options
 
     YukiData.sortAction = qaction(_('&Channel sort'), data)
@@ -381,7 +378,7 @@ def populate_menubar(
     i, menubar, data, track_list=None, playing_chan=None,
     get_keybind=None
 ): # pylint: disable=too-many-statements, too-many-arguments, too-many-locals
-    #print_with_time("populate_menubar called")
+    #logger.info("populate_menubar called")
     # File
 
     if get_keybind:
@@ -464,9 +461,6 @@ def populate_menubar(
     view_menu.addAction(YukiData.alwaysontopAction)
     view_menu.addAction(YukiData.streaminformationAction)
     view_menu.addAction(YukiData.showepgAction)
-    view_menu.addSection(_('Logs'))
-    view_menu.addAction(YukiData.applogAction)
-    view_menu.addAction(YukiData.mpvlogAction)
 
     # Options
 
@@ -515,7 +509,7 @@ def update_menubar(track_list, playing_chan, m3u, file, aot_file): # pylint: dis
         #print(playing_chan + '::::::::::::::' + m3u)
         if not YukiData.first_run:
             YukiData.first_run = True
-            print_with_time("YukiData.first_run")
+            logger.info("YukiData.first_run")
             try:
                 file_1 = open(file, 'r', encoding='utf-8')
                 file_1_out = json.loads(file_1.read())['vf_filters']
@@ -583,8 +577,6 @@ def init_menubar_player( # pylint: disable=too-many-arguments, too-many-locals
     mpv_fullscreen,
     showhideeverything,
     main_channel_settings,
-    show_app_log,
-    show_mpv_log,
     show_settings,
     show_help,
     do_screenshot,

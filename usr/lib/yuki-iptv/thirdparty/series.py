@@ -1,6 +1,8 @@
 # pylint: disable=missing-class-docstring, missing-function-docstring, missing-module-docstring
 import re
-from yuki_iptv.time import print_with_time
+import logging
+
+logger = logging.getLogger(__name__)
 
 SERIES = re.compile(
     r"(?P<series>.*?) S(?P<season>.\d{1,2}).*E(?P<episode>.\d{1,2}.*)$",
@@ -68,5 +70,5 @@ def parse_series(obj1, series):
             serie1.episodes.append(ep_channel)
             is_matched = True
         except: # pylint: disable=bare-except
-            print_with_time("M3U Series parse FAILED")
+            logger.warning("M3U Series parse FAILED")
     return series, is_matched

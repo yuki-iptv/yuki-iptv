@@ -46,7 +46,7 @@ class Server:
     else:
       bus = thirdparty.yukipydbus.SessionBus()
 
-    logger.info(f"MPRIS server connected to D-Bus {bus_type} bus")
+    logger.debug(f"MPRIS server connected to D-Bus {bus_type} bus")
 
     self._publication_token = bus.publish(
       f"org.mpris.MediaPlayer2.{self.dbus_name}",

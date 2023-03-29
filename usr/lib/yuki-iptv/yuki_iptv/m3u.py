@@ -1,7 +1,10 @@
 '''M3U parser'''
 # SPDX-License-Identifier: GPL-3.0-only
+# pylint: disable=logging-format-interpolation
 import re
-from yuki_iptv.time import print_with_time
+import logging
+
+logger = logging.getLogger(__name__)
 
 class M3UParser:
     '''M3U parser'''
@@ -27,7 +30,7 @@ class M3UParser:
             try:
                 res = str(int(res))
             except: # pylint: disable=bare-except
-                print_with_time(
+                logger.warning(
                     "M3U STANDARDS VIOLATION: catchup-days is not int (got '{}')".format(res)
                 )
                 res = default
