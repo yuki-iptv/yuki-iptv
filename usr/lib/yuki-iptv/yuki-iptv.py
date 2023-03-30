@@ -8188,4 +8188,5 @@ if __name__ == '__main__':
         e3_traceback = traceback.format_exc()
         logger.warning(e3_traceback)
         show_exception(e3, e3_traceback)
+        os.killpg(0, signal.SIGKILL)
         sys.exit(1)
