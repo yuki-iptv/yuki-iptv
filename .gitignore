@@ -2,3 +2,4 @@ __pycache__
 usr/share/locale
 *.swo
 *.swp
+.pytest_cache
