@@ -42,7 +42,6 @@ except:
     pass
 
 from yuki_iptv.qt import get_qt_library
-from yuki_iptv.lang import LOCALE_CHANGED
 from yuki_iptv.ua import user_agent, uas, ua_names
 from yuki_iptv.epg import worker
 from yuki_iptv.record import record, record_return, stop_record, \
@@ -61,7 +60,7 @@ from yuki_iptv.interface import init_interface_widgets, cwdg, cwdg_simple, \
 from yuki_iptv.qt6compat import globalPos, getX, getY, _exec, _enum
 from yuki_iptv.m3u_editor import M3UEditor
 from yuki_iptv.keybinds import main_keybinds_internal, main_keybinds_default
-from yuki_iptv.ast_settings_import import ast_settings_import
+from yuki_iptv.ast_settings_import import ast_settings_import, convert_old_filenames
 from thirdparty.conversion import convert_size, format_bytes, human_secs
 from thirdparty.xtream import XTream, Serie
 from thirdparty.series import parse_series
@@ -130,10 +129,6 @@ else:
 
 APP_VERSION = '__DEB_VERSION__'
 VERSION_CODENAME = 'Turning Point'
-
-if not sys.version_info >= (3, 6, 0):
-    logger.error("Incompatible Python version! Required >= 3.6")
-    sys.exit(1)
 
 setproctitle.setproctitle("yuki-iptv")
 
@@ -217,6 +212,7 @@ if not os.path.isdir(SAVE_FOLDER_DEFAULT):
 
 # Try to import settings from Astroncia IPTV
 ast_settings_import()
+convert_old_filenames()
 
 DEF_DEINTERLACE = True
 
@@ -339,8 +335,8 @@ if __name__ == '__main__':
         if not os.path.isdir(LOCAL_DIR):
             os.mkdir(LOCAL_DIR)
 
-        if not os.path.isfile(str(Path(LOCAL_DIR, 'playlist_separate.m3u'))):
-            file01 = open(str(Path(LOCAL_DIR, 'playlist_separate.m3u')), 'w', encoding="utf8")
+        if not os.path.isfile(str(Path(LOCAL_DIR, 'favplaylist.m3u'))):
+            file01 = open(str(Path(LOCAL_DIR, 'favplaylist.m3u')), 'w', encoding="utf8")
             file01.write('#EXTM3U\n#EXTINF:-1,{}\nhttp://255.255.255.255\n'.format('-'))
             file01.close()
 
@@ -697,11 +693,6 @@ if __name__ == '__main__':
         class PlaylistsFail: # pylint: disable=too-few-public-methods
             status_code = 0
 
-        if LOCALE_CHANGED:
-            logger.info("System locale changed from last run")
-            if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.cache.json'))):
-                os.remove(str(Path(LOCAL_DIR, 'playlist.cache.json')))
-
         m3uFailed = False
 
         use_cache = settings['m3u'].startswith('http://') or settings['m3u'].startswith('https://')
@@ -709,28 +700,28 @@ if __name__ == '__main__':
             use_cache = False
         if not use_cache:
             logger.info(_('Playlist caching off'))
-        if use_cache and os.path.isfile(str(Path(LOCAL_DIR, 'playlist.cache.json'))):
-            pj = open(str(Path(LOCAL_DIR, 'playlist.cache.json')), 'r', encoding="utf8")
+        if use_cache and os.path.isfile(str(Path(LOCAL_DIR, 'playlistcache.json'))):
+            pj = open(str(Path(LOCAL_DIR, 'playlistcache.json')), 'r', encoding="utf8")
             pj1 = json.loads(pj.read())['url']
             pj.close()
             if pj1 != settings['m3u']:
-                os.remove(str(Path(LOCAL_DIR, 'playlist.cache.json')))
-        if (not use_cache) and os.path.isfile(str(Path(LOCAL_DIR, 'playlist.cache.json'))):
-            os.remove(str(Path(LOCAL_DIR, 'playlist.cache.json')))
-        if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.cache.json'))):
+                os.remove(str(Path(LOCAL_DIR, 'playlistcache.json')))
+        if (not use_cache) and os.path.isfile(str(Path(LOCAL_DIR, 'playlistcache.json'))):
+            os.remove(str(Path(LOCAL_DIR, 'playlistcache.json')))
+        if os.path.isfile(str(Path(LOCAL_DIR, 'playlistcache.json'))):
             try:
                 playlist_load_tmp = open(
-                    str(Path(LOCAL_DIR, 'playlist.cache.json')), 'r', encoding="utf8"
+                    str(Path(LOCAL_DIR, 'playlistcache.json')), 'r', encoding="utf8"
                 )
                 playlist_load_tmp_data = playlist_load_tmp.read()
                 playlist_load_tmp.close()
                 playlist_load_tmp_data = json.loads(playlist_load_tmp_data)
                 if not playlist_load_tmp_data['m3u'] and not playlist_load_tmp_data['array']:
                     logger.warning("Cached playlist broken, ignoring and deleting")
-                    os.remove(str(Path(LOCAL_DIR, 'playlist.cache.json')))
+                    os.remove(str(Path(LOCAL_DIR, 'playlistcache.json')))
             except:
                 pass
-        if not os.path.isfile(str(Path(LOCAL_DIR, 'playlist.cache.json'))):
+        if not os.path.isfile(str(Path(LOCAL_DIR, 'playlistcache.json'))):
             logger.info(_('Loading playlist...'))
             if settings['m3u']:
                 # Parsing m3u
@@ -921,13 +912,13 @@ if __name__ == '__main__':
                     'epgurl': epg_url,
                     'movies': YukiData.movies
                 })
-                cm3uf = open(str(Path(LOCAL_DIR, 'playlist.cache.json')), 'w', encoding="utf8")
+                cm3uf = open(str(Path(LOCAL_DIR, 'playlistcache.json')), 'w', encoding="utf8")
                 cm3uf.write(cm3u)
                 cm3uf.close()
                 logger.info(_('Playlist cache saved!'))
         else:
             logger.info(_('Using cached playlist'))
-            cm3uf = open(str(Path(LOCAL_DIR, 'playlist.cache.json')), 'r', encoding="utf8")
+            cm3uf = open(str(Path(LOCAL_DIR, 'playlistcache.json')), 'r', encoding="utf8")
             cm3u = json.loads(cm3uf.read())
             cm3uf.close()
             array = cm3u['array']
@@ -961,8 +952,8 @@ if __name__ == '__main__':
             groups.remove(_('All channels'))
         groups = [_('All channels'), _('Favourites')] + groups
 
-        if m3uFailed and os.path.isfile(str(Path(LOCAL_DIR, 'playlist.cache.json'))):
-            os.remove(str(Path(LOCAL_DIR, 'playlist.cache.json')))
+        if m3uFailed and os.path.isfile(str(Path(LOCAL_DIR, 'playlistcache.json'))):
+            os.remove(str(Path(LOCAL_DIR, 'playlistcache.json')))
 
         try:
             if os.path.isfile(str(Path(LOCAL_DIR, 'settings.json'))):
@@ -1572,7 +1563,7 @@ if __name__ == '__main__':
         playlists_add = QtWidgets.QPushButton(_('Add'))
         playlists_edit = QtWidgets.QPushButton(_('Edit'))
         playlists_delete = QtWidgets.QPushButton(_('Delete'))
-        playlists_favourites = QtWidgets.QPushButton(_('Favourites') + '+')
+        playlists_favourites = QtWidgets.QPushButton(_('Favourites+'))
         playlists_settings = QtWidgets.QPushButton(_('Settings'))
         playlists_settings.setStyleSheet('color: blue;')
 
@@ -1581,7 +1572,7 @@ if __name__ == '__main__':
         playlists_win_layout.addWidget(playlists_add, 0, 0)
         playlists_win_layout.addWidget(playlists_edit, 0, 1)
         playlists_win_layout.addWidget(playlists_delete, 0, 2)
-        playlists_win_layout.addWidget(playlists_favourites, 1, 0)
+        playlists_win_layout.addWidget(playlists_favourites, 0, 3)
         playlists_win_widget.setLayout(playlists_win_layout)
 
         playlists_win_widget_main = QtWidgets.QWidget()
@@ -1598,7 +1589,7 @@ if __name__ == '__main__':
         def playlists_favourites_do():
             playlists_win.close()
             reset_prov()
-            sm3u.setText(str(Path(LOCAL_DIR, 'playlist_separate.m3u')))
+            sm3u.setText(str(Path(LOCAL_DIR, 'favplaylist.m3u')))
             sepg.setText("")
             save_settings()
 
@@ -1689,7 +1680,7 @@ if __name__ == '__main__':
             return [
                 record_return(
                     record_url, out_file,
-                    ch_name, "Referer: {}".format(settings["referer"]), parse_url_ua
+                    ch_name, "Referer: {}".format(settings["referer"]), get_ua_ref_for_channel
                 ),
                 time.time(), out_file, ch_name
             ]
@@ -2133,6 +2124,10 @@ if __name__ == '__main__':
 
         def_user_agent = uas[settings['useragent']]
         logger.info("Default user agent: {}".format(def_user_agent))
+        if settings['referer']:
+            logger.info("Default HTTP referer: {}".format(settings['referer']))
+        else:
+            logger.info("Default HTTP referer: (empty)")
 
         YukiData.bitrate_failed = False
 
@@ -2267,64 +2262,25 @@ if __name__ == '__main__':
             stream_info.video_bitrates.clear()
             stream_info.audio_bitrates.clear()
 
-        def parse_url_ua(url5):
-            ua_data = {
-                'ua': '',
-                'ref': ''
-            }
-            if '|' in url5:
-                logger.info("")
-                logger.info("Found Kodi-style arguments, parsing")
-                split_kodi = url5.split('|')[1]
-                if '&' in split_kodi:
-                    logger.info("Multiple")
-                    split_kodi = split_kodi.split('&')
-                else:
-                    logger.info("Single")
-                    split_kodi = [split_kodi]
-                for kodi_str in split_kodi:
-                    if kodi_str.startswith('User-Agent='):
-                        kodi_user_agent = kodi_str.replace('User-Agent=', '', 1)
-                        logger.info("Kodi-style User-Agent found: {}".format(kodi_user_agent))
-                        ua_data['ua'] = kodi_user_agent
-                    if kodi_str.startswith('user-agent='):
-                        kodi_user_agent = kodi_str.replace('user-agent=', '', 1)
-                        logger.info("Kodi-style User-Agent found: {}".format(kodi_user_agent))
-                        ua_data['ua'] = kodi_user_agent
-                    if kodi_str.startswith('Referer='):
-                        kodi_referer = kodi_str.replace('Referer=', '', 1)
-                        logger.info("Kodi-style Referer found: {}".format(kodi_referer))
-                        ua_data['ref'] = kodi_referer
-                    if kodi_str.startswith('referer='):
-                        kodi_referer = kodi_str.replace('referer=', '', 1)
-                        logger.info("Kodi-style Referer found: {}".format(kodi_referer))
-                        ua_data['ref'] = kodi_referer
-                url5 = url5.split('|')[0]
-                logger.info("")
-            if '^^^^^^^^^^' in url5:
-                if '^^^^^^^^^^useragent=' in url5:
-                    extvlcopt_ua = url5.split('^^^^^^^^^^useragent=')[1].split('@#@')[0]
-                    ua_data['ua'] = extvlcopt_ua
-                if '^^^^^^^^^^referer=' in url5:
-                    extvlcopt_ref = url5.split('^^^^^^^^^^referer=')[1].split('@#@')[0]
-                    ua_data['ref'] = extvlcopt_ref
-                url5 = url5.split('^^^^^^^^^^')[0]
-            return url5, ua_data
+        def get_ua_ref_for_channel(channel_name1):
+            useragent_ref = uas[settings['useragent']]
+            referer_ref = settings['referer']
+            if channel_name1 and channel_name1 in array:
+                useragent_ref = array[channel_name1]['useragent'] if \
+                    array[channel_name1]['useragent'] else uas[settings['useragent']]
+                referer_ref = array[channel_name1]['referer'] if \
+                    array[channel_name1]['referer'] else settings['referer']
+            return useragent_ref, referer_ref
 
-        def mpv_override_play(arg_override_play, ua1=''): # pylint: disable=too-many-branches
+        def mpv_override_play(arg_override_play, channel_name1=''): # pylint: disable=too-many-branches
             global event_handler
             on_before_play()
-            # Parsing User-Agent and Referer in Kodi-like style
-            player.user_agent = ua1
-            if settings["referer"]:
-                player.http_header_fields = "Referer: {}".format(settings["referer"])
+            useragent_ref, referer_ref = get_ua_ref_for_channel(channel_name1)
+            player.user_agent = useragent_ref
+            if referer_ref:
+                player.http_header_fields = "Referer: {}".format(referer_ref)
             else:
                 player.http_header_fields = ""
-            arg_override_play, ua_data = parse_url_ua(arg_override_play)
-            if ua_data['ua']:
-                player.user_agent = ua_data['ua']
-            if ua_data['ref']:
-                player.http_header_fields = "Referer: {}".format(ua_data['ref'])
 
             if not arg_override_play.endswith('/main.png'):
                 logger.info("Using User-Agent: {}".format(player.user_agent))
@@ -2336,7 +2292,10 @@ if __name__ == '__main__':
                             cur_ref = ref1
                 except:
                     pass
-                logger.info("Using HTTP Referer: {}".format(cur_ref))
+                if cur_ref:
+                    logger.info("Using HTTP Referer: {}".format(cur_ref))
+                else:
+                    logger.info("Using HTTP Referer: (empty)")
 
             player.play(parse_specifiers_now_url(arg_override_play))
             if event_handler:
@@ -2470,11 +2429,9 @@ if __name__ == '__main__':
                     '-reconnect=1 -reconnect_at_eof=1 -reconnect_streamed=1 -reconnect_delay_max=2'
             except:
                 pass
-            # Set user agent and loop
-            player.user_agent = ua_ch if isinstance(ua_ch, str) else uas[ua_ch]
             player.loop = True
             # Playing
-            mpv_override_play(play_url1, ua_ch if isinstance(ua_ch, str) else uas[ua_ch])
+            mpv_override_play(play_url1, chan_name_0)
             # Set channel (video) settings
             setPlayerSettings(chan_name_0)
             # Monitor playback (for stream information)
@@ -2649,14 +2606,14 @@ if __name__ == '__main__':
             if udp_proxy_text and not udp_proxy_starts:
                 udp_proxy_text = 'http://' + udp_proxy_text
             if udp_proxy_text:
-                if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.cache.json'))):
-                    os.remove(str(Path(LOCAL_DIR, 'playlist.cache.json')))
+                if os.path.isfile(str(Path(LOCAL_DIR, 'playlistcache.json'))):
+                    os.remove(str(Path(LOCAL_DIR, 'playlistcache.json')))
             if settings["epgoffset"] != soffset.value():
                 if os.path.isfile(str(Path(LOCAL_DIR, 'epg.cache'))):
                     os.remove(str(Path(LOCAL_DIR, 'epg.cache')))
             if sort_widget.currentIndex() != settings['sort']:
-                if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.cache.json'))):
-                    os.remove(str(Path(LOCAL_DIR, 'playlist.cache.json')))
+                if os.path.isfile(str(Path(LOCAL_DIR, 'playlistcache.json'))):
+                    os.remove(str(Path(LOCAL_DIR, 'playlistcache.json')))
             sfld_text = sfld.text()
             HOME_SYMBOL = '~'
             try:
@@ -2877,8 +2834,8 @@ if __name__ == '__main__':
         sclose.clicked.connect(close_settings)
 
         def update_m3u():
-            if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.cache.json'))):
-                os.remove(str(Path(LOCAL_DIR, 'playlist.cache.json')))
+            if os.path.isfile(str(Path(LOCAL_DIR, 'playlistcache.json'))):
+                os.remove(str(Path(LOCAL_DIR, 'playlistcache.json')))
             save_settings()
 
         sm3ufile = QtWidgets.QPushButton()
@@ -3541,8 +3498,8 @@ if __name__ == '__main__':
 
         def reload_playlist():
             logger.info("Reloading playlist...")
-            if os.path.isfile(str(Path(LOCAL_DIR, 'playlist.cache.json'))):
-                os.remove(str(Path(LOCAL_DIR, 'playlist.cache.json')))
+            if os.path.isfile(str(Path(LOCAL_DIR, 'playlistcache.json'))):
+                os.remove(str(Path(LOCAL_DIR, 'playlistcache.json')))
             save_settings()
 
         def playlists_selected():
@@ -5355,25 +5312,40 @@ if __name__ == '__main__':
                 tvguide_lbl_2.setText('')
                 epg_win.hide()
 
-        def favoritesplaylistsep_add():
+        def favoritesplaylistsep_add(): # pylint: disable=too-many-branches
             ps_data = getArrayItem(item_selected)
             str1 = "#EXTINF:-1"
             if ps_data['tvg-name']:
-                str1 += " tvg-name=\"{}\"".format(ps_data['tvg-name'])
+                str1 += f" tvg-name=\"{ps_data['tvg-name']}\""
             if ps_data['tvg-ID']:
-                str1 += " tvg-id=\"{}\"".format(ps_data['tvg-ID'])
+                str1 += f" tvg-id=\"{ps_data['tvg-ID']}\""
             if ps_data['tvg-logo']:
-                str1 += " tvg-logo=\"{}\"".format(ps_data['tvg-logo'])
+                str1 += f" tvg-logo=\"{ps_data['tvg-logo']}\""
+            if ps_data['tvg-group']:
+                str1 += f" tvg-group=\"{ps_data['tvg-group']}\""
             if ps_data['tvg-url']:
-                str1 += " tvg-url=\"{}\"".format(ps_data['tvg-url'])
+                str1 += f" tvg-url=\"{ps_data['tvg-url']}\""
             else:
-                str1 += " tvg-url=\"{}\"".format(settings['epg'])
-            str1 += ",{}\n{}\n".format(item_selected, ps_data['url'])
-            file03 = open(str(Path(LOCAL_DIR, 'playlist_separate.m3u')), 'r', encoding="utf8")
+                str1 += f" tvg-url=\"{settings['epg']}\""
+            if ps_data['catchup']:
+                str1 += f" catchup=\"{ps_data['catchup']}\""
+            if ps_data['catchup-source']:
+                str1 += f" catchup-source=\"{ps_data['catchup-source']}\""
+            if ps_data['catchup-days']:
+                str1 += f" catchup-days=\"{ps_data['catchup-days']}\""
+
+            str_append = ""
+            if ps_data['useragent']:
+                str_append += f"#EXTVLCOPT:http-user-agent={ps_data['useragent']}\n"
+            if ps_data['referer']:
+                str_append += f"#EXTVLCOPT:http-referrer={ps_data['referer']}\n"
+
+            str1 += f",{item_selected}\n{str_append}{ps_data['url']}\n"
+            file03 = open(str(Path(LOCAL_DIR, 'favplaylist.m3u')), 'r', encoding="utf8")
             file03_contents = file03.read()
             file03.close()
             if file03_contents == '#EXTM3U\n#EXTINF:-1,{}\nhttp://255.255.255.255\n'.format('-'):
-                file04 = open(str(Path(LOCAL_DIR, 'playlist_separate.m3u')), 'w', encoding="utf8")
+                file04 = open(str(Path(LOCAL_DIR, 'favplaylist.m3u')), 'w', encoding="utf8")
                 file04.write('#EXTM3U\n' + str1)
                 file04.close()
             else:
@@ -5394,13 +5366,13 @@ if __name__ == '__main__':
                             new_data = \
                             '#EXTM3U\n#EXTINF:-1,{}\nhttp://255.255.255.255\n'.format('-')
                         file05 = open(
-                            str(Path(LOCAL_DIR, 'playlist_separate.m3u')), 'w', encoding="utf8"
+                            str(Path(LOCAL_DIR, 'favplaylist.m3u')), 'w', encoding="utf8"
                         )
                         file05.write(new_data)
                         file05.close()
                 else:
                     file02 = open(
-                        str(Path(LOCAL_DIR, 'playlist_separate.m3u')), 'w', encoding="utf8"
+                        str(Path(LOCAL_DIR, 'favplaylist.m3u')), 'w', encoding="utf8"
                     )
                     file02.write(file03_contents + str1)
                     file02.close()
@@ -5440,7 +5412,7 @@ if __name__ == '__main__':
                     menu.addAction(_('TV guide'), tvguide_context_menu)
                     menu.addAction(_('Hide TV guide'), tvguide_hide)
                     menu.addAction(_('Favourites'), tvguide_favourites_add)
-                    menu.addAction(_('Favourites (separate playlist)'), favoritesplaylistsep_add)
+                    menu.addAction(_('Favourites+ (separate playlist)'), favoritesplaylistsep_add)
                     menu.addAction(_('Open in external player'), open_external_player)
                     menu.addAction(_('Start recording'), tvguide_start_record)
                     menu.addAction(_('Video settings'), settings_context_menu)
@@ -6119,7 +6091,7 @@ if __name__ == '__main__':
                 record_file = out_file
                 record(
                     url3, out_file, orig_channel_name, "Referer: {}".format(settings["referer"]),
-                    parse_url_ua
+                    get_ua_ref_for_channel
                 )
             else:
                 is_recording = False

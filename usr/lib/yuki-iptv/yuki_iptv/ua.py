@@ -1,7 +1,6 @@
 # pylint: disable=missing-function-docstring, missing-module-docstring
 # SPDX-License-Identifier: GPL-3.0-only
 import os
-import json
 from pathlib import Path
 user_agent = '' # pylint: disable=invalid-name
 uas = [
@@ -36,43 +35,3 @@ if not os.path.isdir(str(Path(os.environ['HOME'], '.config'))):
     os.mkdir(str(Path(os.environ['HOME'], '.config')))
 if not os.path.isdir(LOCAL_DIR):
     os.mkdir(LOCAL_DIR)
-
-def get_default_user_agent():
-    if os.path.isfile(str(Path(LOCAL_DIR, 'settings.json'))):
-        settings_file1 = open(str(Path(LOCAL_DIR, 'settings.json')), 'r', encoding="utf8")
-        settings1 = json.loads(settings_file1.read())
-        settings_file1.close()
-    else:
-        settings1 = {
-            "useragent": 10
-        }
-    if 'useragent' not in settings1:
-        settings1['useragent'] = 10
-    def_user_agent = uas[settings1['useragent']]
-    return def_user_agent
-
-def get_user_agent_for_channel(channel):
-    if os.path.isfile(str(Path(LOCAL_DIR, 'settings.json'))):
-        settings_file2 = open(str(Path(LOCAL_DIR, 'settings.json')), 'r', encoding="utf8")
-        settings2 = json.loads(settings_file2.read())
-        settings_file2.close()
-    else:
-        settings2 = {
-            "m3u": ''
-        }
-    if 'm3u' not in settings2:
-        settings2['m3u'] = ''
-    ua1 = get_default_user_agent()
-    channel_sets1 = {}
-    if os.path.isfile(str(Path(LOCAL_DIR, 'channelsettings.json'))):
-        file2 = open(str(Path(LOCAL_DIR, 'channelsettings.json')), 'r', encoding="utf8")
-        channel_sets1 = json.loads(file2.read())
-        file2.close()
-    if settings2['m3u'] in channel_sets1 and channel in channel_sets1[settings2['m3u']]:
-        ch_data = channel_sets1[settings2['m3u']][channel]
-        if 'useragent' in ch_data:
-            try:
-                ua1 = uas[ch_data['useragent']]
-            except: # pylint: disable=bare-except
-                ua1 = get_default_user_agent()
-    return ua1
