@@ -4,7 +4,6 @@
 import logging
 import subprocess
 import threading
-from yuki_iptv.ua import get_user_agent_for_channel
 
 logger = logging.getLogger(__name__)
 
@@ -42,17 +41,15 @@ def is_ffmpeg_recording():
 
 def record( # pylint: disable=inconsistent-return-statements
     input_url, out_file, channel_name, http_referer,
-    parse_url_ua, is_return=False, is_screenshot=False
+    get_ua_ref_for_channel, is_return=False, is_screenshot=False
 ): # pylint: disable=too-many-arguments
     '''Main recording function'''
     if http_referer == 'Referer: ':
         http_referer = ''
-    user_agent = get_user_agent_for_channel(channel_name)
-    input_url, ua_data = parse_url_ua(input_url)
-    if ua_data['ua']:
-        user_agent = ua_data['ua']
-    if ua_data['ref']:
-        http_referer = 'Referer: {}'.format(ua_data['ref'])
+    useragent_ref, referer_ref = get_ua_ref_for_channel(channel_name)
+    user_agent = useragent_ref
+    if referer_ref:
+        http_referer = 'Referer: {}'.format(referer_ref)
     action = 'record'
     if is_screenshot:
         action = 'screenshot'
@@ -141,9 +138,9 @@ def record( # pylint: disable=inconsistent-return-statements
                 startupinfo=None
             )
 
-def record_return(input_url, out_file, channel_name, http_referer, parse_url_ua):
+def record_return(input_url, out_file, channel_name, http_referer, get_ua_ref_for_channel):
     '''Record with return subprocess'''
-    return record(input_url, out_file, channel_name, http_referer, parse_url_ua, True)
+    return record(input_url, out_file, channel_name, http_referer, get_ua_ref_for_channel, True)
 
 def stop_record():
     '''Stop recording'''

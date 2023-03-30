@@ -48,3 +48,42 @@ def ast_settings_import():
         except:
             logger.warning("Importing settings from Astroncia IPTV - FAILED!")
             logger.warning("")
+
+def convert_old_filenames():
+    if os.path.isfile(Path(os.environ['HOME'], '.config', 'yuki-iptv', 'playlist_separate.m3u')) \
+    and not os.path.isfile(Path(os.environ['HOME'], '.config', 'yuki-iptv', 'favplaylist.m3u')):
+        os.rename(
+            Path(os.environ['HOME'], '.config', 'yuki-iptv', 'playlist_separate.m3u'),
+            Path(os.environ['HOME'], '.config', 'yuki-iptv', 'favplaylist.m3u')
+        )
+
+    if os.path.isfile(Path(os.environ['HOME'], '.config', 'yuki-iptv', 'channels.json')) \
+    and not os.path.isfile(
+        Path(os.environ['HOME'], '.config', 'yuki-iptv', 'channelsettings.json')
+    ):
+        with open(
+            Path(os.environ['HOME'], '.config', 'yuki-iptv', 'channels.json'),
+            'r', encoding="utf8"
+        ) as old_channels_file:
+            old_channels = json.loads(old_channels_file.read())
+
+        # settings start
+        settings = {'m3u': ''}
+        if os.path.isfile(Path(os.environ['HOME'], '.config', 'yuki-iptv', 'settings.json')):
+            with open(
+                Path(os.environ['HOME'], '.config', 'yuki-iptv', 'settings.json'),
+                'r', encoding="utf8"
+            ) as old_settings_file:
+                settings = json.loads(old_settings_file.read())
+        # settings end
+
+        new_channels = {}
+        if settings['m3u']:
+            new_channels[settings['m3u']] = old_channels
+
+        with open(
+            Path(os.environ['HOME'], '.config', 'yuki-iptv', 'channelsettings.json'),
+            'w', encoding="utf8"
+        ) as new_channels_file:
+            new_channels_file.write(json.dumps(new_channels))
+        os.remove(Path(os.environ['HOME'], '.config', 'yuki-iptv', 'channels.json'))

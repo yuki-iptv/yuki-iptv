@@ -38,6 +38,41 @@ class M3UParser:
         res = res.strip()
         return res
 
+    def parse_url_kodi_arguments(self, url): # pylint: disable=no-self-use
+        '''Parse Kodi-style URL arguments'''
+        useragent = ''
+        referrer = ''
+        if '|' in url:
+            logger.debug("")
+            logger.debug("Found Kodi-style arguments, parsing")
+            split_kodi = url.split('|')[1]
+            if '&' in split_kodi:
+                logger.debug("Multiple")
+                split_kodi = split_kodi.split('&')
+            else:
+                logger.debug("Single")
+                split_kodi = [split_kodi]
+            for kodi_str in split_kodi:
+                if kodi_str.startswith('User-Agent='):
+                    kodi_user_agent = kodi_str.replace('User-Agent=', '', 1)
+                    logger.debug("Kodi-style User-Agent found: {}".format(kodi_user_agent))
+                    useragent = kodi_user_agent
+                if kodi_str.startswith('user-agent='):
+                    kodi_user_agent = kodi_str.replace('user-agent=', '', 1)
+                    logger.debug("Kodi-style User-Agent found: {}".format(kodi_user_agent))
+                    useragent = kodi_user_agent
+                if kodi_str.startswith('Referer='):
+                    kodi_referer = kodi_str.replace('Referer=', '', 1)
+                    logger.debug("Kodi-style Referer found: {}".format(kodi_referer))
+                    referrer = kodi_referer
+                if kodi_str.startswith('referer='):
+                    kodi_referer = kodi_str.replace('referer=', '', 1)
+                    logger.debug("Kodi-style Referer found: {}".format(kodi_referer))
+                    referrer = kodi_referer
+            url = url.split('|')[0]
+            logger.debug("")
+        return url, useragent, referrer
+
     def parse_channel(self, line_info, ch_url, overrides):
         '''Parse EXTINF channel info'''
         if self.udp_proxy and (ch_url.startswith('udp://') or ch_url.startswith('rtp://')):
@@ -69,17 +104,28 @@ class M3UParser:
             "catchup": catchup_tag,
             "catchup-source": self.parse_regexp("catchup-source", line_info),
             "catchup-days": self.parse_regexp("catchup-days", line_info, "1"),
-            "useragent": "",
+            "useragent": self.parse_regexp("user-agent", line_info),
             "referer": "",
             "url": ch_url
         }
+
+        # search also for tvg-ID
+        tvg_id_2 = self.parse_regexp("tvg-ID", line_info)
+        if tvg_id_2 and not ch_array['tvg-ID']:
+            ch_array['tvg-ID'] = tvg_id_2
+
+        # Parse Kodi-style URL arguments
+        channel_url, kodi_useragent, kodi_referrer = \
+            self.parse_url_kodi_arguments(ch_array['url'])
+        if kodi_useragent:
+            ch_array['useragent'] = kodi_useragent
+        if kodi_referrer:
+            ch_array['referer'] = kodi_referrer
+        ch_array['url'] = channel_url
+
+        # EXTGRP and EXTVLCOPT always have priority over EXTINF options
         for override in overrides:
             ch_array[override] = overrides[override]
-
-        if ch_array['useragent']:
-            ch_array['url'] += '^^^^^^^^^^useragent=' + ch_array['useragent'] + '@#@'
-        if ch_array['referer']:
-            ch_array['url'] += '^^^^^^^^^^referer=' + ch_array['referer'] + '@#@'
 
         return ch_array
 
