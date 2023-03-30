@@ -44,22 +44,32 @@ def get_default_user_agent():
         settings_file1.close()
     else:
         settings1 = {
-            "useragent": 2
+            "useragent": 10
         }
     if 'useragent' not in settings1:
-        settings1['useragent'] = 2
+        settings1['useragent'] = 10
     def_user_agent = uas[settings1['useragent']]
     return def_user_agent
 
 def get_user_agent_for_channel(channel):
+    if os.path.isfile(str(Path(LOCAL_DIR, 'settings.json'))):
+        settings_file2 = open(str(Path(LOCAL_DIR, 'settings.json')), 'r', encoding="utf8")
+        settings2 = json.loads(settings_file2.read())
+        settings_file2.close()
+    else:
+        settings2 = {
+            "m3u": ''
+        }
+    if 'm3u' not in settings2:
+        settings2['m3u'] = ''
     ua1 = get_default_user_agent()
     channel_sets1 = {}
-    if os.path.isfile(str(Path(LOCAL_DIR, 'channels.json'))):
-        file2 = open(str(Path(LOCAL_DIR, 'channels.json')), 'r', encoding="utf8")
+    if os.path.isfile(str(Path(LOCAL_DIR, 'channelsettings.json'))):
+        file2 = open(str(Path(LOCAL_DIR, 'channelsettings.json')), 'r', encoding="utf8")
         channel_sets1 = json.loads(file2.read())
         file2.close()
-    if channel in channel_sets1:
-        ch_data = channel_sets1[channel]
+    if settings2['m3u'] in channel_sets1 and channel in channel_sets1[settings2['m3u']]:
+        ch_data = channel_sets1[settings2['m3u']][channel]
         if 'useragent' in ch_data:
             try:
                 ua1 = uas[ch_data['useragent']]

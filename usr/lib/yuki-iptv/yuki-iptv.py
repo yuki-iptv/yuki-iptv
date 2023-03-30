@@ -349,14 +349,14 @@ if __name__ == '__main__':
         epg_icons = {}
         def save_channel_sets():
             global channel_sets
-            file2 = open(str(Path(LOCAL_DIR, 'channels.json')), 'w', encoding="utf8")
+            file2 = open(str(Path(LOCAL_DIR, 'channelsettings.json')), 'w', encoding="utf8")
             file2.write(json.dumps(channel_sets))
             file2.close()
 
-        if not os.path.isfile(str(Path(LOCAL_DIR, 'channels.json'))):
+        if not os.path.isfile(str(Path(LOCAL_DIR, 'channelsettings.json'))):
             save_channel_sets()
         else:
-            file1 = open(str(Path(LOCAL_DIR, 'channels.json')), 'r', encoding="utf8")
+            file1 = open(str(Path(LOCAL_DIR, 'channelsettings.json')), 'r', encoding="utf8")
             channel_sets = json.loads(file1.read())
             file1.close()
 
@@ -946,15 +946,16 @@ if __name__ == '__main__':
                 pass
 
         for ch3 in array.copy():
-            if ch3 in channel_sets:
-                if 'group' in channel_sets[ch3]:
-                    if channel_sets[ch3]['group']:
-                        array[ch3]['tvg-group'] = channel_sets[ch3]['group']
-                        if channel_sets[ch3]['group'] not in groups:
-                            groups.append(channel_sets[ch3]['group'])
-                if 'hidden' in channel_sets[ch3]:
-                    if channel_sets[ch3]['hidden']:
-                        array.pop(ch3)
+            if settings['m3u'] in channel_sets:
+                if ch3 in channel_sets[settings['m3u']]:
+                    if 'group' in channel_sets[settings['m3u']][ch3]:
+                        if channel_sets[settings['m3u']][ch3]['group']:
+                            array[ch3]['tvg-group'] = channel_sets[settings['m3u']][ch3]['group']
+                            if channel_sets[settings['m3u']][ch3]['group'] not in groups:
+                                groups.append(channel_sets[settings['m3u']][ch3]['group'])
+                    if 'hidden' in channel_sets[settings['m3u']][ch3]:
+                        if channel_sets[settings['m3u']][ch3]['hidden']:
+                            array.pop(ch3)
 
         if _('All channels') in groups:
             groups.remove(_('All channels'))
@@ -2481,7 +2482,9 @@ if __name__ == '__main__':
 
         def chan_set_save():
             chan_3 = title.text()
-            channel_sets[chan_3] = {
+            if settings['m3u'] not in channel_sets:
+                channel_sets[settings['m3u']] = {}
+            channel_sets[settings['m3u']][chan_3] = {
                 "deinterlace": deinterlace_chk.isChecked(),
                 "useragent": useragent_choose.currentIndex(),
                 "group": group_text.text(),
@@ -2795,8 +2798,8 @@ if __name__ == '__main__':
         )
 
         def reset_channel_settings():
-            if os.path.isfile(str(Path(LOCAL_DIR, 'channels.json'))):
-                os.remove(str(Path(LOCAL_DIR, 'channels.json')))
+            if os.path.isfile(str(Path(LOCAL_DIR, 'channelsettings.json'))):
+                os.remove(str(Path(LOCAL_DIR, 'channelsettings.json')))
             if os.path.isfile(str(Path(LOCAL_DIR, 'favourites.json'))):
                 os.remove(str(Path(LOCAL_DIR, 'favourites.json')))
             if os.path.isfile(str(Path(LOCAL_DIR, 'sort.json'))):
@@ -4132,8 +4135,8 @@ if __name__ == '__main__':
                     pass
                 if j == playing_chan:
                     logger.info("setPlayerSettings '{}'".format(j))
-                    if j in channel_sets:
-                        d = channel_sets[j]
+                    if settings['m3u'] in channel_sets and j in channel_sets[settings['m3u']]:
+                        d = channel_sets[settings['m3u']][j]
                         player.deinterlace = d['deinterlace']
                         if not 'useragent' in d:
                             d['useragent'] = settings['useragent']
@@ -4253,8 +4256,8 @@ if __name__ == '__main__':
                 win.update()
                 playing_url = play_url
                 ua_choose = def_user_agent
-                if j in channel_sets:
-                    ua_choose = channel_sets[j]['useragent']
+                if settings['m3u'] in channel_sets and j in channel_sets[settings['m3u']]:
+                    ua_choose = channel_sets[settings['m3u']][j]['useragent']
                 if not custom_url:
                     doPlay(play_url, ua_choose, j)
                 else:
@@ -4893,10 +4896,10 @@ if __name__ == '__main__':
                 is_epgname_found = False
 
                 # First, match EPG name from settings
-                if i in channel_sets:
-                    if 'epgname' in channel_sets[i]:
-                        if channel_sets[i]['epgname']:
-                            epg_name = channel_sets[i]['epgname']
+                if settings['m3u'] in channel_sets and i in channel_sets[settings['m3u']]:
+                    if 'epgname' in channel_sets[settings['m3u']][i]:
+                        if channel_sets[settings['m3u']][i]['epgname']:
+                            epg_name = channel_sets[settings['m3u']][i]['epgname']
                             if str(epg_name).lower() in programmes:
                                 prog_search = str(epg_name).lower()
                                 is_epgname_found = True
@@ -5228,54 +5231,68 @@ if __name__ == '__main__':
             if chan_win.isVisible():
                 chan_win.close()
             title.setText(str(item_selected))
-            if item_selected in channel_sets:
-                deinterlace_chk.setChecked(channel_sets[item_selected]['deinterlace'])
+            if settings['m3u'] in channel_sets and item_selected in channel_sets[settings['m3u']]:
+                deinterlace_chk.setChecked(
+                    channel_sets[settings['m3u']][item_selected]['deinterlace']
+                )
                 try:
-                    useragent_choose.setCurrentIndex(channel_sets[item_selected]['useragent'])
+                    useragent_choose.setCurrentIndex(
+                        channel_sets[settings['m3u']][item_selected]['useragent']
+                    )
                 except:
                     useragent_choose.setCurrentIndex(settings['useragent'])
                 try:
-                    group_text.setText(channel_sets[item_selected]['group'])
+                    group_text.setText(channel_sets[settings['m3u']][item_selected]['group'])
                 except:
                     group_text.setText('')
                 try:
-                    hidden_chk.setChecked(channel_sets[item_selected]['hidden'])
+                    hidden_chk.setChecked(channel_sets[settings['m3u']][item_selected]['hidden'])
                 except:
                     hidden_chk.setChecked(False)
                 try:
-                    contrast_choose.setValue(channel_sets[item_selected]['contrast'])
+                    contrast_choose.setValue(
+                        channel_sets[settings['m3u']][item_selected]['contrast']
+                    )
                 except:
                     contrast_choose.setValue(0)
                 try:
-                    brightness_choose.setValue(channel_sets[item_selected]['brightness'])
+                    brightness_choose.setValue(
+                        channel_sets[settings['m3u']][item_selected]['brightness']
+                    )
                 except:
                     brightness_choose.setValue(0)
                 try:
-                    hue_choose.setValue(channel_sets[item_selected]['hue'])
+                    hue_choose.setValue(channel_sets[settings['m3u']][item_selected]['hue'])
                 except:
                     hue_choose.setValue(0)
                 try:
-                    saturation_choose.setValue(channel_sets[item_selected]['saturation'])
+                    saturation_choose.setValue(
+                        channel_sets[settings['m3u']][item_selected]['saturation']
+                    )
                 except:
                     saturation_choose.setValue(0)
                 try:
-                    gamma_choose.setValue(channel_sets[item_selected]['gamma'])
+                    gamma_choose.setValue(channel_sets[settings['m3u']][item_selected]['gamma'])
                 except:
                     gamma_choose.setValue(0)
                 try:
-                    videoaspect_choose.setCurrentIndex(channel_sets[item_selected]['videoaspect'])
+                    videoaspect_choose.setCurrentIndex(
+                        channel_sets[settings['m3u']][item_selected]['videoaspect']
+                    )
                 except:
                     videoaspect_choose.setCurrentIndex(0)
                 try:
-                    zoom_choose.setCurrentIndex(channel_sets[item_selected]['zoom'])
+                    zoom_choose.setCurrentIndex(
+                        channel_sets[settings['m3u']][item_selected]['zoom']
+                    )
                 except:
                     zoom_choose.setCurrentIndex(0)
                 try:
-                    panscan_choose.setValue(channel_sets[item_selected]['panscan'])
+                    panscan_choose.setValue(channel_sets[settings['m3u']][item_selected]['panscan'])
                 except:
                     panscan_choose.setValue(0)
                 try:
-                    epgname_saved = channel_sets[item_selected]['epgname']
+                    epgname_saved = channel_sets[settings['m3u']][item_selected]['epgname']
                     if not epgname_saved:
                         epgname_saved = _('Default')
                     epgname_lbl.setText(epgname_saved)
