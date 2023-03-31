@@ -4086,6 +4086,7 @@ if __name__ == '__main__':
                 pass
 
         def setChanText(chanText, do_chan_set=False):
+            global time_stop
             chTextStrip = chanText.strip()
             if chTextStrip:
                 win.setWindowTitle(chTextStrip + ' - ' + MAIN_WINDOW_TITLE)
@@ -4094,6 +4095,10 @@ if __name__ == '__main__':
             set_mpv_title()
             if not do_chan_set:
                 chan.setText(chanText)
+            if fullscreen and chTextStrip:
+                l1.show()
+                l1.setText2(chTextStrip)
+                time_stop = time.time() + 1
 
         playing_archive = False
 
