@@ -4102,12 +4102,8 @@ if __name__ == '__main__':
                     if settings['m3u'] in channel_sets and j in channel_sets[settings['m3u']]:
                         d = channel_sets[settings['m3u']][j]
                         player.deinterlace = d['deinterlace']
-                        if not 'ua' in d:
-                            d['ua'] = settings['ua']
-                        try:
-                            d['ua'] = d['ua']
-                        except:
-                            pass
+                        if 'ua' not in d:
+                            d['ua'] = ''
                         if 'contrast' in d:
                             player.contrast = d['contrast']
                         else:
