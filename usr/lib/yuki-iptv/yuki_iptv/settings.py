@@ -21,7 +21,7 @@ def parse_settings( # pylint: disable=too-many-arguments
         "hwaccel": True,
         "sort": 0,
         "cache_secs": 0,
-        "useragent": 10,
+        "ua": "libmpv",
         "mpv_options": '',
         'donotupdateepg': False,
         'channelsonpage': 100,
