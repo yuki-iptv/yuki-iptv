@@ -129,6 +129,7 @@ else:
 
 APP_VERSION = '__DEB_VERSION__'
 VERSION_CODENAME = 'Turning Point'
+COPYRIGHT_YEAR = '2023'
 
 setproctitle.setproctitle("yuki-iptv")
 
@@ -3664,7 +3665,7 @@ if __name__ == '__main__':
 
             logger.info("Using {}".format(mpv_version))
 
-            textbox.setText(format_about_text(_('yuki-iptv\nversion: {}\ncodename: {}\n\n© 2021-2022 Astroncia\n© 2023 yuki-chan-nya\nhttps://github.com/yuki-chan-nya\n\nIPTV player\n\nSupports TV guide (EPG) only in XMLTV and JTV formats!\n\nIcons by Font Awesome ( https://fontawesome.com/ )\nIcons licensed under the CC BY 4.0 License\n( https://creativecommons.org/licenses/by/4.0/ )').format(APP_VERSION, VERSION_CODENAME))) # pylint: disable=line-too-long
+            textbox.setText(format_about_text(_('yuki-iptv\nversion: {}\ncodename: {}\n\n© 2021-2022 Astroncia\n© {} yuki-chan-nya\nhttps://github.com/yuki-chan-nya\n\nIPTV player\n\nSupports TV guide (EPG) only in XMLTV and JTV formats!\n\nIcons by Font Awesome ( https://fontawesome.com/ )\nIcons licensed under the CC BY 4.0 License\n( https://creativecommons.org/licenses/by/4.0/ )').format(APP_VERSION, VERSION_CODENAME, COPYRIGHT_YEAR))) # pylint: disable=line-too-long
 
             if settings["cache_secs"] != 0:
                 try:
