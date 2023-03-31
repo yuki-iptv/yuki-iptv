@@ -23,6 +23,7 @@ import logging
 import signal
 import base64
 import argparse
+import shutil
 import subprocess
 import re
 import textwrap
@@ -69,10 +70,6 @@ from thirdparty.resizablewindow import ResizableWindow
 #from thirdparty.levenshtein import damerau_levenshtein
 
 parser = argparse.ArgumentParser(prog="yuki-iptv", description="yuki-iptv")
-parser.add_argument(
-    '--python',
-    help='Internal argument, do not use'
-)
 parser.add_argument(
     '--version',
     action='store_true',
@@ -2730,21 +2727,11 @@ if __name__ == '__main__':
             streaminfo_win.close()
             license_win.close()
             time.sleep(0.1)
-            if args1.python:
-                os.execv(args1.python, ['python'] + sys.argv)
-            else:
-                sys_executable = sys.executable
-                if not os.path.isfile(sys_executable):
-                    sys_executable = str(
-                        Path(os.path.dirname(os.path.abspath(__file__)), 'yuki-iptv')
-                    )
-                    os.execv(sys_executable, sys.argv)
-                else:
-                    os.execv(
-                        sys_executable,
-                        ['python'] + sys.argv + ['--python', sys_executable]
-                    )
             stop_record()
+            os.execv(
+                shutil.which('python3'),
+                ['./yuki-iptv.py'] + sys.argv
+            )
             sys.exit(0)
 
         wid2 = QtWidgets.QWidget()
