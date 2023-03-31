@@ -4,7 +4,7 @@
 import os
 import logging
 import requests
-from yuki_iptv.jtv import parse_jtv
+from thirdparty.jtv import parse_jtv
 from yuki_iptv.xmltv import parse_as_xmltv
 
 logger = logging.getLogger(__name__)
