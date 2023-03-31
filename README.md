@@ -44,6 +44,7 @@ Icons: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 - Display of technical information - video / audio codec, bit rate, resolution  
 - Channel groups (from playlist and custom)  
 - Hide channels  
+- Sorting channels  
 - Video settings for each channel - contrast, brightness, hue, saturation, gamma  
 - Change user agent / HTTP Referer for each channel  
 - M3U playlist editor  
