@@ -2,20 +2,26 @@
 # SPDX-License-Identifier: GPL-3.0-only
 # pylint: disable=logging-format-interpolation, logging-fstring-interpolation
 import logging
+import gettext
 import gzip
 import lzma
 import datetime
 import xml.etree.ElementTree as ET
 
+_ = gettext.gettext
 logger = logging.getLogger(__name__)
 
-def parse_as_xmltv(epg, settings, catchup_days1): # pylint: disable=too-many-locals, too-many-branches, too-many-statements
+def parse_as_xmltv(epg, settings, catchup_days1, progress_dict, epg_i, epg_settings_url): # pylint: disable=too-many-locals, too-many-branches, too-many-statements, too-many-arguments
     '''Load EPG file'''
     logger.info("Trying parsing as XMLTV...")
     logger.info(f"catchup-days = {catchup_days1}")
     try:
         tree = ET.ElementTree(ET.fromstring(epg))
     except ET.ParseError:
+        progress_dict[0] = _('Updating TV guide... (unpacking {}/{})').format(
+            epg_i,
+            len(epg_settings_url)
+        )
         try:
             logger.info("Trying to unpack as gzip...")
             tree = ET.ElementTree(ET.fromstring(gzip.decompress(epg)))
@@ -24,6 +30,10 @@ def parse_as_xmltv(epg, settings, catchup_days1): # pylint: disable=too-many-loc
             tree = ET.ElementTree(ET.fromstring(
                 lzma.LZMADecompressor().decompress(epg)
             ))
+    progress_dict[0] = _('Updating TV guide... (parsing {}/{})').format(
+        epg_i,
+        len(epg_settings_url)
+    )
     ids = {}
     programmes_epg = {}
     icons = {}

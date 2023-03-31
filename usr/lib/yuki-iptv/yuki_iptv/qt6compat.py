@@ -17,7 +17,7 @@ def globalPos(arg):
     except: # pylint: disable=bare-except
         if not YukiData.WRITTEN:
             YukiData.WRITTEN = True
-            logger.warning("Qt 5 (globalPos) compatibility enabled")
+            logger.debug("Qt 5 (globalPos) compatibility enabled")
         ret = arg.globalPos()
     return ret
 
@@ -46,7 +46,7 @@ def _enum(obj, name):
     except: # pylint: disable=bare-except
         if not YukiData.WRITTENQT:
             YukiData.WRITTENQT = True
-            logger.warning("Falling back to short names for Qt enums")
+            logger.debug("Falling back to short names for Qt enums")
         return getattr(obj, child)
 
 def qaction(arg1, arg2):
