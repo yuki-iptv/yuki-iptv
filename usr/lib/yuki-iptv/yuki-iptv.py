@@ -7360,7 +7360,7 @@ if __name__ == '__main__':
             else:
                 if not YukiData.connprinted:
                     YukiData.connprinted = True
-                    logger.info("Connection loss detector DISABLED")
+                    logger.info("Connection loss detector disabled")
 
         def thread_check_tvguide_obsolete(): # pylint: disable=too-many-branches
             try:
