@@ -1,6 +1,6 @@
 # pylint: disable=no-member, unnecessary-lambda, unused-argument, import-error
 # pylint: disable=missing-module-docstring, missing-class-docstring, missing-function-docstring
-# pylint: disable=logging-format-interpolation
+# pylint: disable=logging-format-interpolation, logging-fstring-interpolation
 # SPDX-License-Identifier: GPL-3.0-only
 import os
 import logging
@@ -29,15 +29,15 @@ class YukiData: # pylint: disable=too-few-public-methods
         str_offset = ''
 
 def ast_mpv_seek(secs):
-    logger.info("Seeking to {} seconds".format(secs))
+    logger.info(f"Seeking to {secs} seconds")
     YukiData.player.command('seek', secs)
 
 def ast_mpv_speed(spd):
-    logger.info("Set speed to {}".format(spd))
+    logger.info(f"Set speed to {spd}")
     YukiData.player.speed = spd
 
 def ast_trackset(track, type1):
-    logger.info("Set {} track to {}".format(type1, track))
+    logger.info(f"Set {type1} track to {track}")
     if type1 == 'vid':
         YukiData.player.vid = track
     else:
@@ -47,13 +47,11 @@ def ast_trackset(track, type1):
 def send_mpv_command(name, act, cmd):
     if cmd == '__AST_VFBLACK__':
         cur_window_pos = YukiData.get_curwindow_pos()
-        cmd = 'lavfi=[pad=iw:iw*sar/{}*{}:0:(oh-ih)/2]'.format(
-            cur_window_pos[0], cur_window_pos[1]
-        )
+        cmd = f'lavfi=[pad=iw:iw*sar/{cur_window_pos[0]}*{cur_window_pos[1]}:0:(oh-ih)/2]'
     if cmd == '__AST_SOFTSCALING__':
         cur_window_pos = YukiData.get_curwindow_pos()
-        cmd = 'lavfi=[scale={}:-2]'.format(cur_window_pos[0])
-    logger.info("Sending mpv command: \"{} {} \\\"{}\\\"\"".format(name, act, cmd))
+        cmd = f'lavfi=[scale={cur_window_pos[0]}:-2]'
+    logger.info(f"Sending mpv command: \"{name} {act} \\\"{cmd}\\\"\"")
     YukiData.player.command(name, act, cmd)
 
 def get_active_vf_filters():
@@ -210,7 +208,7 @@ def init_menubar(data): # pylint: disable=too-many-statements
     YukiData.spds = []
 
     for spd in (0.25, 0.5, 0.75, 1.25, 1.5, 1.75):
-        spd_action = qaction("{}x".format(spd), data)
+        spd_action = qaction(f"{spd}x", data)
         spd_action.triggered.connect(partial(ast_mpv_speed, spd))
         YukiData.spds.append(spd_action)
 

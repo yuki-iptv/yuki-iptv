@@ -15,9 +15,9 @@ def convert_xtream_to_m3u(_, data, skip_init=False, append_group=""):
         url = channel.url
         line = '#EXTINF:0'
         if logo:
-            line += " tvg-logo=\"{}\"".format(logo)
+            line += f" tvg-logo=\"{logo}\""
         if group:
-            line += " group-title=\"{}\"".format(group)
-        line += ",{}".format(name)
+            line += f" group-title=\"{group}\""
+        line += f",{name}"
         output += line + '\n' + url + '\n'
     return output

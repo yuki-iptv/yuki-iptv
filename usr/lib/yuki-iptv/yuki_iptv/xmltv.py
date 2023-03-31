@@ -1,6 +1,6 @@
 '''XMLTV parser'''
 # SPDX-License-Identifier: GPL-3.0-only
-# pylint: disable=logging-format-interpolation
+# pylint: disable=logging-format-interpolation, logging-fstring-interpolation
 import logging
 import gzip
 import lzma
@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 def parse_as_xmltv(epg, settings, catchup_days1): # pylint: disable=too-many-locals, too-many-branches, too-many-statements
     '''Load EPG file'''
     logger.info("Trying parsing as XMLTV...")
-    logger.info("catchup-days = {}".format(catchup_days1))
+    logger.info(f"catchup-days = {catchup_days1}")
     try:
         tree = ET.ElementTree(ET.fromstring(epg))
     except ET.ParseError:
