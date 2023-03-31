@@ -4793,7 +4793,11 @@ if __name__ == '__main__':
                     )
 
         def get_of_txt(of_num):
-            return gettext.ngettext("of %d", "", of_num) % of_num
+            try:
+                of_txt = gettext.ngettext("of %d", "", of_num) % of_num
+            except: # pylint: disable=bare-except
+                of_txt = f"of {of_num}"
+            return of_txt
 
         prog_match_arr = {}
 
