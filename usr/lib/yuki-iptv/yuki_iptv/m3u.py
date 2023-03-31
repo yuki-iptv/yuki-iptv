@@ -1,6 +1,6 @@
 '''M3U parser'''
 # SPDX-License-Identifier: GPL-3.0-only
-# pylint: disable=logging-format-interpolation
+# pylint: disable=logging-format-interpolation, logging-fstring-interpolation
 import re
 import logging
 
@@ -31,7 +31,7 @@ class M3UParser:
                 res = str(int(res))
             except: # pylint: disable=bare-except
                 logger.warning(
-                    "M3U STANDARDS VIOLATION: catchup-days is not int (got '{}')".format(res)
+                    f"M3U STANDARDS VIOLATION: catchup-days is not int (got '{res}')"
                 )
                 res = default
         # catchup-days check end
@@ -55,19 +55,19 @@ class M3UParser:
             for kodi_str in split_kodi:
                 if kodi_str.startswith('User-Agent='):
                     kodi_user_agent = kodi_str.replace('User-Agent=', '', 1)
-                    logger.debug("Kodi-style User-Agent found: {}".format(kodi_user_agent))
+                    logger.debug(f"Kodi-style User-Agent found: {kodi_user_agent}")
                     useragent = kodi_user_agent
                 if kodi_str.startswith('user-agent='):
                     kodi_user_agent = kodi_str.replace('user-agent=', '', 1)
-                    logger.debug("Kodi-style User-Agent found: {}".format(kodi_user_agent))
+                    logger.debug(f"Kodi-style User-Agent found: {kodi_user_agent}")
                     useragent = kodi_user_agent
                 if kodi_str.startswith('Referer='):
                     kodi_referer = kodi_str.replace('Referer=', '', 1)
-                    logger.debug("Kodi-style Referer found: {}".format(kodi_referer))
+                    logger.debug(f"Kodi-style Referer found: {kodi_referer}")
                     referrer = kodi_referer
                 if kodi_str.startswith('referer='):
                     kodi_referer = kodi_str.replace('referer=', '', 1)
-                    logger.debug("Kodi-style Referer found: {}".format(kodi_referer))
+                    logger.debug(f"Kodi-style Referer found: {kodi_referer}")
                     referrer = kodi_referer
             url = url.split('|')[0]
             logger.debug("")

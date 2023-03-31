@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-only
 # pylint: disable=broad-except, too-many-locals, import-error, missing-module-docstring
-# pylint: disable=logging-format-interpolation
+# pylint: disable=logging-format-interpolation, logging-fstring-interpolation
 import os
 import logging
 import requests
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 def load_epg(epg_url, user_agent):
     '''Load EPG file'''
     logger.info("Loading EPG...")
-    logger.info("Address: '{}'".format(epg_url))
+    logger.info(f"Address: '{epg_url}'")
     if os.path.isfile(epg_url):
         epg_file = open(epg_url, 'rb')
         epg = epg_file.read()
@@ -25,7 +25,7 @@ def load_epg(epg_url, user_agent):
             stream=True,
             timeout=35
         )
-        logger.info("EPG URL status code: {}".format(epg_req.status_code))
+        logger.info(f"EPG URL status code: {epg_req.status_code}")
         epg = epg_req.content
     logger.info("EPG loaded")
     return epg

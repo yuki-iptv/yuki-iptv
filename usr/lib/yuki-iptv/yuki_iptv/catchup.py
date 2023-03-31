@@ -1,6 +1,5 @@
 '''Catchup'''
-# pylint: disable=missing-function-docstring
-# pylint: disable=logging-format-interpolation
+# pylint: disable=missing-function-docstring, logging-format-interpolation, logging-fstring-interpolation
 import time
 import datetime
 import re
@@ -31,7 +30,7 @@ def format_catchup_array(array0):
 
 def format_placeholders(start_time, end_time, catchup_id, orig_url): # pylint: disable=too-many-locals, too-many-branches, too-many-statements
     logger.info("")
-    logger.info("orig placeholder url: {}".format(orig_url))
+    logger.info(f"orig placeholder url: {orig_url}")
     start_timestamp = int(time.mktime(time.strptime(start_time, '%d.%m.%Y %H:%M:%S')))
     end_timestamp = int(time.mktime(time.strptime(end_time, '%d.%m.%Y %H:%M:%S')))
     duration = int(end_timestamp - start_timestamp)
@@ -161,7 +160,7 @@ def format_placeholders(start_time, end_time, catchup_id, orig_url): # pylint: d
         logger.warning("format_placeholders / specifiers_re parsing failed")
         logger.warning(traceback.format_exc())
 
-    logger.info("formatted placeholder url: {}".format(orig_url))
+    logger.info(f"formatted placeholder url: {orig_url}")
     logger.info("")
     return orig_url
 
@@ -187,7 +186,7 @@ def get_catchup_url(chan_url, arr1, start_time, end_time, catchup_id): # pylint:
     elif arr1['catchup'] in ('flussonic', 'flussonic-hls', 'flussonic-ts', 'fs'):
         fs_url = chan_url
         logger.info("")
-        logger.info("orig fs url: {}".format(fs_url))
+        logger.info(f"orig fs url: {fs_url}")
         flussonic_re = re.findall(
             r"^(http[s]?://[^/]+)/(.*)/([^/]*)(mpegts|\.m3u8)(\?.+=.+)?$",
             chan_url
@@ -252,7 +251,7 @@ def get_catchup_url(chan_url, arr1, start_time, end_time, catchup_id): # pylint:
     elif arr1['catchup'] == 'xc':
         xc_url = chan_url
         logger.info("")
-        logger.info("orig xc url: {}".format(xc_url))
+        logger.info(f"orig xc url: {xc_url}")
         xc_re = re.findall(
             r"^(http[s]?://[^/]+)/(?:live/)?([^/]+)/([^/]+)/([^/\.]+)(\.m3u[8]?)?$",
             chan_url
@@ -289,7 +288,7 @@ def parse_specifiers_now_url(url4):
     if url4.endswith("/icons/main.png") or url4.endswith("/icons_dark/main.png"):
         return url4
     logger.info("")
-    logger.info("orig spec url: {}".format(format_url_clean(url4)))
+    logger.info(f"orig spec url: {format_url_clean(url4)}")
     current_utc_str = int(time.time())
     url4 = url4.replace('${lutc}', str(current_utc_str))
     url4 = url4.replace('{lutc}', str(current_utc_str))
@@ -323,6 +322,6 @@ def parse_specifiers_now_url(url4):
         logger.warning("parse_specifiers_now_url / specifiers_re_url parsing failed")
         logger.warning(traceback.format_exc())
 
-    logger.info("after spec url: {}".format(format_url_clean(url4)))
+    logger.info(f"after spec url: {format_url_clean(url4)}")
     logger.info("")
     return url4

@@ -1,5 +1,4 @@
-# pylint: disable=missing-module-docstring
-# pylint: disable=logging-format-interpolation
+# pylint: disable=missing-module-docstring, logging-format-interpolation, logging-fstring-interpolation
 # SPDX-License-Identifier: GPL-3.0-only
 import logging
 import subprocess
@@ -49,14 +48,12 @@ def record( # pylint: disable=inconsistent-return-statements
     useragent_ref, referer_ref = get_ua_ref_for_channel(channel_name)
     user_agent = useragent_ref
     if referer_ref:
-        http_referer = 'Referer: {}'.format(referer_ref)
+        http_referer = f'Referer: {referer_ref}'
     action = 'record'
     if is_screenshot:
         action = 'screenshot'
-    logger.info("Using user agent '{}' for {} channel '{}'".format(
-        user_agent, action, channel_name
-    ))
-    logger.info("HTTP headers: '{}'".format(http_referer))
+    logger.info(f"Using user agent '{user_agent}' for {action} channel '{channel_name}'")
+    logger.info(f"HTTP headers: '{http_referer}'")
     if input_url.startswith('http://') or input_url.startswith('https://'):
         arr = [
             'ffmpeg',
