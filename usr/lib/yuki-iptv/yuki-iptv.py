@@ -7011,9 +7011,14 @@ if __name__ == '__main__':
 
         static_text = ""
         gl_is_static = False
+        previous_text = ""
 
-        def set_text_l1(text):
-            global static_text, gl_is_static
+        def set_text_l1(text="", is_previous=False):
+            global static_text, gl_is_static, previous_text
+            if is_previous:
+                text = previous_text
+            else:
+                previous_text = text
             if gl_is_static:
                 br = "    "
                 if not text or not static_text:
@@ -7206,6 +7211,7 @@ if __name__ == '__main__':
         epg_thread = None
         manager = None
         return_dict = None
+        progress_dict = None
         waiting_for_epg = False
         epg_failed = False
 
@@ -7230,7 +7236,7 @@ if __name__ == '__main__':
             try: # pylint: disable=too-many-nested-blocks
                 global stopped, time_stop, first_boot, programmes, btn_update, \
                 epg_thread, static_text, manager, tvguide_sets, epg_updating, ic, \
-                return_dict, waiting_for_epg, epg_failed, first_boot_1
+                return_dict, waiting_for_epg, epg_failed, first_boot_1, progress_dict
                 if not first_boot:
                     first_boot = True
                     if settings['epg'] and settings['epg'] != 'http://' and not epg_failed:
@@ -7248,9 +7254,13 @@ if __name__ == '__main__':
                                 try:
                                     manager = Manager()
                                     return_dict = manager.dict()
+                                    progress_dict = manager.dict()
                                     p = Process(
                                         target=worker,
-                                        args=(0, settings, get_catchup_days(), return_dict,)
+                                        args=(
+                                            0, settings, get_catchup_days(),
+                                            return_dict, progress_dict,
+                                        )
                                     )
                                     epg_thread = p
                                     p.start()
@@ -7396,7 +7406,6 @@ if __name__ == '__main__':
                 pass
 
         thread_4_lock = False
-
         def thread_tvguide_2():
             try:
                 global stopped, time_stop, first_boot, programmes, btn_update, \
@@ -7432,6 +7441,23 @@ if __name__ == '__main__':
                         epg_updating = False
                         waiting_for_epg = False
                     thread_4_lock = False
+            except:
+                pass
+
+        thread_5_lock = False
+        def thread_tvguide_3():
+            try:
+                global thread_5_lock, waiting_for_epg, progress_dict, static_text
+                if not thread_5_lock:
+                    thread_5_lock = True
+                    try:
+                        if waiting_for_epg and progress_dict:
+                            if progress_dict[0]:
+                                static_text = progress_dict[0]
+                                l1.setText2(is_previous=True)
+                    except:
+                        pass
+                    thread_5_lock = False
             except:
                 pass
 
@@ -8165,6 +8191,7 @@ if __name__ == '__main__':
                 thread_osc: 100,
                 thread_check_tvguide_obsolete: 100,
                 thread_tvguide_2: 1000,
+                thread_tvguide_3: 100,
                 thread_update_time: 1000,
                 record_thread: 1000,
                 record_thread_2: 1000,
