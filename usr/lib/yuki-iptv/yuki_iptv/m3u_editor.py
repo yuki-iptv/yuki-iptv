@@ -2,6 +2,7 @@
 # pylint: disable=missing-function-docstring, missing-class-docstring, bare-except
 # SPDX-License-Identifier: GPL-3.0-only
 import os
+import gettext
 from pathlib import Path
 from unidecode import unidecode
 from yuki_iptv.m3u import M3UParser
@@ -9,6 +10,7 @@ from yuki_iptv.xspf import parse_xspf
 from yuki_iptv.qt6compat import _enum, qaction
 from yuki_iptv.qt import get_qt_library
 qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
+_ = gettext.gettext
 
 HOME_FOLDER = ""
 try:
@@ -63,11 +65,11 @@ class M3UEditor(QtWidgets.QMainWindow):
         self.ask_changed(False)
         filename = QtWidgets.QFileDialog.getOpenFileName(
             self,
-            self.data['_']('selectplaylist'),
+            _('Select m3u playlist'),
             HOME_FOLDER
         )[0]
         if filename:
-            m3u_parser = M3UParser(self.data['settings']['udp_proxy'], self.data['_'])
+            m3u_parser = M3UParser(self.data['settings']['udp_proxy'], _)
             try:
                 file0 = open(filename, 'r')
                 filedata = file0.read()
@@ -83,12 +85,12 @@ class M3UEditor(QtWidgets.QMainWindow):
             if m3u_data:
                 self.file_opened = False
                 self.fill_table(m3u_data)
-                self.statusBar().showMessage(str(filename) + " " + self.data['_']('m3u_loaded'), 0)
+                self.statusBar().showMessage(str(filename) + " " + _('loaded'), 0)
                 self.file_opened = True
                 self.table_changed = False
             else:
                 self.clear_table()
-                self.statusBar().showMessage(self.data['_']('playlistloaderror'), 0)
+                self.statusBar().showMessage(_('Playlist loading error!'), 0)
                 self.file_opened = True
                 self.table_changed = False
 
@@ -120,9 +122,9 @@ class M3UEditor(QtWidgets.QMainWindow):
         # Writing to file
         save_fname = QtWidgets.QFileDialog.getSaveFileName(
             self,
-            self.data['_']('m3u_savefile'),
+            _('Save File'),
             HOME_FOLDER,
-            self.data['_']('m3u_playlists')
+            _('Playlists (*.m3u)')
         )[0]
         if save_fname:
             try:
@@ -130,25 +132,25 @@ class M3UEditor(QtWidgets.QMainWindow):
                 save_file.write(m3u_str)
                 save_file.close()
                 self.table_changed = False
-                self.statusBar().showMessage(self.data['_']('m3u_playlistsaved'), 0)
+                self.statusBar().showMessage(_('Playlist successfully saved!'), 0)
             except:
-                self.statusBar().showMessage(self.data['_']('error'), 0)
+                self.statusBar().showMessage(_('Error'), 0)
         # Cleaning memory
         output = {}
         m3u_str = ""
 
     def populate_menubar(self):
         # Menubar
-        open_action = qaction(self.data['_']('m3u_loadm3u'), self)
+        open_action = qaction(_('Load M3U'), self)
         open_action.setShortcut('Ctrl+O')
         open_action.triggered.connect(self.select_file)
 
-        save_action = qaction(self.data['_']('m3u_saveas'), self)
+        save_action = qaction(_('Save as'), self)
         save_action.setShortcut('Ctrl+Shift+S')
         save_action.triggered.connect(self.save_file)
 
         menubar = self.menuBar()
-        file_menu = menubar.addMenu(self.data['_']('m3u_file'))
+        file_menu = menubar.addMenu(_('File'))
         file_menu.addAction(open_action)
         file_menu.addAction(save_action)
 
@@ -234,17 +236,17 @@ class M3UEditor(QtWidgets.QMainWindow):
 
         # Search
         self.data['search_edit'] = QtWidgets.QLineEdit()
-        self.data['search_edit'].setPlaceholderText(self.data['_']('m3u_find'))
+        self.data['search_edit'].setPlaceholderText(_('find'))
         self.data['search_edit'].setFixedWidth(230)
 
         # Replace
         self.data['replace_edit'] = QtWidgets.QLineEdit()
-        self.data['replace_edit'].setPlaceholderText(self.data['_']('m3u_replacewith'))
+        self.data['replace_edit'].setPlaceholderText(_('replace with'))
         self.data['replace_edit'].setFixedWidth(230)
 
         # Replace all
         replaceall_btn = QtWidgets.QToolButton()
-        replaceall_btn.setText(self.data['_']('m3u_replaceall'))
+        replaceall_btn.setText(_('replace all'))
         replaceall_btn.clicked.connect(self.replace_all)
 
         # Delete current row
@@ -252,7 +254,7 @@ class M3UEditor(QtWidgets.QMainWindow):
         delete_btn.setIcon(QtGui.QIcon(
             str(Path('yuki_iptv', self.data['icons_folder'], 'trash.png'))
         ))
-        delete_btn.setToolTip(self.data['_']('m3u_deleterow'))
+        delete_btn.setToolTip(_('delete row'))
         delete_btn.clicked.connect(self.delete_row)
 
         # Add new empty row
@@ -260,7 +262,7 @@ class M3UEditor(QtWidgets.QMainWindow):
         add_btn.setIcon(QtGui.QIcon(
             str(Path('yuki_iptv', self.data['icons_folder'], 'plus.png'))
         ))
-        add_btn.setToolTip(self.data['_']('m3u_addrow'))
+        add_btn.setToolTip(_('add row'))
         add_btn.clicked.connect(self.add_row)
 
         # Down
@@ -279,8 +281,10 @@ class M3UEditor(QtWidgets.QMainWindow):
 
         # Group filter
         self.data['groupfilter_edit'] = QtWidgets.QLineEdit()
-        self.data['groupfilter_edit'].setPlaceholderText(self.data['_']('m3u_filtergroup'))
-        self.data['groupfilter_edit'].setToolTip(self.data['_']('m3u_searchterm'))
+        self.data['groupfilter_edit'].setPlaceholderText(_('filter group (press Enter)'))
+        self.data['groupfilter_edit'].setToolTip(
+            _('insert search term and press enter\n use Selector → to choose column to search')
+        )
         self.data['groupfilter_edit'].returnPressed.connect(self.filter_table)
 
         # Filter selector
@@ -313,7 +317,6 @@ class M3UEditor(QtWidgets.QMainWindow):
     def __init__(self, _=None, icon=None, icons_folder=None, settings=None):
         super().__init__()
         self.data = {
-            '_': _,
             'settings': settings,
             'icons_folder': icons_folder
         }
@@ -336,14 +339,16 @@ class M3UEditor(QtWidgets.QMainWindow):
         self.table = QtWidgets.QTableWidget(self)
         self.table.cellChanged.connect(self.on_cell_changed)
         self.setCentralWidget(self.table)
-        self.statusBar().showMessage(self.data['_']('m3u_ready'), 0)
+        self.statusBar().showMessage(_('Ready'), 0)
 
     def ask_changed(self, callback=False):
         if self.table_changed:
             reply = QtWidgets.QMessageBox.question(
                 self,
-                self.data['_']('m3u_saveconfirm'),
-                "<b>{}</b>".format(self.data['_']('m3u_waschanged')),
+                _('Save Confirmation'),
+                "<b>{}</b>".format(
+                    _('The document was changed.<br>Do you want to save the changes?')
+                ),
                 _enum(QtWidgets.QMessageBox, 'StandardButton.Yes') | \
                 _enum(QtWidgets.QMessageBox, 'StandardButton.No'),
                 _enum(QtWidgets.QMessageBox, 'StandardButton.Yes')
@@ -360,5 +365,5 @@ class M3UEditor(QtWidgets.QMainWindow):
         self.clear_table()
         self.file_opened = False
         self.table_changed = False
-        self.statusBar().showMessage(self.data['_']('m3u_ready'), 0)
+        self.statusBar().showMessage(_('Ready'), 0)
         super().show()
