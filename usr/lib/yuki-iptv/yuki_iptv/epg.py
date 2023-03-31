@@ -4,7 +4,6 @@
 import os
 import logging
 import requests
-from yuki_iptv.ua import user_agents
 from yuki_iptv.jtv import parse_jtv
 from yuki_iptv.xmltv import parse_as_xmltv
 
@@ -52,7 +51,7 @@ def fetch_epg(settings, catchup_days1):
         epg_settings_url = epg_settings_url[0].replace('^^::MULTIPLE::^^', '').split(':::^^^:::')
     for epg_url_1 in epg_settings_url:
         try:
-            epg = load_epg(epg_url_1, user_agents[settings["useragent"]])
+            epg = load_epg(epg_url_1, settings["ua"])
             try:
                 pr_xmltv = parse_as_xmltv(epg, settings, catchup_days1)
                 programmes_epg = merge_two_dicts(programmes_epg, pr_xmltv[0])

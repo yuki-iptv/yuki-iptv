@@ -44,7 +44,6 @@ except:
     pass
 
 from yuki_iptv.qt import get_qt_library
-from yuki_iptv.ua import user_agents, ua_names
 from yuki_iptv.epg import worker
 from yuki_iptv.record import record, record_return, stop_record, \
     async_wait_process, is_ffmpeg_recording
@@ -828,7 +827,7 @@ if __name__ == '__main__':
                             try:
                                 m3u_req = requests.get(
                                     settings['m3u'],
-                                    headers={'User-Agent': user_agents[settings['useragent']]},
+                                    headers={'User-Agent': settings['ua']},
                                     timeout=3
                                 )
                             except:
@@ -2047,10 +2046,7 @@ if __name__ == '__main__':
         hidden_lbl = QtWidgets.QLabel("{}:".format(_('Hide')))
         deinterlace_chk = QtWidgets.QCheckBox()
         hidden_chk = QtWidgets.QCheckBox()
-        useragent_choose = QtWidgets.QComboBox()
-        useragent_choose.addItem(_('None'))
-        for ua_name in ua_names[1::]:
-            useragent_choose.addItem(ua_name)
+        useragent_choose = QtWidgets.QLineEdit()
 
         def epgname_btn_action():
             prog_ids_0 = []
@@ -2135,7 +2131,7 @@ if __name__ == '__main__':
         panscan_choose.setSingleStep(0.1)
         panscan_choose.setDecimals(1)
 
-        def_user_agent = user_agents[settings['useragent']]
+        def_user_agent = settings['ua']
         logger.info(f"Default user agent: {def_user_agent}")
         if settings['referer']:
             logger.info(f"Default HTTP referer: {settings['referer']}")
@@ -2276,13 +2272,20 @@ if __name__ == '__main__':
             stream_info.audio_bitrates.clear()
 
         def get_ua_ref_for_channel(channel_name1):
-            useragent_ref = user_agents[settings['useragent']]
+            useragent_ref = settings['ua']
             referer_ref = settings['referer']
             if channel_name1 and channel_name1 in array:
                 useragent_ref = array[channel_name1]['useragent'] if \
-                    array[channel_name1]['useragent'] else user_agents[settings['useragent']]
+                    array[channel_name1]['useragent'] else settings['ua']
                 referer_ref = array[channel_name1]['referer'] if \
                     array[channel_name1]['referer'] else settings['referer']
+            if settings['m3u'] in channel_sets:
+                channel_set = channel_sets[settings['m3u']]
+                if channel_name1 and channel_name1 in channel_set:
+                    channel_config = channel_set[channel_name1]
+                    if 'ua' in channel_config and channel_config['ua'] \
+                    and channel_config['ua'] != settings['ua']:
+                        useragent_ref = channel_config['ua']
             return useragent_ref, referer_ref
 
         def mpv_override_play(arg_override_play, channel_name1=''): # pylint: disable=too-many-branches
@@ -2456,7 +2459,7 @@ if __name__ == '__main__':
                 channel_sets[settings['m3u']] = {}
             channel_sets[settings['m3u']][chan_3] = {
                 "deinterlace": deinterlace_chk.isChecked(),
-                "useragent": useragent_choose.currentIndex(),
+                "ua": useragent_choose.text(),
                 "group": group_text.text(),
                 "hidden": hidden_chk.isChecked(),
                 "contrast": contrast_choose.value(),
@@ -2653,7 +2656,7 @@ if __name__ == '__main__':
                 "hwaccel": shwaccel.isChecked(),
                 "sort": sort_widget.currentIndex(),
                 "cache_secs": scache1.value(),
-                "useragent": useragent_choose_2.currentIndex(),
+                "ua": useragent_choose_2.text(),
                 "mpv_options": mpv_options.text(),
                 'donotupdateepg': donot_flag.isChecked(),
                 'channelsonpage': channels_box.value(),
@@ -2903,11 +2906,8 @@ if __name__ == '__main__':
         referer_lbl = QtWidgets.QLabel("HTTP Referer:")
         referer_choose = QtWidgets.QLineEdit()
         referer_choose.setText(settings["referer"])
-        useragent_choose_2 = QtWidgets.QComboBox()
-        useragent_choose_2.addItem(_('None'))
-        for ua_name_2 in ua_names[1::]:
-            useragent_choose_2.addItem(ua_name_2)
-        useragent_choose_2.setCurrentIndex(settings['useragent'])
+        useragent_choose_2 = QtWidgets.QLineEdit()
+        useragent_choose_2.setText(settings['ua'])
 
         mpv_label = QtWidgets.QLabel("{} ({}):".format(
             _('mpv options'),
@@ -4102,10 +4102,10 @@ if __name__ == '__main__':
                     if settings['m3u'] in channel_sets and j in channel_sets[settings['m3u']]:
                         d = channel_sets[settings['m3u']][j]
                         player.deinterlace = d['deinterlace']
-                        if not 'useragent' in d:
-                            d['useragent'] = settings['useragent']
+                        if not 'ua' in d:
+                            d['ua'] = settings['ua']
                         try:
-                            d['useragent'] = user_agents.index(d['useragent'])
+                            d['ua'] = d['ua']
                         except:
                             pass
                         if 'contrast' in d:
@@ -4221,7 +4221,7 @@ if __name__ == '__main__':
                 playing_url = play_url
                 ua_choose = def_user_agent
                 if settings['m3u'] in channel_sets and j in channel_sets[settings['m3u']]:
-                    ua_choose = channel_sets[settings['m3u']][j]['useragent']
+                    ua_choose = channel_sets[settings['m3u']][j]['ua']
                 if not custom_url:
                     doPlay(play_url, ua_choose, j)
                 else:
@@ -4646,7 +4646,7 @@ if __name__ == '__main__':
                 try:
                     req_data = requests.get(
                         logo_url,
-                        headers={'User-Agent': user_agents[settings['useragent']]},
+                        headers={'User-Agent': settings['ua']},
                         timeout=(3, 3),
                         stream=True
                     ).content
@@ -5205,11 +5205,11 @@ if __name__ == '__main__':
                     channel_sets[settings['m3u']][item_selected]['deinterlace']
                 )
                 try:
-                    useragent_choose.setCurrentIndex(
-                        channel_sets[settings['m3u']][item_selected]['useragent']
+                    useragent_choose.setText(
+                        channel_sets[settings['m3u']][item_selected]['ua']
                     )
                 except:
-                    useragent_choose.setCurrentIndex(settings['useragent'])
+                    useragent_choose.setText('')
                 try:
                     group_text.setText(channel_sets[settings['m3u']][item_selected]['group'])
                 except:
@@ -5278,7 +5278,7 @@ if __name__ == '__main__':
                 videoaspect_choose.setCurrentIndex(0)
                 zoom_choose.setCurrentIndex(0)
                 panscan_choose.setValue(0)
-                useragent_choose.setCurrentIndex(settings['useragent'])
+                useragent_choose.setText('')
                 group_text.setText('')
                 epgname_lbl.setText(_('Default'))
             moveWindowToCenter(chan_win)
