@@ -357,20 +357,6 @@ if __name__ == '__main__':
             channel_sets = json.loads(file1.read())
             file1.close()
 
-        favourite_sets = []
-        def save_favourite_sets():
-            global favourite_sets
-            file2 = open(str(Path(LOCAL_DIR, 'favourites.json')), 'w', encoding="utf8")
-            file2.write(json.dumps(favourite_sets))
-            file2.close()
-
-        if not os.path.isfile(str(Path(LOCAL_DIR, 'favourites.json'))):
-            save_favourite_sets()
-        else:
-            file1 = open(str(Path(LOCAL_DIR, 'favourites.json')), 'r', encoding="utf8")
-            favourite_sets = json.loads(file1.read())
-            file1.close()
-
         DEF_TIMEZONE = 0
 
         settings, settings_loaded = parse_settings(
@@ -379,6 +365,30 @@ if __name__ == '__main__':
         )
         if not settings_loaded:
             m3u = ""
+
+        favourite_sets = []
+        def save_favourite_sets():
+            global favourite_sets
+            favourite_sets_2 = {}
+            if os.path.isfile(Path(LOCAL_DIR, 'favouritechannels.json')):
+                with open(
+                    Path(LOCAL_DIR, 'favouritechannels.json'), 'r', encoding="utf8"
+                ) as fsetfile:
+                    favourite_sets_2 = json.loads(fsetfile.read())
+            if settings['m3u']:
+                favourite_sets_2[settings['m3u']] = favourite_sets
+            file2 = open(Path(LOCAL_DIR, 'favouritechannels.json'), 'w', encoding="utf8")
+            file2.write(json.dumps(favourite_sets_2))
+            file2.close()
+
+        if not os.path.isfile(str(Path(LOCAL_DIR, 'favouritechannels.json'))):
+            save_favourite_sets()
+        else:
+            file1 = open(Path(LOCAL_DIR, 'favouritechannels.json'), 'r', encoding="utf8")
+            favourite_sets1 = json.loads(file1.read())
+            if settings['m3u'] in favourite_sets1:
+                favourite_sets = favourite_sets1[settings['m3u']]
+            file1.close()
 
         init_interface_widgets(settings)
 
@@ -2758,8 +2768,8 @@ if __name__ == '__main__':
         def reset_channel_settings():
             if os.path.isfile(str(Path(LOCAL_DIR, 'channelsettings.json'))):
                 os.remove(str(Path(LOCAL_DIR, 'channelsettings.json')))
-            if os.path.isfile(str(Path(LOCAL_DIR, 'favourites.json'))):
-                os.remove(str(Path(LOCAL_DIR, 'favourites.json')))
+            if os.path.isfile(str(Path(LOCAL_DIR, 'favouritechannels.json'))):
+                os.remove(str(Path(LOCAL_DIR, 'favouritechannels.json')))
             if os.path.isfile(str(Path(LOCAL_DIR, 'sort.json'))):
                 os.remove(str(Path(LOCAL_DIR, 'sort.json')))
             save_settings()

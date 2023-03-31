@@ -87,3 +87,34 @@ def convert_old_filenames():
         ) as new_channels_file:
             new_channels_file.write(json.dumps(new_channels))
         os.remove(Path(os.environ['HOME'], '.config', 'yuki-iptv', 'channels.json'))
+
+    if os.path.isfile(Path(os.environ['HOME'], '.config', 'yuki-iptv', 'favourites.json')) \
+    and not os.path.isfile(
+        Path(os.environ['HOME'], '.config', 'yuki-iptv', 'favouritechannels.json')
+    ):
+        with open(
+            Path(os.environ['HOME'], '.config', 'yuki-iptv', 'favourites.json'),
+            'r', encoding="utf8"
+        ) as old_favourites_file:
+            old_favourites = json.loads(old_favourites_file.read())
+
+        # settings start
+        settings = {'m3u': ''}
+        if os.path.isfile(Path(os.environ['HOME'], '.config', 'yuki-iptv', 'settings.json')):
+            with open(
+                Path(os.environ['HOME'], '.config', 'yuki-iptv', 'settings.json'),
+                'r', encoding="utf8"
+            ) as old_settings_file:
+                settings = json.loads(old_settings_file.read())
+        # settings end
+
+        new_favourites = {}
+        if settings['m3u']:
+            new_favourites[settings['m3u']] = old_favourites
+
+        with open(
+            Path(os.environ['HOME'], '.config', 'yuki-iptv', 'favouritechannels.json'),
+            'w', encoding="utf8"
+        ) as new_favourites_file:
+            new_favourites_file.write(json.dumps(new_favourites))
+        os.remove(Path(os.environ['HOME'], '.config', 'yuki-iptv', 'favourites.json'))
