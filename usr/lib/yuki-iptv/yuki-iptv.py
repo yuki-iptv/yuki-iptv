@@ -13,6 +13,7 @@
 from pathlib import Path
 import sys
 import os
+import os.path
 import time
 import datetime
 import json
@@ -1958,9 +1959,13 @@ if __name__ == '__main__':
         def save_sort():
             global channel_sort
             channel_sort = [sort_list.item(z0).text() for z0 in range(sort_list.count())]
-            file4 = open(str(Path(LOCAL_DIR, 'sort.json')), 'w', encoding="utf8")
-            file4.write(json.dumps(channel_sort))
-            file4.close()
+            channel_sort2 = {}
+            if os.path.isfile(Path(LOCAL_DIR, 'sortchannels.json')):
+                with open(Path(LOCAL_DIR, 'sortchannels.json'), 'r', encoding="utf8") as file5:
+                    channel_sort2 = json.loads(file5.read())
+            channel_sort2[settings['m3u']] = channel_sort
+            with open(Path(LOCAL_DIR, 'sortchannels.json'), 'w', encoding="utf8") as file4:
+                file4.write(json.dumps(channel_sort2))
             sort_win.hide()
 
         close_sort_btn = QtWidgets.QPushButton(_('Close'))
@@ -2770,8 +2775,8 @@ if __name__ == '__main__':
                 os.remove(str(Path(LOCAL_DIR, 'channelsettings.json')))
             if os.path.isfile(str(Path(LOCAL_DIR, 'favouritechannels.json'))):
                 os.remove(str(Path(LOCAL_DIR, 'favouritechannels.json')))
-            if os.path.isfile(str(Path(LOCAL_DIR, 'sort.json'))):
-                os.remove(str(Path(LOCAL_DIR, 'sort.json')))
+            if os.path.isfile(str(Path(LOCAL_DIR, 'sortchannels.json'))):
+                os.remove(str(Path(LOCAL_DIR, 'sortchannels.json')))
             save_settings()
         def reset_prov():
             if sprov.currentText() != '--{}--'.format(_('Not selected')):
@@ -4580,10 +4585,11 @@ if __name__ == '__main__':
         current_group = _('All channels')
 
         channel_sort = {}
-        if os.path.isfile(str(Path(LOCAL_DIR, 'sort.json'))):
-            file3 = open(str(Path(LOCAL_DIR, 'sort.json')), 'r', encoding="utf8")
-            channel_sort = json.loads(file3.read())
-            file3.close()
+        if os.path.isfile(str(Path(LOCAL_DIR, 'sortchannels.json'))):
+            with open(str(Path(LOCAL_DIR, 'sortchannels.json')), 'r', encoding="utf8") as file3:
+                channel_sort3 = json.loads(file3.read())
+                if settings['m3u'] in channel_sort3:
+                    channel_sort = channel_sort3[settings['m3u']]
 
         def sort_custom(sub):
             try:
