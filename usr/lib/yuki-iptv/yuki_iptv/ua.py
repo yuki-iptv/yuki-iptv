@@ -1,9 +1,6 @@
 # pylint: disable=missing-function-docstring, missing-module-docstring
 # SPDX-License-Identifier: GPL-3.0-only
-import os
-from pathlib import Path
-user_agent = '' # pylint: disable=invalid-name
-uas = [
+user_agents = [
     '',
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36', # pylint: disable=line-too-long
     'Dalvik/2.1.0 (Linux; U; Android 10; AGS3-L09 Build/HUAWEIAGS3-L09)',
@@ -29,9 +26,3 @@ ua_names = [
     'VLC',
     'libmpv'
 ]
-
-LOCAL_DIR = str(Path(os.environ['HOME'], '.config', 'yuki-iptv'))
-if not os.path.isdir(str(Path(os.environ['HOME'], '.config'))):
-    os.mkdir(str(Path(os.environ['HOME'], '.config')))
-if not os.path.isdir(LOCAL_DIR):
-    os.mkdir(LOCAL_DIR)

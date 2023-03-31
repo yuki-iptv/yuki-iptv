@@ -43,7 +43,7 @@ except:
     pass
 
 from yuki_iptv.qt import get_qt_library
-from yuki_iptv.ua import user_agent, uas, ua_names
+from yuki_iptv.ua import user_agents, ua_names
 from yuki_iptv.epg import worker
 from yuki_iptv.record import record, record_return, stop_record, \
     async_wait_process, is_ffmpeg_recording
@@ -831,7 +831,7 @@ if __name__ == '__main__':
                             try:
                                 m3u_req = requests.get(
                                     settings['m3u'],
-                                    headers={'User-Agent': uas[settings['useragent']]},
+                                    headers={'User-Agent': user_agents[settings['useragent']]},
                                     timeout=3
                                 )
                             except:
@@ -842,7 +842,7 @@ if __name__ == '__main__':
                                 logger.warning("Playlist load failed, trying empty user agent")
                                 m3u_req = requests.get(
                                     settings['m3u'],
-                                    headers={'User-Agent': user_agent},
+                                    headers={'User-Agent': ''},
                                     timeout=3
                                 )
 
@@ -2138,7 +2138,7 @@ if __name__ == '__main__':
         panscan_choose.setSingleStep(0.1)
         panscan_choose.setDecimals(1)
 
-        def_user_agent = uas[settings['useragent']]
+        def_user_agent = user_agents[settings['useragent']]
         logger.info("Default user agent: {}".format(def_user_agent))
         if settings['referer']:
             logger.info("Default HTTP referer: {}".format(settings['referer']))
@@ -2279,11 +2279,11 @@ if __name__ == '__main__':
             stream_info.audio_bitrates.clear()
 
         def get_ua_ref_for_channel(channel_name1):
-            useragent_ref = uas[settings['useragent']]
+            useragent_ref = user_agents[settings['useragent']]
             referer_ref = settings['referer']
             if channel_name1 and channel_name1 in array:
                 useragent_ref = array[channel_name1]['useragent'] if \
-                    array[channel_name1]['useragent'] else uas[settings['useragent']]
+                    array[channel_name1]['useragent'] else user_agents[settings['useragent']]
                 referer_ref = array[channel_name1]['referer'] if \
                     array[channel_name1]['referer'] else settings['referer']
             return useragent_ref, referer_ref
@@ -4119,7 +4119,7 @@ if __name__ == '__main__':
                         if not 'useragent' in d:
                             d['useragent'] = settings['useragent']
                         try:
-                            d['useragent'] = uas.index(d['useragent'])
+                            d['useragent'] = user_agents.index(d['useragent'])
                         except:
                             pass
                         if 'contrast' in d:
@@ -4661,7 +4661,7 @@ if __name__ == '__main__':
                 try:
                     req_data = requests.get(
                         logo_url,
-                        headers={'User-Agent': uas[settings['useragent']]},
+                        headers={'User-Agent': user_agents[settings['useragent']]},
                         timeout=(3, 3),
                         stream=True
                     ).content
