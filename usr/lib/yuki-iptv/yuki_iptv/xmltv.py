@@ -29,9 +29,10 @@ def parse_as_xmltv(epg, settings, catchup_days1): # pylint: disable=too-many-loc
     icons = {}
     for channel_epg in tree.findall('./channel'): # pylint: disable=too-many-nested-blocks
         for display_name in channel_epg.findall('./display-name'):
-            if not channel_epg.attrib['id'].strip() in ids:
-                ids[channel_epg.attrib['id'].strip()] = []
-            ids[channel_epg.attrib['id'].strip()].append(display_name.text.strip())
+            if display_name.text:
+                if not channel_epg.attrib['id'].strip() in ids:
+                    ids[channel_epg.attrib['id'].strip()] = []
+                ids[channel_epg.attrib['id'].strip()].append(display_name.text.strip())
             try:
                 all_icons = channel_epg.findall('./icon')
                 if all_icons:
