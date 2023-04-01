@@ -1,0 +1,6 @@
+#EXTM3U
+#EXTINF:17 tvg-id="ExampleId1",Example 1
+http://127.0.0.1/1|User-Agent=Example/1.0 (Example; Example; Example) example&Referer=http://127.0.0.1/examplereferer
+#EXTINF:555 tvg-id="ExampleId2",Example 2
+#EXTVLCOPT:http-user-agent=Example/2.0 (Example; Example; Example) example
+http://127.0.0.1:9999/2|Referer=http://127.0.0.1/example2

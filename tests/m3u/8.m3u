@@ -1,0 +1,5 @@
+#EXTM3U
+#EXTINF:0 tvg-name="ExampleTvgId" group-title="ExampleGroup",Example
+#EXTGRP:GroupAlt
+#EXTVLCOPT:http-user-agent="Example/1.0 (Example; Example; Example;)"
+http://127.0.0.1/example
