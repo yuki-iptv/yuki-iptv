@@ -323,12 +323,7 @@ if __name__ == '__main__':
 
         DEFAULT_HWACCEL = "auto-safe"
 
-        try:
-            from thirdparty import mpv
-        except:
-            logger.warning("Falling back to old mpv library...")
-            from thirdparty import mpv_old as mpv
-            DEFAULT_HWACCEL = "auto"
+        from thirdparty import mpv
 
         if not os.path.isdir(LOCAL_DIR):
             os.mkdir(LOCAL_DIR)

@@ -41,13 +41,7 @@ def _exec(obj, arg=None):
 
 def _enum(obj, name):
     parent, child = name.split('.')
-    try:
-        return getattr(getattr(obj, parent), child)
-    except: # pylint: disable=bare-except
-        if not YukiData.WRITTENQT:
-            YukiData.WRITTENQT = True
-            logger.debug("Falling back to short names for Qt enums")
-        return getattr(obj, child)
+    return getattr(getattr(obj, parent), child)
 
 def qaction(arg1, arg2):
     if qt_library == 'PyQt6':
