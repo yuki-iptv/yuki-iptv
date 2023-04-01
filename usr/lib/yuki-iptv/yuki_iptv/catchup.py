@@ -31,6 +31,8 @@ def format_catchup_array(array0):
     return array0
 
 def format_placeholders(start_time, end_time, catchup_id, orig_url): # pylint: disable=too-many-locals, too-many-branches, too-many-statements
+    if start_time == 'TEST':
+        return orig_url
     logger.info("")
     logger.info(f"orig placeholder url: {orig_url}")
     start_timestamp = int(time.mktime(time.strptime(start_time, '%d.%m.%Y %H:%M:%S')))

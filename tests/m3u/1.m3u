@@ -1,0 +1,20 @@
+#EXTM3U x-tvg-url="http://127.0.0.1/0"
+    #EXTINF:-1 tvg-ID="EX1" tvg-name="Example 1" tvg-logo="http://127.0.0.1/1,1,1,1.png" tvg-url="http://127.0.0.1/1.xml.gz" tvg-rec="1" group-title="Group 1",Example 1
+    #EXTGRP:Example group 1
+    #EXTVLCOPT:http-referrer=http://127.0.0.1/referrer
+    #EXTVLCOPT:http-user-agent=Example/1.0
+    http://127.0.0.1/1.mp4
+    #EXTINF:16 tvg-id="EX2",Example 2
+http://127.0.0.1/2.m3u8
+
+=========================Example===================================
+#EXTM3U
+#EXTINF:1,=>(★ Example 2 ★)<=
+
+http://127.0.0.1/2.mp4
+#EXTINF:1 timeshift="3" catchup="shift" catchup-days="3" catchup-source="http://127.0.0.1/?utc=11&lutc=11",Example 3
+http://127.0.0.1/iObU3FB)_9(A2(74(Qpw)sRer)Yk2mTbLU7LCWBabG4wnpQwa2JZ9w)esa_uf)Tst()8PE_BR2O6JYYfzoi(wNyYatYq_)3LI()HAUTQQc5U0hdPBjg3goTnuaPm)86Cjyhcrn6nUKlv's29sl4Q5oXn(5y(F)0utO1iOstALx)vUU7Fs-szCOw2OZWq6AMYgV(8vk1(eOuA)A(pCZu93z(2s0h)ope0_'1br)a)PuO(RV((O9t99Y()(WZnV0)RfeIE(Agkh(OOjm(lFdnaeabID)x_OLs)bFwbE4GsZxQGZTVxVwr480CZkKgnGDi)44YBlH()s9MK'mwvTc/3.mp4
+#EXTINF: -1, Example 4,comma
+http://127.0.0.1/ú
+#EXTINF: -1 tvg-name="Example 5 tvg-name",Example 5
+http://127.0.0.1/5

@@ -1,0 +1,5 @@
+#EXTM3U url-tvg="http://127.0.0.1/example.xml.gz"
+#EXTINF:-1 tvg-id="ex-tvg-id" user-agent="Example/1.0" group-title="Example group",Example channel
+http://127.0.0.1/example
+#EXTINF:-1 tvg-id="ex-tvg-id" user-agent="Example/1.0" group-title="Example group",Example channel
+http://127.0.0.1/example
