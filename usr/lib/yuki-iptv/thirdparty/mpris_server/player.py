@@ -1,8 +1,9 @@
+# https://github.com/alexdelorenzo/mpris_server/tree/f55313f3a0383de4606f7589a770430d90a11c7d
 from typing import Optional
 import logging
 
 from gi.repository.GLib import Variant
-from thirdparty.yukipydbus.generic import signal
+from thirdparty.pydbus.generic import signal
 
 from .base import PlayState, MUTE_VOL, MAX_VOL, PAUSE_RATE, BEGINNING, \
     Microseconds, RateDecimal, VolumeDecimal, MAX_RATE, MIN_RATE, \

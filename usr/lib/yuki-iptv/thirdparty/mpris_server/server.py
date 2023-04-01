@@ -1,7 +1,8 @@
+# https://github.com/alexdelorenzo/mpris_server/tree/f55313f3a0383de4606f7589a770430d90a11c7d
 import logging
 
 from gi.repository import GLib
-import thirdparty.yukipydbus
+import thirdparty.pydbus
 
 from .player import Player
 from .playlists import Playlists
@@ -41,10 +42,10 @@ class Server:
     logger.debug(f"Connecting to D-Bus {bus_type} bus...")
 
     if bus_type == "system":
-      bus = thirdparty.yukipydbus.SystemBus()
+      bus = thirdparty.pydbus.SystemBus()
 
     else:
-      bus = thirdparty.yukipydbus.SessionBus()
+      bus = thirdparty.pydbus.SessionBus()
 
     logger.debug(f"MPRIS server connected to D-Bus {bus_type} bus")
 

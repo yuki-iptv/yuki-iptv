@@ -1,7 +1,8 @@
+# https://github.com/alexdelorenzo/mpris_server/tree/f55313f3a0383de4606f7589a770430d90a11c7d
 import logging
 from typing import List
 
-from thirdparty.yukipydbus.generic import signal
+from thirdparty.pydbus.generic import signal
 
 from .base import Metadata, DbusObj
 from .interface import MprisInterface
