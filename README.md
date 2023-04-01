@@ -26,7 +26,7 @@ sudo apt install yuki-iptv
 
 ## License
 
-Code: [GPL-3.0-only](https://github.com/yuki-chan-nya/yuki-iptv/blob/stable/COPYING)  
+Code: [GPL-3.0-or-later](https://github.com/yuki-chan-nya/yuki-iptv/blob/stable/COPYING)  
 Icons: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)  
   
 *Icons by [Font Awesome](https://fontawesome.com/)*  

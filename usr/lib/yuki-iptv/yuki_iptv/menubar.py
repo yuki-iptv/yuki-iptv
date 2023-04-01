@@ -1,7 +1,7 @@
 # pylint: disable=no-member, unnecessary-lambda, unused-argument, import-error
 # pylint: disable=missing-module-docstring, missing-class-docstring, missing-function-docstring
 # pylint: disable=logging-format-interpolation, logging-fstring-interpolation
-# SPDX-License-Identifier: GPL-3.0-only
+# SPDX-License-Identifier: GPL-3.0-or-later
 import os
 import logging
 import gettext

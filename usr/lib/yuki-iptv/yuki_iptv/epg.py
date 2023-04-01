@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: GPL-3.0-only
+# SPDX-License-Identifier: GPL-3.0-or-later
 # pylint: disable=broad-except, too-many-locals, import-error, missing-module-docstring
 # pylint: disable=logging-format-interpolation, logging-fstring-interpolation
 import os

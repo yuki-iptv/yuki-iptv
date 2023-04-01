@@ -1,5 +1,7 @@
 '''Catchup'''
+# SPDX-License-Identifier: GPL-3.0-or-later
 # pylint: disable=missing-function-docstring, logging-format-interpolation, logging-fstring-interpolation
+# see https://github.com/kodi-pvr/pvr.iptvsimple/blob/2143e856dc3f21e4573210cfec73900e65919ef8/src/iptvsimple/data/Channel.cpp#L440 # pylint: disable=line-too-long
 import time
 import datetime
 import re
