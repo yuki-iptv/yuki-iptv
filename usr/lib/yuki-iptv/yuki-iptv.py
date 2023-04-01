@@ -2140,6 +2140,9 @@ if __name__ == '__main__':
 
         YukiData.bitrate_failed = False
 
+        referer_lbl_custom = QtWidgets.QLabel(_("HTTP Referer:"))
+        referer_choose_custom = QtWidgets.QLineEdit()
+
         def on_bitrate(prop, bitrate):
             try:
                 if not bitrate or prop not in ["video-bitrate", "audio-bitrate"]:
@@ -2286,6 +2289,9 @@ if __name__ == '__main__':
                     if 'ua' in channel_config and channel_config['ua'] \
                     and channel_config['ua'] != settings['ua']:
                         useragent_ref = channel_config['ua']
+                    if 'ref' in channel_config and channel_config['ref'] \
+                    and channel_config['ref'] != settings['referer']:
+                        referer_ref = channel_config['ref']
             return useragent_ref, referer_ref
 
         def mpv_override_play(arg_override_play, channel_name1=''): # pylint: disable=too-many-branches
@@ -2460,6 +2466,7 @@ if __name__ == '__main__':
             channel_sets[settings['m3u']][chan_3] = {
                 "deinterlace": deinterlace_chk.isChecked(),
                 "ua": useragent_choose.text(),
+                "ref": referer_choose_custom.text(),
                 "group": group_text.text(),
                 "hidden": hidden_chk.isChecked(),
                 "contrast": contrast_choose.value(),
@@ -2507,6 +2514,13 @@ if __name__ == '__main__':
         horizontalLayout2_1.addWidget(useragent_choose)
         horizontalLayout2_1.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_1.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
+
+        horizontalLayout2_13 = QtWidgets.QHBoxLayout()
+        horizontalLayout2_13.addWidget(QtWidgets.QLabel("\n"))
+        horizontalLayout2_13.addWidget(referer_lbl_custom)
+        horizontalLayout2_13.addWidget(referer_choose_custom)
+        horizontalLayout2_13.addWidget(QtWidgets.QLabel("\n"))
+        horizontalLayout2_13.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
 
         horizontalLayout2_2 = QtWidgets.QHBoxLayout()
         horizontalLayout2_2.addWidget(QtWidgets.QLabel("\n"))
@@ -2592,6 +2606,7 @@ if __name__ == '__main__':
         verticalLayout.addLayout(horizontalLayout)
         verticalLayout.addLayout(horizontalLayout2)
         verticalLayout.addLayout(horizontalLayout2_1)
+        verticalLayout.addLayout(horizontalLayout2_13)
         verticalLayout.addLayout(horizontalLayout2_2)
         verticalLayout.addLayout(horizontalLayout2_3)
         verticalLayout.addLayout(horizontalLayout2_4)
@@ -2903,7 +2918,7 @@ if __name__ == '__main__':
         grid.addWidget(fastview_label, 0, 0)
 
         useragent_lbl_2 = QtWidgets.QLabel("{}:".format(_('User agent')))
-        referer_lbl = QtWidgets.QLabel("HTTP Referer:")
+        referer_lbl = QtWidgets.QLabel(_("HTTP Referer:"))
         referer_choose = QtWidgets.QLineEdit()
         referer_choose.setText(settings["referer"])
         useragent_choose_2 = QtWidgets.QLineEdit()
@@ -4104,6 +4119,8 @@ if __name__ == '__main__':
                         player.deinterlace = d['deinterlace']
                         if 'ua' not in d:
                             d['ua'] = ''
+                        if 'ref' not in d:
+                            d['ref'] = ''
                         if 'contrast' in d:
                             player.contrast = d['contrast']
                         else:
@@ -5207,6 +5224,12 @@ if __name__ == '__main__':
                 except:
                     useragent_choose.setText('')
                 try:
+                    referer_choose_custom.setText(
+                        channel_sets[settings['m3u']][item_selected]['ref']
+                    )
+                except:
+                    referer_choose_custom.setText('')
+                try:
                     group_text.setText(channel_sets[settings['m3u']][item_selected]['group'])
                 except:
                     group_text.setText('')
@@ -5275,6 +5298,7 @@ if __name__ == '__main__':
                 zoom_choose.setCurrentIndex(0)
                 panscan_choose.setValue(0)
                 useragent_choose.setText('')
+                referer_choose_custom.setText('')
                 group_text.setText('')
                 epgname_lbl.setText(_('Default'))
             moveWindowToCenter(chan_win)
