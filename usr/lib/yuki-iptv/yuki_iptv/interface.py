@@ -1,5 +1,5 @@
 '''Interface widgets'''
-# SPDX-License-Identifier: GPL-3.0-only
+# SPDX-License-Identifier: GPL-3.0-or-later
 # pylint: disable=invalid-name, missing-class-docstring, missing-function-docstring
 from yuki_iptv.qt import get_qt_library
 from yuki_iptv.qt6compat import _enum

@@ -1,6 +1,6 @@
 '''M3U editor'''
 # pylint: disable=missing-function-docstring, missing-class-docstring, bare-except
-# SPDX-License-Identifier: GPL-3.0-only
+# SPDX-License-Identifier: GPL-3.0-or-later
 import os
 import gettext
 from pathlib import Path

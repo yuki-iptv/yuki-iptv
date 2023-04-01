@@ -1,6 +1,6 @@
 '''Convert XTream to M3U playlist'''
 # pylint: disable=missing-class-docstring, missing-function-docstring
-# SPDX-License-Identifier: GPL-3.0-only
+# SPDX-License-Identifier: GPL-3.0-or-later
 def convert_xtream_to_m3u(_, data, skip_init=False, append_group=""):
     output = '#EXTM3U\n' if not skip_init else ''
     for channel in data:

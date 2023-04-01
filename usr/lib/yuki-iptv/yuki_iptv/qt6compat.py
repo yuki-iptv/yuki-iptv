@@ -1,5 +1,5 @@
 # pylint: disable=missing-module-docstring, missing-function-docstring, no-else-return, invalid-name
-# SPDX-License-Identifier: GPL-3.0-only
+# SPDX-License-Identifier: GPL-3.0-or-later
 import logging
 from yuki_iptv.qt import get_qt_library
 qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()

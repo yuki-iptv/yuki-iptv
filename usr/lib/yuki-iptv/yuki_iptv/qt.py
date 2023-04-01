@@ -1,6 +1,6 @@
 '''Qt loader'''
 # pylint: disable=no-member, c-extension-no-member, import-outside-toplevel, invalid-name
-# SPDX-License-Identifier: GPL-3.0-only
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 def get_qt_library():
     '''Get correct Qt library - PyQt6/5'''

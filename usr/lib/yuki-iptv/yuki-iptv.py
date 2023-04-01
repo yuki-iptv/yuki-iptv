@@ -3,7 +3,7 @@
 # pylint: disable=too-many-lines, too-many-statements, broad-except, bare-except
 # pylint: disable=logging-format-interpolation, logging-not-lazy, logging-fstring-interpolation
 #
-# SPDX-License-Identifier: GPL-3.0-only
+# SPDX-License-Identifier: GPL-3.0-or-later
 #
 # Icons by Font Awesome ( https://fontawesome.com/ ) ( https://fontawesome.com/license )
 #
@@ -3349,7 +3349,7 @@ if __name__ == '__main__':
             else:
                 license_win.hide()
 
-        license_str = "GPL-3.0-only"
+        license_str = "GPL-3.0-or-later"
         if os.path.isfile(str(Path('..', '..', 'share', 'yuki-iptv', 'license.txt'))):
             license_file = open(
                 str(Path('..', '..', 'share', 'yuki-iptv', 'license.txt')),

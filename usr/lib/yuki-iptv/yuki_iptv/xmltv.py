@@ -1,5 +1,5 @@
 '''XMLTV parser'''
-# SPDX-License-Identifier: GPL-3.0-only
+# SPDX-License-Identifier: GPL-3.0-or-later
 # pylint: disable=logging-format-interpolation, logging-fstring-interpolation
 import logging
 import gettext

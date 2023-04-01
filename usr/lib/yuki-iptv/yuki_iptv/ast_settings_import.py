@@ -1,5 +1,5 @@
 '''Import settings from Astroncia IPTV'''
-# SPDX-License-Identifier: GPL-3.0-only
+# SPDX-License-Identifier: GPL-3.0-or-later
 # pylint: disable=missing-function-docstring, bare-except
 import os
 import os.path

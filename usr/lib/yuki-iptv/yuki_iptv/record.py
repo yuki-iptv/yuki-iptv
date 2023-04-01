@@ -1,5 +1,5 @@
 # pylint: disable=missing-module-docstring, logging-format-interpolation, logging-fstring-interpolation
-# SPDX-License-Identifier: GPL-3.0-only
+# SPDX-License-Identifier: GPL-3.0-or-later
 import logging
 import subprocess
 import threading

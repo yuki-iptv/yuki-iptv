@@ -1,5 +1,5 @@
 '''Keybinds'''
-# SPDX-License-Identifier: GPL-3.0-only
+# SPDX-License-Identifier: GPL-3.0-or-later
 from yuki_iptv.qt import get_qt_library
 from yuki_iptv.qt6compat import _enum
 qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
