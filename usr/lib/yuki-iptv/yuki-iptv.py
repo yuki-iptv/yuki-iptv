@@ -2319,7 +2319,7 @@ if __name__ == '__main__':
         def mpv_override_volume(volume_val):
             global event_handler, firstVolRun
             player.volume = volume_val
-            if settings["remembervol"] and not firstVolRun:
+            if not firstVolRun:
                 volfile = open(str(Path(LOCAL_DIR, 'volume.json')), 'w', encoding="utf8")
                 volfile.write(json.dumps({"volume": player.volume}))
                 volfile.close()
@@ -2632,7 +2632,6 @@ if __name__ == '__main__':
                 'donotupdateepg': donot_flag.isChecked(),
                 'channelsonpage': channels_box.value(),
                 'openprevchan': openprevchan_flag.isChecked(),
-                'remembervol': remembervol_flag.isChecked(),
                 'hidempv': hidempv_flag.isChecked(),
                 'hideepgpercentage': hideepgpercentage_flag.isChecked(),
                 'hidebitrateinfo': hidebitrateinfo_flag.isChecked(),
@@ -2855,7 +2854,6 @@ if __name__ == '__main__':
 
         gui_label = QtWidgets.QLabel("{}:".format(_('TV guide\ninterface')))
         openprevchan_label = QtWidgets.QLabel("{}:".format(_('Open previous channel\nat startup')))
-        remembervol_label = QtWidgets.QLabel("{}:".format(_('Remember volume')))
         hidempv_label = QtWidgets.QLabel("{}:".format(_('Hide mpv panel')))
         hideepgpercentage_label = QtWidgets.QLabel("{}:".format(_('Hide EPG percentage')))
         hidebitrateinfo_label = QtWidgets.QLabel("{}:".format(_('Hide bitrate / video info')))
@@ -2876,9 +2874,6 @@ if __name__ == '__main__':
 
         openprevchan_flag = QtWidgets.QCheckBox()
         openprevchan_flag.setChecked(settings['openprevchan'])
-
-        remembervol_flag = QtWidgets.QCheckBox()
-        remembervol_flag.setChecked(settings['remembervol'])
 
         hidempv_flag = QtWidgets.QCheckBox()
         hidempv_flag.setChecked(settings['hidempv'])
@@ -3057,8 +3052,6 @@ if __name__ == '__main__':
         tab_main.layout.addWidget(supdate, 3, 1)
         tab_main.layout.addWidget(openprevchan_label, 4, 0)
         tab_main.layout.addWidget(openprevchan_flag, 4, 1)
-        tab_main.layout.addWidget(remembervol_label, 5, 0)
-        tab_main.layout.addWidget(remembervol_flag, 5, 1)
         tab_main.setLayout(tab_main.layout)
 
         tab_video.layout = QtWidgets.QGridLayout()
@@ -3708,7 +3701,7 @@ if __name__ == '__main__':
                 str(Path(LOCAL_DIR, 'alwaysontop.json'))
             )
 
-            if settings["remembervol"] and os.path.isfile(str(Path(LOCAL_DIR, 'volume.json'))):
+            if os.path.isfile(str(Path(LOCAL_DIR, 'volume.json'))):
                 logger.info(f"Set volume to {vol_remembered}")
                 label7.setValue(vol_remembered)
                 mpv_volume_set()
@@ -4569,8 +4562,8 @@ if __name__ == '__main__':
                 req_data = cache_file_2_read
             else:
                 try:
-                    if os.path.isfile(logo_url):
-                        with open(logo_url, 'rb') as logo_url_fd:
+                    if os.path.isfile(logo_url.strip()):
+                        with open(logo_url.strip(), 'rb') as logo_url_fd:
                             req_data = logo_url_fd.read()
                     else:
                         req_data = requests.get(
@@ -7956,7 +7949,7 @@ if __name__ == '__main__':
         app.aboutToQuit.connect(myExitHandler)
 
         vol_remembered = 100
-        if settings["remembervol"] and os.path.isfile(str(Path(LOCAL_DIR, 'volume.json'))):
+        if os.path.isfile(str(Path(LOCAL_DIR, 'volume.json'))):
             try:
                 volfile_1 = open(str(Path(LOCAL_DIR, 'volume.json')), 'r', encoding="utf8")
                 volfile_1_out = int(json.loads(volfile_1.read())["volume"])
