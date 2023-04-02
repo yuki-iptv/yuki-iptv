@@ -1292,7 +1292,7 @@ if __name__ == '__main__':
         xtream_win_2.setWindowIcon(main_icon)
 
         scheduler_win = QtWidgets.QMainWindow()
-        scheduler_win.resize(1000, 600)
+        scheduler_win.resize(1200, 600)
         scheduler_win.setWindowTitle(_('Recording scheduler'))
         scheduler_win.setWindowIcon(main_icon)
 
@@ -4566,9 +4566,15 @@ if __name__ == '__main__':
                         with open(logo_url.strip(), 'rb') as logo_url_fd:
                             req_data = logo_url_fd.read()
                     else:
+                        req_data_ua, req_data_ref = get_ua_ref_for_channel(chan_name)
+                        req_data_headers = {
+                            'User-Agent': req_data_ua
+                        }
+                        if req_data_ref:
+                            req_data_headers['Referer'] = req_data_ref
                         req_data = requests.get(
                             logo_url,
-                            headers={'User-Agent': settings['ua']},
+                            headers=req_data_headers,
                             timeout=(3, 3),
                             stream=True
                         ).content
