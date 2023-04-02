@@ -221,18 +221,6 @@ if not os.path.isdir(SAVE_FOLDER_DEFAULT):
 ast_settings_import()
 convert_old_filenames()
 
-DEF_DEINTERLACE = True
-
-try:
-    if os.path.isfile('/proc/cpuinfo'):
-        cpuinfo_file = open('/proc/cpuinfo', 'r')
-        cpuinfo_file_contents = cpuinfo_file.read()
-        cpuinfo_file.close()
-        if 'Raspberry' in cpuinfo_file_contents:
-            DEF_DEINTERLACE = False
-except:
-    pass
-
 
 def show_exception(e, e_traceback="", prev=""):
     if e_traceback:
@@ -336,8 +324,6 @@ if __name__ == '__main__':
         m3u = ""
         clockOn = False
 
-        DEFAULT_HWACCEL = "auto-safe"
-
         from thirdparty import mpv
 
         if not os.path.isdir(LOCAL_DIR):
@@ -368,7 +354,7 @@ if __name__ == '__main__':
         DEF_TIMEZONE = 0
 
         settings, settings_loaded = parse_settings(
-            LOCAL_DIR, DEF_DEINTERLACE, SAVE_FOLDER_DEFAULT,
+            LOCAL_DIR, SAVE_FOLDER_DEFAULT,
             DEF_TIMEZONE, DOCK_WIDGET_WIDTH
         )
         if not settings_loaded:
@@ -6183,29 +6169,21 @@ if __name__ == '__main__':
                         os.remove(str(Path(LOCAL_DIR, 'lastchannels.json')))
             return isPlayingLast
 
-        if settings['hwaccel']:
-            VIDEO_OUTPUT = 'gpu,vdpau,opengl,xv,x11'
-            HWACCEL = DEFAULT_HWACCEL
-        else:
-            VIDEO_OUTPUT = 'xv,x11'
-            HWACCEL = 'no'
+        VIDEO_OUTPUT = ''
+        HWACCEL = "auto-safe" if settings['hwaccel'] else "no"
 
         # Wayland fix
         is_apply_wayland_fix = False
-        try:
-            if 'WAYLAND_DISPLAY' in os.environ:
-                if os.environ['WAYLAND_DISPLAY']:
-                    logger.info("Found environ WAYLAND_DISPLAY")
-                    is_apply_wayland_fix = True
-        except:
-            pass
-        try:
-            if 'XDG_SESSION_TYPE' in os.environ:
-                if os.environ['XDG_SESSION_TYPE'] == 'wayland':
-                    logger.info("Environ XDG_SESSION_TYPE == wayland")
-                    is_apply_wayland_fix = True
-        except:
-            pass
+
+        if 'WAYLAND_DISPLAY' in os.environ:
+            if os.environ['WAYLAND_DISPLAY']:
+                logger.info("Found environ WAYLAND_DISPLAY")
+                is_apply_wayland_fix = True
+        if 'XDG_SESSION_TYPE' in os.environ:
+            if os.environ['XDG_SESSION_TYPE'] == 'wayland':
+                logger.info("Environ XDG_SESSION_TYPE == wayland")
+                is_apply_wayland_fix = True
+
         if is_apply_wayland_fix:
             logger.info("")
             logger.info("[NOTE] Applying video output fix for Wayland")
