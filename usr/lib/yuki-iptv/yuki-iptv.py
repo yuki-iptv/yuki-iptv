@@ -6076,7 +6076,7 @@ if __name__ == '__main__':
                         os.remove(str(Path(LOCAL_DIR, 'lastchannels.json')))
             return isPlayingLast
 
-        VIDEO_OUTPUT = ''
+        VIDEO_OUTPUT = "gpu,x11" if settings['hwaccel'] else "x11"
         HWACCEL = "auto-safe" if settings['hwaccel'] else "no"
 
         # Wayland fix
