@@ -26,19 +26,19 @@ from pathlib import Path
 
 
 def parse_settings(
-    local_dir, def_deinterlace, save_folder_default,
+    local_dir, save_folder_default,
     def_timezone, dock_widget_width
 ):
     settings_default = {
         "m3u": "",
         "epg": "",
-        "deinterlace": def_deinterlace,
+        "deinterlace": False,
         "udp_proxy": "",
         "save_folder": save_folder_default,
         "provider": "",
         "nocache": True,
         "epgoffset": def_timezone,
-        "hwaccel": True,
+        "hwaccel": False,
         "sort": 0,
         "cache_secs": 0,
         "ua": "Mozilla/5.0",
