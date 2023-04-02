@@ -19,10 +19,10 @@ FILE = open('./usr/share/applications/yuki-iptv.desktop', 'w', encoding='utf8')
 FILE.write(PREFIX)
 
 for lang_file in glob.glob('./po/yuki-iptv-*.po'):
-    lang = lang_file.replace('.po', '').split('-')[2]
+    lang = lang_file.replace('.po', '').split('yuki-iptv-')[1]
     translation = gettext.translation('yuki-iptv', './usr/share/locale/', languages=[lang])
     playername = translation.gettext('IPTV player')
-    if playername != 'IPTV player' and lang != 'en':
+    if playername != 'IPTV player':
         FILE.write("Comment[{}]={}\n".format(lang, playername))
 
 FILE.write(SUFFIX)
