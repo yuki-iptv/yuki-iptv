@@ -1,4 +1,3 @@
-'''yuki-iptv'''
 #
 # Copyright (c) 2021-2022 Astroncia <kestraly@gmail.com>
 # Copyright (c) 2023 yuki-chan-nya
@@ -205,16 +204,11 @@ if args1.version:
     print(f"{MAIN_WINDOW_TITLE} {APP_VERSION} ({VERSION_CODENAME})")
     sys.exit(0)
 
-try:
-    if not os.path.isdir(str(Path(os.environ['HOME'], '.config'))):
-        os.mkdir(str(Path(os.environ['HOME'], '.config')))
-except:
-    pass
-try:
-    if not os.path.isdir(str(Path(os.environ['HOME'], '.cache'))):
-        os.mkdir(str(Path(os.environ['HOME'], '.cache')))
-except:
-    pass
+if not os.path.isdir(str(Path(os.environ['HOME'], '.config'))):
+    os.mkdir(str(Path(os.environ['HOME'], '.config')))
+
+if not os.path.isdir(str(Path(os.environ['HOME'], '.cache'))):
+    os.mkdir(str(Path(os.environ['HOME'], '.cache')))
 
 LOCAL_DIR = str(Path(os.environ['HOME'], '.config', 'yuki-iptv'))
 SAVE_FOLDER_DEFAULT = str(Path(os.environ['HOME'], '.config', 'yuki-iptv', 'saves'))
@@ -6966,27 +6960,6 @@ if __name__ == '__main__':
         hlayout1.addWidget(start_label)
         hlayout1.addWidget(progress)
         hlayout1.addWidget(stop_label)
-
-        all_labels = [
-            label3,
-            label4,
-            label5,
-            label5_0,
-            label5_1,
-            label5_2,
-            label6,
-            label7,
-            label7_1,
-            label7_2,
-            label8,
-            label8_0,
-            label8_1,
-            label8_2,
-            label8_3,
-            label8_4,
-            label8_5,
-            label9
-        ]
 
         hlayout2_btns = [
             label3, label4, label5, label5_1,
