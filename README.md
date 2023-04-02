@@ -10,16 +10,16 @@ The channels and pictures in the screenshots are for demonstration purposes only
 
 ## Download
 
-[Ubuntu Launchpad PPA (stable)](https://launchpad.net/~yuki-chan-nya/+archive/ubuntu/yuki-iptv-stable):  
+[Ubuntu Launchpad PPA (stable)](https://launchpad.net/~yuki-iptv/+archive/ubuntu/yuki-iptv-stable):  
 ```
-sudo add-apt-repository ppa:yuki-chan-nya/yuki-iptv-stable
+sudo add-apt-repository ppa:yuki-iptv/yuki-iptv-stable
 sudo apt update
 sudo apt install yuki-iptv
 ```
 
-[Ubuntu Launchpad PPA (develop)](https://launchpad.net/~yuki-chan-nya/+archive/ubuntu/yuki-iptv-develop):  
+[Ubuntu Launchpad PPA (develop)](https://launchpad.net/~yuki-iptv/+archive/ubuntu/yuki-iptv-develop):  
 ```
-sudo add-apt-repository ppa:yuki-chan-nya/yuki-iptv-develop
+sudo add-apt-repository ppa:yuki-iptv/yuki-iptv-develop
 sudo apt update
 sudo apt install yuki-iptv
 ```
