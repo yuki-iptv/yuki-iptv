@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+ <!DOCTYPE tv SYSTEM "xmltv.dtd">
+<tv>
+<channel id="broken1"></channel>
+<channel id="broken2"><display-name></display-name></channel>
+<channel id="testchan"><display-name>Test channel 1</display-name><icon src="http://127.0.0.1/testchannel1.png"/></channel>
+<programme start="20230402010000 +0200" stop="20230402020000 +0200" channel="testchan"><title lang="en">Test program 1</title></programme>
+<programme start="20230402020000 +0200" stop="20230402020000 +0100" channel="testchan"><desc lang="en">Test description</desc><title lang="en">Test program 2</title></programme>
+</tv>
