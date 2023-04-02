@@ -1,10 +1,30 @@
-'''M3U parser'''
-# SPDX-License-Identifier: GPL-3.0-or-later
-# pylint: disable=logging-format-interpolation, logging-fstring-interpolation
+#
+# Copyright (c) 2021-2022 Astroncia <kestraly@gmail.com>
+# Copyright (c) 2023 yuki-chan-nya
+#
+# This file is part of yuki-iptv.
+#
+# yuki-iptv is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# yuki-iptv is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with yuki-iptv  If not, see <http://www.gnu.org/licenses/>.
+#
+# The Font Awesome pictograms are licensed under the CC BY 4.0 License
+# https://creativecommons.org/licenses/by/4.0/
+#
 import re
 import logging
 
 logger = logging.getLogger(__name__)
+
 
 class M3UParser:
     '''M3U parser'''
@@ -15,7 +35,7 @@ class M3UParser:
         self.m3u_epg = ""
         self.epg_url_final = ""
 
-    def parse_regexp(self, name, line_info, default="", custom_regex=False): # pylint: disable=no-self-use
+    def parse_regexp(self, name, line_info, default="", custom_regex=False):
         '''Channel info regexp parser'''
         regexp = name
         if not custom_regex:
@@ -29,7 +49,7 @@ class M3UParser:
         if name == 'catchup-days':
             try:
                 res = str(int(res))
-            except: # pylint: disable=bare-except
+            except:
                 logger.warning(
                     f"M3U STANDARDS VIOLATION: catchup-days is not int (got '{res}')"
                 )
@@ -38,7 +58,7 @@ class M3UParser:
         res = res.strip()
         return res
 
-    def parse_url_kodi_arguments(self, url): # pylint: disable=no-self-use
+    def parse_url_kodi_arguments(self, url):
         '''Parse Kodi-style URL arguments'''
         useragent = ''
         referrer = ''
@@ -76,8 +96,7 @@ class M3UParser:
     def parse_channel(self, line_info, ch_url, overrides):
         '''Parse EXTINF channel info'''
         if self.udp_proxy and (ch_url.startswith('udp://') or ch_url.startswith('rtp://')):
-            ch_url = self.udp_proxy + \
-            "/" + ch_url.replace("udp://", "udp/").replace("rtp://", "rtp/")
+            ch_url = self.udp_proxy + "/" + ch_url.replace("udp://", "udp/").replace("rtp://", "rtp/")
             ch_url = ch_url.replace('//udp/', '/udp/').replace('//rtp/', '/rtp/')
             ch_url = ch_url.replace('@', '')
 
@@ -129,7 +148,7 @@ class M3UParser:
 
         return ch_array
 
-    def parse_m3u(self, m3u_str): # pylint: disable=too-many-branches, too-many-statements
+    def parse_m3u(self, m3u_str):
         '''Parse m3u string'''
         self.epg_urls = []
         self.m3u_epg = ""
@@ -138,25 +157,25 @@ class M3UParser:
             raise Exception("Malformed M3U")
         channels = []
         buffer = []
-        for line in m3u_str.split('\n'): # pylint: disable=too-many-nested-blocks
+        for line in m3u_str.split('\n'):
             line = line.rstrip('\n').rstrip().strip()
             if line.startswith('#EXTM3U'):
                 epg_m3u_url = ""
                 if 'x-tvg-url="' in line:
                     try:
                         epg_m3u_url = re.findall('x-tvg-url="(.*?)"', line)[0]
-                    except: # pylint: disable=bare-except
+                    except:
                         pass
                 else:
                     if 'tvg-url="' in line:
                         try:
                             epg_m3u_url = re.findall('tvg-url="(.*?)"', line)[0]
-                        except: # pylint: disable=bare-except
+                        except:
                             pass
                     else:
                         try:
                             epg_m3u_url = re.findall('url-tvg="(.*?)"', line)[0]
-                        except: # pylint: disable=bare-except
+                        except:
                             pass
                 if epg_m3u_url:
                     self.m3u_epg = epg_m3u_url if epg_m3u_url != 'http://server/jtv.zip' else ''

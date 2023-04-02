@@ -1,7 +1,25 @@
-'''Catchup'''
-# SPDX-License-Identifier: GPL-3.0-or-later
-# pylint: disable=missing-function-docstring, logging-format-interpolation, logging-fstring-interpolation
-# see https://github.com/kodi-pvr/pvr.iptvsimple/blob/2143e856dc3f21e4573210cfec73900e65919ef8/src/iptvsimple/data/Channel.cpp#L440 # pylint: disable=line-too-long
+#
+# Copyright (c) 2021-2022 Astroncia <kestraly@gmail.com>
+# Copyright (c) 2023 yuki-chan-nya
+#
+# This file is part of yuki-iptv.
+#
+# yuki-iptv is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# yuki-iptv is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with yuki-iptv  If not, see <http://www.gnu.org/licenses/>.
+#
+# The Font Awesome pictograms are licensed under the CC BY 4.0 License
+# https://creativecommons.org/licenses/by/4.0/
+#
 import time
 import datetime
 import re
@@ -9,6 +27,7 @@ import traceback
 import logging
 
 logger = logging.getLogger(__name__)
+
 
 def format_catchup_array(array0):
     if 'catchup' not in array0:
@@ -19,18 +38,18 @@ def format_catchup_array(array0):
         array0['catchup-days'] = '1'
 
     if not array0['catchup-source'] and \
-    array0['catchup'] not in ('flussonic', 'flussonic-hls', 'flussonic-ts', 'fs', 'xc'):
+       array0['catchup'] not in ('flussonic', 'flussonic-hls', 'flussonic-ts', 'fs', 'xc'):
         array0['catchup'] = 'shift'
 
     if array0['catchup-source']:
         if not (
-            array0['catchup-source'].startswith("http://") or \
-            array0['catchup-source'].startswith("https://")
+            array0['catchup-source'].startswith("http://") or array0['catchup-source'].startswith("https://")
         ):
             array0['catchup'] = 'append'
     return array0
 
-def format_placeholders(start_time, end_time, catchup_id, orig_url): # pylint: disable=too-many-locals, too-many-branches, too-many-statements
+
+def format_placeholders(start_time, end_time, catchup_id, orig_url):
     if start_time == 'TEST':
         return orig_url
     logger.info("")
@@ -101,7 +120,7 @@ def format_placeholders(start_time, end_time, catchup_id, orig_url): # pylint: d
                     duration_re_i,
                     str(int(duration / duration_re_i_parse))
                 )
-    except: # pylint: disable=bare-except
+    except:
         logger.warning("format_placeholders / duration_re parsing failed")
         logger.warning(traceback.format_exc())
 
@@ -114,7 +133,7 @@ def format_placeholders(start_time, end_time, catchup_id, orig_url): # pylint: d
                     offset_re_i,
                     str(int(offset2 / offset_re_i_parse))
                 )
-    except: # pylint: disable=bare-except
+    except:
         logger.warning("format_placeholders / offset_re parsing failed")
         logger.warning(traceback.format_exc())
 
@@ -130,7 +149,7 @@ def format_placeholders(start_time, end_time, catchup_id, orig_url): # pylint: d
 
     try:
         specifiers_re = re.findall(
-            r"((\$?){(utc|start|lutc|now|timestamp|utcend|end):([YmdHMS])(-?)([YmdHMS]?)(-?)([YmdHMS]?)(-?)([YmdHMS]?)(-?)([YmdHMS]?)(-?)([YmdHMS]?)})", # pylint: disable=line-too-long
+            r"((\$?){(utc|start|lutc|now|timestamp|utcend|end):([YmdHMS])(-?)([YmdHMS]?)(-?)([YmdHMS]?)(-?)([YmdHMS]?)(-?)([YmdHMS]?)(-?)([YmdHMS]?)})",  # noqa: E501
             orig_url
         )
         if specifiers_re:
@@ -160,7 +179,7 @@ def format_placeholders(start_time, end_time, catchup_id, orig_url): # pylint: d
                     spec_val = spec_val.replace('M', str(utcend_time[4]))
                     spec_val = spec_val.replace('S', str(utcend_time[5]))
                 orig_url = orig_url.replace(specifiers_re_i_o, str(spec_val))
-    except: # pylint: disable=bare-except
+    except:
         logger.warning("format_placeholders / specifiers_re parsing failed")
         logger.warning(traceback.format_exc())
 
@@ -168,7 +187,9 @@ def format_placeholders(start_time, end_time, catchup_id, orig_url): # pylint: d
     logger.info("")
     return orig_url
 
-def get_catchup_url(chan_url, arr1, start_time, end_time, catchup_id): # pylint: disable=too-many-locals, too-many-branches, too-many-statements
+
+# https://github.com/kodi-pvr/pvr.iptvsimple/blob/2143e856dc3f21e4573210cfec73900e65919ef8/src/iptvsimple/data/Channel.cpp#L440
+def get_catchup_url(chan_url, arr1, start_time, end_time, catchup_id):
     play_url = chan_url
     if arr1['catchup'] == 'default':
         play_url = format_placeholders(
@@ -283,10 +304,12 @@ def get_catchup_url(chan_url, arr1, start_time, end_time, catchup_id): # pylint:
         )
     return play_url
 
+
 def format_url_clean(url5):
     if '^^^^^^^^^^' in url5:
         url5 = url5.split('^^^^^^^^^^')[0]
     return url5
+
 
 def parse_specifiers_now_url(url4):
     if url4.endswith("/icons/main.png") or url4.endswith("/icons_dark/main.png"):
@@ -309,7 +332,7 @@ def parse_specifiers_now_url(url4):
 
     try:
         specifiers_re_url = re.findall(
-            r"((\$?){(lutc|now|timestamp):([YmdHMS])(-?)([YmdHMS]?)(-?)([YmdHMS]?)(-?)([YmdHMS]?)(-?)([YmdHMS]?)(-?)([YmdHMS]?)})", # pylint: disable=line-too-long
+            r"((\$?){(lutc|now|timestamp):([YmdHMS])(-?)([YmdHMS]?)(-?)([YmdHMS]?)(-?)([YmdHMS]?)(-?)([YmdHMS]?)(-?)([YmdHMS]?)})",  # noqa: E501
             url4
         )
         if specifiers_re_url:
@@ -322,7 +345,7 @@ def parse_specifiers_now_url(url4):
                 spec_val_1 = spec_val_1.replace('M', str(cur_utc_time[4]))
                 spec_val_1 = spec_val_1.replace('S', str(cur_utc_time[5]))
                 url4 = url4.replace(specifiers_re_url_i[0], str(spec_val_1))
-    except: # pylint: disable=bare-except
+    except:
         logger.warning("parse_specifiers_now_url / specifiers_re_url parsing failed")
         logger.warning(traceback.format_exc())
 

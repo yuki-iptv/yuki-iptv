@@ -1,14 +1,36 @@
-# pylint: disable=missing-module-docstring, logging-format-interpolation, logging-fstring-interpolation
-# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Copyright (c) 2021-2022 Astroncia <kestraly@gmail.com>
+# Copyright (c) 2023 yuki-chan-nya
+#
+# This file is part of yuki-iptv.
+#
+# yuki-iptv is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# yuki-iptv is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with yuki-iptv  If not, see <http://www.gnu.org/licenses/>.
+#
+# The Font Awesome pictograms are licensed under the CC BY 4.0 License
+# https://creativecommons.org/licenses/by/4.0/
+#
 import logging
 import subprocess
 import threading
 
 logger = logging.getLogger(__name__)
 
-class YukiData: # pylint: disable=too-few-public-methods
+
+class YukiData:
     '''Main class'''
     ffmpeg_proc = None
+
 
 def async_function(func):
     '''Used as a decorator to run things in the background'''
@@ -19,10 +41,12 @@ def async_function(func):
         return thread
     return wrapper
 
+
 @async_function
 def async_wait_process(proc):
     '''Wait for process to finish'''
     proc.wait()
+
 
 def is_ffmpeg_recording():
     '''Check is currently recording'''
@@ -38,10 +62,11 @@ def is_ffmpeg_recording():
             ret = False
     return ret
 
-def record( # pylint: disable=inconsistent-return-statements
+
+def record(
     input_url, out_file, channel_name, http_referer,
     get_ua_ref_for_channel, is_return=False, is_screenshot=False
-): # pylint: disable=too-many-arguments
+):
     '''Main recording function'''
     if http_referer == 'Referer: ':
         http_referer = ''
@@ -117,7 +142,7 @@ def record( # pylint: disable=inconsistent-return-statements
         )
         try:
             async_wait_process(YukiData.ffmpeg_proc_screenshot)
-        except: # pylint: disable=bare-except
+        except:
             pass
     else:
         if not is_return:
@@ -135,9 +160,11 @@ def record( # pylint: disable=inconsistent-return-statements
                 startupinfo=None
             )
 
+
 def record_return(input_url, out_file, channel_name, http_referer, get_ua_ref_for_channel):
     '''Record with return subprocess'''
     return record(input_url, out_file, channel_name, http_referer, get_ua_ref_for_channel, True)
+
 
 def stop_record():
     '''Stop recording'''
@@ -145,6 +172,6 @@ def stop_record():
         YukiData.ffmpeg_proc.terminate()
         try:
             async_wait_process(YukiData.ffmpeg_proc)
-        except: # pylint: disable=bare-except
+        except:
             pass
-        #YukiData.ffmpeg_proc = None
+        # YukiData.ffmpeg_proc = None

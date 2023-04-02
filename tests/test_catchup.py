@@ -1,13 +1,35 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
-# pylint: disable=missing-module-docstring, missing-function-docstring, line-too-long
+#
+# Copyright (c) 2021-2022 Astroncia <kestraly@gmail.com>
+# Copyright (c) 2023 yuki-chan-nya
+#
+# This file is part of yuki-iptv.
+#
+# yuki-iptv is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# yuki-iptv is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with yuki-iptv  If not, see <http://www.gnu.org/licenses/>.
+#
+# The Font Awesome pictograms are licensed under the CC BY 4.0 License
+# https://creativecommons.org/licenses/by/4.0/
+#
 import os
 import sys
 from pathlib import Path
 
 sys.path.append(str(Path(os.getcwd(), 'usr', 'lib', 'yuki-iptv')))
 
-from yuki_iptv.catchup import get_catchup_url # pylint: disable=import-error, wrong-import-position
+from yuki_iptv.catchup import get_catchup_url  # noqa: E402
 
+
+# https://github.com/kodi-pvr/pvr.iptvsimple/blob/2143e856dc3f21e4573210cfec73900e65919ef8/src/iptvsimple/data/Channel.cpp#L467
 def test_catchup():
     urls = {
         'http://127.0.0.1/index.m3u8':
@@ -20,12 +42,12 @@ def test_catchup():
             ['flussonic', 'http://127.0.0.1:8888/325/timeshift_rel-{offset:1}.m3u8?token=secret'],
         'http://127.0.0.1:8888/325/mono.m3u8?token=secret':
             ['flussonic', 'http://127.0.0.1:8888/325/mono-timeshift_rel-{offset:1}.m3u8?token=secret'],
-        #'http://127.0.0.1:8888/325/live?token=my_token':
+        # 'http://127.0.0.1:8888/325/live?token=my_token':
         #    ['flussonic', 'http://127.0.0.1:8888/325/{utc}.ts?token=my_token'],
         'http://127.0.0.1:8080/my@account.xc/my_password/1477':
-            ['xc', 'http://127.0.0.1:8080/timeshift/my@account.xc/my_password/{duration}/{Y}-{m}-{d}:{H}-{M}/1477.ts'.replace('{duration}', '{duration:60}')],
+            ['xc', 'http://127.0.0.1:8080/timeshift/my@account.xc/my_password/{duration}/{Y}-{m}-{d}:{H}-{M}/1477.ts'.replace('{duration}', '{duration:60}')],  # noqa: E501
         'http://127.0.0.1:8080/live/my@account.xc/my_password/1477.m3u8':
-            ['xc', 'http://127.0.0.1:8080/timeshift/my@account.xc/my_password/{duration}/{Y}-{m}-{d}:{H}-{M}/1477.m3u8'.replace('{duration}', '{duration:60}')]
+            ['xc', 'http://127.0.0.1:8080/timeshift/my@account.xc/my_password/{duration}/{Y}-{m}-{d}:{H}-{M}/1477.m3u8'.replace('{duration}', '{duration:60}')]  # noqa: E501
     }
     for url in urls:
         assert get_catchup_url(

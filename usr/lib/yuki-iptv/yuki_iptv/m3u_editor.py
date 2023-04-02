@@ -1,6 +1,25 @@
-'''M3U editor'''
-# pylint: disable=missing-function-docstring, missing-class-docstring, bare-except
-# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Copyright (c) 2021-2022 Astroncia <kestraly@gmail.com>
+# Copyright (c) 2023 yuki-chan-nya
+#
+# This file is part of yuki-iptv.
+#
+# yuki-iptv is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# yuki-iptv is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with yuki-iptv  If not, see <http://www.gnu.org/licenses/>.
+#
+# The Font Awesome pictograms are licensed under the CC BY 4.0 License
+# https://creativecommons.org/licenses/by/4.0/
+#
 import os
 import gettext
 from pathlib import Path
@@ -17,6 +36,7 @@ try:
     HOME_FOLDER = os.environ['HOME']
 except:
     pass
+
 
 class M3UEditor(QtWidgets.QMainWindow):
     def clear_table(self):
@@ -74,8 +94,9 @@ class M3UEditor(QtWidgets.QMainWindow):
                 file0 = open(filename, 'r')
                 filedata = file0.read()
                 file0.close()
-                is_xspf = '<?xml version="' in filedata and ('http://xspf.org/' in filedata or \
-                'https://xspf.org/' in filedata)
+                is_xspf = '<?xml version="' in filedata and (
+                    'http://xspf.org/' in filedata or 'https://xspf.org/' in filedata
+                )
                 if not is_xspf:
                     m3u_data = m3u_parser.parse_m3u(filedata)[0]
                 else:
@@ -102,23 +123,29 @@ class M3UEditor(QtWidgets.QMainWindow):
                 item = self.table.item(row, column)
                 if item:
                     output[self.table.horizontalHeaderItem(column).text()] = item.text()
-            m3u_str += ('#EXTINF:0 tvg-name="{}" tvg-id="{}" tvg-logo="{}"' + \
-                        ' tvg-group="{}" tvg-url="{}" catchup="{}" catchup-source="{}"' + \
-                        ' catchup-days="{}",{}\n#EXTVLCOPT:http-user-agent={}\n' + \
-                        '#EXTVLCOPT:http-referrer={}\n{}\n').format(
-                output['tvg-name'],
-                output['tvg-id'],
-                output['tvg-logo'],
-                output['tvg-group'],
-                output['tvg-url'],
-                output['catchup'],
-                output['catchup-source'],
-                output['catchup-days'],
-                output['title'],
-                output['useragent'],
-                output['referer'],
-                output['url']
-            )
+            m3u_str += '#EXTINF:0'
+            if output["tvg-name"]:
+                m3u_str += f' tvg-name="{output["tvg-name"]}"'
+            if output["tvg-id"]:
+                m3u_str += f' tvg-id="{output["tvg-id"]}"'
+            if output["tvg-logo"]:
+                m3u_str += f' tvg-logo="{output["tvg-logo"]}"'
+            if output["tvg-group"]:
+                m3u_str += f' tvg-group="{output["tvg-group"]}"'
+            if output["tvg-url"]:
+                m3u_str += f' tvg-url="{output["tvg-url"]}"'
+            if output["catchup"]:
+                m3u_str += f' catchup="{output["catchup"]}"'
+            if output["catchup-source"]:
+                m3u_str += f' catchup-source="{output["catchup-source"]}"'
+            if output["catchup-days"]:
+                m3u_str += f' catchup-days="{output["catchup-days"]}"'
+            m3u_str += f',{output["title"]}\n'
+            if output["useragent"]:
+                m3u_str += f'#EXTVLCOPT:http-user-agent={output["useragent"]}\n'
+            if output["referer"]:
+                m3u_str += f'#EXTVLCOPT:http-referrer={output["referer"]}\n'
+            m3u_str += f'{output["url"]}\n'
         # Writing to file
         save_fname = QtWidgets.QFileDialog.getSaveFileName(
             self,
@@ -183,7 +210,7 @@ class M3UEditor(QtWidgets.QMainWindow):
             item1 = self.table.item(row1, self.data['filter_selector'].currentIndex())
             if item1:
                 if unidecode(self.data['groupfilter_edit'].text()).lower().strip() in \
-                unidecode(item1.text()).lower().strip():
+                   unidecode(item1.text()).lower().strip():
                     self.table.showRow(row1)
                 else:
                     self.table.hideRow(row1)
@@ -205,7 +232,7 @@ class M3UEditor(QtWidgets.QMainWindow):
                 current_column = self.table.currentColumn()
                 # Save current row data
                 current_row_data = []
-                for i_0, x_0 in enumerate(self.labels): # pylint: disable=unused-variable
+                for i_0, x_0 in enumerate(self.labels):
                     item2 = self.table.item(current_row2, i_0)
                     if item2:
                         current_row_data.append(item2.text())
@@ -310,7 +337,7 @@ class M3UEditor(QtWidgets.QMainWindow):
 
         self.addToolBar(toolbar)
 
-    def on_cell_changed(self, row, column): # pylint: disable=unused-argument
+    def on_cell_changed(self, row, column):
         if self.file_opened:
             self.table_changed = True
 
@@ -349,8 +376,7 @@ class M3UEditor(QtWidgets.QMainWindow):
                 "<b>{}</b>".format(
                     _('The document was changed.<br>Do you want to save the changes?')
                 ),
-                _enum(QtWidgets.QMessageBox, 'StandardButton.Yes') | \
-                _enum(QtWidgets.QMessageBox, 'StandardButton.No'),
+                _enum(QtWidgets.QMessageBox, 'StandardButton.Yes') | _enum(QtWidgets.QMessageBox, 'StandardButton.No'),
                 _enum(QtWidgets.QMessageBox, 'StandardButton.Yes')
             )
             if reply == _enum(QtWidgets.QMessageBox, 'StandardButton.Yes'):
@@ -358,7 +384,7 @@ class M3UEditor(QtWidgets.QMainWindow):
                     callback()
                 self.save_file()
 
-    def closeEvent(self, event): # pylint: disable=invalid-name
+    def closeEvent(self, event):
         self.ask_changed(event.accept)
 
     def show(self):

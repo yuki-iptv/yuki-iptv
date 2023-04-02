@@ -1,17 +1,17 @@
-'''Interface widgets'''
-# SPDX-License-Identifier: GPL-3.0-or-later
-# pylint: disable=invalid-name, missing-class-docstring, missing-function-docstring
 from yuki_iptv.qt import get_qt_library
 from yuki_iptv.qt6compat import _enum
 qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
 
-class AstInterfaceData: # pylint: disable=too-few-public-methods
+
+class AstInterfaceData:
     settings = {}
+
 
 def init_interface_widgets(settings1):
     AstInterfaceData.settings = settings1
 
-class cwdg(QtWidgets.QWidget): # pylint: disable=too-many-instance-attributes
+
+class cwdg(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.tooltip = ""
@@ -80,7 +80,8 @@ class cwdg(QtWidgets.QWidget): # pylint: disable=too-many-instance-attributes
         self.op.setOpacity(0)
         self.progressBar.setGraphicsEffect(self.op)
 
-class cwdg_simple(QtWidgets.QWidget): # pylint: disable=too-many-instance-attributes
+
+class cwdg_simple(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.textQHBoxLayout = QtWidgets.QHBoxLayout()
@@ -117,7 +118,8 @@ class cwdg_simple(QtWidgets.QWidget): # pylint: disable=too-many-instance-attrib
     def hideProgress(self):
         pass
 
-class settings_scrollable_window(QtWidgets.QMainWindow): # pylint: disable=too-few-public-methods
+
+class settings_scrollable_window(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.initScroll()
@@ -133,15 +135,17 @@ class settings_scrollable_window(QtWidgets.QMainWindow): # pylint: disable=too-f
         self.scroll.setWidgetResizable(True)
         self.setCentralWidget(self.scroll)
 
-class ClickableLabel(QtWidgets.QLabel): # pylint: disable=too-few-public-methods
-    def __init__(self, whenClicked, win, parent=None): # pylint: disable=unused-argument
+
+class ClickableLabel(QtWidgets.QLabel):
+    def __init__(self, whenClicked, win, parent=None):
         QtWidgets.QLabel.__init__(self, win)
         self._whenClicked = whenClicked
 
     def mouseReleaseEvent(self, event):
         self._whenClicked(event)
 
-class KeySequenceEdit(QtWidgets.QKeySequenceEdit): # pylint: disable=too-few-public-methods
+
+class KeySequenceEdit(QtWidgets.QKeySequenceEdit):
     def keyPressEvent(self, event):
         super().keyPressEvent(event)
         self.setKeySequence(QtGui.QKeySequence(self.keySequence()))

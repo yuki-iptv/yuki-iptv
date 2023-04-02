@@ -1,6 +1,25 @@
-'''Import settings from Astroncia IPTV'''
-# SPDX-License-Identifier: GPL-3.0-or-later
-# pylint: disable=missing-function-docstring, bare-except
+#
+# Copyright (c) 2021-2022 Astroncia <kestraly@gmail.com>
+# Copyright (c) 2023 yuki-chan-nya
+#
+# This file is part of yuki-iptv.
+#
+# yuki-iptv is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# yuki-iptv is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with yuki-iptv  If not, see <http://www.gnu.org/licenses/>.
+#
+# The Font Awesome pictograms are licensed under the CC BY 4.0 License
+# https://creativecommons.org/licenses/by/4.0/
+#
 import os
 import os.path
 import logging
@@ -10,9 +29,10 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
+
 def ast_settings_import():
     if os.path.isfile(Path(os.environ['HOME'], '.config', 'astronciaiptv', 'settings.json')) \
-    and not os.path.isfile(Path(os.environ['HOME'], '.config', 'yuki-iptv', 'settings.json')):
+       and not os.path.isfile(Path(os.environ['HOME'], '.config', 'yuki-iptv', 'settings.json')):
         logger.info("Importing settings from Astroncia IPTV...")
         try:
             for file in Path(os.environ['HOME'], '.config', 'astronciaiptv').glob('*'):
@@ -49,16 +69,17 @@ def ast_settings_import():
             logger.warning("Importing settings from Astroncia IPTV - FAILED!")
             logger.warning("")
 
+
 def convert_old_filenames():
     if os.path.isfile(Path(os.environ['HOME'], '.config', 'yuki-iptv', 'playlist_separate.m3u')) \
-    and not os.path.isfile(Path(os.environ['HOME'], '.config', 'yuki-iptv', 'favplaylist.m3u')):
+       and not os.path.isfile(Path(os.environ['HOME'], '.config', 'yuki-iptv', 'favplaylist.m3u')):
         os.rename(
             Path(os.environ['HOME'], '.config', 'yuki-iptv', 'playlist_separate.m3u'),
             Path(os.environ['HOME'], '.config', 'yuki-iptv', 'favplaylist.m3u')
         )
 
     if os.path.isfile(Path(os.environ['HOME'], '.config', 'yuki-iptv', 'channels.json')) \
-    and not os.path.isfile(
+       and not os.path.isfile(
         Path(os.environ['HOME'], '.config', 'yuki-iptv', 'channelsettings.json')
     ):
         with open(
@@ -89,7 +110,7 @@ def convert_old_filenames():
         os.remove(Path(os.environ['HOME'], '.config', 'yuki-iptv', 'channels.json'))
 
     if os.path.isfile(Path(os.environ['HOME'], '.config', 'yuki-iptv', 'favourites.json')) \
-    and not os.path.isfile(
+       and not os.path.isfile(
         Path(os.environ['HOME'], '.config', 'yuki-iptv', 'favouritechannels.json')
     ):
         with open(
@@ -120,7 +141,7 @@ def convert_old_filenames():
         os.remove(Path(os.environ['HOME'], '.config', 'yuki-iptv', 'favourites.json'))
 
     if os.path.isfile(Path(os.environ['HOME'], '.config', 'yuki-iptv', 'sort.json')) \
-    and not os.path.isfile(
+       and not os.path.isfile(
         Path(os.environ['HOME'], '.config', 'yuki-iptv', 'sortchannels.json')
     ):
         with open(
