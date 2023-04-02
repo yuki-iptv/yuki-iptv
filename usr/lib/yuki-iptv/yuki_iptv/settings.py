@@ -45,7 +45,6 @@ def parse_settings(
         'donotupdateepg': False,
         'channelsonpage': 100,
         'openprevchan': False,
-        'remembervol': True,
         'hidempv': False,
         'hideepgpercentage': False,
         'hidebitrateinfo': False,
