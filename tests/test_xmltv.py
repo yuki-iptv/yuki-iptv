@@ -32,49 +32,27 @@ from yuki_iptv.xmltv import parse_as_xmltv  # noqa: E402
 def test_xmltv():
     with open(Path('tests', 'xmltv.xml'), 'r', encoding='utf8') as xmltv_file_fd:
         xmltv_file = xmltv_file_fd.read()
-    xmltv = parse_as_xmltv(xmltv_file, {"epgoffset": 0}, 1, {}, 0, "")
-    assert xmltv == [
-        {
-            'Test channel 1': [
-                {
-                    'start': 1680390000.0,
-                    'stop': 1680393600.0,
-                    'title': 'Test program 1',
-                    'desc': '',
-                    'catchup-id': ''
-                },
-                {
-                    'start': 1680393600.0,
-                    'stop': 1680397200.0,
-                    'title': 'Test program 2',
-                    'desc': 'Test description',
-                    'catchup-id': ''
-                }
-            ]
-        },
-        {'testchan': ['Test channel 1']},
-        {'Test channel 1': 'http://127.0.0.1/testchannel1.png'}
-    ]
-    xmltv1 = parse_as_xmltv(xmltv_file, {"epgoffset": -124}, 1, {}, 0, "")
-    assert xmltv1 == [
-        {
-            'Test channel 1': [
-                {
-                    'start': 1680390000.0 + (3600 * -124),
-                    'stop': 1680393600.0 + (3600 * -124),
-                    'title': 'Test program 1',
-                    'desc': '',
-                    'catchup-id': ''
-                },
-                {
-                    'start': 1680393600.0 + (3600 * -124),
-                    'stop': 1680397200.0 + (3600 * -124),
-                    'title': 'Test program 2',
-                    'desc': 'Test description',
-                    'catchup-id': ''
-                }
-            ]
-        },
-        {'testchan': ['Test channel 1']},
-        {'Test channel 1': 'http://127.0.0.1/testchannel1.png'}
-    ]
+    for epgoffset in [0, -124, 3490]:
+        xmltv = parse_as_xmltv(xmltv_file, {"epgoffset": epgoffset}, 1, {}, 0, "")
+        assert xmltv == [
+            {
+                'Test channel 1': [
+                    {
+                        'start': 1680390000.0 + (3600 * epgoffset),
+                        'stop': 1680393600.0 + (3600 * epgoffset),
+                        'title': 'Test program 1',
+                        'desc': '',
+                        'catchup-id': ''
+                    },
+                    {
+                        'start': 1680393600.0 + (3600 * epgoffset),
+                        'stop': 1680397200.0 + (3600 * epgoffset),
+                        'title': 'Test program 2',
+                        'desc': 'Test description',
+                        'catchup-id': ''
+                    }
+                ]
+            },
+            {'testchan': ['Test channel 1']},
+            {'Test channel 1': 'http://127.0.0.1/testchannel1.png'}
+        ]
