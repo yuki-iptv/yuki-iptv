@@ -183,7 +183,7 @@ class YukiData:
     fullscreen_locked = False
     selected_shortcut_row = -1
     shortcuts_state = False
-    use_dark_theme = False
+    use_dark_icon_theme = False
     playmodeIndex = 0
     serie_selected = False
     movies = {}
@@ -197,8 +197,6 @@ stream_info.audio_bitrates = []
 
 DOCK_WIDGET2_HEIGHT = max(DOCK_WIDGET2_HEIGHT, 0)
 DOCK_WIDGET_WIDTH = max(DOCK_WIDGET_WIDTH, 0)
-
-iptv_playlists = {}
 
 if args1.version:
     print(f"{MAIN_WINDOW_TITLE} {APP_VERSION} ({VERSION_CODENAME})")
@@ -252,23 +250,8 @@ def async_function(func):
     return wrapper
 
 
-def qt_version_pt1():
-    return QtCore.QT_VERSION_STR
-
-
-def qt_version_pt2():
-    try:
-        qt_version_1 = QtCore.qVersion()
-    except:
-        qt_version_1 = "UNKNOWN"
-    return qt_version_1
-
-
 if __name__ == '__main__':
-    try:
-        os.setpgrp()
-    except:
-        pass
+    os.setpgrp()
     logger.info("Qt init...")
     app = QtWidgets.QApplication(sys.argv)
     logger.info("Qt init successful")
@@ -313,16 +296,15 @@ if __name__ == '__main__':
         # Qt library debugging
         logger.info(f"Qt library: {qt_library}")
         try:
-            qt_version = qt_version_pt1()
+            qt_version = QtCore.QT_VERSION_STR
         except:
-            qt_version = qt_version_pt2()
+            qt_version = QtCore.qVersion()
         logger.info(f"Qt version: {qt_version}")
         logger.info("")
 
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
         m3u = ""
-        clockOn = False
 
         from thirdparty import mpv
 
@@ -388,21 +370,19 @@ if __name__ == '__main__':
         init_interface_widgets(settings)
 
         if settings['hwaccel']:
-            logger.info(_('Hardware acceleration enabled'))
+            logger.info('Hardware acceleration enabled')
         else:
-            logger.info(_('Hardware acceleration disabled'))
+            logger.info('Hardware acceleration disabled')
 
-        logger.info("Checking theme")
         dark_label = QtWidgets.QLabel("Darkness test")
         is_dark_theme = dark_label.palette().color(
             _enum(QtGui.QPalette, 'ColorRole.WindowText')
         ).value() > dark_label.palette().color(_enum(QtGui.QPalette, 'ColorRole.Window')).value()
         if is_dark_theme:
-            logger.info("Detected dark theme, applying icons compat")
-            YukiData.use_dark_theme = True
+            logger.info("Detected dark window theme, applying icons compat")
+            YukiData.use_dark_icon_theme = True
         else:
-            logger.info("Detected light theme")
-            YukiData.use_dark_theme = False
+            YukiData.use_dark_icon_theme = False
 
         if settings["catchupenable"]:
             logger.info("Catchup enabled")
@@ -599,7 +579,7 @@ if __name__ == '__main__':
         # Updating EPG, async
         update_epg_func()
 
-        if YukiData.use_dark_theme:
+        if YukiData.use_dark_icon_theme:
             ICONS_FOLDER = str(Path('..', '..', '..', 'share', 'yuki-iptv', 'icons_dark'))
         else:
             ICONS_FOLDER = str(Path('..', '..', '..', 'share', 'yuki-iptv', 'icons'))
@@ -702,7 +682,7 @@ if __name__ == '__main__':
         if settings['nocache']:
             use_cache = False
         if not use_cache:
-            logger.info(_('Playlist caching off'))
+            logger.info('Playlist caching off')
         if use_cache and os.path.isfile(str(Path(LOCAL_DIR, 'playlistcache.json'))):
             pj = open(str(Path(LOCAL_DIR, 'playlistcache.json')), 'r', encoding="utf8")
             pj1 = json.loads(pj.read())['url']
@@ -725,7 +705,7 @@ if __name__ == '__main__':
             except:
                 pass
         if not os.path.isfile(str(Path(LOCAL_DIR, 'playlistcache.json'))):
-            logger.info(_('Loading playlist...'))
+            logger.info('Loading playlist...')
             if settings['m3u']:
                 # Parsing m3u
                 if settings['m3u'].startswith('XTREAM::::::::::::::'):
@@ -890,26 +870,14 @@ if __name__ == '__main__':
                     groups = []
                     m3uFailed = True
 
-            a = 'hidden_channels'
-            if settings['provider'] in iptv_playlists and a in iptv_playlists[settings['provider']]:
-                h1 = iptv_playlists[settings['provider']][a]
-                h1 = json.loads(base64.b64decode(bytes(h1, 'utf-8')).decode('utf-8'))
-                for ch2 in h1:
-                    ch2['tvg-name'] = ch2['tvg-name'] if 'tvg-name' in ch2 else ''
-                    ch2['tvg-ID'] = ch2['tvg-ID'] if 'tvg-ID' in ch2 else ''
-                    ch2['tvg-logo'] = ch2['tvg-logo'] if 'tvg-logo' in ch2 else ''
-                    ch2['tvg-group'] = ch2['tvg-group'] if 'tvg-group' in \
-                        ch2 else _('All channels')
-                    array[ch2['title']] = ch2
-
             logger.info("{} channels, {} groups, {} movies, {} series".format(
                 len(array), len([group2 for group2 in groups if group2 != _('All channels')]),
                 len(YukiData.movies), len(YukiData.series)
             ))
 
-            logger.info(_('Playling loading done!'))
+            logger.info('Playling loading done!')
             if use_cache:
-                logger.info(_('Caching playlist...'))
+                logger.info('Caching playlist...')
                 cm3u = json.dumps({
                     'url': settings['m3u'],
                     'array': array,
@@ -921,9 +889,9 @@ if __name__ == '__main__':
                 cm3uf = open(str(Path(LOCAL_DIR, 'playlistcache.json')), 'w', encoding="utf8")
                 cm3uf.write(cm3u)
                 cm3uf.close()
-                logger.info(_('Playlist cache saved!'))
+                logger.info('Playlist cache saved!')
         else:
-            logger.info(_('Using cached playlist'))
+            logger.info('Using cached playlist')
             cm3uf = open(str(Path(LOCAL_DIR, 'playlistcache.json')), 'r', encoding="utf8")
             cm3u = json.loads(cm3uf.read())
             cm3uf.close()
@@ -1008,7 +976,7 @@ if __name__ == '__main__':
                 self.setWidgetResizable(True)
                 content = QtWidgets.QWidget(self)
                 bcolor_scrollabel = 'white'
-                if YukiData.use_dark_theme:
+                if YukiData.use_dark_icon_theme:
                     bcolor_scrollabel = 'black'
                 content.setStyleSheet('background-color: ' + bcolor_scrollabel)
                 self.setWidget(content)
@@ -1597,7 +1565,6 @@ if __name__ == '__main__':
 
         def playlists_favourites_do():
             playlists_win.close()
-            reset_prov()
             sm3u.setText(str(Path(LOCAL_DIR, 'favplaylist.m3u')))
             sepg.setText("")
             save_settings()
@@ -2000,7 +1967,6 @@ if __name__ == '__main__':
             pass
 
         def m3u_select():
-            reset_prov()
             fname = QtWidgets.QFileDialog.getOpenFileName(
                 settings_win,
                 _('Select m3u playlist'),
@@ -2010,7 +1976,6 @@ if __name__ == '__main__':
                 sm3u.setText(fname)
 
         def epg_select():
-            reset_prov()
             fname = QtWidgets.QFileDialog.getOpenFileName(
                 settings_win,
                 _('Select EPG file (XMLTV or JTV EPG)'),
@@ -2659,7 +2624,6 @@ if __name__ == '__main__':
                 "deinterlace": sdei.isChecked(),
                 "udp_proxy": udp_proxy_text,
                 "save_folder": sfld_text,
-                "provider": sprov.currentText() if sprov.currentText() != '--{}--'.format(_('Not selected')) else '',
                 "nocache": supdate.isChecked(),
                 "epgoffset": soffset.value(),
                 "hwaccel": shwaccel.isChecked(),
@@ -2768,18 +2732,12 @@ if __name__ == '__main__':
                 os.remove(str(Path(LOCAL_DIR, 'sortchannels.json')))
             save_settings()
 
-        def reset_prov():
-            if sprov.currentText() != '--{}--'.format(_('Not selected')):
-                sprov.setCurrentIndex(0)
-
         sm3u = QtWidgets.QLineEdit()
         sm3u.setPlaceholderText(_('Path to file or URL'))
         sm3u.setText(settings['m3u'])
-        sm3u.textEdited.connect(reset_prov)
         sepg = QtWidgets.QLineEdit()
         sepg.setPlaceholderText(_('Path to file or URL'))
         sepg.setText(settings['epg'] if not settings['epg'].startswith('^^::MULTIPLE::^^') else '')
-        sepg.textEdited.connect(reset_prov)
         sudp = QtWidgets.QLineEdit()
         sudp.setText(settings['udp_proxy'])
         sdei = QtWidgets.QCheckBox()
@@ -2806,7 +2764,6 @@ if __name__ == '__main__':
         sort_widget.addItem(_('reverse alphabetical order'))
         sort_widget.addItem(_('custom'))
         sort_widget.setCurrentIndex(settings['sort'])
-        sprov = QtWidgets.QComboBox()
 
         def close_settings():
             settings_win.hide()
@@ -2815,29 +2772,6 @@ if __name__ == '__main__':
                     os.killpg(0, signal.SIGKILL)
                     sys.exit(0)
 
-        def prov_select(self):
-            prov1 = sprov.currentText()
-            if prov1 != '--{}--'.format(_('Not selected')):
-                sm3u.setText(iptv_playlists[prov1]['m3u'])
-                if 'epg' in iptv_playlists[prov1]:
-                    sepg.setText(
-                        iptv_playlists[prov1]['epg'] if not iptv_playlists[prov1]['epg'].startswith('^^::MULTIPLE::^^') else ''  # noqa: E501
-                    )
-        sprov.currentIndexChanged.connect(prov_select)
-        sprov.addItem('--{}--'.format(_('Not selected')))
-        provs = {}
-        ic3 = 0
-        for prov in iptv_playlists:
-            ic3 += 1
-            provs[prov] = ic3
-            sprov.addItem(prov)
-        if settings['provider'] and settings['provider'] in provs:
-            prov_d = provs[settings['provider']]
-            if prov_d and prov_d != -1:
-                try:
-                    sprov.setCurrentIndex(prov_d)
-                except:
-                    pass
         sclose = QtWidgets.QPushButton(_('Close'))
         sclose.setStyleSheet('color: red;')
         sclose.clicked.connect(close_settings)
@@ -2886,7 +2820,6 @@ if __name__ == '__main__':
                 xtr_username_input.setText(sm3u_text_sp[1])
                 xtr_password_input.setText(sm3u_text_sp[2])
                 xtr_url_input.setText(sm3u_text_sp[3])
-                reset_prov()
             moveWindowToCenter(xtream_win)
             xtream_win.show()
 
@@ -2897,7 +2830,6 @@ if __name__ == '__main__':
                 xtr_username_input_2.setText(m3u_edit_1_text_sp[1])
                 xtr_password_input_2.setText(m3u_edit_1_text_sp[2])
                 xtr_url_input_2.setText(m3u_edit_1_text_sp[3])
-                reset_prov()
             moveWindowToCenter(xtream_win_2)
             xtream_win_2.show()
 
@@ -3260,7 +3192,6 @@ if __name__ == '__main__':
                     [xtr_username_input.text(), xtr_password_input.text(), xtr_url_input.text()]
                 )
                 sm3u.setText(xtream_gen_url)
-                reset_prov()
             xtream_win.hide()
 
         def xtream_save_btn_action_2():
@@ -3273,7 +3204,6 @@ if __name__ == '__main__':
                     ]
                 )
                 m3u_edit_1.setText(xtream_gen_url_2)
-                reset_prov()
             xtream_win_2.hide()
 
         wid3 = QtWidgets.QWidget()
@@ -3511,7 +3441,6 @@ if __name__ == '__main__':
                 sm3u.setText(prov_m3u)
                 sepg.setText(prov_epg if not prov_epg.startswith('^^::MULTIPLE::^^') else '')
                 soffset.setValue(prov_offset)
-                sprov.setCurrentIndex(0)
                 playlists_save_json()
                 playlists_win.hide()
                 playlists_win_edit.hide()
@@ -4376,7 +4305,6 @@ if __name__ == '__main__':
                     fullscreen = True
                     dockWidget.hide()
                     chan.hide()
-                    label11.hide()
                     label12.hide()
                     for lbl3 in hlayout2_btns:
                         if lbl3 not in show_lbls_fullscreen:
@@ -4433,7 +4361,6 @@ if __name__ == '__main__':
                         start_label.show()
                         stop_label.show()
                         dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
-                    label11.show()
                     label12.show()
                     for lbl3 in hlayout2_btns:
                         if lbl3 not in show_lbls_fullscreen:
@@ -4563,7 +4490,7 @@ if __name__ == '__main__':
             QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'close.png'))).pixmap(32, 32)
         )
         tvguide_close_lbl.setStyleSheet(
-            "background-color: {};".format("black" if YukiData.use_dark_theme else "white")
+            "background-color: {};".format("black" if YukiData.use_dark_icon_theme else "white")
         )
         tvguide_close_lbl.resize(32, 32)
         if settings['panelposition'] == 0:
@@ -6002,7 +5929,7 @@ if __name__ == '__main__':
                             attach_1 = f' ({marked_integer})'
                         start_symbl = ''
                         stop_symbl = ''
-                        if YukiData.use_dark_theme:
+                        if YukiData.use_dark_icon_theme:
                             start_symbl = '<span style="color: white;">'
                             stop_symbl = '</span>'
                         txt += '<span style="color: green;">' + start_2 + stop_2 + '</span>' + \
@@ -6883,11 +6810,6 @@ if __name__ == '__main__':
         label9.clicked.connect(show_help)
 
         label12 = QtWidgets.QLabel('')
-        label11 = QtWidgets.QLabel()
-        myFont3 = QtGui.QFont()
-        myFont3.setPointSize(11)
-        myFont3.setBold(True)
-        label11.setFont(myFont3)
         myFont4 = QtGui.QFont()
         myFont4.setPointSize(12)
         label13 = QtWidgets.QLabel('')
@@ -6941,7 +6863,6 @@ if __name__ == '__main__':
         for hlayout2_btn in hlayout2_btns:
             hlayout2.addWidget(hlayout2_btn)
         hlayout2.addStretch(1000000)
-        hlayout2.addWidget(label11)
         hlayout2.addWidget(label12)
         hlayout2.addWidget(hdd_gif_label)
 
@@ -7428,8 +7349,6 @@ if __name__ == '__main__':
 
         def thread_update_time():
             try:
-                if label11 and clockOn:
-                    label11.setText('  ' + time.strftime('%H:%M:%S', time.localtime()))
                 scheduler_clock.setText(get_current_time())
             except:
                 pass
@@ -7825,13 +7744,6 @@ if __name__ == '__main__':
             myExitHandler()
             app.quit()
 
-        def show_clock():
-            global clockOn
-            clockOn = not clockOn
-            thread_update_time()
-            if not clockOn:
-                label11.setText('')
-
         def dockwidget_resize_thread():
             try:
                 if start_label.text() and start_label.isVisible():
@@ -7889,7 +7801,6 @@ if __name__ == '__main__':
             "do_record": do_record,
             "prev_channel": prev_channel,
             "next_channel": next_channel,
-            "show_clock": show_clock,
             "(lambda: my_up_binding())": (lambda: my_up_binding_execute()),
             "(lambda: my_down_binding())": (lambda: my_down_binding_execute()),
             "show_timeshift": show_timeshift,
@@ -7966,7 +7877,6 @@ if __name__ == '__main__':
             "next_channel": _('&Next').replace('&', ''),
             "open_stream_info": _('Stream Information'),
             "prev_channel": _('&Previous').replace('&', ''),
-            "show_clock": _('Show clock'),
             "show_m3u_editor": _('&m3u Editor').replace('&', ''),
             "show_playlists": _('&Playlists').replace('&', ''),
             "reload_playlist": _('&Update current playlist').replace('&', ''),
@@ -7994,6 +7904,9 @@ if __name__ == '__main__':
         else:
             logger.info("No hotkeys.json found, using default hotkeys")
             main_keybinds = main_keybinds_default.copy()
+
+        if 'show_clock' in main_keybinds:
+            main_keybinds.pop('show_clock')
 
         seq = get_seq()
 

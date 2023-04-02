@@ -35,7 +35,6 @@ def parse_settings(
         "deinterlace": False,
         "udp_proxy": "",
         "save_folder": save_folder_default,
-        "provider": "",
         "nocache": True,
         "epgoffset": def_timezone,
         "hwaccel": False,
