@@ -199,7 +199,7 @@ DOCK_WIDGET2_HEIGHT = max(DOCK_WIDGET2_HEIGHT, 0)
 DOCK_WIDGET_WIDTH = max(DOCK_WIDGET_WIDTH, 0)
 
 if args1.version:
-    print(f"{MAIN_WINDOW_TITLE} {APP_VERSION} ({VERSION_CODENAME})")
+    print(f"{MAIN_WINDOW_TITLE} {APP_VERSION} {VERSION_CODENAME}")
     sys.exit(0)
 
 if not os.path.isdir(str(Path(os.environ['HOME'], '.config'))):
@@ -290,16 +290,12 @@ if __name__ == '__main__':
         logger.info("Copyright (c) 2023 yuki-chan-nya")
         logger.info("")
         # Version debugging
-        logger.info(f"Current version: {APP_VERSION} ({VERSION_CODENAME})")
+        logger.info(f"Current version: {APP_VERSION} {VERSION_CODENAME}")
         logger.info("")
         logger.info("Using Python " + sys.version.replace('\n', ''))
         # Qt library debugging
         logger.info(f"Qt library: {qt_library}")
-        try:
-            qt_version = QtCore.QT_VERSION_STR
-        except:
-            qt_version = QtCore.qVersion()
-        logger.info(f"Qt version: {qt_version}")
+        logger.info(f"Qt version: {QtCore.QT_VERSION_STR}")
         logger.info("")
 
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -1409,6 +1405,9 @@ if __name__ == '__main__':
         soffset_1.setSingleStep(1)
         soffset_1.setDecimals(1)
         offset_label_1 = QtWidgets.QLabel('{}:'.format(_('TV guide offset')))
+        offset_label_hours = QtWidgets.QLabel(
+            (gettext.ngettext("%d hour", "%d hours", 0) % 0).replace('0 ', '')
+        )
 
         def lo_xtream_select_1():
             xtream_select_1()
@@ -1432,6 +1431,7 @@ if __name__ == '__main__':
         playlists_win_edit_layout.addWidget(epg_file_1, 3, 2)
         playlists_win_edit_layout.addWidget(offset_label_1, 4, 0)
         playlists_win_edit_layout.addWidget(soffset_1, 4, 1)
+        playlists_win_edit_layout.addWidget(offset_label_hours, 4, 2)
         playlists_win_edit_layout.addWidget(save_btn_1, 5, 1)
         playlists_win_edit_widget.setLayout(playlists_win_edit_layout)
         playlists_win_edit.setCentralWidget(playlists_win_edit_widget)
@@ -2721,7 +2721,6 @@ if __name__ == '__main__':
         cache_label = QtWidgets.QLabel('{}:'.format(_('Cache')))
         udp_label = QtWidgets.QLabel('{}:'.format(_('UDP proxy')))
         fld_label = QtWidgets.QLabel('{}:'.format(_('Folder for recordings\nand screenshots')))
-        offset_label = QtWidgets.QLabel('{}:'.format(_('TV guide offset')))
 
         def reset_channel_settings():
             if os.path.isfile(str(Path(LOCAL_DIR, 'channelsettings.json'))):
