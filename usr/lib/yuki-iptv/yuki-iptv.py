@@ -2758,16 +2758,6 @@ if __name__ == '__main__':
         udp_label = QtWidgets.QLabel('{}:'.format(_('UDP proxy')))
         fld_label = QtWidgets.QLabel('{}:'.format(_('Folder for recordings\nand screenshots')))
         offset_label = QtWidgets.QLabel('{}:'.format(_('TV guide offset')))
-        fastview_label = QtWidgets.QLabel()
-        fastview_label.setTextFormat(_enum(QtCore.Qt, 'TextFormat.RichText'))
-        fastview_label.setSizePolicy(
-            _enum(QtWidgets.QSizePolicy, 'Policy.Preferred'),
-            _enum(QtWidgets.QSizePolicy, 'Policy.Minimum')
-        )
-        fastview_label.setWordWrap(True)
-        fastview_label.setText(
-            '<span style="color:#1D877C;">' + _('For faster channel loading, set the cache\nfor 1 or more seconds in the network settings') + '</span><br>'  # noqa: E501
-        )
 
         def reset_channel_settings():
             if os.path.isfile(str(Path(LOCAL_DIR, 'channelsettings.json'))):
@@ -2911,10 +2901,6 @@ if __name__ == '__main__':
             moveWindowToCenter(xtream_win_2)
             xtream_win_2.show()
 
-        grid = QtWidgets.QGridLayout()
-        grid.setSpacing(10)
-        grid.addWidget(fastview_label, 0, 0)
-
         useragent_lbl_2 = QtWidgets.QLabel("{}:".format(_('User agent')))
         referer_lbl = QtWidgets.QLabel(_("HTTP Referer:"))
         referer_choose = QtWidgets.QLineEdit()
@@ -3053,10 +3039,6 @@ if __name__ == '__main__':
         showcontrolsmouse_flag = QtWidgets.QCheckBox()
         showcontrolsmouse_flag.setChecked(settings['showcontrolsmouse'])
 
-        shortcuts_button = QtWidgets.QPushButton()
-        shortcuts_button.setText(_('Shortcuts'))
-        shortcuts_button.clicked.connect((lambda: show_shortcuts()))
-
         hideplaylistleftclk_label = QtWidgets.QLabel("{}:".format(_('Hide playlist by left click')))
         hideplaylistleftclk_flag = QtWidgets.QCheckBox()
         hideplaylistleftclk_flag.setChecked(settings['hideplaylistleftclk'])
@@ -3182,16 +3164,16 @@ if __name__ == '__main__':
         tab_other.layout = QtWidgets.QGridLayout()
         tab_other.layout.addWidget(mpv_label, 0, 0)
         tab_other.layout.addWidget(mpv_options, 0, 1)
-        tab_other.layout.addWidget(donot_label, 1, 0)
-        tab_other.layout.addWidget(donot_flag, 1, 1)
-        tab_other.layout.addWidget(hidempv_label, 2, 0)
-        tab_other.layout.addWidget(hidempv_flag, 2, 1)
-        tab_other.layout.addWidget(channellogos_label, 3, 0)
-        tab_other.layout.addWidget(channellogos_select, 3, 1)
-        tab_other.layout.addWidget(volumechangestep_label, 4, 0)
-        tab_other.layout.addWidget(volumechangestep_choose, 4, 1)
-        tab_other.layout.addWidget(nocacheepg_label, 6, 0)
-        tab_other.layout.addWidget(nocacheepg_flag, 6, 1)
+        tab_other.layout.addWidget(hidempv_label, 1, 0)
+        tab_other.layout.addWidget(hidempv_flag, 1, 1)
+        tab_other.layout.addWidget(donot_label, 2, 0)
+        tab_other.layout.addWidget(donot_flag, 2, 1)
+        tab_other.layout.addWidget(nocacheepg_label, 3, 0)
+        tab_other.layout.addWidget(nocacheepg_flag, 3, 1)
+        tab_other.layout.addWidget(channellogos_label, 4, 0)
+        tab_other.layout.addWidget(channellogos_select, 4, 1)
+        tab_other.layout.addWidget(volumechangestep_label, 5, 0)
+        tab_other.layout.addWidget(volumechangestep_choose, 5, 1)
         tab_other.setLayout(tab_other.layout)
 
         tab_debug.layout = QtWidgets.QGridLayout()
@@ -3242,7 +3224,6 @@ if __name__ == '__main__':
         tab_actions.layout.addWidget(showcontrolsmouse_label, 4, 0)
         tab_actions.layout.addWidget(showcontrolsmouse_flag, 4, 1)
         tab_actions.layout.addWidget(QtWidgets.QLabel(), 5, 0)
-        tab_actions.layout.addWidget(shortcuts_button, 6, 0)
         tab_actions.setLayout(tab_actions.layout)
 
         tab_catchup.layout = QtWidgets.QGridLayout()
@@ -3251,11 +3232,11 @@ if __name__ == '__main__':
         tab_catchup.layout.addWidget(QtWidgets.QLabel(), 0, 2)
         tab_catchup.setLayout(tab_catchup.layout)
 
-        grid2 = QtWidgets.QVBoxLayout()
-        grid2.addWidget(tabs)
+        grid = QtWidgets.QVBoxLayout()
+        grid.addWidget(tabs)
 
-        grid3 = QtWidgets.QGridLayout()
-        grid3.setSpacing(0)
+        grid2 = QtWidgets.QGridLayout()
+        grid2.setSpacing(0)
 
         ssaveclose = QtWidgets.QWidget()
         ssaveclose_layout = QtWidgets.QHBoxLayout()
@@ -3263,13 +3244,12 @@ if __name__ == '__main__':
         ssaveclose_layout.addWidget(sclose)
         ssaveclose.setLayout(ssaveclose_layout)
 
-        grid3.addWidget(ssaveclose, 2, 1)
-        grid3.addWidget(sreset, 3, 1)
+        grid2.addWidget(ssaveclose, 2, 1)
+        grid2.addWidget(sreset, 3, 1)
 
         layout2 = QtWidgets.QVBoxLayout()
         layout2.addLayout(grid)
         layout2.addLayout(grid2)
-        layout2.addLayout(grid3)
 
         wid2.setLayout(layout2)
         settings_win.scroll.setWidget(wid2)
@@ -8200,7 +8180,6 @@ if __name__ == '__main__':
                 timers_array[timer].timeout.connect(timer)
                 timers_array[timer].start(timers[timer])
         else:
-            shortcuts_button.hide()
             show_playlists()
             playlists_win.show()
             playlists_win.raise_()
