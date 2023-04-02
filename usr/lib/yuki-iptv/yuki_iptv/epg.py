@@ -1,6 +1,25 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
-# pylint: disable=broad-except, too-many-locals, import-error, missing-module-docstring
-# pylint: disable=logging-format-interpolation, logging-fstring-interpolation
+#
+# Copyright (c) 2021-2022 Astroncia <kestraly@gmail.com>
+# Copyright (c) 2023 yuki-chan-nya
+#
+# This file is part of yuki-iptv.
+#
+# yuki-iptv is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# yuki-iptv is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with yuki-iptv  If not, see <http://www.gnu.org/licenses/>.
+#
+# The Font Awesome pictograms are licensed under the CC BY 4.0 License
+# https://creativecommons.org/licenses/by/4.0/
+#
 import os
 import gettext
 import logging
@@ -10,6 +29,7 @@ from yuki_iptv.xmltv import parse_as_xmltv
 
 _ = gettext.gettext
 logger = logging.getLogger(__name__)
+
 
 def load_epg(epg_url, user_agent):
     '''Load EPG file'''
@@ -31,11 +51,13 @@ def load_epg(epg_url, user_agent):
     logger.info("EPG loaded")
     return epg
 
+
 def merge_two_dicts(dict1, dict2):
     ''' Merge two dictionaries'''
     dict_new = dict1.copy()
     dict_new.update(dict2)
     return dict_new
+
 
 def fetch_epg(settings, catchup_days1, progress_dict):
     '''Parsing EPG'''
@@ -74,11 +96,11 @@ def fetch_epg(settings, catchup_days1, progress_dict):
                 )
                 programmes_epg = merge_two_dicts(programmes_epg, pr_xmltv[0])
                 prog_ids = merge_two_dicts(prog_ids, pr_xmltv[1])
-            except: # pylint: disable=bare-except
+            except:
                 programmes_epg = merge_two_dicts(programmes_epg, parse_jtv(epg, settings))
             try:
                 epg_icons = merge_two_dicts(epg_icons, pr_xmltv[2])
-            except: # pylint: disable=bare-except
+            except:
                 pass
             epg_failures.append(False)
             logger.info("Parsing done!")
@@ -94,7 +116,8 @@ def fetch_epg(settings, catchup_days1, progress_dict):
     logger.info("Parsing EPG done!")
     return [{}, programmes_epg, epg_ok, exc, prog_ids, epg_icons]
 
-def worker(procnum, sys_settings, catchup_days1, return_dict1, progress_dict): # pylint: disable=unused-argument
+
+def worker(procnum, sys_settings, catchup_days1, return_dict1, progress_dict):
     '''Worker running from multiprocess'''
     epg = fetch_epg(sys_settings, catchup_days1, progress_dict)
     return_dict1[0] = epg[0]

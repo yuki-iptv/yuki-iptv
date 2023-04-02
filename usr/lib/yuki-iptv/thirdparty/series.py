@@ -1,4 +1,3 @@
-# pylint: disable=missing-class-docstring, missing-function-docstring, missing-module-docstring
 import re
 import logging
 
@@ -9,7 +8,8 @@ SERIES = re.compile(
     re.IGNORECASE
 )
 
-class SerieM3U(): # pylint: disable=too-few-public-methods
+
+class SerieM3U():
     def __init__(self, name):
         self.name = name
         self.logo = None
@@ -17,15 +17,17 @@ class SerieM3U(): # pylint: disable=too-few-public-methods
         self.seasons = {}
         self.episodes = []
 
-class SeasonM3U(): # pylint: disable=too-few-public-methods
+
+class SeasonM3U():
     def __init__(self, name):
         self.name = name
         self.episodes = {}
 
-class ChannelM3U(): # pylint: disable=too-few-public-methods, too-many-instance-attributes
+
+class ChannelM3U():
     def __init__(self):
         self.info = None
-        self.id = None # pylint: disable=invalid-name
+        self.id = None
         self.name = None
         self.logo = None
         self.logo_path = None
@@ -33,11 +35,13 @@ class ChannelM3U(): # pylint: disable=too-few-public-methods, too-many-instance-
         self.title = None
         self.url = None
 
+
 def get_series_name(obj):
     chan_name_1 = obj['tvg-name']
     if not chan_name_1:
         chan_name_1 = obj['title']
     return chan_name_1
+
 
 def parse_series(obj1, series):
     is_matched = False
@@ -69,6 +73,6 @@ def parse_series(obj1, series):
             season1.episodes[episode_name1] = ep_channel
             serie1.episodes.append(ep_channel)
             is_matched = True
-        except: # pylint: disable=bare-except
+        except:
             logger.warning("M3U Series parse FAILED")
     return series, is_matched

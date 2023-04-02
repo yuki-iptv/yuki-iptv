@@ -12,11 +12,7 @@ clean:
 	rm -rf usr/share/locale
 
 lint:
-	pylint usr/lib/yuki-iptv/thirdparty/conversion.py
-	pylint usr/lib/yuki-iptv/thirdparty/series.py
-	pylint usr/lib/yuki-iptv/yuki_iptv/
-	pylint usr/lib/yuki-iptv/yuki-iptv.py
-	pylint tests/
+	flake8 .
 
 test:
 	python3 -m pytest tests

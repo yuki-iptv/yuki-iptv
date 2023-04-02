@@ -1,7 +1,25 @@
-# pylint: disable=no-member, unnecessary-lambda, unused-argument, import-error
-# pylint: disable=missing-module-docstring, missing-class-docstring, missing-function-docstring
-# pylint: disable=logging-format-interpolation, logging-fstring-interpolation
-# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Copyright (c) 2021-2022 Astroncia <kestraly@gmail.com>
+# Copyright (c) 2023 yuki-chan-nya
+#
+# This file is part of yuki-iptv.
+#
+# yuki-iptv is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# yuki-iptv is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with yuki-iptv  If not, see <http://www.gnu.org/licenses/>.
+#
+# The Font Awesome pictograms are licensed under the CC BY 4.0 License
+# https://creativecommons.org/licenses/by/4.0/
+#
 import os
 import logging
 import gettext
@@ -15,7 +33,8 @@ qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
 logger = logging.getLogger(__name__)
 _ = gettext.gettext
 
-class YukiData: # pylint: disable=too-few-public-methods
+
+class YukiData:
     menubar_ready = False
     first_run = False
     first_run1 = False
@@ -28,13 +47,16 @@ class YukiData: # pylint: disable=too-few-public-methods
     else:
         str_offset = ''
 
+
 def ast_mpv_seek(secs):
     logger.info(f"Seeking to {secs} seconds")
     YukiData.player.command('seek', secs)
 
+
 def ast_mpv_speed(spd):
     logger.info(f"Set speed to {spd}")
     YukiData.player.speed = spd
+
 
 def ast_trackset(track, type1):
     logger.info(f"Set {type1} track to {track}")
@@ -43,6 +65,7 @@ def ast_trackset(track, type1):
     else:
         YukiData.player.aid = track
     YukiData.redraw_menubar()
+
 
 def send_mpv_command(name, act, cmd):
     if cmd == '__AST_VFBLACK__':
@@ -54,8 +77,10 @@ def send_mpv_command(name, act, cmd):
     logger.info(f"Sending mpv command: \"{name} {act} \\\"{cmd}\\\"\"")
     YukiData.player.command(name, act, cmd)
 
+
 def get_active_vf_filters():
     return YukiData.cur_vf_filters
+
 
 def apply_vf_filter(vf_filter, e_l):
     try:
@@ -67,23 +92,27 @@ def apply_vf_filter(vf_filter, e_l):
                 vf_filter.split('::::::::')[0], 'remove', vf_filter.split('::::::::')[1]
             )
             YukiData.cur_vf_filters.remove(vf_filter)
-    except Exception as e_4: # pylint: disable=broad-except
+    except Exception as e_4:
         logger.error("ERROR in vf-filter apply")
         logger.error("")
         e4_traceback = traceback.format_exc()
         logger.error(e4_traceback)
         YukiData.show_exception(e_4, e4_traceback, '\n\n' + _('Error applying filters'))
 
+
 def get_seq():
     return YukiData.keyboard_sequences
+
 
 def qkeysequence(seq):
     s_e = QtGui.QKeySequence(seq)
     YukiData.keyboard_sequences.append(s_e)
     return s_e
 
+
 def kbd(k_1):
     return qkeysequence(YukiData.get_keybind(k_1))
+
 
 def alwaysontop_action():
     try:
@@ -92,7 +121,7 @@ def alwaysontop_action():
             "alwaysontop": YukiData.alwaysontopAction.isChecked()
         }))
         aot_f.close()
-    except: # pylint: disable=bare-except
+    except:
         pass
     if YukiData.alwaysontopAction.isChecked():
         logger.info("Always on top enabled now")
@@ -100,6 +129,7 @@ def alwaysontop_action():
     else:
         logger.info("Always on top disabled now")
         YukiData.disable_always_on_top()
+
 
 def reload_menubar_shortcuts():
     YukiData.playlists.setShortcut(kbd("show_playlists"))
@@ -139,7 +169,8 @@ def reload_menubar_shortcuts():
         sec_i_1 += 1
         i_1.setShortcut(qkeysequence(sec_keys_1[sec_i_1]))
 
-def init_menubar(data): # pylint: disable=too-many-statements
+
+def init_menubar(data):
     # File
 
     YukiData.playlists = qaction(_('&Playlists'), data)
@@ -372,11 +403,12 @@ def init_menubar(data): # pylint: disable=too-many-statements
         )
     return YukiData.alwaysontopAction
 
+
 def populate_menubar(
     i, menubar, data, track_list=None, playing_chan=None,
     get_keybind=None
-): # pylint: disable=too-many-statements, too-many-arguments, too-many-locals
-    #logger.info("populate_menubar called")
+):
+    # logger.info("populate_menubar called")
     # File
 
     if get_keybind:
@@ -477,34 +509,38 @@ def populate_menubar(
 
     return aot_action
 
+
 # Preventing memory leak
 def clear_menu(menu):
     for mb_action in menu.actions():
         if mb_action.isSeparator():
             mb_action.deleteLater()
-        #elif mb_action.menu():
+        # elif mb_action.menu():
         #    clear_menu(mb_action.menu())
         #    mb_action.menu().deleteLater()
         else:
             if mb_action.text() != '<{}>'.format(_('empty')):
                 mb_action.deleteLater()
 
+
 def recursive_filter_setstate(state):
     for act in YukiData.video_menu_filters.actions():
-        if not act.isSeparator(): #or act.menu():
+        if not act.isSeparator():  # or act.menu():
             act.setEnabled(state)
     for act1 in YukiData.audio_menu_filters.actions():
-        if not act1.isSeparator(): #or act1.menu():
+        if not act1.isSeparator():  # or act1.menu():
             act1.setEnabled(state)
+
 
 def get_first_run():
     return YukiData.first_run
 
-def update_menubar(track_list, playing_chan, m3u, file, aot_file): # pylint: disable=too-many-branches, too-many-statements
+
+def update_menubar(track_list, playing_chan, m3u, file, aot_file):
     # Filters enable / disable
     if playing_chan:
         recursive_filter_setstate(True)
-        #print(playing_chan + '::::::::::::::' + m3u)
+        # print(playing_chan + '::::::::::::::' + m3u)
         if not YukiData.first_run:
             YukiData.first_run = True
             logger.info("YukiData.first_run")
@@ -516,7 +552,7 @@ def update_menubar(track_list, playing_chan, m3u, file, aot_file): # pylint: dis
                     if dat in YukiData.filter_mapping:
                         YukiData.filter_mapping[dat].setChecked(True)
                         apply_vf_filter(dat, YukiData.filter_mapping[dat])
-            except: # pylint: disable=bare-except
+            except:
                 pass
     else:
         recursive_filter_setstate(False)
@@ -533,7 +569,7 @@ def update_menubar(track_list, playing_chan, m3u, file, aot_file): # pylint: dis
                     YukiData.alwaysontopAction.setChecked(True)
                 else:
                     YukiData.alwaysontopAction.setChecked(False)
-        except: # pylint: disable=bare-except
+        except:
             pass
     # Track list
     for i in YukiData.menubars:
@@ -563,10 +599,12 @@ def update_menubar(track_list, playing_chan, m3u, file, aot_file): # pylint: dis
             YukiData.menubars[i][0].addAction(YukiData.empty_action)
             YukiData.menubars[i][1].addAction(YukiData.empty_action1)
 
+
 def init_yuki_iptv_menubar(data, app, menubar):
     YukiData.data = data
 
-def init_menubar_player( # pylint: disable=too-many-arguments, too-many-locals
+
+def init_menubar_player(
     player,
     mpv_play,
     mpv_stop,

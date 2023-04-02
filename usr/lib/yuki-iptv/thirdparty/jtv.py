@@ -1,4 +1,3 @@
-'''JTV parser'''
 import logging
 import zipfile
 import io
@@ -6,6 +5,7 @@ import datetime
 import struct
 
 logger = logging.getLogger(__name__)
+
 
 def ft_to_dt(time, settings):
     '''Convert filetime to datetime'''
@@ -22,9 +22,11 @@ def ft_to_dt(time, settings):
         datetime_ret = 0
     return datetime_ret
 
+
 def unpack_struct(inf1):
     '''Unpack data struct'''
     return struct.unpack('<H', inf1[0:2])[0]
+
 
 def parse_titles(inf1, encoding="cp1251"):
     '''Parse titles'''
@@ -44,6 +46,7 @@ def parse_titles(inf1, encoding="cp1251"):
         titles.append(title)
     return titles
 
+
 def parse_schedule(inf1, settings):
     '''Parse schedule'''
     schedules = []
@@ -57,6 +60,7 @@ def parse_schedule(inf1, settings):
         schedules.append(ft_to_dt(record[2:-2], settings))
     return schedules
 
+
 def fix_zip_filename(filename):
     '''Fix zip filename (encoding)'''
     try:
@@ -68,6 +72,7 @@ def fix_zip_filename(filename):
         name_unicode = filename
     return name_unicode
 
+
 def parse_jtv(jtv_inf1, settings):
     '''Main parse function'''
     logger.info("Trying parsing as JTV...")
@@ -77,16 +82,16 @@ def parse_jtv(jtv_inf1, settings):
         file_name = fix_zip_filename(fileinfo.filename)
         if file_name.endswith('.pdt'):
             file_name1 = file_name[0:-4].replace('_', ' ')
-            if not file_name1 in array:
+            if file_name1 not in array:
                 array[file_name1] = {}
             try:
                 array[file_name1]['titles'] = parse_titles(zip_file.read(fileinfo))
-            except: # pylint: disable=bare-except
+            except:
                 # Support UTF-8 encoding
                 array[file_name1]['titles'] = parse_titles(zip_file.read(fileinfo), 'utf-8')
         if file_name.endswith('.ndx'):
             file_name1 = file_name[0:-4].replace('_', ' ')
-            if not file_name1 in array:
+            if file_name1 not in array:
                 array[file_name1] = {}
             array[file_name1]['schedules'] = parse_schedule(zip_file.read(fileinfo), settings)
     array_out = {}
@@ -97,10 +102,10 @@ def parse_jtv(jtv_inf1, settings):
             count1 += 1
             start_dt = array[chan]['schedules'][count1]
             try:
-                stop_dt = array[chan]['schedules'][count1+1]
+                stop_dt = array[chan]['schedules'][count1 + 1]
                 try:
                     title = bytes(title, 'cp1251').decode('utf-8')
-                except: # pylint: disable=bare-except
+                except:
                     pass
                 array_out[chan].append({
                     'start': start_dt,
@@ -108,6 +113,6 @@ def parse_jtv(jtv_inf1, settings):
                     'title': title,
                     'desc': ' '
                 })
-            except: # pylint: disable=bare-except
+            except:
                 pass
     return array_out
