@@ -3,7 +3,6 @@ Type=Application
 Name=yuki-iptv
 Comment=IPTV player
 Comment[es]=Reproductor de IPTV
-Comment[uk]=IPTV player
 Comment[hr]=IPTV reproduktor
 Comment[ru]=IPTV плеер
 Exec=yuki-iptv
