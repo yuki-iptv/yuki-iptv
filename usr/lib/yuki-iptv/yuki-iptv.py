@@ -289,11 +289,9 @@ if __name__ == '__main__':
         logger.info("Copyright (c) 2021-2022 Astroncia")
         logger.info("Copyright (c) 2023 yuki-chan-nya")
         logger.info("")
-        # Version debugging
-        logger.info(f"Current version: {APP_VERSION} {VERSION_CODENAME}")
+        logger.info(f"Version: {APP_VERSION} {VERSION_CODENAME}")
         logger.info("")
         logger.info("Using Python " + sys.version.replace('\n', ''))
-        # Qt library debugging
         logger.info(f"Qt library: {qt_library}")
         logger.info(f"Qt version: {QtCore.QT_VERSION_STR}")
         logger.info("")
@@ -4571,12 +4569,16 @@ if __name__ == '__main__':
                 req_data = cache_file_2_read
             else:
                 try:
-                    req_data = requests.get(
-                        logo_url,
-                        headers={'User-Agent': settings['ua']},
-                        timeout=(3, 3),
-                        stream=True
-                    ).content
+                    if os.path.isfile(logo_url):
+                        with open(logo_url, 'rb') as logo_url_fd:
+                            req_data = logo_url_fd.read()
+                    else:
+                        req_data = requests.get(
+                            logo_url,
+                            headers={'User-Agent': settings['ua']},
+                            timeout=(3, 3),
+                            stream=True
+                        ).content
                     cache_file_2 = open(cache_file, 'wb')
                     cache_file_2.write(req_data)
                     cache_file_2.close()

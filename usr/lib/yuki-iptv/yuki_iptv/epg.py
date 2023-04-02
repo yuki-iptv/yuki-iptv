@@ -35,8 +35,8 @@ def load_epg(epg_url, user_agent):
     '''Load EPG file'''
     logger.info("Loading EPG...")
     logger.info(f"Address: '{epg_url}'")
-    if os.path.isfile(epg_url):
-        epg_file = open(epg_url, 'rb')
+    if os.path.isfile(epg_url.strip()):
+        epg_file = open(epg_url.strip(), 'rb')
         epg = epg_file.read()
         epg_file.close()
     else:
