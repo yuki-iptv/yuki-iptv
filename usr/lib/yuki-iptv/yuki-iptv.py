@@ -4656,9 +4656,12 @@ if __name__ == '__main__':
             try:
                 qp_1 = QtGui.QPixmap()
                 qp_1.loadFromData(req_data)
-                qp_1 = qp_1.scaled(64, 64, _enum(QtCore.Qt, 'AspectRatioMode.KeepAspectRatio'))
-                fetched_icon = Pickable_QIcon(qp_1)
-                return_dict_2[chan_name] = [fetched_icon]
+                if not qp_1.isNull():
+                    qp_1 = qp_1.scaled(64, 64, _enum(QtCore.Qt, 'AspectRatioMode.KeepAspectRatio'))
+                    fetched_icon = Pickable_QIcon(qp_1)
+                    return_dict_2[chan_name] = [fetched_icon]
+                else:
+                    return_dict_2[chan_name] = None
             except:
                 return_dict_2[chan_name] = None
 
