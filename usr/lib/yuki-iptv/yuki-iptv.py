@@ -1253,6 +1253,31 @@ if __name__ == '__main__':
         def showonlychplaylist_chk_clk():
             update_tvguide_2()
 
+        def tvguide_channelfilter_do():
+            try:
+                filter_txt3 = tvguidechannelfilter.text()
+            except:
+                filter_txt3 = ""
+            for item6 in range(epg_win_2_checkbox.count()):
+                if unidecode(
+                    filter_txt3
+                ).lower().strip() in unidecode(epg_win_2_checkbox.itemText(item6)).lower().strip():
+                    epg_win_2_checkbox.view().setRowHidden(item6, False)
+                else:
+                    epg_win_2_checkbox.view().setRowHidden(item6, True)
+
+        tvguidechannelfilter = QtWidgets.QLineEdit()
+        tvguidechannelfilter.setPlaceholderText(_('Search channel'))
+        tvguidechannelfiltersearch = QtWidgets.QPushButton()
+        tvguidechannelfiltersearch.setText(_('Search'))
+        tvguidechannelfiltersearch.clicked.connect(tvguide_channelfilter_do)
+
+        tvguidechannelwidget = QtWidgets.QWidget()
+        tvguidechannellayout = QtWidgets.QHBoxLayout()
+        tvguidechannellayout.addWidget(tvguidechannelfilter)
+        tvguidechannellayout.addWidget(tvguidechannelfiltersearch)
+        tvguidechannelwidget.setLayout(tvguidechannellayout)
+
         showonlychplaylist_lbl = QtWidgets.QLabel()
         showonlychplaylist_lbl.setText('{}:'.format(_('Show only channels in playlist')))
         showonlychplaylist_chk = QtWidgets.QCheckBox()
@@ -1275,6 +1300,7 @@ if __name__ == '__main__':
         epg_win_2_widget = QtWidgets.QWidget()
         epg_win_2_layout = QtWidgets.QVBoxLayout()
         epg_win_2_layout.addWidget(epg_win_2_1_widget)
+        epg_win_2_layout.addWidget(tvguidechannelwidget)
         epg_win_2_layout.addWidget(epg_win_2_checkbox)
         epg_win_2_layout.addWidget(epg_win_2_count)
         epg_win_2_layout.addWidget(tvguide_lbl_3)
