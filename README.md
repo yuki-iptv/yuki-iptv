@@ -24,6 +24,8 @@ sudo apt update
 sudo apt install yuki-iptv
 ```
 
+[Arch Linux AUR (develop)](https://aur.archlinux.org/packages/yuki-iptv-git)  
+
 ## License
 
 Code: [GPL-3.0-or-later](https://github.com/yuki-chan-nya/yuki-iptv/blob/stable/COPYING)  
