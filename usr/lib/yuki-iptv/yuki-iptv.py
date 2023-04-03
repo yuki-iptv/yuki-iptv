@@ -5953,70 +5953,71 @@ if __name__ == '__main__':
             mark_integers=False
         ):
             global item_selected
-            if not chan_1:
-                if item_selected:
-                    chan_2 = item_selected
-                else:
-                    chan_2 = sorted(array.items())[0][0]
-            else:
-                chan_2 = chan_1
-            txt = _('No TV guide for channel')
-            chan_2 = chan_2.lower()
-            newline_symbol = '\n'
-            if do_return:
-                newline_symbol = '!@#$%^^&*('
-            try:
-                chan_3 = prog_match_arr[chan_2]
-            except:
-                chan_3 = chan_2
-            if chan_3 in programmes:
-                txt = newline_symbol
-                prog = programmes[chan_3]
-                for pr in prog:
-                    override_this = False
-                    if show_all_guides:
-                        override_this = pr['start'] < time.time() + 1
+            if array:
+                if not chan_1:
+                    if item_selected:
+                        chan_2 = item_selected
                     else:
-                        override_this = pr['stop'] > time.time() - 1
-                    if override_this:
-                        def_placeholder = '%d.%m.%y %H:%M'
-                        if mark_integers:
-                            def_placeholder = '%d.%m.%Y %H:%M:%S'
-                        start_2 = datetime.datetime.fromtimestamp(
-                            pr['start']
-                        ).strftime(def_placeholder) + ' - '
-                        stop_2 = datetime.datetime.fromtimestamp(
-                            pr['stop']
-                        ).strftime(def_placeholder) + '\n'
-                        try:
-                            title_2 = pr['title'] if 'title' in pr else ''
-                        except:
-                            title_2 = ''
-                        try:
-                            desc_2 = ('\n' + pr['desc'] + '\n') if 'desc' in pr else ''
-                        except:
-                            desc_2 = ''
-                        attach_1 = ''
-                        if mark_integers:
+                        chan_2 = sorted(array.items())[0][0]
+                else:
+                    chan_2 = chan_1
+                txt = _('No TV guide for channel')
+                chan_2 = chan_2.lower()
+                newline_symbol = '\n'
+                if do_return:
+                    newline_symbol = '!@#$%^^&*('
+                try:
+                    chan_3 = prog_match_arr[chan_2]
+                except:
+                    chan_3 = chan_2
+                if chan_3 in programmes:
+                    txt = newline_symbol
+                    prog = programmes[chan_3]
+                    for pr in prog:
+                        override_this = False
+                        if show_all_guides:
+                            override_this = pr['start'] < time.time() + 1
+                        else:
+                            override_this = pr['stop'] > time.time() - 1
+                        if override_this:
+                            def_placeholder = '%d.%m.%y %H:%M'
+                            if mark_integers:
+                                def_placeholder = '%d.%m.%Y %H:%M:%S'
+                            start_2 = datetime.datetime.fromtimestamp(
+                                pr['start']
+                            ).strftime(def_placeholder) + ' - '
+                            stop_2 = datetime.datetime.fromtimestamp(
+                                pr['stop']
+                            ).strftime(def_placeholder) + '\n'
                             try:
-                                marked_integer = prog.index(pr)
+                                title_2 = pr['title'] if 'title' in pr else ''
                             except:
-                                marked_integer = -1
-                            attach_1 = f' ({marked_integer})'
-                        start_symbl = ''
-                        stop_symbl = ''
-                        if YukiData.use_dark_icon_theme:
-                            start_symbl = '<span style="color: white;">'
-                            stop_symbl = '</span>'
-                        txt += '<span style="color: green;">' + start_2 + stop_2 + '</span>' + \
-                            start_symbl + '<b>' + title_2 + '</b>' + \
-                            desc_2 + attach_1 + stop_symbl + newline_symbol
-            if do_return:
-                return txt
-            txt = txt.replace('\n', '<br>').replace('<br>', '', 1)
-            txt = txt.replace('<span style="color: green;">', '<span style="color: red;">', 1)
-            tvguide_lbl.setText(txt)
-            tvguide_lbl_2.setText(txt)
+                                title_2 = ''
+                            try:
+                                desc_2 = ('\n' + pr['desc'] + '\n') if 'desc' in pr else ''
+                            except:
+                                desc_2 = ''
+                            attach_1 = ''
+                            if mark_integers:
+                                try:
+                                    marked_integer = prog.index(pr)
+                                except:
+                                    marked_integer = -1
+                                attach_1 = f' ({marked_integer})'
+                            start_symbl = ''
+                            stop_symbl = ''
+                            if YukiData.use_dark_icon_theme:
+                                start_symbl = '<span style="color: white;">'
+                                stop_symbl = '</span>'
+                            txt += '<span style="color: green;">' + start_2 + stop_2 + '</span>' + \
+                                start_symbl + '<b>' + title_2 + '</b>' + \
+                                desc_2 + attach_1 + stop_symbl + newline_symbol
+                if do_return:
+                    return txt
+                txt = txt.replace('\n', '<br>').replace('<br>', '', 1)
+                txt = txt.replace('<span style="color: green;">', '<span style="color: red;">', 1)
+                tvguide_lbl.setText(txt)
+                tvguide_lbl_2.setText(txt)
             return ''
 
         def show_tvguide():
