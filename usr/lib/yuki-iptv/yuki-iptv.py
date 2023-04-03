@@ -1292,7 +1292,7 @@ if __name__ == '__main__':
         xtream_win_2.setWindowIcon(main_icon)
 
         scheduler_win = QtWidgets.QMainWindow()
-        scheduler_win.resize(1200, 600)
+        scheduler_win.resize(1200, 650)
         scheduler_win.setWindowTitle(_('Recording scheduler'))
         scheduler_win.setWindowIcon(main_icon)
 
@@ -1807,10 +1807,37 @@ if __name__ == '__main__':
         addrecord_btn.clicked.connect(addrecord_clicked)
         delrecord_btn = QtWidgets.QPushButton(_('Remove'))
         delrecord_btn.clicked.connect(delrecord_clicked)
+
+        def scheduler_channelfilter_do():
+            try:
+                filter_txt2 = schedulerchannelfilter.text()
+            except:
+                filter_txt2 = ""
+            for item5 in range(choosechannel_ch.count()):
+                if unidecode(
+                    filter_txt2
+                ).lower().strip() in unidecode(choosechannel_ch.itemText(item5)).lower().strip():
+                    choosechannel_ch.view().setRowHidden(item5, False)
+                else:
+                    choosechannel_ch.view().setRowHidden(item5, True)
+
+        schedulerchannelfilter = QtWidgets.QLineEdit()
+        schedulerchannelfilter.setPlaceholderText(_('Search channel'))
+        schedulerchannelfiltersearch = QtWidgets.QPushButton()
+        schedulerchannelfiltersearch.setText(_('Search'))
+        schedulerchannelfiltersearch.clicked.connect(scheduler_channelfilter_do)
+
+        schedulerchannelwidget = QtWidgets.QWidget()
+        schedulerchannellayout = QtWidgets.QHBoxLayout()
+        schedulerchannellayout.addWidget(schedulerchannelfilter)
+        schedulerchannellayout.addWidget(schedulerchannelfiltersearch)
+        schedulerchannelwidget.setLayout(schedulerchannellayout)
+
         scheduler_layout.addWidget(scheduler_clock, 0, 0)
         scheduler_layout.addWidget(choosechannel_lbl, 1, 0)
-        scheduler_layout.addWidget(choosechannel_ch, 2, 0)
-        scheduler_layout.addWidget(tvguide_sch, 3, 0)
+        scheduler_layout.addWidget(schedulerchannelwidget, 2, 0)
+        scheduler_layout.addWidget(choosechannel_ch, 3, 0)
+        scheduler_layout.addWidget(tvguide_sch, 4, 0)
 
         starttime_lbl = QtWidgets.QLabel('{}:'.format(_('Start record time')))
         endtime_lbl = QtWidgets.QLabel('{}:'.format(_('End record time')))
@@ -4666,6 +4693,9 @@ if __name__ == '__main__':
                 if not epg_icons_aldisabled:
                     epg_icons_aldisabled = True
                     logger.info("EPG icons disabled")
+
+        if settings['channellogos'] == 3:
+            channel_icons_data.load_completed = True
 
         @async_function
         def update_channel_icons():
