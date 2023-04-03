@@ -31,7 +31,7 @@ _ = gettext.gettext
 logger = logging.getLogger(__name__)
 
 
-def parse_as_xmltv(epg, settings, catchup_days1, progress_dict, epg_i, epg_settings_url):
+def parse_as_xmltv(epg, settings, catchup_days1, progress_dict, epg_i, epg_settings_url, force=False):
     '''Load EPG file'''
     logger.info("Trying parsing as XMLTV...")
     logger.info(f"catchup-days = {catchup_days1}")
@@ -108,7 +108,7 @@ def parse_as_xmltv(epg, settings, catchup_days1, progress_dict, epg_i, epg_setti
                 ).timestamp() + (3600 * settings["epgoffset"])
                 if channel_epg_1 not in programmes_epg:
                     programmes_epg[channel_epg_1] = []
-                if start > day_start and stop < day_end:
+                if (start > day_start and stop < day_end) or force:
                     try:
                         prog_title = programme.find('./title').text
                     except:
