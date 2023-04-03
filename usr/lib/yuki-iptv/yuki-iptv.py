@@ -2781,6 +2781,15 @@ if __name__ == '__main__':
                 os.remove(str(Path(LOCAL_DIR, 'sortchannels.json')))
             save_settings()
 
+        def do_clear_logo_cache():
+            logger.info("Clearing channel logos cache...")
+            if os.path.isdir(Path(LOCAL_DIR, 'channel_icons_cache')):
+                channel_logos = os.listdir(Path(LOCAL_DIR, 'channel_icons_cache'))
+                for channel_logo in channel_logos:
+                    if os.path.isfile(Path(LOCAL_DIR, 'channel_icons_cache', channel_logo)):
+                        os.remove(Path(LOCAL_DIR, 'channel_icons_cache', channel_logo))
+            logger.info("Channel logos cache cleared!")
+
         sm3u = QtWidgets.QLineEdit()
         sm3u.setPlaceholderText(_('Path to file or URL'))
         sm3u.setText(settings['m3u'])
@@ -2807,6 +2816,8 @@ if __name__ == '__main__':
         ssave.clicked.connect(save_settings)
         sreset = QtWidgets.QPushButton(_('Reset channel settings and sorting'))
         sreset.clicked.connect(reset_channel_settings)
+        clear_logo_cache = QtWidgets.QPushButton(_('Clear logo cache'))
+        clear_logo_cache.clicked.connect(do_clear_logo_cache)
         sort_widget = QtWidgets.QComboBox()
         sort_widget.addItem(_('as in playlist'))
         sort_widget.addItem(_('alphabetical order'))
@@ -3219,8 +3230,14 @@ if __name__ == '__main__':
         ssaveclose_layout.addWidget(sclose)
         ssaveclose.setLayout(ssaveclose_layout)
 
+        sbtns = QtWidgets.QWidget()
+        sbtns_layout = QtWidgets.QHBoxLayout()
+        sbtns_layout.addWidget(sreset)
+        sbtns_layout.addWidget(clear_logo_cache)
+        sbtns.setLayout(sbtns_layout)
+
         grid2.addWidget(ssaveclose, 2, 1)
-        grid2.addWidget(sreset, 3, 1)
+        grid2.addWidget(sbtns, 3, 1)
 
         layout2 = QtWidgets.QVBoxLayout()
         layout2.addLayout(grid)
