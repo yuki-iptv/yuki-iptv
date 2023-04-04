@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: yuki-iptv\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-03 05:31+0000\n"
+"POT-Creation-Date: 2023-04-04 04:15+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,8 +35,8 @@ msgstr ""
 
 #: usr/lib/yuki-iptv/yuki-iptv.py:648 usr/lib/yuki-iptv/yuki-iptv.py:868
 #: usr/lib/yuki-iptv/yuki-iptv.py:919 usr/lib/yuki-iptv/yuki-iptv.py:920
-#: usr/lib/yuki-iptv/yuki-iptv.py:921 usr/lib/yuki-iptv/yuki-iptv.py:4563
-#: usr/lib/yuki-iptv/yuki-iptv.py:4833 usr/lib/yuki-iptv/yuki_iptv/m3u.py:108
+#: usr/lib/yuki-iptv/yuki-iptv.py:921 usr/lib/yuki-iptv/yuki-iptv.py:4550
+#: usr/lib/yuki-iptv/yuki-iptv.py:4727 usr/lib/yuki-iptv/yuki_iptv/m3u.py:108
 #: usr/lib/yuki-iptv/yuki_iptv/m3u.py:110
 #: usr/lib/yuki-iptv/yuki_iptv/xspf.py:43
 #: usr/lib/yuki-iptv/yuki_iptv/xtreamtom3u.py:30
@@ -62,738 +62,738 @@ msgstr ""
 msgid "Playlist loading error!"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:921 usr/lib/yuki-iptv/yuki-iptv.py:4834
-#: usr/lib/yuki-iptv/yuki-iptv.py:5414
+#: usr/lib/yuki-iptv/yuki-iptv.py:921 usr/lib/yuki-iptv/yuki-iptv.py:4728
+#: usr/lib/yuki-iptv/yuki-iptv.py:5335
 msgid "Favourites"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:995 usr/lib/yuki-iptv/yuki-iptv.py:1568
-#: usr/lib/yuki-iptv/yuki-iptv.py:6854 usr/lib/yuki-iptv/yuki-iptv.py:7957
+#: usr/lib/yuki-iptv/yuki-iptv.py:992 usr/lib/yuki-iptv/yuki-iptv.py:1565
+#: usr/lib/yuki-iptv/yuki-iptv.py:6776 usr/lib/yuki-iptv/yuki-iptv.py:7870
 msgid "Settings"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1000
+#: usr/lib/yuki-iptv/yuki-iptv.py:997
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:367
 msgid "Shortcuts"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1014
+#: usr/lib/yuki-iptv/yuki-iptv.py:1011
 msgid "Description"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1014
+#: usr/lib/yuki-iptv/yuki-iptv.py:1011
 msgid "Shortcut"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1031 usr/lib/yuki-iptv/yuki-iptv.py:3550
-#: usr/lib/yuki-iptv/yuki-iptv.py:5373
+#: usr/lib/yuki-iptv/yuki-iptv.py:1028 usr/lib/yuki-iptv/yuki-iptv.py:3537
+#: usr/lib/yuki-iptv/yuki-iptv.py:5294
 msgid "Are you sure?"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1056 usr/lib/yuki-iptv/yuki-iptv.py:3444
+#: usr/lib/yuki-iptv/yuki-iptv.py:1053 usr/lib/yuki-iptv/yuki-iptv.py:3431
 msgid "Double click to change"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1073
+#: usr/lib/yuki-iptv/yuki-iptv.py:1070
 msgid "Reset to defaults"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1081
+#: usr/lib/yuki-iptv/yuki-iptv.py:1078
 msgid "Modify shortcut"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1091
+#: usr/lib/yuki-iptv/yuki-iptv.py:1088
 msgid ""
 "Press the key combination\n"
 "you want to assign"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1141
+#: usr/lib/yuki-iptv/yuki-iptv.py:1138
 msgid "Shortcut already used"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1146
+#: usr/lib/yuki-iptv/yuki-iptv.py:1143
 msgid "Cancel"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1148
+#: usr/lib/yuki-iptv/yuki-iptv.py:1145
 msgid "OK"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1195
+#: usr/lib/yuki-iptv/yuki-iptv.py:1192
 msgid "playlist"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1200
+#: usr/lib/yuki-iptv/yuki-iptv.py:1197
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:376
 msgid "&About yuki-iptv"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1205 usr/lib/yuki-iptv/yuki-iptv.py:3379
+#: usr/lib/yuki-iptv/yuki-iptv.py:1202 usr/lib/yuki-iptv/yuki-iptv.py:3366
 msgid "License"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1210 usr/lib/yuki-iptv/yuki-iptv.py:2770
-#: usr/lib/yuki-iptv/yuki-iptv.py:6866
+#: usr/lib/yuki-iptv/yuki-iptv.py:1207 usr/lib/yuki-iptv/yuki-iptv.py:2757
+#: usr/lib/yuki-iptv/yuki-iptv.py:6788
 msgid ""
 "Channel\n"
 "sort"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1215 usr/lib/yuki-iptv/yuki-iptv.py:5417
+#: usr/lib/yuki-iptv/yuki-iptv.py:1212 usr/lib/yuki-iptv/yuki-iptv.py:5338
 msgid "Video settings"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1220 usr/lib/yuki-iptv/yuki-iptv.py:5416
+#: usr/lib/yuki-iptv/yuki-iptv.py:1217 usr/lib/yuki-iptv/yuki-iptv.py:5337
 msgid "Open in external player"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1225 usr/lib/yuki-iptv/yuki-iptv.py:1237
-#: usr/lib/yuki-iptv/yuki-iptv.py:1342 usr/lib/yuki-iptv/yuki-iptv.py:5412
-#: usr/lib/yuki-iptv/yuki-iptv.py:5691 usr/lib/yuki-iptv/yuki-iptv.py:5763
-#: usr/lib/yuki-iptv/yuki-iptv.py:6862 usr/lib/yuki-iptv/yuki-iptv.py:7960
+#: usr/lib/yuki-iptv/yuki-iptv.py:1222 usr/lib/yuki-iptv/yuki-iptv.py:1234
+#: usr/lib/yuki-iptv/yuki-iptv.py:1339 usr/lib/yuki-iptv/yuki-iptv.py:5333
+#: usr/lib/yuki-iptv/yuki-iptv.py:5612 usr/lib/yuki-iptv/yuki-iptv.py:5684
+#: usr/lib/yuki-iptv/yuki-iptv.py:6784 usr/lib/yuki-iptv/yuki-iptv.py:7873
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:349
 msgid "TV guide"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1241 usr/lib/yuki-iptv/yuki-iptv.py:5960
+#: usr/lib/yuki-iptv/yuki-iptv.py:1238 usr/lib/yuki-iptv/yuki-iptv.py:5882
 msgid "No TV guide for channel"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1270 usr/lib/yuki-iptv/yuki-iptv.py:1851
-#: usr/lib/yuki-iptv/yuki-iptv.py:5116 usr/lib/yuki-iptv/yuki-iptv.py:5774
+#: usr/lib/yuki-iptv/yuki-iptv.py:1267 usr/lib/yuki-iptv/yuki-iptv.py:1848
+#: usr/lib/yuki-iptv/yuki-iptv.py:5037 usr/lib/yuki-iptv/yuki-iptv.py:5695
 msgid "Search channel"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1272 usr/lib/yuki-iptv/yuki-iptv.py:1501
-#: usr/lib/yuki-iptv/yuki-iptv.py:1503 usr/lib/yuki-iptv/yuki-iptv.py:1853
-#: usr/lib/yuki-iptv/yuki-iptv.py:5776
+#: usr/lib/yuki-iptv/yuki-iptv.py:1269 usr/lib/yuki-iptv/yuki-iptv.py:1498
+#: usr/lib/yuki-iptv/yuki-iptv.py:1500 usr/lib/yuki-iptv/yuki-iptv.py:1850
+#: usr/lib/yuki-iptv/yuki-iptv.py:5697
 msgid "Search"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1282
+#: usr/lib/yuki-iptv/yuki-iptv.py:1279
 msgid "Show only channels in playlist"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1322 usr/lib/yuki-iptv/yuki-iptv.py:6830
+#: usr/lib/yuki-iptv/yuki-iptv.py:1319 usr/lib/yuki-iptv/yuki-iptv.py:6752
 msgid "Recording scheduler"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1327 usr/lib/yuki-iptv/yuki-iptv.py:6570
-#: usr/lib/yuki-iptv/yuki-iptv.py:6848 usr/lib/yuki-iptv/yuki-iptv.py:7959
+#: usr/lib/yuki-iptv/yuki-iptv.py:1324 usr/lib/yuki-iptv/yuki-iptv.py:6492
+#: usr/lib/yuki-iptv/yuki-iptv.py:6770 usr/lib/yuki-iptv/yuki-iptv.py:7872
 msgid "Archive"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1332 usr/lib/yuki-iptv/yuki-iptv.py:1337
-#: usr/lib/yuki-iptv/yuki-iptv.py:6858
+#: usr/lib/yuki-iptv/yuki-iptv.py:1329 usr/lib/yuki-iptv/yuki-iptv.py:1334
+#: usr/lib/yuki-iptv/yuki-iptv.py:6780
 msgid "Playlists"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1378
+#: usr/lib/yuki-iptv/yuki-iptv.py:1375
 msgid "Name should not be empty!"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1386
+#: usr/lib/yuki-iptv/yuki-iptv.py:1383
 msgid "URL not specified!"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1394 usr/lib/yuki-iptv/yuki-iptv.py:2023
+#: usr/lib/yuki-iptv/yuki-iptv.py:1391 usr/lib/yuki-iptv/yuki-iptv.py:2020
 #: usr/lib/yuki-iptv/yuki_iptv/m3u_editor.py:88
 msgid "Select m3u playlist"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1403 usr/lib/yuki-iptv/yuki-iptv.py:2032
+#: usr/lib/yuki-iptv/yuki-iptv.py:1400 usr/lib/yuki-iptv/yuki-iptv.py:2029
 msgid "Select EPG file (XMLTV or JTV EPG)"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1409
+#: usr/lib/yuki-iptv/yuki-iptv.py:1406
 msgid "Name"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1410 usr/lib/yuki-iptv/yuki-iptv.py:2765
+#: usr/lib/yuki-iptv/yuki-iptv.py:1407 usr/lib/yuki-iptv/yuki-iptv.py:2752
 msgid "M3U / XSPF playlist"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1411 usr/lib/yuki-iptv/yuki-iptv.py:2767
+#: usr/lib/yuki-iptv/yuki-iptv.py:1408 usr/lib/yuki-iptv/yuki-iptv.py:2754
 msgid ""
 "TV guide\n"
 "address\n"
 "(XMLTV or JTV)"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1414 usr/lib/yuki-iptv/yuki-iptv.py:1416
-#: usr/lib/yuki-iptv/yuki-iptv.py:2794 usr/lib/yuki-iptv/yuki-iptv.py:2797
+#: usr/lib/yuki-iptv/yuki-iptv.py:1411 usr/lib/yuki-iptv/yuki-iptv.py:1413
+#: usr/lib/yuki-iptv/yuki-iptv.py:2781 usr/lib/yuki-iptv/yuki-iptv.py:2784
 msgid "Path to file or URL"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1423 usr/lib/yuki-iptv/yuki-iptv.py:1988
-#: usr/lib/yuki-iptv/yuki-iptv.py:3272 usr/lib/yuki-iptv/yuki-iptv.py:3289
+#: usr/lib/yuki-iptv/yuki-iptv.py:1420 usr/lib/yuki-iptv/yuki-iptv.py:1985
+#: usr/lib/yuki-iptv/yuki-iptv.py:3259 usr/lib/yuki-iptv/yuki-iptv.py:3276
 msgid "Save"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1431
+#: usr/lib/yuki-iptv/yuki-iptv.py:1428
 msgid "TV guide offset"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1433
+#: usr/lib/yuki-iptv/yuki-iptv.py:1430
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1498 usr/lib/yuki-iptv/yuki-iptv.py:2108
-#: usr/lib/yuki-iptv/yuki-iptv.py:2126 usr/lib/yuki-iptv/yuki-iptv.py:2492
-#: usr/lib/yuki-iptv/yuki-iptv.py:5273 usr/lib/yuki-iptv/yuki-iptv.py:5276
-#: usr/lib/yuki-iptv/yuki-iptv.py:5291
+#: usr/lib/yuki-iptv/yuki-iptv.py:1495 usr/lib/yuki-iptv/yuki-iptv.py:2105
+#: usr/lib/yuki-iptv/yuki-iptv.py:2123 usr/lib/yuki-iptv/yuki-iptv.py:2489
+#: usr/lib/yuki-iptv/yuki-iptv.py:5194 usr/lib/yuki-iptv/yuki-iptv.py:5197
+#: usr/lib/yuki-iptv/yuki-iptv.py:5212
 msgid "Default"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1543
+#: usr/lib/yuki-iptv/yuki-iptv.py:1540
 msgid "Open"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1562 usr/lib/yuki-iptv/yuki-iptv.py:5410
+#: usr/lib/yuki-iptv/yuki-iptv.py:1559 usr/lib/yuki-iptv/yuki-iptv.py:5331
 msgid "Select"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1564 usr/lib/yuki-iptv/yuki-iptv.py:1832
+#: usr/lib/yuki-iptv/yuki-iptv.py:1561 usr/lib/yuki-iptv/yuki-iptv.py:1829
 msgid "Add"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1565
+#: usr/lib/yuki-iptv/yuki-iptv.py:1562
 msgid "Edit"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1566
+#: usr/lib/yuki-iptv/yuki-iptv.py:1563
 msgid "Delete"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1567
+#: usr/lib/yuki-iptv/yuki-iptv.py:1564
 msgid "Favourites+"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1655
+#: usr/lib/yuki-iptv/yuki-iptv.py:1652
 msgid "Channel"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1656 usr/lib/yuki-iptv/yuki-iptv.py:1868
+#: usr/lib/yuki-iptv/yuki-iptv.py:1653 usr/lib/yuki-iptv/yuki-iptv.py:1865
 msgid "Start record time"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1657 usr/lib/yuki-iptv/yuki-iptv.py:1869
+#: usr/lib/yuki-iptv/yuki-iptv.py:1654 usr/lib/yuki-iptv/yuki-iptv.py:1866
 msgid "End record time"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1726 usr/lib/yuki-iptv/yuki-iptv.py:7956
+#: usr/lib/yuki-iptv/yuki-iptv.py:1723 usr/lib/yuki-iptv/yuki-iptv.py:7869
 msgid "Scheduler"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1763
+#: usr/lib/yuki-iptv/yuki-iptv.py:1760
 msgid "No planned recordings"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1768 usr/lib/yuki-iptv/yuki-iptv.py:7272
+#: usr/lib/yuki-iptv/yuki-iptv.py:1765 usr/lib/yuki-iptv/yuki-iptv.py:7182
 msgid "Waiting for record"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1798
+#: usr/lib/yuki-iptv/yuki-iptv.py:1795
 msgid "Recording"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1799
+#: usr/lib/yuki-iptv/yuki-iptv.py:1796
 msgid "Status"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1822
+#: usr/lib/yuki-iptv/yuki-iptv.py:1819
 msgid "Planned recordings"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1823
+#: usr/lib/yuki-iptv/yuki-iptv.py:1820
 msgid "Active recordings"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1828
+#: usr/lib/yuki-iptv/yuki-iptv.py:1825
 msgid "Choose channel"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1834
+#: usr/lib/yuki-iptv/yuki-iptv.py:1831
 msgid "Remove"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1884
+#: usr/lib/yuki-iptv/yuki-iptv.py:1881
 msgid ""
 "Post-recording\n"
 "action"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1886
+#: usr/lib/yuki-iptv/yuki-iptv.py:1883
 msgid "Nothing to do"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1887
+#: usr/lib/yuki-iptv/yuki-iptv.py:1884
 msgid "Press Stop"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1940
+#: usr/lib/yuki-iptv/yuki-iptv.py:1937
 msgid "Recording of two channels simultaneously is not available!"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1984 usr/lib/yuki-iptv/yuki-iptv.py:2835
-#: usr/lib/yuki-iptv/yuki-iptv.py:3336 usr/lib/yuki-iptv/yuki-iptv.py:3393
+#: usr/lib/yuki-iptv/yuki-iptv.py:1981 usr/lib/yuki-iptv/yuki-iptv.py:2822
+#: usr/lib/yuki-iptv/yuki-iptv.py:3323 usr/lib/yuki-iptv/yuki-iptv.py:3380
 msgid "Close"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:1992
+#: usr/lib/yuki-iptv/yuki-iptv.py:1989
 msgid ""
 "Do not forget\n"
 "to set custom sort order in settings!"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2041
+#: usr/lib/yuki-iptv/yuki-iptv.py:2038
 msgid "Select folder for recordings and screenshots"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2056 usr/lib/yuki-iptv/yuki-iptv.py:2768
+#: usr/lib/yuki-iptv/yuki-iptv.py:2053 usr/lib/yuki-iptv/yuki-iptv.py:2755
 msgid "Deinterlace"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2057 usr/lib/yuki-iptv/yuki-iptv.py:2896
+#: usr/lib/yuki-iptv/yuki-iptv.py:2054 usr/lib/yuki-iptv/yuki-iptv.py:2883
 msgid "User agent"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2058
+#: usr/lib/yuki-iptv/yuki-iptv.py:2055
 msgid "Group"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2060
+#: usr/lib/yuki-iptv/yuki-iptv.py:2057
 msgid "Hide"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2079
+#: usr/lib/yuki-iptv/yuki-iptv.py:2076
 msgid "Contrast"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2080
+#: usr/lib/yuki-iptv/yuki-iptv.py:2077
 msgid "Brightness"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2081
+#: usr/lib/yuki-iptv/yuki-iptv.py:2078
 msgid "Hue"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2082
+#: usr/lib/yuki-iptv/yuki-iptv.py:2079
 msgid "Saturation"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2083 usr/lib/yuki-iptv/yuki-iptv.py:2207
+#: usr/lib/yuki-iptv/yuki-iptv.py:2080 usr/lib/yuki-iptv/yuki-iptv.py:2204
 msgid "Gamma"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2084 usr/lib/yuki-iptv/yuki-iptv.py:3061
+#: usr/lib/yuki-iptv/yuki-iptv.py:2081 usr/lib/yuki-iptv/yuki-iptv.py:3048
 msgid "Aspect ratio"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2085 usr/lib/yuki-iptv/yuki-iptv.py:3062
+#: usr/lib/yuki-iptv/yuki-iptv.py:2082 usr/lib/yuki-iptv/yuki-iptv.py:3049
 msgid "Scale / Zoom"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2086 usr/lib/yuki-iptv/yuki-iptv.py:3063
+#: usr/lib/yuki-iptv/yuki-iptv.py:2083 usr/lib/yuki-iptv/yuki-iptv.py:3050
 msgid "Pan and scan"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2087
+#: usr/lib/yuki-iptv/yuki-iptv.py:2084
 msgid "EPG name"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2157 usr/lib/yuki-iptv/yuki-iptv.py:2897
+#: usr/lib/yuki-iptv/yuki-iptv.py:2154 usr/lib/yuki-iptv/yuki-iptv.py:2884
 msgid "HTTP Referer:"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2165 usr/lib/yuki-iptv/yuki-iptv.py:2166
-#: usr/lib/yuki-iptv/yuki-iptv.py:2180 usr/lib/yuki-iptv/yuki-iptv.py:2183
-#: usr/lib/yuki-iptv/yuki-iptv.py:6318 usr/lib/yuki-iptv/yuki-iptv.py:6321
-#: usr/lib/yuki-iptv/yuki-iptv.py:6333 usr/lib/yuki-iptv/yuki-iptv.py:6337
+#: usr/lib/yuki-iptv/yuki-iptv.py:2162 usr/lib/yuki-iptv/yuki-iptv.py:2163
+#: usr/lib/yuki-iptv/yuki-iptv.py:2177 usr/lib/yuki-iptv/yuki-iptv.py:2180
+#: usr/lib/yuki-iptv/yuki-iptv.py:6240 usr/lib/yuki-iptv/yuki-iptv.py:6243
+#: usr/lib/yuki-iptv/yuki-iptv.py:6255 usr/lib/yuki-iptv/yuki-iptv.py:6259
 msgid "Average Bitrate"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2180 usr/lib/yuki-iptv/yuki-iptv.py:2183
-#: usr/lib/yuki-iptv/yuki-iptv.py:2196 usr/lib/yuki-iptv/yuki-iptv.py:2201
-#: usr/lib/yuki-iptv/yuki-iptv.py:2218 usr/lib/yuki-iptv/yuki-iptv.py:2233
-#: usr/lib/yuki-iptv/yuki-iptv.py:2237 usr/lib/yuki-iptv/yuki-iptv.py:2248
-#: usr/lib/yuki-iptv/yuki-iptv.py:2281 usr/lib/yuki-iptv/yuki-iptv.py:2285
-#: usr/lib/yuki-iptv/yuki-iptv.py:6318 usr/lib/yuki-iptv/yuki-iptv.py:6321
-#: usr/lib/yuki-iptv/yuki-iptv.py:6349 usr/lib/yuki-iptv/yuki-iptv.py:6351
-#: usr/lib/yuki-iptv/yuki-iptv.py:6362 usr/lib/yuki-iptv/yuki-iptv.py:6366
+#: usr/lib/yuki-iptv/yuki-iptv.py:2177 usr/lib/yuki-iptv/yuki-iptv.py:2180
+#: usr/lib/yuki-iptv/yuki-iptv.py:2193 usr/lib/yuki-iptv/yuki-iptv.py:2198
+#: usr/lib/yuki-iptv/yuki-iptv.py:2215 usr/lib/yuki-iptv/yuki-iptv.py:2230
+#: usr/lib/yuki-iptv/yuki-iptv.py:2234 usr/lib/yuki-iptv/yuki-iptv.py:2245
+#: usr/lib/yuki-iptv/yuki-iptv.py:2278 usr/lib/yuki-iptv/yuki-iptv.py:2282
+#: usr/lib/yuki-iptv/yuki-iptv.py:6240 usr/lib/yuki-iptv/yuki-iptv.py:6243
+#: usr/lib/yuki-iptv/yuki-iptv.py:6271 usr/lib/yuki-iptv/yuki-iptv.py:6273
+#: usr/lib/yuki-iptv/yuki-iptv.py:6284 usr/lib/yuki-iptv/yuki-iptv.py:6288
 msgid "General"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2181 usr/lib/yuki-iptv/yuki-iptv.py:2184
-#: usr/lib/yuki-iptv/yuki-iptv.py:7325
+#: usr/lib/yuki-iptv/yuki-iptv.py:2178 usr/lib/yuki-iptv/yuki-iptv.py:2181
+#: usr/lib/yuki-iptv/yuki-iptv.py:7235
 msgid "kbps"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2196
+#: usr/lib/yuki-iptv/yuki-iptv.py:2193
 msgid "Dimensions"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2201
+#: usr/lib/yuki-iptv/yuki-iptv.py:2198
 msgid "Aspect"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2204 usr/lib/yuki-iptv/yuki-iptv.py:2207
-#: usr/lib/yuki-iptv/yuki-iptv.py:2209 usr/lib/yuki-iptv/yuki-iptv.py:2282
-#: usr/lib/yuki-iptv/yuki-iptv.py:6350 usr/lib/yuki-iptv/yuki-iptv.py:6363
+#: usr/lib/yuki-iptv/yuki-iptv.py:2201 usr/lib/yuki-iptv/yuki-iptv.py:2204
+#: usr/lib/yuki-iptv/yuki-iptv.py:2206 usr/lib/yuki-iptv/yuki-iptv.py:2279
+#: usr/lib/yuki-iptv/yuki-iptv.py:6272 usr/lib/yuki-iptv/yuki-iptv.py:6285
 msgid "Color"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2204
+#: usr/lib/yuki-iptv/yuki-iptv.py:2201
 msgid "Pixel Format"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2209
+#: usr/lib/yuki-iptv/yuki-iptv.py:2206
 msgid "Bits Per Pixel"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2218 usr/lib/yuki-iptv/yuki-iptv.py:2248
+#: usr/lib/yuki-iptv/yuki-iptv.py:2215 usr/lib/yuki-iptv/yuki-iptv.py:2245
 msgid "Codec"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2229
+#: usr/lib/yuki-iptv/yuki-iptv.py:2226
 msgid "surround sound"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2230 usr/lib/yuki-iptv/yuki-iptv.py:2239
-#: usr/lib/yuki-iptv/yuki-iptv.py:2286 usr/lib/yuki-iptv/yuki-iptv.py:6352
-#: usr/lib/yuki-iptv/yuki-iptv.py:6370
+#: usr/lib/yuki-iptv/yuki-iptv.py:2227 usr/lib/yuki-iptv/yuki-iptv.py:2236
+#: usr/lib/yuki-iptv/yuki-iptv.py:2283 usr/lib/yuki-iptv/yuki-iptv.py:6274
+#: usr/lib/yuki-iptv/yuki-iptv.py:6292
 msgid "Layout"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2230
+#: usr/lib/yuki-iptv/yuki-iptv.py:2227
 msgid "Channels"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2233
+#: usr/lib/yuki-iptv/yuki-iptv.py:2230
 msgid "Sample Rate"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2237
+#: usr/lib/yuki-iptv/yuki-iptv.py:2234
 msgid "Format"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2239
+#: usr/lib/yuki-iptv/yuki-iptv.py:2236
 msgid "Channel Count"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2440 usr/lib/yuki-iptv/yuki-iptv.py:5460
-#: usr/lib/yuki-iptv/yuki-iptv.py:7352
+#: usr/lib/yuki-iptv/yuki-iptv.py:2437 usr/lib/yuki-iptv/yuki-iptv.py:5381
+#: usr/lib/yuki-iptv/yuki-iptv.py:7262
 msgid "Loading..."
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2510 usr/lib/yuki-iptv/yuki-iptv.py:2814
+#: usr/lib/yuki-iptv/yuki-iptv.py:2507 usr/lib/yuki-iptv/yuki-iptv.py:2801
 msgid "Save settings"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2766
+#: usr/lib/yuki-iptv/yuki-iptv.py:2753
 msgid ""
 "Update playlist\n"
 "at launch"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2769
+#: usr/lib/yuki-iptv/yuki-iptv.py:2756
 msgid ""
 "Hardware\n"
 "acceleration"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2771
+#: usr/lib/yuki-iptv/yuki-iptv.py:2758
 msgid "Cache"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2772
+#: usr/lib/yuki-iptv/yuki-iptv.py:2759
 msgid "UDP proxy"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2773
+#: usr/lib/yuki-iptv/yuki-iptv.py:2760
 msgid ""
 "Folder for recordings\n"
 "and screenshots"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2810
+#: usr/lib/yuki-iptv/yuki-iptv.py:2797
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] ""
 msgstr[1] ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2812
+#: usr/lib/yuki-iptv/yuki-iptv.py:2799
 msgid "Or select provider"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2817
+#: usr/lib/yuki-iptv/yuki-iptv.py:2804
 msgid "Reset channel settings and sorting"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2819
+#: usr/lib/yuki-iptv/yuki-iptv.py:2806
 msgid "Clear logo cache"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2822
+#: usr/lib/yuki-iptv/yuki-iptv.py:2809
 msgid "as in playlist"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2823
+#: usr/lib/yuki-iptv/yuki-iptv.py:2810
 msgid "alphabetical order"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2824
+#: usr/lib/yuki-iptv/yuki-iptv.py:2811
 msgid "reverse alphabetical order"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2825
+#: usr/lib/yuki-iptv/yuki-iptv.py:2812
 msgid "custom"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2850 usr/lib/yuki-iptv/yuki-iptv.py:2858
+#: usr/lib/yuki-iptv/yuki-iptv.py:2837 usr/lib/yuki-iptv/yuki-iptv.py:2845
 msgid "Update"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2904
+#: usr/lib/yuki-iptv/yuki-iptv.py:2891
 msgid "mpv options"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2906
+#: usr/lib/yuki-iptv/yuki-iptv.py:2893
 msgid "list"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2915
+#: usr/lib/yuki-iptv/yuki-iptv.py:2902
 msgid ""
 "Do not update\n"
 "EPG at boot"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2919
+#: usr/lib/yuki-iptv/yuki-iptv.py:2906
 msgid ""
 "TV guide\n"
 "interface"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2920
+#: usr/lib/yuki-iptv/yuki-iptv.py:2907
 msgid ""
 "Open previous channel\n"
 "at startup"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2921
+#: usr/lib/yuki-iptv/yuki-iptv.py:2908
 msgid "Hide mpv panel"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2922
+#: usr/lib/yuki-iptv/yuki-iptv.py:2909
 msgid "Hide EPG percentage"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2923
+#: usr/lib/yuki-iptv/yuki-iptv.py:2910
 msgid "Hide bitrate / video info"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2924
+#: usr/lib/yuki-iptv/yuki-iptv.py:2911
 msgid "Move window by dragging"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2925
+#: usr/lib/yuki-iptv/yuki-iptv.py:2912
 msgid "Enable styles redefinition"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2926
+#: usr/lib/yuki-iptv/yuki-iptv.py:2913
 msgid "Volume change step"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2927
+#: usr/lib/yuki-iptv/yuki-iptv.py:2914
 msgid ""
 "Channels on\n"
 "page"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2934
+#: usr/lib/yuki-iptv/yuki-iptv.py:2921
 msgid "Classic"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2935
+#: usr/lib/yuki-iptv/yuki-iptv.py:2922
 msgid "Simple"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2936
+#: usr/lib/yuki-iptv/yuki-iptv.py:2923
 msgid "Simple (no icons)"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2955 usr/lib/yuki-iptv/yuki-iptv.py:2956
-#: usr/lib/yuki-iptv/yuki-iptv.py:2965 usr/lib/yuki-iptv/yuki-iptv.py:2968
-#: usr/lib/yuki-iptv/yuki-iptv.py:3005 usr/lib/yuki-iptv/yuki-iptv.py:3006
-#: usr/lib/yuki-iptv/yuki-iptv.py:3019 usr/lib/yuki-iptv/yuki-iptv.py:3020
-#: usr/lib/yuki-iptv/yuki-iptv.py:3057 usr/lib/yuki-iptv/yuki-iptv.py:3058
+#: usr/lib/yuki-iptv/yuki-iptv.py:2942 usr/lib/yuki-iptv/yuki-iptv.py:2943
+#: usr/lib/yuki-iptv/yuki-iptv.py:2952 usr/lib/yuki-iptv/yuki-iptv.py:2955
+#: usr/lib/yuki-iptv/yuki-iptv.py:2992 usr/lib/yuki-iptv/yuki-iptv.py:2993
+#: usr/lib/yuki-iptv/yuki-iptv.py:3006 usr/lib/yuki-iptv/yuki-iptv.py:3007
+#: usr/lib/yuki-iptv/yuki-iptv.py:3044 usr/lib/yuki-iptv/yuki-iptv.py:3045
 msgid "WARNING: experimental function, working with problems"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2965 usr/lib/yuki-iptv/yuki-iptv.py:2968
+#: usr/lib/yuki-iptv/yuki-iptv.py:2952 usr/lib/yuki-iptv/yuki-iptv.py:2955
 msgid "Incompatible with option Playlist in separate window"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2974
+#: usr/lib/yuki-iptv/yuki-iptv.py:2961
 msgid ""
 "The settings here\n"
 "may be unstable!"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2976
+#: usr/lib/yuki-iptv/yuki-iptv.py:2963
 msgid ""
 "Playlist width\n"
 "in full screen mode"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2986
+#: usr/lib/yuki-iptv/yuki-iptv.py:2973
 msgid "Floating panels opacity"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2994
+#: usr/lib/yuki-iptv/yuki-iptv.py:2981
 msgid ""
 "Floating panel\n"
 "position"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2996
+#: usr/lib/yuki-iptv/yuki-iptv.py:2983
 msgid "Right"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:2997
+#: usr/lib/yuki-iptv/yuki-iptv.py:2984
 msgid "Left"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3000
+#: usr/lib/yuki-iptv/yuki-iptv.py:2987
 msgid "Playlist in separate window"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3009
+#: usr/lib/yuki-iptv/yuki-iptv.py:2996
 msgid ""
 "Switch channels with\n"
 "the mouse wheel"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3010
+#: usr/lib/yuki-iptv/yuki-iptv.py:2997
 msgid ""
 "Automatic\n"
 "reconnection"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3011
+#: usr/lib/yuki-iptv/yuki-iptv.py:2998
 msgid ""
 "by default:\n"
 "change volume"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3023
+#: usr/lib/yuki-iptv/yuki-iptv.py:3010
 msgid ""
 "Show playlist\n"
 "on mouse move"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3026
+#: usr/lib/yuki-iptv/yuki-iptv.py:3013
 msgid ""
 "Show controls\n"
 "on mouse move"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3030
+#: usr/lib/yuki-iptv/yuki-iptv.py:3017
 msgid "Hide playlist by left click"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3034
+#: usr/lib/yuki-iptv/yuki-iptv.py:3021
 msgid "Channel logos"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3036
+#: usr/lib/yuki-iptv/yuki-iptv.py:3023
 msgid "Prefer M3U"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3037
+#: usr/lib/yuki-iptv/yuki-iptv.py:3024
 msgid "Prefer EPG"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3038
+#: usr/lib/yuki-iptv/yuki-iptv.py:3025
 msgid "Do not load from EPG"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3039
+#: usr/lib/yuki-iptv/yuki-iptv.py:3026
 msgid "Do not load any logos"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3042
+#: usr/lib/yuki-iptv/yuki-iptv.py:3029
 msgid "Do not cache EPG"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3047
+#: usr/lib/yuki-iptv/yuki-iptv.py:3034
 msgid ""
 "Do not create screenshots\n"
 "and recordings subfolders"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3052
+#: usr/lib/yuki-iptv/yuki-iptv.py:3039
 msgid "Hide the current television program"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3083
+#: usr/lib/yuki-iptv/yuki-iptv.py:3070
 msgid "Enable catchup"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3098
+#: usr/lib/yuki-iptv/yuki-iptv.py:3085
 msgid "Main"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3099 usr/lib/yuki-iptv/yuki-iptv.py:6356
+#: usr/lib/yuki-iptv/yuki-iptv.py:3086 usr/lib/yuki-iptv/yuki-iptv.py:6278
 msgid "Video"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3100
+#: usr/lib/yuki-iptv/yuki-iptv.py:3087
 msgid "Network"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3101
+#: usr/lib/yuki-iptv/yuki-iptv.py:3088
 msgid "GUI"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3102
+#: usr/lib/yuki-iptv/yuki-iptv.py:3089
 msgid "Actions"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3103
+#: usr/lib/yuki-iptv/yuki-iptv.py:3090
 msgid "Catchup"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3104
+#: usr/lib/yuki-iptv/yuki-iptv.py:3091
 msgid "Other"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3105
+#: usr/lib/yuki-iptv/yuki-iptv.py:3092
 msgid "Debug"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3280 usr/lib/yuki-iptv/yuki-iptv.py:3297
+#: usr/lib/yuki-iptv/yuki-iptv.py:3267 usr/lib/yuki-iptv/yuki-iptv.py:3284
 msgid "Username"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3282 usr/lib/yuki-iptv/yuki-iptv.py:3299
+#: usr/lib/yuki-iptv/yuki-iptv.py:3269 usr/lib/yuki-iptv/yuki-iptv.py:3286
 msgid "Password"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3284 usr/lib/yuki-iptv/yuki-iptv.py:3301
+#: usr/lib/yuki-iptv/yuki-iptv.py:3271 usr/lib/yuki-iptv/yuki-iptv.py:3288
 msgid "URL"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3389
+#: usr/lib/yuki-iptv/yuki-iptv.py:3376
 msgid "About Qt"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3655
+#: usr/lib/yuki-iptv/yuki-iptv.py:3642
 msgid ""
 "yuki-iptv\n"
 "version: {}\n"
@@ -812,206 +812,210 @@ msgid ""
 "( https://creativecommons.org/licenses/by/4.0/ )"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3971 usr/lib/yuki-iptv/yuki-iptv.py:4256
-#: usr/lib/yuki-iptv/yuki-iptv.py:5943 usr/lib/yuki-iptv/yuki-iptv.py:6242
-#: usr/lib/yuki-iptv/yuki-iptv.py:6379
+#: usr/lib/yuki-iptv/yuki-iptv.py:3958 usr/lib/yuki-iptv/yuki-iptv.py:4243
+#: usr/lib/yuki-iptv/yuki-iptv.py:5864 usr/lib/yuki-iptv/yuki-iptv.py:6164
+#: usr/lib/yuki-iptv/yuki-iptv.py:6301
 msgid "No channel selected"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:3998
+#: usr/lib/yuki-iptv/yuki-iptv.py:3985
 msgid "Processing record..."
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:4174 usr/lib/yuki-iptv/yuki-iptv.py:5074
-#: usr/lib/yuki-iptv/yuki-iptv.py:5400 usr/lib/yuki-iptv/yuki-iptv.py:5498
-#: usr/lib/yuki-iptv/yuki-iptv.py:5527
+#: usr/lib/yuki-iptv/yuki-iptv.py:4161 usr/lib/yuki-iptv/yuki-iptv.py:4995
+#: usr/lib/yuki-iptv/yuki-iptv.py:5321 usr/lib/yuki-iptv/yuki-iptv.py:5419
+#: usr/lib/yuki-iptv/yuki-iptv.py:5448
 msgid "Nothing found"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:4238 usr/lib/yuki-iptv/yuki-iptv.py:6810
+#: usr/lib/yuki-iptv/yuki-iptv.py:4225 usr/lib/yuki-iptv/yuki-iptv.py:6732
 msgid "Pause"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:4242
+#: usr/lib/yuki-iptv/yuki-iptv.py:4229
 msgid "Play"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:4404 usr/lib/yuki-iptv/yuki-iptv.py:4486
-#: usr/lib/yuki-iptv/yuki-iptv.py:6834 usr/lib/yuki-iptv/yuki-iptv.py:7741
+#: usr/lib/yuki-iptv/yuki-iptv.py:4391 usr/lib/yuki-iptv/yuki-iptv.py:4473
+#: usr/lib/yuki-iptv/yuki-iptv.py:6756 usr/lib/yuki-iptv/yuki-iptv.py:7654
 msgid "Volume"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:4414
+#: usr/lib/yuki-iptv/yuki-iptv.py:4401
 msgid "To exit fullscreen mode press"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:4506 usr/lib/yuki-iptv/yuki-iptv.py:4514
+#: usr/lib/yuki-iptv/yuki-iptv.py:4493 usr/lib/yuki-iptv/yuki-iptv.py:4501
 msgid "Volume off"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:4800
+#: usr/lib/yuki-iptv/yuki-iptv.py:4645
 msgid "of"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:5127
+#: usr/lib/yuki-iptv/yuki-iptv.py:5048
 msgid "Search movie"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:5138
+#: usr/lib/yuki-iptv/yuki-iptv.py:5059
 msgid "Search series"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:5300
+#: usr/lib/yuki-iptv/yuki-iptv.py:5221
 msgid "Delete from favourites"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:5413
+#: usr/lib/yuki-iptv/yuki-iptv.py:5334
 msgid "Hide TV guide"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:5415
+#: usr/lib/yuki-iptv/yuki-iptv.py:5336
 msgid "Favourites+ (separate playlist)"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:5465
+#: usr/lib/yuki-iptv/yuki-iptv.py:5386
 msgid "EPG loading..."
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:5531 usr/lib/yuki-iptv/yuki-iptv.py:5550
+#: usr/lib/yuki-iptv/yuki-iptv.py:5452 usr/lib/yuki-iptv/yuki-iptv.py:5471
 msgid "Back"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:5581
+#: usr/lib/yuki-iptv/yuki-iptv.py:5502
 msgid "TV channels"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:5581
+#: usr/lib/yuki-iptv/yuki-iptv.py:5502
 msgid "Movies"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:5581
+#: usr/lib/yuki-iptv/yuki-iptv.py:5502
 msgid "Series"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:5792
+#: usr/lib/yuki-iptv/yuki-iptv.py:5713
 msgid "Page"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:5922
+#: usr/lib/yuki-iptv/yuki-iptv.py:5843
 msgid "Doing screenshot..."
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:5936
+#: usr/lib/yuki-iptv/yuki-iptv.py:5857
 msgid "Screenshot saved!"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:5939
+#: usr/lib/yuki-iptv/yuki-iptv.py:5860
 msgid "Screenshot saving error!"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:6056 usr/lib/yuki-iptv/yuki-iptv.py:6060
+#: usr/lib/yuki-iptv/yuki-iptv.py:5978 usr/lib/yuki-iptv/yuki-iptv.py:5982
 msgid "channels"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:6080
+#: usr/lib/yuki-iptv/yuki-iptv.py:6002
 msgid "Preparing record"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:6115
+#: usr/lib/yuki-iptv/yuki-iptv.py:6037
 msgid "No channel selected for record"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:6201
+#: usr/lib/yuki-iptv/yuki-iptv.py:6123
 msgid "Custom MPV options invalid, ignoring them"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:6368
+#: usr/lib/yuki-iptv/yuki-iptv.py:6290
 msgid "Audio"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:6382 usr/lib/yuki-iptv/yuki-iptv.py:7951
+#: usr/lib/yuki-iptv/yuki-iptv.py:6304 usr/lib/yuki-iptv/yuki-iptv.py:7864
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:343
 msgid "Stream Information"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:6453
+#: usr/lib/yuki-iptv/yuki-iptv.py:6375
 msgid "Playing error"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:6591
+#: usr/lib/yuki-iptv/yuki-iptv.py:6513
 msgid "Using mode"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:6814
+#: usr/lib/yuki-iptv/yuki-iptv.py:6736
 msgid "Stop"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:6818
+#: usr/lib/yuki-iptv/yuki-iptv.py:6740
 msgid "Fullscreen"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:6822
+#: usr/lib/yuki-iptv/yuki-iptv.py:6744
 msgid "Open recordings folder"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:6826 usr/lib/yuki-iptv/yuki-iptv.py:7935
+#: usr/lib/yuki-iptv/yuki-iptv.py:6748 usr/lib/yuki-iptv/yuki-iptv.py:7848
 msgid "Record"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:6844 usr/lib/yuki-iptv/yuki-iptv.py:7936
+#: usr/lib/yuki-iptv/yuki-iptv.py:6766 usr/lib/yuki-iptv/yuki-iptv.py:7849
 msgid "Screenshot"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:6870
+#: usr/lib/yuki-iptv/yuki-iptv.py:6792
 msgid "Previous channel"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:6874
+#: usr/lib/yuki-iptv/yuki-iptv.py:6796
 msgid "Next channel"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:6878
+#: usr/lib/yuki-iptv/yuki-iptv.py:6800
 #: usr/lib/yuki-iptv/yuki_iptv/m3u_editor.py:359
 msgid "m3u Editor"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:6882
+#: usr/lib/yuki-iptv/yuki-iptv.py:6804
 msgid "Help"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:6901
+#: usr/lib/yuki-iptv/yuki-iptv.py:6823
 msgid "Writing EPG cache"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7209 usr/lib/yuki-iptv/yuki_iptv/epg.py:130
+#: usr/lib/yuki-iptv/yuki-iptv.py:7121 usr/lib/yuki-iptv/yuki_iptv/epg.py:130
 msgid "Updating TV guide..."
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7234 usr/lib/yuki-iptv/yuki-iptv.py:7397
+#: usr/lib/yuki-iptv/yuki-iptv.py:7146 usr/lib/yuki-iptv/yuki-iptv.py:7310
 msgid "TV guide update error!"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7325
+#: usr/lib/yuki-iptv/yuki-iptv.py:7235
 msgid "bps"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7326
+#: usr/lib/yuki-iptv/yuki-iptv.py:7236
 msgid "Mbps"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7326
+#: usr/lib/yuki-iptv/yuki-iptv.py:7236
 msgid "Gbps"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7326
+#: usr/lib/yuki-iptv/yuki-iptv.py:7236
 msgid "Tbps"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7380
+#: usr/lib/yuki-iptv/yuki-iptv.py:7290
 msgid "TV guide update done!"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7917
+#: usr/lib/yuki-iptv/yuki-iptv.py:7308
+msgid "EPG is outdated!"
+msgstr ""
+
+#: usr/lib/yuki-iptv/yuki-iptv.py:7830
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:212
 #, python-format
 msgid "-%d second"
@@ -1019,7 +1023,7 @@ msgid_plural "-%d seconds"
 msgstr[0] ""
 msgstr[1] ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7918
+#: usr/lib/yuki-iptv/yuki-iptv.py:7831
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:213
 #, python-format
 msgid "+%d second"
@@ -1027,7 +1031,7 @@ msgid_plural "+%d seconds"
 msgstr[0] ""
 msgstr[1] ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7919 usr/lib/yuki-iptv/yuki-iptv.py:7921
+#: usr/lib/yuki-iptv/yuki-iptv.py:7832 usr/lib/yuki-iptv/yuki-iptv.py:7834
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:214
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:216
 #, python-format
@@ -1036,7 +1040,7 @@ msgid_plural "-%d minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7920 usr/lib/yuki-iptv/yuki-iptv.py:7922
+#: usr/lib/yuki-iptv/yuki-iptv.py:7833 usr/lib/yuki-iptv/yuki-iptv.py:7835
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:215
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:217
 #, python-format
@@ -1045,109 +1049,109 @@ msgid_plural "+%d minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7931 usr/lib/yuki-iptv/yuki-iptv.py:7948
+#: usr/lib/yuki-iptv/yuki-iptv.py:7844 usr/lib/yuki-iptv/yuki-iptv.py:7861
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:304
 msgid "V&olume -"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7932 usr/lib/yuki-iptv/yuki-iptv.py:7949
+#: usr/lib/yuki-iptv/yuki-iptv.py:7845 usr/lib/yuki-iptv/yuki-iptv.py:7862
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:308
 msgid "Vo&lume +"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7933
+#: usr/lib/yuki-iptv/yuki-iptv.py:7846
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:235
 msgid "&Normal speed"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7934 usr/lib/yuki-iptv/yuki-iptv.py:7939
+#: usr/lib/yuki-iptv/yuki-iptv.py:7847 usr/lib/yuki-iptv/yuki-iptv.py:7852
 msgid "Quit the program"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7937
+#: usr/lib/yuki-iptv/yuki-iptv.py:7850
 msgid "Exit fullscreen"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7938
+#: usr/lib/yuki-iptv/yuki-iptv.py:7851
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:355
 msgid "&Update TV guide"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7940
+#: usr/lib/yuki-iptv/yuki-iptv.py:7853
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:328
 msgid "Show/hide playlist"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7941
+#: usr/lib/yuki-iptv/yuki-iptv.py:7854
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:332
 msgid "Show/hide controls panel"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7942
+#: usr/lib/yuki-iptv/yuki-iptv.py:7855
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:264
 msgid "&Video settings"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7943 usr/lib/yuki-iptv/yuki-iptv.py:7944
+#: usr/lib/yuki-iptv/yuki-iptv.py:7856 usr/lib/yuki-iptv/yuki-iptv.py:7857
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:255
 msgid "&Fullscreen"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7945
+#: usr/lib/yuki-iptv/yuki-iptv.py:7858
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:300
 msgid "&Mute audio"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7946
+#: usr/lib/yuki-iptv/yuki-iptv.py:7859
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:194
 msgid "&Play / Pause"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7947
+#: usr/lib/yuki-iptv/yuki-iptv.py:7860
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:198
 msgid "&Stop"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7950
+#: usr/lib/yuki-iptv/yuki-iptv.py:7863
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:250
 msgid "&Next"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7952
+#: usr/lib/yuki-iptv/yuki-iptv.py:7865
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:246
 msgid "&Previous"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7953
+#: usr/lib/yuki-iptv/yuki-iptv.py:7866
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:184
 msgid "&m3u Editor"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7954
+#: usr/lib/yuki-iptv/yuki-iptv.py:7867
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:176
 msgid "&Playlists"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7955
+#: usr/lib/yuki-iptv/yuki-iptv.py:7868
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:180
 msgid "&Update current playlist"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7958
+#: usr/lib/yuki-iptv/yuki-iptv.py:7871
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:363
 msgid "&Channel sort"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7961
+#: usr/lib/yuki-iptv/yuki-iptv.py:7874
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:259
 msgid "&Compact mode"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7962
+#: usr/lib/yuki-iptv/yuki-iptv.py:7875
 msgid "TV guide for all channels"
 msgstr ""
 
-#: usr/lib/yuki-iptv/yuki-iptv.py:7963
+#: usr/lib/yuki-iptv/yuki-iptv.py:7876
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:336
 msgid "Window always on top"
 msgstr ""
