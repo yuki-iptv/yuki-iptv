@@ -471,9 +471,15 @@ if __name__ == '__main__':
             if not epg_updating:
                 first_boot = False
 
+        epg_update_allowed = True
+
+        if settings["donotupdateepg"]:
+            epg_update_allowed = False
+
         def force_update_epg_act():
-            global epg_failed
+            global epg_failed, epg_update_allowed
             logger.info("Force update EPG triggered")
+            epg_update_allowed = True
             if epg_failed:
                 epg_failed = False
             force_update_epg()
@@ -7147,7 +7153,8 @@ if __name__ == '__main__':
             try:
                 global stopped, time_stop, first_boot, programmes, btn_update, \
                     epg_thread, static_text, manager, tvguide_sets, epg_updating, ic, \
-                    return_dict, waiting_for_epg, epg_failed, first_boot_1, progress_dict
+                    return_dict, waiting_for_epg, epg_failed, first_boot_1, progress_dict, \
+                    epg_update_allowed
                 if not first_boot:
                     first_boot = True
                     if settings['epg'] and settings['epg'] != 'http://' and not epg_failed:
@@ -7156,37 +7163,38 @@ if __name__ == '__main__':
                             if not first_boot_1:
                                 update_epg = True
                             if update_epg:
-                                epg_updating = True
-                                l1.setStatic2(True)
-                                l1.show()
-                                static_text = _('Updating TV guide...')
-                                l1.setText2("")
-                                time_stop = time.time() + 3
-                                try:
-                                    manager = Manager()
-                                    return_dict = manager.dict()
-                                    progress_dict = manager.dict()
-                                    p = Process(
-                                        target=worker,
-                                        args=(
-                                            0, settings, get_catchup_days(),
-                                            return_dict, progress_dict,
-                                        )
-                                    )
-                                    epg_thread = p
-                                    p.start()
-                                    waiting_for_epg = True
-                                except Exception as e1:
-                                    epg_failed = True
-                                    logger.warning(
-                                        "[TV guide, part 1] Caught exception: " + str(e1)
-                                    )
-                                    logger.warning(traceback.format_exc())
-                                    l1.setStatic2(False)
+                                if epg_update_allowed:
+                                    epg_updating = True
+                                    l1.setStatic2(True)
                                     l1.show()
-                                    l1.setText2(_('TV guide update error!'))
+                                    static_text = _('Updating TV guide...')
+                                    l1.setText2("")
                                     time_stop = time.time() + 3
-                                    epg_updating = False
+                                    try:
+                                        manager = Manager()
+                                        return_dict = manager.dict()
+                                        progress_dict = manager.dict()
+                                        p = Process(
+                                            target=worker,
+                                            args=(
+                                                0, settings, get_catchup_days(),
+                                                return_dict, progress_dict,
+                                            )
+                                        )
+                                        epg_thread = p
+                                        p.start()
+                                        waiting_for_epg = True
+                                    except Exception as e1:
+                                        epg_failed = True
+                                        logger.warning(
+                                            "[TV guide, part 1] Caught exception: " + str(e1)
+                                        )
+                                        logger.warning(traceback.format_exc())
+                                        l1.setStatic2(False)
+                                        l1.show()
+                                        l1.setText2(_('TV guide update error!'))
+                                        time_stop = time.time() + 3
+                                        epg_updating = False
                             else:
                                 logger.info("EPG update at boot disabled")
                             first_boot_1 = False
