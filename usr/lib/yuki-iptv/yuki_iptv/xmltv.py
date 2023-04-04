@@ -69,7 +69,7 @@ def parse_as_xmltv(epg, settings, catchup_days1, progress_dict, epg_i, epg_setti
                     for icon in all_icons:
                         try:
                             if 'src' in icon.attrib:
-                                icons[display_name.text.strip()] = icon.attrib['src'].strip()
+                                icons[display_name.text.strip().lower()] = icon.attrib['src'].strip()
                         except:
                             pass
             except:
