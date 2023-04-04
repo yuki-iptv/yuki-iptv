@@ -4710,7 +4710,9 @@ if __name__ == '__main__':
                 array, page_box, channelfilter, prog_match_arr, \
                 channel_logos_request_old, channel_logos_process, \
                 logos_fnames_cache, logos_update_manager_dict
-            visible_channels = {}
+
+            channel_logos_request = {}
+
             try:
                 idx = (page_box.value() - 1) * settings["channelsonpage"]
             except:
@@ -4848,7 +4850,24 @@ if __name__ == '__main__':
                 chan_name = i
 
                 orig_chan_name = chan_name
-                visible_channels[chan_name] = prog_search
+
+                if settings['channellogos'] != 3:
+                    try:
+                        channel_logo1 = ""
+                        if 'tvg-logo' in array_filtered[i]:
+                            channel_logo1 = array_filtered[i]['tvg-logo']
+
+                        epg_logo1 = ""
+                        if prog_search in epg_icons:
+                            epg_logo1 = epg_icons[prog_search]
+
+                        channel_logos_request[array_filtered[i]['title']] = [
+                            channel_logo1,
+                            epg_logo1
+                        ]
+                    except:
+                        logger.warning(f"Exception in channel logos (channel '{i}')")
+                        logger.warning(traceback.format_exc())
 
                 if len(chan_name) > MAX_SIZE_CHAN:
                     chan_name = chan_name[0:MAX_SIZE_CHAN] + "..."
@@ -4885,34 +4904,38 @@ if __name__ == '__main__':
                 mycwdg.setIcon(TV_ICON)
 
                 if settings['channellogos'] != 3:  # Do not load any logos
-                    if orig_chan_name in logos_fnames_cache:
-                        if settings['channellogos'] == 0:  # Prefer M3U
-                            first_loaded = False
-                            if logos_fnames_cache[orig_chan_name][0]:
-                                chan_logo = get_pixmap_from_filename(logos_fnames_cache[orig_chan_name][0])
-                                if chan_logo:
-                                    first_loaded = True
-                                    mycwdg.setIcon(chan_logo)
-                            if not first_loaded:
-                                chan_logo = get_pixmap_from_filename(logos_fnames_cache[orig_chan_name][1])
-                                if chan_logo:
-                                    mycwdg.setIcon(chan_logo)
-                        elif settings['channellogos'] == 1:  # Prefer EPG
-                            first_loaded = False
-                            if logos_fnames_cache[orig_chan_name][1]:
-                                chan_logo = get_pixmap_from_filename(logos_fnames_cache[orig_chan_name][1])
-                                if chan_logo:
-                                    first_loaded = True
-                                    mycwdg.setIcon(chan_logo)
-                            if not first_loaded:
-                                chan_logo = get_pixmap_from_filename(logos_fnames_cache[orig_chan_name][0])
-                                if chan_logo:
-                                    mycwdg.setIcon(chan_logo)
-                        elif settings['channellogos'] == 2:  # Do not load from EPG (only M3U)
-                            if logos_fnames_cache[orig_chan_name][0]:
-                                chan_logo = get_pixmap_from_filename(logos_fnames_cache[orig_chan_name][0])
-                                if chan_logo:
-                                    mycwdg.setIcon(chan_logo)
+                    try:
+                        if orig_chan_name in logos_fnames_cache:
+                            if settings['channellogos'] == 0:  # Prefer M3U
+                                first_loaded = False
+                                if logos_fnames_cache[orig_chan_name][0]:
+                                    chan_logo = get_pixmap_from_filename(logos_fnames_cache[orig_chan_name][0])
+                                    if chan_logo:
+                                        first_loaded = True
+                                        mycwdg.setIcon(chan_logo)
+                                if not first_loaded:
+                                    chan_logo = get_pixmap_from_filename(logos_fnames_cache[orig_chan_name][1])
+                                    if chan_logo:
+                                        mycwdg.setIcon(chan_logo)
+                            elif settings['channellogos'] == 1:  # Prefer EPG
+                                first_loaded = False
+                                if logos_fnames_cache[orig_chan_name][1]:
+                                    chan_logo = get_pixmap_from_filename(logos_fnames_cache[orig_chan_name][1])
+                                    if chan_logo:
+                                        first_loaded = True
+                                        mycwdg.setIcon(chan_logo)
+                                if not first_loaded:
+                                    chan_logo = get_pixmap_from_filename(logos_fnames_cache[orig_chan_name][0])
+                                    if chan_logo:
+                                        mycwdg.setIcon(chan_logo)
+                            elif settings['channellogos'] == 2:  # Do not load from EPG (only M3U)
+                                if logos_fnames_cache[orig_chan_name][0]:
+                                    chan_logo = get_pixmap_from_filename(logos_fnames_cache[orig_chan_name][0])
+                                    if chan_logo:
+                                        mycwdg.setIcon(chan_logo)
+                    except:
+                        logger.warning("Set failed logos failed with exception")
+                        logger.warning(traceback.format_exc())
 
                 # Create QListWidgetItem
                 myQListWidgetItem = QtWidgets.QListWidgetItem()
@@ -4940,26 +4963,9 @@ if __name__ == '__main__':
             # Fetch channel logos
             try:
                 if settings['channellogos'] != 3:
-                    channel_logos_request = {}
-                    for channel_2 in array:
-                        channel_2_item = getArrayItem(channel_2)
-                        if channel_2_item['title'] in visible_channels:
-                            channel_logo1 = ""
-                            if 'tvg-logo' in channel_2_item:
-                                channel_logo1 = channel_2_item['tvg-logo']
-
-                            epg_logo_search = visible_channels[channel_2_item['title']]
-                            epg_logo1 = ""
-                            if epg_logo_search in epg_icons:
-                                epg_logo1 = epg_icons[epg_logo_search]
-
-                            channel_logos_request[channel_2_item['title']] = [
-                                channel_logo1,
-                                epg_logo1
-                            ]
                     if channel_logos_request != channel_logos_request_old:
                         channel_logos_request_old = channel_logos_request
-                        # logger.debug("Channel logos request")
+                        logger.debug("Channel logos request")
                         if channel_logos_process and channel_logos_process.is_alive():
                             # logger.debug("Old channel logos request found, stopping it")
                             channel_logos_process.kill()
