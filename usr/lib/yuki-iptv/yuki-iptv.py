@@ -2732,11 +2732,6 @@ if __name__ == '__main__':
                     process_3.terminate()
             if manager:
                 manager.shutdown()
-            try:
-                if channel_logo_data.manager_1:
-                    channel_logo_data.manager_1.shutdown()
-            except:
-                pass
             win.close()
             settings_win.close()
             shortcuts_win.close()
@@ -4580,11 +4575,6 @@ if __name__ == '__main__':
                 except:
                     return arr0
             return arr0
-
-        class channel_logo_data:
-            pass
-
-        channel_logo_data.manager_1 = None
 
         if not os.path.isdir(str(Path(LOCAL_DIR, 'logo_cache'))):
             os.mkdir(str(Path(LOCAL_DIR, 'logo_cache')))
@@ -7082,11 +7072,6 @@ if __name__ == '__main__':
                     process_3.terminate()
             if manager:
                 manager.shutdown()
-            try:
-                if channel_logo_data.manager_1:
-                    channel_logo_data.manager_1.shutdown()
-            except:
-                pass
             logger.info("Stopped")
             # Stopping all childs
             os.killpg(0, signal.SIGKILL)
@@ -7319,7 +7304,10 @@ if __name__ == '__main__':
                             logger.warning(traceback.format_exc())
                             l1.setStatic2(False)
                             l1.show()
-                            l1.setText2(_('TV guide update error!'))
+                            if 'Programme not actual' in str(e2):
+                                l1.setText2(_('EPG is outdated!'))
+                            else:
+                                l1.setText2(_('TV guide update error!'))
                             time_stop = time.time() + 3
                         epg_updating = False
                         waiting_for_epg = False
