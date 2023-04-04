@@ -988,7 +988,7 @@ if __name__ == '__main__':
                 return self.label.height()
 
         settings_win = settings_scrollable_window()
-        settings_win.resize(720, 600)
+        settings_win.resize(800, 600)
         settings_win.setWindowTitle(_('Settings'))
         settings_win.setWindowIcon(main_icon)
 
@@ -2666,6 +2666,12 @@ if __name__ == '__main__':
                         sfld_text = sfld_text.replace('~', HOME_SYMBOL, 1)
             except:
                 pass
+
+            if settings["epgdays"] != epgdays.value():
+                logger.info("EPG days option changed, removing cache")
+                if os.path.exists(str(Path(LOCAL_DIR, 'epg.cache'))):
+                    os.remove(str(Path(LOCAL_DIR, 'epg.cache')))
+
             settings_arr = {
                 "m3u": sm3u.text(),
                 "epg": sepg.text(),
@@ -2677,6 +2683,7 @@ if __name__ == '__main__':
                 "hwaccel": shwaccel.isChecked(),
                 "sort": sort_widget.currentIndex(),
                 "cache_secs": scache1.value(),
+                "epgdays": epgdays.value(),
                 "ua": useragent_choose_2.text(),
                 "mpv_options": mpv_options.text(),
                 'donotupdateepg': donot_flag.isChecked(),
@@ -2860,6 +2867,19 @@ if __name__ == '__main__':
         scache1.setMaximum(120)
         scache1.setValue(settings["cache_secs"])
 
+        epgdays_p = QtWidgets.QLabel(
+            (gettext.ngettext("%d day", "%d days", 0) % 0).replace('0 ', '')
+        )
+
+        epgdays_label = QtWidgets.QLabel('{}:'.format(
+            _('Load EPG for')
+        ))
+
+        epgdays = QtWidgets.QSpinBox()
+        epgdays.setMinimum(1)
+        epgdays.setMaximum(7)
+        epgdays.setValue(settings["epgdays"])
+
         def xtream_select():
             sm3u_text = sm3u.text()
             if sm3u_text.startswith('XTREAM::::::::::::::'):
@@ -2911,6 +2931,7 @@ if __name__ == '__main__':
         movedragging_label = QtWidgets.QLabel("{}:".format(_('Move window by dragging')))
         styleredefoff_label = QtWidgets.QLabel("{}:".format(_('Enable styles redefinition')))
         volumechangestep_label = QtWidgets.QLabel("{}:".format(_('Volume change step')))
+        volumechangestep_percent = QtWidgets.QLabel("%")
         channels_label = QtWidgets.QLabel("{}:".format(_('Channels on\npage')))
         channels_box = QtWidgets.QSpinBox()
         channels_box.setSuffix('    ')
@@ -3081,6 +3102,7 @@ if __name__ == '__main__':
         tab_actions = QtWidgets.QWidget()
         tab_catchup = QtWidgets.QWidget()
         tab_debug = QtWidgets.QWidget()
+        tab_epg = QtWidgets.QWidget()
 
         tabs.addTab(tab_main, _('Main'))
         tabs.addTab(tab_video, _('Video'))
@@ -3088,6 +3110,7 @@ if __name__ == '__main__':
         tabs.addTab(tab_gui, _('GUI'))
         tabs.addTab(tab_actions, _('Actions'))
         tabs.addTab(tab_catchup, _('Catchup'))
+        tabs.addTab(tab_epg, _('EPG'))
         tabs.addTab(tab_other, _('Other'))
         tabs.addTab(tab_debug, _('Debug'))
 
@@ -3139,15 +3162,25 @@ if __name__ == '__main__':
         tab_other.layout.addWidget(mpv_options, 0, 1)
         tab_other.layout.addWidget(hidempv_label, 1, 0)
         tab_other.layout.addWidget(hidempv_flag, 1, 1)
-        tab_other.layout.addWidget(donot_label, 2, 0)
-        tab_other.layout.addWidget(donot_flag, 2, 1)
-        tab_other.layout.addWidget(nocacheepg_label, 3, 0)
-        tab_other.layout.addWidget(nocacheepg_flag, 3, 1)
-        tab_other.layout.addWidget(channellogos_label, 4, 0)
-        tab_other.layout.addWidget(channellogos_select, 4, 1)
-        tab_other.layout.addWidget(volumechangestep_label, 5, 0)
-        tab_other.layout.addWidget(volumechangestep_choose, 5, 1)
+        tab_other.layout.addWidget(channellogos_label, 2, 0)
+        tab_other.layout.addWidget(channellogos_select, 2, 1)
+        tab_other.layout.addWidget(volumechangestep_label, 3, 0)
+        tab_other.layout.addWidget(volumechangestep_choose, 3, 1)
+        tab_other.layout.addWidget(volumechangestep_percent, 3, 2)
         tab_other.setLayout(tab_other.layout)
+
+        tab_epg.layout = QtWidgets.QGridLayout()
+        tab_epg.layout.addWidget(epgdays_label, 0, 0)
+        tab_epg.layout.addWidget(epgdays, 0, 1)
+        tab_epg.layout.addWidget(epgdays_p, 0, 2)
+        tab_epg.layout.addWidget(donot_label, 1, 0)
+        tab_epg.layout.addWidget(donot_flag, 1, 1)
+        tab_epg.layout.addWidget(nocacheepg_label, 2, 0)
+        tab_epg.layout.addWidget(nocacheepg_flag, 2, 1)
+        tab_epg.layout.addWidget(QtWidgets.QLabel(), 2, 2)
+        tab_epg.layout.addWidget(QtWidgets.QLabel(), 2, 3)
+        tab_epg.layout.addWidget(QtWidgets.QLabel(), 3, 0)
+        tab_epg.setLayout(tab_epg.layout)
 
         tab_debug.layout = QtWidgets.QGridLayout()
         tab_debug.layout.addWidget(styleredefoff_label, 0, 0)
@@ -3203,6 +3236,8 @@ if __name__ == '__main__':
         tab_catchup.layout.addWidget(catchupenable_label, 0, 0)
         tab_catchup.layout.addWidget(catchupenable_flag, 0, 1)
         tab_catchup.layout.addWidget(QtWidgets.QLabel(), 0, 2)
+        tab_catchup.layout.addWidget(QtWidgets.QLabel(), 0, 3)
+        tab_catchup.layout.addWidget(QtWidgets.QLabel(), 1, 0)
         tab_catchup.setLayout(tab_catchup.layout)
 
         grid = QtWidgets.QVBoxLayout()

@@ -40,6 +40,7 @@ def parse_settings(
         "hwaccel": False,
         "sort": 0,
         "cache_secs": 0,
+        "epgdays": 1,
         "ua": "Mozilla/5.0",
         "mpv_options": '',
         'donotupdateepg': False,

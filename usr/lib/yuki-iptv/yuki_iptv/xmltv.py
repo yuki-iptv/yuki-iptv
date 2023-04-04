@@ -102,7 +102,7 @@ def parse_as_xmltv(epg, settings, catchup_days1, progress_dict, epg_i, epg_setti
                     hour=0, minute=0, second=0
                 ).timestamp() + (3600 * settings["epgoffset"])
                 day_end = (
-                    datetime.datetime.now() + datetime.timedelta(days=1)
+                    datetime.datetime.now() + datetime.timedelta(days=settings["epgdays"])
                 ).replace(
                     hour=23, minute=59, second=59
                 ).timestamp() + (3600 * settings["epgoffset"])

@@ -33,7 +33,11 @@ def test_xmltv():
     with open(Path('tests', 'xmltv.xml'), 'r', encoding='utf8') as xmltv_file_fd:
         xmltv_file = xmltv_file_fd.read()
     for epgoffset in [0, -124, 3490]:
-        xmltv = parse_as_xmltv(xmltv_file, {"epgoffset": epgoffset}, 1, {}, 0, "", force=True)
+        xmltv = parse_as_xmltv(
+            xmltv_file,
+            {"epgoffset": epgoffset, "epgdays": 1},
+            1, {}, 0, "", force=True
+        )
         assert xmltv == [
             {
                 'Test channel 1': [
