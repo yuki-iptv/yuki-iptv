@@ -954,9 +954,6 @@ if __name__ == '__main__':
 
         TV_ICON = QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'tv.png')))
         MOVIE_ICON = QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'movie.png')))
-        ICONS_CACHE = {}
-        ICONS_CACHE_FETCHED = {}
-        ICONS_CACHE_FETCHED_EPG = {}
 
         def get_current_time():
             return time.strftime('%d.%m.%y %H:%M', time.localtime())
@@ -2736,13 +2733,8 @@ if __name__ == '__main__':
             if manager:
                 manager.shutdown()
             try:
-                if channel_icons_data.manager_1:
-                    channel_icons_data.manager_1.shutdown()
-            except:
-                pass
-            try:
-                if channel_icons_data_epg.manager_1:
-                    channel_icons_data_epg.manager_1.shutdown()
+                if channel_logo_data.manager_1:
+                    channel_logo_data.manager_1.shutdown()
             except:
                 pass
             win.close()
@@ -2783,11 +2775,11 @@ if __name__ == '__main__':
 
         def do_clear_logo_cache():
             logger.info("Clearing channel logos cache...")
-            if os.path.isdir(Path(LOCAL_DIR, 'channel_icons_cache')):
-                channel_logos = os.listdir(Path(LOCAL_DIR, 'channel_icons_cache'))
+            if os.path.isdir(Path(LOCAL_DIR, 'logo_cache')):
+                channel_logos = os.listdir(Path(LOCAL_DIR, 'logo_cache'))
                 for channel_logo in channel_logos:
-                    if os.path.isfile(Path(LOCAL_DIR, 'channel_icons_cache', channel_logo)):
-                        os.remove(Path(LOCAL_DIR, 'channel_icons_cache', channel_logo))
+                    if os.path.isfile(Path(LOCAL_DIR, 'logo_cache', channel_logo)):
+                        os.remove(Path(LOCAL_DIR, 'logo_cache', channel_logo))
             logger.info("Channel logos cache cleared!")
 
         sm3u = QtWidgets.QLineEdit()
@@ -4589,15 +4581,13 @@ if __name__ == '__main__':
                     return arr0
             return arr0
 
-        class channel_icons_data:
+        class channel_logo_data:
             pass
 
-        channel_icons_data.manager_1 = None
+        channel_logo_data.manager_1 = None
 
-        class channel_icons_data_epg:
-            pass
-
-        channel_icons_data_epg.manager_1 = None
+        if not os.path.isdir(str(Path(LOCAL_DIR, 'logo_cache'))):
+            os.mkdir(str(Path(LOCAL_DIR, 'logo_cache')))
 
         class Pickable_QIcon(QtGui.QIcon):
             def __reduce__(self):
@@ -4619,180 +4609,42 @@ if __name__ == '__main__':
                     stream = QtCore.QDataStream(ba, QtCore.QIODeviceBase.OpenModeFlag.ReadOnly)
                 stream >> self
 
-        def fetch_remote_channel_icon(chan_name, logo_url, return_dict_2):
-            base64_enc = base64.b64encode(
-                bytes(chan_name + ":::" + logo_url, 'utf-8')
-            ).decode('utf-8')
-            sha512_hash = str(hashlib.sha512(bytes(base64_enc, 'utf-8')).hexdigest()) + ".cacheimg"
-            cache_file = str(Path(LOCAL_DIR, 'channel_icons_cache', sha512_hash))
+        def fetch_remote_channel_icon(chan_name, logo_url):
+            icon_ret = None
+            if not logo_url:
+                return None
+            base64_enc = base64.b64encode(bytes(logo_url, 'utf-8')).decode('utf-8')
+            sha512_hash = str(hashlib.sha512(bytes(base64_enc, 'utf-8')).hexdigest()) + ".img"
+            cache_file = str(Path(LOCAL_DIR, 'logo_cache', sha512_hash))
             if os.path.isfile(cache_file):
-                cache_file_2 = open(cache_file, 'rb')
-                cache_file_2_read = cache_file_2.read()
-                cache_file_2.close()
-                req_data = cache_file_2_read
+                # logger.debug("is remote icon, cache available")
+                icon_ret = cache_file
             else:
                 try:
                     if os.path.isfile(logo_url.strip()):
-                        with open(logo_url.strip(), 'rb') as logo_url_fd:
-                            req_data = logo_url_fd.read()
+                        # logger.debug("is local icon")
+                        icon_ret = logo_url.strip()
                     else:
+                        # logger.debug("is remote icon, cache not available, fetching it...")
                         req_data_ua, req_data_ref = get_ua_ref_for_channel(chan_name)
                         req_data_headers = {
                             'User-Agent': req_data_ua
                         }
                         if req_data_ref:
                             req_data_headers['Referer'] = req_data_ref
-                        req_data = requests.get(
+                        req_data1 = requests.get(
                             logo_url,
                             headers=req_data_headers,
                             timeout=(3, 3),
                             stream=True
                         ).content
-                    cache_file_2 = open(cache_file, 'wb')
-                    cache_file_2.write(req_data)
-                    cache_file_2.close()
+                        cache_file_2 = open(cache_file, 'wb')
+                        cache_file_2.write(req_data1)
+                        cache_file_2.close()
+                        icon_ret = cache_file
                 except:
-                    req_data = None
-            try:
-                qp_1 = QtGui.QPixmap()
-                qp_1.loadFromData(req_data)
-                if not qp_1.isNull():
-                    qp_1 = qp_1.scaled(64, 64, _enum(QtCore.Qt, 'AspectRatioMode.KeepAspectRatio'))
-                    fetched_icon = Pickable_QIcon(qp_1)
-                    return_dict_2[chan_name] = [fetched_icon]
-                else:
-                    return_dict_2[chan_name] = None
-            except:
-                return_dict_2[chan_name] = None
-
-        channel_icons_data.load_completed = False
-        channel_icons_data.do_next_update = False
-
-        channel_icons_data_epg.load_completed = False
-        channel_icons_data_epg.do_next_update = False
-
-        def channel_icons_thread():
-            try:
-                if channel_icons_data.do_next_update:
-                    channel_icons_data.do_next_update = False
-                    btn_update.click()
-                    logger.info("Channel logos updated")
-                try:
-                    if len(channel_icons_data.return_dict) != channel_icons_data.total:
-                        logger.info("Channel logos loaded: {}/{}".format(
-                            len(channel_icons_data.return_dict), channel_icons_data.total
-                        ))
-                        btn_update.click()
-                    else:
-                        if not channel_icons_data.load_completed:
-                            channel_icons_data.load_completed = True
-                            channel_icons_data.do_next_update = True
-                            logger.info("Channel logos loaded ({}/{}), took {} seconds".format(
-                                len(channel_icons_data.return_dict),
-                                channel_icons_data.total,
-                                time.time() - channel_icons_data.load_time
-                            ))
-                except:
-                    pass
-            except:
-                pass
-
-        def channel_icons_thread_epg():
-            try:
-                if channel_icons_data_epg.do_next_update:
-                    channel_icons_data_epg.do_next_update = False
-                    btn_update.click()
-                    logger.info("Channel logos (EPG) updated")
-                try:
-                    if len(channel_icons_data_epg.return_dict) != channel_icons_data_epg.total:
-                        logger.info("Channel logos (EPG) loaded: {}/{}".format(
-                            len(channel_icons_data_epg.return_dict), channel_icons_data_epg.total
-                        ))
-                        btn_update.click()
-                    else:
-                        if not channel_icons_data_epg.load_completed:
-                            channel_icons_data_epg.load_completed = True
-                            channel_icons_data_epg.do_next_update = True
-                            logger.info(
-                                "Channel logos (EPG) loaded ({}/{}), took {} seconds".format(
-                                    len(channel_icons_data_epg.return_dict),
-                                    channel_icons_data_epg.total,
-                                    time.time() - channel_icons_data_epg.load_time
-                                )
-                            )
-                except:
-                    pass
-            except:
-                pass
-
-        epg_icons_found = False
-        epg_icons_aldisabled = False
-
-        def epg_channel_icons_thread():
-            global epg_icons, epg_icons_found, epg_icons_aldisabled
-            if settings['channellogos'] < 2:
-                if not epg_icons_found:
-                    if epg_icons:
-                        epg_icons_found = True
-                        logger.info("EPG icons ready")
-            else:
-                if not epg_icons_aldisabled:
-                    epg_icons_aldisabled = True
-                    logger.info("EPG icons disabled")
-
-        if settings['channellogos'] == 3:
-            channel_icons_data.load_completed = True
-
-        @async_function
-        def update_channel_icons():
-            while not win.isVisible():
-                time.sleep(1)
-            logger.info("Loading channel logos...")
-            if not os.path.isdir(str(Path(LOCAL_DIR, 'channel_icons_cache'))):
-                os.mkdir(str(Path(LOCAL_DIR, 'channel_icons_cache')))
-            channel_icons_data.load_time = time.time()
-            channel_icons_data.total = 0
-
-            for chan_4 in array:
-                chan_4_logo = getArrayItem(chan_4)['tvg-logo']
-                if chan_4_logo:
-                    channel_icons_data.total += 1
-
-            for chan_4 in array:
-                chan_4_logo = getArrayItem(chan_4)['tvg-logo']
-                if chan_4_logo:
-                    # fetching_str = "Fetching channel icon from URL '{}' for channel '{}'"
-                    # logger.info(fetching_str.format(chan_4_logo, chan_4))
-                    fetch_remote_channel_icon(
-                        chan_4, chan_4_logo, channel_icons_data.return_dict
-                    )
-
-        @async_function
-        def update_channel_icons_epg():
-            global epg_icons_found
-            while not win.isVisible():
-                time.sleep(1)
-            while not epg_icons_found:
-                time.sleep(1)
-            logger.info("Loading channel logos (EPG)...")
-            if not os.path.isdir(str(Path(LOCAL_DIR, 'channel_icons_cache'))):
-                os.mkdir(str(Path(LOCAL_DIR, 'channel_icons_cache')))
-            channel_icons_data_epg.load_time = time.time()
-            channel_icons_data_epg.total = 0
-
-            for chan_5 in epg_icons:
-                chan_5_logo = epg_icons[chan_5]
-                if chan_5_logo:
-                    channel_icons_data_epg.total += 1
-
-            for chan_5 in epg_icons:
-                chan_5_logo = epg_icons[chan_5]
-                if chan_5_logo:
-                    # fetching_str_2 = "Fetching channel icon from URL '{}' for channel '{}'"
-                    # logger.info(fetching_str_2.format(chan_5_logo, chan_5))
-                    fetch_remote_channel_icon(
-                        chan_5, chan_5_logo, channel_icons_data_epg.return_dict
-                    )
+                    icon_ret = None
+            return icon_ret
 
         def get_of_txt(of_num):
             # try:
@@ -4804,22 +4656,71 @@ if __name__ == '__main__':
 
         prog_match_arr = {}
 
-        first_gen_chans = True
+        channel_logos_request_old = {}
+        channel_logos_process = None
+        logos_manager = Manager()
+        logos_fnames_cache = logos_manager.dict()
+        logos_update_manager = Manager()
+        logos_update_manager_dict = logos_update_manager.dict()
+        logos_update_manager_dict['inprogress'] = False
+        logos_update_manager_dict['completed'] = False
+        logos_cache = {}
+
+        def channel_logos_worker(procnum1, requested_logos, logos_cache1, update_dict):
+            # logger.debug("channel_logos_worker started")
+            update_dict['inprogress'] = True
+            for logo_channel in requested_logos:
+                # logger.debug(f"Downloading logo for channel '{logo_channel}'...")
+                logo_m3u = fetch_remote_channel_icon(
+                    logo_channel,
+                    requested_logos[logo_channel][0]
+                )
+                logo_epg = fetch_remote_channel_icon(
+                    logo_channel,
+                    requested_logos[logo_channel][1]
+                )
+                logos_cache1[logo_channel] = [logo_m3u, logo_epg]
+            # logger.debug("channel_logos_worker ended")
+            update_dict['inprogress'] = False
+            update_dict['completed'] = True
+
+        def get_pixmap_from_filename(pixmap_filename):
+            if pixmap_filename in logos_cache:
+                return logos_cache[pixmap_filename]
+            else:
+                try:
+                    with open(pixmap_filename, 'rb') as pixmap_file:
+                        qp_1 = QtGui.QPixmap()
+                        qp_1.loadFromData(pixmap_file.read())
+                    if not qp_1.isNull():
+                        qp_1 = qp_1.scaled(64, 64, _enum(QtCore.Qt, 'AspectRatioMode.KeepAspectRatio'))
+                        icon_pixmap = Pickable_QIcon(qp_1)
+                        logos_cache[pixmap_filename] = icon_pixmap
+                        icon_pixmap = None
+                        return logos_cache[pixmap_filename]
+                except:
+                    return None
+
+        thread_logos_update_lock = False
+
+        def thread_logos_update():
+            global thread_logos_update_lock, logos_update_manager_dict
+            try:
+                if not thread_logos_update_lock:
+                    thread_logos_update_lock = True
+                    if logos_update_manager_dict['completed']:
+                        logos_update_manager_dict['completed'] = False
+                        btn_update.click()
+                    thread_logos_update_lock = False
+            except:
+                pass
 
         def gen_chans():
-            global ICONS_CACHE, playing_chan, current_group, \
-                array, page_box, channelfilter, first_gen_chans, prog_match_arr
-            if first_gen_chans:
-                first_gen_chans = False
-                channel_icons_data.manager_1 = Manager()
-                channel_icons_data.return_dict = channel_icons_data.manager_1.dict()
-                channel_icons_data_epg.manager_1 = Manager()
-                channel_icons_data_epg.return_dict = channel_icons_data_epg.manager_1.dict()
-                if settings['channellogos'] != 3:
-                    update_channel_icons()
-                else:
-                    logger.info("Channel logos from playlist disabled")
-                update_channel_icons_epg()
+            global playing_chan, current_group, \
+                array, page_box, channelfilter, prog_match_arr, \
+                channel_logos_request_old, channel_logos_process, \
+                logos_fnames_cache, logos_update_manager_dict
+            visible_channels = {}
             try:
                 idx = (page_box.value() - 1) * settings["channelsonpage"]
             except:
@@ -4955,6 +4856,10 @@ if __name__ == '__main__':
                     mycwdg = cwdg_simple()
                 MAX_SIZE_CHAN = 21
                 chan_name = i
+
+                orig_chan_name = chan_name
+                visible_channels[chan_name] = prog_search
+
                 if len(chan_name) > MAX_SIZE_CHAN:
                     chan_name = chan_name[0:MAX_SIZE_CHAN] + "..."
                 unicode_play_symbol = chr(9654) + " "
@@ -4989,51 +4894,35 @@ if __name__ == '__main__':
 
                 mycwdg.setIcon(TV_ICON)
 
-                if settings['channellogos'] == 0:
-                    # Prefer M3U
-                    if i in channel_icons_data.return_dict and channel_icons_data.return_dict[i]:
-                        # Icon from playlist
-                        if i in ICONS_CACHE_FETCHED:
-                            fetched_icon = ICONS_CACHE_FETCHED[i]
-                        else:
-                            fetched_icon = channel_icons_data.return_dict[i][0]
-                            ICONS_CACHE_FETCHED[i] = fetched_icon
-                        mycwdg.setIcon(fetched_icon)
-                    elif i in channel_icons_data_epg.return_dict and channel_icons_data_epg.return_dict[i]:
-                        # Icon from EPG
-                        if i in ICONS_CACHE_FETCHED_EPG:
-                            fetched_icon_epg = ICONS_CACHE_FETCHED_EPG[i]
-                        else:
-                            fetched_icon_epg = channel_icons_data_epg.return_dict[i][0]
-                            ICONS_CACHE_FETCHED_EPG[i] = fetched_icon_epg
-                        mycwdg.setIcon(fetched_icon_epg)
-                elif settings['channellogos'] == 1:
-                    # Prefer EPG
-                    if i in channel_icons_data_epg.return_dict and channel_icons_data_epg.return_dict[i]:
-                        if i in ICONS_CACHE_FETCHED_EPG:
-                            fetched_icon_epg = ICONS_CACHE_FETCHED_EPG[i]
-                        else:
-                            fetched_icon_epg = channel_icons_data_epg.return_dict[i][0]
-                            ICONS_CACHE_FETCHED_EPG[i] = fetched_icon_epg
-                        mycwdg.setIcon(fetched_icon_epg)
-                    elif i in channel_icons_data.return_dict and channel_icons_data.return_dict[i]:
-                        # Icon from playlist
-                        if i in ICONS_CACHE_FETCHED:
-                            fetched_icon = ICONS_CACHE_FETCHED[i]
-                        else:
-                            fetched_icon = channel_icons_data.return_dict[i][0]
-                            ICONS_CACHE_FETCHED[i] = fetched_icon
-                        mycwdg.setIcon(fetched_icon)
-                elif settings['channellogos'] == 2:
-                    # Do not load from EPG
-                    # Icon from playlist
-                    if i in channel_icons_data.return_dict and channel_icons_data.return_dict[i]:
-                        if i in ICONS_CACHE_FETCHED:
-                            fetched_icon = ICONS_CACHE_FETCHED[i]
-                        else:
-                            fetched_icon = channel_icons_data.return_dict[i][0]
-                            ICONS_CACHE_FETCHED[i] = fetched_icon
-                        mycwdg.setIcon(fetched_icon)
+                if settings['channellogos'] != 3:  # Do not load any logos
+                    if orig_chan_name in logos_fnames_cache:
+                        if settings['channellogos'] == 0:  # Prefer M3U
+                            first_loaded = False
+                            if logos_fnames_cache[orig_chan_name][0]:
+                                chan_logo = get_pixmap_from_filename(logos_fnames_cache[orig_chan_name][0])
+                                if chan_logo:
+                                    first_loaded = True
+                                    mycwdg.setIcon(chan_logo)
+                            if not first_loaded:
+                                chan_logo = get_pixmap_from_filename(logos_fnames_cache[orig_chan_name][1])
+                                if chan_logo:
+                                    mycwdg.setIcon(chan_logo)
+                        elif settings['channellogos'] == 1:  # Prefer EPG
+                            first_loaded = False
+                            if logos_fnames_cache[orig_chan_name][1]:
+                                chan_logo = get_pixmap_from_filename(logos_fnames_cache[orig_chan_name][1])
+                                if chan_logo:
+                                    first_loaded = True
+                                    mycwdg.setIcon(chan_logo)
+                            if not first_loaded:
+                                chan_logo = get_pixmap_from_filename(logos_fnames_cache[orig_chan_name][0])
+                                if chan_logo:
+                                    mycwdg.setIcon(chan_logo)
+                        elif settings['channellogos'] == 2:  # Do not load from EPG (only M3U)
+                            if logos_fnames_cache[orig_chan_name][0]:
+                                chan_logo = get_pixmap_from_filename(logos_fnames_cache[orig_chan_name][0])
+                                if chan_logo:
+                                    mycwdg.setIcon(chan_logo)
 
                 # Create QListWidgetItem
                 myQListWidgetItem = QtWidgets.QListWidgetItem()
@@ -5057,6 +4946,45 @@ if __name__ == '__main__':
                 except:
                     pass
                 show_progress(current_chan)
+
+            # Fetch channel logos
+            try:
+                if settings['channellogos'] != 3:
+                    channel_logos_request = {}
+                    for channel_2 in array:
+                        channel_2_item = getArrayItem(channel_2)
+                        if channel_2_item['title'] in visible_channels:
+                            channel_logo1 = ""
+                            if 'tvg-logo' in channel_2_item:
+                                channel_logo1 = channel_2_item['tvg-logo']
+
+                            epg_logo_search = visible_channels[channel_2_item['title']]
+                            epg_logo1 = ""
+                            if epg_logo_search in epg_icons:
+                                epg_logo1 = epg_icons[epg_logo_search]
+
+                            channel_logos_request[channel_2_item['title']] = [
+                                channel_logo1,
+                                epg_logo1
+                            ]
+                    if channel_logos_request != channel_logos_request_old:
+                        channel_logos_request_old = channel_logos_request
+                        # logger.debug("Channel logos request")
+                        if channel_logos_process and channel_logos_process.is_alive():
+                            # logger.debug("Old channel logos request found, stopping it")
+                            channel_logos_process.kill()
+                        channel_logos_process = Process(
+                            target=channel_logos_worker,
+                            args=(
+                                0, channel_logos_request,
+                                logos_fnames_cache, logos_update_manager_dict,
+                            )
+                        )
+                        channel_logos_process.start()
+            except:
+                logger.warning("Fetch channel logos failed with exception:")
+                logger.warning(traceback.format_exc())
+
             return res
 
         row0 = -1
@@ -7155,13 +7083,8 @@ if __name__ == '__main__':
             if manager:
                 manager.shutdown()
             try:
-                if channel_icons_data.manager_1:
-                    channel_icons_data.manager_1.shutdown()
-            except:
-                pass
-            try:
-                if channel_icons_data_epg.manager_1:
-                    channel_icons_data_epg.manager_1.shutdown()
+                if channel_logo_data.manager_1:
+                    channel_logo_data.manager_1.shutdown()
             except:
                 pass
             logger.info("Stopped")
@@ -7250,12 +7173,10 @@ if __name__ == '__main__':
                 pass
 
             ic += 0.1
-            if ic > 14.9:  # redraw every 15 seconds
+            # redraw every 15 seconds
+            if ic > (14.9 if not logos_update_manager_dict['inprogress'] else 2.9):
                 ic = 0
-                if channel_icons_data.load_completed:
-                    btn_update.click()
-                if channel_icons_data_epg.load_completed:
-                    btn_update.click()
+                btn_update.click()
 
         def thread_record():
             try:
@@ -8156,13 +8077,11 @@ if __name__ == '__main__':
                 thread_tvguide_2: 1000,
                 thread_tvguide_3: 100,
                 thread_update_time: 1000,
+                thread_logos_update: 1000,
                 record_thread: 1000,
                 record_thread_2: 1000,
                 thread_afterrecord: 50,
-                channel_icons_thread: 2000,
-                channel_icons_thread_epg: 2000,
                 thread_bitrate: UPDATE_BR_INTERVAL * 1000,
-                epg_channel_icons_thread: 50,
                 dockwidget_resize_thread: 50
             }
             for timer in timers:

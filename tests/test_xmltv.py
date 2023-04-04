@@ -54,5 +54,5 @@ def test_xmltv():
                 ]
             },
             {'testchan': ['Test channel 1']},
-            {'Test channel 1': 'http://127.0.0.1/testchannel1.png'}
+            {'test channel 1': 'http://127.0.0.1/testchannel1.png'}
         ]
