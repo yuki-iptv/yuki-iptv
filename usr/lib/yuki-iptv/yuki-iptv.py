@@ -188,6 +188,7 @@ class YukiData:
     serie_selected = False
     movies = {}
     series = {}
+    osc = -1
 
 
 stream_info.video_properties = {}
@@ -2356,6 +2357,7 @@ if __name__ == '__main__':
                 else:
                     logger.info("Using HTTP Referer: (empty)")
 
+            player.pause = False
             player.play(parse_specifiers_now_url(arg_override_play))
             if event_handler:
                 try:
@@ -2378,6 +2380,7 @@ if __name__ == '__main__':
                 logger.info("Disabling deinterlace for main.png")
                 player.deinterlace = False
             player.play(str(Path('yuki_iptv', ICONS_FOLDER, 'main.png')))
+            player.pause = True
             if event_handler:
                 try:
                     event_handler.on_title()
@@ -2431,6 +2434,7 @@ if __name__ == '__main__':
             except:
                 player.loop = True
                 mpv_override_play(str(Path('yuki_iptv', ICONS_FOLDER, 'main.png')))
+                player.pause = True
 
         def setVideoAspect(va):
             if va == 0:
@@ -3631,8 +3635,14 @@ if __name__ == '__main__':
         newdockWidgetHeight = False
         newdockWidgetPosition = False
 
+        def set_mpv_osc(osc_value):
+            if osc_value != YukiData.osc:
+                YukiData.osc = osc_value
+                player.osc = osc_value
+
         def init_mpv_player():
             global player
+            mpv_loglevel = 'info' if loglevel.lower() != 'debug' else 'debug'
             try:
                 player = mpv.MPV(
                     **options,
@@ -3642,7 +3652,7 @@ if __name__ == '__main__':
                                 'osc-deadzonesize=0,osc-minmousemove=3',
                     ytdl=True,
                     log_handler=my_log,
-                    loglevel='info'  # debug
+                    loglevel=mpv_loglevel
                 )
             except:
                 logger.warning("mpv init with ytdl failed")
@@ -3654,7 +3664,7 @@ if __name__ == '__main__':
                         script_opts='osc-layout=box,osc-seekbarstyle=bar,'
                                     'osc-deadzonesize=0,osc-minmousemove=3',
                         log_handler=my_log,
-                        loglevel='info'  # debug
+                        loglevel=mpv_loglevel
                     )
                 except:
                     logger.warning("mpv init with osc failed")
@@ -3662,11 +3672,11 @@ if __name__ == '__main__':
                         **options,
                         wid=str(int(win.container.winId())),
                         log_handler=my_log,
-                        loglevel='info'  # debug
+                        loglevel=mpv_loglevel
                     )
             if settings["hidempv"]:
                 try:
-                    player.osc = False
+                    set_mpv_osc(False)
                 except:
                     logger.warning("player.osc set failed")
             try:
@@ -4214,6 +4224,11 @@ if __name__ == '__main__':
                     logger.info(f"Video aspect: {getVideoAspect()}")
                     logger.info(f"Zoom: {player.video_zoom}")
                     logger.info(f"Panscan: {player.panscan}")
+                    try:
+                        player['cursor-autohide'] = 1000
+                        player['force-window'] = True
+                    except:
+                        pass
             except:
                 pass
 
@@ -4303,6 +4318,7 @@ if __name__ == '__main__':
             player.loop = True
             player.deinterlace = False
             mpv_override_play(str(Path('yuki_iptv', ICONS_FOLDER, 'main.png')))
+            player.pause = True
             chan.setText(_('No channel selected'))
             progress.hide()
             start_label.hide()
@@ -6105,10 +6121,13 @@ if __name__ == '__main__':
                 l1.show()
                 l1.setText2(_('No channel selected for record'))
 
-        def my_log(mpv_loglevel, component, message):
-            mpv_log_str = f'[{mpv_loglevel}] {component}: {message}'
+        def my_log(mpv_loglevel1, component, message):
+            mpv_log_str = f'[{mpv_loglevel1}] {component}: {message}'
             if 'Invalid video timestamp: ' not in str(mpv_log_str):
-                mpv_logger.info(str(mpv_log_str))
+                if '[debug] ' in str(mpv_log_str):
+                    mpv_logger.debug(str(mpv_log_str))
+                else:
+                    mpv_logger.info(str(mpv_log_str))
 
         def playLastChannel():
             global playing_url, playing_chan, combobox, m3u
@@ -6140,7 +6159,7 @@ if __name__ == '__main__':
                         os.remove(str(Path(LOCAL_DIR, 'lastchannels.json')))
             return isPlayingLast
 
-        VIDEO_OUTPUT = "gpu,x11" if settings['hwaccel'] else "x11"
+        VIDEO_OUTPUT = "gpu,x11"
         HWACCEL = "auto-safe" if settings['hwaccel'] else "no"
 
         # Wayland fix
@@ -6413,7 +6432,7 @@ if __name__ == '__main__':
                     win.oldpos = get_global_cursor_position()
                     force_turnoff_osc = True
                     try:
-                        player.osc = False
+                        set_mpv_osc(False)
                     except:
                         pass
                 else:
@@ -7418,14 +7437,14 @@ if __name__ == '__main__':
                     if not settings["hidempv"]:
                         try:
                             if not force_turnoff_osc:
-                                player.osc = True
+                                set_mpv_osc(True)
                             else:
-                                player.osc = False
+                                set_mpv_osc(False)
                         except:
                             pass
                 else:
                     try:
-                        player.osc = False
+                        set_mpv_osc(False)
                     except:
                         pass
             except:
@@ -7716,11 +7735,6 @@ if __name__ == '__main__':
                 pass
 
         def thread_mouse():
-            try:
-                player['cursor-autohide'] = 1000
-                player['force-window'] = True
-            except:
-                pass
             try:
                 global fullscreen, key_t_visible, dockWidgetVisible, dockWidget2Visible
                 if l1.isVisible() and l1.text().startswith(_('Volume')) and not is_show_volume():
@@ -8119,6 +8133,7 @@ if __name__ == '__main__':
             if not playLastChannel():
                 logger.info("Show splash")
                 mpv_override_play(str(Path('yuki_iptv', ICONS_FOLDER, 'main.png')))
+                player.pause = True
             else:
                 logger.info("Playing last channel, splash turned off")
             restore_compact_state()
