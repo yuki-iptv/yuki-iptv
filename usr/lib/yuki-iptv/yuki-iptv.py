@@ -577,15 +577,17 @@ if __name__ == '__main__':
                 is_program_actual1 = False
                 if tvguide_json:
                     tvguide_json = tvguide_json[0]
-                    tvguide_sets = tvguide_json["tvguide_sets"]
-                    if "prog_ids" in tvguide_json:
-                        prog_ids = tvguide_json["prog_ids"]
-                    if "epg_icons" in tvguide_json:
-                        epg_icons = tvguide_json["epg_icons"]
-                    if "is_program_actual" in tvguide_json:
-                        is_program_actual1 = tvguide_json["is_program_actual"]
-                    if "programmes_1" in tvguide_json:
-                        programmes = tvguide_json["programmes_1"]
+                    if tvguide_json:
+                        if "tvguide_sets" in tvguide_json:
+                            tvguide_sets = tvguide_json["tvguide_sets"]
+                        if "prog_ids" in tvguide_json:
+                            prog_ids = tvguide_json["prog_ids"]
+                        if "epg_icons" in tvguide_json:
+                            epg_icons = tvguide_json["epg_icons"]
+                        if "is_program_actual" in tvguide_json:
+                            is_program_actual1 = tvguide_json["is_program_actual"]
+                        if "programmes_1" in tvguide_json:
+                            programmes = tvguide_json["programmes_1"]
                 if not is_program_actual1:
                     logger.info("EPG cache expired, updating...")
                     epg_ready = True
