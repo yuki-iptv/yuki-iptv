@@ -240,8 +240,8 @@ def idle_function(func):
     return wrapper
 
 
-# Used as a decorator to run things in the background
-def async_function(func):
+# Used as a decorator to run things in the background (GUI blocking)
+def async_gui_blocking_function(func):
     def wrapper(*args, **kwargs):
         thread = threading.Thread(target=func, args=args, kwargs=kwargs)
         thread.daemon = True
@@ -422,7 +422,7 @@ if __name__ == '__main__':
             except:
                 pass
 
-        @async_function
+        @async_gui_blocking_function
         def save_tvguide_sets():
             global epg_thread_2, tvguide_sets
             try:
@@ -515,13 +515,41 @@ if __name__ == '__main__':
                     file1_json = {}
             except:
                 file1_json = {}
-            epg_dict['out'] = [file1_json, '']
+            if "tvguide_sets" in file1_json:
+                file1_json["programmes_1"] = {
+                    prog3.lower(): file1_json["tvguide_sets"][prog3] for prog3 in file1_json["tvguide_sets"]
+                }
+                file1_json["is_program_actual"] = is_program_actual(
+                    file1_json["tvguide_sets"], force=True
+                )
+            epg_dict['out'] = [file1_json]
 
         def epg_loading_hide():
             epg_loading.hide()
 
+        @idle_function
+        def update_epg_func_static_enable(arg11=None):
+            global static_text, time_stop
+            l1.setStatic2(True)
+            l1.show()
+            static_text = _('Loading TV guide cache...')
+            l1.setText2("")
+            time_stop = time.time() + 3
+
+        @idle_function
+        def update_epg_func_static_disable(arg11=None):
+            global time_stop
+            l1.setStatic2(False)
+            l1.hide()
+            l1.setText2('')
+            time_stop = time.time()
+
+        @async_gui_blocking_function
         def update_epg_func():
-            global settings, tvguide_sets, prog_ids, epg_icons, programmes, epg_ready
+            global settings, tvguide_sets, prog_ids, \
+                epg_icons, programmes, epg_ready
+            while not win.isVisible():
+                time.sleep(0.1)
             if settings["nocacheepg"]:
                 logger.info("No cache EPG active, deleting old EPG cache file")
                 try:
@@ -529,12 +557,12 @@ if __name__ == '__main__':
                         os.remove(str(Path(LOCAL_DIR, 'epg.cache')))
                 except:
                     pass
-            logger.info("Reading cached TV guide if exists...")
             tvguide_read_time = time.time()
-            programmes_1 = {}
-            if not os.path.isfile(str(Path(LOCAL_DIR, 'epg.cache'))):
-                save_tvguide_sets()
-            else:
+            if os.path.isfile(str(Path(LOCAL_DIR, 'epg.cache'))):
+                logger.info("Reading cached TV guide...")
+
+                update_epg_func_static_enable()
+
                 # Disregard existed epg.cache if EPG url changes
                 manager_epg = Manager()
                 dict_epg = manager_epg.dict()
@@ -544,40 +572,36 @@ if __name__ == '__main__':
                 )
                 epg_process.start()
                 epg_process.join()
-                file1_json, settings_epg_new = dict_epg['out']
-                if settings_epg_new:
-                    settings['epg'] = settings_epg_new
+                tvguide_json = dict_epg['out']
                 # Loading epg.cache
-                if file1_json:
-                    tvguide_json = file1_json
-                else:
-                    tvguide_json = {"tvguide_sets": {}, "current_url": ["", ""], "prog_ids": {}}
-                file1_json = {}
-                tvguide_sets = tvguide_json["tvguide_sets"]
-                programmes_1 = {
-                    prog3.lower(): tvguide_sets[prog3] for prog3 in tvguide_sets
-                }
-                try:
-                    prog_ids = tvguide_json["prog_ids"]
-                except:
-                    pass
-                try:
-                    epg_icons = tvguide_json["epg_icons"]
-                except:
-                    pass
-            if not is_program_actual(tvguide_sets, force=True):
-                logger.info("EPG cache expired, updating...")
+                is_program_actual1 = False
+                if tvguide_json:
+                    tvguide_json = tvguide_json[0]
+                    tvguide_sets = tvguide_json["tvguide_sets"]
+                    if "prog_ids" in tvguide_json:
+                        prog_ids = tvguide_json["prog_ids"]
+                    if "epg_icons" in tvguide_json:
+                        epg_icons = tvguide_json["epg_icons"]
+                    if "is_program_actual" in tvguide_json:
+                        is_program_actual1 = tvguide_json["is_program_actual"]
+                    if "programmes_1" in tvguide_json:
+                        programmes = tvguide_json["programmes_1"]
+                if not is_program_actual1:
+                    logger.info("EPG cache expired, updating...")
+                    epg_ready = True
+                    force_update_epg()
+                epg_ready = True
+
+                update_epg_func_static_disable()
+
+                logger.info(
+                    f"TV guide read done, took {time.time() - tvguide_read_time} seconds"
+                )
+                btn_update.click()
+            else:
+                logger.info("No EPG cache found")
                 epg_ready = True
                 force_update_epg()
-            programmes = programmes_1
-            programmes_1 = {}
-            epg_ready = True
-            logger.info(
-                f"TV guide read done, took {time.time() - tvguide_read_time} seconds"
-            )
-
-        # Updating EPG, async
-        update_epg_func()
 
         if YukiData.use_dark_icon_theme:
             ICONS_FOLDER = str(Path('..', '..', '..', 'share', 'yuki-iptv', 'icons_dark'))
@@ -953,10 +977,6 @@ if __name__ == '__main__':
 
         signal.signal(signal.SIGINT, sigint_handler)
         signal.signal(signal.SIGTERM, sigint_handler)
-
-        timer = QtCore.QTimer()
-        timer.start(500)
-        timer.timeout.connect(lambda: None)
 
         TV_ICON = QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'tv.png')))
         MOVIE_ICON = QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'movie.png')))
@@ -1701,7 +1721,7 @@ if __name__ == '__main__':
 
         recViaScheduler = False
 
-        @async_function
+        @async_gui_blocking_function
         def record_post_action():
             while True:
                 if is_recording_func() is True:
@@ -2252,7 +2272,7 @@ if __name__ == '__main__':
             except:
                 pass
 
-        @async_function
+        @async_gui_blocking_function
         def monitor_playback():
             try:
                 player.wait_until_playing()
@@ -4109,7 +4129,7 @@ if __name__ == '__main__':
 
         playing_archive = False
 
-        @async_function
+        @async_gui_blocking_function
         def setPlayerSettings(j):
             global playing_chan
             try:
@@ -5580,7 +5600,7 @@ if __name__ == '__main__':
             if channelfiltersearch_has_focus:
                 channelfiltersearch.click()
 
-        @async_function
+        @async_gui_blocking_function
         def mainthread_timer_2(t2):
             time.sleep(0.05)
             exInMainThread_partial(t2)
@@ -7265,6 +7285,7 @@ if __name__ == '__main__':
                         if not x_conn:
                             logger.info("Connection to stream lost, waiting 5 secs...")
                             x_conn = QtCore.QTimer()
+                            x_conn.setSingleShot(True)
                             x_conn.timeout.connect(do_reconnect)
                             x_conn.start(5000)
                 except:
@@ -8125,6 +8146,9 @@ if __name__ == '__main__':
                 timers_array[timer] = QtCore.QTimer()
                 timers_array[timer].timeout.connect(timer)
                 timers_array[timer].start(timers[timer])
+
+            # Updating EPG, async
+            update_epg_func()
         else:
             show_playlists()
             playlists_win.show()
