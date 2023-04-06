@@ -181,7 +181,7 @@ class M3UParser:
                         except:
                             pass
                 if epg_m3u_url:
-                    self.m3u_epg = epg_m3u_url if epg_m3u_url != 'http://server/jtv.zip' else ''
+                    self.m3u_epg = epg_m3u_url
             else:
                 if line:
                     if line.startswith('#'):

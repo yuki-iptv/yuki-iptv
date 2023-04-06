@@ -24,7 +24,6 @@ import os
 import gettext
 import logging
 import requests
-from thirdparty.jtv import parse_jtv
 from yuki_iptv.xmltv import parse_as_xmltv
 
 _ = gettext.gettext
@@ -90,14 +89,11 @@ def fetch_epg(settings, catchup_days1, progress_dict):
                 len(epg_settings_url)
             )
 
-            try:
-                pr_xmltv = parse_as_xmltv(
-                    epg, settings, catchup_days1, progress_dict, epg_i, epg_settings_url
-                )
-                programmes_epg = merge_two_dicts(programmes_epg, pr_xmltv[0])
-                prog_ids = merge_two_dicts(prog_ids, pr_xmltv[1])
-            except:
-                programmes_epg = merge_two_dicts(programmes_epg, parse_jtv(epg, settings))
+            pr_xmltv = parse_as_xmltv(
+                epg, settings, catchup_days1, progress_dict, epg_i, epg_settings_url
+            )
+            programmes_epg = merge_two_dicts(programmes_epg, pr_xmltv[0])
+            prog_ids = merge_two_dicts(prog_ids, pr_xmltv[1])
             try:
                 epg_icons = merge_two_dicts(epg_icons, pr_xmltv[2])
             except:

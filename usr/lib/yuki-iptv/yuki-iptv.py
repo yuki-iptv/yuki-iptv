@@ -1441,7 +1441,7 @@ if __name__ == '__main__':
         def epg_file_1_clicked():
             fname_2 = QtWidgets.QFileDialog.getOpenFileName(
                 playlists_win_edit,
-                _('Select EPG file (XMLTV or JTV EPG)'),
+                _('Select EPG file'),
                 home_folder
             )[0]
             if fname_2:
@@ -1449,7 +1449,7 @@ if __name__ == '__main__':
 
         name_label_1 = QtWidgets.QLabel('{}:'.format(_('Name')))
         m3u_label_1 = QtWidgets.QLabel('{}:'.format(_('M3U / XSPF playlist')))
-        epg_label_1 = QtWidgets.QLabel('{}:'.format(_('TV guide\naddress\n(XMLTV or JTV)')))
+        epg_label_1 = QtWidgets.QLabel('{}:'.format(_('TV guide\naddress')))
         name_edit_1 = QtWidgets.QLineEdit()
         m3u_edit_1 = QtWidgets.QLineEdit()
         m3u_edit_1.setPlaceholderText(_('Path to file or URL'))
@@ -2070,7 +2070,7 @@ if __name__ == '__main__':
         def epg_select():
             fname = QtWidgets.QFileDialog.getOpenFileName(
                 settings_win,
-                _('Select EPG file (XMLTV or JTV EPG)'),
+                _('Select EPG file'),
                 home_folder
             )[0]
             if fname:
@@ -2805,7 +2805,7 @@ if __name__ == '__main__':
 
         m3u_label = QtWidgets.QLabel('{}:'.format(_('M3U / XSPF playlist')))
         update_label = QtWidgets.QLabel('{}:'.format(_('Update playlist\nat launch')))
-        epg_label = QtWidgets.QLabel('{}:'.format(_('TV guide\naddress\n(XMLTV or JTV)')))
+        epg_label = QtWidgets.QLabel('{}:'.format(_('TV guide\naddress')))
         dei_label = QtWidgets.QLabel('{}:'.format(_('Deinterlace')))
         hwaccel_label = QtWidgets.QLabel('{}:'.format(_('Hardware\nacceleration')))
         sort_label = QtWidgets.QLabel('{}:'.format(_('Channel\nsort')))
@@ -3731,7 +3731,7 @@ if __name__ == '__main__':
 
             logger.info(f"Using {mpv_version}")
 
-            textbox.setText(format_about_text(_('yuki-iptv\nversion: {}\ncodename: {}\n\n© 2021-2022 Astroncia\n© {} yuki-chan-nya\nhttps://github.com/yuki-chan-nya\n\nIPTV player\n\nSupports TV guide (EPG) only in XMLTV and JTV formats!\n\nIcons by Font Awesome ( https://fontawesome.com/ )\nIcons licensed under the CC BY 4.0 License\n( https://creativecommons.org/licenses/by/4.0/ )').format(APP_VERSION, VERSION_CODENAME, COPYRIGHT_YEAR)))  # noqa: E501
+            textbox.setText(format_about_text(_('yuki-iptv\nversion: {}\ncodename: {}\n\n© 2021-2022 Astroncia\n© {} yuki-chan-nya\nhttps://github.com/yuki-chan-nya\n\nIPTV player\n\nIcons by Font Awesome ( https://fontawesome.com/ )\nIcons licensed under the CC BY 4.0 License\n( https://creativecommons.org/licenses/by/4.0/ )').format(APP_VERSION, VERSION_CODENAME, COPYRIGHT_YEAR)))  # noqa: E501
 
             if settings["cache_secs"] != 0:
                 try:
