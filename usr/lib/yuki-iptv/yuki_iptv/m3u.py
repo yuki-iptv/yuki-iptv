@@ -180,7 +180,7 @@ class M3UParser:
                             epg_m3u_url = re.findall('url-tvg="(.*?)"', line)[0]
                         except:
                             pass
-                if epg_m3u_url:
+                if epg_m3u_url and not epg_m3u_url.strip().endswith(".zip"):
                     self.m3u_epg = epg_m3u_url
             else:
                 if line:
