@@ -30,7 +30,7 @@ class M3UParser:
     '''M3U parser'''
     def __init__(self, udp_proxy, _):
         self.udp_proxy = udp_proxy
-        self._ = _
+        self.all_channels = _('All channels')
         self.epg_urls = []
         self.m3u_epg = ""
         self.epg_url_final = ""
@@ -105,9 +105,9 @@ class M3UParser:
         if not tvg_url and url_tvg:
             tvg_url = url_tvg
 
-        group = self.parse_regexp("group-title", line_info, self._('All channels'))
+        group = self.parse_regexp("group-title", line_info, self.all_channels)
         if not group:
-            group = self._('All channels')
+            group = self.all_channels
 
         catchup_tag = self.parse_regexp("catchup", line_info, "")
         if not catchup_tag:
