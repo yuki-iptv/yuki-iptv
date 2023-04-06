@@ -6479,6 +6479,21 @@ if __name__ == '__main__':
         right_click_menu = QtWidgets.QMenu()
 
         @idle_function
+        def do_reconnect1(unused=None):
+            global playing_chan
+            if playing_chan:
+                logger.info("Reconnecting to stream")
+                try:
+                    doPlay(*comm_instance.do_play_args)
+                except:
+                    logger.warning("Failed reconnecting to stream - no known URL")
+
+        @async_gui_blocking_function
+        def do_reconnect1_async():
+            time.sleep(1)
+            do_reconnect1()
+
+        @idle_function
         def end_file_error_callback(unused=None):
             if loading.isVisible():
                 mpv_stop()
@@ -6493,7 +6508,11 @@ if __name__ == '__main__':
         def end_file_callback(unused=None):
             global playing_chan
             if playing_chan and player.path is None:
-                mpv_stop()
+                if settings['autoreconnection']:
+                    logger.info("Connection to stream lost, waiting 1 sec...")
+                    do_reconnect1_async()
+                else:
+                    mpv_stop()
 
         @idle_function
         def file_loaded_callback(unused=None):
@@ -7335,7 +7354,6 @@ if __name__ == '__main__':
                         if not x_conn:
                             logger.info("Connection to stream lost, waiting 5 secs...")
                             x_conn = QtCore.QTimer()
-                            x_conn.setSingleShot(True)
                             x_conn.timeout.connect(do_reconnect)
                             x_conn.start(5000)
                 except:
