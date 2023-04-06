@@ -3658,11 +3658,15 @@ if __name__ == '__main__':
         def init_mpv_player():
             global player
             mpv_loglevel = 'info' if loglevel.lower() != 'debug' else 'debug'
+            mpv_osc = True
+            if "osc" in options:
+                # To prevent 'multiple values for keyword argument'!
+                mpv_osc = options.pop("osc") != "no"
             try:
                 player = mpv.MPV(
                     **options,
                     wid=str(int(win.container.winId())),
-                    osc=True,
+                    osc=mpv_osc,
                     script_opts='osc-layout=box,osc-seekbarstyle=bar,'
                                 'osc-deadzonesize=0,osc-minmousemove=3',
                     ytdl=True,
@@ -3675,7 +3679,7 @@ if __name__ == '__main__':
                     player = mpv.MPV(
                         **options,
                         wid=str(int(win.container.winId())),
-                        osc=True,
+                        osc=mpv_osc,
                         script_opts='osc-layout=box,osc-seekbarstyle=bar,'
                                     'osc-deadzonesize=0,osc-minmousemove=3',
                         log_handler=my_log,
