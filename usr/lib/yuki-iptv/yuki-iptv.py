@@ -2484,7 +2484,6 @@ if __name__ == '__main__':
             loading.setText(_('Loading...'))
             loading.setStyleSheet('color: #778a30')
             showLoading()
-            player.loop = False
             # Optimizations
             if play_url1.startswith("udp://") or play_url1.startswith("rtp://"):
                 try:
@@ -2507,7 +2506,7 @@ if __name__ == '__main__':
                     '-reconnect=1 -reconnect_at_eof=1 -reconnect_streamed=1 -reconnect_delay_max=2'
             except:
                 pass
-            player.loop = True
+            player.loop = False
             # Playing
             mpv_override_play(play_url1, chan_name_0)
             # Set channel (video) settings
