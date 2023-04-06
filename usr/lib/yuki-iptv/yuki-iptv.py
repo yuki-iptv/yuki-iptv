@@ -425,14 +425,14 @@ if __name__ == '__main__':
         epg_thread_2 = None
 
         @idle_function
-        def start_epg_hdd_animation(arg11=None):
+        def start_epg_hdd_animation(unused=None):
             try:
                 hdd_gif_label.setVisible(True)
             except:
                 pass
 
         @idle_function
-        def stop_epg_hdd_animation(arg11=None):
+        def stop_epg_hdd_animation(unused=None):
             try:
                 hdd_gif_label.setVisible(False)
             except:
@@ -544,7 +544,7 @@ if __name__ == '__main__':
             epg_loading.hide()
 
         @idle_function
-        def update_epg_func_static_enable(arg11=None):
+        def update_epg_func_static_enable(unused=None):
             global static_text, time_stop
             l1.setStatic2(True)
             l1.show()
@@ -553,7 +553,7 @@ if __name__ == '__main__':
             time_stop = time.time() + 3
 
         @idle_function
-        def update_epg_func_static_disable(arg11=None):
+        def update_epg_func_static_disable(unused=None):
             global time_stop
             l1.setStatic2(False)
             l1.hide()
@@ -1785,11 +1785,11 @@ if __name__ == '__main__':
         is_recording_old = False
 
         @idle_function
-        def set_record_icon(arg11=None):
+        def set_record_icon(unused=None):
             label5_1.setIcon(record_icon)
 
         @idle_function
-        def set_record_stop_icon(arg11=None):
+        def set_record_stop_icon(unused=None):
             label5_1.setIcon(record_stop_icon)
 
         def record_thread():
@@ -3774,6 +3774,8 @@ if __name__ == '__main__':
             @player.event_callback('end_file')
             def ready_handler_2(event):
                 if event['event']['error'] != 0:
+                    end_file_error_callback()
+                else:
                     end_file_callback()
 
             @player.on_key_press('MBTN_RIGHT')
@@ -4136,7 +4138,7 @@ if __name__ == '__main__':
         playing_url = ''
 
         @idle_function
-        def set_mpv_title(arg11=None):
+        def set_mpv_title(unused=None):
             try:
                 player.title = win.windowTitle()
             except:
@@ -4383,11 +4385,11 @@ if __name__ == '__main__':
                 win.activateWindow()
 
         @idle_function
-        def enable_always_on_top(arg11=None):
+        def enable_always_on_top(unused=None):
             set_always_on_top(True)
 
         @idle_function
-        def disable_always_on_top(arg11=None):
+        def disable_always_on_top(unused=None):
             set_always_on_top(False)
 
         # Always on top
@@ -4549,7 +4551,7 @@ if __name__ == '__main__':
         dockWidget_out.clicked.connect(dockWidget_out_clicked)
 
         @idle_function
-        def mpv_fullscreen(arg11=None):
+        def mpv_fullscreen(unused=None):
             dockWidget_out.click()
 
         old_value = 100
@@ -6434,7 +6436,7 @@ if __name__ == '__main__':
         win.oldpos = None
 
         @idle_function
-        def mouse_move_event_callback(arg11=None):
+        def mouse_move_event_callback(unused=None):
             if settings["movedragging"] and win.oldpos:
                 try:
                     globalPos1 = get_global_cursor_position()
@@ -6477,7 +6479,7 @@ if __name__ == '__main__':
         right_click_menu = QtWidgets.QMenu()
 
         @idle_function
-        def end_file_callback(arg11=None):
+        def end_file_error_callback(unused=None):
             if loading.isVisible():
                 mpv_stop()
                 chan.setText('')
@@ -6488,18 +6490,24 @@ if __name__ == '__main__':
                 loading_movie.stop()
 
         @idle_function
-        def file_loaded_callback(arg11=None):
+        def end_file_callback(unused=None):
+            global playing_chan
+            if playing_chan and player.path is None:
+                mpv_stop()
+
+        @idle_function
+        def file_loaded_callback(unused=None):
             global playing_chan
             if playing_chan:
                 redraw_menubar()
 
         @idle_function
-        def my_mouse_right_callback(arg11=None):
+        def my_mouse_right_callback(unused=None):
             global right_click_menu
             _exec(right_click_menu, QtGui.QCursor.pos())
 
         @idle_function
-        def my_mouse_left_callback(arg11=None):
+        def my_mouse_left_callback(unused=None):
             global right_click_menu, fullscreen
             if right_click_menu.isVisible():
                 right_click_menu.hide()
@@ -6512,7 +6520,7 @@ if __name__ == '__main__':
             move_window_drag()
 
         @idle_function
-        def my_up_binding_execute(arg11=None):
+        def my_up_binding_execute(unused=None):
             global l1, time_stop
             if settings["mouseswitchchannels"]:
                 next_channel()
@@ -6523,7 +6531,7 @@ if __name__ == '__main__':
                 mpv_volume_set()
 
         @idle_function
-        def my_down_binding_execute(arg11=None):
+        def my_down_binding_execute(unused=None):
             global l1, time_stop, fullscreen
             if settings["mouseswitchchannels"]:
                 prev_channel()
@@ -6556,11 +6564,11 @@ if __name__ == '__main__':
             itemClicked_event(win.listWidget.currentItem())
 
         @idle_function
-        def prev_channel(arg11=None):
+        def prev_channel(unused=None):
             go_channel(-1)
 
         @idle_function
-        def next_channel(arg11=None):
+        def next_channel(unused=None):
             go_channel(1)
 
         if qt_library == 'PyQt6':
