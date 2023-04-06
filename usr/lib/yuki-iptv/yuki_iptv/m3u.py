@@ -34,13 +34,16 @@ class M3UParser:
         self.epg_urls = []
         self.m3u_epg = ""
         self.epg_url_final = ""
+        self.regexp_cache = {}
 
     def parse_regexp(self, name, line_info, default="", custom_regex=False):
         '''Channel info regexp parser'''
         regexp = name
         if not custom_regex:
             regexp += "=\"(.*?)\""
-        re_match = re.search(regexp, line_info)
+        if regexp not in self.regexp_cache:
+            self.regexp_cache[regexp] = re.compile(regexp)
+        re_match = self.regexp_cache[regexp].search(line_info)
         try:
             res = re_match.group(1)
         except AttributeError:
