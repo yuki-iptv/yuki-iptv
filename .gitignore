@@ -3,3 +3,9 @@ usr/share/locale
 *.swo
 *.swp
 .pytest_cache
+debian/.debhelper
+debian/debhelper-build-stamp
+debian/files
+debian/yuki-iptv.debhelper.log
+debian/yuki-iptv.substvars
+debian/yuki-iptv
