@@ -26,6 +26,7 @@ import xml.etree.ElementTree as ET
 
 logger = logging.getLogger(__name__)
 _ = gettext.gettext
+all_channels = _('All channels')
 
 
 def parse_xspf(xspf):
@@ -40,7 +41,7 @@ def parse_xspf(xspf):
             'tvg-name': '',
             'tvg-ID': '',
             'tvg-logo': '',
-            'tvg-group': _('All channels'),
+            'tvg-group': all_channels,
             'tvg-url': '',
             'catchup': 'default',
             'catchup-source': '',

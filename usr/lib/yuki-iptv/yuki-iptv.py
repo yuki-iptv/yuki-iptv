@@ -139,13 +139,28 @@ COPYRIGHT_YEAR = '2023'
 
 setproctitle.setproctitle("yuki-iptv")
 
-# i18n
+# i18n start
+
+
+class YukiLang:
+    cache = {}
+
+
 APP = "yuki-iptv"
 LOCALE_DIR = str(Path(os.getcwd(), '..', '..', 'share', 'locale'))
 locale.bindtextdomain(APP, LOCALE_DIR)
 gettext.bindtextdomain(APP, LOCALE_DIR)
 gettext.textdomain(APP)
-_ = gettext.gettext
+
+
+def cached_gettext(gettext_str):
+    if gettext_str not in YukiLang.cache:
+        YukiLang.cache[gettext_str] = gettext.gettext(gettext_str)
+    return YukiLang.cache[gettext_str]
+
+
+_ = cached_gettext
+# i18n end
 
 MAIN_WINDOW_TITLE = 'yuki-iptv'
 WINDOW_SIZE = (1200, 600)
@@ -4784,6 +4799,9 @@ if __name__ == '__main__':
             except:
                 pass
 
+        all_channels_lang = _('All channels')
+        favourites_lang = _('Favourites')
+
         def gen_chans():
             global playing_chan, current_group, \
                 array, page_box, channelfilter, prog_match_arr, \
@@ -4805,8 +4823,8 @@ if __name__ == '__main__':
             array_filtered = {}
             for j1 in array:
                 group1 = array[j1]['tvg-group']
-                if current_group != _('All channels'):
-                    if current_group == _('Favourites'):
+                if current_group != all_channels_lang:
+                    if current_group == favourites_lang:
                         if j1 not in favourite_sets:
                             continue
                     else:
