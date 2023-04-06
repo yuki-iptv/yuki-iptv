@@ -23,10 +23,10 @@ yuki-iptv (0.0.2) unstable; urgency=medium
   * Drop default EPG URLs
   * Drop import from Hypnotix
 
- -- yuki-chan-nya <yuki-chan-nya@unknown>  Thu, 06 Apr 2023 18:29:16 +0000
+ -- yuki-chan-nya <yukichandev@proton.me>  Thu, 06 Apr 2023 18:29:16 +0000
 
 yuki-iptv (0.0.1) unstable; urgency=medium
 
   * Change project name to yuki-iptv
 
- -- yuki-chan-nya <yuki-chan-nya@unknown>  Mon, 27 Mar 2023 18:25:20 +0000
+ -- yuki-chan-nya <yukichandev@proton.me>  Mon, 27 Mar 2023 18:25:20 +0000
