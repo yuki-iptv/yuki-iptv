@@ -33,25 +33,6 @@ class YukiData:
     WRITTENQT = False
 
 
-def globalPos(arg):
-    try:
-        ret = arg.globalPosition().toPoint()
-    except:
-        if not YukiData.WRITTEN:
-            YukiData.WRITTEN = True
-            logger.debug("Qt 5 (globalPos) compatibility enabled")
-        ret = arg.globalPos()
-    return ret
-
-
-def getX(arg1):
-    return arg1.x()
-
-
-def getY(arg2):
-    return arg2.y()
-
-
 def _exec(obj, arg=None):
     if hasattr(obj, 'exec'):
         if arg:

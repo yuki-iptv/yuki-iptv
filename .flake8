@@ -1,4 +1,4 @@
 [flake8]
-exclude = build,venv,.tox,.git,.pytest_cache,usr/lib/yuki-iptv/thirdparty/mpris_server,usr/lib/yuki-iptv/thirdparty/mpv.py,usr/lib/yuki-iptv/thirdparty/pydbus,usr/lib/yuki-iptv/thirdparty/resizablewindow.py,usr/lib/yuki-iptv/thirdparty/xtream.py
+exclude = build,venv,.tox,.git,.pytest_cache,usr/lib/yuki-iptv/thirdparty/mpris_server,usr/lib/yuki-iptv/thirdparty/mpv.py,usr/lib/yuki-iptv/thirdparty/pydbus,usr/lib/yuki-iptv/thirdparty/xtream.py
 ignore = E722
 max_line_length = 120
