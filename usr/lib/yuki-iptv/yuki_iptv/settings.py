@@ -27,7 +27,7 @@ from pathlib import Path
 
 def parse_settings(
     local_dir, save_folder_default,
-    def_timezone, dock_widget_width
+    def_timezone
 ):
     settings_default = {
         "m3u": "",
@@ -44,19 +44,15 @@ def parse_settings(
         "ua": "Mozilla/5.0",
         "mpv_options": '',
         'donotupdateepg': False,
-        'channelsonpage': 100,
         'openprevchan': False,
         'hidempv': False,
         'hideepgpercentage': False,
         'hidebitrateinfo': False,
-        'movedragging': False,
         'styleredefoff': True,
         'volumechangestep': 1,
-        'exp2': dock_widget_width,
         'mouseswitchchannels': False,
         'autoreconnection': False,
         'showplaylistmouse': True,
-        'hideplaylistleftclk': False,
         'channellogos': 0,
         'nocacheepg': False,
         'scrrecnosubfolders': False,
@@ -65,7 +61,6 @@ def parse_settings(
         'catchupenable': False,
         'flpopacity': 0.7,
         'panelposition': 0,
-        'playlistsep': False,
         'videoaspect': 0,
         'zoom': 0,
         'panscan': 0.0,
