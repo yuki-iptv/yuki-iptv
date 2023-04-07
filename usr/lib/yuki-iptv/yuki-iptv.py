@@ -70,7 +70,6 @@ from yuki_iptv.qt6compat import _exec, _enum
 from yuki_iptv.m3u_editor import M3UEditor
 from yuki_iptv.keybinds import main_keybinds_internal, main_keybinds_default
 from yuki_iptv.series import parse_series
-from thirdparty.conversion import convert_size, format_bytes, human_secs
 from thirdparty.xtream import XTream, Serie
 
 parser = argparse.ArgumentParser(prog="yuki-iptv", description="yuki-iptv")
@@ -1729,13 +1728,32 @@ if __name__ == '__main__':
             if praction_choose.currentIndex() == 1:  # 1 - Press Stop
                 mpv_stop()
 
+        def format_bytes(bytes1, hbnames):
+            idx = 0
+            while bytes1 >= 1024 and idx + 1 < len(hbnames):
+                bytes1 = bytes1 / 1024
+                idx += 1
+            return f"{bytes1:.1f} {hbnames[idx]}"
+
+        def format_seconds(seconds):
+            return time.strftime("%H:%M:%S", time.gmtime(seconds))
+
+        def convert_size(size_bytes):
+            return format_bytes(
+                size_bytes,
+                [
+                    "B", "KB", "MB", "GB", "TB",
+                    "PB", "EB", "ZB", "YB"
+                ]
+            )
+
         def record_thread_2():
             try:
                 global recViaScheduler
                 activerec_list_value = activerec_list.verticalScrollBar().value()
                 activerec_list.clear()
                 for sch0 in sch_recordings:
-                    counted_time0 = human_secs(time.time() - sch_recordings[sch0][1])
+                    counted_time0 = format_seconds(time.time() - sch_recordings[sch0][1])
                     channel_name0 = sch_recordings[sch0][3]
                     file_name0 = sch_recordings[sch0][2]
                     file_size0 = "WAITING"
@@ -3961,7 +3979,7 @@ if __name__ == '__main__':
         lbl2.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
         lbl2.setStyleSheet('color: #e0071a')
         lbl2.setWordWrap(True)
-        lbl2.resize(200, 30)
+        lbl2.resize(230, 30)
         lbl2.move(0, lbl2_offset)
         lbl2.hide()
 
@@ -7061,7 +7079,7 @@ if __name__ == '__main__':
                     if is_recording:
                         if not recording_time:
                             recording_time = time.time()
-                        record_time = human_secs(time.time() - recording_time)
+                        record_time = format_seconds(time.time() - recording_time)
                         if os.path.isfile(record_file):
                             record_size = convert_size(os.path.getsize(record_file))
                             lbl2.setText("REC " + record_time + " - " + record_size)
