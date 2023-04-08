@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021-2022 Astroncia <kestraly@gmail.com>
+# Copyright (c) 2021, 2022 Astroncia <kestraly@gmail.com>
 # Copyright (c) 2023 yuki-chan-nya <yukichandev@proton.me>
 #
 # This file is part of yuki-iptv.
@@ -293,10 +293,15 @@ if __name__ == '__main__':
     try:
         logger.info("")
         logger.info(f"{MAIN_WINDOW_TITLE} starting...")
-        logger.info("Copyright (c) 2021-2022 Astroncia")
+        logger.info("Copyright (c) 2021, 2022 Astroncia")
         logger.info("Copyright (c) 2023 yuki-chan-nya")
         logger.info("")
         logger.info(f"Version: {APP_VERSION} {VERSION_CODENAME}")
+        logger.info("")
+        logger.info("This program is free software: you can redistribute it and/or modify")
+        logger.info("it under the terms of the GNU General Public License as published by")
+        logger.info("the Free Software Foundation, either version 3 of the License, or")
+        logger.info("(at your option) any later version.")
         logger.info("")
         logger.info("Using Python " + sys.version.replace('\n', ''))
         logger.info(f"Qt library: {qt_library}")
@@ -1215,7 +1220,7 @@ if __name__ == '__main__':
         help_win.setWindowIcon(main_icon)
 
         license_win = QtWidgets.QMainWindow()
-        license_win.resize(500, 550)
+        license_win.resize(600, 550)
         license_win.setWindowTitle(_('License'))
         license_win.setWindowIcon(main_icon)
 
@@ -3312,9 +3317,20 @@ if __name__ == '__main__':
             license_str = license_file.read()
             license_file.close()
 
+        license_append = (
+            "This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version."  # noqa: E501
+            "\n\n"
+            "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."  # noqa: E501
+            "\n\n"
+            "You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>."  # noqa: E501
+            "\n\n"
+            "------------------------------------"
+            "\n\n"
+        )
+
         licensebox = QtWidgets.QPlainTextEdit()
         licensebox.setReadOnly(True)
-        licensebox.setPlainText(license_str)
+        licensebox.setPlainText(license_append + license_str)
 
         licensebox_close_btn = QtWidgets.QPushButton()
         licensebox_close_btn.setText(_('Close'))
@@ -3635,7 +3651,7 @@ if __name__ == '__main__':
 
             logger.info(f"Using {mpv_version}")
 
-            textbox.setText(format_about_text(_('yuki-iptv\nversion: {}\ncodename: {}\n\n© 2021-2022 Astroncia\n© {} yuki-chan-nya\nhttps://github.com/yuki-chan-nya\n\nIPTV player\n\nIcons by Font Awesome ( https://fontawesome.com/ )\nIcons licensed under the CC BY 4.0 License\n( https://creativecommons.org/licenses/by/4.0/ )').format(APP_VERSION, VERSION_CODENAME, COPYRIGHT_YEAR)))  # noqa: E501
+            textbox.setText(format_about_text(_('yuki-iptv\nversion: {}\ncodename: {}\n\n© 2021, 2022 Astroncia\n© {} yuki-chan-nya\nhttps://github.com/yuki-chan-nya\n\nIPTV player\n\nIcons by Font Awesome ( https://fontawesome.com/ )\nIcons licensed under the CC BY 4.0 License\n( https://creativecommons.org/licenses/by/4.0/ )').format(APP_VERSION, VERSION_CODENAME, COPYRIGHT_YEAR).replace('©', 'Copyright ©')))  # noqa: E501
 
             if settings["cache_secs"] != 0:
                 try:
