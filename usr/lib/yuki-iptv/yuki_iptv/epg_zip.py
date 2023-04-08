@@ -46,7 +46,7 @@ def parse_epg_zip(zip_file):
                     return ["xmltv", myfile.read()]
                 break
             if name.endswith('.ndx'):
-                logger.info("JTV inside ZIP detected, trying to parse...")
+                logger.info("JTV format detected, trying to parse...")
                 found = True
                 return parse_epg_zip_jtv(myzip)
                 break
