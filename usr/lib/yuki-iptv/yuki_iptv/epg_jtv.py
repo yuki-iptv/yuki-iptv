@@ -115,9 +115,17 @@ def parse_epg_zip_jtv(zip_file):
                             ndx_file.read(), pdt_file.read(), settings
                         )
                         if parsed_jtv:
-                            array_out[channel_name] = parsed_jtv
-                            if channel_name.replace('_', ' ') not in array_out:
-                                array_out[channel_name.replace('_', ' ')] = \
+                            try:
+                                channel_u_name = \
+                                    str(
+                                        bytes(channel_name, encoding='cp437'),
+                                        encoding='cp866'
+                                    )
+                            except UnicodeEncodeError:
+                                channel_u_name = channel_name
+                            array_out[channel_u_name] = parsed_jtv
+                            if channel_u_name.replace('_', ' ') not in array_out:
+                                array_out[channel_u_name.replace('_', ' ')] = \
                                     parsed_jtv
             else:
                 logger.debug("No PDT file found for channel!")
