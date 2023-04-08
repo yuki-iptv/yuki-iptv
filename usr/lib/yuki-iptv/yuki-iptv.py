@@ -296,8 +296,6 @@ if __name__ == '__main__':
         logger.info("Copyright (c) 2021, 2022 Astroncia")
         logger.info("Copyright (c) 2023 yuki-chan-nya")
         logger.info("")
-        logger.info(f"Version: {APP_VERSION} {VERSION_CODENAME}")
-        logger.info("")
         logger.info("This program is free software: you can redistribute it and/or modify")
         logger.info("it under the terms of the GNU General Public License as published by")
         logger.info("the Free Software Foundation, either version 3 of the License, or")
@@ -306,6 +304,7 @@ if __name__ == '__main__':
         logger.info("The Font Awesome pictograms are licensed under the CC BY 4.0 License")
         logger.info("https://creativecommons.org/licenses/by/4.0/")
         logger.info("")
+        logger.info(f"yuki-iptv version: {APP_VERSION} {VERSION_CODENAME}")
         logger.info("Using Python " + sys.version.replace('\n', ''))
         logger.info(f"Qt library: {qt_library}")
         logger.info(f"Qt version: {QtCore.QT_VERSION_STR}")
@@ -6109,6 +6108,13 @@ if __name__ == '__main__':
         ]
 
         def format_about_text(about_txt):
+            about_txt += "\n\n" + _('Using Qt {} ({})').format(QtCore.QT_VERSION_STR, qt_library)
+            mpv_version = player.mpv_version
+            if ' ' in mpv_version:
+                mpv_version = mpv_version.split(' ', 1)[1]
+            if not mpv_version:
+                mpv_version = "UNKNOWN"
+            about_txt += "\n" + _('Using libmpv {}').format(mpv_version)
             about_txt = about_txt.replace('\n', '<br>')
             for clickable_link in CLICKABLE_LINKS:
                 about_txt = about_txt.replace(
