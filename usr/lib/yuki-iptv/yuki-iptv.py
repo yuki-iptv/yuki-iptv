@@ -334,12 +334,7 @@ if __name__ == '__main__':
             channel_sets = json.loads(file1.read())
             file1.close()
 
-        DEF_TIMEZONE = 0
-
-        settings, settings_loaded = parse_settings(
-            LOCAL_DIR, SAVE_FOLDER_DEFAULT,
-            DEF_TIMEZONE
-        )
+        settings, settings_loaded = parse_settings()
         if not settings_loaded:
             m3u = ""
 
@@ -3500,7 +3495,7 @@ if __name__ == '__main__':
                 name_edit_1.setText("")
                 m3u_edit_1.setText("")
                 epg_edit_1.setText("")
-                soffset_1.setValue(DEF_TIMEZONE)
+                soffset_1.setValue(0)
                 playlists_data.oldName = ""
                 moveWindowToCenter(playlists_win_edit)
                 playlists_win_edit.show()

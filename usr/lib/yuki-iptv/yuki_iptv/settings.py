@@ -25,18 +25,15 @@ import json
 from pathlib import Path
 
 
-def parse_settings(
-    local_dir, save_folder_default,
-    def_timezone
-):
+def parse_settings():
     settings_default = {
         "m3u": "",
         "epg": "",
         "deinterlace": False,
         "udp_proxy": "",
-        "save_folder": save_folder_default,
+        "save_folder": str(Path(os.environ['HOME'], '.config', 'yuki-iptv', 'saves')),
         "nocache": True,
-        "epgoffset": def_timezone,
+        "epgoffset": 0,
         "hwaccel": False,
         "sort": 0,
         "cache_secs": 0,
@@ -70,6 +67,8 @@ def parse_settings(
 
     settings = settings_default
     settings_loaded = False
+
+    local_dir = str(Path(os.environ['HOME'], '.config', 'yuki-iptv'))
 
     if os.path.isfile(str(Path(local_dir, 'settings.json'))):
         settings_file = open(str(Path(local_dir, 'settings.json')), 'r', encoding="utf8")

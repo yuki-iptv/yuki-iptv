@@ -24,7 +24,11 @@ import os
 import gettext
 import logging
 import requests
+import io
+import zipfile
 from yuki_iptv.xmltv import parse_as_xmltv
+from yuki_iptv.epg_zip import parse_epg_zip
+from yuki_iptv.epg_txt import parse_txt
 
 _ = gettext.gettext
 logger = logging.getLogger(__name__)
@@ -89,15 +93,28 @@ def fetch_epg(settings, catchup_days1, progress_dict):
                 len(epg_settings_url)
             )
 
-            pr_xmltv = parse_as_xmltv(
-                epg, settings, catchup_days1, progress_dict, epg_i, epg_settings_url
-            )
-            programmes_epg = merge_two_dicts(programmes_epg, pr_xmltv[0])
-            prog_ids = merge_two_dicts(prog_ids, pr_xmltv[1])
             try:
-                epg_icons = merge_two_dicts(epg_icons, pr_xmltv[2])
+                pr_xmltv = parse_as_xmltv(
+                    epg, settings, catchup_days1, progress_dict, epg_i, epg_settings_url
+                )
+                programmes_epg = merge_two_dicts(programmes_epg, pr_xmltv[0])
+                prog_ids = merge_two_dicts(prog_ids, pr_xmltv[1])
+                try:
+                    epg_icons = merge_two_dicts(epg_icons, pr_xmltv[2])
+                except:
+                    pass
             except:
-                pass
+                zip_epg = io.BytesIO(epg)
+                if zipfile.is_zipfile(zip_epg):  # ZIP
+                    logger.info("ZIP file detected")
+                    epg = ''
+                    programmes_epg = merge_two_dicts(programmes_epg, parse_epg_zip(zip_epg))
+                elif epg[0:6] == b'tv.all':  # TXT (TV.ALL)
+                    zip_epg = None
+                    programmes_epg = merge_two_dicts(programmes_epg, parse_txt(epg))
+                else:
+                    zip_epg = None
+                    raise Exception("Unknown EPG format or parsing failed!")
             epg_failures.append(False)
             logger.info("Parsing done!")
             logger.info("Parsing EPG...")
