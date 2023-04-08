@@ -20,7 +20,6 @@
 # https://creativecommons.org/licenses/by/4.0/
 #
 import logging
-import traceback
 import datetime
 import struct
 from yuki_iptv.settings import parse_settings
@@ -78,7 +77,7 @@ def parse_jtv(ndx, pdt, settings):
             try:
                 program_name = program_name.decode('utf-8')
             except UnicodeDecodeError:
-                program_name = program_name.decode('cp1251')
+                program_name = program_name.decode('windows-1251')
 
             if isinstance(program_name, str):
                 if count < 1000:  # Workaround, do not allow broken entries
@@ -95,7 +94,6 @@ def parse_jtv(ndx, pdt, settings):
                 raise Exception("Program name decoding failed!")
         except:
             logger.debug("JTV parse failed!")
-            logger.debug(traceback.format_exc())
     # Remove last program because we don't know stop time
     if schedules:
         schedules.pop(len(schedules) - 1)
