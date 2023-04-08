@@ -87,7 +87,7 @@ def parse_programmes(programmes_chan, channel, array_out, settings):
                 array_out[channel[1]] = []
             array_out[channel[1]].append({
                 'start': start_time,
-                'stop': None,
+                'stop': 0,
                 'title': title,
                 'desc': description
             })

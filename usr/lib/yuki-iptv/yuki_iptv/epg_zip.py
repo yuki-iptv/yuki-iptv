@@ -22,6 +22,7 @@
 import logging
 import zipfile
 from yuki_iptv.epg_txt import parse_txt
+from yuki_iptv.epg_jtv import parse_epg_zip_jtv
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +44,11 @@ def parse_epg_zip(zip_file):
                 found = True
                 with myzip.open(name) as myfile:
                     return ["xmltv", myfile.read()]
+                break
+            if name.endswith('.ndx'):
+                logger.info("JTV inside ZIP detected, trying to parse...")
+                found = True
+                return parse_epg_zip_jtv(myzip)
                 break
     if not found:
         raise Exception("No known EPG formats found in ZIP file")
