@@ -303,6 +303,9 @@ if __name__ == '__main__':
         logger.info("the Free Software Foundation, either version 3 of the License, or")
         logger.info("(at your option) any later version.")
         logger.info("")
+        logger.info("The Font Awesome pictograms are licensed under the CC BY 4.0 License")
+        logger.info("https://creativecommons.org/licenses/by/4.0/")
+        logger.info("")
         logger.info("Using Python " + sys.version.replace('\n', ''))
         logger.info(f"Qt library: {qt_library}")
         logger.info(f"Qt version: {QtCore.QT_VERSION_STR}")
@@ -3324,6 +3327,9 @@ if __name__ == '__main__':
             "\n\n"
             "You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>."  # noqa: E501
             "\n\n"
+            "------------------------------------\n\n"
+            "The Font Awesome pictograms are licensed under the CC BY 4.0 License\n"
+            "https://creativecommons.org/licenses/by/4.0/\n\n"
             "------------------------------------"
             "\n\n"
         )
