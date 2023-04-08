@@ -43,7 +43,7 @@ Icons: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 - Recording TV programs  
 - Hotkeys  
 - Channel search  
-- TV program (EPG) support in XMLTV format  
+- TV program (EPG) support in XMLTV and JTV formats  
 - Display of technical information - video / audio codec, bit rate, resolution  
 - Channel groups (from playlist and custom)  
 - Hide channels  
