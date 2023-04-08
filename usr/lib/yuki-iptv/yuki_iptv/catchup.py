@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021-2022 Astroncia <kestraly@gmail.com>
+# Copyright (c) 2021, 2022 Astroncia <kestraly@gmail.com>
 # Copyright (c) 2023 yuki-chan-nya <yukichandev@proton.me>
 #
 # This file is part of yuki-iptv.
@@ -188,7 +188,6 @@ def format_placeholders(start_time, end_time, catchup_id, orig_url):
     return orig_url
 
 
-# https://github.com/kodi-pvr/pvr.iptvsimple/blob/2143e856dc3f21e4573210cfec73900e65919ef8/src/iptvsimple/data/Channel.cpp#L440
 def get_catchup_url(chan_url, arr1, start_time, end_time, catchup_id):
     play_url = chan_url
     if arr1['catchup'] == 'default':
