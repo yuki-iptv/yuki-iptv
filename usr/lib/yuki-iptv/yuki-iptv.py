@@ -1222,7 +1222,7 @@ if __name__ == '__main__':
         help_win.setWindowIcon(main_icon)
 
         license_win = QtWidgets.QMainWindow()
-        license_win.resize(600, 550)
+        license_win.resize(600, 600)
         license_win.setWindowTitle(_('License'))
         license_win.setWindowIcon(main_icon)
 
@@ -3323,8 +3323,6 @@ if __name__ == '__main__':
             "This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version."  # noqa: E501
             "\n\n"
             "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."  # noqa: E501
-            "\n\n"
-            "You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>."  # noqa: E501
             "\n\n"
             "------------------------------------\n\n"
             "The Font Awesome pictograms are licensed under the CC BY 4.0 License\n"
