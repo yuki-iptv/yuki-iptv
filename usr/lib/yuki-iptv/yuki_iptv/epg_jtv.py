@@ -44,10 +44,14 @@ def parse_jtv(ndx, pdt, settings):
             entry = ndx[i * 12:12 + (i * 12)]
             if entry[0:2] != b'\x00\x00':
                 logger.debug("JTV format violation detected!")
+            if len(entry[2:10]) != 8:
+                logger.debug("Broken JTV time detected")
+                continue
+            filetime = struct.unpack('<Q', entry[2:10])[0]
             start_time = (datetime.datetime(
                 year=1601, month=1, day=1
             ) + datetime.timedelta(
-                microseconds=struct.unpack('<Q', entry[2:10])[0] / 10
+                microseconds=filetime / 10
             )).timestamp() + (3600 * settings["epgoffset"])
             offset = struct.unpack('<H', entry[10:12])[0]
             count = struct.unpack('<H', pdt[offset:offset + 2])[0]
