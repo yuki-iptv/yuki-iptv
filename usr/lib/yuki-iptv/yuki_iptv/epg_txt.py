@@ -76,7 +76,8 @@ def parse_programmes(programmes_chan, channel, array_out, settings):
                 if m > len(programmes_chan) - 1:
                     break
                 re3 = date_regex.findall(programmes_chan[m])
-                if re3 and len(re3[0]) == 2:
+                re4 = months_regex.findall(programmes_chan[m])
+                if (re3 and len(re3[0]) == 2) or (re4 and len(re4[0]) == 5):
                     break
                 else:
                     # Description
