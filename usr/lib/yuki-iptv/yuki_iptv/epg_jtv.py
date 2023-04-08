@@ -108,9 +108,7 @@ def parse_epg_zip_jtv(zip_file):
     namelist = zip_file.namelist()
     for name in namelist:
         if name.endswith('.ndx'):
-            channel_name = name.replace(
-                '_', ' '
-            ).replace('.ndx', '')
+            channel_name = name.replace('.ndx', '')
             pdt_filename = name.replace('.ndx', '.pdt')
             if pdt_filename in namelist:
                 with zip_file.open(pdt_filename) as pdt_file:
@@ -120,6 +118,9 @@ def parse_epg_zip_jtv(zip_file):
                         )
                         if parsed_jtv:
                             array_out[channel_name] = parsed_jtv
+                            if channel_name.replace('_', ' ') not in array_out:
+                                array_out[channel_name.replace('_', ' ')] = \
+                                    parsed_jtv
             else:
                 logger.debug("No PDT file found for channel!")
     if not array_out:
