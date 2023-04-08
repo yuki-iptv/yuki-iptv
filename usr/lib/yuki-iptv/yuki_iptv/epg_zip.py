@@ -38,5 +38,11 @@ def parse_epg_zip(zip_file):
                 with myzip.open(name) as myfile:
                     return parse_txt(myfile.read())
                 break
+            if name.endswith('.xml'):
+                logger.info("XMLTV inside ZIP detected, trying to parse...")
+                found = True
+                with myzip.open(name) as myfile:
+                    return ["xmltv", myfile.read()]
+                break
     if not found:
         raise Exception("No known EPG formats found in ZIP file")
