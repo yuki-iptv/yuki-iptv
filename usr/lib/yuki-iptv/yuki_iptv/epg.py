@@ -26,7 +26,7 @@ import logging
 import requests
 import io
 import zipfile
-from yuki_iptv.xmltv import parse_as_xmltv
+from yuki_iptv.epg_xmltv import parse_as_xmltv
 from yuki_iptv.epg_zip import parse_epg_zip
 from yuki_iptv.epg_txt import parse_txt
 
