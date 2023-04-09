@@ -1,3 +1,17 @@
+yuki-iptv (0.0.3) unstable; urgency=medium
+
+  * EPG: trying to fix EPG cache load freezing
+  * EPG: fix XMLTV timezone parsing
+  * EPG: re-implement JTV support from scratch
+  * EPG: Add support for XMLTV inside zip archive
+  * Show Qt and libmpv versions in about window
+  * Add TV.ALL EPG format support
+  * Fix autoreconnection option
+  * Show logo when file ended
+  * Fix channel looping
+
+ -- yuki-chan-nya <yukichandev@proton.me>  Sun, 09 Apr 2023 20:48:06 +0000
+
 yuki-iptv (0.0.2) unstable; urgency=medium
 
   * l10n: Update translations
