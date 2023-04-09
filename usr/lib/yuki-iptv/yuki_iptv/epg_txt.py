@@ -100,7 +100,10 @@ def parse_txt(txt):
     try:
         txt = txt.decode('windows-1251')
     except UnicodeDecodeError:
-        pass
+        try:
+            txt = txt.decode('utf-8')
+        except:
+            pass
     if txt[0:6] == 'tv.all':
         logger.info("TV.ALL format detected, trying to parse...")
         txt = [str1.strip() for str1 in txt.split('\n')[2:] if str1.strip()] + ['\n']
