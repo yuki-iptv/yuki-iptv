@@ -557,6 +557,7 @@ if __name__ == '__main__':
                 epg_icons, programmes, epg_ready
             while not win.isVisible():
                 time.sleep(0.1)
+            time.sleep(1)
             if settings["nocacheepg"]:
                 logger.info("No cache EPG active, deleting old EPG cache file")
                 try:
