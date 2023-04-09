@@ -31,6 +31,34 @@ _ = gettext.gettext
 logger = logging.getLogger(__name__)
 
 
+def parse_timestamp(ts_string, settings):
+    # TODO: support string timezones like 'DST'
+
+    # Assume UTC if no timezone specified
+    if ' ' not in ts_string.strip():
+        ts_string += ' +0000'
+
+    timestamp_formats = [
+        '%Y%m%d%H%M%S %z',
+        '%Y%m%d%H%M %z',
+        '%Y%m%d%H %z',
+        '%Y%m%d %z',
+        '%Y%m %z',
+        '%Y %z'
+    ]
+
+    ts = 0
+    for timestamp_format in timestamp_formats:
+        try:
+            ts = datetime.datetime.strptime(
+                ts_string, timestamp_format
+            ).timestamp() + (3600 * settings["epgoffset"])
+            break
+        except:
+            pass
+    return ts
+
+
 def parse_as_xmltv(epg, settings, catchup_days1, progress_dict, epg_i, epg_settings_url, force=False):
     '''Load EPG file'''
     logger.info("Trying parsing as XMLTV...")
@@ -76,15 +104,15 @@ def parse_as_xmltv(epg, settings, catchup_days1, progress_dict, epg_i, epg_setti
                 pass
     for programme in tree.findall('./programme'):
         try:
-            start = datetime.datetime.strptime(
-                programme.attrib['start'], '%Y%m%d%H%M%S %z'
-            ).timestamp() + (3600 * settings["epgoffset"])
+            start = parse_timestamp(
+                programme.attrib['start'], settings
+            )
         except:
             start = 0
         try:
-            stop = datetime.datetime.strptime(
-                programme.attrib['stop'], '%Y%m%d%H%M%S %z'
-            ).timestamp() + (3600 * settings["epgoffset"])
+            stop = parse_timestamp(
+                programme.attrib['stop'], settings
+            )
         except:
             stop = 0
         try:
