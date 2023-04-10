@@ -12,6 +12,8 @@ The channels and pictures in the screenshots are for demonstration purposes only
 
 ## Download
 
+[.deb packages](https://github.com/yuki-iptv/yuki-iptv/releases)  
+
 [Ubuntu Launchpad PPA (stable)](https://launchpad.net/~yuki-iptv/+archive/ubuntu/yuki-iptv-stable):  
 ```
 sudo add-apt-repository ppa:yuki-iptv/yuki-iptv-stable
@@ -46,7 +48,7 @@ Icons: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 - Hotkeys  
 - Channel search  
 - TV program (EPG) support in XMLTV and JTV formats  
-- Display of technical information - video / audio codec, bit rate, resolution  
+- Display of technical information - video / audio codec, bitrate, resolution  
 - Channel groups (from playlist and custom)  
 - Hide channels  
 - Sorting channels  
@@ -90,5 +92,5 @@ file:///home/user/Videos/SomeName_4/SomeName.S04E10.mp4
 
 ## Localization
 
-To help with localization you can use [Crowdin](https://crowdin.com/project/yuki-iptv).  
+To help with localization you can use [Crowdin](https://crowdin.com/project/yuki-iptv) or create pull request with .po file.  
 To add a new language, write me on the Crowdin page.  
