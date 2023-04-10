@@ -1,7 +1,7 @@
 # yuki-iptv
 ### IPTV player with EPG support (Astroncia IPTV fork)
 
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/yuki-iptv/yuki-iptv)](https://github.com/yuki-iptv/yuki-iptv/releases) [![GitHub all releases](https://img.shields.io/github/downloads/yuki-iptv/yuki-iptv/total)](https://github.com/yuki-iptv/yuki-iptv/releases)  
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/yuki-iptv/yuki-iptv)](https://github.com/yuki-iptv/yuki-iptv/releases) [![Crowdin](https://badges.crowdin.net/yuki-iptv/localized.svg)](https://crowdin.com/project/yuki-iptv)  
   
 [![Screenshot](https://gist.githubusercontent.com/yuki-chan-nya/c37f80c2cb00afbdbd98959186e1ab80/raw/71a5c9c177130154a7bd1ad31d7465096cc102bb/yuki-iptv.png)](https://gist.githubusercontent.com/yuki-chan-nya/c37f80c2cb00afbdbd98959186e1ab80/raw/71a5c9c177130154a7bd1ad31d7465096cc102bb/yuki-iptv.png)  
   
@@ -87,3 +87,8 @@ file:///home/user/Videos/SomeName_4/SomeName.S04E09.mp4
 #EXTINF:-1 tvg-name="SomeName S04E10 Season Title 4" group-title="SERIES SomeName",
 file:///home/user/Videos/SomeName_4/SomeName.S04E10.mp4
 ```
+
+## Localization
+
+To help with localization you can use [Crowdin](https://crowdin.com/project/yuki-iptv).  
+To add a new language, write me on the Crowdin page.  
