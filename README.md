@@ -72,7 +72,7 @@ https://example.com
 https://example.com
 ```
   
-Use **ExxSxx** in your playlist to get it shown as series.  
+Use **SxxExx** in your playlist to get it shown as series.  
   
 - S01E12 = Season 1 Episode 12  
   
@@ -92,5 +92,5 @@ file:///home/user/Videos/SomeName_4/SomeName.S04E10.mp4
 
 ## Localization
 
-To help with localization you can use [Crowdin](https://crowdin.com/project/yuki-iptv) or create pull request with .po file.  
+To help with localization you can use [Crowdin](https://crowdin.com/project/yuki-iptv) or create pull request with translated .po file.  
 To add a new language, write me on the Crowdin page.  
