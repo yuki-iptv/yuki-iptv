@@ -1609,7 +1609,6 @@ if __name__ == '__main__':
             playlists_json1.close()
 
         time_stop = 0
-        autoclosemenu_time = -1
 
         def moveWindowToCenter(win_arg, force=False):
             used_screen = QtWidgets.QApplication.primaryScreen()
@@ -2415,15 +2414,6 @@ if __name__ == '__main__':
             if event_handler:
                 try:
                     event_handler.on_volume()
-                except:
-                    pass
-
-        def mpv_override_pause(pause_val):
-            global event_handler
-            player.pause = pause_val
-            if event_handler:
-                try:
-                    event_handler.on_playpause()
                 except:
                     pass
 
@@ -3704,6 +3694,34 @@ if __name__ == '__main__':
             def my_down_binding():
                 my_down_binding_execute()
 
+            @idle_function
+            def pause_handler(unused=None, unused2=None, unused3=None):
+                global event_handler
+                try:
+                    if not player.pause:
+                        label3.setIcon(
+                            QtGui.QIcon(
+                                str(Path('yuki_iptv', ICONS_FOLDER, 'pause.png'))
+                            )
+                        )
+                        label3.setToolTip(_('Pause'))
+                    else:
+                        label3.setIcon(
+                            QtGui.QIcon(
+                                str(Path('yuki_iptv', ICONS_FOLDER, 'play.png'))
+                            )
+                        )
+                        label3.setToolTip(_('Play'))
+                    if event_handler:
+                        try:
+                            event_handler.on_playpause()
+                        except:
+                            pass
+                except:
+                    pass
+
+            player.observe_property('pause', pause_handler)
+
             init_menubar_player(
                 player,
                 mpv_play,
@@ -4182,16 +4200,7 @@ if __name__ == '__main__':
                 pass
 
         def mpv_play():
-            global autoclosemenu_time
-            autoclosemenu_time = -1
-            if player.pause:
-                label3.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'pause.png'))))
-                label3.setToolTip(_('Pause'))
-                mpv_override_pause(False)
-            else:
-                label3.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'play.png'))))
-                label3.setToolTip(_('Play'))
-                mpv_override_pause(True)
+            player.pause = not player.pause
 
         def mpv_stop():
             global playing, playing_chan, playing_url
@@ -6120,9 +6129,8 @@ if __name__ == '__main__':
         # logger.info("")
 
         def main_channel_settings():
-            global item_selected, autoclosemenu_time, playing_chan
+            global item_selected, playing_chan
             if playing_chan:
-                autoclosemenu_time = -1
                 item_selected = playing_chan
                 settings_context_menu()
             else:
