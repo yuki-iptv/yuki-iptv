@@ -3081,6 +3081,7 @@ if __name__ == '__main__':
         tabs.addTab(tab_debug, _('Debug'))
 
         tab_main.layout = QtWidgets.QGridLayout()
+        tab_main.layout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         tab_main.layout.addWidget(fld_label, 0, 0)
         tab_main.layout.addWidget(sfld, 0, 1)
         tab_main.layout.addWidget(sfolder, 0, 2)
@@ -3095,23 +3096,21 @@ if __name__ == '__main__':
         tab_main.setLayout(tab_main.layout)
 
         tab_video.layout = QtWidgets.QGridLayout()
+        tab_video.layout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         tab_video.layout.addWidget(dei_label, 0, 0)
         tab_video.layout.addWidget(sdei, 0, 1)
         tab_video.layout.addWidget(hwaccel_label, 1, 0)
         tab_video.layout.addWidget(shwaccel, 1, 1)
-        tab_video.layout.addWidget(QtWidgets.QLabel(), 1, 2)
-        tab_video.layout.addWidget(QtWidgets.QLabel(), 1, 3)
-        tab_video.layout.addWidget(QtWidgets.QLabel(), 1, 4)
         tab_video.layout.addWidget(videoaspectdef_label, 2, 0)
         tab_video.layout.addWidget(videoaspect_def_choose, 2, 1)
         tab_video.layout.addWidget(zoomdef_label, 3, 0)
         tab_video.layout.addWidget(zoom_def_choose, 3, 1)
         tab_video.layout.addWidget(panscan_def_label, 4, 0)
         tab_video.layout.addWidget(panscan_def_choose, 4, 1)
-        tab_video.layout.addWidget(QtWidgets.QLabel(), 5, 0)
         tab_video.setLayout(tab_video.layout)
 
         tab_network.layout = QtWidgets.QGridLayout()
+        tab_network.layout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         tab_network.layout.addWidget(udp_label, 0, 0)
         tab_network.layout.addWidget(sudp, 0, 1)
         tab_network.layout.addWidget(cache_label, 1, 0)
@@ -3123,45 +3122,8 @@ if __name__ == '__main__':
         tab_network.layout.addWidget(referer_choose, 3, 1)
         tab_network.setLayout(tab_network.layout)
 
-        tab_other.layout = QtWidgets.QGridLayout()
-        tab_other.layout.addWidget(mpv_label, 0, 0)
-        tab_other.layout.addWidget(mpv_options, 0, 1)
-        tab_other.layout.addWidget(hidempv_label, 1, 0)
-        tab_other.layout.addWidget(hidempv_flag, 1, 1)
-        tab_other.layout.addWidget(channellogos_label, 2, 0)
-        tab_other.layout.addWidget(channellogos_select, 2, 1)
-        tab_other.layout.addWidget(volumechangestep_label, 3, 0)
-        tab_other.layout.addWidget(volumechangestep_choose, 3, 1)
-        tab_other.layout.addWidget(volumechangestep_percent, 3, 2)
-        tab_other.setLayout(tab_other.layout)
-
-        tab_epg.layout = QtWidgets.QGridLayout()
-        # tab_epg.layout.addWidget(epgdays_label, 0, 0)
-        # tab_epg.layout.addWidget(epgdays, 0, 1)
-        # tab_epg.layout.addWidget(epgdays_p, 0, 2)
-        tab_epg.layout.addWidget(donot_label, 0, 0)
-        tab_epg.layout.addWidget(donot_flag, 0, 1)
-        tab_epg.layout.addWidget(nocacheepg_label, 1, 0)
-        tab_epg.layout.addWidget(nocacheepg_flag, 1, 1)
-        tab_epg.layout.addWidget(QtWidgets.QLabel(), 1, 2)
-        tab_epg.layout.addWidget(QtWidgets.QLabel(), 1, 3)
-        tab_epg.layout.addWidget(QtWidgets.QLabel(), 2, 0)
-        tab_epg.setLayout(tab_epg.layout)
-
-        tab_debug.layout = QtWidgets.QGridLayout()
-        tab_debug.layout.addWidget(styleredefoff_label, 0, 0)
-        tab_debug.layout.addWidget(styleredefoff_flag, 0, 1)
-        tab_debug.layout.addWidget(autoreconnection_label, 1, 0)
-        tab_debug.layout.addWidget(autoreconnection_flag, 1, 1)
-        tab_debug.layout.addWidget(QtWidgets.QLabel(), 2, 2)
-        tab_debug.layout.addWidget(QtWidgets.QLabel(), 2, 3)
-        tab_debug.layout.addWidget(QtWidgets.QLabel(), 2, 4)
-        tab_debug.setLayout(tab_debug.layout)
-
         tab_gui.layout = QtWidgets.QGridLayout()
-        tab_gui.layout.addWidget(QtWidgets.QLabel(), 0, 2)
-        tab_gui.layout.addWidget(QtWidgets.QLabel(), 0, 3)
-        tab_gui.layout.addWidget(QtWidgets.QLabel(), 0, 4)
+        tab_gui.layout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         tab_gui.layout.addWidget(panelposition_label, 0, 0)
         tab_gui.layout.addWidget(panelposition_choose, 0, 1)
         tab_gui.layout.addWidget(hideepgpercentage_label, 1, 0)
@@ -3173,26 +3135,53 @@ if __name__ == '__main__':
         tab_gui.setLayout(tab_gui.layout)
 
         tab_actions.layout = QtWidgets.QGridLayout()
+        tab_actions.layout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         tab_actions.layout.addWidget(mouseswitchchannels_label, 0, 0)
         tab_actions.layout.addWidget(mouseswitchchannels_flag, 0, 1)
-        tab_actions.layout.addWidget(QtWidgets.QLabel(), 0, 2)
-        tab_actions.layout.addWidget(QtWidgets.QLabel(), 0, 3)
         tab_actions.layout.addWidget(defaultchangevol_label, 1, 0)
-        tab_actions.layout.addWidget(QtWidgets.QLabel(), 2, 0)
         tab_actions.layout.addWidget(showplaylistmouse_label, 3, 0)
         tab_actions.layout.addWidget(showplaylistmouse_flag, 3, 1)
         tab_actions.layout.addWidget(showcontrolsmouse_label, 4, 0)
         tab_actions.layout.addWidget(showcontrolsmouse_flag, 4, 1)
-        tab_actions.layout.addWidget(QtWidgets.QLabel(), 5, 0)
         tab_actions.setLayout(tab_actions.layout)
 
         tab_catchup.layout = QtWidgets.QGridLayout()
+        tab_catchup.layout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         tab_catchup.layout.addWidget(catchupenable_label, 0, 0)
         tab_catchup.layout.addWidget(catchupenable_flag, 0, 1)
-        tab_catchup.layout.addWidget(QtWidgets.QLabel(), 0, 2)
-        tab_catchup.layout.addWidget(QtWidgets.QLabel(), 0, 3)
-        tab_catchup.layout.addWidget(QtWidgets.QLabel(), 1, 0)
         tab_catchup.setLayout(tab_catchup.layout)
+
+        tab_epg.layout = QtWidgets.QGridLayout()
+        tab_epg.layout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        # tab_epg.layout.addWidget(epgdays_label, 0, 0)
+        # tab_epg.layout.addWidget(epgdays, 0, 1)
+        # tab_epg.layout.addWidget(epgdays_p, 0, 2)
+        tab_epg.layout.addWidget(donot_label, 0, 0)
+        tab_epg.layout.addWidget(donot_flag, 0, 1)
+        tab_epg.layout.addWidget(nocacheepg_label, 1, 0)
+        tab_epg.layout.addWidget(nocacheepg_flag, 1, 1)
+        tab_epg.setLayout(tab_epg.layout)
+
+        tab_other.layout = QtWidgets.QGridLayout()
+        tab_other.layout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        tab_other.layout.addWidget(mpv_label, 0, 0)
+        tab_other.layout.addWidget(mpv_options, 0, 1)
+        tab_other.layout.addWidget(hidempv_label, 1, 0)
+        tab_other.layout.addWidget(hidempv_flag, 1, 1)
+        tab_other.layout.addWidget(channellogos_label, 2, 0)
+        tab_other.layout.addWidget(channellogos_select, 2, 1)
+        tab_other.layout.addWidget(volumechangestep_label, 3, 0)
+        tab_other.layout.addWidget(volumechangestep_choose, 3, 1)
+        tab_other.layout.addWidget(volumechangestep_percent, 3, 2)
+        tab_other.setLayout(tab_other.layout)
+
+        tab_debug.layout = QtWidgets.QGridLayout()
+        tab_debug.layout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        tab_debug.layout.addWidget(styleredefoff_label, 0, 0)
+        tab_debug.layout.addWidget(styleredefoff_flag, 0, 1)
+        tab_debug.layout.addWidget(autoreconnection_label, 1, 0)
+        tab_debug.layout.addWidget(autoreconnection_flag, 1, 1)
+        tab_debug.setLayout(tab_debug.layout)
 
         grid = QtWidgets.QVBoxLayout()
         grid.addWidget(tabs)
@@ -4665,16 +4654,13 @@ if __name__ == '__main__':
         class PlaylistWidget(QtWidgets.QWidget):
             def __init__(self, parent=None):
                 super().__init__(parent)
-                self.layout = QtWidgets.QVBoxLayout()
+
                 self.name_label = QtWidgets.QLabel()
                 myFont = QtGui.QFont()
                 myFont.setBold(True)
                 self.name_label.setFont(myFont)
                 self.description_label = QtWidgets.QLabel()
-                self.layout.addWidget(self.name_label)
-                self.layout.addWidget(self.description_label)
-                self.layout.setSpacing(5)
-                self.layout1 = QtWidgets.QGridLayout()
+
                 self.icon_label = QtWidgets.QLabel()
                 self.progress_label = QtWidgets.QLabel()
                 self.progress_bar = QtWidgets.QProgressBar()
@@ -4682,13 +4668,29 @@ if __name__ == '__main__':
                 self.end_label = QtWidgets.QLabel()
                 self.opacity = QtWidgets.QGraphicsOpacityEffect()
                 self.opacity.setOpacity(100)
-                self.layout1.addWidget(self.icon_label, 0, 0)
-                self.layout1.addLayout(self.layout, 0, 1)
-                self.layout1.addWidget(self.progress_label, 3, 0)
-                self.layout1.addWidget(self.progress_bar, 3, 1)
-                self.layout1.addWidget(self.end_label, 3, 2)
-                self.layout1.setSpacing(10)
-                self.setLayout(self.layout1)
+
+                self.layout = QtWidgets.QVBoxLayout()
+                self.layout.addWidget(self.name_label)
+                self.layout.addWidget(self.description_label)
+                self.layout.setSpacing(5)
+
+                self.layout1 = QtWidgets.QGridLayout()
+                self.layout1.addWidget(self.progress_label, 0, 0)
+                self.layout1.addWidget(self.progress_bar, 0, 1)
+                self.layout1.addWidget(self.end_label, 0, 2)
+
+                self.layout2 = QtWidgets.QGridLayout()
+                self.layout2.setAlignment(QtCore.Qt.AlignLeft)
+                self.layout2.addWidget(self.icon_label, 0, 0)
+                self.layout2.addLayout(self.layout, 0, 1)
+                self.layout2.setSpacing(10)
+
+                self.layout3 = QtWidgets.QVBoxLayout()
+                self.layout3.addLayout(self.layout2)
+                self.layout3.addLayout(self.layout1)
+
+                self.setLayout(self.layout3)
+
                 self.progress_bar.setStyleSheet('''
                   background-color: #C0C6CA;
                   border: 0px;
@@ -4718,6 +4720,18 @@ if __name__ == '__main__':
             def hideProgress(self):
                 self.opacity.setOpacity(0)
                 self.progress_bar.setGraphicsEffect(self.opacity)
+
+            def showDescription(self):
+                self.description_label.show()
+                self.progress_label.show()
+                self.progress_bar.show()
+                self.end_label.show()
+
+            def hideDescription(self):
+                self.description_label.hide()
+                self.progress_label.hide()
+                self.progress_bar.hide()
+                self.end_label.hide()
 
         all_channels_lang = _('All channels')
         favourites_lang = _('Favourites')
@@ -4901,6 +4915,7 @@ if __name__ == '__main__':
                             "<i>" + orig_prog + "</i>" + prog_desc
                         ).replace('\n', '<br>')
                     )
+                    MyPlaylistWidget.showDescription()
                     try:
                         if start_time:
                             MyPlaylistWidget.progress_label.setText(start_time)
@@ -4913,6 +4928,7 @@ if __name__ == '__main__':
                 else:
                     MyPlaylistWidget.setDescription("", f"<b>{i}</b>")
                     MyPlaylistWidget.hideProgress()
+                    MyPlaylistWidget.hideDescription()
 
                 MyPlaylistWidget.setIcon(TV_ICON)
 
