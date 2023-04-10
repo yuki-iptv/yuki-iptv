@@ -3924,7 +3924,7 @@ if __name__ == '__main__':
         chan.resize(200, 30)
 
         def centerwidget(wdg3, offset1=0):
-            fg1 = win.frameGeometry()
+            fg1 = win.container.frameGeometry()
             xg1 = (fg1.width() - wdg3.width()) / 2
             yg1 = (fg1.height() - wdg3.height()) / 2
             wdg3.move(int(xg1), int(yg1) + int(offset1))
