@@ -166,6 +166,7 @@ DOCK_WIDGET2_HEIGHT_LOW = DOCK_WIDGET2_HEIGHT_HIGH - (DOCK_WIDGET2_HEIGHT_OFFSET
 DOCK_WIDGET_WIDTH = int((WINDOW_SIZE[0] / 2) - 200)
 TVGUIDE_WIDTH = int((WINDOW_SIZE[0] / 5))
 BCOLOR = "#A2A3A3"
+EPG_CACHE_VERSION = 1
 
 UPDATE_BR_INTERVAL = 5
 
@@ -404,6 +405,8 @@ if __name__ == '__main__':
                     file2 = open(str(Path(LOCAL_DIR, 'epg.cache')), 'wb')
                     file2.write(codecs.encode(bytes(json.dumps(
                         {
+                            "cache_version": EPG_CACHE_VERSION,
+                            "system_timezone": json.dumps(time.tzname),
                             "tvguide_sets": clean_programme(),
                             "current_url": [str(settings["m3u"]), str(settings["epg"])],
                             "prog_ids": prog_ids,
@@ -507,19 +510,27 @@ if __name__ == '__main__':
                     codecs.decode(codecs.decode(file_epg1.read(), 'zlib'), 'utf-8')
                 )
                 file_epg1.close()
-                current_url = ["", ""]
+                epg_cache_version = -1
                 try:
-                    if 'current_url' in file1_json:
-                        current_url = file1_json['current_url']
+                    if 'cache_version' in file1_json:
+                        epg_cache_version = file1_json['cache_version']
                 except:
                     pass
-                if not (
-                    current_url[0] == settings_m3u and current_url[1] == settings_epg
-                ):
-                    # Ignoring epg.cache, EPG URL changed
-                    logger.info("Ignoring epg.cache, EPG URL changed")
+                if epg_cache_version != EPG_CACHE_VERSION:
+                    logger.info("Ignoring epg.cache, EPG cache version changed")
                     os.remove(str(Path(LOCAL_DIR, 'epg.cache')))
                     file1_json = {}
+                else:
+                    current_url = file1_json['current_url']
+                    system_timezone = file1_json['system_timezone']
+                    if current_url[0] == settings_m3u and \
+                       current_url[1] == settings_epg and \
+                       system_timezone == json.dumps(time.tzname):
+                        pass
+                    else:
+                        logger.info("Ignoring epg.cache, something changed")
+                        os.remove(str(Path(LOCAL_DIR, 'epg.cache')))
+                        file1_json = {}
             except:
                 file1_json = {}
             if "tvguide_sets" in file1_json:
