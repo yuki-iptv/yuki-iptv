@@ -62,8 +62,10 @@ def ast_trackset(track, type1):
     logger.info(f"Set {type1} track to {track}")
     if type1 == 'vid':
         YukiData.player.vid = track
-    else:
+    elif type1 == 'aid':
         YukiData.player.aid = track
+    elif type1 == 'sid':
+        YukiData.player.sid = track
     YukiData.redraw_menubar()
 
 
@@ -381,6 +383,8 @@ def init_menubar(data):
     YukiData.empty_action.setEnabled(False)
     YukiData.empty_action1 = qaction('<{}>'.format(_('empty')), data)
     YukiData.empty_action1.setEnabled(False)
+    YukiData.empty_action2 = qaction('<{}>'.format(_('empty')), data)
+    YukiData.empty_action2.setEnabled(False)
 
     # Filters mapping
     YukiData.filter_mapping = {
@@ -483,6 +487,11 @@ def populate_menubar(
     audio_menu.addAction(YukiData.volumeMinus)
     audio_menu.addAction(YukiData.volumePlus)
 
+    # Subtitles
+    subtitles_menu = menubar.addMenu(_('&Subtitles'))
+    sub_track_menu = subtitles_menu.addMenu(_('&Track'))
+    sub_track_menu.clear()
+
     # View
 
     view_menu = menubar.addMenu(_('Vie&w'))
@@ -505,7 +514,7 @@ def populate_menubar(
     help_menu = menubar.addMenu(_('&Help'))
     help_menu.addAction(YukiData.aboutAction)
 
-    YukiData.menubars[i] = [video_track_menu, audio_track_menu]
+    YukiData.menubars[i] = [video_track_menu, audio_track_menu, sub_track_menu]
 
     return aot_action
 
@@ -575,13 +584,21 @@ def update_menubar(track_list, playing_chan, m3u, file, aot_file):
     for i in YukiData.menubars:
         clear_menu(YukiData.menubars[i][0])
         clear_menu(YukiData.menubars[i][1])
+        clear_menu(YukiData.menubars[i][2])
         YukiData.menubars[i][0].clear()
         YukiData.menubars[i][1].clear()
+        YukiData.menubars[i][2].clear()
         if track_list and playing_chan:
             if not [x for x in track_list if x['type'] == 'video']:
                 YukiData.menubars[i][0].addAction(YukiData.empty_action)
             if not [x for x in track_list if x['type'] == 'audio']:
                 YukiData.menubars[i][1].addAction(YukiData.empty_action1)
+            # Subtitles off
+            sub_off_action = qaction(_('None'), YukiData.data)
+            if YukiData.player.sid == 'no' or not YukiData.player.sid:
+                sub_off_action.setIcon(YukiData.circle_icon)
+            sub_off_action.triggered.connect(partial(ast_trackset, 'no', 'sid'))
+            YukiData.menubars[i][2].addAction(sub_off_action)
             for track in track_list:
                 if track['type'] == 'video':
                     trk = qaction(str(track['id']), YukiData.data)
@@ -590,14 +607,33 @@ def update_menubar(track_list, playing_chan, m3u, file, aot_file):
                     trk.triggered.connect(partial(ast_trackset, track['id'], 'vid'))
                     YukiData.menubars[i][0].addAction(trk)
                 if track['type'] == 'audio':
-                    trk1 = qaction(str(track['id']), YukiData.data)
+                    if 'lang' in track:
+                        trk1 = qaction(
+                            '{} ({})'.format(track['id'], track['lang']),
+                            YukiData.data
+                        )
+                    else:
+                        trk1 = qaction(str(track['id']), YukiData.data)
                     if track['id'] == YukiData.player.aid:
                         trk1.setIcon(YukiData.circle_icon)
                     trk1.triggered.connect(partial(ast_trackset, track['id'], 'aid'))
                     YukiData.menubars[i][1].addAction(trk1)
+                if track['type'] == 'sub':
+                    if 'lang' in track:
+                        trk2 = qaction(
+                            '{} ({})'.format(track['id'], track['lang']),
+                            YukiData.data
+                        )
+                    else:
+                        trk2 = qaction(str(track['id']), YukiData.data)
+                    if track['id'] == YukiData.player.sid:
+                        trk2.setIcon(YukiData.circle_icon)
+                    trk2.triggered.connect(partial(ast_trackset, track['id'], 'sid'))
+                    YukiData.menubars[i][2].addAction(trk2)
         else:
             YukiData.menubars[i][0].addAction(YukiData.empty_action)
             YukiData.menubars[i][1].addAction(YukiData.empty_action1)
+            YukiData.menubars[i][2].addAction(YukiData.empty_action2)
 
 
 def init_yuki_iptv_menubar(data, app, menubar):
