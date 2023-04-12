@@ -32,3 +32,9 @@ def test_xmltv_timestamp():
     # TODO: 200007281733 BST
     assert int(parse_timestamp("200209", {'epgoffset': 0})) == 1030838400
     assert int(parse_timestamp("19880523083000 +0300", {'epgoffset': 0})) == 580368600
+    # Positive EPG offset (+2 hours)
+    assert int(parse_timestamp("200209", {'epgoffset': 2})) == 1030838400 + (3600 * 2)
+    assert int(parse_timestamp("19880523083000 +0300", {'epgoffset': 2})) == 580368600 + (3600 * 2)
+    # Negative EPG offset (-2 hours)
+    assert int(parse_timestamp("200209", {'epgoffset': -2})) == 1030838400 - (3600 * 2)
+    assert int(parse_timestamp("19880523083000 +0300", {'epgoffset': -2})) == 580368600 - (3600 * 2)
