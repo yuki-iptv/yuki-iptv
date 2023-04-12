@@ -3096,7 +3096,11 @@ if __name__ == '__main__':
         tabs.addTab(tab_debug, _('Debug'))
 
         tab_main.layout = QtWidgets.QGridLayout()
-        tab_main.layout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        tab_main.layout.setAlignment(
+            _enum(
+                QtCore.Qt, 'AlignmentFlag.AlignLeft'
+            ) | _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+        )
         tab_main.layout.addWidget(fld_label, 0, 0)
         tab_main.layout.addWidget(sfld, 0, 1)
         tab_main.layout.addWidget(sfolder, 0, 2)
@@ -3111,7 +3115,11 @@ if __name__ == '__main__':
         tab_main.setLayout(tab_main.layout)
 
         tab_video.layout = QtWidgets.QGridLayout()
-        tab_video.layout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        tab_video.layout.setAlignment(
+            _enum(
+                QtCore.Qt, 'AlignmentFlag.AlignLeft'
+            ) | _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+        )
         tab_video.layout.addWidget(dei_label, 0, 0)
         tab_video.layout.addWidget(sdei, 0, 1)
         tab_video.layout.addWidget(hwaccel_label, 1, 0)
@@ -3125,7 +3133,11 @@ if __name__ == '__main__':
         tab_video.setLayout(tab_video.layout)
 
         tab_network.layout = QtWidgets.QGridLayout()
-        tab_network.layout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        tab_network.layout.setAlignment(
+            _enum(
+                QtCore.Qt, 'AlignmentFlag.AlignLeft'
+            ) | _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+        )
         tab_network.layout.addWidget(udp_label, 0, 0)
         tab_network.layout.addWidget(sudp, 0, 1)
         tab_network.layout.addWidget(cache_label, 1, 0)
@@ -3138,7 +3150,11 @@ if __name__ == '__main__':
         tab_network.setLayout(tab_network.layout)
 
         tab_gui.layout = QtWidgets.QGridLayout()
-        tab_gui.layout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        tab_gui.layout.setAlignment(
+            _enum(
+                QtCore.Qt, 'AlignmentFlag.AlignLeft'
+            ) | _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+        )
         tab_gui.layout.addWidget(panelposition_label, 0, 0)
         tab_gui.layout.addWidget(panelposition_choose, 0, 1)
         tab_gui.layout.addWidget(hideepgpercentage_label, 1, 0)
@@ -3150,7 +3166,11 @@ if __name__ == '__main__':
         tab_gui.setLayout(tab_gui.layout)
 
         tab_actions.layout = QtWidgets.QGridLayout()
-        tab_actions.layout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        tab_actions.layout.setAlignment(
+            _enum(
+                QtCore.Qt, 'AlignmentFlag.AlignLeft'
+            ) | _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+        )
         tab_actions.layout.addWidget(mouseswitchchannels_label, 0, 0)
         tab_actions.layout.addWidget(mouseswitchchannels_flag, 0, 1)
         tab_actions.layout.addWidget(defaultchangevol_label, 1, 0)
@@ -3161,13 +3181,21 @@ if __name__ == '__main__':
         tab_actions.setLayout(tab_actions.layout)
 
         tab_catchup.layout = QtWidgets.QGridLayout()
-        tab_catchup.layout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        tab_catchup.layout.setAlignment(
+            _enum(
+                QtCore.Qt, 'AlignmentFlag.AlignLeft'
+            ) | _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+        )
         tab_catchup.layout.addWidget(catchupenable_label, 0, 0)
         tab_catchup.layout.addWidget(catchupenable_flag, 0, 1)
         tab_catchup.setLayout(tab_catchup.layout)
 
         tab_epg.layout = QtWidgets.QGridLayout()
-        tab_epg.layout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        tab_epg.layout.setAlignment(
+            _enum(
+                QtCore.Qt, 'AlignmentFlag.AlignLeft'
+            ) | _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+        )
         # tab_epg.layout.addWidget(epgdays_label, 0, 0)
         # tab_epg.layout.addWidget(epgdays, 0, 1)
         # tab_epg.layout.addWidget(epgdays_p, 0, 2)
@@ -3178,7 +3206,11 @@ if __name__ == '__main__':
         tab_epg.setLayout(tab_epg.layout)
 
         tab_other.layout = QtWidgets.QGridLayout()
-        tab_other.layout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        tab_other.layout.setAlignment(
+            _enum(
+                QtCore.Qt, 'AlignmentFlag.AlignLeft'
+            ) | _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+        )
         tab_other.layout.addWidget(mpv_label, 0, 0)
         tab_other.layout.addWidget(mpv_options, 0, 1)
         tab_other.layout.addWidget(hidempv_label, 1, 0)
@@ -3191,7 +3223,11 @@ if __name__ == '__main__':
         tab_other.setLayout(tab_other.layout)
 
         tab_debug.layout = QtWidgets.QGridLayout()
-        tab_debug.layout.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        tab_debug.layout.setAlignment(
+            _enum(
+                QtCore.Qt, 'AlignmentFlag.AlignLeft'
+            ) | _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+        )
         tab_debug.layout.addWidget(styleredefoff_label, 0, 0)
         tab_debug.layout.addWidget(styleredefoff_flag, 0, 1)
         tab_debug.layout.addWidget(autoreconnection_label, 1, 0)
@@ -4753,7 +4789,9 @@ if __name__ == '__main__':
                 self.layout1.addWidget(self.end_label, 0, 2)
 
                 self.layout2 = QtWidgets.QGridLayout()
-                self.layout2.setAlignment(QtCore.Qt.AlignLeft)
+                self.layout2.setAlignment(
+                    _enum(QtCore.Qt, 'AlignmentFlag.AlignLeft')
+                )
                 self.layout2.addWidget(self.icon_label, 0, 0)
                 self.layout2.addLayout(self.layout, 0, 1)
                 self.layout2.setSpacing(10)
