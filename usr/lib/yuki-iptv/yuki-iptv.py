@@ -371,6 +371,29 @@ if __name__ == '__main__':
                 favourite_sets = favourite_sets1[settings['m3u']]
             file1.close()
 
+        player_tracks = {}
+
+        def save_player_tracks():
+            global player_tracks
+            player_tracks_2 = {}
+            if os.path.isfile(Path(LOCAL_DIR, 'tracks.json')):
+                with open(
+                    Path(LOCAL_DIR, 'tracks.json'), 'r', encoding="utf8"
+                ) as tracks_file0:
+                    player_tracks_2 = json.loads(tracks_file0.read())
+            if settings['m3u']:
+                player_tracks_2[settings['m3u']] = player_tracks
+            tracks_file1 = open(Path(LOCAL_DIR, 'tracks.json'), 'w', encoding="utf8")
+            tracks_file1.write(json.dumps(player_tracks_2))
+            tracks_file1.close()
+
+        if os.path.isfile(str(Path(LOCAL_DIR, 'tracks.json'))):
+            tracks_file = open(Path(LOCAL_DIR, 'tracks.json'), 'r', encoding="utf8")
+            player_tracks1 = json.loads(tracks_file.read())
+            if settings['m3u'] in player_tracks1:
+                player_tracks = player_tracks1[settings['m3u']]
+            tracks_file.close()
+
         if settings['hwaccel']:
             logger.info('Hardware acceleration enabled')
         else:
@@ -440,6 +463,7 @@ if __name__ == '__main__':
             except:
                 pass
             epg_thread_2 = Process(
+                name='[yuki-iptv] save_tvguide_sets_proc',
                 target=save_tvguide_sets_proc,
                 args=(tvguide_sets,)
             )
@@ -561,6 +585,7 @@ if __name__ == '__main__':
                 dict_epg = manager_epg.dict()
                 dict_epg['out'] = []
                 epg_process = Process(
+                    name='[yuki-iptv] load_epg_cache',
                     target=load_epg_cache, args=(dict_epg, settings['m3u'], settings['epg'],)
                 )
                 epg_process.start()
@@ -3722,6 +3747,21 @@ if __name__ == '__main__':
 
             player.observe_property('pause', pause_handler)
 
+            def yuki_track_set(track, type1):
+                global player_tracks
+                logger.info(f"Set {type1} track to {track}")
+                if playing_chan not in player_tracks:
+                    player_tracks[playing_chan] = {}
+                if type1 == 'vid':
+                    player.vid = track
+                    player_tracks[playing_chan]['vid'] = track
+                elif type1 == 'aid':
+                    player.aid = track
+                    player_tracks[playing_chan]['aid'] = track
+                elif type1 == 'sid':
+                    player.sid = track
+                    player_tracks[playing_chan]['sid'] = track
+
             init_menubar_player(
                 player,
                 mpv_play,
@@ -3757,7 +3797,8 @@ if __name__ == '__main__':
                 disable_always_on_top,
                 reload_playlist,
                 show_shortcuts,
-                str(Path(LOCAL_DIR, 'alwaysontop.json'))
+                str(Path(LOCAL_DIR, 'alwaysontop.json')),
+                yuki_track_set
             )
 
             if os.path.isfile(str(Path(LOCAL_DIR, 'volume.json'))):
@@ -4133,6 +4174,29 @@ if __name__ == '__main__':
                         player['force-window'] = True
                     except:
                         pass
+                    # Restore video / audio / subtitle tracks for channel
+                    if playing_chan in player_tracks:
+                        last_track = player_tracks[playing_chan]
+                        if 'vid' in last_track:
+                            logger.info(f"Restoring last video track: '{last_track['vid']}'")
+                            player.vid = last_track['vid']
+                        else:
+                            player.vid = 'auto'
+                        if 'aid' in last_track:
+                            logger.info(f"Restoring last audio track: '{last_track['aid']}'")
+                            player.aid = last_track['aid']
+                        else:
+                            player.aid = 'auto'
+                        if 'sid' in last_track:
+                            logger.info(f"Restoring last sub track: '{last_track['sid']}'")
+                            player.sid = last_track['sid']
+                        else:
+                            player.sid = 'auto'
+                    else:
+                        player.vid = 'auto'
+                        player.aid = 'auto'
+                        player.sid = 'auto'
+                    file_loaded_callback()
             except:
                 pass
 
@@ -5008,6 +5072,7 @@ if __name__ == '__main__':
                             # logger.debug("Old channel logos request found, stopping it")
                             channel_logos_process.kill()
                         channel_logos_process = Process(
+                            name='[yuki-iptv] channel_logos_worker',
                             target=channel_logos_worker,
                             args=(
                                 0, channel_logos_request,
@@ -6975,6 +7040,7 @@ if __name__ == '__main__':
                     compactstate_file.close()
             except:
                 pass
+            save_player_tracks()
             saveLastChannel()
             stop_record()
             for rec_1 in sch_recordings:
@@ -7055,6 +7121,7 @@ if __name__ == '__main__':
                                         return_dict = manager.dict()
                                         progress_dict = manager.dict()
                                         p = Process(
+                                            name='[yuki-iptv] worker',
                                             target=worker,
                                             args=(
                                                 0, settings, get_catchup_days(),

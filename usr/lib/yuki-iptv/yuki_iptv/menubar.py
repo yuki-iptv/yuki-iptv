@@ -58,14 +58,8 @@ def ast_mpv_speed(spd):
     YukiData.player.speed = spd
 
 
-def ast_trackset(track, type1):
-    logger.info(f"Set {type1} track to {track}")
-    if type1 == 'vid':
-        YukiData.player.vid = track
-    elif type1 == 'aid':
-        YukiData.player.aid = track
-    elif type1 == 'sid':
-        YukiData.player.sid = track
+def yuki_trackset(track, type1):
+    YukiData.yuki_track_set(track, type1)
     YukiData.redraw_menubar()
 
 
@@ -597,14 +591,14 @@ def update_menubar(track_list, playing_chan, m3u, file, aot_file):
             sub_off_action = qaction(_('None'), YukiData.data)
             if YukiData.player.sid == 'no' or not YukiData.player.sid:
                 sub_off_action.setIcon(YukiData.circle_icon)
-            sub_off_action.triggered.connect(partial(ast_trackset, 'no', 'sid'))
+            sub_off_action.triggered.connect(partial(yuki_trackset, 'no', 'sid'))
             YukiData.menubars[i][2].addAction(sub_off_action)
             for track in track_list:
                 if track['type'] == 'video':
                     trk = qaction(str(track['id']), YukiData.data)
                     if track['id'] == YukiData.player.vid:
                         trk.setIcon(YukiData.circle_icon)
-                    trk.triggered.connect(partial(ast_trackset, track['id'], 'vid'))
+                    trk.triggered.connect(partial(yuki_trackset, track['id'], 'vid'))
                     YukiData.menubars[i][0].addAction(trk)
                 if track['type'] == 'audio':
                     if 'lang' in track:
@@ -616,7 +610,7 @@ def update_menubar(track_list, playing_chan, m3u, file, aot_file):
                         trk1 = qaction(str(track['id']), YukiData.data)
                     if track['id'] == YukiData.player.aid:
                         trk1.setIcon(YukiData.circle_icon)
-                    trk1.triggered.connect(partial(ast_trackset, track['id'], 'aid'))
+                    trk1.triggered.connect(partial(yuki_trackset, track['id'], 'aid'))
                     YukiData.menubars[i][1].addAction(trk1)
                 if track['type'] == 'sub':
                     if 'lang' in track:
@@ -628,7 +622,7 @@ def update_menubar(track_list, playing_chan, m3u, file, aot_file):
                         trk2 = qaction(str(track['id']), YukiData.data)
                     if track['id'] == YukiData.player.sid:
                         trk2.setIcon(YukiData.circle_icon)
-                    trk2.triggered.connect(partial(ast_trackset, track['id'], 'sid'))
+                    trk2.triggered.connect(partial(yuki_trackset, track['id'], 'sid'))
                     YukiData.menubars[i][2].addAction(trk2)
         else:
             YukiData.menubars[i][0].addAction(YukiData.empty_action)
@@ -673,7 +667,8 @@ def init_menubar_player(
     disable_always_on_top,
     reload_playlist,
     show_shortcuts,
-    aot_file
+    aot_file,
+    yuki_track_set
 ):
     for func in locals().items():
         setattr(YukiData, func[0], func[1])
