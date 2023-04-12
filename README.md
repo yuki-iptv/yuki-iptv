@@ -6,8 +6,6 @@
 ⚠️ Disclaimer: yuki-iptv doesn't provide any playlists or other digital content.  
 The channels and pictures in the screenshots are for demonstration purposes only.  
   
-**Looking for testers and translators!**
-
 ## Download
 
 [.deb packages](https://github.com/yuki-iptv/yuki-iptv/releases)  
