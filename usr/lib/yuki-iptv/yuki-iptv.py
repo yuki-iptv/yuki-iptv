@@ -56,7 +56,7 @@ except:
 from yuki_iptv.qt import get_qt_library
 from yuki_iptv.epg import worker
 from yuki_iptv.record import record, record_return, stop_record, \
-    async_wait_process, is_ffmpeg_recording
+    is_ffmpeg_recording, init_record
 from yuki_iptv.menubar import init_yuki_iptv_menubar, init_menubar_player, \
     populate_menubar, update_menubar, get_active_vf_filters, get_first_run, get_seq, \
     reload_menubar_shortcuts
@@ -1657,6 +1657,10 @@ if __name__ == '__main__':
         settings_win_l.setY(origY)
         settings_win.move(qr.topLeft())
 
+        ffmpeg_processes = []
+
+        init_record(show_exception, ffmpeg_processes)
+
         def convert_time(times_1):
             yr = time.strftime('%Y', time.localtime())
             yr = yr[0] + yr[1]
@@ -1720,11 +1724,6 @@ if __name__ == '__main__':
                 ffmpeg_process = sch_recordings[name2][0]
                 if ffmpeg_process:
                     ffmpeg_process.terminate()
-                    try:
-                        async_wait_process(ffmpeg_process)
-                    except:
-                        pass
-                    ffmpeg_process = None
 
         recViaScheduler = False
 
@@ -1789,7 +1788,6 @@ if __name__ == '__main__':
             except:
                 pass
 
-        ffmpeg_processes = []
         is_recording_old = False
 
         @idle_function
@@ -6375,10 +6373,7 @@ if __name__ == '__main__':
             if ffmpeg_processes:
                 ret_code_array = []
                 for ffmpeg_process_1 in ffmpeg_processes:
-                    ret_code = ffmpeg_process_1[0].returncode
-                    if ret_code == 0:
-                        ret_code = 1
-                    if ret_code:
+                    if ffmpeg_process_1[0].processId() == 0:
                         ret_code_array.append(True)
                         ffmpeg_processes.remove(ffmpeg_process_1)
                     else:

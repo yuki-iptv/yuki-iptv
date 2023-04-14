@@ -21,41 +21,24 @@
 # https://creativecommons.org/licenses/by/4.0/
 #
 import logging
-import subprocess
-import threading
+import gettext
+from yuki_iptv.qt import get_qt_library
+qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
 
 logger = logging.getLogger(__name__)
+_ = gettext.gettext
 
 
 class YukiData:
-    '''Main class'''
     ffmpeg_proc = None
-
-
-def async_function(func):
-    '''Used as a decorator to run things in the background'''
-    def wrapper(*args, **kwargs):
-        thread = threading.Thread(target=func, args=args, kwargs=kwargs)
-        thread.daemon = True
-        thread.start()
-        return thread
-    return wrapper
-
-
-@async_function
-def async_wait_process(proc):
-    '''Wait for process to finish'''
-    proc.wait()
+    ffmpeg_processes = None
+    show_record_exception = None
 
 
 def is_ffmpeg_recording():
-    '''Check is currently recording'''
     ret = -2
     if YukiData.ffmpeg_proc:
-        ffmpeg_ret_code = YukiData.ffmpeg_proc.returncode
-        if ffmpeg_ret_code == 0:
-            ffmpeg_ret_code = 1
-        if ffmpeg_ret_code:
+        if YukiData.ffmpeg_proc.processId() == 0:
             YukiData.ffmpeg_proc = None
             ret = True
         else:
@@ -63,28 +46,84 @@ def is_ffmpeg_recording():
     return ret
 
 
+def exit_handler(exit_code, exit_status):
+    if exit_status != QtCore.QProcess.ExitStatus.NormalExit:
+        logger.warning("ffmpeg process crashed")
+        ffmpeg_process_found = False
+        if YukiData.show_record_exception:
+            try:
+                if YukiData.ffmpeg_proc and YukiData.ffmpeg_proc.processId() == 0 \
+                   and YukiData.ffmpeg_proc.exitCode() == exit_code \
+                   and YukiData.ffmpeg_proc.exitStatus() == exit_status:
+                    standard_output = YukiData.ffmpeg_proc.readAllStandardOutput()
+                    try:
+                        standard_output = bytes(standard_output).decode('utf-8')
+                        standard_output = '\n'.join(standard_output.split('\n')[-15:])
+                    except:
+                        pass
+                    standard_error = YukiData.ffmpeg_proc.readAllStandardError()
+                    try:
+                        standard_error = bytes(standard_error).decode('utf-8')
+                        standard_error = '\n'.join(standard_error.split('\n')[-15:])
+                    except:
+                        pass
+                    ffmpeg_process_found = True
+                    YukiData.show_record_exception(
+                        _('ffmpeg crashed!') + '\n'
+                        '' + _('exit code:') + ' ' + str(exit_code) + ''
+                        '\nstdout:\n' + str(standard_output) + ''
+                        '\nstderr:\n' + str(standard_error)
+                    )
+                else:
+                    if YukiData.ffmpeg_processes:
+                        for ffmpeg_process in YukiData.ffmpeg_processes:
+                            if ffmpeg_process and ffmpeg_process.processId() == 0 \
+                               and ffmpeg_process[0].exitCode() == exit_code \
+                               and ffmpeg_process[0].exitStatus() == exit_status:
+                                standard_output = ffmpeg_process[0].readAllStandardOutput()
+                                try:
+                                    standard_output = bytes(standard_output).decode('utf-8')
+                                    standard_output = '\n'.join(standard_output.split('\n')[-15:])
+                                except:
+                                    pass
+                                standard_error = ffmpeg_process[0].readAllStandardError()
+                                try:
+                                    standard_error = bytes(standard_error).decode('utf-8')
+                                    standard_error = '\n'.join(standard_error.split('\n')[-15:])
+                                except:
+                                    pass
+                                ffmpeg_process_found = True
+                                YukiData.show_record_exception(
+                                    _('ffmpeg crashed!') + '\n'
+                                    '' + _('exit code:') + ' ' + str(exit_code) + ''
+                                    '\nstdout:\n' + str(standard_output) + ''
+                                    '\nstderr:\n' + str(standard_error)
+                                )
+            except:
+                pass
+            if not ffmpeg_process_found:
+                YukiData.show_record_exception(_('ffmpeg crashed!'))
+
+
 def record(
     input_url, out_file, channel_name, http_referer,
-    get_ua_ref_for_channel, is_return=False, is_screenshot=False
+    get_ua_ref_for_channel, is_return=False
 ):
-    '''Main recording function'''
     if http_referer == 'Referer: ':
         http_referer = ''
     useragent_ref, referer_ref = get_ua_ref_for_channel(channel_name)
     user_agent = useragent_ref
     if referer_ref:
         http_referer = f'Referer: {referer_ref}'
-    action = 'record'
-    if is_screenshot:
-        action = 'screenshot'
-    logger.info(f"Using user agent '{user_agent}' for {action} channel '{channel_name}'")
+    logger.info(f"Using user agent '{user_agent}' for record channel '{channel_name}'")
     logger.info(f"HTTP headers: '{http_referer}'")
     if input_url.startswith('http://') or input_url.startswith('https://'):
         arr = [
-            'ffmpeg',
+            '-nostats',
+            '-hide_banner',
+            '-loglevel', 'warning',
             '-user_agent', user_agent,
             '-headers', http_referer,
-            '-icy', '0',
             '-i', input_url,
             '-map', '-0:s?',
             '-sn',
@@ -96,7 +135,9 @@ def record(
         ]
     else:
         arr = [
-            'ffmpeg',
+            '-nostats',
+            '-hide_banner',
+            '-loglevel', 'warning',
             '-i', input_url,
             '-map', '-0:s?',
             '-sn',
@@ -106,72 +147,26 @@ def record(
             '-max_muxing_queue_size', '4096',
             out_file
         ]
-    if is_screenshot:
-        if input_url.startswith('http://') or input_url.startswith('https://'):
-            arr = [
-                'ffmpeg',
-                '-user_agent', user_agent,
-                '-headers', http_referer,
-                '-icy', '0',
-                '-i', input_url,
-                '-map', '-0:s?',
-                '-sn',
-                '-map', '-0:d?',
-                '-an',
-                '-frames:v', '1',
-                '-max_muxing_queue_size', '4096',
-                out_file
-            ]
-        else:
-            arr = [
-                'ffmpeg',
-                '-i', input_url,
-                '-map', '-0:s?',
-                '-sn',
-                '-map', '-0:d?',
-                '-an',
-                '-frames:v', '1',
-                '-max_muxing_queue_size', '4096',
-                out_file
-            ]
-        YukiData.ffmpeg_proc_screenshot = subprocess.Popen(
-            arr,
-            shell=False,
-            start_new_session=True,
-            startupinfo=None
-        )
-        try:
-            async_wait_process(YukiData.ffmpeg_proc_screenshot)
-        except:
-            pass
+    if not is_return:
+        YukiData.ffmpeg_proc = QtCore.QProcess()
+        YukiData.ffmpeg_proc.start('ffmpeg', arr)
+        YukiData.ffmpeg_proc.finished.connect(exit_handler)
     else:
-        if not is_return:
-            YukiData.ffmpeg_proc = subprocess.Popen(
-                arr,
-                shell=False,
-                start_new_session=True,
-                startupinfo=None
-            )
-        else:
-            return subprocess.Popen(
-                arr,
-                shell=False,
-                start_new_session=True,
-                startupinfo=None
-            )
+        ffmpeg_ret_proc = QtCore.QProcess()
+        ffmpeg_ret_proc.start('ffmpeg', arr)
+        ffmpeg_ret_proc.finished.connect(exit_handler)
+        return ffmpeg_ret_proc
 
 
 def record_return(input_url, out_file, channel_name, http_referer, get_ua_ref_for_channel):
-    '''Record with return subprocess'''
     return record(input_url, out_file, channel_name, http_referer, get_ua_ref_for_channel, True)
 
 
 def stop_record():
-    '''Stop recording'''
     if YukiData.ffmpeg_proc:
         YukiData.ffmpeg_proc.terminate()
-        try:
-            async_wait_process(YukiData.ffmpeg_proc)
-        except:
-            pass
-        # YukiData.ffmpeg_proc = None
+
+
+def init_record(show_exception, ffmpeg_processes):
+    YukiData.show_record_exception = show_exception
+    YukiData.ffmpeg_processes = ffmpeg_processes
