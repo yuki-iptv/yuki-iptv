@@ -66,7 +66,7 @@ from yuki_iptv.xspf import parse_xspf
 from yuki_iptv.catchup import get_catchup_url, parse_specifiers_now_url, format_url_clean, \
     format_catchup_array
 from yuki_iptv.settings import parse_settings
-from yuki_iptv.qt6compat import _exec, _enum
+from yuki_iptv.qt6compat import _exec
 from yuki_iptv.m3u_editor import M3UEditor
 from yuki_iptv.keybinds import main_keybinds_internal, main_keybinds_default
 from yuki_iptv.series import parse_series
@@ -236,7 +236,7 @@ def show_exception(e, e_traceback="", prev=""):
     )
     msg = QtWidgets.QMessageBox(
         qt_icon_critical,
-        _('Error'), message, _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
+        _('Error'), message, QtWidgets.QMessageBox.StandardButton.Ok
     )
     msg.exec()
 
@@ -401,8 +401,8 @@ if __name__ == '__main__':
 
         dark_label = QtWidgets.QLabel("Darkness test")
         is_dark_theme = dark_label.palette().color(
-            _enum(QtGui.QPalette, 'ColorRole.WindowText')
-        ).value() > dark_label.palette().color(_enum(QtGui.QPalette, 'ColorRole.Window')).value()
+            QtGui.QPalette.ColorRole.WindowText
+        ).value() > dark_label.palette().color(QtGui.QPalette.ColorRole.Window).value()
         if is_dark_theme:
             logger.info("Detected dark window theme, applying icons compat")
             YukiData.use_dark_icon_theme = True
@@ -793,7 +793,7 @@ if __name__ == '__main__':
                                 qt_icon_warning,
                                 _('Error'),
                                 message2,
-                                _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
+                                QtWidgets.QMessageBox.StandardButton.Ok
                             )
                             msg2.exec()
                     else:
@@ -805,7 +805,7 @@ if __name__ == '__main__':
                             qt_icon_warning,
                             _('Error'),
                             message1,
-                            _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
+                            QtWidgets.QMessageBox.StandardButton.Ok
                         )
                         msg1.exec()
                 else:
@@ -1018,7 +1018,7 @@ if __name__ == '__main__':
                 self.setWidget(content)
                 lay = QtWidgets.QVBoxLayout(content)
                 self.label = QtWidgets.QLabel(content)
-                self.label.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
+                self.label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
                 self.label.setWordWrap(True)
                 self.label.setStyleSheet('background-color: ' + bcolor_scrollabel)
                 lay.addWidget(self.label)
@@ -1037,10 +1037,10 @@ if __name__ == '__main__':
                 super().__init__()
                 self.scroll = QtWidgets.QScrollArea()
                 self.scroll.setVerticalScrollBarPolicy(
-                    _enum(QtCore.Qt, 'ScrollBarPolicy.ScrollBarAlwaysOn')
+                    QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOn
                 )
                 self.scroll.setHorizontalScrollBarPolicy(
-                    _enum(QtCore.Qt, 'ScrollBarPolicy.ScrollBarAlwaysOn')
+                    QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOn
                 )
                 self.scroll.setWidgetResizable(True)
                 self.setCentralWidget(self.scroll)
@@ -1069,13 +1069,13 @@ if __name__ == '__main__':
         shortcuts_table.setHorizontalHeaderLabels([_('Description'), _('Shortcut')])
 
         shortcuts_table.horizontalHeaderItem(0).setTextAlignment(
-            _enum(QtCore.Qt, 'AlignmentFlag.AlignHCenter')
+            QtCore.Qt.AlignmentFlag.AlignHCenter
         )
         shortcuts_table.horizontalHeaderItem(1).setTextAlignment(
-            _enum(QtCore.Qt, 'AlignmentFlag.AlignHCenter')
+            QtCore.Qt.AlignmentFlag.AlignHCenter
         )
         # shortcuts_table.horizontalHeaderItem(2).setTextAlignment(
-        #     _enum(QtCore.Qt, 'AlignmentFlag.AlignHCenter')
+        #     QtCore.Qt.AlignmentFlag.AlignHCenter
         # )
 
         def resettodefaults_btn_clicked():
@@ -1084,16 +1084,10 @@ if __name__ == '__main__':
                 None,
                 MAIN_WINDOW_TITLE,
                 _('Are you sure?'),
-                _enum(
-                    QtWidgets.QMessageBox, 'StandardButton.Yes'
-                ) | _enum(
-                    QtWidgets.QMessageBox, 'StandardButton.No'
-                ),
-                _enum(QtWidgets.QMessageBox, 'StandardButton.Yes')
+                QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No,
+                QtWidgets.QMessageBox.StandardButton.Yes
             )
-            if resettodefaults_btn_clicked_msg == _enum(
-                QtWidgets.QMessageBox, 'StandardButton.Yes'
-            ):
+            if resettodefaults_btn_clicked_msg == QtWidgets.QMessageBox.StandardButton.Yes:
                 logger.info("Restoring default keybinds")
                 main_keybinds = main_keybinds_default.copy()
                 shortcuts_table.setRowCount(len(main_keybinds))
@@ -1199,7 +1193,7 @@ if __name__ == '__main__':
                         qt_icon_warning,
                         MAIN_WINDOW_TITLE,
                         _('Shortcut already used'),
-                        _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
+                        QtWidgets.QMessageBox.StandardButton.Ok
                     )
                     msg_shortcut_taken.exec()
 
@@ -1318,7 +1312,7 @@ if __name__ == '__main__':
         epg_win_2_checkbox.currentIndexChanged.connect(epg_win_2_checkbox_changed)
 
         epg_win_2_count = QtWidgets.QLabel()
-        epg_win_2_count.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
+        epg_win_2_count.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         epg_win_2_1_widget = QtWidgets.QWidget()
         epg_win_2_1_layout = QtWidgets.QHBoxLayout()
@@ -1387,7 +1381,7 @@ if __name__ == '__main__':
                             playlists_list.row(
                                 playlists_list.findItems(
                                     playlists_data.oldName,
-                                    _enum(QtCore.Qt, 'MatchFlag.MatchExactly')
+                                    QtCore.Qt.MatchFlag.MatchExactly
                                 )[0]
                             )
                         )
@@ -1407,7 +1401,7 @@ if __name__ == '__main__':
                         qt_icon_warning,
                         MAIN_WINDOW_TITLE,
                         _('Name should not be empty!'),
-                        _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
+                        QtWidgets.QMessageBox.StandardButton.Ok
                     )
                     noemptyname_msg.exec()
             else:
@@ -1415,7 +1409,7 @@ if __name__ == '__main__':
                     qt_icon_warning,
                     MAIN_WINDOW_TITLE,
                     _('URL not specified!'),
-                    _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
+                    QtWidgets.QMessageBox.StandardButton.Ok
                 )
                 nourlset_msg.exec()
 
@@ -1473,7 +1467,7 @@ if __name__ == '__main__':
         playlists_win_edit_widget = QtWidgets.QWidget()
         playlists_win_edit_layout = QtWidgets.QGridLayout()
         playlists_win_edit_layout.setAlignment(
-            _enum(QtCore.Qt, 'AlignmentFlag.AlignHCenter') | _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+            QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignTop
         )
         playlists_win_edit_layout.addWidget(name_label_1, 0, 0)
         playlists_win_edit_layout.addWidget(name_edit_1, 0, 1)
@@ -1498,7 +1492,7 @@ if __name__ == '__main__':
         myFont6.setPointSize(11)
         myFont6.setBold(True)
         yuki_iptv_label.setFont(myFont6)
-        yuki_iptv_label.setTextFormat(_enum(QtCore.Qt, 'TextFormat.RichText'))
+        yuki_iptv_label.setTextFormat(QtCore.Qt.TextFormat.RichText)
         yuki_iptv_label.setText(
             '<br>&nbsp;<span style="color: #b35900;">yuki-iptv</span><br>'
         )
@@ -1510,7 +1504,7 @@ if __name__ == '__main__':
         yuki_iptv_widget.setLayout(yuki_iptv_layout)
 
         yuki_iptv_layout.setAlignment(
-            _enum(QtCore.Qt, 'AlignmentFlag.AlignHCenter') | _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+            QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignTop
         )
 
         def esw_input_edit():
@@ -1545,7 +1539,7 @@ if __name__ == '__main__':
         epg_select_win_widget = QtWidgets.QWidget()
         epg_select_win_layout = QtWidgets.QVBoxLayout()
         epg_select_win_layout.setAlignment(
-            _enum(QtCore.Qt, 'AlignmentFlag.AlignHCenter') | _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+            QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignTop
         )
         epg_select_win_layout.addWidget(esw_widget, 0)
         epg_select_win_layout.addWidget(esw_select, 1)
@@ -1577,7 +1571,7 @@ if __name__ == '__main__':
         ext_layout.addWidget(ext_player_txt, 0, 0)
         ext_layout.addWidget(ext_open_btn, 0, 1)
         ext_layout.setAlignment(
-            _enum(QtCore.Qt, 'AlignmentFlag.AlignHCenter') | _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+            QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignTop
         )
         ext_widget.setLayout(ext_layout)
         ext_win.setCentralWidget(ext_widget)
@@ -1938,7 +1932,7 @@ if __name__ == '__main__':
 
         scheduler_layout_2 = QtWidgets.QGridLayout()
         scheduler_layout_2.setAlignment(
-            _enum(QtCore.Qt, 'AlignmentFlag.AlignHCenter') | _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+            QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignTop
         )
         scheduler_layout_2.addWidget(starttime_lbl, 0, 0)
         scheduler_layout_2.addWidget(starttime_w, 1, 0)
@@ -1952,7 +1946,7 @@ if __name__ == '__main__':
 
         scheduler_layout_3 = QtWidgets.QGridLayout()
         scheduler_layout_3.setAlignment(
-            _enum(QtCore.Qt, 'AlignmentFlag.AlignHCenter') | _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+            QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignTop
         )
         scheduler_layout_3.addWidget(statusrec_lbl, 0, 0)
         scheduler_layout_3.addWidget(plannedrec_lbl, 1, 0)
@@ -1960,7 +1954,7 @@ if __name__ == '__main__':
 
         scheduler_layout_4 = QtWidgets.QGridLayout()
         scheduler_layout_4.setAlignment(
-            _enum(QtCore.Qt, 'AlignmentFlag.AlignHCenter') | _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+            QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignTop
         )
         scheduler_layout_4.addWidget(activerec_lbl, 0, 0)
         scheduler_layout_4.addWidget(activerec_list, 1, 0)
@@ -1990,7 +1984,7 @@ if __name__ == '__main__':
         myFont5.setBold(True)
         warning_lbl.setFont(myFont5)
         warning_lbl.setStyleSheet('color: red')
-        warning_lbl.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
+        warning_lbl.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         scheduler_layout_main = QtWidgets.QVBoxLayout()
         scheduler_layout_main.addWidget(scheduler_widget)
@@ -2037,7 +2031,7 @@ if __name__ == '__main__':
         save_sort_btn.clicked.connect(save_sort)
 
         sort_label = QtWidgets.QLabel(_('Do not forget\nto set custom sort order in settings!'))
-        sort_label.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
+        sort_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         sort_widget3 = QtWidgets.QWidget()
 
@@ -2053,7 +2047,7 @@ if __name__ == '__main__':
         sort_layout.addWidget(sort_widget3)
         sort_layout.addWidget(sort_widget4)
         sort_layout.setAlignment(
-            _enum(QtCore.Qt, 'AlignmentFlag.AlignHCenter') | _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+            QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignTop
         )
         sort_widget_main.setLayout(sort_layout)
         sort_win.setCentralWidget(sort_widget_main)
@@ -2086,7 +2080,7 @@ if __name__ == '__main__':
             folder_name = QtWidgets.QFileDialog.getExistingDirectory(
                 settings_win,
                 _('Select folder for recordings and screenshots'),
-                options=_enum(QtWidgets.QFileDialog, 'Option.ShowDirsOnly')
+                options=QtWidgets.QFileDialog.Option.ShowDirsOnly
             )
             if folder_name:
                 sfld.setText(folder_name)
@@ -2098,7 +2092,7 @@ if __name__ == '__main__':
         myFont2 = QtGui.QFont()
         myFont2.setBold(True)
         title.setFont(myFont2)
-        title.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
+        title.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         deinterlace_lbl = QtWidgets.QLabel("{}:".format(_('Deinterlace')))
         useragent_lbl = QtWidgets.QLabel("{}:".format(_('User agent')))
@@ -2558,98 +2552,98 @@ if __name__ == '__main__':
         horizontalLayout2.addWidget(deinterlace_lbl)
         horizontalLayout2.addWidget(deinterlace_chk)
         horizontalLayout2.addWidget(QtWidgets.QLabel("\n"))
-        horizontalLayout2.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
+        horizontalLayout2.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         horizontalLayout2_1 = QtWidgets.QHBoxLayout()
         horizontalLayout2_1.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_1.addWidget(useragent_lbl)
         horizontalLayout2_1.addWidget(useragent_choose)
         horizontalLayout2_1.addWidget(QtWidgets.QLabel("\n"))
-        horizontalLayout2_1.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
+        horizontalLayout2_1.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         horizontalLayout2_13 = QtWidgets.QHBoxLayout()
         horizontalLayout2_13.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_13.addWidget(referer_lbl_custom)
         horizontalLayout2_13.addWidget(referer_choose_custom)
         horizontalLayout2_13.addWidget(QtWidgets.QLabel("\n"))
-        horizontalLayout2_13.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
+        horizontalLayout2_13.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         horizontalLayout2_2 = QtWidgets.QHBoxLayout()
         horizontalLayout2_2.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_2.addWidget(group_lbl)
         horizontalLayout2_2.addWidget(group_text)
         horizontalLayout2_2.addWidget(QtWidgets.QLabel("\n"))
-        horizontalLayout2_2.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
+        horizontalLayout2_2.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         horizontalLayout2_3 = QtWidgets.QHBoxLayout()
         horizontalLayout2_3.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_3.addWidget(hidden_lbl)
         horizontalLayout2_3.addWidget(hidden_chk)
         horizontalLayout2_3.addWidget(QtWidgets.QLabel("\n"))
-        horizontalLayout2_3.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
+        horizontalLayout2_3.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         horizontalLayout2_4 = QtWidgets.QHBoxLayout()
         horizontalLayout2_4.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_4.addWidget(contrast_lbl)
         horizontalLayout2_4.addWidget(contrast_choose)
         horizontalLayout2_4.addWidget(QtWidgets.QLabel("\n"))
-        horizontalLayout2_4.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
+        horizontalLayout2_4.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         horizontalLayout2_5 = QtWidgets.QHBoxLayout()
         horizontalLayout2_5.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_5.addWidget(brightness_lbl)
         horizontalLayout2_5.addWidget(brightness_choose)
         horizontalLayout2_5.addWidget(QtWidgets.QLabel("\n"))
-        horizontalLayout2_5.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
+        horizontalLayout2_5.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         horizontalLayout2_6 = QtWidgets.QHBoxLayout()
         horizontalLayout2_6.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_6.addWidget(hue_lbl)
         horizontalLayout2_6.addWidget(hue_choose)
         horizontalLayout2_6.addWidget(QtWidgets.QLabel("\n"))
-        horizontalLayout2_6.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
+        horizontalLayout2_6.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         horizontalLayout2_7 = QtWidgets.QHBoxLayout()
         horizontalLayout2_7.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_7.addWidget(saturation_lbl)
         horizontalLayout2_7.addWidget(saturation_choose)
         horizontalLayout2_7.addWidget(QtWidgets.QLabel("\n"))
-        horizontalLayout2_7.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
+        horizontalLayout2_7.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         horizontalLayout2_8 = QtWidgets.QHBoxLayout()
         horizontalLayout2_8.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_8.addWidget(gamma_lbl)
         horizontalLayout2_8.addWidget(gamma_choose)
         horizontalLayout2_8.addWidget(QtWidgets.QLabel("\n"))
-        horizontalLayout2_8.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
+        horizontalLayout2_8.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         horizontalLayout2_9 = QtWidgets.QHBoxLayout()
         horizontalLayout2_9.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_9.addWidget(videoaspect_lbl)
         horizontalLayout2_9.addWidget(videoaspect_choose)
         horizontalLayout2_9.addWidget(QtWidgets.QLabel("\n"))
-        horizontalLayout2_9.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
+        horizontalLayout2_9.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         horizontalLayout2_10 = QtWidgets.QHBoxLayout()
         horizontalLayout2_10.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_10.addWidget(zoom_lbl)
         horizontalLayout2_10.addWidget(zoom_choose)
         horizontalLayout2_10.addWidget(QtWidgets.QLabel("\n"))
-        horizontalLayout2_10.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
+        horizontalLayout2_10.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         horizontalLayout2_11 = QtWidgets.QHBoxLayout()
         horizontalLayout2_11.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_11.addWidget(panscan_lbl)
         horizontalLayout2_11.addWidget(panscan_choose)
         horizontalLayout2_11.addWidget(QtWidgets.QLabel("\n"))
-        horizontalLayout2_11.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
+        horizontalLayout2_11.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         horizontalLayout2_12 = QtWidgets.QHBoxLayout()
         horizontalLayout2_12.addWidget(QtWidgets.QLabel("\n"))
         horizontalLayout2_12.addWidget(epgname_btn)
         horizontalLayout2_12.addWidget(epgname_lbl)
         horizontalLayout2_12.addWidget(QtWidgets.QLabel("\n"))
-        horizontalLayout2_12.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
+        horizontalLayout2_12.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         horizontalLayout3 = QtWidgets.QHBoxLayout()
         horizontalLayout3.addWidget(save_btn)
@@ -2672,7 +2666,7 @@ if __name__ == '__main__':
         verticalLayout.addLayout(horizontalLayout2_12)
         verticalLayout.addLayout(horizontalLayout3)
         verticalLayout.setAlignment(
-            _enum(QtCore.Qt, 'AlignmentFlag.AlignHCenter') | _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+            QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignTop
         )
 
         wid.setLayout(verticalLayout)
@@ -2952,7 +2946,7 @@ if __name__ == '__main__':
         ))
         mpv_label.setOpenExternalLinks(True)
         mpv_label.setTextInteractionFlags(
-            _enum(QtCore.Qt, 'TextInteractionFlag.LinksAccessibleByMouse')
+            QtCore.Qt.TextInteractionFlag.LinksAccessibleByMouse
         )
         mpv_options = QtWidgets.QLineEdit()
         mpv_options.setText(settings['mpv_options'])
@@ -3095,9 +3089,7 @@ if __name__ == '__main__':
 
         tab_main.layout = QtWidgets.QGridLayout()
         tab_main.layout.setAlignment(
-            _enum(
-                QtCore.Qt, 'AlignmentFlag.AlignLeft'
-            ) | _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+            QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop
         )
         tab_main.layout.addWidget(fld_label, 0, 0)
         tab_main.layout.addWidget(sfld, 0, 1)
@@ -3114,9 +3106,7 @@ if __name__ == '__main__':
 
         tab_video.layout = QtWidgets.QGridLayout()
         tab_video.layout.setAlignment(
-            _enum(
-                QtCore.Qt, 'AlignmentFlag.AlignLeft'
-            ) | _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+            QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop
         )
         tab_video.layout.addWidget(dei_label, 0, 0)
         tab_video.layout.addWidget(sdei, 0, 1)
@@ -3132,9 +3122,7 @@ if __name__ == '__main__':
 
         tab_network.layout = QtWidgets.QGridLayout()
         tab_network.layout.setAlignment(
-            _enum(
-                QtCore.Qt, 'AlignmentFlag.AlignLeft'
-            ) | _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+            QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop
         )
         tab_network.layout.addWidget(udp_label, 0, 0)
         tab_network.layout.addWidget(sudp, 0, 1)
@@ -3149,9 +3137,7 @@ if __name__ == '__main__':
 
         tab_gui.layout = QtWidgets.QGridLayout()
         tab_gui.layout.setAlignment(
-            _enum(
-                QtCore.Qt, 'AlignmentFlag.AlignLeft'
-            ) | _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+            QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop
         )
         tab_gui.layout.addWidget(panelposition_label, 0, 0)
         tab_gui.layout.addWidget(panelposition_choose, 0, 1)
@@ -3165,9 +3151,7 @@ if __name__ == '__main__':
 
         tab_actions.layout = QtWidgets.QGridLayout()
         tab_actions.layout.setAlignment(
-            _enum(
-                QtCore.Qt, 'AlignmentFlag.AlignLeft'
-            ) | _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+            QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop
         )
         tab_actions.layout.addWidget(mouseswitchchannels_label, 0, 0)
         tab_actions.layout.addWidget(mouseswitchchannels_flag, 0, 1)
@@ -3180,9 +3164,7 @@ if __name__ == '__main__':
 
         tab_catchup.layout = QtWidgets.QGridLayout()
         tab_catchup.layout.setAlignment(
-            _enum(
-                QtCore.Qt, 'AlignmentFlag.AlignLeft'
-            ) | _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+            QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop
         )
         tab_catchup.layout.addWidget(catchupenable_label, 0, 0)
         tab_catchup.layout.addWidget(catchupenable_flag, 0, 1)
@@ -3190,9 +3172,7 @@ if __name__ == '__main__':
 
         tab_epg.layout = QtWidgets.QGridLayout()
         tab_epg.layout.setAlignment(
-            _enum(
-                QtCore.Qt, 'AlignmentFlag.AlignLeft'
-            ) | _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+            QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop
         )
         # tab_epg.layout.addWidget(epgdays_label, 0, 0)
         # tab_epg.layout.addWidget(epgdays, 0, 1)
@@ -3205,9 +3185,7 @@ if __name__ == '__main__':
 
         tab_other.layout = QtWidgets.QGridLayout()
         tab_other.layout.setAlignment(
-            _enum(
-                QtCore.Qt, 'AlignmentFlag.AlignLeft'
-            ) | _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+            QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop
         )
         tab_other.layout.addWidget(mpv_label, 0, 0)
         tab_other.layout.addWidget(mpv_options, 0, 1)
@@ -3222,9 +3200,7 @@ if __name__ == '__main__':
 
         tab_debug.layout = QtWidgets.QGridLayout()
         tab_debug.layout.setAlignment(
-            _enum(
-                QtCore.Qt, 'AlignmentFlag.AlignLeft'
-            ) | _enum(QtCore.Qt, 'AlignmentFlag.AlignTop')
+            QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop
         )
         tab_debug.layout.addWidget(styleredefoff_label, 0, 0)
         tab_debug.layout.addWidget(styleredefoff_flag, 0, 1)
@@ -3399,7 +3375,7 @@ if __name__ == '__main__':
         def aboutqt_show():
             QtWidgets.QMessageBox.aboutQt(QtWidgets.QWidget(), MAIN_WINDOW_TITLE)
             help_win.raise_()
-            help_win.setFocus(_enum(QtCore.Qt, 'FocusReason.PopupFocusReason'))
+            help_win.setFocus(QtCore.Qt.FocusReason.PopupFocusReason)
             help_win.activateWindow()
 
         aboutqt_btn = QtWidgets.QPushButton()
@@ -3440,7 +3416,7 @@ if __name__ == '__main__':
 
         def get_widget_item(widget_str):
             twi = QtWidgets.QTableWidgetItem(widget_str)
-            twi.setFlags(twi.flags() & ~_enum(QtCore.Qt, 'ItemFlag.ItemIsEditable'))
+            twi.setFlags(twi.flags() & ~QtCore.Qt.ItemFlag.ItemIsEditable)
             return twi
 
         def show_shortcuts():
@@ -3565,16 +3541,10 @@ if __name__ == '__main__':
                 None,
                 MAIN_WINDOW_TITLE,
                 _('Are you sure?'),
-                _enum(
-                    QtWidgets.QMessageBox, 'StandardButton.Yes'
-                ) | _enum(
-                    QtWidgets.QMessageBox, 'StandardButton.No'
-                ),
-                _enum(QtWidgets.QMessageBox, 'StandardButton.Yes')
+                QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No,
+                QtWidgets.QMessageBox.StandardButton.Yes
             )
-            if resettodefaults_btn_clicked_msg_1 == _enum(
-                QtWidgets.QMessageBox, 'StandardButton.Yes'
-            ):
+            if resettodefaults_btn_clicked_msg_1 == QtWidgets.QMessageBox.StandardButton.Yes:
                 try:
                     currentItem_text = playlists_list.currentItem().text()
                 except Exception:
@@ -3876,10 +3846,10 @@ if __name__ == '__main__':
                 self.container = QtWidgets.QWidget(self)
                 self.setCentralWidget(self.container)
                 self.container.setAttribute(
-                    _enum(QtCore.Qt, 'WidgetAttribute.WA_DontCreateNativeAncestors')
+                    QtCore.Qt.WidgetAttribute.WA_DontCreateNativeAncestors
                 )
                 self.container.setAttribute(
-                    _enum(QtCore.Qt, 'WidgetAttribute.WA_NativeWindow')
+                    QtCore.Qt.WidgetAttribute.WA_NativeWindow
                 )
                 self.container.setFocus()
                 self.container.setStyleSheet('''
@@ -4008,7 +3978,7 @@ if __name__ == '__main__':
             return win_geometry_1
 
         chan = QtWidgets.QLabel(_('No channel selected'))
-        chan.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
+        chan.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         chan.setStyleSheet('color: green')
         myFont4 = QtGui.QFont()
         myFont4.setPointSize(11)
@@ -4027,7 +3997,7 @@ if __name__ == '__main__':
         loading1.setMovie(loading_movie)
         loading1.setStyleSheet('background-color: white;')
         loading1.resize(32, 32)
-        loading1.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
+        loading1.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         centerwidget(loading1)
         loading1.hide()
 
@@ -4036,7 +4006,7 @@ if __name__ == '__main__':
         loading2.setMovie(loading_movie2)
         loading2.setToolTip(_('Processing record...'))
         loading2.resize(32, 32)
-        loading2.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
+        loading2.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         centerwidget(loading2, 50)
         loading2.hide()
         loading_movie2.stop()
@@ -4057,7 +4027,7 @@ if __name__ == '__main__':
         tvguide_lbl_offset = 30 + lbl2_offset
 
         lbl2 = QtWidgets.QLabel(win)
-        lbl2.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
+        lbl2.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         lbl2.setStyleSheet('color: #e0071a')
         lbl2.setWordWrap(True)
         lbl2.resize(230, 30)
@@ -4080,7 +4050,7 @@ if __name__ == '__main__':
                 prog_stop_time = datetime.datetime.fromtimestamp(prog_stop).strftime('%H:%M')
                 progress.setValue(prog_percentage)
                 progress.setFormat(str(prog_percentage) + '% ' + prog_title)
-                progress.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignLeft'))
+                progress.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
                 start_label.setText(prog_start_time)
                 stop_label.setText(prog_stop_time)
                 if not fullscreen:
@@ -4244,7 +4214,7 @@ if __name__ == '__main__':
             if is_ic_ok:
                 playing_archive = archived
                 try:
-                    j = item.data(_enum(QtCore.Qt, 'ItemDataRole.UserRole'))
+                    j = item.data(QtCore.Qt.ItemDataRole.UserRole)
                 except Exception:
                     j = item
                 playing_chan = j
@@ -4291,7 +4261,7 @@ if __name__ == '__main__':
         def itemSelected_event(item):
             global item_selected
             try:
-                n_1 = item.data(_enum(QtCore.Qt, 'ItemDataRole.UserRole'))
+                n_1 = item.data(QtCore.Qt.ItemDataRole.UserRole)
                 item_selected = n_1
                 update_tvguide(n_1)
             except Exception:
@@ -4336,7 +4306,7 @@ if __name__ == '__main__':
             global cur_aot_state
             cur_aot_state = aot_state
             logger.debug(f"set_always_on_top: {aot_state}")
-            whint1 = _enum(QtCore.Qt, 'WindowType.WindowStaysOnTopHint')
+            whint1 = QtCore.Qt.WindowType.WindowStaysOnTopHint
             if ((aot_state and (win.windowFlags() & whint1)) or (not aot_state and (not win.windowFlags() & whint1))):
                 logger.debug("set_always_on_top: nothing to do")
                 return
@@ -4344,17 +4314,17 @@ if __name__ == '__main__':
             winPos1 = win.pos()
             if aot_state:
                 win.setWindowFlags(
-                    win.windowFlags() | _enum(QtCore.Qt, 'WindowType.WindowStaysOnTopHint')
+                    win.windowFlags() | QtCore.Qt.WindowType.WindowStaysOnTopHint
                 )
             else:
                 win.setWindowFlags(
-                    win.windowFlags() & ~_enum(QtCore.Qt, 'WindowType.WindowStaysOnTopHint')
+                    win.windowFlags() & ~QtCore.Qt.WindowType.WindowStaysOnTopHint
                 )
             win.move(winPos1)
             if winIsVisible:
                 win.show()
                 win.raise_()
-                win.setFocus(_enum(QtCore.Qt, 'FocusReason.PopupFocusReason'))
+                win.setFocus(QtCore.Qt.FocusReason.PopupFocusReason)
                 win.activateWindow()
 
         @idle_function
@@ -4736,7 +4706,7 @@ if __name__ == '__main__':
                         qp_1 = QtGui.QPixmap()
                         qp_1.loadFromData(pixmap_file.read())
                     if not qp_1.isNull():
-                        qp_1 = qp_1.scaled(64, 64, _enum(QtCore.Qt, 'AspectRatioMode.KeepAspectRatio'))
+                        qp_1 = qp_1.scaled(64, 64, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
                         icon_pixmap = Pickable_QIcon(qp_1)
                         logos_cache[pixmap_filename] = icon_pixmap
                         icon_pixmap = None
@@ -4788,7 +4758,7 @@ if __name__ == '__main__':
 
                 self.layout2 = QtWidgets.QGridLayout()
                 self.layout2.setAlignment(
-                    _enum(QtCore.Qt, 'AlignmentFlag.AlignLeft')
+                    QtCore.Qt.AlignmentFlag.AlignLeft
                 )
                 self.layout2.addWidget(self.icon_label, 0, 0)
                 self.layout2.addLayout(self.layout, 0, 1)
@@ -5077,7 +5047,7 @@ if __name__ == '__main__':
 
                 # Create QListWidgetItem
                 myQListWidgetItem = QtWidgets.QListWidgetItem()
-                myQListWidgetItem.setData(_enum(QtCore.Qt, 'ItemDataRole.UserRole'), i)
+                myQListWidgetItem.setData(QtCore.Qt.ItemDataRole.UserRole, i)
                 # Set size hint
                 myQListWidgetItem.setSizeHint(MyPlaylistWidget.sizeHint())
                 res[k0] = [myQListWidgetItem, MyPlaylistWidget, k0, i]
@@ -5236,7 +5206,7 @@ if __name__ == '__main__':
 
         sort_widget2 = QtWidgets.QWidget()
         sort_layout2 = QtWidgets.QVBoxLayout()
-        sort_layout2.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
+        sort_layout2.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         sort_layout2.addWidget(sort_upbtn)
         sort_layout2.addWidget(sort_downbtn)
         sort_widget2.setLayout(sort_layout2)
@@ -5364,16 +5334,10 @@ if __name__ == '__main__':
                     None,
                     MAIN_WINDOW_TITLE,
                     str(_('Delete from favourites')) + '?',
-                    _enum(
-                        QtWidgets.QMessageBox, 'StandardButton.Yes'
-                    ) | _enum(
-                        QtWidgets.QMessageBox, 'StandardButton.No'
-                    ),
-                    _enum(QtWidgets.QMessageBox, 'StandardButton.Yes')
+                    QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No,
+                    QtWidgets.QMessageBox.StandardButton.Yes
                 )
-                if isdelete_fav_msg == _enum(
-                    QtWidgets.QMessageBox, 'StandardButton.Yes'
-                ):
+                if isdelete_fav_msg == QtWidgets.QMessageBox.StandardButton.Yes:
                     favourite_sets.remove(item_selected)
             else:
                 favourite_sets.append(item_selected)
@@ -5432,14 +5396,10 @@ if __name__ == '__main__':
                         None,
                         MAIN_WINDOW_TITLE,
                         _('Are you sure?'),
-                        _enum(
-                            QtWidgets.QMessageBox, 'StandardButton.Yes'
-                        ) | _enum(
-                            QtWidgets.QMessageBox, 'StandardButton.No'
-                        ),
-                        _enum(QtWidgets.QMessageBox, 'StandardButton.Yes')
+                        QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No,
+                        QtWidgets.QMessageBox.StandardButton.Yes
                     )
-                    if playlistsep_del_msg == _enum(QtWidgets.QMessageBox, 'StandardButton.Yes'):
+                    if playlistsep_del_msg == QtWidgets.QMessageBox.StandardButton.Yes:
                         new_data = file03_contents.replace(str1, '')
                         if new_data == '#EXTM3U\n':
                             new_data = '#EXTM3U\n#EXTINF:-1,-\nhttp://255.255.255.255\n'
@@ -5480,7 +5440,7 @@ if __name__ == '__main__':
             except Exception:
                 pass
 
-        win.listWidget.setContextMenuPolicy(_enum(QtCore.Qt, 'ContextMenuPolicy.CustomContextMenu'))
+        win.listWidget.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
         win.listWidget.customContextMenuRequested.connect(show_context_menu)
         win.listWidget.currentItemChanged.connect(itemSelected_event)
         win.listWidget.itemClicked.connect(itemSelected_event)
@@ -5490,7 +5450,7 @@ if __name__ == '__main__':
             itemClicked_event(win.listWidget.currentItem())
         shortcuts = {}
         shortcuts_return = QShortcut(
-            QtGui.QKeySequence(_enum(QtCore.Qt, 'Key.Key_Return')),
+            QtGui.QKeySequence(QtCore.Qt.Key.Key_Return),
             win.listWidget,
             activated=enterPressed
         )
@@ -5519,7 +5479,7 @@ if __name__ == '__main__':
                     else:
                         win.seriesWidget.item(item4).setHidden(True)
         loading = QtWidgets.QLabel(_('Loading...'))
-        loading.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
+        loading.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         loading.setStyleSheet('color: #778a30')
         hideLoading()
 
@@ -5588,7 +5548,7 @@ if __name__ == '__main__':
             else:
                 if YukiData.serie_selected:
                     try:
-                        serie_data = series_item.data(_enum(QtCore.Qt, 'ItemDataRole.UserRole'))
+                        serie_data = series_item.data(QtCore.Qt.ItemDataRole.UserRole)
                         if serie_data:
                             series_name = serie_data.split(':::::::::::::::::::')[2]
                             season_name = serie_data.split(':::::::::::::::::::')[1]
@@ -5603,7 +5563,7 @@ if __name__ == '__main__':
                     logger.info(f"Fetching data for serie '{sel_serie}'")
                     win.seriesWidget.clear()
                     win.seriesWidget.addItem('< ' + _('Back'))
-                    win.seriesWidget.item(0).setForeground(_enum(QtCore.Qt, 'GlobalColor.blue'))
+                    win.seriesWidget.item(0).setForeground(QtCore.Qt.GlobalColor.blue)
                     try:
                         if not YukiData.series[sel_serie].seasons:
                             xt.get_series_info_by_id(YukiData.series[sel_serie])
@@ -5618,7 +5578,7 @@ if __name__ == '__main__':
                                 episode_item = QtWidgets.QListWidgetItem()
                                 episode_item.setText(episode.title)
                                 episode_item.setData(
-                                    _enum(QtCore.Qt, 'ItemDataRole.UserRole'),
+                                    QtCore.Qt.ItemDataRole.UserRole,
                                     episode.url + ':::::::::::::::::::' + season.name + ':::::::::::::::::::' + sel_serie  # noqa: E501
                                 )
                                 win.seriesWidget.addItem(episode_item)
@@ -5643,22 +5603,10 @@ if __name__ == '__main__':
         ):
             channelfilter.usePopup = False
             playlist_widget.setWindowFlags(
-                _enum(
-                    QtCore.Qt, 'WindowType.CustomizeWindowHint'
-                ) | _enum(
-                    QtCore.Qt, 'WindowType.FramelessWindowHint'
-                ) | _enum(
-                    QtCore.Qt, 'WindowType.X11BypassWindowManagerHint'
-                )
+                QtCore.Qt.WindowType.CustomizeWindowHint | QtCore.Qt.WindowType.FramelessWindowHint | QtCore.Qt.WindowType.X11BypassWindowManagerHint  # noqa: E501
             )
             controlpanel_widget.setWindowFlags(
-                _enum(
-                    QtCore.Qt, 'WindowType.CustomizeWindowHint'
-                ) | _enum(
-                    QtCore.Qt, 'WindowType.FramelessWindowHint'
-                ) | _enum(
-                    QtCore.Qt, 'WindowType.X11BypassWindowManagerHint'
-                )
+                QtCore.Qt.WindowType.CustomizeWindowHint | QtCore.Qt.WindowType.FramelessWindowHint | QtCore.Qt.WindowType.X11BypassWindowManagerHint  # noqa: E501
             )
             if playlist_widget_visible:
                 playlist_widget.show()
@@ -5680,7 +5628,7 @@ if __name__ == '__main__':
             click_event = Signal()
 
             def mousePressEvent(self, event1):
-                if event1.button() == _enum(QtCore.Qt, 'MouseButton.LeftButton'):
+                if event1.button() == QtCore.Qt.MouseButton.LeftButton:
                     self.click_event.emit()
                 else:
                     super().mousePressEvent(event1)
@@ -5709,26 +5657,10 @@ if __name__ == '__main__':
                 controlpanel_widget_visible1 = controlpanel_widget.isVisible()
                 channelfilter.usePopup = True
                 playlist_widget.setWindowFlags(
-                    _enum(
-                        QtCore.Qt, 'WindowType.CustomizeWindowHint'
-                    ) | _enum(
-                        QtCore.Qt, 'WindowType.FramelessWindowHint'
-                    ) | _enum(
-                        QtCore.Qt, 'WindowType.X11BypassWindowManagerHint'
-                    ) | _enum(
-                        QtCore.Qt, 'WindowType.Popup'
-                    )
+                    QtCore.Qt.WindowType.CustomizeWindowHint | QtCore.Qt.WindowType.FramelessWindowHint | QtCore.Qt.WindowType.X11BypassWindowManagerHint | QtCore.Qt.WindowType.Popup  # noqa: E501
                 )
                 controlpanel_widget.setWindowFlags(
-                    _enum(
-                        QtCore.Qt, 'WindowType.CustomizeWindowHint'
-                    ) | _enum(
-                        QtCore.Qt, 'WindowType.FramelessWindowHint'
-                    ) | _enum(
-                        QtCore.Qt, 'WindowType.X11BypassWindowManagerHint'
-                    ) | _enum(
-                        QtCore.Qt, 'WindowType.Popup'
-                    )
+                    QtCore.Qt.WindowType.CustomizeWindowHint | QtCore.Qt.WindowType.FramelessWindowHint | QtCore.Qt.WindowType.X11BypassWindowManagerHint | QtCore.Qt.WindowType.Popup  # noqa: E501
                 )
                 if playlist_widget_visible1:
                     playlist_widget.show()
@@ -5813,7 +5745,7 @@ if __name__ == '__main__':
 
         tvguide_widget = QtWidgets.QWidget()
         tvguide_layout = QtWidgets.QHBoxLayout()
-        tvguide_layout.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignRight'))
+        tvguide_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight)
         tvguide_layout.addWidget(tvguide_many)
         tvguide_widget.setLayout(tvguide_layout)
 
@@ -5831,11 +5763,7 @@ if __name__ == '__main__':
         widget4 = QtWidgets.QWidget()
         layout4 = QtWidgets.QHBoxLayout()
         layout4.setAlignment(
-            _enum(
-                QtCore.Qt, 'AlignmentFlag.AlignLeft'
-            ) | _enum(
-                QtCore.Qt, 'AlignmentFlag.AlignTop'
-            )
+            QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop
         )
         page_lbl = QtWidgets.QLabel('{}:'.format(_('Page')))
         of_lbl = QtWidgets.QLabel()
@@ -5862,7 +5790,7 @@ if __name__ == '__main__':
               width: 24px;
             }
         ''')
-        page_box.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
+        page_box.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         of_lbl.setText(get_of_txt(round(len(array) / 100) + 1))
 
         def page_change():
@@ -5877,7 +5805,7 @@ if __name__ == '__main__':
         layout = QtWidgets.QGridLayout()
         layout.setVerticalSpacing(0)
         layout.setContentsMargins(0, 0, 0, 0)
-        layout.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignTop'))
+        layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
         layout.setSpacing(0)
         widget = QtWidgets.QWidget()
         widget.setLayout(layout)
@@ -5906,15 +5834,15 @@ if __name__ == '__main__':
         dockWidget.setWidget(widget)
         dockWidget.setFloating(False)
         dockWidget.setFeatures(
-            _enum(QtWidgets.QDockWidget, 'DockWidgetFeature.NoDockWidgetFeatures')
+            QtWidgets.QDockWidget.DockWidgetFeature.NoDockWidgetFeatures
         )
         if settings['panelposition'] == 0:
             win.addDockWidget(
-                _enum(QtCore.Qt, 'DockWidgetArea.RightDockWidgetArea'), dockWidget
+                QtCore.Qt.DockWidgetArea.RightDockWidgetArea, dockWidget
             )
         else:
             win.addDockWidget(
-                _enum(QtCore.Qt, 'DockWidgetArea.LeftDockWidgetArea'), dockWidget
+                QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, dockWidget
             )
 
         FORBIDDEN_CHARS = ('"', '*', ':', '<', '>', '?', '\\', '/', '|', '[', ']')
@@ -6192,7 +6120,7 @@ if __name__ == '__main__':
                 qt_icon_warning,
                 MAIN_WINDOW_TITLE,
                 _('Custom MPV options invalid, ignoring them') + "\n\n" + str(json.dumps(options_2)),
-                _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
+                QtWidgets.QMessageBox.StandardButton.Ok
             )
             msg_wrongmpvoptions.exec()
             options = options_orig
@@ -6239,7 +6167,7 @@ if __name__ == '__main__':
                     qt_icon_warning,
                     MAIN_WINDOW_TITLE,
                     _('No channel selected'),
-                    _enum(QtWidgets.QMessageBox, 'StandardButton.Ok')
+                    QtWidgets.QMessageBox.StandardButton.Ok
                 )
                 msg.exec()
 
@@ -6509,9 +6437,9 @@ if __name__ == '__main__':
             go_channel(1)
 
         if qt_library == 'PyQt6':
-            qaction_prio = _enum(QtGui.QAction, 'Priority.HighPriority')
+            qaction_prio = QtGui.QAction.Priority.HighPriority
         else:
-            qaction_prio = _enum(QtWidgets.QAction, 'Priority.HighPriority')
+            qaction_prio = QtWidgets.QAction.Priority.HighPriority
 
         def get_keybind(func1):
             return main_keybinds[func1]
@@ -6810,7 +6738,7 @@ if __name__ == '__main__':
         label6.setToolTip(_('Volume'))
         label6.clicked.connect(mpv_mute)
         LABEL7_SET_WIDTH = 150
-        label7 = QtWidgets.QSlider(_enum(QtCore.Qt, 'Orientation.Horizontal'))
+        label7 = QtWidgets.QSlider(QtCore.Qt.Orientation.Horizontal)
         label7.setMinimum(0)
         label7.setMaximum(200)
         label7.setFixedWidth(LABEL7_SET_WIDTH)
@@ -6926,9 +6854,9 @@ if __name__ == '__main__':
         dockWidget2.setFloating(False)
         dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
         dockWidget2.setFeatures(
-            _enum(QtWidgets.QDockWidget, 'DockWidgetFeature.NoDockWidgetFeatures')
+            QtWidgets.QDockWidget.DockWidgetFeature.NoDockWidgetFeatures
         )
-        win.addDockWidget(_enum(QtCore.Qt, 'DockWidgetArea.BottomDockWidgetArea'), dockWidget2)
+        win.addDockWidget(QtCore.Qt.DockWidgetArea.BottomDockWidgetArea, dockWidget2)
 
         progress.hide()
         start_label.hide()
@@ -6943,7 +6871,7 @@ if __name__ == '__main__':
         l1.setFont(myFont1)
         l1.setWordWrap(True)
         l1.move(50, 50)
-        l1.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignCenter'))
+        l1.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         static_text = ""
         gl_is_static = False
@@ -7418,7 +7346,7 @@ if __name__ == '__main__':
                     if show_cursor_really:
                         win.container.unsetCursor()
                     else:
-                        win.container.setCursor(_enum(QtCore.Qt, 'CursorShape.BlankCursor'))
+                        win.container.setCursor(QtCore.Qt.CursorShape.BlankCursor)
                 except Exception:
                     pass
             else:
@@ -7433,7 +7361,7 @@ if __name__ == '__main__':
         pl_layout = QtWidgets.QGridLayout()
         pl_layout.setVerticalSpacing(0)
         pl_layout.setContentsMargins(0, 0, 0, 0)
-        pl_layout.setAlignment(_enum(QtCore.Qt, 'AlignmentFlag.AlignTop'))
+        pl_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
         pl_layout.setSpacing(0)
         playlist_widget_orig.setLayout(pl_layout)
         playlist_widget.hide()
@@ -7459,13 +7387,7 @@ if __name__ == '__main__':
             )
             playlist_widget.setWindowOpacity(0.55)
             playlist_widget.setWindowFlags(
-                _enum(
-                    QtCore.Qt, 'WindowType.CustomizeWindowHint'
-                ) | _enum(
-                    QtCore.Qt, 'WindowType.FramelessWindowHint'
-                ) | _enum(
-                    QtCore.Qt, 'WindowType.X11BypassWindowManagerHint'
-                )
+                QtCore.Qt.WindowType.CustomizeWindowHint | QtCore.Qt.WindowType.FramelessWindowHint | QtCore.Qt.WindowType.X11BypassWindowManagerHint  # noqa: E501
             )
             pl_layout.addWidget(widget)
             playlist_widget.show()
@@ -7507,25 +7429,11 @@ if __name__ == '__main__':
             controlpanel_widget.setWindowOpacity(0.55)
             if channelfilter.usePopup:
                 controlpanel_widget.setWindowFlags(
-                    _enum(
-                        QtCore.Qt, 'WindowType.CustomizeWindowHint'
-                    ) | _enum(
-                        QtCore.Qt, 'WindowType.FramelessWindowHint'
-                    ) | _enum(
-                        QtCore.Qt, 'WindowType.X11BypassWindowManagerHint'
-                    ) | _enum(
-                        QtCore.Qt, 'WindowType.Popup'
-                    )
+                    QtCore.Qt.WindowType.CustomizeWindowHint | QtCore.Qt.WindowType.FramelessWindowHint | QtCore.Qt.WindowType.X11BypassWindowManagerHint | QtCore.Qt.WindowType.Popup  # noqa: E501
                 )
             else:
                 controlpanel_widget.setWindowFlags(
-                    _enum(
-                        QtCore.Qt, 'WindowType.CustomizeWindowHint'
-                    ) | _enum(
-                        QtCore.Qt, 'WindowType.FramelessWindowHint'
-                    ) | _enum(
-                        QtCore.Qt, 'WindowType.X11BypassWindowManagerHint'
-                    )
+                    QtCore.Qt.WindowType.CustomizeWindowHint | QtCore.Qt.WindowType.FramelessWindowHint | QtCore.Qt.WindowType.X11BypassWindowManagerHint  # noqa: E501
                 )
             cp_layout.addWidget(widget2)
             resizeandmove_controlpanel()
@@ -7925,7 +7833,7 @@ if __name__ == '__main__':
             win.show()
             aot_action = init_mpv_player()
             win.raise_()
-            win.setFocus(_enum(QtCore.Qt, 'FocusReason.PopupFocusReason'))
+            win.setFocus(QtCore.Qt.FocusReason.PopupFocusReason)
             win.activateWindow()
             if os.path.isfile(str(Path(LOCAL_DIR, 'windowpos.json'))):
                 try:
@@ -7989,7 +7897,7 @@ if __name__ == '__main__':
             show_playlists()
             playlists_win.show()
             playlists_win.raise_()
-            playlists_win.setFocus(_enum(QtCore.Qt, 'FocusReason.PopupFocusReason'))
+            playlists_win.setFocus(QtCore.Qt.FocusReason.PopupFocusReason)
             playlists_win.activateWindow()
             moveWindowToCenter(playlists_win)
 

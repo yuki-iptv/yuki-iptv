@@ -26,7 +26,7 @@ from pathlib import Path
 from unidecode import unidecode
 from yuki_iptv.m3u import M3UParser
 from yuki_iptv.xspf import parse_xspf
-from yuki_iptv.qt6compat import _enum, qaction
+from yuki_iptv.qt6compat import qaction
 from yuki_iptv.qt import get_qt_library
 qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
 _ = gettext.gettext
@@ -376,10 +376,10 @@ class M3UEditor(QtWidgets.QMainWindow):
                 "<b>{}</b>".format(
                     _('The document was changed.<br>Do you want to save the changes?')
                 ),
-                _enum(QtWidgets.QMessageBox, 'StandardButton.Yes') | _enum(QtWidgets.QMessageBox, 'StandardButton.No'),
-                _enum(QtWidgets.QMessageBox, 'StandardButton.Yes')
+                QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No,
+                QtWidgets.QMessageBox.StandardButton.Yes
             )
-            if reply == _enum(QtWidgets.QMessageBox, 'StandardButton.Yes'):
+            if reply == QtWidgets.QMessageBox.StandardButton.Yes:
                 if callback:
                     callback()
                 self.save_file()

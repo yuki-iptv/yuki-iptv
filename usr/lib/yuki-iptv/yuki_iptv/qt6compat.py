@@ -20,17 +20,8 @@
 # The Font Awesome pictograms are licensed under the CC BY 4.0 License
 # https://creativecommons.org/licenses/by/4.0/
 #
-import logging
 from yuki_iptv.qt import get_qt_library
 qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
-
-logger = logging.getLogger(__name__)
-
-
-class YukiData:
-    '''Data class'''
-    WRITTEN = False
-    WRITTENQT = False
 
 
 def _exec(obj, arg=None):
@@ -44,11 +35,6 @@ def _exec(obj, arg=None):
             return obj.exec_(arg)
         else:
             return obj.exec_()
-
-
-def _enum(obj, name):
-    parent, child = name.split('.')
-    return getattr(getattr(obj, parent), child)
 
 
 def qaction(arg1, arg2):
