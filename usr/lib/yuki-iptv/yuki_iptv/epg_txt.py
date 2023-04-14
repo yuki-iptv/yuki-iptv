@@ -102,7 +102,7 @@ def parse_txt(txt):
     except UnicodeDecodeError:
         try:
             txt = txt.decode('utf-8')
-        except:
+        except Exception:
             pass
     if txt[0:6] == 'tv.all':
         logger.info("TV.ALL format detected, trying to parse...")

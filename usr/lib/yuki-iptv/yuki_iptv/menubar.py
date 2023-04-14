@@ -117,7 +117,7 @@ def alwaysontop_action():
             "alwaysontop": YukiData.alwaysontopAction.isChecked()
         }))
         aot_f.close()
-    except:
+    except Exception:
         pass
     if YukiData.alwaysontopAction.isChecked():
         logger.info("Always on top enabled now")
@@ -555,7 +555,7 @@ def update_menubar(track_list, playing_chan, m3u, file, aot_file):
                     if dat in YukiData.filter_mapping:
                         YukiData.filter_mapping[dat].setChecked(True)
                         apply_vf_filter(dat, YukiData.filter_mapping[dat])
-            except:
+            except Exception:
                 pass
     else:
         recursive_filter_setstate(False)
@@ -572,7 +572,7 @@ def update_menubar(track_list, playing_chan, m3u, file, aot_file):
                     YukiData.alwaysontopAction.setChecked(True)
                 else:
                     YukiData.alwaysontopAction.setChecked(False)
-        except:
+        except Exception:
             pass
     # Track list
     for i in YukiData.menubars:

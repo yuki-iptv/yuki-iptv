@@ -59,13 +59,13 @@ def exit_handler(exit_code, exit_status):
                     try:
                         standard_output = bytes(standard_output).decode('utf-8')
                         standard_output = '\n'.join(standard_output.split('\n')[-15:])
-                    except:
+                    except Exception:
                         pass
                     standard_error = YukiData.ffmpeg_proc.readAllStandardError()
                     try:
                         standard_error = bytes(standard_error).decode('utf-8')
                         standard_error = '\n'.join(standard_error.split('\n')[-15:])
-                    except:
+                    except Exception:
                         pass
                     ffmpeg_process_found = True
                     YukiData.show_record_exception(
@@ -84,13 +84,13 @@ def exit_handler(exit_code, exit_status):
                                 try:
                                     standard_output = bytes(standard_output).decode('utf-8')
                                     standard_output = '\n'.join(standard_output.split('\n')[-15:])
-                                except:
+                                except Exception:
                                     pass
                                 standard_error = ffmpeg_process[0].readAllStandardError()
                                 try:
                                     standard_error = bytes(standard_error).decode('utf-8')
                                     standard_error = '\n'.join(standard_error.split('\n')[-15:])
-                                except:
+                                except Exception:
                                     pass
                                 ffmpeg_process_found = True
                                 YukiData.show_record_exception(
@@ -99,7 +99,7 @@ def exit_handler(exit_code, exit_status):
                                     '\nstdout:\n' + str(standard_output) + ''
                                     '\nstderr:\n' + str(standard_error)
                                 )
-            except:
+            except Exception:
                 pass
             if not ffmpeg_process_found:
                 YukiData.show_record_exception(_('ffmpeg crashed!'))

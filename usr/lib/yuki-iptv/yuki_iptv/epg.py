@@ -103,9 +103,9 @@ def fetch_epg(settings, catchup_days1, progress_dict):
                 prog_ids = merge_two_dicts(prog_ids, pr_xmltv[1])
                 try:
                     epg_icons = merge_two_dicts(epg_icons, pr_xmltv[2])
-                except:
+                except Exception:
                     pass
-            except:
+            except Exception:
                 zip_epg = io.BytesIO(epg)
                 if zipfile.is_zipfile(zip_epg):  # ZIP
                     logger.info("ZIP file detected")
@@ -121,7 +121,7 @@ def fetch_epg(settings, catchup_days1, progress_dict):
                         prog_ids = merge_two_dicts(prog_ids, pr_xmltv[1])
                         try:
                             epg_icons = merge_two_dicts(epg_icons, pr_xmltv[2])
-                        except:
+                        except Exception:
                             pass
                     else:
                         programmes_epg = merge_two_dicts(programmes_epg, pr_zip)

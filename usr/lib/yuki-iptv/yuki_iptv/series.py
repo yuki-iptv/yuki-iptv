@@ -95,6 +95,6 @@ def parse_series(obj1, series):
             season1.episodes[episode_name1] = ep_channel
             serie1.episodes.append(ep_channel)
             is_matched = True
-        except:
+        except Exception:
             logger.warning("M3U Series parse FAILED")
     return series, is_matched

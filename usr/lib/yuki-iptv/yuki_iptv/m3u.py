@@ -52,7 +52,7 @@ class M3UParser:
         if name == 'catchup-days':
             try:
                 res = str(int(res))
-            except:
+            except Exception:
                 logger.warning(
                     f"M3U STANDARDS VIOLATION: catchup-days is not int (got '{res}')"
                 )
@@ -167,18 +167,18 @@ class M3UParser:
                 if 'x-tvg-url="' in line:
                     try:
                         epg_m3u_url = re.findall('x-tvg-url="(.*?)"', line)[0]
-                    except:
+                    except Exception:
                         pass
                 else:
                     if 'tvg-url="' in line:
                         try:
                             epg_m3u_url = re.findall('tvg-url="(.*?)"', line)[0]
-                        except:
+                        except Exception:
                             pass
                     else:
                         try:
                             epg_m3u_url = re.findall('url-tvg="(.*?)"', line)[0]
-                        except:
+                        except Exception:
                             pass
                 if epg_m3u_url:
                     self.m3u_epg = epg_m3u_url

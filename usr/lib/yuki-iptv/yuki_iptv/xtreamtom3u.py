@@ -26,7 +26,7 @@ def convert_xtream_to_m3u(_, data, skip_init=False, append_group=""):
         name = channel.name
         try:
             group = channel.group_title if channel.group_title else ''
-        except:
+        except Exception:
             group = _('All channels')
         if append_group:
             group = append_group + " " + group

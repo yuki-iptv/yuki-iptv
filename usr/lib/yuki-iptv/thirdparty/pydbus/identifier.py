@@ -1,7 +1,7 @@
 # https://github.com/LEW21/pydbus/tree/cc407c8b1d25b7e28a6d661a29f9e661b1c9b964
 try:
 	isident = str.isidentifier
-except:
+except Exception:
 	import re
 
 	isidentre = re.compile("^[a-zA-Z_][a-zA-Z0-9_]*$")

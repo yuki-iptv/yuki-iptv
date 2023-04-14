@@ -7,7 +7,7 @@ from .timeout import timeout_to_glib
 try:
 	from inspect import Signature, Parameter
 	put_signature_in_doc = False
-except:
+except Exception:
 	from ._inspect3 import Signature, Parameter
 	put_signature_in_doc = True
 

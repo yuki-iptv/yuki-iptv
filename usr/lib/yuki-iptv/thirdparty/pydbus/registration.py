@@ -10,7 +10,7 @@ import logging
 
 try:
 	from inspect import signature, Parameter
-except:
+except Exception:
 	from ._inspect3 import signature, Parameter
 
 class ObjectWrapper(ExitableWithAliases("unwrap")):

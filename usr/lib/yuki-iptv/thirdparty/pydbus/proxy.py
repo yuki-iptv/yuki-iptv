@@ -54,7 +54,7 @@ class ProxyMixin(object):
 
 		try:
 			introspection = ET.fromstring(xml)
-		except:
+		except Exception:
 			raise KeyError("object provides invalid introspection XML")
 
 		return CompositeInterface(introspection)(self, bus_name, object_path)
@@ -111,7 +111,7 @@ def CompositeInterface(introspection):
 			for iface in cls.__bases__:
 				try:
 					iface._Introspect()
-				except:
+				except Exception:
 					pass
 
 	ifaces = sorted([x for x in introspection if x.tag == "interface"], key=lambda x: int(x.attrib["name"].startswith("org.freedesktop.DBus.")))

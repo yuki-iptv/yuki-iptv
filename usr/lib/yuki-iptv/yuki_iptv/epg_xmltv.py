@@ -54,7 +54,7 @@ def parse_timestamp(ts_string, settings):
                 ts_string, timestamp_format
             ).timestamp() + (3600 * settings["epgoffset"])
             break
-        except:
+        except Exception:
             pass
     return ts
 
@@ -73,7 +73,7 @@ def parse_as_xmltv(epg, settings, catchup_days1, progress_dict, epg_i, epg_setti
         try:
             logger.info("Trying to unpack as gzip...")
             tree = ET.ElementTree(ET.fromstring(gzip.decompress(epg)))
-        except:
+        except Exception:
             logger.info("Trying to unpack as xz...")
             tree = ET.ElementTree(ET.fromstring(
                 lzma.LZMADecompressor().decompress(epg)
@@ -98,22 +98,22 @@ def parse_as_xmltv(epg, settings, catchup_days1, progress_dict, epg_i, epg_setti
                         try:
                             if 'src' in icon.attrib:
                                 icons[display_name.text.strip().lower()] = icon.attrib['src'].strip()
-                        except:
+                        except Exception:
                             pass
-            except:
+            except Exception:
                 pass
     for programme in tree.findall('./programme'):
         try:
             start = parse_timestamp(
                 programme.attrib['start'], settings
             )
-        except:
+        except Exception:
             start = 0
         try:
             stop = parse_timestamp(
                 programme.attrib['stop'], settings
             )
-        except:
+        except Exception:
             stop = 0
         try:
             chans = ids[programme.attrib['channel'].strip()]
@@ -121,7 +121,7 @@ def parse_as_xmltv(epg, settings, catchup_days1, progress_dict, epg_i, epg_setti
             try:
                 if 'catchup-id' in programme.attrib:
                     catchup_id = programme.attrib['catchup-id']
-            except:
+            except Exception:
                 pass
             for channel_epg_1 in chans:
                 day_start = (
@@ -139,11 +139,11 @@ def parse_as_xmltv(epg, settings, catchup_days1, progress_dict, epg_i, epg_setti
                 if (start > day_start and stop < day_end) or force:
                     try:
                         prog_title = programme.find('./title').text
-                    except:
+                    except Exception:
                         prog_title = ""
                     try:
                         prog_desc = programme.find('./desc').text
-                    except:
+                    except Exception:
                         prog_desc = ""
                     programmes_epg[channel_epg_1].append({
                         "start": start,
@@ -152,6 +152,6 @@ def parse_as_xmltv(epg, settings, catchup_days1, progress_dict, epg_i, epg_setti
                         "desc": prog_desc,
                         'catchup-id': catchup_id
                     })
-        except:
+        except Exception:
             pass
     return [programmes_epg, ids, icons]

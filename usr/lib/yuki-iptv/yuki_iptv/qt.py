@@ -34,7 +34,7 @@ def get_qt_library():
         from PyQt6 import QtGui
         QShortcut = QtGui.QShortcut
         qt_library = "PyQt6"
-    except:
+    except Exception:
         from PyQt5 import QtWidgets
         from PyQt5 import QtCore
         from PyQt5 import QtGui

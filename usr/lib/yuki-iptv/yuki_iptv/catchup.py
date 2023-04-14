@@ -120,7 +120,7 @@ def format_placeholders(start_time, end_time, catchup_id, orig_url):
                     duration_re_i,
                     str(int(duration / duration_re_i_parse))
                 )
-    except:
+    except Exception:
         logger.warning("format_placeholders / duration_re parsing failed")
         logger.warning(traceback.format_exc())
 
@@ -133,7 +133,7 @@ def format_placeholders(start_time, end_time, catchup_id, orig_url):
                     offset_re_i,
                     str(int(offset2 / offset_re_i_parse))
                 )
-    except:
+    except Exception:
         logger.warning("format_placeholders / offset_re parsing failed")
         logger.warning(traceback.format_exc())
 
@@ -179,7 +179,7 @@ def format_placeholders(start_time, end_time, catchup_id, orig_url):
                     spec_val = spec_val.replace('M', str(utcend_time[4]))
                     spec_val = spec_val.replace('S', str(utcend_time[5]))
                 orig_url = orig_url.replace(specifiers_re_i_o, str(spec_val))
-    except:
+    except Exception:
         logger.warning("format_placeholders / specifiers_re parsing failed")
         logger.warning(traceback.format_exc())
 
@@ -344,7 +344,7 @@ def parse_specifiers_now_url(url4):
                 spec_val_1 = spec_val_1.replace('M', str(cur_utc_time[4]))
                 spec_val_1 = spec_val_1.replace('S', str(cur_utc_time[5]))
                 url4 = url4.replace(specifiers_re_url_i[0], str(spec_val_1))
-    except:
+    except Exception:
         logger.warning("parse_specifiers_now_url / specifiers_re_url parsing failed")
         logger.warning(traceback.format_exc())
 

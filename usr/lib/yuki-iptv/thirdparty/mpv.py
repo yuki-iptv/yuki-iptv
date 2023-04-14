@@ -564,12 +564,12 @@ _handle_func('mpv_wakeup',                  [],                                 
 _handle_func('mpv_set_wakeup_callback',     [WakeupCallback, c_void_p],                 None, errcheck=None)
 try:
     _handle_func('mpv_get_wakeup_pipe',         [],                                         c_int, errcheck=None)
-except:
+except Exception:
     pass
 
 try:
     _handle_func('mpv_stream_cb_add_ro',        [c_char_p, c_void_p, StreamOpenFn],         c_int, ec_errcheck)
-except:
+except Exception:
     pass
 
 _handle_func('mpv_render_context_create',               [MpvRenderCtxHandle, MpvHandle, POINTER(MpvRenderParam)],   c_int, ec_errcheck,     ctx=None)
@@ -1642,7 +1642,7 @@ class MPV(object):
             self._stream_protocol_cbs[proto] = [open_backend]
             try:
                 _mpv_stream_cb_add_ro(self.handle, proto.encode('utf-8'), c_void_p(), open_backend)
-            except:
+            except Exception:
                 pass
 
             return open_fn

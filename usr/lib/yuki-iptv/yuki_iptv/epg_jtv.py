@@ -92,7 +92,7 @@ def parse_jtv(ndx, pdt, settings):
                     logger.debug("Broken JTV entry found!")
             else:
                 raise Exception("Program name decoding failed!")
-        except:
+        except Exception:
             logger.debug("JTV parse failed!")
     # Remove last program because we don't know stop time
     if schedules:

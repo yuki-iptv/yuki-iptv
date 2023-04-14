@@ -34,7 +34,7 @@ _ = gettext.gettext
 HOME_FOLDER = ""
 try:
     HOME_FOLDER = os.environ['HOME']
-except:
+except Exception:
     pass
 
 
@@ -101,7 +101,7 @@ class M3UEditor(QtWidgets.QMainWindow):
                     m3u_data = m3u_parser.parse_m3u(filedata)[0]
                 else:
                     m3u_data = parse_xspf(filedata)[0]
-            except:
+            except Exception:
                 m3u_data = False
             if m3u_data:
                 self.file_opened = False
@@ -160,7 +160,7 @@ class M3UEditor(QtWidgets.QMainWindow):
                 save_file.close()
                 self.table_changed = False
                 self.statusBar().showMessage(_('Playlist successfully saved!'), 0)
-            except:
+            except Exception:
                 self.statusBar().showMessage(_('Error'), 0)
         # Cleaning memory
         output = {}
