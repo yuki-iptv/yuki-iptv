@@ -15,4 +15,6 @@ lint:
 	flake8 .
 
 test:
-	python3 -m pytest tests
+	mkdir -p "/tmp/yuki-iptv-py"
+	PYTHONPYCACHEPREFIX="/tmp/yuki-iptv-py" python3 -m pytest tests
+	rm -rf "/tmp/yuki-iptv-py"
