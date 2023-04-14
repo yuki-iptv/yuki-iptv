@@ -87,7 +87,10 @@ def parse_jtv(ndx, pdt, settings):
                         'title': program_name,
                         'desc': ''
                     })
-                    schedules[len(schedules) - 2]['stop'] = start_time
+                    try:
+                        schedules[len(schedules) - 2]['stop'] = start_time
+                    except Exception:
+                        pass
                 else:
                     logger.debug("Broken JTV entry found!")
             else:
