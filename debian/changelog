@@ -1,3 +1,15 @@
+yuki-iptv (0.0.4) unstable; urgency=medium
+
+  * Optimize channel logos load
+  * Show warning if ffmpeg crashed
+  * Remember video / audio / subtitle tracks for channel
+  * Add subtitles selector
+  * Fix pause button behaviour on changing channels
+  * UI improvements
+  * packaging: add python3-pydbus to depends
+
+ -- yuki-chan-nya <yukichandev@proton.me>  Sat, 15 Apr 2023 18:52:48 +0000
+
 yuki-iptv (0.0.3) unstable; urgency=medium
 
   * EPG: trying to fix EPG cache load freezing
