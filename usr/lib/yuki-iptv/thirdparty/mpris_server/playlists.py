@@ -3,7 +3,7 @@ from typing import Union, List, Tuple
 import base64
 import logging
 
-from thirdparty.pydbus.generic import signal
+from pydbus.generic import signal
 
 from .base import PlaylistEntry, PlaylistValidity
 from .interface import MprisInterface

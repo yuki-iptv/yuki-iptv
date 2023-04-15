@@ -2,7 +2,7 @@
 import logging
 from typing import List
 
-from thirdparty.pydbus.generic import signal
+from pydbus.generic import signal
 
 from .base import Metadata, DbusObj
 from .interface import MprisInterface

@@ -3,7 +3,7 @@ from typing import Optional
 import logging
 
 from gi.repository.GLib import Variant
-from thirdparty.pydbus.generic import signal
+from pydbus.generic import signal
 
 from .base import PlayState, MUTE_VOL, MAX_VOL, PAUSE_RATE, BEGINNING, \
     Microseconds, RateDecimal, VolumeDecimal, MAX_RATE, MIN_RATE, \
