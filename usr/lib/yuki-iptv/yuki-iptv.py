@@ -68,6 +68,7 @@ from yuki_iptv.catchup import get_catchup_url, parse_specifiers_now_url, format_
 from yuki_iptv.settings import parse_settings
 from yuki_iptv.qt6compat import _exec
 from yuki_iptv.m3u_editor import M3UEditor
+from yuki_iptv.options import read_option, write_option
 from yuki_iptv.keybinds import main_keybinds_internal, main_keybinds_default
 from yuki_iptv.series import parse_series
 from thirdparty.xtream import XTream, Serie
@@ -200,6 +201,7 @@ class YukiData:
     movies = {}
     series = {}
     osc = -1
+    volume = 100
 
 
 stream_info.video_properties = {}
@@ -2415,10 +2417,7 @@ if __name__ == '__main__':
         def mpv_override_volume(volume_val):
             global event_handler, firstVolRun
             player.volume = volume_val
-            if not firstVolRun:
-                volfile = open(str(Path(LOCAL_DIR, 'volume.json')), 'w', encoding="utf8")
-                volfile.write(json.dumps({"volume": player.volume}))
-                volfile.close()
+            YukiData.volume = volume_val
             if event_handler:
                 try:
                     event_handler.on_volume()
@@ -3805,7 +3804,8 @@ if __name__ == '__main__':
                 yuki_track_set
             )
 
-            if os.path.isfile(str(Path(LOCAL_DIR, 'volume.json'))):
+            volume_option1 = read_option('volume')
+            if volume_option1 is not None:
                 logger.info(f"Set volume to {vol_remembered}")
                 label7.setValue(vol_remembered)
                 mpv_volume_set()
@@ -3943,14 +3943,10 @@ if __name__ == '__main__':
         win.setMinimumSize(1, 1)
         win.setWindowTitle(MAIN_WINDOW_TITLE)
         win.setWindowIcon(main_icon)
-        if os.path.isfile(str(Path(LOCAL_DIR, 'windowsize.json'))):
-            try:
-                ws_file_1 = open(str(Path(LOCAL_DIR, 'windowsize.json')), 'r', encoding="utf8")
-                ws_file_1_out = json.loads(ws_file_1.read())
-                ws_file_1.close()
-                win.resize(ws_file_1_out['w'], ws_file_1_out['h'])
-            except Exception:
-                win.resize(WINDOW_SIZE[0], WINDOW_SIZE[1])
+
+        window_data = read_option('window')
+        if window_data:
+            win.resize(window_data['w'], window_data['h'])
         else:
             win.resize(WINDOW_SIZE[0], WINDOW_SIZE[1])
 
@@ -6322,7 +6318,6 @@ if __name__ == '__main__':
                     player.track_list,
                     playing_chan,
                     settings["m3u"],
-                    str(Path(LOCAL_DIR, 'menubar.json')),
                     str(Path(LOCAL_DIR, 'alwaysontop.json'))
                 )
             except Exception:
@@ -6944,61 +6939,38 @@ if __name__ == '__main__':
         def myExitHandler():
             global stopped, epg_thread, epg_thread_2, mpris_loop
             if comm_instance.comboboxIndex != -1:
-                combobox_index_file = open(
-                    str(Path(LOCAL_DIR, 'comboboxindex.json')), 'w', encoding="utf8"
-                )
-                combobox_index_file.write(json.dumps({
+                write_option('comboboxindex', {
                     "m3u": settings['m3u'],
                     "index": comm_instance.comboboxIndex
-                }))
-                combobox_index_file.close()
+                })
             try:
                 if get_first_run():
                     logger.info("Saving active vf filters...")
-                    vf_filters_file = open(
-                        str(Path(LOCAL_DIR, 'menubar.json')), 'w', encoding="utf8"
-                    )
-                    vf_filters_file.write(json.dumps({
-                        "vf_filters": get_active_vf_filters()
-                    }))
-                    vf_filters_file.close()
+                    write_option('vf_filters', get_active_vf_filters())
                     logger.info("Active vf filters saved")
             except Exception:
                 pass
             try:
-                logger.info("Saving main window position...")
-                windowpos_file = open(
-                    str(Path(LOCAL_DIR, 'windowpos.json')), 'w', encoding="utf8"
-                )
-                windowpos_file.write(
-                    json.dumps({
-                        "x": win.geometry().x(),
-                        "y": win.geometry().y()
-                    })
-                )
-                windowpos_file.close()
-                logger.info("Main window position saved")
+                logger.info("Saving main window position / width / height...")
+                write_option('window', {
+                    "x": win.geometry().x(),
+                    "y": win.geometry().y(),
+                    "w": win.width(),
+                    "h": win.height()
+                })
+                logger.info("Main window position / width / height saved")
             except Exception:
                 pass
             try:
-                logger.info("Saving main window width / height...")
-                window_size = {'w': win.width(), 'h': win.height()}
-                ws_file = open(
-                    str(Path(LOCAL_DIR, 'windowsize.json')), 'w', encoding="utf8"
-                )
-                ws_file.write(json.dumps(window_size))
-                ws_file.close()
-                logger.info("Main window width / height saved")
+                write_option('compactstate', {
+                    "compact_mode": YukiData.compact_mode,
+                    "playlist_hidden": YukiData.playlist_hidden,
+                    "controlpanel_hidden": YukiData.controlpanel_hidden
+                })
             except Exception:
                 pass
             try:
-                with open(str(Path(LOCAL_DIR, 'compactstate.json')), 'w', encoding="utf8") as compactstate_file:
-                    compactstate_file.write(json.dumps({
-                        "compact_mode": YukiData.compact_mode,
-                        "playlist_hidden": YukiData.playlist_hidden,
-                        "controlpanel_hidden": YukiData.controlpanel_hidden
-                    }))
-                    compactstate_file.close()
+                write_option('volume', int(YukiData.volume))
             except Exception:
                 pass
             save_player_tracks()
@@ -7803,31 +7775,25 @@ if __name__ == '__main__':
         app.aboutToQuit.connect(myExitHandler)
 
         vol_remembered = 100
-        if os.path.isfile(str(Path(LOCAL_DIR, 'volume.json'))):
-            try:
-                volfile_1 = open(str(Path(LOCAL_DIR, 'volume.json')), 'r', encoding="utf8")
-                volfile_1_out = int(json.loads(volfile_1.read())["volume"])
-                volfile_1.close()
-            except Exception:
-                volfile_1_out = 100
-            vol_remembered = volfile_1_out
+        volume_option = read_option('volume')
+        if volume_option is not None:
+            vol_remembered = int(volume_option)
+            YukiData.volume = vol_remembered
         firstVolRun = False
 
         def restore_compact_state():
-            if os.path.isfile(str(Path(LOCAL_DIR, 'compactstate.json'))):
-                try:
-                    with open(str(Path(LOCAL_DIR, 'compactstate.json')), 'r', encoding="utf8") as compactstate_file_1:
-                        compactstate = json.loads(compactstate_file_1.read())
-                        compactstate_file_1.close()
-                        if compactstate["compact_mode"]:
-                            showhideeverything()
-                        else:
-                            if compactstate["playlist_hidden"]:
-                                key_t()
-                            if compactstate["controlpanel_hidden"]:
-                                lowpanel_ch()
-                except Exception:
-                    pass
+            try:
+                compactstate = read_option('compactstate')
+                if compactstate:
+                    if compactstate["compact_mode"]:
+                        showhideeverything()
+                    else:
+                        if compactstate["playlist_hidden"]:
+                            key_t()
+                        if compactstate["controlpanel_hidden"]:
+                            lowpanel_ch()
+            except Exception:
+                pass
 
         if settings['m3u'] and m3u:
             win.show()
@@ -7835,32 +7801,19 @@ if __name__ == '__main__':
             win.raise_()
             win.setFocus(QtCore.Qt.FocusReason.PopupFocusReason)
             win.activateWindow()
-            if os.path.isfile(str(Path(LOCAL_DIR, 'windowpos.json'))):
-                try:
-                    logger.info("Restoring main window position...")
-                    windowpos_file_1 = open(
-                        str(Path(LOCAL_DIR, 'windowpos.json')), 'r', encoding="utf8"
-                    )
-                    windowpos_file_1_out = windowpos_file_1.read()
-                    windowpos_file_1.close()
-                    windowpos_file_1_json = json.loads(windowpos_file_1_out)
-                    win.move(windowpos_file_1_json['x'], windowpos_file_1_json['y'])
-                    logger.info("Main window position restored")
-                except Exception:
-                    pass
-            if os.path.isfile(str(Path(LOCAL_DIR, 'comboboxindex.json'))):
-                try:
-                    combobox_index_file_1 = open(
-                        str(Path(LOCAL_DIR, 'comboboxindex.json')), 'r', encoding="utf8"
-                    )
-                    combobox_index_file_1_out = combobox_index_file_1.read()
-                    combobox_index_file_1.close()
-                    combobox_index_file_1_json = json.loads(combobox_index_file_1_out)
-                    if combobox_index_file_1_json['m3u'] == settings['m3u']:
-                        if combobox_index_file_1_json['index'] < combobox.count():
-                            combobox.setCurrentIndex(combobox_index_file_1_json['index'])
-                except Exception:
-                    pass
+            window_data_1 = read_option('window')
+            if window_data_1:
+                logger.info("Restoring main window position...")
+                win.move(window_data_1['x'], window_data_1['y'])
+                logger.info("Main window position restored")
+            try:
+                combobox_index1 = read_option('comboboxindex')
+                if combobox_index1:
+                    if combobox_index1['m3u'] == settings['m3u']:
+                        if combobox_index1['index'] < combobox.count():
+                            combobox.setCurrentIndex(combobox_index1['index'])
+            except Exception:
+                pass
             if not playLastChannel():
                 logger.info("Show splash")
                 mpv_override_play(str(Path('yuki_iptv', ICONS_FOLDER, 'main.png')))

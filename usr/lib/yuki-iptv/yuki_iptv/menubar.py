@@ -28,6 +28,7 @@ import traceback
 from functools import partial
 from yuki_iptv.qt import get_qt_library
 from yuki_iptv.qt6compat import qaction
+from yuki_iptv.options import read_option
 
 qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
 logger = logging.getLogger(__name__)
@@ -539,7 +540,7 @@ def get_first_run():
     return YukiData.first_run
 
 
-def update_menubar(track_list, playing_chan, m3u, file, aot_file):
+def update_menubar(track_list, playing_chan, m3u, aot_file):
     # Filters enable / disable
     if playing_chan:
         recursive_filter_setstate(True)
@@ -548,10 +549,8 @@ def update_menubar(track_list, playing_chan, m3u, file, aot_file):
             YukiData.first_run = True
             logger.info("YukiData.first_run")
             try:
-                file_1 = open(file, 'r', encoding='utf-8')
-                file_1_out = json.loads(file_1.read())['vf_filters']
-                file_1.close()
-                for dat in file_1_out:
+                vf_filters_read = read_option('vf_filters')
+                for dat in vf_filters_read:
                     if dat in YukiData.filter_mapping:
                         YukiData.filter_mapping[dat].setChecked(True)
                         apply_vf_filter(dat, YukiData.filter_mapping[dat])
