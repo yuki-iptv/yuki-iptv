@@ -132,7 +132,7 @@ else:
     qt_icon_information = QtWidgets.QMessageBox.Icon.Information
 
 APP_VERSION = '__DEB_VERSION__'
-VERSION_CODENAME = 'Time Travel Paranoia'
+VERSION_CODENAME = 'Parallel World Paranoia'
 COPYRIGHT_YEAR = '2023'
 
 setproctitle.setproctitle("yuki-iptv")
