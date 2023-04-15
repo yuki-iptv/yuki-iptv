@@ -34,6 +34,7 @@ import signal
 import base64
 import argparse
 import shutil
+import io
 import subprocess
 import re
 import textwrap
@@ -47,6 +48,7 @@ import chardet
 import requests
 import setproctitle
 from unidecode import unidecode
+from PIL import Image
 
 try:
     from gi.repository import GLib
@@ -615,7 +617,7 @@ if __name__ == '__main__':
                 epg_ready = True
 
                 logger.info(
-                    f"TV guide read done, took {time.time() - tvguide_read_time} seconds"
+                    f"TV guide read done, took {round(time.time() - tvguide_read_time, 2)} seconds"
                 )
             else:
                 logger.info("No EPG cache found")
@@ -4623,7 +4625,7 @@ if __name__ == '__main__':
             if not logo_url:
                 return None
             base64_enc = base64.b64encode(bytes(logo_url, 'utf-8')).decode('utf-8')
-            sha512_hash = str(hashlib.sha512(bytes(base64_enc, 'utf-8')).hexdigest()) + ".img"
+            sha512_hash = str(hashlib.sha512(bytes(base64_enc, 'utf-8')).hexdigest()) + ".png"
             cache_file = str(Path(LOCAL_DIR, 'logo_cache', sha512_hash))
             if os.path.isfile(cache_file):
                 # logger.debug("is remote icon, cache available")
@@ -4647,10 +4649,12 @@ if __name__ == '__main__':
                             timeout=(3, 3),
                             stream=True
                         ).content
-                        cache_file_2 = open(cache_file, 'wb')
-                        cache_file_2.write(req_data1)
-                        cache_file_2.close()
-                        icon_ret = cache_file
+                        if req_data1:
+                            with io.BytesIO(req_data1) as im_logo_bytes:
+                                with Image.open(im_logo_bytes) as im_logo:
+                                    im_logo.thumbnail((64, 64))
+                                    im_logo.save(cache_file, 'PNG')
+                                    icon_ret = cache_file
                 except Exception:
                     icon_ret = None
             return icon_ret
@@ -4698,15 +4702,13 @@ if __name__ == '__main__':
                 return logos_cache[pixmap_filename]
             else:
                 try:
-                    with open(pixmap_filename, 'rb') as pixmap_file:
-                        qp_1 = QtGui.QPixmap()
-                        qp_1.loadFromData(pixmap_file.read())
-                    if not qp_1.isNull():
-                        qp_1 = qp_1.scaled(64, 64, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
-                        icon_pixmap = Pickable_QIcon(qp_1)
+                    if os.path.isfile(pixmap_filename):
+                        icon_pixmap = Pickable_QIcon(pixmap_filename)
                         logos_cache[pixmap_filename] = icon_pixmap
                         icon_pixmap = None
                         return logos_cache[pixmap_filename]
+                    else:
+                        return None
                 except Exception:
                     return None
 
