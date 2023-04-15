@@ -550,10 +550,11 @@ def update_menubar(track_list, playing_chan, m3u, aot_file):
             logger.info("YukiData.first_run")
             try:
                 vf_filters_read = read_option('vf_filters')
-                for dat in vf_filters_read:
-                    if dat in YukiData.filter_mapping:
-                        YukiData.filter_mapping[dat].setChecked(True)
-                        apply_vf_filter(dat, YukiData.filter_mapping[dat])
+                if vf_filters_read:
+                    for dat in vf_filters_read:
+                        if dat in YukiData.filter_mapping:
+                            YukiData.filter_mapping[dat].setChecked(True)
+                            apply_vf_filter(dat, YukiData.filter_mapping[dat])
             except Exception:
                 pass
     else:
