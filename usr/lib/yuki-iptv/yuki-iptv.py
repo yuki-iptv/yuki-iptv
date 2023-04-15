@@ -570,9 +570,30 @@ if __name__ == '__main__':
                 )
             epg_dict['out'] = [file1_json]
 
+        @idle_function
+        def update_epg_func_static_enable(unused=None):
+            global static_text, time_stop
+            l1.setStatic2(True)
+            l1.show()
+            static_text = _('Loading TV guide cache...')
+            l1.setText2("")
+            time_stop = time.time() + 3
+
+        @idle_function
+        def update_epg_func_static_disable(unused=None):
+            global time_stop
+            l1.setStatic2(False)
+            l1.hide()
+            l1.setText2('')
+            time_stop = time.time()
+
+        @async_gui_blocking_function
         def update_epg_func():
             global settings, tvguide_sets, prog_ids, \
                 epg_icons, programmes, epg_ready
+            while not win.isVisible():
+                time.sleep(0.1)
+            time.sleep(1)
             if settings["nocacheepg"]:
                 logger.info("No cache EPG active, deleting old EPG cache file")
                 try:
@@ -583,6 +604,8 @@ if __name__ == '__main__':
             tvguide_read_time = time.time()
             if os.path.isfile(str(Path(LOCAL_DIR, 'epg.cache'))):
                 logger.info("Reading cached TV guide...")
+
+                update_epg_func_static_enable()
 
                 # Disregard existed epg.cache if EPG url changes
                 manager_epg = Manager()
@@ -616,15 +639,16 @@ if __name__ == '__main__':
                     force_update_epg()
                 epg_ready = True
 
+                update_epg_func_static_disable()
+
                 logger.info(
                     f"TV guide read done, took {round(time.time() - tvguide_read_time, 2)} seconds"
                 )
+                btn_update.click()
             else:
                 logger.info("No EPG cache found")
                 epg_ready = True
                 force_update_epg()
-
-        update_epg_func()
 
         if YukiData.use_dark_icon_theme:
             ICONS_FOLDER = str(Path('..', '..', '..', 'share', 'yuki-iptv', 'icons_dark'))
@@ -7848,6 +7872,9 @@ if __name__ == '__main__':
                 timers_array[timer] = QtCore.QTimer()
                 timers_array[timer].timeout.connect(timer)
                 timers_array[timer].start(timers[timer])
+
+            # Updating EPG, async
+            update_epg_func()
         else:
             show_playlists()
             playlists_win.show()
