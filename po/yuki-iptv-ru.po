@@ -1380,8 +1380,8 @@ msgstr "Сп&равка"
 msgid "None"
 msgstr "Нет"
 
-#~ msgid "Loading TV guide cache..."
-#~ msgstr "Загрузка кэша телепрограммы..."
+msgid "Loading TV guide cache..."
+msgstr "Загрузка кэша телепрограммы..."
 
-#~ msgid "EPG loading..."
-#~ msgstr "Телепрограмма загружается..."
+msgid "EPG loading..."
+msgstr "Телепрограмма загружается..."
