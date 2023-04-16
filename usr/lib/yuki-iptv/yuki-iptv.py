@@ -5008,7 +5008,7 @@ if __name__ == '__main__':
                 orig_prog = prog
                 if len(prog) > MAX_SIZE:
                     prog = prog[0:MAX_SIZE] + "..."
-                if prog_search in programmes:
+                if prog_search in programmes and orig_prog:
                     MyPlaylistWidget.setDescription(
                         prog,
                         (
