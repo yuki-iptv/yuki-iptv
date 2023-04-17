@@ -1,7 +1,7 @@
 # yuki-iptv
 ### IPTV player with EPG support (Astroncia IPTV fork)
 
-[![Screenshot](https://gist.githubusercontent.com/yuki-chan-nya/c37f80c2cb00afbdbd98959186e1ab80/raw/71a5c9c177130154a7bd1ad31d7465096cc102bb/yuki-iptv.png)](https://gist.githubusercontent.com/yuki-chan-nya/c37f80c2cb00afbdbd98959186e1ab80/raw/71a5c9c177130154a7bd1ad31d7465096cc102bb/yuki-iptv.png)  
+[![Screenshot](https://gist.githubusercontent.com/yuki-chan-nya/c37f80c2cb00afbdbd98959186e1ab80/raw/d990f212d8e9a5170f800aafdfc82333f9264e31/yuki-iptv.png)](https://gist.githubusercontent.com/yuki-chan-nya/c37f80c2cb00afbdbd98959186e1ab80/raw/d990f212d8e9a5170f800aafdfc82333f9264e31/yuki-iptv.png)  
   
 ⚠️ Disclaimer: yuki-iptv doesn't provide any playlists or other digital content.  
 The channels and pictures in the screenshots are for demonstration purposes only.  
