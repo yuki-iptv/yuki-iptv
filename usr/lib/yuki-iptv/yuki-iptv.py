@@ -132,7 +132,6 @@ else:
     qt_icon_information = QtWidgets.QMessageBox.Icon.Information
 
 APP_VERSION = '__DEB_VERSION__'
-VERSION_CODENAME = 'Parallel World Paranoia'
 COPYRIGHT_YEAR = '2023'
 
 setproctitle.setproctitle("yuki-iptv")
@@ -219,7 +218,7 @@ DOCK_WIDGET2_HEIGHT = max(DOCK_WIDGET2_HEIGHT, 0)
 DOCK_WIDGET_WIDTH = max(DOCK_WIDGET_WIDTH, 0)
 
 if args1.version:
-    print(f"{MAIN_WINDOW_TITLE} {APP_VERSION} {VERSION_CODENAME}")
+    print(f"{MAIN_WINDOW_TITLE} {APP_VERSION}")
     sys.exit(0)
 
 if not os.path.isdir(str(Path(os.environ['HOME'], '.config'))):
@@ -313,7 +312,7 @@ if __name__ == '__main__':
         logger.info("The Font Awesome pictograms are licensed under the CC BY 4.0 License")
         logger.info("https://creativecommons.org/licenses/by/4.0/")
         logger.info("")
-        logger.info(f"yuki-iptv version: {APP_VERSION} {VERSION_CODENAME}")
+        logger.info(f"yuki-iptv version: {APP_VERSION}")
         logger.info("Using Python " + sys.version.replace('\n', ''))
         logger.info(f"Qt library: {qt_library}")
         logger.info(f"Qt version: {QtCore.QT_VERSION_STR}")
@@ -3676,7 +3675,7 @@ if __name__ == '__main__':
 
             logger.info(f"Using {mpv_version}")
 
-            textbox.setText(format_about_text(_('yuki-iptv\nversion: {}\ncodename: {}\n\n© 2021, 2022 Astroncia\n© {} yuki-chan-nya\nhttps://github.com/yuki-chan-nya\n\nIPTV player\n\nIcons by Font Awesome ( https://fontawesome.com/ )\nIcons licensed under the CC BY 4.0 License\n( https://creativecommons.org/licenses/by/4.0/ )').format(APP_VERSION, VERSION_CODENAME, COPYRIGHT_YEAR).replace('©', 'Copyright ©')))  # noqa: E501
+            textbox.setText(format_about_text(_('yuki-iptv {}\n\n© 2021, 2022 Astroncia\n© {} yuki-chan-nya\nhttps://github.com/yuki-chan-nya\n\nIPTV player\n\nIcons by Font Awesome ( https://fontawesome.com/ )\nIcons licensed under the CC BY 4.0 License\n( https://creativecommons.org/licenses/by/4.0/ )').format(APP_VERSION, COPYRIGHT_YEAR).replace('©', 'Copyright ©')))  # noqa: E501
 
             if settings["cache_secs"] != 0:
                 try:
