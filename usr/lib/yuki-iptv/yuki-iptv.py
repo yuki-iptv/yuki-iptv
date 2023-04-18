@@ -1407,19 +1407,8 @@ if __name__ == '__main__':
             if m3u_edit_1.text():
                 channel_text_prov = name_edit_1.text()
                 if channel_text_prov:
-                    try:
-                        playlists_list.takeItem(
-                            playlists_list.row(
-                                playlists_list.findItems(
-                                    playlists_data.oldName,
-                                    QtCore.Qt.MatchFlag.MatchExactly
-                                )[0]
-                            )
-                        )
-                        playlists_data.playlists_used.pop(playlists_data.oldName)
-                    except Exception:
-                        pass
-                    playlists_list.addItem(channel_text_prov)
+                    if playlists_data.oldName == "":
+                        playlists_list.addItem(channel_text_prov)
                     playlists_data.playlists_used[channel_text_prov] = {
                         "m3u": m3u_edit_1.text(),
                         "epg": epg_edit_1.text(),
