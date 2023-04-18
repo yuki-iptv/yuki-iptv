@@ -1,3 +1,3 @@
 [flake8]
-exclude = build,venv,.tox,.git,.pytest_cache,usr/lib/yuki-iptv/thirdparty/mpris_server,usr/lib/yuki-iptv/thirdparty/mpv.py,usr/lib/yuki-iptv/thirdparty/xtream.py
+exclude = build,venv,.tox,.git,.pytest_cache,usr/lib/yuki-iptv/thirdparty
 max_line_length = 120
