@@ -136,6 +136,10 @@ VERSION_CODENAME = 'Parallel World Paranoia'
 COPYRIGHT_YEAR = '2023'
 
 setproctitle.setproctitle("yuki-iptv")
+try:
+    setproctitle.setthreadtitle("yuki-iptv")
+except Exception:
+    pass
 
 # i18n start
 
