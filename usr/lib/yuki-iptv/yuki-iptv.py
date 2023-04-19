@@ -42,7 +42,7 @@ import hashlib
 import codecs
 import threading
 import traceback
-from multiprocessing import Process, Manager, active_children
+from multiprocessing import Manager, active_children, get_context
 from functools import partial
 import chardet
 import requests
@@ -56,7 +56,8 @@ except Exception:
     pass
 
 from yuki_iptv.qt import get_qt_library
-from yuki_iptv.epg import worker
+from yuki_iptv.epg import EPG_CACHE_VERSION, worker, is_program_actual, \
+    load_epg_cache
 from yuki_iptv.record import record, record_return, stop_record, \
     is_ffmpeg_recording, init_record
 from yuki_iptv.menubar import init_yuki_iptv_menubar, init_menubar_player, \
@@ -172,7 +173,6 @@ DOCK_WIDGET2_HEIGHT_LOW = DOCK_WIDGET2_HEIGHT_HIGH - (DOCK_WIDGET2_HEIGHT_OFFSET
 DOCK_WIDGET_WIDTH = int((WINDOW_SIZE[0] / 2) - 200)
 TVGUIDE_WIDTH = int((WINDOW_SIZE[0] / 5))
 BCOLOR = "#A2A3A3"
-EPG_CACHE_VERSION = 1
 
 UPDATE_BR_INTERVAL = 5
 
@@ -431,7 +431,6 @@ if __name__ == '__main__':
         def save_tvguide_sets_proc(tvguide_sets_arg):
             if tvguide_sets_arg:
                 if not settings["nocacheepg"]:
-                    logger.info("Writing EPG cache...")
                     file2 = open(str(Path(LOCAL_DIR, 'epg.cache')), 'wb')
                     file2.write(codecs.encode(bytes(json.dumps(
                         {
@@ -444,7 +443,6 @@ if __name__ == '__main__':
                         }
                     ), 'utf-8'), 'zlib'))
                     file2.close()
-                    logger.info("Writing EPG cache done")
 
         epg_thread_2 = None
 
@@ -469,13 +467,15 @@ if __name__ == '__main__':
                 start_epg_hdd_animation()
             except Exception:
                 pass
-            epg_thread_2 = Process(
+            logger.info("Writing EPG cache...")
+            epg_thread_2 = get_context("fork").Process(
                 name='[yuki-iptv] save_tvguide_sets_proc',
                 target=save_tvguide_sets_proc,
                 args=(tvguide_sets,)
             )
             epg_thread_2.start()
             epg_thread_2.join()
+            logger.info("Writing EPG cache done")
             try:
                 stop_epg_hdd_animation()
             except Exception:
@@ -487,19 +487,6 @@ if __name__ == '__main__':
                 for prog2 in sets1:
                     sets1[prog2] = [x12 for x12 in sets1[prog2] if time.time() + 172800 > x12['start'] and time.time() - get_catchup_days(True) < x12['stop']]  # noqa: E501
             return sets1
-
-        def is_program_actual(sets0, force=False):
-            global epg_ready
-            if not epg_ready and not force:
-                return True
-            found_prog = False
-            if sets0:
-                for prog1 in sets0:
-                    pr1 = sets0[prog1]
-                    for p in pr1:
-                        if time.time() > p['start'] and time.time() < p['stop']:
-                            found_prog = True
-            return found_prog
 
         first_boot = False
         epg_updating = False
@@ -534,45 +521,6 @@ if __name__ == '__main__':
             except Exception:
                 return False
 
-        def load_epg_cache(epg_dict, settings_m3u, settings_epg):
-            try:
-                file_epg1 = open(str(Path(LOCAL_DIR, 'epg.cache')), 'rb')
-                file1_json = json.loads(
-                    codecs.decode(codecs.decode(file_epg1.read(), 'zlib'), 'utf-8')
-                )
-                file_epg1.close()
-                epg_cache_version = -1
-                try:
-                    if 'cache_version' in file1_json:
-                        epg_cache_version = file1_json['cache_version']
-                except Exception:
-                    pass
-                if epg_cache_version != EPG_CACHE_VERSION:
-                    logger.info("Ignoring epg.cache, EPG cache version changed")
-                    os.remove(str(Path(LOCAL_DIR, 'epg.cache')))
-                    file1_json = {}
-                else:
-                    current_url = file1_json['current_url']
-                    system_timezone = file1_json['system_timezone']
-                    if current_url[0] == settings_m3u and \
-                       current_url[1] == settings_epg and \
-                       system_timezone == json.dumps(time.tzname):
-                        pass
-                    else:
-                        logger.info("Ignoring epg.cache, something changed")
-                        os.remove(str(Path(LOCAL_DIR, 'epg.cache')))
-                        file1_json = {}
-            except Exception:
-                file1_json = {}
-            if "tvguide_sets" in file1_json:
-                file1_json["programmes_1"] = {
-                    prog3.lower(): file1_json["tvguide_sets"][prog3] for prog3 in file1_json["tvguide_sets"]
-                }
-                file1_json["is_program_actual"] = is_program_actual(
-                    file1_json["tvguide_sets"], force=True
-                )
-            epg_dict['out'] = [file1_json]
-
         @idle_function
         def update_epg_func_static_enable(unused=None):
             global static_text, time_stop
@@ -594,9 +542,6 @@ if __name__ == '__main__':
         def update_epg_func():
             global settings, tvguide_sets, prog_ids, \
                 epg_icons, programmes, epg_ready
-            while not win.isVisible():
-                time.sleep(0.1)
-            time.sleep(1)
             if settings["nocacheepg"]:
                 logger.info("No cache EPG active, deleting old EPG cache file")
                 try:
@@ -614,9 +559,10 @@ if __name__ == '__main__':
                 manager_epg = Manager()
                 dict_epg = manager_epg.dict()
                 dict_epg['out'] = []
-                epg_process = Process(
+                epg_process = get_context("spawn").Process(
                     name='[yuki-iptv] load_epg_cache',
-                    target=load_epg_cache, args=(dict_epg, settings['m3u'], settings['epg'],)
+                    target=load_epg_cache,
+                    args=(dict_epg, settings['m3u'], settings['epg'], epg_ready,)
                 )
                 epg_process.start()
                 epg_process.join()
@@ -5091,7 +5037,7 @@ if __name__ == '__main__':
                         if channel_logos_process and channel_logos_process.is_alive():
                             # logger.debug("Old channel logos request found, stopping it")
                             channel_logos_process.kill()
-                        channel_logos_process = Process(
+                        channel_logos_process = get_context("fork").Process(
                             name='[yuki-iptv] channel_logos_worker',
                             target=channel_logos_worker,
                             args=(
@@ -7071,7 +7017,7 @@ if __name__ == '__main__':
                                         manager = Manager()
                                         return_dict = manager.dict()
                                         progress_dict = manager.dict()
-                                        p = Process(
+                                        p = get_context("spawn").Process(
                                             name='[yuki-iptv] worker',
                                             target=worker,
                                             args=(
@@ -7214,7 +7160,7 @@ if __name__ == '__main__':
                 if ic2 > 9.9:
                     ic2 = 0
                     if not epg_updating:
-                        if not is_program_actual(programmes):
+                        if not is_program_actual(programmes, epg_ready):
                             force_update_epg()
             except Exception:
                 pass
@@ -7238,7 +7184,7 @@ if __name__ == '__main__':
                             time_stop = time.time() + 3
                             values = return_dict.values()
                             programmes = {prog0.lower(): values[1][prog0] for prog0 in values[1]}
-                            if not is_program_actual(programmes):
+                            if not is_program_actual(programmes, epg_ready):
                                 raise Exception("Programme not actual")
                             prog_ids = return_dict[5]
                             epg_icons = return_dict[6]

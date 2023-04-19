@@ -23,15 +23,21 @@
 import os
 import gettext
 import logging
+import json
+import codecs
+import time
 import requests
 import io
 import zipfile
+from pathlib import Path
 from yuki_iptv.epg_xmltv import parse_as_xmltv
 from yuki_iptv.epg_zip import parse_epg_zip
 from yuki_iptv.epg_txt import parse_txt
 
 _ = gettext.gettext
 logger = logging.getLogger(__name__)
+
+EPG_CACHE_VERSION = 1
 
 
 def load_epg(epg_url, user_agent):
@@ -157,3 +163,58 @@ def worker(procnum, sys_settings, catchup_days1, return_dict1, progress_dict):
     return_dict1[5] = epg[4]
     return_dict1[6] = epg[5]
     progress_dict[0] = _('Updating TV guide...')
+
+
+def is_program_actual(sets0, epg_ready, force=False):
+    if not epg_ready and not force:
+        return True
+    found_prog = False
+    if sets0:
+        for prog1 in sets0:
+            pr1 = sets0[prog1]
+            for p in pr1:
+                if time.time() > p['start'] and time.time() < p['stop']:
+                    found_prog = True
+    return found_prog
+
+
+def load_epg_cache(epg_dict, settings_m3u, settings_epg, epg_ready):
+    LOCAL_DIR = str(Path(os.environ['HOME'], '.config', 'yuki-iptv'))
+
+    try:
+        file_epg1 = open(str(Path(LOCAL_DIR, 'epg.cache')), 'rb')
+        file1_json = json.loads(
+            codecs.decode(codecs.decode(file_epg1.read(), 'zlib'), 'utf-8')
+        )
+        file_epg1.close()
+        epg_cache_version = -1
+        try:
+            if 'cache_version' in file1_json:
+                epg_cache_version = file1_json['cache_version']
+        except Exception:
+            pass
+        if epg_cache_version != EPG_CACHE_VERSION:
+            logger.info("Ignoring epg.cache, EPG cache version changed")
+            os.remove(str(Path(LOCAL_DIR, 'epg.cache')))
+            file1_json = {}
+        else:
+            current_url = file1_json['current_url']
+            system_timezone = file1_json['system_timezone']
+            if current_url[0] == settings_m3u and \
+               current_url[1] == settings_epg and \
+               system_timezone == json.dumps(time.tzname):
+                pass
+            else:
+                logger.info("Ignoring epg.cache, something changed")
+                os.remove(str(Path(LOCAL_DIR, 'epg.cache')))
+                file1_json = {}
+    except Exception:
+        file1_json = {}
+    if "tvguide_sets" in file1_json:
+        file1_json["programmes_1"] = {
+            prog3.lower(): file1_json["tvguide_sets"][prog3] for prog3 in file1_json["tvguide_sets"]
+        }
+        file1_json["is_program_actual"] = is_program_actual(
+            file1_json["tvguide_sets"], epg_ready, force=True
+        )
+    epg_dict['out'] = [file1_json]
