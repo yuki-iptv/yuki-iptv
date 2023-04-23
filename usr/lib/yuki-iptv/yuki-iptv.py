@@ -4562,26 +4562,6 @@ if __name__ == '__main__':
         if not os.path.isdir(str(Path(LOCAL_DIR, 'logo_cache'))):
             os.mkdir(str(Path(LOCAL_DIR, 'logo_cache')))
 
-        class Pickable_QIcon(QtGui.QIcon):
-            def __reduce__(self):
-                return type(self), (), self.__getstate__()
-
-            def __getstate__(self):
-                ba = QtCore.QByteArray()
-                try:
-                    stream = QtCore.QDataStream(ba, QtCore.QIODevice.WriteOnly)
-                except Exception:
-                    stream = QtCore.QDataStream(ba, QtCore.QIODeviceBase.OpenModeFlag.WriteOnly)
-                stream << self
-                return ba
-
-            def __setstate__(self, ba):
-                try:
-                    stream = QtCore.QDataStream(ba, QtCore.QIODevice.ReadOnly)
-                except Exception:
-                    stream = QtCore.QDataStream(ba, QtCore.QIODeviceBase.OpenModeFlag.ReadOnly)
-                stream >> self
-
         def fetch_remote_channel_icon(chan_name, logo_url):
             icon_ret = None
             if not logo_url:
@@ -4665,7 +4645,7 @@ if __name__ == '__main__':
             else:
                 try:
                     if os.path.isfile(pixmap_filename):
-                        icon_pixmap = Pickable_QIcon(pixmap_filename)
+                        icon_pixmap = QtGui.QIcon(pixmap_filename)
                         logos_cache[pixmap_filename] = icon_pixmap
                         icon_pixmap = None
                         return logos_cache[pixmap_filename]
