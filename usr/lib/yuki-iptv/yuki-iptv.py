@@ -1229,34 +1229,22 @@ if __name__ == '__main__':
         ext_win.setWindowIcon(main_icon)
 
         epg_win = QtWidgets.QMainWindow()
-        epg_win.resize(400, 600)
+        epg_win.resize(600, 600)
         epg_win.setWindowTitle(_('TV guide'))
         epg_win.setWindowIcon(main_icon)
 
-        tvguide_lbl_2 = ScrollLabel()
-        epg_win_widget = QtWidgets.QWidget()
-        epg_win_layout = QtWidgets.QVBoxLayout()
-        epg_win_layout.addWidget(tvguide_lbl_2)
-        epg_win_widget.setLayout(epg_win_layout)
-        epg_win.setCentralWidget(epg_win_widget)
-
-        epg_win_2 = QtWidgets.QMainWindow()
-        epg_win_2.resize(600, 600)
-        epg_win_2.setWindowTitle(_('TV guide'))
-        epg_win_2.setWindowIcon(main_icon)
-
-        def epg_win_2_checkbox_changed():
-            tvguide_lbl_3.setText(_('No TV guide for channel'))
+        def epg_win_checkbox_changed():
+            tvguide_lbl_2.setText(_('No TV guide for channel'))
             try:
-                ch_3 = epg_win_2_checkbox.currentText()
+                ch_3 = epg_win_checkbox.currentText()
                 ch_3_guide = update_tvguide(ch_3, True).replace('!@#$%^^&*(', '\n')
                 ch_3_guide = ch_3_guide.replace('\n', '<br>').replace('<br>', '', 1)
                 ch_3_guide = ch_3_guide.replace(
                     '<span style="color: green;">', '<span style="color: red;">', 1
                 )
-                tvguide_lbl_3.setText(ch_3_guide)
+                tvguide_lbl_2.setText(ch_3_guide)
             except Exception:
-                logger.warning("Exception in epg_win_2_checkbox_changed")
+                logger.warning("Exception in epg_win_checkbox_changed")
 
         def showonlychplaylist_chk_clk():
             update_tvguide_2()
@@ -1266,13 +1254,13 @@ if __name__ == '__main__':
                 filter_txt3 = tvguidechannelfilter.text()
             except Exception:
                 filter_txt3 = ""
-            for item6 in range(epg_win_2_checkbox.count()):
+            for item6 in range(epg_win_checkbox.count()):
                 if unidecode(
                     filter_txt3
-                ).lower().strip() in unidecode(epg_win_2_checkbox.itemText(item6)).lower().strip():
-                    epg_win_2_checkbox.view().setRowHidden(item6, False)
+                ).lower().strip() in unidecode(epg_win_checkbox.itemText(item6)).lower().strip():
+                    epg_win_checkbox.view().setRowHidden(item6, False)
                 else:
-                    epg_win_2_checkbox.view().setRowHidden(item6, True)
+                    epg_win_checkbox.view().setRowHidden(item6, True)
 
         tvguidechannelfilter = QtWidgets.QLineEdit()
         tvguidechannelfilter.setPlaceholderText(_('Search channel'))
@@ -1291,29 +1279,29 @@ if __name__ == '__main__':
         showonlychplaylist_chk = QtWidgets.QCheckBox()
         showonlychplaylist_chk.setChecked(True)
         showonlychplaylist_chk.clicked.connect(showonlychplaylist_chk_clk)
-        epg_win_2_checkbox = QtWidgets.QComboBox()
-        epg_win_2_checkbox.currentIndexChanged.connect(epg_win_2_checkbox_changed)
+        epg_win_checkbox = QtWidgets.QComboBox()
+        epg_win_checkbox.currentIndexChanged.connect(epg_win_checkbox_changed)
 
-        epg_win_2_count = QtWidgets.QLabel()
-        epg_win_2_count.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        epg_win_count = QtWidgets.QLabel()
+        epg_win_count.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
-        epg_win_2_1_widget = QtWidgets.QWidget()
-        epg_win_2_1_layout = QtWidgets.QHBoxLayout()
-        epg_win_2_1_layout.addWidget(showonlychplaylist_lbl)
-        epg_win_2_1_layout.addWidget(showonlychplaylist_chk)
-        epg_win_2_1_widget.setLayout(epg_win_2_1_layout)
+        epg_win_1_widget = QtWidgets.QWidget()
+        epg_win_1_layout = QtWidgets.QHBoxLayout()
+        epg_win_1_layout.addWidget(showonlychplaylist_lbl)
+        epg_win_1_layout.addWidget(showonlychplaylist_chk)
+        epg_win_1_widget.setLayout(epg_win_1_layout)
 
-        tvguide_lbl_3 = ScrollLabel()
+        tvguide_lbl_2 = ScrollLabel()
 
-        epg_win_2_widget = QtWidgets.QWidget()
-        epg_win_2_layout = QtWidgets.QVBoxLayout()
-        epg_win_2_layout.addWidget(epg_win_2_1_widget)
-        epg_win_2_layout.addWidget(tvguidechannelwidget)
-        epg_win_2_layout.addWidget(epg_win_2_checkbox)
-        epg_win_2_layout.addWidget(epg_win_2_count)
-        epg_win_2_layout.addWidget(tvguide_lbl_3)
-        epg_win_2_widget.setLayout(epg_win_2_layout)
-        epg_win_2.setCentralWidget(epg_win_2_widget)
+        epg_win_widget = QtWidgets.QWidget()
+        epg_win_layout = QtWidgets.QVBoxLayout()
+        epg_win_layout.addWidget(epg_win_1_widget)
+        epg_win_layout.addWidget(tvguidechannelwidget)
+        epg_win_layout.addWidget(epg_win_checkbox)
+        epg_win_layout.addWidget(epg_win_count)
+        epg_win_layout.addWidget(tvguide_lbl_2)
+        epg_win_widget.setLayout(epg_win_layout)
+        epg_win.setCentralWidget(epg_win_widget)
 
         xtream_win = QtWidgets.QMainWindow()
         xtream_win.resize(400, 140)
@@ -5296,7 +5284,6 @@ if __name__ == '__main__':
 
         def tvguide_hide():
             tvguide_lbl.setText('')
-            tvguide_lbl_2.setText('')
             tvguide_lbl.hide()
             tvguide_close_lbl.hide()
 
@@ -5892,13 +5879,11 @@ if __name__ == '__main__':
                 txt = txt.replace('\n', '<br>').replace('<br>', '', 1)
                 txt = txt.replace('<span style="color: green;">', '<span style="color: red;">', 1)
                 tvguide_lbl.setText(txt)
-                tvguide_lbl_2.setText(txt)
             return ''
 
         def show_tvguide():
             if tvguide_lbl.isVisible():
                 tvguide_lbl.setText('')
-                tvguide_lbl_2.setText('')
                 tvguide_lbl.hide()
                 tvguide_close_lbl.hide()
             else:
@@ -5909,27 +5894,26 @@ if __name__ == '__main__':
         def hide_tvguide():
             if tvguide_lbl.isVisible():
                 tvguide_lbl.setText('')
-                tvguide_lbl_2.setText('')
                 tvguide_lbl.hide()
                 tvguide_close_lbl.hide()
 
         def update_tvguide_2():
-            epg_win_2_checkbox.clear()
+            epg_win_checkbox.clear()
             if showonlychplaylist_chk.isChecked():
                 for chan_0 in array:
-                    epg_win_2_count.setText('({}: {})'.format(_('channels'), len(array)))
-                    epg_win_2_checkbox.addItem(chan_0)
+                    epg_win_count.setText('({}: {})'.format(_('channels'), len(array)))
+                    epg_win_checkbox.addItem(chan_0)
             else:
                 for chan_0 in programmes:
-                    epg_win_2_count.setText('({}: {})'.format(_('channels'), len(programmes)))
-                    epg_win_2_checkbox.addItem(chan_0)
+                    epg_win_count.setText('({}: {})'.format(_('channels'), len(programmes)))
+                    epg_win_checkbox.addItem(chan_0)
 
         def show_tvguide_2():
-            if epg_win_2.isVisible():
-                epg_win_2.hide()
+            if epg_win.isVisible():
+                epg_win.hide()
             else:
                 update_tvguide_2()
-                epg_win_2.show()
+                epg_win.show()
 
         is_recording = False
         recording_time = 0
