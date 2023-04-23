@@ -32,10 +32,13 @@ class Server:
     self._publication_token = None
 
   def __del__(self):
-    self.unpublish()
+    try:
+        self.unpublish()
 
-    if self._loop:
-      self._loop.quit()
+        if self._loop:
+          self._loop.quit()
+    except Exception:
+        pass
 
   def publish(self):
     bus_type = BUS_TYPE

@@ -326,6 +326,9 @@ if __name__ == '__main__':
 
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+        multiprocessing_manager = Manager()
+        multiprocessing_manager_dict = multiprocessing_manager.dict()
+
         m3u = ""
 
         from thirdparty import mpv
@@ -562,17 +565,18 @@ if __name__ == '__main__':
                 update_epg_func_static_enable()
 
                 # Disregard existed epg.cache if EPG url changes
-                manager_epg = Manager()
-                dict_epg = manager_epg.dict()
-                dict_epg['out'] = []
+                multiprocessing_manager_dict['load_epg_cache'] = []
                 epg_process = get_context("spawn").Process(
                     name='[yuki-iptv] load_epg_cache',
                     target=load_epg_cache,
-                    args=(dict_epg, settings['m3u'], settings['epg'], epg_ready,)
+                    args=(
+                        multiprocessing_manager_dict, settings['m3u'],
+                        settings['epg'], epg_ready,
+                    )
                 )
                 epg_process.start()
                 epg_process.join()
-                tvguide_json = dict_epg['out']
+                tvguide_json = multiprocessing_manager_dict['load_epg_cache']
                 # Loading epg.cache
                 is_program_actual1 = False
                 if tvguide_json:
@@ -2631,7 +2635,7 @@ if __name__ == '__main__':
 
         # Settings window
         def save_settings():
-            global epg_thread, epg_thread_2, manager
+            global epg_thread, epg_thread_2
             settings_old = settings.copy()
             udp_proxy_text = sudp.text()
             udp_proxy_starts = udp_proxy_text.startswith('http://') or \
@@ -2710,36 +2714,8 @@ if __name__ == '__main__':
             settings_file1.write(json.dumps(settings_arr))
             settings_file1.close()
             settings_win.hide()
-            if epg_thread:
-                try:
-                    epg_thread.kill()
-                except Exception:
-                    epg_thread.terminate()
-            if epg_thread_2:
-                try:
-                    epg_thread_2.kill()
-                except Exception:
-                    epg_thread_2.terminate()
-            for process_3 in active_children():
-                try:
-                    process_3.kill()
-                except Exception:
-                    process_3.terminate()
-            if manager:
-                manager.shutdown()
-            win.close()
-            settings_win.close()
-            shortcuts_win.close()
-            shortcuts_win_2.close()
-            help_win.close()
-            streaminfo_win.close()
-            license_win.close()
-            time.sleep(0.1)
-            stop_record()
-            os.execv(
-                shutil.which('python3'),
-                ['./yuki-iptv.py'] + sys.argv
-            )
+            myExitHandler_before()
+            subprocess.Popen([shutil.which('python3'), './yuki-iptv.py'] + sys.argv[1:])
             sys.exit(0)
 
         wid2 = QtWidgets.QWidget()
@@ -2811,6 +2787,7 @@ if __name__ == '__main__':
             settings_win.hide()
             if not win.isVisible():
                 if not playlists_win.isVisible():
+                    myExitHandler_before()
                     os.killpg(0, signal.SIGKILL)
                     sys.exit(0)
 
@@ -4607,17 +4584,13 @@ if __name__ == '__main__':
 
         channel_logos_request_old = {}
         channel_logos_process = None
-        logos_manager = Manager()
-        logos_fnames_cache = logos_manager.dict()
-        logos_update_manager = Manager()
-        logos_update_manager_dict = logos_update_manager.dict()
-        logos_update_manager_dict['inprogress'] = False
-        logos_update_manager_dict['completed'] = False
+        multiprocessing_manager_dict['logos_inprogress'] = False
+        multiprocessing_manager_dict['logos_completed'] = False
         logos_cache = {}
 
-        def channel_logos_worker(procnum1, requested_logos, logos_cache1, update_dict):
+        def channel_logos_worker(procnum1, requested_logos, update_dict):
             # logger.debug("channel_logos_worker started")
-            update_dict['inprogress'] = True
+            update_dict['logos_inprogress'] = True
             for logo_channel in requested_logos:
                 # logger.debug(f"Downloading logo for channel '{logo_channel}'...")
                 logo_m3u = fetch_remote_channel_icon(
@@ -4628,10 +4601,10 @@ if __name__ == '__main__':
                     logo_channel,
                     requested_logos[logo_channel][1]
                 )
-                logos_cache1[logo_channel] = [logo_m3u, logo_epg]
+                update_dict[f"LOGO:::{logo_channel}"] = [logo_m3u, logo_epg]
             # logger.debug("channel_logos_worker ended")
-            update_dict['inprogress'] = False
-            update_dict['completed'] = True
+            update_dict['logos_inprogress'] = False
+            update_dict['logos_completed'] = True
 
         def get_pixmap_from_filename(pixmap_filename):
             if pixmap_filename in logos_cache:
@@ -4651,12 +4624,12 @@ if __name__ == '__main__':
         thread_logos_update_lock = False
 
         def thread_logos_update():
-            global thread_logos_update_lock, logos_update_manager_dict
+            global thread_logos_update_lock, multiprocessing_manager_dict
             try:
                 if not thread_logos_update_lock:
                     thread_logos_update_lock = True
-                    if logos_update_manager_dict['completed']:
-                        logos_update_manager_dict['completed'] = False
+                    if multiprocessing_manager_dict['logos_completed']:
+                        multiprocessing_manager_dict['logos_completed'] = False
                         btn_update.click()
                     thread_logos_update_lock = False
             except Exception:
@@ -4753,7 +4726,7 @@ if __name__ == '__main__':
             global playing_chan, current_group, \
                 array, page_box, channelfilter, prog_match_arr, \
                 channel_logos_request_old, channel_logos_process, \
-                logos_fnames_cache, logos_update_manager_dict
+                multiprocessing_manager_dict
 
             channel_logos_request = {}
 
@@ -4947,32 +4920,42 @@ if __name__ == '__main__':
 
                 if settings['channellogos'] != 3:  # Do not load any logos
                     try:
-                        if orig_chan_name in logos_fnames_cache:
+                        if f"LOGO:::{orig_chan_name}" in multiprocessing_manager_dict:
                             if settings['channellogos'] == 0:  # Prefer M3U
                                 first_loaded = False
-                                if logos_fnames_cache[orig_chan_name][0]:
-                                    chan_logo = get_pixmap_from_filename(logos_fnames_cache[orig_chan_name][0])
+                                if multiprocessing_manager_dict[f"LOGO:::{orig_chan_name}"][0]:
+                                    chan_logo = get_pixmap_from_filename(
+                                        multiprocessing_manager_dict[f"LOGO:::{orig_chan_name}"][0]
+                                    )
                                     if chan_logo:
                                         first_loaded = True
                                         MyPlaylistWidget.setIcon(chan_logo)
                                 if not first_loaded:
-                                    chan_logo = get_pixmap_from_filename(logos_fnames_cache[orig_chan_name][1])
+                                    chan_logo = get_pixmap_from_filename(
+                                        multiprocessing_manager_dict[f"LOGO:::{orig_chan_name}"][1]
+                                    )
                                     if chan_logo:
                                         MyPlaylistWidget.setIcon(chan_logo)
                             elif settings['channellogos'] == 1:  # Prefer EPG
                                 first_loaded = False
-                                if logos_fnames_cache[orig_chan_name][1]:
-                                    chan_logo = get_pixmap_from_filename(logos_fnames_cache[orig_chan_name][1])
+                                if multiprocessing_manager_dict[f"LOGO:::{orig_chan_name}"][1]:
+                                    chan_logo = get_pixmap_from_filename(
+                                        multiprocessing_manager_dict[f"LOGO:::{orig_chan_name}"][1]
+                                    )
                                     if chan_logo:
                                         first_loaded = True
                                         MyPlaylistWidget.setIcon(chan_logo)
                                 if not first_loaded:
-                                    chan_logo = get_pixmap_from_filename(logos_fnames_cache[orig_chan_name][0])
+                                    chan_logo = get_pixmap_from_filename(
+                                        multiprocessing_manager_dict[f"LOGO:::{orig_chan_name}"][0]
+                                    )
                                     if chan_logo:
                                         MyPlaylistWidget.setIcon(chan_logo)
                             elif settings['channellogos'] == 2:  # Do not load from EPG (only M3U)
-                                if logos_fnames_cache[orig_chan_name][0]:
-                                    chan_logo = get_pixmap_from_filename(logos_fnames_cache[orig_chan_name][0])
+                                if multiprocessing_manager_dict[f"LOGO:::{orig_chan_name}"][0]:
+                                    chan_logo = get_pixmap_from_filename(
+                                        multiprocessing_manager_dict[f"LOGO:::{orig_chan_name}"][0]
+                                    )
                                     if chan_logo:
                                         MyPlaylistWidget.setIcon(chan_logo)
                     except Exception:
@@ -5016,7 +4999,7 @@ if __name__ == '__main__':
                             target=channel_logos_worker,
                             args=(
                                 0, channel_logos_request,
-                                logos_fnames_cache, logos_update_manager_dict,
+                                multiprocessing_manager_dict,
                             )
                         )
                         channel_logos_process.start()
@@ -6870,7 +6853,7 @@ if __name__ == '__main__':
                 w1_height += app_scr.size().height()
             return w1_height
 
-        def myExitHandler():
+        def myExitHandler_before():
             global stopped, epg_thread, epg_thread_2, mpris_loop
             if comm_instance.comboboxIndex != -1:
                 write_option('comboboxindex', {
@@ -6925,13 +6908,16 @@ if __name__ == '__main__':
                     epg_thread_2.kill()
                 except Exception:
                     epg_thread_2.terminate()
+            if multiprocessing_manager:
+                multiprocessing_manager.shutdown()
             for process_3 in active_children():
                 try:
                     process_3.kill()
                 except Exception:
                     process_3.terminate()
-            if manager:
-                manager.shutdown()
+
+        def myExitHandler():
+            myExitHandler_before()
             logger.info("Stopped")
             # Stopping all childs
             os.killpg(0, signal.SIGKILL)
@@ -6939,9 +6925,6 @@ if __name__ == '__main__':
         first_boot_1 = True
 
         epg_thread = None
-        manager = None
-        return_dict = None
-        progress_dict = None
         waiting_for_epg = False
         epg_failed = False
 
@@ -6965,12 +6948,12 @@ if __name__ == '__main__':
         def thread_tvguide():
             try:
                 global stopped, time_stop, first_boot, programmes, btn_update, \
-                    epg_thread, static_text, manager, tvguide_sets, epg_updating, ic, \
-                    return_dict, waiting_for_epg, epg_failed, first_boot_1, progress_dict, \
+                    epg_thread, static_text, tvguide_sets, epg_updating, ic, \
+                    waiting_for_epg, epg_failed, first_boot_1, multiprocessing_manager_dict, \
                     epg_update_allowed
                 if not first_boot:
                     first_boot = True
-                    if settings['epg'] and settings['epg'] != 'http://' and not epg_failed:
+                    if settings['epg'] and not epg_failed:
                         if not use_local_tvguide:
                             update_epg = not settings['donotupdateepg']
                             if not first_boot_1:
@@ -6984,15 +6967,13 @@ if __name__ == '__main__':
                                     l1.setText2("")
                                     time_stop = time.time() + 3
                                     try:
-                                        manager = Manager()
-                                        return_dict = manager.dict()
-                                        progress_dict = manager.dict()
+                                        multiprocessing_manager_dict['epg'] = None
                                         p = get_context("spawn").Process(
                                             name='[yuki-iptv] worker',
                                             target=worker,
                                             args=(
                                                 0, settings, get_catchup_days(),
-                                                return_dict, progress_dict,
+                                                multiprocessing_manager_dict,
                                             )
                                         )
                                         epg_thread = p
@@ -7022,7 +7003,7 @@ if __name__ == '__main__':
 
             ic += 0.1
             # redraw every 15 seconds
-            if ic > (14.9 if not logos_update_manager_dict['inprogress'] else 2.9):
+            if ic > (14.9 if not multiprocessing_manager_dict['logos_inprogress'] else 2.9):
                 ic = 0
                 btn_update.click()
 
@@ -7140,24 +7121,28 @@ if __name__ == '__main__':
         def thread_tvguide_2():
             try:
                 global stopped, time_stop, first_boot, programmes, btn_update, \
-                    epg_thread, static_text, manager, tvguide_sets, epg_updating, ic, \
-                    return_dict, waiting_for_epg, thread_4_lock, epg_failed, prog_ids, epg_icons
+                    epg_thread, static_text, tvguide_sets, epg_updating, ic, \
+                    multiprocessing_manager_dict, waiting_for_epg, \
+                    thread_4_lock, epg_failed, prog_ids, epg_icons
                 if not thread_4_lock:
                     thread_4_lock = True
-                    if waiting_for_epg and return_dict and len(return_dict) == 7:
+                    if waiting_for_epg and 'epg' in multiprocessing_manager_dict \
+                       and multiprocessing_manager_dict['epg'] \
+                       and len(multiprocessing_manager_dict['epg']) == 7:
                         try:
-                            if not return_dict[3]:
-                                raise return_dict[4]
+                            if not multiprocessing_manager_dict['epg'][3]:
+                                raise multiprocessing_manager_dict['epg'][4]
                             l1.setStatic2(False)
                             l1.show()
                             l1.setText2(_('TV guide update done!'))
                             time_stop = time.time() + 3
-                            values = return_dict.values()
+                            values = multiprocessing_manager_dict['epg']
                             programmes = {prog0.lower(): values[1][prog0] for prog0 in values[1]}
+                            values = None
                             if not is_program_actual(programmes, epg_ready):
                                 raise Exception("Programme not actual")
-                            prog_ids = return_dict[5]
-                            epg_icons = return_dict[6]
+                            prog_ids = multiprocessing_manager_dict['epg'][5]
+                            epg_icons = multiprocessing_manager_dict['epg'][6]
                             tvguide_sets = programmes
                             save_tvguide_sets()
                             btn_update.click()  # start update in main thread
@@ -7182,13 +7167,14 @@ if __name__ == '__main__':
 
         def thread_tvguide_3():
             try:
-                global thread_5_lock, waiting_for_epg, progress_dict, static_text
+                global thread_5_lock, waiting_for_epg, multiprocessing_manager_dict, static_text
                 if not thread_5_lock:
                     thread_5_lock = True
                     try:
-                        if waiting_for_epg and progress_dict:
-                            if progress_dict[0]:
-                                static_text = progress_dict[0]
+                        if waiting_for_epg:
+                            if 'epg_progress' in multiprocessing_manager_dict and \
+                              multiprocessing_manager_dict['epg_progress']:
+                                static_text = multiprocessing_manager_dict['epg_progress']
                                 l1.setText2(is_previous=True)
                     except Exception:
                         pass
@@ -7798,5 +7784,9 @@ if __name__ == '__main__':
         e3_traceback = traceback.format_exc()
         logger.warning(e3_traceback)
         show_exception(e3, e3_traceback)
+        try:
+            myExitHandler_before()
+        except Exception:
+            pass
         os.killpg(0, signal.SIGKILL)
         sys.exit(1)

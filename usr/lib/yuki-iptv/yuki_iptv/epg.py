@@ -68,7 +68,7 @@ def merge_two_dicts(dict1, dict2):
     return dict_new
 
 
-def fetch_epg(settings, catchup_days1, progress_dict):
+def fetch_epg(settings, catchup_days1, return_dict1):
     '''Parsing EPG'''
     programmes_epg = {}
     prog_ids = {}
@@ -87,14 +87,14 @@ def fetch_epg(settings, catchup_days1, progress_dict):
         epg_i += 1
         try:
 
-            progress_dict[0] = _('Updating TV guide... (loading {}/{})').format(
+            return_dict1['epg_progress'] = _('Updating TV guide... (loading {}/{})').format(
                 epg_i,
                 len(epg_settings_url)
             )
 
             epg = load_epg(epg_url_1, settings["ua"])
 
-            progress_dict[0] = _('Updating TV guide... (parsing {}/{})').format(
+            return_dict1['epg_progress'] = _('Updating TV guide... (parsing {}/{})').format(
                 epg_i,
                 len(epg_settings_url)
             )
@@ -103,7 +103,7 @@ def fetch_epg(settings, catchup_days1, progress_dict):
                 # XMLTV
                 pr_xmltv = parse_as_xmltv(
                     epg, settings, catchup_days1,
-                    progress_dict, epg_i, epg_settings_url
+                    return_dict1, epg_i, epg_settings_url
                 )
                 programmes_epg = merge_two_dicts(programmes_epg, pr_xmltv[0])
                 prog_ids = merge_two_dicts(prog_ids, pr_xmltv[1])
@@ -121,7 +121,7 @@ def fetch_epg(settings, catchup_days1, progress_dict):
                         # XMLTV
                         pr_xmltv = parse_as_xmltv(
                             pr_zip[1], settings, catchup_days1,
-                            progress_dict, epg_i, epg_settings_url
+                            return_dict1, epg_i, epg_settings_url
                         )
                         programmes_epg = merge_two_dicts(programmes_epg, pr_xmltv[0])
                         prog_ids = merge_two_dicts(prog_ids, pr_xmltv[1])
@@ -147,22 +147,16 @@ def fetch_epg(settings, catchup_days1, progress_dict):
     if False not in epg_failures:
         epg_ok = False
         exc = epg_exceptions[0]
-    progress_dict[0] = ''
+    return_dict1['epg_progress'] = ''
     logger.info("Parsing EPG done!")
     return [{}, programmes_epg, epg_ok, exc, prog_ids, epg_icons]
 
 
-def worker(procnum, sys_settings, catchup_days1, return_dict1, progress_dict):
+def worker(procnum, sys_settings, catchup_days1, return_dict1):
     '''Worker running from multiprocess'''
-    epg = fetch_epg(sys_settings, catchup_days1, progress_dict)
-    return_dict1[0] = epg[0]
-    return_dict1[1] = epg[1]
-    return_dict1[2] = True
-    return_dict1[3] = epg[2]
-    return_dict1[4] = epg[3]
-    return_dict1[5] = epg[4]
-    return_dict1[6] = epg[5]
-    progress_dict[0] = _('Updating TV guide...')
+    epg = fetch_epg(sys_settings, catchup_days1, return_dict1)
+    return_dict1['epg'] = [epg[0], epg[1], True, epg[2], epg[3], epg[4], epg[5]]
+    return_dict1['epg_progress'] = _('Updating TV guide...')
 
 
 def is_program_actual(sets0, epg_ready, force=False):
@@ -217,4 +211,4 @@ def load_epg_cache(epg_dict, settings_m3u, settings_epg, epg_ready):
         file1_json["is_program_actual"] = is_program_actual(
             file1_json["tvguide_sets"], epg_ready, force=True
         )
-    epg_dict['out'] = [file1_json]
+    epg_dict['load_epg_cache'] = [file1_json]
