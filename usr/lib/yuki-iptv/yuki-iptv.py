@@ -34,7 +34,6 @@ import logging
 import signal
 import base64
 import argparse
-import shutil
 import io
 import subprocess
 import re
@@ -272,7 +271,6 @@ def async_gui_blocking_function(func):
 
 
 if __name__ == '__main__':
-    os.setpgrp()
     logger.info("Qt init...")
     app = QtWidgets.QApplication(sys.argv)
     logger.info("Qt init successful")
@@ -2715,7 +2713,7 @@ if __name__ == '__main__':
             settings_file1.close()
             settings_win.hide()
             myExitHandler_before()
-            subprocess.Popen([shutil.which('python3'), './yuki-iptv.py'] + sys.argv[1:])
+            subprocess.Popen([sys.executable] + sys.argv)
             sys.exit(0)
 
         wid2 = QtWidgets.QWidget()
@@ -2788,7 +2786,6 @@ if __name__ == '__main__':
             if not win.isVisible():
                 if not playlists_win.isVisible():
                     myExitHandler_before()
-                    os.killpg(0, signal.SIGKILL)
                     sys.exit(0)
 
         sclose = QtWidgets.QPushButton(_('Close'))
@@ -6919,8 +6916,7 @@ if __name__ == '__main__':
         def myExitHandler():
             myExitHandler_before()
             logger.info("Stopped")
-            # Stopping all childs
-            os.killpg(0, signal.SIGKILL)
+            sys.exit(0)
 
         first_boot_1 = True
 
@@ -7788,5 +7784,4 @@ if __name__ == '__main__':
             myExitHandler_before()
         except Exception:
             pass
-        os.killpg(0, signal.SIGKILL)
         sys.exit(1)
