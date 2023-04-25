@@ -10,19 +10,22 @@ The channels and pictures in the screenshots are for demonstration purposes only
 
 [.deb packages](https://github.com/yuki-iptv/yuki-iptv/releases)  
 
-[Ubuntu Launchpad PPA (stable)](https://launchpad.net/~yuki-iptv/+archive/ubuntu/yuki-iptv-stable):  
+[Ubuntu Launchpad PPA (stable version)](https://launchpad.net/~yuki-iptv/+archive/ubuntu/yuki-iptv-stable):  
 ```
 sudo add-apt-repository ppa:yuki-iptv/yuki-iptv-stable
 sudo apt update
 sudo apt install yuki-iptv
 ```
 
-[Ubuntu Launchpad PPA (develop)](https://launchpad.net/~yuki-iptv/+archive/ubuntu/yuki-iptv-develop):  
+[Ubuntu Launchpad PPA (development version)](https://launchpad.net/~yuki-iptv/+archive/ubuntu/yuki-iptv-develop):  
 ```
 sudo add-apt-repository ppa:yuki-iptv/yuki-iptv-develop
 sudo apt update
 sudo apt install yuki-iptv
 ```
+
+[Arch Linux AUR (stable version)](https://aur.archlinux.org/packages/yuki-iptv)  
+[Arch Linux AUR (development version)](https://aur.archlinux.org/packages/yuki-iptv-git)  
 
 ## License
 
@@ -51,6 +54,7 @@ Icons: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 - TV archive / catchup  
 - Internalization  
 - MPRIS support  
+- and many more...  
 
 ## HowTo make playlists for movies/series
   
