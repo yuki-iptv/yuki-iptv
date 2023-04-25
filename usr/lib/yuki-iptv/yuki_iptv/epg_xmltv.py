@@ -66,7 +66,7 @@ def parse_as_xmltv(epg, settings, catchup_days1, progress_dict, epg_i, epg_setti
     try:
         tree = ET.ElementTree(ET.fromstring(epg))
     except ET.ParseError:
-        progress_dict[0] = _('Updating TV guide... (unpacking {}/{})').format(
+        progress_dict['epg_progress'] = _('Updating TV guide... (unpacking {}/{})').format(
             epg_i,
             len(epg_settings_url)
         )
@@ -78,7 +78,7 @@ def parse_as_xmltv(epg, settings, catchup_days1, progress_dict, epg_i, epg_setti
             tree = ET.ElementTree(ET.fromstring(
                 lzma.LZMADecompressor().decompress(epg)
             ))
-    progress_dict[0] = _('Updating TV guide... (parsing {}/{})').format(
+    progress_dict['epg_progress'] = _('Updating TV guide... (parsing {}/{})').format(
         epg_i,
         len(epg_settings_url)
     )
