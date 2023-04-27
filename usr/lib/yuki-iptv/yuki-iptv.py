@@ -27,7 +27,6 @@ import os.path
 import time
 import datetime
 import json
-import glob
 import locale
 import gettext
 import logging
@@ -164,11 +163,6 @@ class YukiLang:
 
 APP = "yuki-iptv"
 LOCALE_DIR = str(Path(os.getcwd(), "..", "..", "share", "locale"))
-
-if not glob.glob(str(Path(LOCALE_DIR, "*", "*", "yuki-iptv.mo"))):
-    logger.error("No locales found! Run 'make' to generate locales.")
-    sys.exit(1)
-
 locale.bindtextdomain(APP, LOCALE_DIR)
 gettext.bindtextdomain(APP, LOCALE_DIR)
 gettext.textdomain(APP)
