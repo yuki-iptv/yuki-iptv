@@ -38,10 +38,13 @@ months = [
     "сентября",
     "октября",
     "ноября",
-    "декабря"
+    "декабря",
 ]
-months_regex = re.compile(r'^(.*)\. (([0-9][0-9]) (января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря))\. (.*)')  # noqa: E501
-date_regex = re.compile(r'^([0-9][0-9]:[0-9][0-9]) (.*)')
+months_regex = re.compile(
+    "^(.*)\\. (([0-9][0-9]) (января|февраля|марта|апреля|мая|июня|июля|августа"
+    "|сентября|октября|ноября|декабря))\\. (.*)"
+)
+date_regex = re.compile(r"^([0-9][0-9]:[0-9][0-9]) (.*)")
 
 
 def parse_programmes(programmes_chan, channel, array_out, settings):
@@ -53,11 +56,11 @@ def parse_programmes(programmes_chan, channel, array_out, settings):
         if re2 and len(re2[0]) == 2:
             timestamp = channel[0]
 
-            hour = int(re2[0][0].split(':')[0])
-            minute = int(re2[0][0].split(':')[1])
-            start_time = timestamp.replace(
-                hour=hour, minute=minute
-            ).timestamp() + (3600 * settings["epgoffset"])
+            hour = int(re2[0][0].split(":")[0])
+            minute = int(re2[0][0].split(":")[1])
+            start_time = timestamp.replace(hour=hour, minute=minute).timestamp() + (
+                3600 * settings["epgoffset"]
+            )
 
             if hour > 6:
                 morning_passed = True
@@ -66,7 +69,7 @@ def parse_programmes(programmes_chan, channel, array_out, settings):
                 start_time += 60 * 60 * 24  # 1 day
 
             title = re2[0][1]
-            description = ''
+            description = ""
 
             k = 0
             m = i
@@ -81,16 +84,13 @@ def parse_programmes(programmes_chan, channel, array_out, settings):
                     break
                 else:
                     # Description
-                    description += f'{programmes_chan[m]}\n'
+                    description += f"{programmes_chan[m]}\n"
 
             if channel[1] not in array_out:
                 array_out[channel[1]] = []
-            array_out[channel[1]].append({
-                'start': start_time,
-                'stop': 0,
-                'title': title,
-                'desc': description
-            })
+            array_out[channel[1]].append(
+                {"start": start_time, "stop": 0, "title": title, "desc": description}
+            )
     return array_out
 
 
@@ -98,15 +98,15 @@ def parse_txt(txt):
     array_out = {}
     settings, settings_loaded = parse_settings()
     try:
-        txt = txt.decode('windows-1251')
+        txt = txt.decode("windows-1251")
     except UnicodeDecodeError:
         try:
-            txt = txt.decode('utf-8')
+            txt = txt.decode("utf-8")
         except Exception:
             pass
-    if txt[0:6] == 'tv.all':
+    if txt[0:6] == "tv.all":
         logger.info("TV.ALL format detected, trying to parse...")
-        txt = [str1.strip() for str1 in txt.split('\n')[2:] if str1.strip()] + ['\n']
+        txt = [str1.strip() for str1 in txt.split("\n")[2:] if str1.strip()] + ["\n"]
         # day and channel name
         current_channel = None
         programmes_chan = []
@@ -116,10 +116,11 @@ def parse_txt(txt):
             re1 = months_regex.findall(text)
             if re1 and len(re1[0]) == 5:
                 if programmes_chan:
-                    array_out = parse_programmes(programmes_chan, current_channel, array_out, settings)
+                    array_out = parse_programmes(
+                        programmes_chan, current_channel, array_out, settings
+                    )
                 re_time = datetime.datetime.strptime(
-                    f"{re1[0][2]}.{months.index(re1[0][3]) + 1}",
-                    '%d.%m'
+                    f"{re1[0][2]}.{months.index(re1[0][3]) + 1}", "%d.%m"
                 ).replace(year=datetime.datetime.now().year)
 
                 if re_time < datetime.datetime.now():
@@ -127,8 +128,7 @@ def parse_txt(txt):
                         datetime.datetime.now().timestamp() - re_time.timestamp()
                     ) > 30 * 60 * 60 * 24:  # 30 days
                         re_time = datetime.datetime.strptime(
-                            f"{re1[0][2]}.{months.index(re1[0][3]) + 1}",
-                            '%d.%m'
+                            f"{re1[0][2]}.{months.index(re1[0][3]) + 1}", "%d.%m"
                         ).replace(year=datetime.datetime.now().year + 1)
 
                 current_channel = [re_time, re1[0][4]]
@@ -137,7 +137,9 @@ def parse_txt(txt):
                 programmes_chan.append(text)
                 if (i + 1) == len(txt):
                     # EOF
-                    array_out = parse_programmes(programmes_chan, current_channel, array_out, settings)
+                    array_out = parse_programmes(
+                        programmes_chan, current_channel, array_out, settings
+                    )
 
         # Set stop time
         for channel in array_out:
@@ -147,7 +149,7 @@ def parse_txt(txt):
                 if i == len(array_out[channel]):
                     array_out[channel].pop(i - 1)
                 else:
-                    programme['stop'] = array_out[channel][i]['start']
+                    programme["stop"] = array_out[channel][i]["start"]
     else:
         logger.warning("Invalid TXT format")
         raise Exception("Invalid TXT format")

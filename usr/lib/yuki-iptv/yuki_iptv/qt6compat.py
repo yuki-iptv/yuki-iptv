@@ -21,11 +21,12 @@
 # https://creativecommons.org/licenses/by/4.0/
 #
 from yuki_iptv.qt import get_qt_library
+
 qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
 
 
 def _exec(obj, arg=None):
-    if hasattr(obj, 'exec'):
+    if hasattr(obj, "exec"):
         if arg:
             return obj.exec(arg)
         else:
@@ -38,7 +39,7 @@ def _exec(obj, arg=None):
 
 
 def qaction(arg1, arg2):
-    if qt_library == 'PyQt6':
+    if qt_library == "PyQt6":
         func = QtGui.QAction
     else:
         func = QtWidgets.QAction

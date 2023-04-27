@@ -56,18 +56,33 @@ except Exception:
     pass
 
 from yuki_iptv.qt import get_qt_library
-from yuki_iptv.epg import EPG_CACHE_VERSION, worker, is_program_actual, \
-    load_epg_cache
-from yuki_iptv.record import record, record_return, stop_record, \
-    is_ffmpeg_recording, init_record
-from yuki_iptv.menubar import init_yuki_iptv_menubar, init_menubar_player, \
-    populate_menubar, update_menubar, get_active_vf_filters, get_first_run, get_seq, \
-    reload_menubar_shortcuts
+from yuki_iptv.epg import EPG_CACHE_VERSION, worker, is_program_actual, load_epg_cache
+from yuki_iptv.record import (
+    record,
+    record_return,
+    stop_record,
+    is_ffmpeg_recording,
+    init_record,
+)
+from yuki_iptv.menubar import (
+    init_yuki_iptv_menubar,
+    init_menubar_player,
+    populate_menubar,
+    update_menubar,
+    get_active_vf_filters,
+    get_first_run,
+    get_seq,
+    reload_menubar_shortcuts,
+)
 from yuki_iptv.xtreamtom3u import convert_xtream_to_m3u
 from yuki_iptv.m3u import M3UParser
 from yuki_iptv.xspf import parse_xspf
-from yuki_iptv.catchup import get_catchup_url, parse_specifiers_now_url, format_url_clean, \
-    format_catchup_array
+from yuki_iptv.catchup import (
+    get_catchup_url,
+    parse_specifiers_now_url,
+    format_url_clean,
+    format_catchup_array,
+)
 from yuki_iptv.settings import parse_settings
 from yuki_iptv.qt6compat import _exec
 from yuki_iptv.m3u_editor import M3UEditor
@@ -77,39 +92,38 @@ from yuki_iptv.series import parse_series
 from thirdparty.xtream import XTream, Serie
 
 parser = argparse.ArgumentParser(prog="yuki-iptv", description="yuki-iptv")
+parser.add_argument("--version", action="store_true", help="Show version")
 parser.add_argument(
-    '--version',
-    action='store_true',
-    help='Show version'
+    "--loglevel",
+    action="store",
+    help="Log level (CRITICAL, ERROR, WARNING, INFO, DEBUG) default: INFO",
 )
-parser.add_argument(
-    '--loglevel',
-    action='store',
-    help='Log level (CRITICAL, ERROR, WARNING, INFO, DEBUG) default: INFO'
-)
-parser.add_argument(
-    'URL',
-    help='Playlist URL or file',
-    nargs='?'
-)
+parser.add_argument("URL", help="Playlist URL or file", nargs="?")
 args1 = parser.parse_args()
 
-loglevel = args1.loglevel if args1.loglevel else 'INFO'
+loglevel = args1.loglevel if args1.loglevel else "INFO"
 numeric_level = getattr(logging, loglevel.upper(), None)
 if not isinstance(numeric_level, int):
-    raise ValueError('Invalid log level: %s' % loglevel)
+    raise ValueError("Invalid log level: %s" % loglevel)
 
 logging.basicConfig(
-    format='%(asctime)s.%(msecs)03d %(name)s %(levelname)s: %(message)s',
+    format="%(asctime)s.%(msecs)03d %(name)s %(levelname)s: %(message)s",
     level=numeric_level,
-    datefmt='%H:%M:%S'
+    datefmt="%H:%M:%S",
 )
 logger = logging.getLogger("yuki-iptv")
 mpv_logger = logging.getLogger("libmpv")
 
 try:
-    from thirdparty.mpris_server.adapters import PlayState, MprisAdapter, Microseconds, \
-        VolumeDecimal, RateDecimal, Track, DEFAULT_RATE
+    from thirdparty.mpris_server.adapters import (
+        PlayState,
+        MprisAdapter,
+        Microseconds,
+        VolumeDecimal,
+        RateDecimal,
+        Track,
+        DEFAULT_RATE,
+    )
     from thirdparty.mpris_server.events import EventAdapter
     from thirdparty.mpris_server.server import Server
 except Exception:
@@ -118,12 +132,12 @@ except Exception:
 
 qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
 
-if 'PyQt6' in sys.modules or 'PyQt5' in sys.modules:
+if "PyQt6" in sys.modules or "PyQt5" in sys.modules:
     Signal = QtCore.pyqtSignal
 else:
     Signal = QtCore.Signal
 
-if qt_library == 'PyQt5':
+if qt_library == "PyQt5":
     qt_icon_critical = 3
     qt_icon_warning = 2
     qt_icon_information = 1
@@ -132,8 +146,8 @@ else:
     qt_icon_warning = QtWidgets.QMessageBox.Icon.Warning
     qt_icon_information = QtWidgets.QMessageBox.Icon.Information
 
-APP_VERSION = '__DEB_VERSION__'
-COPYRIGHT_YEAR = '2023'
+APP_VERSION = "__DEB_VERSION__"
+COPYRIGHT_YEAR = "2023"
 
 setproctitle.setproctitle("yuki-iptv")
 try:
@@ -149,9 +163,9 @@ class YukiLang:
 
 
 APP = "yuki-iptv"
-LOCALE_DIR = str(Path(os.getcwd(), '..', '..', 'share', 'locale'))
+LOCALE_DIR = str(Path(os.getcwd(), "..", "..", "share", "locale"))
 
-if not glob.glob(str(Path(LOCALE_DIR, '*', '*', 'yuki-iptv.mo'))):
+if not glob.glob(str(Path(LOCALE_DIR, "*", "*", "yuki-iptv.mo"))):
     logger.error("No locales found! Run 'make' to generate locales.")
     sys.exit(1)
 
@@ -169,7 +183,7 @@ def cached_gettext(gettext_str):
 _ = cached_gettext
 # i18n end
 
-MAIN_WINDOW_TITLE = 'yuki-iptv'
+MAIN_WINDOW_TITLE = "yuki-iptv"
 WINDOW_SIZE = (1200, 600)
 DOCK_WIDGET2_HEIGHT = int(WINDOW_SIZE[1] / 10)
 DOCK_WIDGET2_HEIGHT_OFFSET = 10
@@ -190,7 +204,7 @@ AUDIO_SAMPLE_FORMATS = {
     "fltp": "float, planar",
     "floatp": "float, planar",
     "dbl": "double",
-    "dblp": "double, planar"
+    "dblp": "double, planar",
 }
 
 
@@ -226,14 +240,14 @@ if args1.version:
     print(f"{MAIN_WINDOW_TITLE} {APP_VERSION}")
     sys.exit(0)
 
-if not os.path.isdir(str(Path(os.environ['HOME'], '.config'))):
-    os.mkdir(str(Path(os.environ['HOME'], '.config')))
+if not os.path.isdir(str(Path(os.environ["HOME"], ".config"))):
+    os.mkdir(str(Path(os.environ["HOME"], ".config")))
 
-if not os.path.isdir(str(Path(os.environ['HOME'], '.cache'))):
-    os.mkdir(str(Path(os.environ['HOME'], '.cache')))
+if not os.path.isdir(str(Path(os.environ["HOME"], ".cache"))):
+    os.mkdir(str(Path(os.environ["HOME"], ".cache")))
 
-LOCAL_DIR = str(Path(os.environ['HOME'], '.config', 'yuki-iptv'))
-SAVE_FOLDER_DEFAULT = str(Path(os.environ['HOME'], '.config', 'yuki-iptv', 'saves'))
+LOCAL_DIR = str(Path(os.environ["HOME"], ".config", "yuki-iptv"))
+SAVE_FOLDER_DEFAULT = str(Path(os.environ["HOME"], ".config", "yuki-iptv", "saves"))
 if not os.path.isdir(LOCAL_DIR):
     os.mkdir(LOCAL_DIR)
 if not os.path.isdir(SAVE_FOLDER_DEFAULT):
@@ -243,12 +257,9 @@ if not os.path.isdir(SAVE_FOLDER_DEFAULT):
 def show_exception(e, e_traceback="", prev=""):
     if e_traceback:
         e = e_traceback.strip()
-    message = "{}{}\n\n{}".format(
-        _('yuki-iptv error'), prev, str(e)
-    )
+    message = "{}{}\n\n{}".format(_("yuki-iptv error"), prev, str(e))
     msg = QtWidgets.QMessageBox(
-        qt_icon_critical,
-        _('Error'), message, QtWidgets.QMessageBox.StandardButton.Ok
+        qt_icon_critical, _("Error"), message, QtWidgets.QMessageBox.StandardButton.Ok
     )
     msg.exec()
 
@@ -257,6 +268,7 @@ def show_exception(e, e_traceback="", prev=""):
 def idle_function(func):
     def wrapper(*args):
         exInMainThread_partial(partial(func, *args))
+
     return wrapper
 
 
@@ -267,10 +279,11 @@ def async_gui_blocking_function(func):
         thread.daemon = True
         thread.start()
         return thread
+
     return wrapper
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     logger.info("Qt init...")
     app = QtWidgets.QApplication(sys.argv)
     logger.info("Qt init successful")
@@ -278,11 +291,13 @@ if __name__ == '__main__':
 
     setAppFusion = True
     try:
-        if os.path.isfile(str(Path(LOCAL_DIR, 'settings.json'))):
-            with open(str(Path(LOCAL_DIR, 'settings.json')), 'r', encoding="utf8") as settings_tmp:
+        if os.path.isfile(str(Path(LOCAL_DIR, "settings.json"))):
+            with open(
+                str(Path(LOCAL_DIR, "settings.json")), "r", encoding="utf8"
+            ) as settings_tmp:
                 settings_tmp_json = json.loads(settings_tmp.read())
-                if 'styleredefoff' in settings_tmp_json:
-                    setAppFusion = settings_tmp_json['styleredefoff']
+                if "styleredefoff" in settings_tmp_json:
+                    setAppFusion = settings_tmp_json["styleredefoff"]
     except Exception:
         logger.warning("failed to read settings.json")
 
@@ -296,11 +311,12 @@ if __name__ == '__main__':
         logger.warning('app.setStyle("fusion") FAILED')
 
     # dummy, for xgettext
-    PLAYERNAME = _('IPTV player')
+    PLAYERNAME = _("IPTV player")
 
     # This is necessary since PyQT stomps over the locale settings needed by libmpv.
-    # This needs to happen after importing PyQT before creating the first mpv.MPV instance.
-    locale.setlocale(locale.LC_NUMERIC, 'C')
+    # This needs to happen after importing PyQT before
+    # creating the first mpv.MPV instance.
+    locale.setlocale(locale.LC_NUMERIC, "C")
 
     try:
         logger.info("")
@@ -308,16 +324,22 @@ if __name__ == '__main__':
         logger.info("Copyright (c) 2021, 2022 Astroncia")
         logger.info("Copyright (c) 2023 yuki-chan-nya")
         logger.info("")
-        logger.info("This program is free software: you can redistribute it and/or modify")
-        logger.info("it under the terms of the GNU General Public License as published by")
+        logger.info(
+            "This program is free software: you can redistribute it and/or modify"
+        )
+        logger.info(
+            "it under the terms of the GNU General Public License as published by"
+        )
         logger.info("the Free Software Foundation, either version 3 of the License, or")
         logger.info("(at your option) any later version.")
         logger.info("")
-        logger.info("The Font Awesome pictograms are licensed under the CC BY 4.0 License")
+        logger.info(
+            "The Font Awesome pictograms are licensed under the CC BY 4.0 License"
+        )
         logger.info("https://creativecommons.org/licenses/by/4.0/")
         logger.info("")
         logger.info(f"yuki-iptv version: {APP_VERSION}")
-        logger.info("Using Python " + sys.version.replace('\n', ''))
+        logger.info("Using Python " + sys.version.replace("\n", ""))
         logger.info(f"Qt library: {qt_library}")
         logger.info(f"Qt version: {QtCore.QT_VERSION_STR}")
         logger.info("")
@@ -334,9 +356,9 @@ if __name__ == '__main__':
         if not os.path.isdir(LOCAL_DIR):
             os.mkdir(LOCAL_DIR)
 
-        if not os.path.isfile(str(Path(LOCAL_DIR, 'favplaylist.m3u'))):
-            file01 = open(str(Path(LOCAL_DIR, 'favplaylist.m3u')), 'w', encoding="utf8")
-            file01.write('#EXTM3U\n#EXTINF:-1,-\nhttp://255.255.255.255\n')
+        if not os.path.isfile(str(Path(LOCAL_DIR, "favplaylist.m3u"))):
+            file01 = open(str(Path(LOCAL_DIR, "favplaylist.m3u")), "w", encoding="utf8")
+            file01.write("#EXTM3U\n#EXTINF:-1,-\nhttp://255.255.255.255\n")
             file01.close()
 
         channel_sets = {}
@@ -345,14 +367,18 @@ if __name__ == '__main__':
 
         def save_channel_sets():
             global channel_sets
-            file2 = open(str(Path(LOCAL_DIR, 'channelsettings.json')), 'w', encoding="utf8")
+            file2 = open(
+                str(Path(LOCAL_DIR, "channelsettings.json")), "w", encoding="utf8"
+            )
             file2.write(json.dumps(channel_sets))
             file2.close()
 
-        if not os.path.isfile(str(Path(LOCAL_DIR, 'channelsettings.json'))):
+        if not os.path.isfile(str(Path(LOCAL_DIR, "channelsettings.json"))):
             save_channel_sets()
         else:
-            file1 = open(str(Path(LOCAL_DIR, 'channelsettings.json')), 'r', encoding="utf8")
+            file1 = open(
+                str(Path(LOCAL_DIR, "channelsettings.json")), "r", encoding="utf8"
+            )
             channel_sets = json.loads(file1.read())
             file1.close()
 
@@ -365,24 +391,28 @@ if __name__ == '__main__':
         def save_favourite_sets():
             global favourite_sets
             favourite_sets_2 = {}
-            if os.path.isfile(Path(LOCAL_DIR, 'favouritechannels.json')):
+            if os.path.isfile(Path(LOCAL_DIR, "favouritechannels.json")):
                 with open(
-                    Path(LOCAL_DIR, 'favouritechannels.json'), 'r', encoding="utf8"
+                    Path(LOCAL_DIR, "favouritechannels.json"), "r", encoding="utf8"
                 ) as fsetfile:
                     favourite_sets_2 = json.loads(fsetfile.read())
-            if settings['m3u']:
-                favourite_sets_2[settings['m3u']] = favourite_sets
-            file2 = open(Path(LOCAL_DIR, 'favouritechannels.json'), 'w', encoding="utf8")
+            if settings["m3u"]:
+                favourite_sets_2[settings["m3u"]] = favourite_sets
+            file2 = open(
+                Path(LOCAL_DIR, "favouritechannels.json"), "w", encoding="utf8"
+            )
             file2.write(json.dumps(favourite_sets_2))
             file2.close()
 
-        if not os.path.isfile(str(Path(LOCAL_DIR, 'favouritechannels.json'))):
+        if not os.path.isfile(str(Path(LOCAL_DIR, "favouritechannels.json"))):
             save_favourite_sets()
         else:
-            file1 = open(Path(LOCAL_DIR, 'favouritechannels.json'), 'r', encoding="utf8")
+            file1 = open(
+                Path(LOCAL_DIR, "favouritechannels.json"), "r", encoding="utf8"
+            )
             favourite_sets1 = json.loads(file1.read())
-            if settings['m3u'] in favourite_sets1:
-                favourite_sets = favourite_sets1[settings['m3u']]
+            if settings["m3u"] in favourite_sets1:
+                favourite_sets = favourite_sets1[settings["m3u"]]
             file1.close()
 
         player_tracks = {}
@@ -390,33 +420,34 @@ if __name__ == '__main__':
         def save_player_tracks():
             global player_tracks
             player_tracks_2 = {}
-            if os.path.isfile(Path(LOCAL_DIR, 'tracks.json')):
+            if os.path.isfile(Path(LOCAL_DIR, "tracks.json")):
                 with open(
-                    Path(LOCAL_DIR, 'tracks.json'), 'r', encoding="utf8"
+                    Path(LOCAL_DIR, "tracks.json"), "r", encoding="utf8"
                 ) as tracks_file0:
                     player_tracks_2 = json.loads(tracks_file0.read())
-            if settings['m3u']:
-                player_tracks_2[settings['m3u']] = player_tracks
-            tracks_file1 = open(Path(LOCAL_DIR, 'tracks.json'), 'w', encoding="utf8")
+            if settings["m3u"]:
+                player_tracks_2[settings["m3u"]] = player_tracks
+            tracks_file1 = open(Path(LOCAL_DIR, "tracks.json"), "w", encoding="utf8")
             tracks_file1.write(json.dumps(player_tracks_2))
             tracks_file1.close()
 
-        if os.path.isfile(str(Path(LOCAL_DIR, 'tracks.json'))):
-            tracks_file = open(Path(LOCAL_DIR, 'tracks.json'), 'r', encoding="utf8")
+        if os.path.isfile(str(Path(LOCAL_DIR, "tracks.json"))):
+            tracks_file = open(Path(LOCAL_DIR, "tracks.json"), "r", encoding="utf8")
             player_tracks1 = json.loads(tracks_file.read())
-            if settings['m3u'] in player_tracks1:
-                player_tracks = player_tracks1[settings['m3u']]
+            if settings["m3u"] in player_tracks1:
+                player_tracks = player_tracks1[settings["m3u"]]
             tracks_file.close()
 
-        if settings['hwaccel']:
-            logger.info('Hardware acceleration enabled')
+        if settings["hwaccel"]:
+            logger.info("Hardware acceleration enabled")
         else:
-            logger.info('Hardware acceleration disabled')
+            logger.info("Hardware acceleration disabled")
 
         dark_label = QtWidgets.QLabel("Darkness test")
-        is_dark_theme = dark_label.palette().color(
-            QtGui.QPalette.ColorRole.WindowText
-        ).value() > dark_label.palette().color(QtGui.QPalette.ColorRole.Window).value()
+        is_dark_theme = (
+            dark_label.palette().color(QtGui.QPalette.ColorRole.WindowText).value()
+            > dark_label.palette().color(QtGui.QPalette.ColorRole.Window).value()
+        )
         if is_dark_theme:
             logger.info("Detected dark window theme, applying icons compat")
             YukiData.use_dark_icon_theme = True
@@ -438,17 +469,28 @@ if __name__ == '__main__':
         def save_tvguide_sets_proc(tvguide_sets_arg):
             if tvguide_sets_arg:
                 if not settings["nocacheepg"]:
-                    file2 = open(str(Path(LOCAL_DIR, 'epg.cache')), 'wb')
-                    file2.write(codecs.encode(bytes(json.dumps(
-                        {
-                            "cache_version": EPG_CACHE_VERSION,
-                            "system_timezone": json.dumps(time.tzname),
-                            "tvguide_sets": tvguide_sets,
-                            "current_url": [str(settings["m3u"]), str(settings["epg"])],
-                            "prog_ids": prog_ids,
-                            "epg_icons": epg_icons
-                        }
-                    ), 'utf-8'), 'zlib'))
+                    file2 = open(str(Path(LOCAL_DIR, "epg.cache")), "wb")
+                    file2.write(
+                        codecs.encode(
+                            bytes(
+                                json.dumps(
+                                    {
+                                        "cache_version": EPG_CACHE_VERSION,
+                                        "system_timezone": json.dumps(time.tzname),
+                                        "tvguide_sets": tvguide_sets,
+                                        "current_url": [
+                                            str(settings["m3u"]),
+                                            str(settings["epg"]),
+                                        ],
+                                        "prog_ids": prog_ids,
+                                        "epg_icons": epg_icons,
+                                    }
+                                ),
+                                "utf-8",
+                            ),
+                            "zlib",
+                        )
+                    )
                     file2.close()
 
         epg_thread_2 = None
@@ -476,9 +518,9 @@ if __name__ == '__main__':
                 pass
             logger.info("Writing EPG cache...")
             epg_thread_2 = get_context("fork").Process(
-                name='[yuki-iptv] save_tvguide_sets_proc',
+                name="[yuki-iptv] save_tvguide_sets_proc",
                 target=save_tvguide_sets_proc,
-                args=(tvguide_sets,)
+                args=(tvguide_sets,),
             )
             epg_thread_2.start()
             epg_thread_2.join()
@@ -493,8 +535,8 @@ if __name__ == '__main__':
 
         def force_update_epg():
             global use_local_tvguide, first_boot
-            if os.path.exists(str(Path(LOCAL_DIR, 'epg.cache'))):
-                os.remove(str(Path(LOCAL_DIR, 'epg.cache')))
+            if os.path.exists(str(Path(LOCAL_DIR, "epg.cache"))):
+                os.remove(str(Path(LOCAL_DIR, "epg.cache")))
             use_local_tvguide = False
             if not epg_updating:
                 first_boot = False
@@ -526,7 +568,7 @@ if __name__ == '__main__':
             global static_text, time_stop
             l1.setStatic2(True)
             l1.show()
-            static_text = _('Loading TV guide cache...')
+            static_text = _("Loading TV guide cache...")
             l1.setText2("")
             time_stop = time.time() + 3
 
@@ -535,31 +577,38 @@ if __name__ == '__main__':
             global time_stop
             l1.setStatic2(False)
             l1.hide()
-            l1.setText2('')
+            l1.setText2("")
             time_stop = time.time()
 
         @async_gui_blocking_function
         def update_epg_func():
-            global settings, tvguide_sets, prog_ids, \
-                epg_icons, programmes, epg_ready
+            global settings, tvguide_sets, prog_ids, epg_icons, programmes, epg_ready
             if settings["nocacheepg"]:
                 logger.info("No cache EPG active, deleting old EPG cache file")
                 try:
-                    if os.path.isfile(str(Path(LOCAL_DIR, 'epg.cache'))):
-                        os.remove(str(Path(LOCAL_DIR, 'epg.cache')))
+                    if os.path.isfile(str(Path(LOCAL_DIR, "epg.cache"))):
+                        os.remove(str(Path(LOCAL_DIR, "epg.cache")))
                 except Exception:
                     pass
             tvguide_read_time = time.time()
-            if os.path.isfile(str(Path(LOCAL_DIR, 'epg.cache'))):
+            if os.path.isfile(str(Path(LOCAL_DIR, "epg.cache"))):
                 logger.info("Reading cached TV guide...")
 
                 update_epg_func_static_enable()
 
-                # Disregard existed epg.cache if EPG url changes
-                tvguide_json = get_context("spawn").Pool(1).apply(load_epg_cache, (
-                    settings['m3u'], settings['epg'], epg_ready,
-                ))
                 # Loading epg.cache
+                tvguide_json = (
+                    get_context("spawn")
+                    .Pool(1)
+                    .apply(
+                        load_epg_cache,
+                        (
+                            settings["m3u"],
+                            settings["epg"],
+                            epg_ready,
+                        ),
+                    )
+                )
                 is_program_actual1 = False
                 if tvguide_json:
                     if "tvguide_sets" in tvguide_json:
@@ -582,7 +631,8 @@ if __name__ == '__main__':
                 update_epg_func_static_disable()
 
                 logger.info(
-                    f"TV guide read done, took {round(time.time() - tvguide_read_time, 2)} seconds"
+                    "TV guide read done, took "
+                    f"{round(time.time() - tvguide_read_time, 2)} seconds"
                 )
                 btn_update.click()
             else:
@@ -591,18 +641,26 @@ if __name__ == '__main__':
                 force_update_epg()
 
         if YukiData.use_dark_icon_theme:
-            ICONS_FOLDER = str(Path('..', '..', '..', 'share', 'yuki-iptv', 'icons_dark'))
+            ICONS_FOLDER = str(
+                Path("..", "..", "..", "share", "yuki-iptv", "icons_dark")
+            )
         else:
-            ICONS_FOLDER = str(Path('..', '..', '..', 'share', 'yuki-iptv', 'icons'))
+            ICONS_FOLDER = str(Path("..", "..", "..", "share", "yuki-iptv", "icons"))
 
-        main_icon = QtGui.QIcon(str(
-            Path(os.path.dirname(__file__), 'yuki_iptv', ICONS_FOLDER, 'tv-blue.png')
-        ))
+        main_icon = QtGui.QIcon(
+            str(
+                Path(
+                    os.path.dirname(__file__), "yuki_iptv", ICONS_FOLDER, "tv-blue.png"
+                )
+            )
+        )
         channels = {}
         programmes = {}
 
         logger.info("Init m3u editor")
-        m3u_editor = M3UEditor(_=_, icon=main_icon, icons_folder=ICONS_FOLDER, settings=settings)
+        m3u_editor = M3UEditor(
+            _=_, icon=main_icon, icons_folder=ICONS_FOLDER, settings=settings
+        )
         logger.info("M3u editor init done")
 
         def show_m3u_editor():
@@ -613,7 +671,7 @@ if __name__ == '__main__':
                 m3u_editor.show()
                 moveWindowToCenter(m3u_editor)
 
-        save_folder = settings['save_folder']
+        save_folder = settings["save_folder"]
 
         if not os.path.isdir(str(Path(save_folder))):
             try:
@@ -624,20 +682,20 @@ if __name__ == '__main__':
                 if not os.path.isdir(str(Path(save_folder))):
                     os.mkdir(str(Path(save_folder)))
 
-        if not settings['scrrecnosubfolders']:
-            if not os.path.isdir(str(Path(save_folder, 'screenshots'))):
-                os.mkdir(str(Path(save_folder, 'screenshots')))
-            if not os.path.isdir(str(Path(save_folder, 'recordings'))):
-                os.mkdir(str(Path(save_folder, 'recordings')))
+        if not settings["scrrecnosubfolders"]:
+            if not os.path.isdir(str(Path(save_folder, "screenshots"))):
+                os.mkdir(str(Path(save_folder, "screenshots")))
+            if not os.path.isdir(str(Path(save_folder, "recordings"))):
+                os.mkdir(str(Path(save_folder, "recordings")))
         else:
-            if os.path.isdir(str(Path(save_folder, 'screenshots'))):
+            if os.path.isdir(str(Path(save_folder, "screenshots"))):
                 try:
-                    os.rmdir(str(Path(save_folder, 'screenshots')))
+                    os.rmdir(str(Path(save_folder, "screenshots")))
                 except Exception:
                     pass
-            if os.path.isdir(str(Path(save_folder, 'recordings'))):
+            if os.path.isdir(str(Path(save_folder, "recordings"))):
                 try:
-                    os.rmdir(str(Path(save_folder, 'recordings')))
+                    os.rmdir(str(Path(save_folder, "recordings")))
                 except Exception:
                     pass
 
@@ -651,25 +709,29 @@ if __name__ == '__main__':
                 try:
                     if " ::: " in arr_item:
                         arr_item_split = arr_item.split(" ::: ")
-                        for season_name in YukiData.series[arr_item_split[2]].seasons.keys():
-                            season = YukiData.series[arr_item_split[2]].seasons[season_name]
+                        for season_name in YukiData.series[
+                            arr_item_split[2]
+                        ].seasons.keys():
+                            season = YukiData.series[arr_item_split[2]].seasons[
+                                season_name
+                            ]
                             if season.name == arr_item_split[1]:
                                 for episode_name in season.episodes.keys():
                                     episode = season.episodes[episode_name]
                                     if episode.title == arr_item_split[0]:
                                         arr_item_ret = {
-                                            'title': episode.title,
-                                            'tvg-name': '',
-                                            'tvg-ID': '',
-                                            'tvg-logo': '',
-                                            'tvg-group': _('All channels'),
-                                            'tvg-url': '',
-                                            'catchup': 'default',
-                                            'catchup-source': '',
-                                            'catchup-days': '1',
-                                            'useragent': '',
-                                            'referer': '',
-                                            'url': episode.url
+                                            "title": episode.title,
+                                            "tvg-name": "",
+                                            "tvg-ID": "",
+                                            "tvg-logo": "",
+                                            "tvg-group": _("All channels"),
+                                            "tvg-url": "",
+                                            "catchup": "default",
+                                            "catchup-source": "",
+                                            "catchup-days": "1",
+                                            "useragent": "",
+                                            "referer": "",
+                                            "url": episode.url,
                                         }
                                         break
                                 break
@@ -689,53 +751,62 @@ if __name__ == '__main__':
 
         m3uFailed = False
 
-        use_cache = settings['m3u'].startswith('http://') or settings['m3u'].startswith('https://')
-        if settings['nocache']:
+        use_cache = settings["m3u"].startswith("http://") or settings["m3u"].startswith(
+            "https://"
+        )
+        if settings["nocache"]:
             use_cache = False
         if not use_cache:
-            logger.info('Playlist caching off')
-        if use_cache and os.path.isfile(str(Path(LOCAL_DIR, 'playlistcache.json'))):
-            pj = open(str(Path(LOCAL_DIR, 'playlistcache.json')), 'r', encoding="utf8")
-            pj1 = json.loads(pj.read())['url']
+            logger.info("Playlist caching off")
+        if use_cache and os.path.isfile(str(Path(LOCAL_DIR, "playlistcache.json"))):
+            pj = open(str(Path(LOCAL_DIR, "playlistcache.json")), "r", encoding="utf8")
+            pj1 = json.loads(pj.read())["url"]
             pj.close()
-            if pj1 != settings['m3u']:
-                os.remove(str(Path(LOCAL_DIR, 'playlistcache.json')))
-        if (not use_cache) and os.path.isfile(str(Path(LOCAL_DIR, 'playlistcache.json'))):
-            os.remove(str(Path(LOCAL_DIR, 'playlistcache.json')))
-        if os.path.isfile(str(Path(LOCAL_DIR, 'playlistcache.json'))):
+            if pj1 != settings["m3u"]:
+                os.remove(str(Path(LOCAL_DIR, "playlistcache.json")))
+        if (not use_cache) and os.path.isfile(
+            str(Path(LOCAL_DIR, "playlistcache.json"))
+        ):
+            os.remove(str(Path(LOCAL_DIR, "playlistcache.json")))
+        if os.path.isfile(str(Path(LOCAL_DIR, "playlistcache.json"))):
             try:
                 playlist_load_tmp = open(
-                    str(Path(LOCAL_DIR, 'playlistcache.json')), 'r', encoding="utf8"
+                    str(Path(LOCAL_DIR, "playlistcache.json")), "r", encoding="utf8"
                 )
                 playlist_load_tmp_data = playlist_load_tmp.read()
                 playlist_load_tmp.close()
                 playlist_load_tmp_data = json.loads(playlist_load_tmp_data)
-                if not playlist_load_tmp_data['m3u'] and not playlist_load_tmp_data['array']:
+                if (
+                    not playlist_load_tmp_data["m3u"]
+                    and not playlist_load_tmp_data["array"]
+                ):
                     logger.warning("Cached playlist broken, ignoring and deleting")
-                    os.remove(str(Path(LOCAL_DIR, 'playlistcache.json')))
+                    os.remove(str(Path(LOCAL_DIR, "playlistcache.json")))
             except Exception:
                 pass
-        if not os.path.isfile(str(Path(LOCAL_DIR, 'playlistcache.json'))):
-            logger.info('Loading playlist...')
-            if settings['m3u']:
+        if not os.path.isfile(str(Path(LOCAL_DIR, "playlistcache.json"))):
+            logger.info("Loading playlist...")
+            if settings["m3u"]:
                 # Parsing m3u
-                if settings['m3u'].startswith('XTREAM::::::::::::::'):
+                if settings["m3u"].startswith("XTREAM::::::::::::::"):
                     # XTREAM::::::::::::::username::::::::::::::password::::::::::::::url
                     logger.info("Using XTream API")
-                    xtream_sha512 = hashlib.sha512(settings['m3u'].encode('utf-8')).hexdigest()
-                    xtream_split = settings['m3u'].split('::::::::::::::')
+                    xtream_sha512 = hashlib.sha512(
+                        settings["m3u"].encode("utf-8")
+                    ).hexdigest()
+                    xtream_split = settings["m3u"].split("::::::::::::::")
                     xtream_username = xtream_split[1]
                     xtream_password = xtream_split[2]
                     xtream_url = xtream_split[3]
-                    if not os.path.isdir(str(Path(LOCAL_DIR, 'xtream'))):
-                        os.mkdir(str(Path(LOCAL_DIR, 'xtream')))
+                    if not os.path.isdir(str(Path(LOCAL_DIR, "xtream"))):
+                        os.mkdir(str(Path(LOCAL_DIR, "xtream")))
                     try:
                         xt = XTream(
                             xtream_sha512,
                             xtream_username,
                             xtream_password,
                             xtream_url,
-                            ''
+                            "",
                         )
                     except Exception:
                         logger.warning("XTream init failure")
@@ -746,7 +817,7 @@ if __name__ == '__main__':
                         try:
                             m3u = convert_xtream_to_m3u(_, xt.channels)
                             try:
-                                m3u += convert_xtream_to_m3u(_, xt.movies, True, 'VOD')
+                                m3u += convert_xtream_to_m3u(_, xt.movies, True, "VOD")
                             except Exception:
                                 logger.warning("XTream movies parse FAILED")
                             for movie1 in xt.series:
@@ -754,41 +825,47 @@ if __name__ == '__main__':
                                     YukiData.series[movie1.name] = movie1
                         except Exception as e3:
                             message2 = "{}\n\n{}".format(
-                                _('yuki-iptv error'),
-                                str("XTream API: {}\n\n{}".format(_('Processing error'), str(e3)))
+                                _("yuki-iptv error"),
+                                str(
+                                    "XTream API: {}\n\n{}".format(
+                                        _("Processing error"), str(e3)
+                                    )
+                                ),
                             )
                             msg2 = QtWidgets.QMessageBox(
                                 qt_icon_warning,
-                                _('Error'),
+                                _("Error"),
                                 message2,
-                                QtWidgets.QMessageBox.StandardButton.Ok
+                                QtWidgets.QMessageBox.StandardButton.Ok,
                             )
                             msg2.exec()
                     else:
                         message1 = "{}\n\n{}".format(
-                            _('yuki-iptv error'),
-                            str("XTream API: {}".format(_('Could not connect')))
+                            _("yuki-iptv error"),
+                            str("XTream API: {}".format(_("Could not connect"))),
                         )
                         msg1 = QtWidgets.QMessageBox(
                             qt_icon_warning,
-                            _('Error'),
+                            _("Error"),
                             message1,
-                            QtWidgets.QMessageBox.StandardButton.Ok
+                            QtWidgets.QMessageBox.StandardButton.Ok,
                         )
                         msg1.exec()
                 else:
-                    if os.path.isfile(settings['m3u']):
+                    if os.path.isfile(settings["m3u"]):
                         try:
-                            file = open(settings['m3u'], 'r', encoding="utf8")
+                            file = open(settings["m3u"], "r", encoding="utf8")
                             m3u = file.read()
                             file.close()
                         except Exception:
                             logger.warning("Playlist is not UTF-8 encoding")
                             logger.info("Trying to detect encoding...")
-                            file_222_encoding = ''
+                            file_222_encoding = ""
                             try:
-                                file_222 = open(settings['m3u'], 'rb')
-                                file_222_encoding = chardet.detect(file_222.read())['encoding']
+                                file_222 = open(settings["m3u"], "rb")
+                                file_222_encoding = chardet.detect(file_222.read())[
+                                    "encoding"
+                                ]
                                 file_222.close()
                             except Exception:
                                 pass
@@ -796,40 +873,48 @@ if __name__ == '__main__':
                                 logger.info(f"Guessed encoding: {file_222_encoding}")
                                 try:
                                     file_111 = open(
-                                        settings['m3u'],
-                                        'r',
-                                        encoding=file_222_encoding
+                                        settings["m3u"], "r", encoding=file_222_encoding
                                     )
                                     m3u = file_111.read()
                                     file_111.close()
                                 except Exception:
                                     logger.warning("Wrong encoding guess!")
                                     show_exception(
-                                        _('Failed to load playlist - unknown encoding! Please use playlists in UTF-8 encoding.')  # noqa: E501
+                                        _(
+                                            "Failed to load playlist - unknown "
+                                            "encoding! Please use playlists "
+                                            "in UTF-8 encoding."
+                                        )
                                     )
                             else:
                                 logger.warning("Unknown encoding!")
                                 show_exception(
-                                    _('Failed to load playlist - unknown encoding! Please use playlists in UTF-8 encoding.')  # noqa: E501
+                                    _(
+                                        "Failed to load playlist - unknown "
+                                        "encoding! Please use playlists "
+                                        "in UTF-8 encoding."
+                                    )
                                 )
                     else:
                         try:
                             try:
                                 m3u_req = requests.get(
-                                    settings['m3u'],
-                                    headers={'User-Agent': settings['ua']},
-                                    timeout=3
+                                    settings["m3u"],
+                                    headers={"User-Agent": settings["ua"]},
+                                    timeout=3,
                                 )
                             except Exception:
                                 m3u_req = PlaylistsFail()
                                 m3u_req.status_code = 400
 
                             if m3u_req.status_code != 200:
-                                logger.warning("Playlist load failed, trying empty user agent")
+                                logger.warning(
+                                    "Playlist load failed, trying empty user agent"
+                                )
                                 m3u_req = requests.get(
-                                    settings['m3u'],
-                                    headers={'User-Agent': ''},
-                                    timeout=3
+                                    settings["m3u"],
+                                    headers={"User-Agent": ""},
+                                    timeout=3,
                                 )
 
                             logger.info(f"Status code: {m3u_req.status_code}")
@@ -838,15 +923,17 @@ if __name__ == '__main__':
                         except Exception:
                             m3u = ""
                             exp3 = traceback.format_exc()
-                            logger.warning("Playlist URL loading error!" + '\n' + exp3)
-                            show_exception(_('Playlist loading error!'))
+                            logger.warning("Playlist URL loading error!" + "\n" + exp3)
+                            show_exception(_("Playlist loading error!"))
 
-            m3u_parser = M3UParser(settings['udp_proxy'], _)
+            m3u_parser = M3UParser(settings["udp_proxy"], _)
             epg_url = ""
             m3uFailed = False
             if m3u:
                 try:
-                    is_xspf = '<?xml version="' in m3u and ('http://xspf.org/' in m3u or 'https://xspf.org/' in m3u)
+                    is_xspf = '<?xml version="' in m3u and (
+                        "http://xspf.org/" in m3u or "https://xspf.org/" in m3u
+                    )
                     if not is_xspf:
                         m3u_data0 = m3u_parser.parse_m3u(m3u)
                     else:
@@ -855,10 +942,11 @@ if __name__ == '__main__':
                     m3u_data = []
 
                     for m3u_datai in m3u_data_got:
-                        if 'tvg-group' in m3u_datai:
-                            if m3u_datai['tvg-group'].lower() == 'vod' or \
-                               m3u_datai['tvg-group'].lower().startswith('vod '):
-                                YukiData.movies[m3u_datai['title']] = m3u_datai
+                        if "tvg-group" in m3u_datai:
+                            if m3u_datai["tvg-group"].lower() == "vod" or m3u_datai[
+                                "tvg-group"
+                            ].lower().startswith("vod "):
+                                YukiData.movies[m3u_datai["title"]] = m3u_datai
                             else:
                                 YukiData.series, is_matched = parse_series(
                                     m3u_datai, YukiData.series
@@ -870,85 +958,106 @@ if __name__ == '__main__':
                     if epg_url and not settings["epg"]:
                         settings["epg"] = epg_url
                     for m3u_line in m3u_data:
-                        array[m3u_line['title']] = m3u_line
-                        if not m3u_line['tvg-group'] in groups:
-                            groups.append(m3u_line['tvg-group'])
+                        array[m3u_line["title"]] = m3u_line
+                        if not m3u_line["tvg-group"] in groups:
+                            groups.append(m3u_line["tvg-group"])
                 except Exception:
-                    logger.warning("Playlist parsing error!" + '\n' + traceback.format_exc())
-                    show_exception(_('Playlist loading error!'))
+                    logger.warning(
+                        "Playlist parsing error!" + "\n" + traceback.format_exc()
+                    )
+                    show_exception(_("Playlist loading error!"))
                     m3u = ""
                     array = {}
                     groups = []
                     m3uFailed = True
 
-            logger.info("{} channels, {} groups, {} movies, {} series".format(
-                len(array), len([group2 for group2 in groups if group2 != _('All channels')]),
-                len(YukiData.movies), len(YukiData.series)
-            ))
+            logger.info(
+                "{} channels, {} groups, {} movies, {} series".format(
+                    len(array),
+                    len([group2 for group2 in groups if group2 != _("All channels")]),
+                    len(YukiData.movies),
+                    len(YukiData.series),
+                )
+            )
 
-            logger.info('Playling loading done!')
+            logger.info("Playling loading done!")
             if use_cache:
-                logger.info('Caching playlist...')
-                cm3u = json.dumps({
-                    'url': settings['m3u'],
-                    'array': array,
-                    'groups': groups,
-                    'm3u': m3u,
-                    'epgurl': epg_url,
-                    'movies': YukiData.movies
-                })
-                cm3uf = open(str(Path(LOCAL_DIR, 'playlistcache.json')), 'w', encoding="utf8")
+                logger.info("Caching playlist...")
+                cm3u = json.dumps(
+                    {
+                        "url": settings["m3u"],
+                        "array": array,
+                        "groups": groups,
+                        "m3u": m3u,
+                        "epgurl": epg_url,
+                        "movies": YukiData.movies,
+                    }
+                )
+                cm3uf = open(
+                    str(Path(LOCAL_DIR, "playlistcache.json")), "w", encoding="utf8"
+                )
                 cm3uf.write(cm3u)
                 cm3uf.close()
-                logger.info('Playlist cache saved!')
+                logger.info("Playlist cache saved!")
         else:
-            logger.info('Using cached playlist')
-            cm3uf = open(str(Path(LOCAL_DIR, 'playlistcache.json')), 'r', encoding="utf8")
+            logger.info("Using cached playlist")
+            cm3uf = open(
+                str(Path(LOCAL_DIR, "playlistcache.json")), "r", encoding="utf8"
+            )
             cm3u = json.loads(cm3uf.read())
             cm3uf.close()
-            array = cm3u['array']
-            groups = cm3u['groups']
-            m3u = cm3u['m3u']
+            array = cm3u["array"]
+            groups = cm3u["groups"]
+            m3u = cm3u["m3u"]
             try:
-                epg_url = cm3u['epgurl']
+                epg_url = cm3u["epgurl"]
                 if epg_url and not settings["epg"]:
                     settings["epg"] = epg_url
             except Exception:
                 pass
             try:
-                if 'movies' in cm3u:
-                    YukiData.movies = cm3u['movies']
+                if "movies" in cm3u:
+                    YukiData.movies = cm3u["movies"]
             except Exception:
                 pass
 
         for ch3 in array.copy():
-            if settings['m3u'] in channel_sets:
-                if ch3 in channel_sets[settings['m3u']]:
-                    if 'group' in channel_sets[settings['m3u']][ch3]:
-                        if channel_sets[settings['m3u']][ch3]['group']:
-                            array[ch3]['tvg-group'] = channel_sets[settings['m3u']][ch3]['group']
-                            if channel_sets[settings['m3u']][ch3]['group'] not in groups:
-                                groups.append(channel_sets[settings['m3u']][ch3]['group'])
-                    if 'hidden' in channel_sets[settings['m3u']][ch3]:
-                        if channel_sets[settings['m3u']][ch3]['hidden']:
+            if settings["m3u"] in channel_sets:
+                if ch3 in channel_sets[settings["m3u"]]:
+                    if "group" in channel_sets[settings["m3u"]][ch3]:
+                        if channel_sets[settings["m3u"]][ch3]["group"]:
+                            array[ch3]["tvg-group"] = channel_sets[settings["m3u"]][
+                                ch3
+                            ]["group"]
+                            if (
+                                channel_sets[settings["m3u"]][ch3]["group"]
+                                not in groups
+                            ):
+                                groups.append(
+                                    channel_sets[settings["m3u"]][ch3]["group"]
+                                )
+                    if "hidden" in channel_sets[settings["m3u"]][ch3]:
+                        if channel_sets[settings["m3u"]][ch3]["hidden"]:
                             array.pop(ch3)
 
-        if _('All channels') in groups:
-            groups.remove(_('All channels'))
-        groups = [_('All channels'), _('Favourites')] + groups
+        if _("All channels") in groups:
+            groups.remove(_("All channels"))
+        groups = [_("All channels"), _("Favourites")] + groups
 
-        if m3uFailed and os.path.isfile(str(Path(LOCAL_DIR, 'playlistcache.json'))):
-            os.remove(str(Path(LOCAL_DIR, 'playlistcache.json')))
+        if m3uFailed and os.path.isfile(str(Path(LOCAL_DIR, "playlistcache.json"))):
+            os.remove(str(Path(LOCAL_DIR, "playlistcache.json")))
 
         try:
-            if os.path.isfile(str(Path(LOCAL_DIR, 'settings.json'))):
-                settings_file2 = open(str(Path(LOCAL_DIR, 'settings.json')), 'r', encoding="utf8")
+            if os.path.isfile(str(Path(LOCAL_DIR, "settings.json"))):
+                settings_file2 = open(
+                    str(Path(LOCAL_DIR, "settings.json")), "r", encoding="utf8"
+                )
                 settings_file2_json = json.loads(settings_file2.read())
                 settings_file2.close()
-                if settings['epg'] and not settings_file2_json['epg']:
-                    settings_file2_json['epg'] = settings['epg']
+                if settings["epg"] and not settings_file2_json["epg"]:
+                    settings_file2_json["epg"] = settings["epg"]
                     settings_file4 = open(
-                        str(Path(LOCAL_DIR, 'settings.json')), 'w', encoding="utf8"
+                        str(Path(LOCAL_DIR, "settings.json")), "w", encoding="utf8"
                     )
                     settings_file4.write(json.dumps(settings_file2_json))
                     settings_file4.close()
@@ -965,11 +1074,11 @@ if __name__ == '__main__':
         signal.signal(signal.SIGINT, sigint_handler)
         signal.signal(signal.SIGTERM, sigint_handler)
 
-        TV_ICON = QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'tv.png')))
-        MOVIE_ICON = QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'movie.png')))
+        TV_ICON = QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "tv.png")))
+        MOVIE_ICON = QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "movie.png")))
 
         def get_current_time():
-            return time.strftime('%d.%m.%y %H:%M', time.localtime())
+            return time.strftime("%d.%m.%y %H:%M", time.localtime())
 
         def empty_function(arg1):
             pass
@@ -979,16 +1088,16 @@ if __name__ == '__main__':
                 QtWidgets.QScrollArea.__init__(self, *args, **kwargs)
                 self.setWidgetResizable(True)
                 content = QtWidgets.QWidget(self)
-                bcolor_scrollabel = 'white'
+                bcolor_scrollabel = "white"
                 if YukiData.use_dark_icon_theme:
-                    bcolor_scrollabel = 'black'
-                content.setStyleSheet('background-color: ' + bcolor_scrollabel)
+                    bcolor_scrollabel = "black"
+                content.setStyleSheet("background-color: " + bcolor_scrollabel)
                 self.setWidget(content)
                 lay = QtWidgets.QVBoxLayout(content)
                 self.label = QtWidgets.QLabel(content)
                 self.label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
                 self.label.setWordWrap(True)
-                self.label.setStyleSheet('background-color: ' + bcolor_scrollabel)
+                self.label.setStyleSheet("background-color: " + bcolor_scrollabel)
                 lay.addWidget(self.label)
 
             def setText(self, text):
@@ -1015,12 +1124,12 @@ if __name__ == '__main__':
 
         settings_win = settings_scrollable_window()
         settings_win.resize(800, 600)
-        settings_win.setWindowTitle(_('Settings'))
+        settings_win.setWindowTitle(_("Settings"))
         settings_win.setWindowIcon(main_icon)
 
         shortcuts_win = QtWidgets.QMainWindow()
         shortcuts_win.resize(720, 500)
-        shortcuts_win.setWindowTitle(_('Shortcuts'))
+        shortcuts_win.setWindowTitle(_("Shortcuts"))
         shortcuts_win.setWindowIcon(main_icon)
 
         shortcuts_central_widget = QtWidgets.QWidget(shortcuts_win)
@@ -1033,8 +1142,10 @@ if __name__ == '__main__':
         # shortcuts_table.setColumnCount(3)
         shortcuts_table.setColumnCount(2)
 
-        # shortcuts_table.setHorizontalHeaderLabels([_('Description'), _('Shortcut'), "Header 3"])
-        shortcuts_table.setHorizontalHeaderLabels([_('Description'), _('Shortcut')])
+        # shortcuts_table.setHorizontalHeaderLabels(
+        #     [_('Description'), _('Shortcut'), "Header 3"]
+        # )
+        shortcuts_table.setHorizontalHeaderLabels([_("Description"), _("Shortcut")])
 
         shortcuts_table.horizontalHeaderItem(0).setTextAlignment(
             QtCore.Qt.AlignmentFlag.AlignHCenter
@@ -1051,11 +1162,15 @@ if __name__ == '__main__':
             resettodefaults_btn_clicked_msg = QtWidgets.QMessageBox.question(
                 None,
                 MAIN_WINDOW_TITLE,
-                _('Are you sure?'),
-                QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No,
+                _("Are you sure?"),
                 QtWidgets.QMessageBox.StandardButton.Yes
+                | QtWidgets.QMessageBox.StandardButton.No,
+                QtWidgets.QMessageBox.StandardButton.Yes,
             )
-            if resettodefaults_btn_clicked_msg == QtWidgets.QMessageBox.StandardButton.Yes:
+            if (
+                resettodefaults_btn_clicked_msg
+                == QtWidgets.QMessageBox.StandardButton.Yes
+            ):
                 logger.info("Restoring default keybinds")
                 main_keybinds = main_keybinds_default.copy()
                 shortcuts_table.setRowCount(len(main_keybinds))
@@ -1063,31 +1178,31 @@ if __name__ == '__main__':
                 for keybind in main_keybinds:
                     keybind_i += 1
                     shortcuts_table.setItem(
-                        keybind_i, 0, get_widget_item(main_keybinds_translations[keybind])
+                        keybind_i,
+                        0,
+                        get_widget_item(main_keybinds_translations[keybind]),
                     )
                     if isinstance(main_keybinds[keybind], str):
                         keybind_str = main_keybinds[keybind]
                     else:
-                        keybind_str = QtGui.QKeySequence(main_keybinds[keybind]).toString()
+                        keybind_str = QtGui.QKeySequence(
+                            main_keybinds[keybind]
+                        ).toString()
                     kbd_widget = get_widget_item(keybind_str)
-                    kbd_widget.setToolTip(_('Double click to change'))
+                    kbd_widget.setToolTip(_("Double click to change"))
                     shortcuts_table.setItem(keybind_i, 1, kbd_widget)
                 shortcuts_table.resizeColumnsToContents()
                 hotkeys_file_1 = open(
-                    str(Path(LOCAL_DIR, 'hotkeys.json')), 'w', encoding="utf8"
+                    str(Path(LOCAL_DIR, "hotkeys.json")), "w", encoding="utf8"
                 )
-                hotkeys_file_1.write(json.dumps(
-                    {
-                        "current_profile": {
-                            "keys": main_keybinds
-                        }
-                    }
-                ))
+                hotkeys_file_1.write(
+                    json.dumps({"current_profile": {"keys": main_keybinds}})
+                )
                 hotkeys_file_1.close()
                 reload_keybinds()
 
         resettodefaults_btn = QtWidgets.QPushButton()
-        resettodefaults_btn.setText(_('Reset to defaults'))
+        resettodefaults_btn.setText(_("Reset to defaults"))
         resettodefaults_btn.clicked.connect(resettodefaults_btn_clicked)
 
         shortcuts_grid_layout.addWidget(shortcuts_table)
@@ -1095,7 +1210,7 @@ if __name__ == '__main__':
 
         shortcuts_win_2 = QtWidgets.QMainWindow()
         shortcuts_win_2.resize(300, 100)
-        shortcuts_win_2.setWindowTitle(_('Modify shortcut'))
+        shortcuts_win_2.setWindowTitle(_("Modify shortcut"))
         shortcuts_win_2.setWindowIcon(main_icon)
 
         class KeySequenceEdit(QtWidgets.QKeySequenceEdit):
@@ -1110,12 +1225,14 @@ if __name__ == '__main__':
 
         la_sl = QtWidgets.QLabel()
         la_sl.setFont(bold_fnt_1)
-        la_sl.setText(_('Press the key combination\nyou want to assign'))
+        la_sl.setText(_("Press the key combination\nyou want to assign"))
 
         def keyseq_ok_clicked():
             if YukiData.selected_shortcut_row != -1:
                 sel_keyseq = keyseq.keySequence().toString()
-                search_value = shortcuts_table.item(YukiData.selected_shortcut_row, 0).text()
+                search_value = shortcuts_table.item(
+                    YukiData.selected_shortcut_row, 0
+                ).text()
                 shortcut_taken = False
                 for sci1 in range(shortcuts_table.rowCount()):
                     if sci1 != YukiData.selected_shortcut_row:
@@ -1134,25 +1251,25 @@ if __name__ == '__main__':
                     "Key.Key_Stop",
                     "Key.Key_VolumeDown",
                     "Key.Key_VolumeMute",
-                    "Key.Key_VolumeUp"
+                    "Key.Key_VolumeUp",
                 ]
                 if sel_keyseq in forbidden_hotkeys:
                     shortcut_taken = True
                 if not shortcut_taken:
-                    shortcuts_table.item(YukiData.selected_shortcut_row, 1).setText(sel_keyseq)
+                    shortcuts_table.item(YukiData.selected_shortcut_row, 1).setText(
+                        sel_keyseq
+                    )
                     for name55, value55 in main_keybinds_translations.items():
                         if value55 == search_value:
                             main_keybinds[name55] = sel_keyseq
                             hotkeys_file = open(
-                                str(Path(LOCAL_DIR, 'hotkeys.json')), 'w', encoding="utf8"
+                                str(Path(LOCAL_DIR, "hotkeys.json")),
+                                "w",
+                                encoding="utf8",
                             )
-                            hotkeys_file.write(json.dumps(
-                                {
-                                    "current_profile": {
-                                        "keys": main_keybinds
-                                    }
-                                }
-                            ))
+                            hotkeys_file.write(
+                                json.dumps({"current_profile": {"keys": main_keybinds}})
+                            )
                             hotkeys_file.close()
                             reload_keybinds()
                     shortcuts_win_2.hide()
@@ -1160,14 +1277,14 @@ if __name__ == '__main__':
                     msg_shortcut_taken = QtWidgets.QMessageBox(
                         qt_icon_warning,
                         MAIN_WINDOW_TITLE,
-                        _('Shortcut already used'),
-                        QtWidgets.QMessageBox.StandardButton.Ok
+                        _("Shortcut already used"),
+                        QtWidgets.QMessageBox.StandardButton.Ok,
                     )
                     msg_shortcut_taken.exec()
 
-        keyseq_cancel = QtWidgets.QPushButton(_('Cancel'))
+        keyseq_cancel = QtWidgets.QPushButton(_("Cancel"))
         keyseq_cancel.clicked.connect(shortcuts_win_2.hide)
-        keyseq_ok = QtWidgets.QPushButton(_('OK'))
+        keyseq_ok = QtWidgets.QPushButton(_("OK"))
         keyseq_ok.clicked.connect(keyseq_ok_clicked)
 
         shortcuts_win_2_widget_2 = QtWidgets.QWidget()
@@ -1190,40 +1307,40 @@ if __name__ == '__main__':
 
         help_win = QtWidgets.QMainWindow()
         help_win.resize(500, 600)
-        help_win.setWindowTitle(_('&About yuki-iptv').replace('&', ''))
+        help_win.setWindowTitle(_("&About yuki-iptv").replace("&", ""))
         help_win.setWindowIcon(main_icon)
 
         license_win = QtWidgets.QMainWindow()
         license_win.resize(600, 600)
-        license_win.setWindowTitle(_('License'))
+        license_win.setWindowTitle(_("License"))
         license_win.setWindowIcon(main_icon)
 
         sort_win = QtWidgets.QMainWindow()
         sort_win.resize(400, 500)
-        sort_win.setWindowTitle(_('Channel\nsort').replace('\n', ' '))
+        sort_win.setWindowTitle(_("Channel\nsort").replace("\n", " "))
         sort_win.setWindowIcon(main_icon)
 
         chan_win = QtWidgets.QMainWindow()
         chan_win.resize(400, 250)
-        chan_win.setWindowTitle(_('Video settings'))
+        chan_win.setWindowTitle(_("Video settings"))
         chan_win.setWindowIcon(main_icon)
 
         ext_win = QtWidgets.QMainWindow()
         ext_win.resize(300, 60)
-        ext_win.setWindowTitle(_('Open in external player'))
+        ext_win.setWindowTitle(_("Open in external player"))
         ext_win.setWindowIcon(main_icon)
 
         epg_win = QtWidgets.QMainWindow()
         epg_win.resize(600, 600)
-        epg_win.setWindowTitle(_('TV guide'))
+        epg_win.setWindowTitle(_("TV guide"))
         epg_win.setWindowIcon(main_icon)
 
         def epg_win_checkbox_changed():
-            tvguide_lbl_2.setText(_('No TV guide for channel'))
+            tvguide_lbl_2.setText(_("No TV guide for channel"))
             try:
                 ch_3 = epg_win_checkbox.currentText()
-                ch_3_guide = update_tvguide(ch_3, True).replace('!@#$%^^&*(', '\n')
-                ch_3_guide = ch_3_guide.replace('\n', '<br>').replace('<br>', '', 1)
+                ch_3_guide = update_tvguide(ch_3, True).replace("!@#$%^^&*(", "\n")
+                ch_3_guide = ch_3_guide.replace("\n", "<br>").replace("<br>", "", 1)
                 ch_3_guide = ch_3_guide.replace(
                     '<span style="color: green;">', '<span style="color: red;">', 1
                 )
@@ -1240,17 +1357,18 @@ if __name__ == '__main__':
             except Exception:
                 filter_txt3 = ""
             for item6 in range(epg_win_checkbox.count()):
-                if unidecode(
-                    filter_txt3
-                ).lower().strip() in unidecode(epg_win_checkbox.itemText(item6)).lower().strip():
+                if (
+                    unidecode(filter_txt3).lower().strip()
+                    in unidecode(epg_win_checkbox.itemText(item6)).lower().strip()
+                ):
                     epg_win_checkbox.view().setRowHidden(item6, False)
                 else:
                     epg_win_checkbox.view().setRowHidden(item6, True)
 
         tvguidechannelfilter = QtWidgets.QLineEdit()
-        tvguidechannelfilter.setPlaceholderText(_('Search channel'))
+        tvguidechannelfilter.setPlaceholderText(_("Search channel"))
         tvguidechannelfiltersearch = QtWidgets.QPushButton()
-        tvguidechannelfiltersearch.setText(_('Search'))
+        tvguidechannelfiltersearch.setText(_("Search"))
         tvguidechannelfiltersearch.clicked.connect(tvguide_channelfilter_do)
 
         tvguidechannelwidget = QtWidgets.QWidget()
@@ -1260,7 +1378,9 @@ if __name__ == '__main__':
         tvguidechannelwidget.setLayout(tvguidechannellayout)
 
         showonlychplaylist_lbl = QtWidgets.QLabel()
-        showonlychplaylist_lbl.setText('{}:'.format(_('Show only channels in playlist')))
+        showonlychplaylist_lbl.setText(
+            "{}:".format(_("Show only channels in playlist"))
+        )
         showonlychplaylist_chk = QtWidgets.QCheckBox()
         showonlychplaylist_chk.setChecked(True)
         showonlychplaylist_chk.clicked.connect(showonlychplaylist_chk_clk)
@@ -1300,27 +1420,27 @@ if __name__ == '__main__':
 
         scheduler_win = QtWidgets.QMainWindow()
         scheduler_win.resize(1200, 650)
-        scheduler_win.setWindowTitle(_('Recording scheduler'))
+        scheduler_win.setWindowTitle(_("Recording scheduler"))
         scheduler_win.setWindowIcon(main_icon)
 
         archive_win = QtWidgets.QMainWindow()
         archive_win.resize(800, 600)
-        archive_win.setWindowTitle(_('Archive'))
+        archive_win.setWindowTitle(_("Archive"))
         archive_win.setWindowIcon(main_icon)
 
         playlists_win = QtWidgets.QMainWindow()
         playlists_win.resize(500, 600)
-        playlists_win.setWindowTitle(_('Playlists'))
+        playlists_win.setWindowTitle(_("Playlists"))
         playlists_win.setWindowIcon(main_icon)
 
         playlists_win_edit = QtWidgets.QMainWindow()
         playlists_win_edit.resize(500, 180)
-        playlists_win_edit.setWindowTitle(_('Playlists'))
+        playlists_win_edit.setWindowTitle(_("Playlists"))
         playlists_win_edit.setWindowIcon(main_icon)
 
         epg_select_win = QtWidgets.QMainWindow()
         epg_select_win.resize(400, 500)
-        epg_select_win.setWindowTitle(_('TV guide'))
+        epg_select_win.setWindowTitle(_("TV guide"))
         epg_select_win.setWindowIcon(main_icon)
 
         class playlists_data:
@@ -1337,7 +1457,7 @@ if __name__ == '__main__':
                     playlists_data.playlists_used[channel_text_prov] = {
                         "m3u": m3u_edit_1.text(),
                         "epg": epg_edit_1.text(),
-                        "epgoffset": soffset_1.value()
+                        "epgoffset": soffset_1.value(),
                     }
                     playlists_save_json()
                     playlists_win_edit.hide()
@@ -1345,62 +1465,62 @@ if __name__ == '__main__':
                     noemptyname_msg = QtWidgets.QMessageBox(
                         qt_icon_warning,
                         MAIN_WINDOW_TITLE,
-                        _('Name should not be empty!'),
-                        QtWidgets.QMessageBox.StandardButton.Ok
+                        _("Name should not be empty!"),
+                        QtWidgets.QMessageBox.StandardButton.Ok,
                     )
                     noemptyname_msg.exec()
             else:
                 nourlset_msg = QtWidgets.QMessageBox(
                     qt_icon_warning,
                     MAIN_WINDOW_TITLE,
-                    _('URL not specified!'),
-                    QtWidgets.QMessageBox.StandardButton.Ok
+                    _("URL not specified!"),
+                    QtWidgets.QMessageBox.StandardButton.Ok,
                 )
                 nourlset_msg.exec()
 
         def m3u_file_1_clicked():
             fname_1 = QtWidgets.QFileDialog.getOpenFileName(
-                playlists_win_edit,
-                _('Select m3u playlist'),
-                home_folder
+                playlists_win_edit, _("Select m3u playlist"), home_folder
             )[0]
             if fname_1:
                 m3u_edit_1.setText(fname_1)
 
         def epg_file_1_clicked():
             fname_2 = QtWidgets.QFileDialog.getOpenFileName(
-                playlists_win_edit,
-                _('Select EPG file'),
-                home_folder
+                playlists_win_edit, _("Select EPG file"), home_folder
             )[0]
             if fname_2:
                 epg_edit_1.setText(fname_2)
 
-        name_label_1 = QtWidgets.QLabel('{}:'.format(_('Name')))
-        m3u_label_1 = QtWidgets.QLabel('{}:'.format(_('M3U / XSPF playlist')))
-        epg_label_1 = QtWidgets.QLabel('{}:'.format(_('TV guide\naddress')))
+        name_label_1 = QtWidgets.QLabel("{}:".format(_("Name")))
+        m3u_label_1 = QtWidgets.QLabel("{}:".format(_("M3U / XSPF playlist")))
+        epg_label_1 = QtWidgets.QLabel("{}:".format(_("TV guide\naddress")))
         name_edit_1 = QtWidgets.QLineEdit()
         m3u_edit_1 = QtWidgets.QLineEdit()
-        m3u_edit_1.setPlaceholderText(_('Path to file or URL'))
+        m3u_edit_1.setPlaceholderText(_("Path to file or URL"))
         epg_edit_1 = QtWidgets.QLineEdit()
-        epg_edit_1.setPlaceholderText(_('Path to file or URL'))
+        epg_edit_1.setPlaceholderText(_("Path to file or URL"))
         m3u_file_1 = QtWidgets.QPushButton()
-        m3u_file_1.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'file.png'))))
+        m3u_file_1.setIcon(
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "file.png")))
+        )
         m3u_file_1.clicked.connect(m3u_file_1_clicked)
         epg_file_1 = QtWidgets.QPushButton()
-        epg_file_1.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'file.png'))))
+        epg_file_1.setIcon(
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "file.png")))
+        )
         epg_file_1.clicked.connect(epg_file_1_clicked)
-        save_btn_1 = QtWidgets.QPushButton(_('Save'))
-        save_btn_1.setStyleSheet('font-weight: bold; color: green;')
+        save_btn_1 = QtWidgets.QPushButton(_("Save"))
+        save_btn_1.setStyleSheet("font-weight: bold; color: green;")
         save_btn_1.clicked.connect(playlists_win_save)
         soffset_1 = QtWidgets.QDoubleSpinBox()
         soffset_1.setMinimum(-240)
         soffset_1.setMaximum(240)
         soffset_1.setSingleStep(1)
         soffset_1.setDecimals(1)
-        offset_label_1 = QtWidgets.QLabel('{}:'.format(_('TV guide offset')))
+        offset_label_1 = QtWidgets.QLabel("{}:".format(_("TV guide offset")))
         offset_label_hours = QtWidgets.QLabel(
-            (gettext.ngettext("%d hour", "%d hours", 0) % 0).replace('0 ', '')
+            (gettext.ngettext("%d hour", "%d hours", 0) % 0).replace("0 ", "")
         )
 
         def lo_xtream_select_1():
@@ -1465,12 +1585,12 @@ if __name__ == '__main__':
             if item1.text():
                 epgname_lbl.setText(item1.text())
             else:
-                epgname_lbl.setText(_('Default'))
+                epgname_lbl.setText(_("Default"))
 
         esw_input = QtWidgets.QLineEdit()
-        esw_input.setPlaceholderText(_('Search'))
+        esw_input.setPlaceholderText(_("Search"))
         esw_button = QtWidgets.QPushButton()
-        esw_button.setText(_('Search'))
+        esw_button.setText(_("Search"))
         esw_button.clicked.connect(esw_input_edit)
         esw_select = QtWidgets.QListWidget()
         esw_select.itemDoubleClicked.connect(esw_select_clicked)
@@ -1492,25 +1612,29 @@ if __name__ == '__main__':
         epg_select_win.setCentralWidget(epg_select_win_widget)
 
         def ext_open_btn_clicked():
-            ext_player_file_1 = open(str(Path(LOCAL_DIR, 'extplayer.json')), 'w', encoding="utf8")
+            ext_player_file_1 = open(
+                str(Path(LOCAL_DIR, "extplayer.json")), "w", encoding="utf8"
+            )
             ext_player_file_1.write(json.dumps({"player": ext_player_txt.text()}))
             ext_player_file_1.close()
             subprocess.Popen(
-                ext_player_txt.text().split(' ') + [getArrayItem(item_selected)['url']]
+                ext_player_txt.text().split(" ") + [getArrayItem(item_selected)["url"]]
             )
             ext_win.close()
 
         ext_player_txt = QtWidgets.QLineEdit()
         player_ext = "mpv"
-        if os.path.isfile(str(Path(LOCAL_DIR, 'extplayer.json'))):
-            ext_player_file = open(str(Path(LOCAL_DIR, 'extplayer.json')), 'r', encoding="utf8")
+        if os.path.isfile(str(Path(LOCAL_DIR, "extplayer.json"))):
+            ext_player_file = open(
+                str(Path(LOCAL_DIR, "extplayer.json")), "r", encoding="utf8"
+            )
             ext_player_file_out = json.loads(ext_player_file.read())
             ext_player_file.close()
             player_ext = ext_player_file_out["player"]
         ext_player_txt.setText(player_ext)
         ext_open_btn = QtWidgets.QPushButton()
         ext_open_btn.clicked.connect(ext_open_btn_clicked)
-        ext_open_btn.setText(_('Open'))
+        ext_open_btn.setText(_("Open"))
         ext_widget = QtWidgets.QWidget()
         ext_layout = QtWidgets.QGridLayout()
         ext_layout.addWidget(ext_player_txt, 0, 0)
@@ -1523,20 +1647,22 @@ if __name__ == '__main__':
 
         playlists_saved = {}
 
-        if os.path.isfile(str(Path(LOCAL_DIR, 'playlists.json'))):
-            playlists_json = open(str(Path(LOCAL_DIR, 'playlists.json')), 'r', encoding="utf8")
+        if os.path.isfile(str(Path(LOCAL_DIR, "playlists.json"))):
+            playlists_json = open(
+                str(Path(LOCAL_DIR, "playlists.json")), "r", encoding="utf8"
+            )
             playlists_saved = json.loads(playlists_json.read())
             playlists_json.close()
 
         playlists_list = QtWidgets.QListWidget()
-        playlists_select = QtWidgets.QPushButton(_('Select'))
-        playlists_select.setStyleSheet('font-weight: bold; color: green;')
-        playlists_add = QtWidgets.QPushButton(_('Add'))
-        playlists_edit = QtWidgets.QPushButton(_('Edit'))
-        playlists_delete = QtWidgets.QPushButton(_('Delete'))
-        playlists_favourites = QtWidgets.QPushButton(_('Favourites+'))
-        playlists_settings = QtWidgets.QPushButton(_('Settings'))
-        playlists_settings.setStyleSheet('color: blue;')
+        playlists_select = QtWidgets.QPushButton(_("Select"))
+        playlists_select.setStyleSheet("font-weight: bold; color: green;")
+        playlists_add = QtWidgets.QPushButton(_("Add"))
+        playlists_edit = QtWidgets.QPushButton(_("Edit"))
+        playlists_delete = QtWidgets.QPushButton(_("Delete"))
+        playlists_favourites = QtWidgets.QPushButton(_("Favourites+"))
+        playlists_settings = QtWidgets.QPushButton(_("Settings"))
+        playlists_settings.setStyleSheet("color: blue;")
 
         playlists_win_widget = QtWidgets.QWidget()
         playlists_win_layout = QtWidgets.QGridLayout()
@@ -1559,7 +1685,7 @@ if __name__ == '__main__':
 
         def playlists_favourites_do():
             playlists_win.close()
-            sm3u.setText(str(Path(LOCAL_DIR, 'favplaylist.m3u')))
+            sm3u.setText(str(Path(LOCAL_DIR, "favplaylist.m3u")))
             sepg.setText("")
             save_settings()
 
@@ -1568,7 +1694,9 @@ if __name__ == '__main__':
         def playlists_json_save(playlists_save0=None):
             if not playlists_save0:
                 playlists_save0 = playlists_saved
-            playlists_json1 = open(str(Path(LOCAL_DIR, 'playlists.json')), 'w', encoding="utf8")
+            playlists_json1 = open(
+                str(Path(LOCAL_DIR, "playlists.json")), "w", encoding="utf8"
+            )
             playlists_json1.write(json.dumps(playlists_save0))
             playlists_json1.close()
 
@@ -1582,14 +1710,14 @@ if __name__ == '__main__':
                 except Exception:
                     pass
             qr0 = win_arg.frameGeometry()
-            qr0.moveCenter(
-                QtGui.QScreen.availableGeometry(used_screen).center()
-            )
+            qr0.moveCenter(QtGui.QScreen.availableGeometry(used_screen).center())
             win_arg.move(qr0.topLeft())
 
         qr = settings_win.frameGeometry()
         qr.moveCenter(
-            QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
+            QtGui.QScreen.availableGeometry(
+                QtWidgets.QApplication.primaryScreen()
+            ).center()
         )
         settings_win_l = qr.topLeft()
         origY = settings_win_l.y() - 150
@@ -1601,33 +1729,43 @@ if __name__ == '__main__':
         init_record(show_exception, ffmpeg_processes)
 
         def convert_time(times_1):
-            yr = time.strftime('%Y', time.localtime())
+            yr = time.strftime("%Y", time.localtime())
             yr = yr[0] + yr[1]
-            times_1_sp = times_1.split(' ')
-            times_1_sp_0 = times_1_sp[0].split('.')
+            times_1_sp = times_1.split(" ")
+            times_1_sp_0 = times_1_sp[0].split(".")
             times_1_sp_0[2] = yr + times_1_sp_0[2]
-            times_1_sp[0] = '.'.join(times_1_sp_0)
-            return ' '.join(times_1_sp)
+            times_1_sp[0] = ".".join(times_1_sp_0)
+            return " ".join(times_1_sp)
 
         def programme_clicked(item):
-            times = item.text().split('\n')[0]
-            start_time = convert_time(times.split(' - ')[0])
-            end_time = convert_time(times.split(' - ')[1])
-            starttime_w.setDateTime(QtCore.QDateTime.fromString(start_time, 'd.M.yyyy hh:mm'))
-            endtime_w.setDateTime(QtCore.QDateTime.fromString(end_time, 'd.M.yyyy hh:mm'))
+            times = item.text().split("\n")[0]
+            start_time = convert_time(times.split(" - ")[0])
+            end_time = convert_time(times.split(" - ")[1])
+            starttime_w.setDateTime(
+                QtCore.QDateTime.fromString(start_time, "d.M.yyyy hh:mm")
+            )
+            endtime_w.setDateTime(
+                QtCore.QDateTime.fromString(end_time, "d.M.yyyy hh:mm")
+            )
 
         def addrecord_clicked():
             selected_chan = choosechannel_ch.currentText()
-            if qt_library == 'PyQt6':
-                start_time_r = starttime_w.dateTime().toPython().strftime('%d.%m.%y %H:%M')
-                end_time_r = endtime_w.dateTime().toPython().strftime('%d.%m.%y %H:%M')
+            if qt_library == "PyQt6":
+                start_time_r = (
+                    starttime_w.dateTime().toPython().strftime("%d.%m.%y %H:%M")
+                )
+                end_time_r = endtime_w.dateTime().toPython().strftime("%d.%m.%y %H:%M")
             else:
-                start_time_r = starttime_w.dateTime().toPyDateTime().strftime('%d.%m.%y %H:%M')
-                end_time_r = endtime_w.dateTime().toPyDateTime().strftime('%d.%m.%y %H:%M')
+                start_time_r = (
+                    starttime_w.dateTime().toPyDateTime().strftime("%d.%m.%y %H:%M")
+                )
+                end_time_r = (
+                    endtime_w.dateTime().toPyDateTime().strftime("%d.%m.%y %H:%M")
+                )
             schedulers.addItem(
-                _('Channel') + ': ' + selected_chan + '\n'
-                '{}: '.format(_('Start record time')) + start_time_r + '\n'
-                '{}: '.format(_('End record time')) + end_time_r + '\n'
+                _("Channel") + ": " + selected_chan + "\n"
+                "{}: ".format(_("Start record time")) + start_time_r + "\n"
+                "{}: ".format(_("End record time")) + end_time_r + "\n"
             )
 
         sch_recordings = {}
@@ -1637,25 +1775,31 @@ if __name__ == '__main__':
             ch = ch_name.replace(" ", "_")
             for char in FORBIDDEN_CHARS:
                 ch = ch.replace(char, "")
-            cur_time = datetime.datetime.now().strftime('%d%m%Y_%H%M%S')
-            if not settings['scrrecnosubfolders']:
-                out_file = str(Path(
-                    save_folder,
-                    'recordings',
-                    'recording_-_' + cur_time + '_-_' + ch + '.mkv'
-                ))
+            cur_time = datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
+            if not settings["scrrecnosubfolders"]:
+                out_file = str(
+                    Path(
+                        save_folder,
+                        "recordings",
+                        "recording_-_" + cur_time + "_-_" + ch + ".mkv",
+                    )
+                )
             else:
-                out_file = str(Path(
-                    save_folder,
-                    'recording_-_' + cur_time + '_-_' + ch + '.mkv'
-                ))
-            record_url = getArrayItem(ch_name)['url']
+                out_file = str(
+                    Path(save_folder, "recording_-_" + cur_time + "_-_" + ch + ".mkv")
+                )
+            record_url = getArrayItem(ch_name)["url"]
             return [
                 record_return(
-                    record_url, out_file,
-                    ch_name, f"Referer: {settings['referer']}", get_ua_ref_for_channel
+                    record_url,
+                    out_file,
+                    ch_name,
+                    f"Referer: {settings['referer']}",
+                    get_ua_ref_for_channel,
                 ),
-                time.time(), out_file, ch_name
+                time.time(),
+                out_file,
+                ch_name,
             ]
 
         def do_stop_record(name2):
@@ -1689,11 +1833,7 @@ if __name__ == '__main__':
 
         def convert_size(size_bytes):
             return format_bytes(
-                size_bytes,
-                [
-                    "B", "KB", "MB", "GB", "TB",
-                    "PB", "EB", "ZB", "YB"
-                ]
+                size_bytes, ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
             )
 
         def record_thread_2():
@@ -1702,15 +1842,19 @@ if __name__ == '__main__':
                 activerec_list_value = activerec_list.verticalScrollBar().value()
                 activerec_list.clear()
                 for sch0 in sch_recordings:
-                    counted_time0 = format_seconds(time.time() - sch_recordings[sch0][1])
+                    counted_time0 = format_seconds(
+                        time.time() - sch_recordings[sch0][1]
+                    )
                     channel_name0 = sch_recordings[sch0][3]
                     file_name0 = sch_recordings[sch0][2]
                     file_size0 = "WAITING"
                     if os.path.isfile(file_name0):
                         file_size0 = convert_size(os.path.getsize(file_name0))
-                    activerec_list.addItem(channel_name0 + "\n" + counted_time0 + " " + file_size0)
+                    activerec_list.addItem(
+                        channel_name0 + "\n" + counted_time0 + " " + file_size0
+                    )
                 activerec_list.verticalScrollBar().setValue(activerec_list_value)
-                pl_text = "REC / " + _('Scheduler')
+                pl_text = "REC / " + _("Scheduler")
                 if activerec_list.count() != 0:
                     recViaScheduler = True
                     lbl2.setText(pl_text)
@@ -1718,7 +1862,8 @@ if __name__ == '__main__':
                 else:
                     if recViaScheduler:
                         logger.info(
-                            "Record via scheduler ended, waiting for ffmpeg process completion..."
+                            "Record via scheduler ended, waiting"
+                            " for ffmpeg process completion..."
                         )
                         record_post_action()
                     recViaScheduler = False
@@ -1746,52 +1891,69 @@ if __name__ == '__main__':
                         set_record_stop_icon()
                     else:
                         set_record_icon()
-                status = _('No planned recordings')
-                sch_items = [str(schedulers.item(i1).text()) for i1 in range(schedulers.count())]
+                status = _("No planned recordings")
+                sch_items = [
+                    str(schedulers.item(i1).text()) for i1 in range(schedulers.count())
+                ]
                 i3 = -1
                 for sch_item in sch_items:
                     i3 += 1
-                    status = _('Waiting for record')
-                    sch_item = [i2.split(': ')[1] for i2 in sch_item.split('\n') if i2]
+                    status = _("Waiting for record")
+                    sch_item = [i2.split(": ")[1] for i2 in sch_item.split("\n") if i2]
                     channel_name_rec = sch_item[0]
-                    current_time = time.strftime('%d.%m.%y %H:%M', time.localtime())
+                    current_time = time.strftime("%d.%m.%y %H:%M", time.localtime())
                     start_time_1 = sch_item[1]
                     end_time_1 = sch_item[2]
-                    array_name = str(channel_name_rec) + "_" + \
-                        str(start_time_1) + "_" + str(end_time_1)
+                    array_name = (
+                        str(channel_name_rec)
+                        + "_"
+                        + str(start_time_1)
+                        + "_"
+                        + str(end_time_1)
+                    )
                     if start_time_1 == current_time:
                         if array_name not in sch_recordings:
-                            st_planned = \
-                                "Starting planned record" + \
-                                " (start_time='{}' end_time='{}' channel='{}')"
+                            st_planned = (
+                                "Starting planned record"
+                                + " (start_time='{}' end_time='{}' channel='{}')"
+                            )
                             logger.info(
-                                st_planned.format(start_time_1, end_time_1, channel_name_rec)
+                                st_planned.format(
+                                    start_time_1, end_time_1, channel_name_rec
+                                )
                             )
                             sch_recordings[array_name] = do_start_record(array_name)
                             ffmpeg_processes.append(sch_recordings[array_name])
                     if end_time_1 == current_time:
                         if array_name in sch_recordings:
                             schedulers.takeItem(i3)
-                            stop_planned = \
-                                "Stopping planned record" + \
-                                " (start_time='{}' end_time='{}' channel='{}')"
+                            stop_planned = (
+                                "Stopping planned record"
+                                + " (start_time='{}' end_time='{}' channel='{}')"
+                            )
                             logger.info(
-                                stop_planned.format(start_time_1, end_time_1, channel_name_rec)
+                                stop_planned.format(
+                                    start_time_1, end_time_1, channel_name_rec
+                                )
                             )
                             do_stop_record(array_name)
                             sch_recordings.pop(array_name)
                     if sch_recordings:
-                        status = _('Recording')
-                statusrec_lbl.setText('{}: {}'.format(_('Status'), status))
+                        status = _("Recording")
+                statusrec_lbl.setText("{}: {}".format(_("Status"), status))
             except Exception:
                 pass
 
         def delrecord_clicked():
             schCurrentRow = schedulers.currentRow()
             if schCurrentRow != -1:
-                sch_index = '_'.join([
-                    xs.split(': ')[1] for xs in schedulers.item(schCurrentRow).text().split('\n') if xs
-                ])
+                sch_index = "_".join(
+                    [
+                        xs.split(": ")[1]
+                        for xs in schedulers.item(schCurrentRow).text().split("\n")
+                        if xs
+                    ]
+                )
                 schedulers.takeItem(schCurrentRow)
                 if sch_index in sch_recordings:
                     do_stop_record(sch_index)
@@ -1804,20 +1966,20 @@ if __name__ == '__main__':
         myFont4.setPointSize(11)
         myFont4.setBold(True)
         scheduler_clock.setFont(myFont4)
-        scheduler_clock.setStyleSheet('color: green')
-        plannedrec_lbl = QtWidgets.QLabel('{}:'.format(_('Planned recordings')))
-        activerec_lbl = QtWidgets.QLabel('{}:'.format(_('Active recordings')))
+        scheduler_clock.setStyleSheet("color: green")
+        plannedrec_lbl = QtWidgets.QLabel("{}:".format(_("Planned recordings")))
+        activerec_lbl = QtWidgets.QLabel("{}:".format(_("Active recordings")))
         statusrec_lbl = QtWidgets.QLabel()
         myFont5 = QtGui.QFont()
         myFont5.setBold(True)
         statusrec_lbl.setFont(myFont5)
-        choosechannel_lbl = QtWidgets.QLabel('{}:'.format(_('Choose channel')))
+        choosechannel_lbl = QtWidgets.QLabel("{}:".format(_("Choose channel")))
         choosechannel_ch = QtWidgets.QComboBox()
         tvguide_sch = QtWidgets.QListWidget()
         tvguide_sch.itemClicked.connect(programme_clicked)
-        addrecord_btn = QtWidgets.QPushButton(_('Add'))
+        addrecord_btn = QtWidgets.QPushButton(_("Add"))
         addrecord_btn.clicked.connect(addrecord_clicked)
-        delrecord_btn = QtWidgets.QPushButton(_('Remove'))
+        delrecord_btn = QtWidgets.QPushButton(_("Remove"))
         delrecord_btn.clicked.connect(delrecord_clicked)
 
         def scheduler_channelfilter_do():
@@ -1826,17 +1988,18 @@ if __name__ == '__main__':
             except Exception:
                 filter_txt2 = ""
             for item5 in range(choosechannel_ch.count()):
-                if unidecode(
-                    filter_txt2
-                ).lower().strip() in unidecode(choosechannel_ch.itemText(item5)).lower().strip():
+                if (
+                    unidecode(filter_txt2).lower().strip()
+                    in unidecode(choosechannel_ch.itemText(item5)).lower().strip()
+                ):
                     choosechannel_ch.view().setRowHidden(item5, False)
                 else:
                     choosechannel_ch.view().setRowHidden(item5, True)
 
         schedulerchannelfilter = QtWidgets.QLineEdit()
-        schedulerchannelfilter.setPlaceholderText(_('Search channel'))
+        schedulerchannelfilter.setPlaceholderText(_("Search channel"))
         schedulerchannelfiltersearch = QtWidgets.QPushButton()
-        schedulerchannelfiltersearch.setText(_('Search'))
+        schedulerchannelfiltersearch.setText(_("Search"))
         schedulerchannelfiltersearch.clicked.connect(scheduler_channelfilter_do)
 
         schedulerchannelwidget = QtWidgets.QWidget()
@@ -1851,26 +2014,26 @@ if __name__ == '__main__':
         scheduler_layout.addWidget(choosechannel_ch, 3, 0)
         scheduler_layout.addWidget(tvguide_sch, 4, 0)
 
-        starttime_lbl = QtWidgets.QLabel('{}:'.format(_('Start record time')))
-        endtime_lbl = QtWidgets.QLabel('{}:'.format(_('End record time')))
+        starttime_lbl = QtWidgets.QLabel("{}:".format(_("Start record time")))
+        endtime_lbl = QtWidgets.QLabel("{}:".format(_("End record time")))
         starttime_w = QtWidgets.QDateTimeEdit()
         starttime_w.setDateTime(
             QtCore.QDateTime.fromString(
-                time.strftime('%d.%m.%Y %H:%M', time.localtime()), 'd.M.yyyy hh:mm'
+                time.strftime("%d.%m.%Y %H:%M", time.localtime()), "d.M.yyyy hh:mm"
             )
         )
         endtime_w = QtWidgets.QDateTimeEdit()
         endtime_w.setDateTime(
             QtCore.QDateTime.fromString(
-                time.strftime('%d.%m.%Y %H:%M', time.localtime(time.time() + 60)),
-                'd.M.yyyy hh:mm'
+                time.strftime("%d.%m.%Y %H:%M", time.localtime(time.time() + 60)),
+                "d.M.yyyy hh:mm",
             )
         )
 
-        praction_lbl = QtWidgets.QLabel('{}:'.format(_('Post-recording\naction')))
+        praction_lbl = QtWidgets.QLabel("{}:".format(_("Post-recording\naction")))
         praction_choose = QtWidgets.QComboBox()
-        praction_choose.addItem(_('Nothing to do'))
-        praction_choose.addItem(_('Press Stop'))
+        praction_choose.addItem(_("Nothing to do"))
+        praction_choose.addItem(_("Press Stop"))
 
         schedulers = QtWidgets.QListWidget()
         activerec_list = QtWidgets.QListWidget()
@@ -1923,12 +2086,14 @@ if __name__ == '__main__':
         scheduler_layout_main1.addWidget(scheduler_layout_main_w4)
         scheduler_widget.setLayout(scheduler_layout_main1)
 
-        warning_lbl = QtWidgets.QLabel(_('Recording of two channels simultaneously is not available!'))
+        warning_lbl = QtWidgets.QLabel(
+            _("Recording of two channels simultaneously is not available!")
+        )
         myFont5 = QtGui.QFont()
         myFont5.setPointSize(11)
         myFont5.setBold(True)
         warning_lbl.setFont(myFont5)
-        warning_lbl.setStyleSheet('color: red')
+        warning_lbl.setStyleSheet("color: red")
         warning_lbl.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         scheduler_layout_main = QtWidgets.QVBoxLayout()
@@ -1957,25 +2122,33 @@ if __name__ == '__main__':
 
         def save_sort():
             global channel_sort
-            channel_sort = [sort_list.item(z0).text() for z0 in range(sort_list.count())]
+            channel_sort = [
+                sort_list.item(z0).text() for z0 in range(sort_list.count())
+            ]
             channel_sort2 = {}
-            if os.path.isfile(Path(LOCAL_DIR, 'sortchannels.json')):
-                with open(Path(LOCAL_DIR, 'sortchannels.json'), 'r', encoding="utf8") as file5:
+            if os.path.isfile(Path(LOCAL_DIR, "sortchannels.json")):
+                with open(
+                    Path(LOCAL_DIR, "sortchannels.json"), "r", encoding="utf8"
+                ) as file5:
                     channel_sort2 = json.loads(file5.read())
-            channel_sort2[settings['m3u']] = channel_sort
-            with open(Path(LOCAL_DIR, 'sortchannels.json'), 'w', encoding="utf8") as file4:
+            channel_sort2[settings["m3u"]] = channel_sort
+            with open(
+                Path(LOCAL_DIR, "sortchannels.json"), "w", encoding="utf8"
+            ) as file4:
                 file4.write(json.dumps(channel_sort2))
             sort_win.hide()
 
-        close_sort_btn = QtWidgets.QPushButton(_('Close'))
+        close_sort_btn = QtWidgets.QPushButton(_("Close"))
         close_sort_btn.clicked.connect(sort_win.hide)
-        close_sort_btn.setStyleSheet('color: red;')
+        close_sort_btn.setStyleSheet("color: red;")
 
-        save_sort_btn = QtWidgets.QPushButton(_('Save'))
-        save_sort_btn.setStyleSheet('font-weight: bold; color: green;')
+        save_sort_btn = QtWidgets.QPushButton(_("Save"))
+        save_sort_btn.setStyleSheet("font-weight: bold; color: green;")
         save_sort_btn.clicked.connect(save_sort)
 
-        sort_label = QtWidgets.QLabel(_('Do not forget\nto set custom sort order in settings!'))
+        sort_label = QtWidgets.QLabel(
+            _("Do not forget\nto set custom sort order in settings!")
+        )
         sort_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         sort_widget3 = QtWidgets.QWidget()
@@ -1999,33 +2172,29 @@ if __name__ == '__main__':
 
         home_folder = ""
         try:
-            home_folder = os.environ['HOME']
+            home_folder = os.environ["HOME"]
         except Exception:
             pass
 
         def m3u_select():
             fname = QtWidgets.QFileDialog.getOpenFileName(
-                settings_win,
-                _('Select m3u playlist'),
-                home_folder
+                settings_win, _("Select m3u playlist"), home_folder
             )[0]
             if fname:
                 sm3u.setText(fname)
 
         def epg_select():
             fname = QtWidgets.QFileDialog.getOpenFileName(
-                settings_win,
-                _('Select EPG file'),
-                home_folder
+                settings_win, _("Select EPG file"), home_folder
             )[0]
             if fname:
-                sepg.setText(fname if not fname.startswith('^^::MULTIPLE::^^') else '')
+                sepg.setText(fname if not fname.startswith("^^::MULTIPLE::^^") else "")
 
         def save_folder_select():
             folder_name = QtWidgets.QFileDialog.getExistingDirectory(
                 settings_win,
-                _('Select folder for recordings and screenshots'),
-                options=QtWidgets.QFileDialog.Option.ShowDirsOnly
+                _("Select folder for recordings and screenshots"),
+                options=QtWidgets.QFileDialog.Option.ShowDirsOnly,
             )
             if folder_name:
                 sfld.setText(folder_name)
@@ -2039,11 +2208,11 @@ if __name__ == '__main__':
         title.setFont(myFont2)
         title.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
-        deinterlace_lbl = QtWidgets.QLabel("{}:".format(_('Deinterlace')))
-        useragent_lbl = QtWidgets.QLabel("{}:".format(_('User agent')))
-        group_lbl = QtWidgets.QLabel("{}:".format(_('Group')))
+        deinterlace_lbl = QtWidgets.QLabel("{}:".format(_("Deinterlace")))
+        useragent_lbl = QtWidgets.QLabel("{}:".format(_("User agent")))
+        group_lbl = QtWidgets.QLabel("{}:".format(_("Group")))
         group_text = QtWidgets.QLineEdit()
-        hidden_lbl = QtWidgets.QLabel("{}:".format(_('Hide')))
+        hidden_lbl = QtWidgets.QLabel("{}:".format(_("Hide")))
         deinterlace_chk = QtWidgets.QCheckBox()
         hidden_chk = QtWidgets.QCheckBox()
         useragent_choose = QtWidgets.QLineEdit()
@@ -2055,22 +2224,22 @@ if __name__ == '__main__':
                     if x1 not in prog_ids_0:
                         prog_ids_0.append(x1)
             esw_select.clear()
-            esw_select.addItem('')
+            esw_select.addItem("")
             for prog_ids_0_dat in prog_ids_0:
                 esw_select.addItem(prog_ids_0_dat)
             esw_input_edit()
             moveWindowToCenter(epg_select_win)
             epg_select_win.show()
 
-        contrast_lbl = QtWidgets.QLabel("{}:".format(_('Contrast')))
-        brightness_lbl = QtWidgets.QLabel("{}:".format(_('Brightness')))
-        hue_lbl = QtWidgets.QLabel("{}:".format(_('Hue')))
-        saturation_lbl = QtWidgets.QLabel("{}:".format(_('Saturation')))
-        gamma_lbl = QtWidgets.QLabel("{}:".format(_('Gamma')))
-        videoaspect_lbl = QtWidgets.QLabel("{}:".format(_('Aspect ratio')))
-        zoom_lbl = QtWidgets.QLabel("{}:".format(_('Scale / Zoom')))
-        panscan_lbl = QtWidgets.QLabel("{}:".format(_('Pan and scan')))
-        epgname_btn = QtWidgets.QPushButton(_('EPG name'))
+        contrast_lbl = QtWidgets.QLabel("{}:".format(_("Contrast")))
+        brightness_lbl = QtWidgets.QLabel("{}:".format(_("Brightness")))
+        hue_lbl = QtWidgets.QLabel("{}:".format(_("Hue")))
+        saturation_lbl = QtWidgets.QLabel("{}:".format(_("Saturation")))
+        gamma_lbl = QtWidgets.QLabel("{}:".format(_("Gamma")))
+        videoaspect_lbl = QtWidgets.QLabel("{}:".format(_("Aspect ratio")))
+        zoom_lbl = QtWidgets.QLabel("{}:".format(_("Scale / Zoom")))
+        panscan_lbl = QtWidgets.QLabel("{}:".format(_("Pan and scan")))
+        epgname_btn = QtWidgets.QPushButton(_("EPG name"))
         epgname_btn.clicked.connect(epgname_btn_action)
 
         epgname_lbl = QtWidgets.QLabel()
@@ -2091,17 +2260,17 @@ if __name__ == '__main__':
         gamma_choose.setMinimum(-100)
         gamma_choose.setMaximum(100)
         videoaspect_vars = {
-            _('Default'): -1,
-            '16:9': '16:9',
-            '16:10': '16:10',
-            '1.85:1': '1.85:1',
-            '2.21:1': '2.21:1',
-            '2.35:1': '2.35:1',
-            '2.39:1': '2.39:1',
-            '4:3': '4:3',
-            '5:4': '5:4',
-            '5:3': '5:3',
-            '1:1': '1:1'
+            _("Default"): -1,
+            "16:9": "16:9",
+            "16:10": "16:10",
+            "1.85:1": "1.85:1",
+            "2.21:1": "2.21:1",
+            "2.35:1": "2.35:1",
+            "2.39:1": "2.39:1",
+            "4:3": "4:3",
+            "5:4": "5:4",
+            "5:3": "5:3",
+            "1:1": "1:1",
         }
         videoaspect_choose = QtWidgets.QComboBox()
         for videoaspect_var in videoaspect_vars:
@@ -2109,18 +2278,18 @@ if __name__ == '__main__':
 
         zoom_choose = QtWidgets.QComboBox()
         zoom_vars = {
-            _('Default'): 0,
-            '1.05': '1.05',
-            '1.1': '1.1',
-            '1.2': '1.2',
-            '1.3': '1.3',
-            '1.4': '1.4',
-            '1.5': '1.5',
-            '1.6': '1.6',
-            '1.7': '1.7',
-            '1.8': '1.8',
-            '1.9': '1.9',
-            '2': '2'
+            _("Default"): 0,
+            "1.05": "1.05",
+            "1.1": "1.1",
+            "1.2": "1.2",
+            "1.3": "1.3",
+            "1.4": "1.4",
+            "1.5": "1.5",
+            "1.6": "1.6",
+            "1.7": "1.7",
+            "1.8": "1.8",
+            "1.9": "1.9",
+            "2": "2",
         }
         for zoom_var in zoom_vars:
             zoom_choose.addItem(zoom_var)
@@ -2131,9 +2300,9 @@ if __name__ == '__main__':
         panscan_choose.setSingleStep(0.1)
         panscan_choose.setDecimals(1)
 
-        def_user_agent = settings['ua']
+        def_user_agent = settings["ua"]
         logger.info(f"Default user agent: {def_user_agent}")
-        if settings['referer']:
+        if settings["referer"]:
             logger.info(f"Default HTTP referer: {settings['referer']}")
         else:
             logger.info("Default HTTP referer: (empty)")
@@ -2153,7 +2322,10 @@ if __name__ == '__main__':
                         if not streaminfo_win.isVisible():
                             return
 
-                rates = {"video": stream_info.video_bitrates, "audio": stream_info.audio_bitrates}
+                rates = {
+                    "video": stream_info.video_bitrates,
+                    "audio": stream_info.audio_bitrates,
+                }
                 rate = "video"
                 if prop == "audio-bitrate":
                     rate = "audio"
@@ -2163,11 +2335,13 @@ if __name__ == '__main__':
                 br = sum(rates[rate]) / float(len(rates[rate]))
 
                 if rate == "video":
-                    stream_info.video_properties[_("General")][_("Average Bitrate")] = \
-                        ("%.f " + _('kbps')) % br
+                    stream_info.video_properties[_("General")][_("Average Bitrate")] = (
+                        "%.f " + _("kbps")
+                    ) % br
                 else:
-                    stream_info.audio_properties[_("General")][_("Average Bitrate")] = \
-                        ("%.f " + _('kbps')) % br
+                    stream_info.audio_properties[_("General")][_("Average Bitrate")] = (
+                        "%.f " + _("kbps")
+                    ) % br
             except Exception:
                 if not YukiData.bitrate_failed:
                     YukiData.bitrate_failed = True
@@ -2179,21 +2353,26 @@ if __name__ == '__main__':
                 if not params or not isinstance(params, dict):
                     return
                 if "w" in params and "h" in params:
-                    stream_info.video_properties[_("General")][_("Dimensions")] = "%sx%s" % (
-                        params["w"], params["h"]
-                    )
+                    stream_info.video_properties[_("General")][
+                        _("Dimensions")
+                    ] = "%sx%s" % (params["w"], params["h"])
                 if "aspect" in params:
                     aspect = round(float(params["aspect"]), 2)
-                    stream_info.video_properties[_("General")][_("Aspect")] = \
+                    stream_info.video_properties[_("General")][_("Aspect")] = (
                         "%s" % aspect
+                    )
                 if "pixelformat" in params:
-                    stream_info.video_properties[_("Color")][_("Pixel Format")] = \
-                        params["pixelformat"]
+                    stream_info.video_properties[_("Color")][
+                        _("Pixel Format")
+                    ] = params["pixelformat"]
                 if "gamma" in params:
-                    stream_info.video_properties[_("Color")][_("Gamma")] = params["gamma"]
+                    stream_info.video_properties[_("Color")][_("Gamma")] = params[
+                        "gamma"
+                    ]
                 if "average-bpp" in params:
-                    stream_info.video_properties[_("Color")][_("Bits Per Pixel")] = \
-                        params["average-bpp"]
+                    stream_info.video_properties[_("Color")][
+                        _("Bits Per Pixel")
+                    ] = params["average-bpp"]
             except Exception:
                 pass
 
@@ -2216,14 +2395,17 @@ if __name__ == '__main__':
                     stream_info.audio_properties[_("Layout")][_("Channels")] = chans
                 if "samplerate" in params:
                     sr = float(params["samplerate"]) / 1000.0
-                    stream_info.audio_properties[_("General")][_("Sample Rate")] = "%.1f KHz" % sr
+                    stream_info.audio_properties[_("General")][_("Sample Rate")] = (
+                        "%.1f KHz" % sr
+                    )
                 if "format" in params:
                     fmt = params["format"]
                     fmt = AUDIO_SAMPLE_FORMATS.get(fmt, fmt)
                     stream_info.audio_properties[_("General")][_("Format")] = fmt
                 if "channel-count" in params:
-                    stream_info.audio_properties[_("Layout")][_("Channel Count")] = \
-                        params["channel-count"]
+                    stream_info.audio_properties[_("Layout")][
+                        _("Channel Count")
+                    ] = params["channel-count"]
             except Exception:
                 pass
 
@@ -2231,7 +2413,9 @@ if __name__ == '__main__':
             try:
                 if not codec:
                     return
-                stream_info.audio_properties[_("General")][_("Codec")] = codec.split()[0]
+                stream_info.audio_properties[_("General")][_("Codec")] = codec.split()[
+                    0
+                ]
             except Exception:
                 pass
 
@@ -2275,24 +2459,38 @@ if __name__ == '__main__':
             stream_info.audio_bitrates.clear()
 
         def get_ua_ref_for_channel(channel_name1):
-            useragent_ref = settings['ua']
-            referer_ref = settings['referer']
+            useragent_ref = settings["ua"]
+            referer_ref = settings["referer"]
             if channel_name1 and channel_name1 in array:
-                useragent_ref = array[channel_name1]['useragent'] if \
-                    array[channel_name1]['useragent'] else settings['ua']
-                referer_ref = array[channel_name1]['referer'] if \
-                    array[channel_name1]['referer'] else settings['referer']
-            if settings['m3u'] in channel_sets:
-                channel_set = channel_sets[settings['m3u']]
+                useragent_ref = (
+                    array[channel_name1]["useragent"]
+                    if array[channel_name1]["useragent"]
+                    else settings["ua"]
+                )
+                referer_ref = (
+                    array[channel_name1]["referer"]
+                    if array[channel_name1]["referer"]
+                    else settings["referer"]
+                )
+            if settings["m3u"] in channel_sets:
+                channel_set = channel_sets[settings["m3u"]]
                 if channel_name1 and channel_name1 in channel_set:
                     channel_config = channel_set[channel_name1]
-                    if 'ua' in channel_config and channel_config['ua'] and channel_config['ua'] != settings['ua']:
-                        useragent_ref = channel_config['ua']
-                    if 'ref' in channel_config and channel_config['ref'] and channel_config['ref'] != settings['referer']:  # noqa: E501
-                        referer_ref = channel_config['ref']
+                    if (
+                        "ua" in channel_config
+                        and channel_config["ua"]
+                        and channel_config["ua"] != settings["ua"]
+                    ):
+                        useragent_ref = channel_config["ua"]
+                    if (
+                        "ref" in channel_config
+                        and channel_config["ref"]
+                        and channel_config["ref"] != settings["referer"]
+                    ):
+                        referer_ref = channel_config["ref"]
             return useragent_ref, referer_ref
 
-        def mpv_override_play(arg_override_play, channel_name1=''):
+        def mpv_override_play(arg_override_play, channel_name1=""):
             global event_handler
             on_before_play()
             useragent_ref, referer_ref = get_ua_ref_for_channel(channel_name1)
@@ -2302,13 +2500,13 @@ if __name__ == '__main__':
             else:
                 player.http_header_fields = ""
 
-            if not arg_override_play.endswith('/main.png'):
+            if not arg_override_play.endswith("/main.png"):
                 logger.info(f"Using User-Agent: {player.user_agent}")
                 cur_ref = ""
                 try:
                     for ref1 in player.http_header_fields:
-                        if ref1.startswith('Referer: '):
-                            ref1 = ref1.replace('Referer: ', '', 1)
+                        if ref1.startswith("Referer: "):
+                            ref1 = ref1.replace("Referer: ", "", 1)
                             cur_ref = ref1
                 except Exception:
                     pass
@@ -2335,11 +2533,11 @@ if __name__ == '__main__':
 
         def mpv_override_stop(ignore=False):
             global event_handler
-            player.command('stop')
+            player.command("stop")
             if not ignore:
                 logger.info("Disabling deinterlace for main.png")
                 player.deinterlace = False
-            player.play(str(Path('yuki_iptv', ICONS_FOLDER, 'main.png')))
+            player.play(str(Path("yuki_iptv", ICONS_FOLDER, "main.png")))
             player.pause = True
             if event_handler:
                 try:
@@ -2381,7 +2579,7 @@ if __name__ == '__main__':
                 mpv_override_stop(ignore)
             except Exception:
                 player.loop = True
-                mpv_override_play(str(Path('yuki_iptv', ICONS_FOLDER, 'main.png')))
+                mpv_override_play(str(Path("yuki_iptv", ICONS_FOLDER, "main.png")))
                 player.pause = True
 
         def setVideoAspect(va):
@@ -2409,34 +2607,36 @@ if __name__ == '__main__':
                 va1 = player.video_aspect
             return va1
 
-        def doPlay(play_url1, ua_ch=def_user_agent, chan_name_0=''):
+        def doPlay(play_url1, ua_ch=def_user_agent, chan_name_0=""):
             comm_instance.do_play_args = (play_url1, ua_ch, chan_name_0)
             logger.info("")
             logger.info(f"Playing '{chan_name_0}' ('{format_url_clean(play_url1)}')")
             # Loading
-            loading.setText(_('Loading...'))
-            loading.setStyleSheet('color: #778a30')
+            loading.setText(_("Loading..."))
+            loading.setStyleSheet("color: #778a30")
             showLoading()
             # Optimizations
             if play_url1.startswith("udp://") or play_url1.startswith("rtp://"):
                 try:
                     # For low latency on multicast
                     logger.info("Using multicast optimized settings")
-                    player.cache = 'no'
+                    player.cache = "no"
                     player.untimed = True
-                    player['cache-pause'] = False
-                    player['audio-buffer'] = 0
-                    player['vd-lavc-threads'] = 1
-                    player['demuxer-lavf-probe-info'] = 'nostreams'
-                    player['demuxer-lavf-analyzeduration'] = 0.1
-                    player['video-sync'] = 'audio'
-                    player['interpolation'] = False
-                    player['video-latency-hacks'] = True
+                    player["cache-pause"] = False
+                    player["audio-buffer"] = 0
+                    player["vd-lavc-threads"] = 1
+                    player["demuxer-lavf-probe-info"] = "nostreams"
+                    player["demuxer-lavf-analyzeduration"] = 0.1
+                    player["video-sync"] = "audio"
+                    player["interpolation"] = False
+                    player["video-latency-hacks"] = True
                 except Exception:
                     logger.warning("Failed to set multicast optimized settings!")
             try:
-                player.stream_lavf_o = \
-                    '-reconnect=1 -reconnect_at_eof=1 -reconnect_streamed=1 -reconnect_delay_max=2'
+                player.stream_lavf_o = (
+                    "-reconnect=1 -reconnect_at_eof=1 "
+                    "-reconnect_streamed=1 -reconnect_delay_max=2"
+                )
             except Exception:
                 pass
             player.loop = False
@@ -2449,9 +2649,9 @@ if __name__ == '__main__':
 
         def chan_set_save():
             chan_3 = title.text()
-            if settings['m3u'] not in channel_sets:
-                channel_sets[settings['m3u']] = {}
-            channel_sets[settings['m3u']][chan_3] = {
+            if settings["m3u"] not in channel_sets:
+                channel_sets[settings["m3u"]] = {}
+            channel_sets[settings["m3u"]][chan_3] = {
                 "deinterlace": deinterlace_chk.isChecked(),
                 "ua": useragent_choose.text(),
                 "ref": referer_choose_custom.text(),
@@ -2465,7 +2665,9 @@ if __name__ == '__main__':
                 "videoaspect": videoaspect_choose.currentIndex(),
                 "zoom": zoom_choose.currentIndex(),
                 "panscan": panscan_choose.value(),
-                "epgname": epgname_lbl.text() if epgname_lbl.text() != _('Default') else ''
+                "epgname": epgname_lbl.text()
+                if epgname_lbl.text() != _("Default")
+                else "",
             }
             save_channel_sets()
             if playing_chan == chan_3:
@@ -2475,15 +2677,19 @@ if __name__ == '__main__':
                 player.hue = hue_choose.value()
                 player.saturation = saturation_choose.value()
                 player.gamma = gamma_choose.value()
-                player.video_zoom = zoom_vars[list(zoom_vars)[zoom_choose.currentIndex()]]
+                player.video_zoom = zoom_vars[
+                    list(zoom_vars)[zoom_choose.currentIndex()]
+                ]
                 player.panscan = panscan_choose.value()
                 setVideoAspect(
-                    videoaspect_vars[list(videoaspect_vars)[videoaspect_choose.currentIndex()]]
+                    videoaspect_vars[
+                        list(videoaspect_vars)[videoaspect_choose.currentIndex()]
+                    ]
                 )
             btn_update.click()
             chan_win.close()
 
-        save_btn = QtWidgets.QPushButton(_('Save settings'))
+        save_btn = QtWidgets.QPushButton(_("Save settings"))
         save_btn.clicked.connect(chan_set_save)
 
         horizontalLayout = QtWidgets.QHBoxLayout()
@@ -2619,37 +2825,38 @@ if __name__ == '__main__':
             global epg_thread_2
             settings_old = settings.copy()
             udp_proxy_text = sudp.text()
-            udp_proxy_starts = udp_proxy_text.startswith('http://') or \
-                udp_proxy_text.startswith('https://')
+            udp_proxy_starts = udp_proxy_text.startswith(
+                "http://"
+            ) or udp_proxy_text.startswith("https://")
             if udp_proxy_text and not udp_proxy_starts:
-                udp_proxy_text = 'http://' + udp_proxy_text
+                udp_proxy_text = "http://" + udp_proxy_text
             if udp_proxy_text:
-                if os.path.isfile(str(Path(LOCAL_DIR, 'playlistcache.json'))):
-                    os.remove(str(Path(LOCAL_DIR, 'playlistcache.json')))
+                if os.path.isfile(str(Path(LOCAL_DIR, "playlistcache.json"))):
+                    os.remove(str(Path(LOCAL_DIR, "playlistcache.json")))
             if settings["epgoffset"] != soffset.value():
-                if os.path.isfile(str(Path(LOCAL_DIR, 'epg.cache'))):
-                    os.remove(str(Path(LOCAL_DIR, 'epg.cache')))
-            if sort_widget.currentIndex() != settings['sort']:
-                if os.path.isfile(str(Path(LOCAL_DIR, 'playlistcache.json'))):
-                    os.remove(str(Path(LOCAL_DIR, 'playlistcache.json')))
+                if os.path.isfile(str(Path(LOCAL_DIR, "epg.cache"))):
+                    os.remove(str(Path(LOCAL_DIR, "epg.cache")))
+            if sort_widget.currentIndex() != settings["sort"]:
+                if os.path.isfile(str(Path(LOCAL_DIR, "playlistcache.json"))):
+                    os.remove(str(Path(LOCAL_DIR, "playlistcache.json")))
             sfld_text = sfld.text()
-            HOME_SYMBOL = '~'
+            HOME_SYMBOL = "~"
             try:
-                if 'HOME' in os.environ:
-                    HOME_SYMBOL = os.environ['HOME']
+                if "HOME" in os.environ:
+                    HOME_SYMBOL = os.environ["HOME"]
             except Exception:
                 pass
             try:
                 if sfld_text:
-                    if sfld_text[0] == '~':
-                        sfld_text = sfld_text.replace('~', HOME_SYMBOL, 1)
+                    if sfld_text[0] == "~":
+                        sfld_text = sfld_text.replace("~", HOME_SYMBOL, 1)
             except Exception:
                 pass
 
             if settings["epgdays"] != epgdays.value():
                 logger.info("EPG days option changed, removing cache")
-                if os.path.exists(str(Path(LOCAL_DIR, 'epg.cache'))):
-                    os.remove(str(Path(LOCAL_DIR, 'epg.cache')))
+                if os.path.exists(str(Path(LOCAL_DIR, "epg.cache"))):
+                    os.remove(str(Path(LOCAL_DIR, "epg.cache")))
 
             settings_arr = {
                 "m3u": sm3u.text(),
@@ -2665,33 +2872,35 @@ if __name__ == '__main__':
                 "epgdays": epgdays.value(),
                 "ua": useragent_choose_2.text(),
                 "mpv_options": mpv_options.text(),
-                'donotupdateepg': donot_flag.isChecked(),
-                'openprevchan': openprevchan_flag.isChecked(),
-                'hidempv': hidempv_flag.isChecked(),
-                'hideepgpercentage': hideepgpercentage_flag.isChecked(),
-                'hidebitrateinfo': hidebitrateinfo_flag.isChecked(),
-                'styleredefoff': styleredefoff_flag.isChecked(),
-                'volumechangestep': volumechangestep_choose.value(),
-                'mouseswitchchannels': mouseswitchchannels_flag.isChecked(),
-                'autoreconnection': autoreconnection_flag.isChecked(),
-                'showplaylistmouse': showplaylistmouse_flag.isChecked(),
-                'channellogos': channellogos_select.currentIndex(),
-                'nocacheepg': nocacheepg_flag.isChecked(),
-                'scrrecnosubfolders': scrrecnosubfolders_flag.isChecked(),
-                'hidetvprogram': hidetvprogram_flag.isChecked(),
-                'showcontrolsmouse': showcontrolsmouse_flag.isChecked(),
-                'catchupenable': catchupenable_flag.isChecked(),
-                'flpopacity': flpopacity_input.value(),
-                'panelposition': panelposition_choose.currentIndex(),
-                'videoaspect': videoaspect_def_choose.currentIndex(),
-                'zoom': zoom_def_choose.currentIndex(),
-                'panscan': panscan_def_choose.value(),
-                'referer': referer_choose.text()
+                "donotupdateepg": donot_flag.isChecked(),
+                "openprevchan": openprevchan_flag.isChecked(),
+                "hidempv": hidempv_flag.isChecked(),
+                "hideepgpercentage": hideepgpercentage_flag.isChecked(),
+                "hidebitrateinfo": hidebitrateinfo_flag.isChecked(),
+                "styleredefoff": styleredefoff_flag.isChecked(),
+                "volumechangestep": volumechangestep_choose.value(),
+                "mouseswitchchannels": mouseswitchchannels_flag.isChecked(),
+                "autoreconnection": autoreconnection_flag.isChecked(),
+                "showplaylistmouse": showplaylistmouse_flag.isChecked(),
+                "channellogos": channellogos_select.currentIndex(),
+                "nocacheepg": nocacheepg_flag.isChecked(),
+                "scrrecnosubfolders": scrrecnosubfolders_flag.isChecked(),
+                "hidetvprogram": hidetvprogram_flag.isChecked(),
+                "showcontrolsmouse": showcontrolsmouse_flag.isChecked(),
+                "catchupenable": catchupenable_flag.isChecked(),
+                "flpopacity": flpopacity_input.value(),
+                "panelposition": panelposition_choose.currentIndex(),
+                "videoaspect": videoaspect_def_choose.currentIndex(),
+                "zoom": zoom_def_choose.currentIndex(),
+                "panscan": panscan_def_choose.value(),
+                "referer": referer_choose.text(),
             }
-            if catchupenable_flag.isChecked() != settings_old['catchupenable']:
-                if os.path.exists(str(Path(LOCAL_DIR, 'epg.cache'))):
-                    os.remove(str(Path(LOCAL_DIR, 'epg.cache')))
-            settings_file1 = open(str(Path(LOCAL_DIR, 'settings.json')), 'w', encoding="utf8")
+            if catchupenable_flag.isChecked() != settings_old["catchupenable"]:
+                if os.path.exists(str(Path(LOCAL_DIR, "epg.cache"))):
+                    os.remove(str(Path(LOCAL_DIR, "epg.cache")))
+            settings_file1 = open(
+                str(Path(LOCAL_DIR, "settings.json")), "w", encoding="utf8"
+            )
             settings_file1.write(json.dumps(settings_arr))
             settings_file1.close()
             settings_win.hide()
@@ -2701,68 +2910,74 @@ if __name__ == '__main__':
 
         wid2 = QtWidgets.QWidget()
 
-        m3u_label = QtWidgets.QLabel('{}:'.format(_('M3U / XSPF playlist')))
-        update_label = QtWidgets.QLabel('{}:'.format(_('Update playlist\nat launch')))
-        epg_label = QtWidgets.QLabel('{}:'.format(_('TV guide\naddress')))
-        dei_label = QtWidgets.QLabel('{}:'.format(_('Deinterlace')))
-        hwaccel_label = QtWidgets.QLabel('{}:'.format(_('Hardware\nacceleration')))
-        sort_label = QtWidgets.QLabel('{}:'.format(_('Channel\nsort')))
-        cache_label = QtWidgets.QLabel('{}:'.format(_('Cache')))
-        udp_label = QtWidgets.QLabel('{}:'.format(_('UDP proxy')))
-        fld_label = QtWidgets.QLabel('{}:'.format(_('Folder for recordings\nand screenshots')))
+        m3u_label = QtWidgets.QLabel("{}:".format(_("M3U / XSPF playlist")))
+        update_label = QtWidgets.QLabel("{}:".format(_("Update playlist\nat launch")))
+        epg_label = QtWidgets.QLabel("{}:".format(_("TV guide\naddress")))
+        dei_label = QtWidgets.QLabel("{}:".format(_("Deinterlace")))
+        hwaccel_label = QtWidgets.QLabel("{}:".format(_("Hardware\nacceleration")))
+        sort_label = QtWidgets.QLabel("{}:".format(_("Channel\nsort")))
+        cache_label = QtWidgets.QLabel("{}:".format(_("Cache")))
+        udp_label = QtWidgets.QLabel("{}:".format(_("UDP proxy")))
+        fld_label = QtWidgets.QLabel(
+            "{}:".format(_("Folder for recordings\nand screenshots"))
+        )
 
         def reset_channel_settings():
-            if os.path.isfile(str(Path(LOCAL_DIR, 'channelsettings.json'))):
-                os.remove(str(Path(LOCAL_DIR, 'channelsettings.json')))
-            if os.path.isfile(str(Path(LOCAL_DIR, 'favouritechannels.json'))):
-                os.remove(str(Path(LOCAL_DIR, 'favouritechannels.json')))
-            if os.path.isfile(str(Path(LOCAL_DIR, 'sortchannels.json'))):
-                os.remove(str(Path(LOCAL_DIR, 'sortchannels.json')))
+            if os.path.isfile(str(Path(LOCAL_DIR, "channelsettings.json"))):
+                os.remove(str(Path(LOCAL_DIR, "channelsettings.json")))
+            if os.path.isfile(str(Path(LOCAL_DIR, "favouritechannels.json"))):
+                os.remove(str(Path(LOCAL_DIR, "favouritechannels.json")))
+            if os.path.isfile(str(Path(LOCAL_DIR, "sortchannels.json"))):
+                os.remove(str(Path(LOCAL_DIR, "sortchannels.json")))
             save_settings()
 
         def do_clear_logo_cache():
             logger.info("Clearing channel logos cache...")
-            if os.path.isdir(Path(LOCAL_DIR, 'logo_cache')):
-                channel_logos = os.listdir(Path(LOCAL_DIR, 'logo_cache'))
+            if os.path.isdir(Path(LOCAL_DIR, "logo_cache")):
+                channel_logos = os.listdir(Path(LOCAL_DIR, "logo_cache"))
                 for channel_logo in channel_logos:
-                    if os.path.isfile(Path(LOCAL_DIR, 'logo_cache', channel_logo)):
-                        os.remove(Path(LOCAL_DIR, 'logo_cache', channel_logo))
+                    if os.path.isfile(Path(LOCAL_DIR, "logo_cache", channel_logo)):
+                        os.remove(Path(LOCAL_DIR, "logo_cache", channel_logo))
             logger.info("Channel logos cache cleared!")
 
         sm3u = QtWidgets.QLineEdit()
-        sm3u.setPlaceholderText(_('Path to file or URL'))
-        sm3u.setText(settings['m3u'])
+        sm3u.setPlaceholderText(_("Path to file or URL"))
+        sm3u.setText(settings["m3u"])
         sepg = QtWidgets.QLineEdit()
-        sepg.setPlaceholderText(_('Path to file or URL'))
-        sepg.setText(settings['epg'] if not settings['epg'].startswith('^^::MULTIPLE::^^') else '')
-        sudp = QtWidgets.QLineEdit()
-        sudp.setText(settings['udp_proxy'])
-        sdei = QtWidgets.QCheckBox()
-        sdei.setChecked(settings['deinterlace'])
-        shwaccel = QtWidgets.QCheckBox()
-        shwaccel.setChecked(settings['hwaccel'])
-        supdate = QtWidgets.QCheckBox()
-        supdate.setChecked(settings['nocache'])
-        sfld = QtWidgets.QLineEdit()
-        sfld.setText(settings['save_folder'])
-        scache = QtWidgets.QLabel(
-            (gettext.ngettext("%d second", "%d seconds", 0) % 0).replace('0 ', '')
+        sepg.setPlaceholderText(_("Path to file or URL"))
+        sepg.setText(
+            settings["epg"]
+            if not settings["epg"].startswith("^^::MULTIPLE::^^")
+            else ""
         )
-        sselect = QtWidgets.QLabel("{}:".format(_('Or select provider')))
-        sselect.setStyleSheet('color: #00008B;')
-        ssave = QtWidgets.QPushButton(_('Save settings'))
-        ssave.setStyleSheet('font-weight: bold; color: green;')
+        sudp = QtWidgets.QLineEdit()
+        sudp.setText(settings["udp_proxy"])
+        sdei = QtWidgets.QCheckBox()
+        sdei.setChecked(settings["deinterlace"])
+        shwaccel = QtWidgets.QCheckBox()
+        shwaccel.setChecked(settings["hwaccel"])
+        supdate = QtWidgets.QCheckBox()
+        supdate.setChecked(settings["nocache"])
+        sfld = QtWidgets.QLineEdit()
+        sfld.setText(settings["save_folder"])
+        scache = QtWidgets.QLabel(
+            (gettext.ngettext("%d second", "%d seconds", 0) % 0).replace("0 ", "")
+        )
+        sselect = QtWidgets.QLabel("{}:".format(_("Or select provider")))
+        sselect.setStyleSheet("color: #00008B;")
+        ssave = QtWidgets.QPushButton(_("Save settings"))
+        ssave.setStyleSheet("font-weight: bold; color: green;")
         ssave.clicked.connect(save_settings)
-        sreset = QtWidgets.QPushButton(_('Reset channel settings and sorting'))
+        sreset = QtWidgets.QPushButton(_("Reset channel settings and sorting"))
         sreset.clicked.connect(reset_channel_settings)
-        clear_logo_cache = QtWidgets.QPushButton(_('Clear logo cache'))
+        clear_logo_cache = QtWidgets.QPushButton(_("Clear logo cache"))
         clear_logo_cache.clicked.connect(do_clear_logo_cache)
         sort_widget = QtWidgets.QComboBox()
-        sort_widget.addItem(_('as in playlist'))
-        sort_widget.addItem(_('alphabetical order'))
-        sort_widget.addItem(_('reverse alphabetical order'))
-        sort_widget.addItem(_('custom'))
-        sort_widget.setCurrentIndex(settings['sort'])
+        sort_widget.addItem(_("as in playlist"))
+        sort_widget.addItem(_("alphabetical order"))
+        sort_widget.addItem(_("reverse alphabetical order"))
+        sort_widget.addItem(_("custom"))
+        sort_widget.setCurrentIndex(settings["sort"])
 
         def close_settings():
             settings_win.hide()
@@ -2771,33 +2986,33 @@ if __name__ == '__main__':
                     myExitHandler_before()
                     sys.exit(0)
 
-        sclose = QtWidgets.QPushButton(_('Close'))
-        sclose.setStyleSheet('color: red;')
+        sclose = QtWidgets.QPushButton(_("Close"))
+        sclose.setStyleSheet("color: red;")
         sclose.clicked.connect(close_settings)
 
         def update_m3u():
-            if os.path.isfile(str(Path(LOCAL_DIR, 'playlistcache.json'))):
-                os.remove(str(Path(LOCAL_DIR, 'playlistcache.json')))
+            if os.path.isfile(str(Path(LOCAL_DIR, "playlistcache.json"))):
+                os.remove(str(Path(LOCAL_DIR, "playlistcache.json")))
             save_settings()
 
         sm3ufile = QtWidgets.QPushButton()
-        sm3ufile.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'file.png'))))
+        sm3ufile.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "file.png"))))
         sm3ufile.clicked.connect(m3u_select)
         sm3uupd = QtWidgets.QPushButton()
-        sm3uupd.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'update.png'))))
+        sm3uupd.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "update.png"))))
         sm3uupd.clicked.connect(update_m3u)
-        sm3uupd.setToolTip(_('Update'))
+        sm3uupd.setToolTip(_("Update"))
 
         sepgfile = QtWidgets.QPushButton()
-        sepgfile.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'file.png'))))
+        sepgfile.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "file.png"))))
         sepgfile.clicked.connect(epg_select)
         sepgupd = QtWidgets.QPushButton()
-        sepgupd.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'update.png'))))
+        sepgupd.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "update.png"))))
         sepgupd.clicked.connect(force_update_epg_act)
-        sepgupd.setToolTip(_('Update'))
+        sepgupd.setToolTip(_("Update"))
 
         sfolder = QtWidgets.QPushButton()
-        sfolder.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'file.png'))))
+        sfolder.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "file.png"))))
         sfolder.clicked.connect(save_folder_select)
 
         soffset = QtWidgets.QDoubleSpinBox()
@@ -2813,12 +3028,10 @@ if __name__ == '__main__':
         scache1.setValue(settings["cache_secs"])
 
         epgdays_p = QtWidgets.QLabel(
-            (gettext.ngettext("%d day", "%d days", 0) % 0).replace('0 ', '')
+            (gettext.ngettext("%d day", "%d days", 0) % 0).replace("0 ", "")
         )
 
-        epgdays_label = QtWidgets.QLabel('{}:'.format(
-            _('Load EPG for')
-        ))
+        epgdays_label = QtWidgets.QLabel("{}:".format(_("Load EPG for")))
 
         epgdays = QtWidgets.QSpinBox()
         epgdays.setMinimum(1)
@@ -2827,8 +3040,8 @@ if __name__ == '__main__':
 
         def xtream_select():
             sm3u_text = sm3u.text()
-            if sm3u_text.startswith('XTREAM::::::::::::::'):
-                sm3u_text_sp = sm3u_text.split('::::::::::::::')
+            if sm3u_text.startswith("XTREAM::::::::::::::"):
+                sm3u_text_sp = sm3u_text.split("::::::::::::::")
                 xtr_username_input.setText(sm3u_text_sp[1])
                 xtr_password_input.setText(sm3u_text_sp[2])
                 xtr_url_input.setText(sm3u_text_sp[3])
@@ -2837,125 +3050,153 @@ if __name__ == '__main__':
 
         def xtream_select_1():
             m3u_edit_1_text = m3u_edit_1.text()
-            if m3u_edit_1_text.startswith('XTREAM::::::::::::::'):
-                m3u_edit_1_text_sp = m3u_edit_1_text.split('::::::::::::::')
+            if m3u_edit_1_text.startswith("XTREAM::::::::::::::"):
+                m3u_edit_1_text_sp = m3u_edit_1_text.split("::::::::::::::")
                 xtr_username_input_2.setText(m3u_edit_1_text_sp[1])
                 xtr_password_input_2.setText(m3u_edit_1_text_sp[2])
                 xtr_url_input_2.setText(m3u_edit_1_text_sp[3])
             moveWindowToCenter(xtream_win_2)
             xtream_win_2.show()
 
-        useragent_lbl_2 = QtWidgets.QLabel("{}:".format(_('User agent')))
+        useragent_lbl_2 = QtWidgets.QLabel("{}:".format(_("User agent")))
         referer_lbl = QtWidgets.QLabel(_("HTTP Referer:"))
         referer_choose = QtWidgets.QLineEdit()
         referer_choose.setText(settings["referer"])
         useragent_choose_2 = QtWidgets.QLineEdit()
-        useragent_choose_2.setText(settings['ua'])
+        useragent_choose_2.setText(settings["ua"])
 
-        mpv_label = QtWidgets.QLabel("{} ({}):".format(
-            _('mpv options'),
-            '<a href="https://mpv.io/manual/master/#options">{}</a>'.format(
-                _('list')
+        mpv_label = QtWidgets.QLabel(
+            "{} ({}):".format(
+                _("mpv options"),
+                '<a href="https://mpv.io/manual/master/#options">{}</a>'.format(
+                    _("list")
+                ),
             )
-        ))
+        )
         mpv_label.setOpenExternalLinks(True)
         mpv_label.setTextInteractionFlags(
             QtCore.Qt.TextInteractionFlag.LinksAccessibleByMouse
         )
         mpv_options = QtWidgets.QLineEdit()
-        mpv_options.setText(settings['mpv_options'])
-        donot_label = QtWidgets.QLabel("{}:".format(_('Do not update\nEPG at boot')))
+        mpv_options.setText(settings["mpv_options"])
+        donot_label = QtWidgets.QLabel("{}:".format(_("Do not update\nEPG at boot")))
         donot_flag = QtWidgets.QCheckBox()
-        donot_flag.setChecked(settings['donotupdateepg'])
+        donot_flag.setChecked(settings["donotupdateepg"])
 
-        openprevchan_label = QtWidgets.QLabel("{}:".format(_('Open previous channel\nat startup')))
-        hidempv_label = QtWidgets.QLabel("{}:".format(_('Hide mpv panel')))
-        hideepgpercentage_label = QtWidgets.QLabel("{}:".format(_('Hide EPG percentage')))
-        hidebitrateinfo_label = QtWidgets.QLabel("{}:".format(_('Hide bitrate / video info')))
-        styleredefoff_label = QtWidgets.QLabel("{}:".format(_('Enable styles redefinition')))
-        volumechangestep_label = QtWidgets.QLabel("{}:".format(_('Volume change step')))
+        openprevchan_label = QtWidgets.QLabel(
+            "{}:".format(_("Open previous channel\nat startup"))
+        )
+        hidempv_label = QtWidgets.QLabel("{}:".format(_("Hide mpv panel")))
+        hideepgpercentage_label = QtWidgets.QLabel(
+            "{}:".format(_("Hide EPG percentage"))
+        )
+        hidebitrateinfo_label = QtWidgets.QLabel(
+            "{}:".format(_("Hide bitrate / video info"))
+        )
+        styleredefoff_label = QtWidgets.QLabel(
+            "{}:".format(_("Enable styles redefinition"))
+        )
+        volumechangestep_label = QtWidgets.QLabel("{}:".format(_("Volume change step")))
         volumechangestep_percent = QtWidgets.QLabel("%")
 
         openprevchan_flag = QtWidgets.QCheckBox()
-        openprevchan_flag.setChecked(settings['openprevchan'])
+        openprevchan_flag.setChecked(settings["openprevchan"])
 
         hidempv_flag = QtWidgets.QCheckBox()
-        hidempv_flag.setChecked(settings['hidempv'])
+        hidempv_flag.setChecked(settings["hidempv"])
 
         hideepgpercentage_flag = QtWidgets.QCheckBox()
-        hideepgpercentage_flag.setChecked(settings['hideepgpercentage'])
+        hideepgpercentage_flag.setChecked(settings["hideepgpercentage"])
 
         hidebitrateinfo_flag = QtWidgets.QCheckBox()
-        hidebitrateinfo_flag.setChecked(settings['hidebitrateinfo'])
+        hidebitrateinfo_flag.setChecked(settings["hidebitrateinfo"])
 
         styleredefoff_flag = QtWidgets.QCheckBox()
-        styleredefoff_flag.setChecked(settings['styleredefoff'])
+        styleredefoff_flag.setChecked(settings["styleredefoff"])
 
         volumechangestep_choose = QtWidgets.QSpinBox()
         volumechangestep_choose.setMinimum(1)
         volumechangestep_choose.setMaximum(50)
-        volumechangestep_choose.setValue(settings['volumechangestep'])
+        volumechangestep_choose.setValue(settings["volumechangestep"])
 
-        flpopacity_label = QtWidgets.QLabel("{}:".format(_('Floating panels opacity')))
+        flpopacity_label = QtWidgets.QLabel("{}:".format(_("Floating panels opacity")))
         flpopacity_input = QtWidgets.QDoubleSpinBox()
         flpopacity_input.setMinimum(0.01)
         flpopacity_input.setMaximum(1)
         flpopacity_input.setSingleStep(0.1)
         flpopacity_input.setDecimals(2)
-        flpopacity_input.setValue(settings['flpopacity'])
+        flpopacity_input.setValue(settings["flpopacity"])
 
-        panelposition_label = QtWidgets.QLabel("{}:".format(_('Floating panel\nposition')))
+        panelposition_label = QtWidgets.QLabel(
+            "{}:".format(_("Floating panel\nposition"))
+        )
         panelposition_choose = QtWidgets.QComboBox()
-        panelposition_choose.addItem(_('Right'))
-        panelposition_choose.addItem(_('Left'))
-        panelposition_choose.setCurrentIndex(settings['panelposition'])
+        panelposition_choose.addItem(_("Right"))
+        panelposition_choose.addItem(_("Left"))
+        panelposition_choose.setCurrentIndex(settings["panelposition"])
 
-        mouseswitchchannels_label = QtWidgets.QLabel("{}:".format(_('Switch channels with\nthe mouse wheel')))
-        autoreconnection_label = QtWidgets.QLabel("{}:".format(_('Automatic\nreconnection')))
-        defaultchangevol_label = QtWidgets.QLabel("({})".format(_('by default:\nchange volume')))
-        defaultchangevol_label.setStyleSheet('color:blue')
+        mouseswitchchannels_label = QtWidgets.QLabel(
+            "{}:".format(_("Switch channels with\nthe mouse wheel"))
+        )
+        autoreconnection_label = QtWidgets.QLabel(
+            "{}:".format(_("Automatic\nreconnection"))
+        )
+        defaultchangevol_label = QtWidgets.QLabel(
+            "({})".format(_("by default:\nchange volume"))
+        )
+        defaultchangevol_label.setStyleSheet("color:blue")
         mouseswitchchannels_flag = QtWidgets.QCheckBox()
-        mouseswitchchannels_flag.setChecked(settings['mouseswitchchannels'])
+        mouseswitchchannels_flag.setChecked(settings["mouseswitchchannels"])
         autoreconnection_flag = QtWidgets.QCheckBox()
-        autoreconnection_flag.setChecked(settings['autoreconnection'])
+        autoreconnection_flag.setChecked(settings["autoreconnection"])
 
         # Mark option as experimental
-        autoreconnection_flag.setToolTip(_('WARNING: experimental function, working with problems'))
-        autoreconnection_label.setToolTip(_('WARNING: experimental function, working with problems'))
-        autoreconnection_label.setStyleSheet('color: #cf9e17')
+        autoreconnection_flag.setToolTip(
+            _("WARNING: experimental function, working with problems")
+        )
+        autoreconnection_label.setToolTip(
+            _("WARNING: experimental function, working with problems")
+        )
+        autoreconnection_label.setStyleSheet("color: #cf9e17")
 
-        showplaylistmouse_label = QtWidgets.QLabel("{}:".format(_('Show playlist\non mouse move')))
+        showplaylistmouse_label = QtWidgets.QLabel(
+            "{}:".format(_("Show playlist\non mouse move"))
+        )
         showplaylistmouse_flag = QtWidgets.QCheckBox()
-        showplaylistmouse_flag.setChecked(settings['showplaylistmouse'])
-        showcontrolsmouse_label = QtWidgets.QLabel("{}:".format(_('Show controls\non mouse move')))
+        showplaylistmouse_flag.setChecked(settings["showplaylistmouse"])
+        showcontrolsmouse_label = QtWidgets.QLabel(
+            "{}:".format(_("Show controls\non mouse move"))
+        )
         showcontrolsmouse_flag = QtWidgets.QCheckBox()
-        showcontrolsmouse_flag.setChecked(settings['showcontrolsmouse'])
+        showcontrolsmouse_flag.setChecked(settings["showcontrolsmouse"])
 
-        channellogos_label = QtWidgets.QLabel("{}:".format(_('Channel logos')))
+        channellogos_label = QtWidgets.QLabel("{}:".format(_("Channel logos")))
         channellogos_select = QtWidgets.QComboBox()
-        channellogos_select.addItem(_('Prefer M3U'))
-        channellogos_select.addItem(_('Prefer EPG'))
-        channellogos_select.addItem(_('Do not load from EPG'))
-        channellogos_select.addItem(_('Do not load any logos'))
-        channellogos_select.setCurrentIndex(settings['channellogos'])
+        channellogos_select.addItem(_("Prefer M3U"))
+        channellogos_select.addItem(_("Prefer EPG"))
+        channellogos_select.addItem(_("Do not load from EPG"))
+        channellogos_select.addItem(_("Do not load any logos"))
+        channellogos_select.setCurrentIndex(settings["channellogos"])
 
-        nocacheepg_label = QtWidgets.QLabel("{}:".format(_('Do not cache EPG')))
+        nocacheepg_label = QtWidgets.QLabel("{}:".format(_("Do not cache EPG")))
         nocacheepg_flag = QtWidgets.QCheckBox()
-        nocacheepg_flag.setChecked(settings['nocacheepg'])
+        nocacheepg_flag.setChecked(settings["nocacheepg"])
 
-        scrrecnosubfolders_label = QtWidgets.QLabel("{}:".format(
-            _('Do not create screenshots\nand recordings subfolders')
-        ))
+        scrrecnosubfolders_label = QtWidgets.QLabel(
+            "{}:".format(_("Do not create screenshots\nand recordings subfolders"))
+        )
         scrrecnosubfolders_flag = QtWidgets.QCheckBox()
-        scrrecnosubfolders_flag.setChecked(settings['scrrecnosubfolders'])
+        scrrecnosubfolders_flag.setChecked(settings["scrrecnosubfolders"])
 
-        hidetvprogram_label = QtWidgets.QLabel("{}:".format(_('Hide the current television program')))
+        hidetvprogram_label = QtWidgets.QLabel(
+            "{}:".format(_("Hide the current television program"))
+        )
         hidetvprogram_flag = QtWidgets.QCheckBox()
-        hidetvprogram_flag.setChecked(settings['hidetvprogram'])
+        hidetvprogram_flag.setChecked(settings["hidetvprogram"])
 
-        videoaspectdef_label = QtWidgets.QLabel("{}:".format(_('Aspect ratio')))
-        zoomdef_label = QtWidgets.QLabel("{}:".format(_('Scale / Zoom')))
-        panscan_def_label = QtWidgets.QLabel("{}:".format(_('Pan and scan')))
+        videoaspectdef_label = QtWidgets.QLabel("{}:".format(_("Aspect ratio")))
+        zoomdef_label = QtWidgets.QLabel("{}:".format(_("Scale / Zoom")))
+        panscan_def_label = QtWidgets.QLabel("{}:".format(_("Pan and scan")))
 
         videoaspect_def_choose = QtWidgets.QComboBox()
         for videoaspect_var_1 in videoaspect_vars:
@@ -2971,13 +3212,13 @@ if __name__ == '__main__':
         panscan_def_choose.setSingleStep(0.1)
         panscan_def_choose.setDecimals(1)
 
-        videoaspect_def_choose.setCurrentIndex(settings['videoaspect'])
-        zoom_def_choose.setCurrentIndex(settings['zoom'])
-        panscan_def_choose.setValue(settings['panscan'])
+        videoaspect_def_choose.setCurrentIndex(settings["videoaspect"])
+        zoom_def_choose.setCurrentIndex(settings["zoom"])
+        panscan_def_choose.setValue(settings["panscan"])
 
-        catchupenable_label = QtWidgets.QLabel("{}:".format(_('Enable catchup')))
+        catchupenable_label = QtWidgets.QLabel("{}:".format(_("Enable catchup")))
         catchupenable_flag = QtWidgets.QCheckBox()
-        catchupenable_flag.setChecked(settings['catchupenable'])
+        catchupenable_flag.setChecked(settings["catchupenable"])
 
         tabs = QtWidgets.QTabWidget()
 
@@ -2991,15 +3232,15 @@ if __name__ == '__main__':
         tab_debug = QtWidgets.QWidget()
         tab_epg = QtWidgets.QWidget()
 
-        tabs.addTab(tab_main, _('Main'))
-        tabs.addTab(tab_video, _('Video'))
-        tabs.addTab(tab_network, _('Network'))
-        tabs.addTab(tab_gui, _('GUI'))
-        tabs.addTab(tab_actions, _('Actions'))
-        tabs.addTab(tab_catchup, _('Catchup'))
-        tabs.addTab(tab_epg, _('EPG'))
-        tabs.addTab(tab_other, _('Other'))
-        tabs.addTab(tab_debug, _('Debug'))
+        tabs.addTab(tab_main, _("Main"))
+        tabs.addTab(tab_video, _("Video"))
+        tabs.addTab(tab_network, _("Network"))
+        tabs.addTab(tab_gui, _("GUI"))
+        tabs.addTab(tab_actions, _("Actions"))
+        tabs.addTab(tab_catchup, _("Catchup"))
+        tabs.addTab(tab_epg, _("EPG"))
+        tabs.addTab(tab_other, _("Other"))
+        tabs.addTab(tab_debug, _("Debug"))
 
         tab_main.layout = QtWidgets.QGridLayout()
         tab_main.layout.setAlignment(
@@ -3151,20 +3392,32 @@ if __name__ == '__main__':
         settings_win.scroll.setWidget(wid2)
 
         def xtream_save_btn_action():
-            if xtr_username_input.text() and xtr_password_input.text() and xtr_url_input.text():
-                xtream_gen_url = 'XTREAM::::::::::::::' + '::::::::::::::'.join(
-                    [xtr_username_input.text(), xtr_password_input.text(), xtr_url_input.text()]
+            if (
+                xtr_username_input.text()
+                and xtr_password_input.text()
+                and xtr_url_input.text()
+            ):
+                xtream_gen_url = "XTREAM::::::::::::::" + "::::::::::::::".join(
+                    [
+                        xtr_username_input.text(),
+                        xtr_password_input.text(),
+                        xtr_url_input.text(),
+                    ]
                 )
                 sm3u.setText(xtream_gen_url)
             xtream_win.hide()
 
         def xtream_save_btn_action_2():
-            if xtr_username_input_2.text() and xtr_password_input_2.text() and xtr_url_input_2.text():
-                xtream_gen_url_2 = 'XTREAM::::::::::::::' + '::::::::::::::'.join(
+            if (
+                xtr_username_input_2.text()
+                and xtr_password_input_2.text()
+                and xtr_url_input_2.text()
+            ):
+                xtream_gen_url_2 = "XTREAM::::::::::::::" + "::::::::::::::".join(
                     [
                         xtr_username_input_2.text(),
                         xtr_password_input_2.text(),
-                        xtr_url_input_2.text()
+                        xtr_url_input_2.text(),
                     ]
                 )
                 m3u_edit_1.setText(xtream_gen_url_2)
@@ -3173,36 +3426,36 @@ if __name__ == '__main__':
         wid3 = QtWidgets.QWidget()
         wid4 = QtWidgets.QWidget()
 
-        save_btn_xtream = QtWidgets.QPushButton(_('Save'))
-        save_btn_xtream.setStyleSheet('font-weight: bold; color: green;')
+        save_btn_xtream = QtWidgets.QPushButton(_("Save"))
+        save_btn_xtream.setStyleSheet("font-weight: bold; color: green;")
         save_btn_xtream.clicked.connect(xtream_save_btn_action)
         xtr_username_input = QtWidgets.QLineEdit()
         xtr_password_input = QtWidgets.QLineEdit()
         xtr_url_input = QtWidgets.QLineEdit()
 
         layout34 = QtWidgets.QGridLayout()
-        layout34.addWidget(QtWidgets.QLabel("{}:".format(_('Username'))), 0, 0)
+        layout34.addWidget(QtWidgets.QLabel("{}:".format(_("Username"))), 0, 0)
         layout34.addWidget(xtr_username_input, 0, 1)
-        layout34.addWidget(QtWidgets.QLabel("{}:".format(_('Password'))), 1, 0)
+        layout34.addWidget(QtWidgets.QLabel("{}:".format(_("Password"))), 1, 0)
         layout34.addWidget(xtr_password_input, 1, 1)
-        layout34.addWidget(QtWidgets.QLabel("{}:".format(_('URL'))), 2, 0)
+        layout34.addWidget(QtWidgets.QLabel("{}:".format(_("URL"))), 2, 0)
         layout34.addWidget(xtr_url_input, 2, 1)
         layout34.addWidget(save_btn_xtream, 3, 1)
         wid3.setLayout(layout34)
 
-        save_btn_xtream_2 = QtWidgets.QPushButton(_('Save'))
-        save_btn_xtream_2.setStyleSheet('font-weight: bold; color: green;')
+        save_btn_xtream_2 = QtWidgets.QPushButton(_("Save"))
+        save_btn_xtream_2.setStyleSheet("font-weight: bold; color: green;")
         save_btn_xtream_2.clicked.connect(xtream_save_btn_action_2)
         xtr_username_input_2 = QtWidgets.QLineEdit()
         xtr_password_input_2 = QtWidgets.QLineEdit()
         xtr_url_input_2 = QtWidgets.QLineEdit()
 
         layout35 = QtWidgets.QGridLayout()
-        layout35.addWidget(QtWidgets.QLabel("{}:".format(_('Username'))), 0, 0)
+        layout35.addWidget(QtWidgets.QLabel("{}:".format(_("Username"))), 0, 0)
         layout35.addWidget(xtr_username_input_2, 0, 1)
-        layout35.addWidget(QtWidgets.QLabel("{}:".format(_('Password'))), 1, 0)
+        layout35.addWidget(QtWidgets.QLabel("{}:".format(_("Password"))), 1, 0)
         layout35.addWidget(xtr_password_input_2, 1, 1)
-        layout35.addWidget(QtWidgets.QLabel("{}:".format(_('URL'))), 2, 0)
+        layout35.addWidget(QtWidgets.QLabel("{}:".format(_("URL"))), 2, 0)
         layout35.addWidget(xtr_url_input_2, 2, 1)
         layout35.addWidget(save_btn_xtream_2, 3, 1)
         wid4.setLayout(layout35)
@@ -3223,19 +3476,25 @@ if __name__ == '__main__':
                 license_win.hide()
 
         license_str = "GPL-3.0-or-later"
-        if os.path.isfile(str(Path('..', '..', 'share', 'yuki-iptv', 'license.txt'))):
+        if os.path.isfile(str(Path("..", "..", "share", "yuki-iptv", "license.txt"))):
             license_file = open(
-                str(Path('..', '..', 'share', 'yuki-iptv', 'license.txt')),
-                'r',
-                encoding="utf8"
+                str(Path("..", "..", "share", "yuki-iptv", "license.txt")),
+                "r",
+                encoding="utf8",
             )
             license_str = license_file.read()
             license_file.close()
 
         license_append = (
-            "This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version."  # noqa: E501
+            "This program is free software: you can redistribute it and/or modify it"
+            " under the terms of the GNU General Public License as published by the"
+            " Free Software Foundation, either version 3 of the License"
+            ", or (at your option) any later version."
             "\n\n"
-            "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."  # noqa: E501
+            "This program is distributed in the hope that it will be useful"
+            ", but WITHOUT ANY WARRANTY; without even the implied warranty"
+            " of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+            " See the GNU General Public License for more details."
             "\n\n"
             "------------------------------------\n\n"
             "The Font Awesome pictograms are licensed under the CC BY 4.0 License\n"
@@ -3249,7 +3508,7 @@ if __name__ == '__main__':
         licensebox.setPlainText(license_append + license_str)
 
         licensebox_close_btn = QtWidgets.QPushButton()
-        licensebox_close_btn.setText(_('Close'))
+        licensebox_close_btn.setText(_("Close"))
         licensebox_close_btn.clicked.connect(license_win.close)
 
         licensewin_widget = QtWidgets.QWidget()
@@ -3283,7 +3542,7 @@ if __name__ == '__main__':
         comm_instance.mainThread_partial.connect(comm_instance_main_thread)
 
         license_btn = QtWidgets.QPushButton()
-        license_btn.setText(_('License'))
+        license_btn.setText(_("License"))
         license_btn.clicked.connect(show_license)
 
         def aboutqt_show():
@@ -3293,11 +3552,11 @@ if __name__ == '__main__':
             help_win.activateWindow()
 
         aboutqt_btn = QtWidgets.QPushButton()
-        aboutqt_btn.setText(_('About Qt'))
+        aboutqt_btn.setText(_("About Qt"))
         aboutqt_btn.clicked.connect(aboutqt_show)
 
         close_btn = QtWidgets.QPushButton()
-        close_btn.setText(_('Close'))
+        close_btn.setText(_("Close"))
         close_btn.clicked.connect(help_win.close)
 
         helpwin_widget_btns = QtWidgets.QWidget()
@@ -3341,14 +3600,18 @@ if __name__ == '__main__':
                 for keybind in main_keybinds:
                     keybind_i += 1
                     shortcuts_table.setItem(
-                        keybind_i, 0, get_widget_item(main_keybinds_translations[keybind])
+                        keybind_i,
+                        0,
+                        get_widget_item(main_keybinds_translations[keybind]),
                     )
                     if isinstance(main_keybinds[keybind], str):
                         keybind_str = main_keybinds[keybind]
                     else:
-                        keybind_str = QtGui.QKeySequence(main_keybinds[keybind]).toString()
+                        keybind_str = QtGui.QKeySequence(
+                            main_keybinds[keybind]
+                        ).toString()
                     kbd_widget = get_widget_item(keybind_str)
-                    kbd_widget.setToolTip(_('Double click to change'))
+                    kbd_widget.setToolTip(_("Double click to change"))
                     shortcuts_table.setItem(keybind_i, 1, kbd_widget)
                 shortcuts_table.resizeColumnsToContents()
                 # end
@@ -3391,22 +3654,26 @@ if __name__ == '__main__':
 
         def reload_playlist():
             logger.info("Reloading playlist...")
-            if os.path.isfile(str(Path(LOCAL_DIR, 'playlistcache.json'))):
-                os.remove(str(Path(LOCAL_DIR, 'playlistcache.json')))
+            if os.path.isfile(str(Path(LOCAL_DIR, "playlistcache.json"))):
+                os.remove(str(Path(LOCAL_DIR, "playlistcache.json")))
             save_settings()
 
         def playlists_selected():
             try:
-                prov_data = playlists_data.playlists_used[playlists_list.currentItem().text()]
-                prov_m3u = prov_data['m3u']
-                prov_epg = ''
+                prov_data = playlists_data.playlists_used[
+                    playlists_list.currentItem().text()
+                ]
+                prov_m3u = prov_data["m3u"]
+                prov_epg = ""
                 prov_offset = 0
-                if 'epg' in prov_data:
-                    prov_epg = prov_data['epg']
-                if 'epgoffset' in prov_data:
-                    prov_offset = prov_data['epgoffset']
+                if "epg" in prov_data:
+                    prov_epg = prov_data["epg"]
+                if "epgoffset" in prov_data:
+                    prov_offset = prov_data["epgoffset"]
                 sm3u.setText(prov_m3u)
-                sepg.setText(prov_epg if not prov_epg.startswith('^^::MULTIPLE::^^') else '')
+                sepg.setText(
+                    prov_epg if not prov_epg.startswith("^^::MULTIPLE::^^") else ""
+                )
                 soffset.setValue(prov_offset)
                 playlists_save_json()
                 playlists_win.hide()
@@ -3433,13 +3700,17 @@ if __name__ == '__main__':
                 playlists_win_edit.show()
             else:
                 if currentItem_text:
-                    item_m3u = playlists_data.playlists_used[currentItem_text]['m3u']
+                    item_m3u = playlists_data.playlists_used[currentItem_text]["m3u"]
                     try:
-                        item_epg = playlists_data.playlists_used[currentItem_text]['epg']
+                        item_epg = playlists_data.playlists_used[currentItem_text][
+                            "epg"
+                        ]
                     except Exception:
                         item_epg = ""
                     try:
-                        item_offset = playlists_data.playlists_used[currentItem_text]['epgoffset']
+                        item_offset = playlists_data.playlists_used[currentItem_text][
+                            "epgoffset"
+                        ]
                     except Exception:
                         item_offset = 0
                     name_edit_1.setText(currentItem_text)
@@ -3454,11 +3725,15 @@ if __name__ == '__main__':
             resettodefaults_btn_clicked_msg_1 = QtWidgets.QMessageBox.question(
                 None,
                 MAIN_WINDOW_TITLE,
-                _('Are you sure?'),
-                QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No,
+                _("Are you sure?"),
                 QtWidgets.QMessageBox.StandardButton.Yes
+                | QtWidgets.QMessageBox.StandardButton.No,
+                QtWidgets.QMessageBox.StandardButton.Yes,
             )
-            if resettodefaults_btn_clicked_msg_1 == QtWidgets.QMessageBox.StandardButton.Yes:
+            if (
+                resettodefaults_btn_clicked_msg_1
+                == QtWidgets.QMessageBox.StandardButton.Yes
+            ):
                 try:
                     currentItem_text = playlists_list.currentItem().text()
                 except Exception:
@@ -3487,7 +3762,7 @@ if __name__ == '__main__':
 
         def init_mpv_player():
             global player
-            mpv_loglevel = 'info' if loglevel.lower() != 'debug' else 'debug'
+            mpv_loglevel = "info" if loglevel.lower() != "debug" else "debug"
             mpv_osc = True
             if "osc" in options:
                 # To prevent 'multiple values for keyword argument'!
@@ -3497,11 +3772,11 @@ if __name__ == '__main__':
                     **options,
                     wid=str(int(win.container.winId())),
                     osc=mpv_osc,
-                    script_opts='osc-layout=box,osc-seekbarstyle=bar,'
-                                'osc-deadzonesize=0,osc-minmousemove=3',
+                    script_opts="osc-layout=box,osc-seekbarstyle=bar,"
+                    "osc-deadzonesize=0,osc-minmousemove=3",
                     ytdl=True,
                     log_handler=my_log,
-                    loglevel=mpv_loglevel
+                    loglevel=mpv_loglevel,
                 )
             except Exception:
                 logger.warning("mpv init with ytdl failed")
@@ -3510,10 +3785,10 @@ if __name__ == '__main__':
                         **options,
                         wid=str(int(win.container.winId())),
                         osc=mpv_osc,
-                        script_opts='osc-layout=box,osc-seekbarstyle=bar,'
-                                    'osc-deadzonesize=0,osc-minmousemove=3',
+                        script_opts="osc-layout=box,osc-seekbarstyle=bar,"
+                        "osc-deadzonesize=0,osc-minmousemove=3",
                         log_handler=my_log,
-                        loglevel=mpv_loglevel
+                        loglevel=mpv_loglevel,
                     )
                 except Exception:
                     logger.warning("mpv init with osc failed")
@@ -3521,7 +3796,7 @@ if __name__ == '__main__':
                         **options,
                         wid=str(int(win.container.winId())),
                         log_handler=my_log,
-                        loglevel=mpv_loglevel
+                        loglevel=mpv_loglevel,
                     )
             if settings["hidempv"]:
                 try:
@@ -3529,16 +3804,16 @@ if __name__ == '__main__':
                 except Exception:
                     logger.warning("player.osc set failed")
             try:
-                player['force-seekable'] = True
+                player["force-seekable"] = True
             except Exception:
                 pass
-            if not settings['hwaccel']:
+            if not settings["hwaccel"]:
                 try:
-                    player['x11-bypass-compositor'] = 'yes'
+                    player["x11-bypass-compositor"] = "yes"
                 except Exception:
                     pass
             try:
-                player['network-timeout'] = 5
+                player["network-timeout"] = 5
             except Exception:
                 pass
 
@@ -3548,29 +3823,41 @@ if __name__ == '__main__':
                 pass
 
             try:
-                player['audio-client-name'] = 'yuki-iptv'
+                player["audio-client-name"] = "yuki-iptv"
             except Exception:
                 logger.warning("mpv audio-client-name set failed")
 
             try:
                 mpv_version = player.mpv_version
-                if not mpv_version.startswith('mpv '):
-                    mpv_version = 'mpv ' + mpv_version
+                if not mpv_version.startswith("mpv "):
+                    mpv_version = "mpv " + mpv_version
             except Exception:
                 mpv_version = "unknown mpv version"
 
             logger.info(f"Using {mpv_version}")
 
-            textbox.setText(format_about_text(_('yuki-iptv {}\n\n© 2021, 2022 Astroncia\n© {} yuki-chan-nya\nhttps://github.com/yuki-chan-nya\n\nIPTV player\n\nIcons by Font Awesome ( https://fontawesome.com/ )\nIcons licensed under the CC BY 4.0 License\n( https://creativecommons.org/licenses/by/4.0/ )').format(APP_VERSION, COPYRIGHT_YEAR).replace('©', 'Copyright ©')))  # noqa: E501
+            textbox.setText(
+                format_about_text(
+                    _(
+                        "yuki-iptv {}\n\n© 2021, 2022 Astroncia\n© {} yuki-chan-nya\n"
+                        "https://github.com/yuki-chan-nya\n\nIPTV player\n\nIcons by"
+                        " Font Awesome ( https://fontawesome.com/ )\nIcons licensed"
+                        " under the CC BY 4.0 License\n"
+                        "( https://creativecommons.org/licenses/by/4.0/ )"
+                    )
+                    .format(APP_VERSION, COPYRIGHT_YEAR)
+                    .replace("©", "Copyright ©")
+                )
+            )
 
             if settings["cache_secs"] != 0:
                 try:
-                    player['demuxer-readahead-secs'] = settings["cache_secs"]
+                    player["demuxer-readahead-secs"] = settings["cache_secs"]
                     logger.info(f'Demuxer cache set to {settings["cache_secs"]}s')
                 except Exception:
                     pass
                 try:
-                    player['cache-secs'] = settings["cache_secs"]
+                    player["cache-secs"] = settings["cache_secs"]
                     logger.info(f'Cache set to {settings["cache_secs"]}s')
                 except Exception:
                     pass
@@ -3588,52 +3875,62 @@ if __name__ == '__main__':
             aot_action1 = None
             try:
                 aot_action1 = populate_menubar(
-                    0, win.menu_bar_qt, win, player.track_list, playing_chan, get_keybind
+                    0,
+                    win.menu_bar_qt,
+                    win,
+                    player.track_list,
+                    playing_chan,
+                    get_keybind,
                 )
                 populate_menubar(
-                    1, right_click_menu, win, player.track_list, playing_chan, get_keybind
+                    1,
+                    right_click_menu,
+                    win,
+                    player.track_list,
+                    playing_chan,
+                    get_keybind,
                 )
             except Exception:
                 logger.warning("populate_menubar failed")
                 show_exception("populate_menubar failed\n\n" + traceback.format_exc())
             redraw_menubar()
 
-            @player.event_callback('file-loaded')
+            @player.event_callback("file-loaded")
             def file_loaded_2(event):
                 file_loaded_callback()
 
-            @player.event_callback('end_file')
+            @player.event_callback("end_file")
             def ready_handler_2(event):
-                if event['event']['error'] != 0:
+                if event["event"]["error"] != 0:
                     end_file_error_callback()
                 else:
                     end_file_callback()
 
-            @player.on_key_press('MBTN_RIGHT')
+            @player.on_key_press("MBTN_RIGHT")
             def my_mouse_right():
                 my_mouse_right_callback()
 
-            @player.on_key_press('MBTN_LEFT')
+            @player.on_key_press("MBTN_LEFT")
             def my_mouse_left():
                 my_mouse_left_callback()
 
-            @player.on_key_press('MBTN_LEFT_DBL')
+            @player.on_key_press("MBTN_LEFT_DBL")
             def my_leftdbl_binding():
                 mpv_fullscreen()
 
-            @player.on_key_press('MBTN_FORWARD')
+            @player.on_key_press("MBTN_FORWARD")
             def my_forward_binding():
                 next_channel()
 
-            @player.on_key_press('MBTN_BACK')
+            @player.on_key_press("MBTN_BACK")
             def my_back_binding():
                 prev_channel()
 
-            @player.on_key_press('WHEEL_UP')
+            @player.on_key_press("WHEEL_UP")
             def my_up_binding():
                 my_up_binding_execute()
 
-            @player.on_key_press('WHEEL_DOWN')
+            @player.on_key_press("WHEEL_DOWN")
             def my_down_binding():
                 my_down_binding_execute()
 
@@ -3644,17 +3941,17 @@ if __name__ == '__main__':
                     if not player.pause:
                         label3.setIcon(
                             QtGui.QIcon(
-                                str(Path('yuki_iptv', ICONS_FOLDER, 'pause.png'))
+                                str(Path("yuki_iptv", ICONS_FOLDER, "pause.png"))
                             )
                         )
-                        label3.setToolTip(_('Pause'))
+                        label3.setToolTip(_("Pause"))
                     else:
                         label3.setIcon(
                             QtGui.QIcon(
-                                str(Path('yuki_iptv', ICONS_FOLDER, 'play.png'))
+                                str(Path("yuki_iptv", ICONS_FOLDER, "play.png"))
                             )
                         )
-                        label3.setToolTip(_('Play'))
+                        label3.setToolTip(_("Play"))
                     if event_handler:
                         try:
                             event_handler.on_playpause()
@@ -3663,22 +3960,22 @@ if __name__ == '__main__':
                 except Exception:
                     pass
 
-            player.observe_property('pause', pause_handler)
+            player.observe_property("pause", pause_handler)
 
             def yuki_track_set(track, type1):
                 global player_tracks
                 logger.info(f"Set {type1} track to {track}")
                 if playing_chan not in player_tracks:
                     player_tracks[playing_chan] = {}
-                if type1 == 'vid':
+                if type1 == "vid":
                     player.vid = track
-                    player_tracks[playing_chan]['vid'] = track
-                elif type1 == 'aid':
+                    player_tracks[playing_chan]["vid"] = track
+                elif type1 == "aid":
                     player.aid = track
-                    player_tracks[playing_chan]['aid'] = track
-                elif type1 == 'sid':
+                    player_tracks[playing_chan]["aid"] = track
+                elif type1 == "sid":
                     player.sid = track
-                    player_tracks[playing_chan]['sid'] = track
+                    player_tracks[playing_chan]["sid"] = track
 
             init_menubar_player(
                 player,
@@ -3699,7 +3996,9 @@ if __name__ == '__main__':
                 app.quit,
                 redraw_menubar,
                 QtGui.QIcon(
-                    QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'circle.png'))).pixmap(8, 8)
+                    QtGui.QIcon(
+                        str(Path("yuki_iptv", ICONS_FOLDER, "circle.png"))
+                    ).pixmap(8, 8)
                 ),
                 my_up_binding_execute,
                 my_down_binding_execute,
@@ -3715,11 +4014,11 @@ if __name__ == '__main__':
                 disable_always_on_top,
                 reload_playlist,
                 show_shortcuts,
-                str(Path(LOCAL_DIR, 'alwaysontop.json')),
-                yuki_track_set
+                str(Path(LOCAL_DIR, "alwaysontop.json")),
+                yuki_track_set,
             )
 
-            volume_option1 = read_option('volume')
+            volume_option1 = read_option("volume")
             if volume_option1 is not None:
                 logger.info(f"Set volume to {vol_remembered}")
                 label7.setValue(vol_remembered)
@@ -3763,16 +4062,19 @@ if __name__ == '__main__':
                 self.container.setAttribute(
                     QtCore.Qt.WidgetAttribute.WA_DontCreateNativeAncestors
                 )
-                self.container.setAttribute(
-                    QtCore.Qt.WidgetAttribute.WA_NativeWindow
-                )
+                self.container.setAttribute(QtCore.Qt.WidgetAttribute.WA_NativeWindow)
                 self.container.setFocus()
-                self.container.setStyleSheet('''
+                self.container.setStyleSheet(
+                    """
                     background-color: #C0C6CA;
-                ''')
+                """
+                )
 
             def updateWindowSize(self):
-                if self.width() != self.latestWidth or self.height() != self.latestHeight:
+                if (
+                    self.width() != self.latestWidth
+                    or self.height() != self.latestHeight
+                ):
                     self.latestWidth = self.width()
                     self.latestHeight = self.height()
 
@@ -3782,19 +4084,24 @@ if __name__ == '__main__':
                 self.windowWidth = self.width()
                 self.windowHeight = self.height()
                 self.updateWindowSize()
-                if settings['panelposition'] == 0:
+                if settings["panelposition"] == 0:
                     move_label(tvguide_lbl, 2, tvguide_lbl_offset)
                 else:
-                    move_label(tvguide_lbl, win.width() - tvguide_lbl.width(), tvguide_lbl_offset)
+                    move_label(
+                        tvguide_lbl,
+                        win.width() - tvguide_lbl.width(),
+                        tvguide_lbl_offset,
+                    )
                 if not fullscreen:
                     if not dockWidget2.isVisible():
                         set_label_width(l1, self.windowWidth - dockWidget.width() + 58)
                         move_label(
                             l1,
                             int(
-                                ((self.windowWidth - l1.width()) / 2) - (dockWidget.width() / 1.7)
+                                ((self.windowWidth - l1.width()) / 2)
+                                - (dockWidget.width() / 1.7)
                             ),
-                            int(((self.windowHeight - l1.height()) - 20))
+                            int(((self.windowHeight - l1.height()) - 20)),
                         )
                         h = 0
                         h2 = 10
@@ -3802,8 +4109,17 @@ if __name__ == '__main__':
                         set_label_width(l1, self.windowWidth - dockWidget.width() + 58)
                         move_label(
                             l1,
-                            int(((self.windowWidth - l1.width()) / 2) - (dockWidget.width() / 1.7)),
-                            int(((self.windowHeight - l1.height()) - dockWidget2.height() - 10))
+                            int(
+                                ((self.windowWidth - l1.width()) / 2)
+                                - (dockWidget.width() / 1.7)
+                            ),
+                            int(
+                                (
+                                    (self.windowHeight - l1.height())
+                                    - dockWidget2.height()
+                                    - 10
+                                )
+                            ),
                         )
                         h = dockWidget2.height()
                         h2 = 20
@@ -3812,28 +4128,32 @@ if __name__ == '__main__':
                     move_label(
                         l1,
                         int(((self.windowWidth - l1.width()) / 2)),
-                        int(((self.windowHeight - l1.height()) - 20))
+                        int(((self.windowHeight - l1.height()) - 20)),
                     )
                     h = 0
                     h2 = 10
                 if dockWidget.isVisible():
-                    if settings['panelposition'] == 0:
+                    if settings["panelposition"] == 0:
                         move_label(lbl2, 0, lbl2_offset)
                     else:
-                        move_label(lbl2, tvguide_lbl.width() + lbl2.width(), lbl2_offset)
+                        move_label(
+                            lbl2, tvguide_lbl.width() + lbl2.width(), lbl2_offset
+                        )
                 else:
                     move_label(lbl2, 0, lbl2_offset)
                 if l1.isVisible():
                     l1_h = l1.height()
                 else:
                     l1_h = 15
-                tvguide_lbl.setFixedHeight(((self.windowHeight - l1_h - h) - 40 - l1_h + h2))
+                tvguide_lbl.setFixedHeight(
+                    ((self.windowHeight - l1_h - h) - 40 - l1_h + h2)
+                )
 
             def moveEvent(self, event):
                 try:
                     comm_instance.winPosition2 = {
                         "x": win.pos().x(),
-                        "y": win.pos().y()
+                        "y": win.pos().y(),
                     }
                 except Exception:
                     pass
@@ -3859,15 +4179,17 @@ if __name__ == '__main__':
         win.setWindowTitle(MAIN_WINDOW_TITLE)
         win.setWindowIcon(main_icon)
 
-        window_data = read_option('window')
+        window_data = read_option("window")
         if window_data:
-            win.resize(window_data['w'], window_data['h'])
+            win.resize(window_data["w"], window_data["h"])
         else:
             win.resize(WINDOW_SIZE[0], WINDOW_SIZE[1])
 
         qr = win.frameGeometry()
         qr.moveCenter(
-            QtGui.QScreen.availableGeometry(QtWidgets.QApplication.primaryScreen()).center()
+            QtGui.QScreen.availableGeometry(
+                QtWidgets.QApplication.primaryScreen()
+            ).center()
         )
         win.move(qr.topLeft())
 
@@ -3879,7 +4201,10 @@ if __name__ == '__main__':
             win_width = win_geometry.width()
             win_height = win_geometry.height()
             logger.info(f"Screen size: {win_width}x{win_height}")
-            return (win_width, win_height,)
+            return (
+                win_width,
+                win_height,
+            )
 
         def get_curwindow_pos_actual():
             try:
@@ -3888,9 +4213,9 @@ if __name__ == '__main__':
                 win_geometry_1 = QtWidgets.QDesktopWidget().screenGeometry(win)
             return win_geometry_1
 
-        chan = QtWidgets.QLabel(_('No channel selected'))
+        chan = QtWidgets.QLabel(_("No channel selected"))
         chan.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        chan.setStyleSheet('color: green')
+        chan.setStyleSheet("color: green")
         myFont4 = QtGui.QFont()
         myFont4.setPointSize(11)
         myFont4.setBold(True)
@@ -3904,18 +4229,22 @@ if __name__ == '__main__':
             wdg3.move(int(xg1), int(yg1) + int(offset1))
 
         loading1 = QtWidgets.QLabel(win)
-        loading_movie = QtGui.QMovie(str(Path('yuki_iptv', ICONS_FOLDER, 'loading.gif')))
+        loading_movie = QtGui.QMovie(
+            str(Path("yuki_iptv", ICONS_FOLDER, "loading.gif"))
+        )
         loading1.setMovie(loading_movie)
-        loading1.setStyleSheet('background-color: white;')
+        loading1.setStyleSheet("background-color: white;")
         loading1.resize(32, 32)
         loading1.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         centerwidget(loading1)
         loading1.hide()
 
         loading2 = QtWidgets.QLabel(win)
-        loading_movie2 = QtGui.QMovie(str(Path('yuki_iptv', ICONS_FOLDER, 'recordwait.gif')))
+        loading_movie2 = QtGui.QMovie(
+            str(Path("yuki_iptv", ICONS_FOLDER, "recordwait.gif"))
+        )
         loading2.setMovie(loading_movie2)
-        loading2.setToolTip(_('Processing record...'))
+        loading2.setToolTip(_("Processing record..."))
         loading2.resize(32, 32)
         loading2.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         centerwidget(loading2, 50)
@@ -3939,28 +4268,32 @@ if __name__ == '__main__':
 
         lbl2 = QtWidgets.QLabel(win)
         lbl2.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        lbl2.setStyleSheet('color: #e0071a')
+        lbl2.setStyleSheet("color: #e0071a")
         lbl2.setWordWrap(True)
         lbl2.resize(230, 30)
         lbl2.move(0, lbl2_offset)
         lbl2.hide()
 
         playing = False
-        playing_chan = ''
+        playing_chan = ""
 
         def show_progress(prog):
             global playing_archive, fullscreen
-            if not settings['hidetvprogram'] and (prog and not playing_archive):
+            if not settings["hidetvprogram"] and (prog and not playing_archive):
                 prog_percentage = round(
-                    (time.time() - prog['start']) / (prog['stop'] - prog['start']) * 100
+                    (time.time() - prog["start"]) / (prog["stop"] - prog["start"]) * 100
                 )
-                prog_title = prog['title']
-                prog_start = prog['start']
-                prog_stop = prog['stop']
-                prog_start_time = datetime.datetime.fromtimestamp(prog_start).strftime('%H:%M')
-                prog_stop_time = datetime.datetime.fromtimestamp(prog_stop).strftime('%H:%M')
+                prog_title = prog["title"]
+                prog_start = prog["start"]
+                prog_stop = prog["stop"]
+                prog_start_time = datetime.datetime.fromtimestamp(prog_start).strftime(
+                    "%H:%M"
+                )
+                prog_stop_time = datetime.datetime.fromtimestamp(prog_stop).strftime(
+                    "%H:%M"
+                )
                 progress.setValue(prog_percentage)
-                progress.setFormat(str(prog_percentage) + '% ' + prog_title)
+                progress.setFormat(str(prog_percentage) + "% " + prog_title)
                 progress.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
                 start_label.setText(prog_start_time)
                 stop_label.setText(prog_stop_time)
@@ -3970,12 +4303,12 @@ if __name__ == '__main__':
                     stop_label.show()
             else:
                 progress.hide()
-                start_label.setText('')
+                start_label.setText("")
                 start_label.hide()
-                stop_label.setText('')
+                stop_label.setText("")
                 stop_label.hide()
 
-        playing_url = ''
+        playing_url = ""
 
         @idle_function
         def set_mpv_title(unused=None):
@@ -3988,7 +4321,7 @@ if __name__ == '__main__':
             global time_stop
             chTextStrip = chanText.strip()
             if chTextStrip:
-                win.setWindowTitle(chTextStrip + ' - ' + MAIN_WINDOW_TITLE)
+                win.setWindowTitle(chTextStrip + " - " + MAIN_WINDOW_TITLE)
             else:
                 win.setWindowTitle(MAIN_WINDOW_TITLE)
             set_mpv_title()
@@ -4012,60 +4345,69 @@ if __name__ == '__main__':
                     pass
                 if j == playing_chan:
                     logger.info(f"setPlayerSettings '{j}'")
-                    if settings['m3u'] in channel_sets and j in channel_sets[settings['m3u']]:
-                        d = channel_sets[settings['m3u']][j]
-                        player.deinterlace = d['deinterlace']
-                        if 'ua' not in d:
-                            d['ua'] = ''
-                        if 'ref' not in d:
-                            d['ref'] = ''
-                        if 'contrast' in d:
-                            player.contrast = d['contrast']
+                    if (
+                        settings["m3u"] in channel_sets
+                        and j in channel_sets[settings["m3u"]]
+                    ):
+                        d = channel_sets[settings["m3u"]][j]
+                        player.deinterlace = d["deinterlace"]
+                        if "ua" not in d:
+                            d["ua"] = ""
+                        if "ref" not in d:
+                            d["ref"] = ""
+                        if "contrast" in d:
+                            player.contrast = d["contrast"]
                         else:
                             player.contrast = 0
-                        if 'brightness' in d:
-                            player.brightness = d['brightness']
+                        if "brightness" in d:
+                            player.brightness = d["brightness"]
                         else:
                             player.brightness = 0
-                        if 'hue' in d:
-                            player.hue = d['hue']
+                        if "hue" in d:
+                            player.hue = d["hue"]
                         else:
                             player.hue = 0
-                        if 'saturation' in d:
-                            player.saturation = d['saturation']
+                        if "saturation" in d:
+                            player.saturation = d["saturation"]
                         else:
                             player.saturation = 0
-                        if 'gamma' in d:
-                            player.gamma = d['gamma']
+                        if "gamma" in d:
+                            player.gamma = d["gamma"]
                         else:
                             player.gamma = 0
-                        if 'videoaspect' in d:
+                        if "videoaspect" in d:
                             setVideoAspect(
-                                videoaspect_vars[list(videoaspect_vars)[d['videoaspect']]]
+                                videoaspect_vars[
+                                    list(videoaspect_vars)[d["videoaspect"]]
+                                ]
                             )
                         else:
                             setVideoAspect(
                                 videoaspect_vars[
-                                    videoaspect_def_choose.itemText(settings['videoaspect'])
+                                    videoaspect_def_choose.itemText(
+                                        settings["videoaspect"]
+                                    )
                                 ]
                             )
-                        if 'zoom' in d:
-                            setZoom(zoom_vars[list(zoom_vars)[d['zoom']]])
+                        if "zoom" in d:
+                            setZoom(zoom_vars[list(zoom_vars)[d["zoom"]]])
                         else:
-                            setZoom(zoom_vars[zoom_def_choose.itemText(settings['zoom'])])
-                        if 'panscan' in d:
-                            setPanscan(d['panscan'])
+                            setZoom(
+                                zoom_vars[zoom_def_choose.itemText(settings["zoom"])]
+                            )
+                        if "panscan" in d:
+                            setPanscan(d["panscan"])
                         else:
-                            setPanscan(settings['panscan'])
+                            setPanscan(settings["panscan"])
                     else:
-                        player.deinterlace = settings['deinterlace']
+                        player.deinterlace = settings["deinterlace"]
                         setVideoAspect(
                             videoaspect_vars[
-                                videoaspect_def_choose.itemText(settings['videoaspect'])
+                                videoaspect_def_choose.itemText(settings["videoaspect"])
                             ]
                         )
-                        setZoom(zoom_vars[zoom_def_choose.itemText(settings['zoom'])])
-                        setPanscan(settings['panscan'])
+                        setZoom(zoom_vars[zoom_def_choose.itemText(settings["zoom"])])
+                        setPanscan(settings["panscan"])
                         player.gamma = 0
                         player.saturation = 0
                         player.hue = 0
@@ -4085,32 +4427,38 @@ if __name__ == '__main__':
                     logger.info(f"Zoom: {player.video_zoom}")
                     logger.info(f"Panscan: {player.panscan}")
                     try:
-                        player['cursor-autohide'] = 1000
-                        player['force-window'] = True
+                        player["cursor-autohide"] = 1000
+                        player["force-window"] = True
                     except Exception:
                         pass
                     # Restore video / audio / subtitle tracks for channel
                     if playing_chan in player_tracks:
                         last_track = player_tracks[playing_chan]
-                        if 'vid' in last_track:
-                            logger.info(f"Restoring last video track: '{last_track['vid']}'")
-                            player.vid = last_track['vid']
+                        if "vid" in last_track:
+                            logger.info(
+                                f"Restoring last video track: '{last_track['vid']}'"
+                            )
+                            player.vid = last_track["vid"]
                         else:
-                            player.vid = 'auto'
-                        if 'aid' in last_track:
-                            logger.info(f"Restoring last audio track: '{last_track['aid']}'")
-                            player.aid = last_track['aid']
+                            player.vid = "auto"
+                        if "aid" in last_track:
+                            logger.info(
+                                f"Restoring last audio track: '{last_track['aid']}'"
+                            )
+                            player.aid = last_track["aid"]
                         else:
-                            player.aid = 'auto'
-                        if 'sid' in last_track:
-                            logger.info(f"Restoring last sub track: '{last_track['sid']}'")
-                            player.sid = last_track['sid']
+                            player.aid = "auto"
+                        if "sid" in last_track:
+                            logger.info(
+                                f"Restoring last sub track: '{last_track['sid']}'"
+                            )
+                            player.sid = last_track["sid"]
                         else:
-                            player.sid = 'auto'
+                            player.sid = "auto"
                     else:
-                        player.vid = 'auto'
-                        player.aid = 'auto'
-                        player.sid = 'auto'
+                        player.vid = "auto"
+                        player.aid = "auto"
+                        player.sid = "auto"
                     file_loaded_callback()
             except Exception:
                 pass
@@ -4119,7 +4467,7 @@ if __name__ == '__main__':
             global playing, playing_chan, item_selected, playing_url, playing_archive
             is_ic_ok = True
             try:
-                is_ic_ok = item.text() != _('Nothing found')
+                is_ic_ok = item.text() != _("Nothing found")
             except Exception:
                 pass
             if is_ic_ok:
@@ -4131,23 +4479,23 @@ if __name__ == '__main__':
                 playing_chan = j
                 item_selected = j
                 try:
-                    play_url = getArrayItem(j)['url']
+                    play_url = getArrayItem(j)["url"]
                 except Exception:
                     play_url = custom_url
                 MAX_CHAN_SIZE = 35
                 channel_name = j
                 if len(channel_name) > MAX_CHAN_SIZE:
-                    channel_name = channel_name[:MAX_CHAN_SIZE - 3] + '...'
-                setChanText('  ' + channel_name)
+                    channel_name = channel_name[: MAX_CHAN_SIZE - 3] + "..."
+                setChanText("  " + channel_name)
                 current_prog = None
                 jlower = j.lower()
                 try:
                     jlower = prog_match_arr[jlower]
                 except Exception:
                     pass
-                if settings['epg'] and jlower in programmes:
+                if settings["epg"] and jlower in programmes:
                     for pr in programmes[jlower]:
-                        if time.time() > pr['start'] and time.time() < pr['stop']:
+                        if time.time() > pr["start"] and time.time() < pr["stop"]:
                             current_prog = pr
                             break
                 show_progress(current_prog)
@@ -4159,15 +4507,18 @@ if __name__ == '__main__':
                 win.update()
                 playing_url = play_url
                 ua_choose = def_user_agent
-                if settings['m3u'] in channel_sets and j in channel_sets[settings['m3u']]:
-                    ua_choose = channel_sets[settings['m3u']][j]['ua']
+                if (
+                    settings["m3u"] in channel_sets
+                    and j in channel_sets[settings["m3u"]]
+                ):
+                    ua_choose = channel_sets[settings["m3u"]][j]["ua"]
                 if not custom_url:
                     doPlay(play_url, ua_choose, j)
                 else:
                     doPlay(custom_url, ua_choose, j)
                 btn_update.click()
 
-        item_selected = ''
+        item_selected = ""
 
         def itemSelected_event(item):
             global item_selected
@@ -4183,22 +4534,22 @@ if __name__ == '__main__':
 
         def mpv_stop():
             global playing, playing_chan, playing_url
-            playing_chan = ''
-            playing_url = ''
+            playing_chan = ""
+            playing_url = ""
             hideLoading()
-            setChanText('')
+            setChanText("")
             playing = False
             stopPlayer()
             player.loop = True
             player.deinterlace = False
-            mpv_override_play(str(Path('yuki_iptv', ICONS_FOLDER, 'main.png')))
+            mpv_override_play(str(Path("yuki_iptv", ICONS_FOLDER, "main.png")))
             player.pause = True
-            chan.setText(_('No channel selected'))
+            chan.setText(_("No channel selected"))
             progress.hide()
             start_label.hide()
             stop_label.hide()
-            start_label.setText('')
-            stop_label.setText('')
+            start_label.setText("")
+            stop_label.setText("")
             dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
             win.update()
             btn_update.click()
@@ -4218,7 +4569,9 @@ if __name__ == '__main__':
             cur_aot_state = aot_state
             logger.debug(f"set_always_on_top: {aot_state}")
             whint1 = QtCore.Qt.WindowType.WindowStaysOnTopHint
-            if ((aot_state and (win.windowFlags() & whint1)) or (not aot_state and (not win.windowFlags() & whint1))):
+            if (aot_state and (win.windowFlags() & whint1)) or (
+                not aot_state and (not win.windowFlags() & whint1)
+            ):
                 logger.debug("set_always_on_top: nothing to do")
                 return
             winIsVisible = win.isVisible()
@@ -4248,9 +4601,11 @@ if __name__ == '__main__':
 
         # Always on top
         is_aot = False
-        if os.path.isfile(str(Path(LOCAL_DIR, 'alwaysontop.json'))):
+        if os.path.isfile(str(Path(LOCAL_DIR, "alwaysontop.json"))):
             try:
-                aot_f1 = open(str(Path(LOCAL_DIR, 'alwaysontop.json')), 'r', encoding='utf-8')
+                aot_f1 = open(
+                    str(Path(LOCAL_DIR, "alwaysontop.json")), "r", encoding="utf-8"
+                )
                 aot_f1_data = json.loads(aot_f1.read())["alwaysontop"]
                 aot_f1.close()
                 is_aot = aot_f1_data
@@ -4272,8 +4627,8 @@ if __name__ == '__main__':
         isControlPanelVisible = False
 
         def dockWidget_out_clicked():
-            global fullscreen, l1, time_stop, currentWidthHeight, currentMaximized, \
-                currentDockWidgetPos, isPlaylistVisible, isControlPanelVisible
+            global fullscreen, l1, time_stop, currentWidthHeight, currentMaximized
+            global currentDockWidgetPos, isPlaylistVisible, isControlPanelVisible
             if not fullscreen:
                 # Entering fullscreen
                 if not YukiData.fullscreen_locked:
@@ -4302,10 +4657,10 @@ if __name__ == '__main__':
                     dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
                     win.update()
                     win.showFullScreen()
-                    if settings['panelposition'] == 1:
+                    if settings["panelposition"] == 1:
                         tvguide_close_lbl.move(
                             get_curwindow_pos()[0] - tvguide_lbl.width() - 40,
-                            tvguide_lbl_offset
+                            tvguide_lbl_offset,
                         )
                     centerwidget(loading1)
                     centerwidget(loading2, 50)
@@ -4319,7 +4674,7 @@ if __name__ == '__main__':
                     logger.info("Leaving fullscreen started")
                     time03 = time.time()
                     setShortcutState(False)
-                    if l1.isVisible() and l1.text().startswith(_('Volume')):
+                    if l1.isVisible() and l1.text().startswith(_("Volume")):
                         l1.hide()
                     win.menu_bar_qt.show()
                     hide_playlist()
@@ -4329,8 +4684,10 @@ if __name__ == '__main__':
                     dockWidget2.setWindowOpacity(1)
                     dockWidget2.hide()
                     fullscreen = False
-                    if l1.text().endswith('{} F'.format(_('To exit fullscreen mode press'))):
-                        l1.setText2('')
+                    if l1.text().endswith(
+                        "{} F".format(_("To exit fullscreen mode press"))
+                    ):
+                        l1.setText2("")
                         if not gl_is_static:
                             l1.hide()
                             win.update()
@@ -4353,15 +4710,16 @@ if __name__ == '__main__':
                         win.showMaximized()
                     win.resize(currentWidthHeight[0], currentWidthHeight[1])
                     if comm_instance.winPosition:
-                        win.move(comm_instance.winPosition.x(), comm_instance.winPosition.y())
+                        win.move(
+                            comm_instance.winPosition.x(), comm_instance.winPosition.y()
+                        )
                     else:
                         moveWindowToCenter(win, True)
                     if not isPlaylistVisible:
                         key_t()
-                    if settings['panelposition'] == 1:
+                    if settings["panelposition"] == 1:
                         tvguide_close_lbl.move(
-                            win.width() - tvguide_lbl.width() - 40,
-                            tvguide_lbl_offset
+                            win.width() - tvguide_lbl.width() - 40, tvguide_lbl_offset
                         )
                     centerwidget(loading1)
                     centerwidget(loading2, 50)
@@ -4398,27 +4756,33 @@ if __name__ == '__main__':
                 if isinstance(v1, str):
                     l1.setText2(v1)
                 else:
-                    l1.setText2("{}: {}%".format(_('Volume'), int(v1)))
+                    l1.setText2("{}: {}%".format(_("Volume"), int(v1)))
 
         def mpv_mute():
             global old_value, time_stop, l1
             time_stop = time.time() + 3
             if player.mute:
                 if old_value > 50:
-                    label6.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'volume.png'))))
+                    label6.setIcon(
+                        QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "volume.png")))
+                    )
                 else:
                     label6.setIcon(
-                        QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'volume-low.png')))
+                        QtGui.QIcon(
+                            str(Path("yuki_iptv", ICONS_FOLDER, "volume-low.png"))
+                        )
                     )
                 mpv_override_mute(False)
                 label7.setValue(old_value)
                 show_volume(old_value)
             else:
-                label6.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'mute.png'))))
+                label6.setIcon(
+                    QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "mute.png")))
+                )
                 mpv_override_mute(True)
                 old_value = label7.value()
                 label7.setValue(0)
-                show_volume(_('Volume off'))
+                show_volume(_("Volume off"))
 
         def mpv_volume_set():
             global time_stop, l1, fullscreen
@@ -4426,7 +4790,7 @@ if __name__ == '__main__':
             vol = int(label7.value())
             try:
                 if vol == 0:
-                    show_volume(_('Volume off'))
+                    show_volume(_("Volume off"))
                 else:
                     show_volume(vol)
             except NameError:
@@ -4434,14 +4798,20 @@ if __name__ == '__main__':
             mpv_override_volume(vol)
             if vol == 0:
                 mpv_override_mute(True)
-                label6.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'mute.png'))))
+                label6.setIcon(
+                    QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "mute.png")))
+                )
             else:
                 mpv_override_mute(False)
                 if vol > 50:
-                    label6.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'volume.png'))))
+                    label6.setIcon(
+                        QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "volume.png")))
+                    )
                 else:
                     label6.setIcon(
-                        QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'volume-low.png')))
+                        QtGui.QIcon(
+                            str(Path("yuki_iptv", ICONS_FOLDER, "volume-low.png"))
+                        )
                     )
 
         dockWidget = QtWidgets.QDockWidget(win)
@@ -4468,27 +4838,35 @@ if __name__ == '__main__':
 
         tvguide_close_lbl = ClickableLabel(tvguide_close_lbl_func, win)
         tvguide_close_lbl.setPixmap(
-            QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'close.png'))).pixmap(32, 32)
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "close.png"))).pixmap(
+                32, 32
+            )
         )
         tvguide_close_lbl.setStyleSheet(
-            "background-color: {};".format("black" if YukiData.use_dark_icon_theme else "white")
+            "background-color: {};".format(
+                "black" if YukiData.use_dark_icon_theme else "white"
+            )
         )
         tvguide_close_lbl.resize(32, 32)
-        if settings['panelposition'] == 0:
+        if settings["panelposition"] == 0:
             tvguide_close_lbl.move(tvguide_lbl.width() + 5, tvguide_lbl_offset)
         else:
-            tvguide_close_lbl.move(win.width() - tvguide_lbl.width() - 40, tvguide_lbl_offset)
+            tvguide_close_lbl.move(
+                win.width() - tvguide_lbl.width() - 40, tvguide_lbl_offset
+            )
             lbl2.move(tvguide_lbl.width() + lbl2.width(), lbl2_offset)
         tvguide_close_lbl.hide()
 
-        current_group = _('All channels')
+        current_group = _("All channels")
 
         channel_sort = {}
-        if os.path.isfile(str(Path(LOCAL_DIR, 'sortchannels.json'))):
-            with open(str(Path(LOCAL_DIR, 'sortchannels.json')), 'r', encoding="utf8") as file3:
+        if os.path.isfile(str(Path(LOCAL_DIR, "sortchannels.json"))):
+            with open(
+                str(Path(LOCAL_DIR, "sortchannels.json")), "r", encoding="utf8"
+            ) as file3:
                 channel_sort3 = json.loads(file3.read())
-                if settings['m3u'] in channel_sort3:
-                    channel_sort = channel_sort3[settings['m3u']]
+                if settings["m3u"] in channel_sort3:
+                    channel_sort = channel_sort3[settings["m3u"]]
 
         def sort_custom(sub):
             try:
@@ -4497,29 +4875,31 @@ if __name__ == '__main__':
                 return 0
 
         def doSort(arr0):
-            if settings['sort'] == 0:
+            if settings["sort"] == 0:
                 return arr0
-            if settings['sort'] == 1:
+            if settings["sort"] == 1:
                 return sorted(arr0)
-            if settings['sort'] == 2:
+            if settings["sort"] == 2:
                 return sorted(arr0, reverse=True)
-            if settings['sort'] == 3:
+            if settings["sort"] == 3:
                 try:
                     return sorted(arr0, reverse=False, key=sort_custom)
                 except Exception:
                     return arr0
             return arr0
 
-        if not os.path.isdir(str(Path(LOCAL_DIR, 'logo_cache'))):
-            os.mkdir(str(Path(LOCAL_DIR, 'logo_cache')))
+        if not os.path.isdir(str(Path(LOCAL_DIR, "logo_cache"))):
+            os.mkdir(str(Path(LOCAL_DIR, "logo_cache")))
 
         def fetch_remote_channel_icon(chan_name, logo_url):
             icon_ret = None
             if not logo_url:
                 return None
-            base64_enc = base64.b64encode(bytes(logo_url, 'utf-8')).decode('utf-8')
-            sha512_hash = str(hashlib.sha512(bytes(base64_enc, 'utf-8')).hexdigest()) + ".png"
-            cache_file = str(Path(LOCAL_DIR, 'logo_cache', sha512_hash))
+            base64_enc = base64.b64encode(bytes(logo_url, "utf-8")).decode("utf-8")
+            sha512_hash = (
+                str(hashlib.sha512(bytes(base64_enc, "utf-8")).hexdigest()) + ".png"
+            )
+            cache_file = str(Path(LOCAL_DIR, "logo_cache", sha512_hash))
             if os.path.isfile(cache_file):
                 # logger.debug("is remote icon, cache available")
                 icon_ret = cache_file
@@ -4529,24 +4909,24 @@ if __name__ == '__main__':
                         # logger.debug("is local icon")
                         icon_ret = logo_url.strip()
                     else:
-                        # logger.debug("is remote icon, cache not available, fetching it...")
+                        # logger.debug(
+                        #     "is remote icon, cache not available, fetching it..."
+                        # )
                         req_data_ua, req_data_ref = get_ua_ref_for_channel(chan_name)
-                        req_data_headers = {
-                            'User-Agent': req_data_ua
-                        }
+                        req_data_headers = {"User-Agent": req_data_ua}
                         if req_data_ref:
-                            req_data_headers['Referer'] = req_data_ref
+                            req_data_headers["Referer"] = req_data_ref
                         req_data1 = requests.get(
                             logo_url,
                             headers=req_data_headers,
                             timeout=(3, 3),
-                            stream=True
+                            stream=True,
                         ).content
                         if req_data1:
                             with io.BytesIO(req_data1) as im_logo_bytes:
                                 with Image.open(im_logo_bytes) as im_logo:
                                     im_logo.thumbnail((64, 64))
-                                    im_logo.save(cache_file, 'PNG')
+                                    im_logo.save(cache_file, "PNG")
                                     icon_ret = cache_file
                 except Exception:
                     icon_ret = None
@@ -4558,33 +4938,31 @@ if __name__ == '__main__':
             # except Exception:
             #     of_txt = f"of {of_num}"
             # return of_txt
-            return _('of') + ' ' + str(of_num)
+            return _("of") + " " + str(of_num)
 
         prog_match_arr = {}
 
         channel_logos_request_old = {}
         channel_logos_process = None
-        multiprocessing_manager_dict['logos_inprogress'] = False
-        multiprocessing_manager_dict['logos_completed'] = False
+        multiprocessing_manager_dict["logos_inprogress"] = False
+        multiprocessing_manager_dict["logos_completed"] = False
         logos_cache = {}
 
         def channel_logos_worker(procnum1, requested_logos, update_dict):
             # logger.debug("channel_logos_worker started")
-            update_dict['logos_inprogress'] = True
+            update_dict["logos_inprogress"] = True
             for logo_channel in requested_logos:
                 # logger.debug(f"Downloading logo for channel '{logo_channel}'...")
                 logo_m3u = fetch_remote_channel_icon(
-                    logo_channel,
-                    requested_logos[logo_channel][0]
+                    logo_channel, requested_logos[logo_channel][0]
                 )
                 logo_epg = fetch_remote_channel_icon(
-                    logo_channel,
-                    requested_logos[logo_channel][1]
+                    logo_channel, requested_logos[logo_channel][1]
                 )
                 update_dict[f"LOGO:::{logo_channel}"] = [logo_m3u, logo_epg]
             # logger.debug("channel_logos_worker ended")
-            update_dict['logos_inprogress'] = False
-            update_dict['logos_completed'] = True
+            update_dict["logos_inprogress"] = False
+            update_dict["logos_completed"] = True
 
         def get_pixmap_from_filename(pixmap_filename):
             if pixmap_filename in logos_cache:
@@ -4608,8 +4986,8 @@ if __name__ == '__main__':
             try:
                 if not thread_logos_update_lock:
                     thread_logos_update_lock = True
-                    if multiprocessing_manager_dict['logos_completed']:
-                        multiprocessing_manager_dict['logos_completed'] = False
+                    if multiprocessing_manager_dict["logos_completed"]:
+                        multiprocessing_manager_dict["logos_completed"] = False
                         btn_update.click()
                     thread_logos_update_lock = False
             except Exception:
@@ -4644,9 +5022,7 @@ if __name__ == '__main__':
                 self.layout1.addWidget(self.end_label, 0, 2)
 
                 self.layout2 = QtWidgets.QGridLayout()
-                self.layout2.setAlignment(
-                    QtCore.Qt.AlignmentFlag.AlignLeft
-                )
+                self.layout2.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
                 self.layout2.addWidget(self.icon_label, 0, 0)
                 self.layout2.addLayout(self.layout, 0, 1)
                 self.layout2.setSpacing(10)
@@ -4657,18 +5033,22 @@ if __name__ == '__main__':
 
                 self.setLayout(self.layout3)
 
-                self.progress_bar.setStyleSheet('''
+                self.progress_bar.setStyleSheet(
+                    """
                   background-color: #C0C6CA;
                   border: 0px;
                   padding: 0px;
                   height: 5px;
-                ''')
-                self.setStyleSheet('''
+                """
+                )
+                self.setStyleSheet(
+                    """
                   QProgressBar::chunk {
                     background: #7D94B0;
                     width:5px
                   }
-                ''')
+                """
+                )
 
             def setDescription(self, text, tooltip):
                 self.setToolTip(tooltip)
@@ -4680,7 +5060,7 @@ if __name__ == '__main__':
             def setProgress(self, progress_val):
                 self.opacity.setOpacity(100)
                 self.progress_bar.setGraphicsEffect(self.opacity)
-                self.progress_bar.setFormat('')
+                self.progress_bar.setFormat("")
                 self.progress_bar.setValue(progress_val)
 
             def hideProgress(self):
@@ -4699,14 +5079,13 @@ if __name__ == '__main__':
                 self.progress_bar.hide()
                 self.end_label.hide()
 
-        all_channels_lang = _('All channels')
-        favourites_lang = _('Favourites')
+        all_channels_lang = _("All channels")
+        favourites_lang = _("Favourites")
 
         def gen_chans():
-            global playing_chan, current_group, \
-                array, page_box, channelfilter, prog_match_arr, \
-                channel_logos_request_old, channel_logos_process, \
-                multiprocessing_manager_dict
+            global playing_chan, current_group, array, page_box, channelfilter
+            global prog_match_arr, channel_logos_request_old
+            global channel_logos_process, multiprocessing_manager_dict
 
             channel_logos_request = {}
 
@@ -4722,7 +5101,7 @@ if __name__ == '__main__':
             # Group and favourites filter
             array_filtered = {}
             for j1 in array:
-                group1 = array[j1]['tvg-group']
+                group1 = array[j1]["tvg-group"]
                 if current_group != all_channels_lang:
                     if current_group == favourites_lang:
                         if j1 not in favourite_sets:
@@ -4733,21 +5112,20 @@ if __name__ == '__main__':
                 array_filtered[j1] = array[j1]
 
             ch_array = {
-                x13: array_filtered[x13] for x13 in array_filtered if unidecode(filter_txt).lower().strip() in unidecode(x13).lower().strip()  # noqa: E501
+                x13: array_filtered[x13]
+                for x13 in array_filtered
+                if unidecode(filter_txt).lower().strip()
+                in unidecode(x13).lower().strip()
             }
-            ch_array = list(ch_array.values())[idx:idx + 100]
-            ch_array = dict([(x14['title'], x14) for x14 in ch_array])
+            ch_array = list(ch_array.values())[idx : idx + 100]
+            ch_array = dict([(x14["title"], x14) for x14 in ch_array])
             try:
                 if filter_txt:
                     page_box.setMaximum(round(len(ch_array) / 100) + 1)
-                    of_lbl.setText(get_of_txt(
-                        round(len(ch_array) / 100) + 1
-                    ))
+                    of_lbl.setText(get_of_txt(round(len(ch_array) / 100) + 1))
                 else:
                     page_box.setMaximum(round(len(array_filtered) / 100) + 1)
-                    of_lbl.setText(get_of_txt(
-                        round(len(array_filtered) / 100) + 1
-                    ))
+                    of_lbl.setText(get_of_txt(round(len(array_filtered) / 100) + 1))
             except Exception:
                 pass
             res = {}
@@ -4756,36 +5134,41 @@ if __name__ == '__main__':
             for i in doSort(ch_array):
                 k0 += 1
                 k += 1
-                prog = ''
-                prog_desc = ''
+                prog = ""
+                prog_desc = ""
                 is_epgname_found = False
 
                 # First, match EPG name from settings
-                if settings['m3u'] in channel_sets and i in channel_sets[settings['m3u']]:
-                    if 'epgname' in channel_sets[settings['m3u']][i]:
-                        if channel_sets[settings['m3u']][i]['epgname']:
-                            epg_name = channel_sets[settings['m3u']][i]['epgname']
+                if (
+                    settings["m3u"] in channel_sets
+                    and i in channel_sets[settings["m3u"]]
+                ):
+                    if "epgname" in channel_sets[settings["m3u"]][i]:
+                        if channel_sets[settings["m3u"]][i]["epgname"]:
+                            epg_name = channel_sets[settings["m3u"]][i]["epgname"]
                             if str(epg_name).lower() in programmes:
                                 prog_search = str(epg_name).lower()
                                 is_epgname_found = True
 
                 # Second, match from tvg-id
                 if not is_epgname_found:
-                    if array_filtered[i]['tvg-ID']:
-                        if str(array_filtered[i]['tvg-ID']) in prog_ids:
-                            prog_search_lst = prog_ids[str(array_filtered[i]['tvg-ID'])]
+                    if array_filtered[i]["tvg-ID"]:
+                        if str(array_filtered[i]["tvg-ID"]) in prog_ids:
+                            prog_search_lst = prog_ids[str(array_filtered[i]["tvg-ID"])]
                             if prog_search_lst:
                                 prog_search = prog_search_lst[0].lower()
                                 is_epgname_found = True
 
                 # Third, match from tvg-name
                 if not is_epgname_found:
-                    if array_filtered[i]['tvg-name']:
-                        if str(array_filtered[i]['tvg-name']).lower() in programmes:
-                            prog_search = str(array_filtered[i]['tvg-name']).lower()
+                    if array_filtered[i]["tvg-name"]:
+                        if str(array_filtered[i]["tvg-name"]).lower() in programmes:
+                            prog_search = str(array_filtered[i]["tvg-name"]).lower()
                             is_epgname_found = True
                         else:
-                            spaces_replaced_name = array_filtered[i]['tvg-name'].replace(' ', '_')
+                            spaces_replaced_name = array_filtered[i][
+                                "tvg-name"
+                            ].replace(" ", "_")
                             if str(spaces_replaced_name).lower() in programmes:
                                 prog_search = str(spaces_replaced_name).lower()
                                 is_epgname_found = True
@@ -4797,66 +5180,63 @@ if __name__ == '__main__':
 
                 prog_match_arr[i.lower()] = prog_search
                 if prog_search in programmes:
-                    current_prog = {
-                        'start': 0,
-                        'stop': 0,
-                        'title': '',
-                        'desc': ''
-                    }
+                    current_prog = {"start": 0, "stop": 0, "title": "", "desc": ""}
                     for pr in programmes[prog_search]:
-                        if time.time() > pr['start'] and time.time() < pr['stop']:
+                        if time.time() > pr["start"] and time.time() < pr["stop"]:
                             current_prog = pr
                             break
-                    if current_prog['start'] != 0:
+                    if current_prog["start"] != 0:
                         start_time = datetime.datetime.fromtimestamp(
-                            current_prog['start']
-                        ).strftime('%H:%M')
+                            current_prog["start"]
+                        ).strftime("%H:%M")
                         stop_time = datetime.datetime.fromtimestamp(
-                            current_prog['stop']
-                        ).strftime('%H:%M')
+                            current_prog["stop"]
+                        ).strftime("%H:%M")
                         t_t = time.time()
                         percentage = round(
-                            (t_t - current_prog['start']) / (
-                                current_prog['stop'] - current_prog['start']
-                            ) * 100
+                            (t_t - current_prog["start"])
+                            / (current_prog["stop"] - current_prog["start"])
+                            * 100
                         )
-                        if settings['hideepgpercentage']:
-                            prog = current_prog['title']
+                        if settings["hideepgpercentage"]:
+                            prog = current_prog["title"]
                         else:
-                            prog = str(percentage) + '% ' + current_prog['title']
+                            prog = str(percentage) + "% " + current_prog["title"]
                         try:
-                            if current_prog['desc']:
-                                prog_desc = '\n\n' + textwrap.fill(current_prog['desc'], 100)
+                            if current_prog["desc"]:
+                                prog_desc = "\n\n" + textwrap.fill(
+                                    current_prog["desc"], 100
+                                )
                             else:
-                                prog_desc = ''
+                                prog_desc = ""
                         except Exception:
-                            prog_desc = ''
+                            prog_desc = ""
                     else:
-                        start_time = ''
-                        stop_time = ''
+                        start_time = ""
+                        stop_time = ""
                         t_t = time.time()
                         percentage = 0
-                        prog = ''
-                        prog_desc = ''
+                        prog = ""
+                        prog_desc = ""
                 MyPlaylistWidget = PlaylistWidget()
                 MAX_SIZE_CHAN = 21
                 chan_name = i
 
                 orig_chan_name = chan_name
 
-                if settings['channellogos'] != 3:
+                if settings["channellogos"] != 3:
                     try:
                         channel_logo1 = ""
-                        if 'tvg-logo' in array_filtered[i]:
-                            channel_logo1 = array_filtered[i]['tvg-logo']
+                        if "tvg-logo" in array_filtered[i]:
+                            channel_logo1 = array_filtered[i]["tvg-logo"]
 
                         epg_logo1 = ""
                         if prog_search in epg_icons:
                             epg_logo1 = epg_icons[prog_search]
 
-                        channel_logos_request[array_filtered[i]['title']] = [
+                        channel_logos_request[array_filtered[i]["title"]] = [
                             channel_logo1,
-                            epg_logo1
+                            epg_logo1,
                         ]
                     except Exception:
                         logger.warning(f"Exception in channel logos (channel '{i}')")
@@ -4868,7 +5248,9 @@ if __name__ == '__main__':
                 append_symbol = ""
                 if playing_chan == chan_name:
                     append_symbol = unicode_play_symbol
-                MyPlaylistWidget.name_label.setText(append_symbol + str(k) + ". " + chan_name)
+                MyPlaylistWidget.name_label.setText(
+                    append_symbol + str(k) + ". " + chan_name
+                )
                 MAX_SIZE = 28
                 orig_prog = prog
                 if len(prog) > MAX_SIZE:
@@ -4879,7 +5261,7 @@ if __name__ == '__main__':
                         (
                             f"<b>{i}</b>" + "<br><br>"
                             "<i>" + orig_prog + "</i>" + prog_desc
-                        ).replace('\n', '<br>')
+                        ).replace("\n", "<br>"),
                     )
                     MyPlaylistWidget.showDescription()
                     try:
@@ -4898,43 +5280,61 @@ if __name__ == '__main__':
 
                 MyPlaylistWidget.setIcon(TV_ICON)
 
-                if settings['channellogos'] != 3:  # Do not load any logos
+                if settings["channellogos"] != 3:  # Do not load any logos
                     try:
                         if f"LOGO:::{orig_chan_name}" in multiprocessing_manager_dict:
-                            if settings['channellogos'] == 0:  # Prefer M3U
+                            if settings["channellogos"] == 0:  # Prefer M3U
                                 first_loaded = False
-                                if multiprocessing_manager_dict[f"LOGO:::{orig_chan_name}"][0]:
+                                if multiprocessing_manager_dict[
+                                    f"LOGO:::{orig_chan_name}"
+                                ][0]:
                                     chan_logo = get_pixmap_from_filename(
-                                        multiprocessing_manager_dict[f"LOGO:::{orig_chan_name}"][0]
+                                        multiprocessing_manager_dict[
+                                            f"LOGO:::{orig_chan_name}"
+                                        ][0]
                                     )
                                     if chan_logo:
                                         first_loaded = True
                                         MyPlaylistWidget.setIcon(chan_logo)
                                 if not first_loaded:
                                     chan_logo = get_pixmap_from_filename(
-                                        multiprocessing_manager_dict[f"LOGO:::{orig_chan_name}"][1]
+                                        multiprocessing_manager_dict[
+                                            f"LOGO:::{orig_chan_name}"
+                                        ][1]
                                     )
                                     if chan_logo:
                                         MyPlaylistWidget.setIcon(chan_logo)
-                            elif settings['channellogos'] == 1:  # Prefer EPG
+                            elif settings["channellogos"] == 1:  # Prefer EPG
                                 first_loaded = False
-                                if multiprocessing_manager_dict[f"LOGO:::{orig_chan_name}"][1]:
+                                if multiprocessing_manager_dict[
+                                    f"LOGO:::{orig_chan_name}"
+                                ][1]:
                                     chan_logo = get_pixmap_from_filename(
-                                        multiprocessing_manager_dict[f"LOGO:::{orig_chan_name}"][1]
+                                        multiprocessing_manager_dict[
+                                            f"LOGO:::{orig_chan_name}"
+                                        ][1]
                                     )
                                     if chan_logo:
                                         first_loaded = True
                                         MyPlaylistWidget.setIcon(chan_logo)
                                 if not first_loaded:
                                     chan_logo = get_pixmap_from_filename(
-                                        multiprocessing_manager_dict[f"LOGO:::{orig_chan_name}"][0]
+                                        multiprocessing_manager_dict[
+                                            f"LOGO:::{orig_chan_name}"
+                                        ][0]
                                     )
                                     if chan_logo:
                                         MyPlaylistWidget.setIcon(chan_logo)
-                            elif settings['channellogos'] == 2:  # Do not load from EPG (only M3U)
-                                if multiprocessing_manager_dict[f"LOGO:::{orig_chan_name}"][0]:
+                            elif (
+                                settings["channellogos"] == 2
+                            ):  # Do not load from EPG (only M3U)
+                                if multiprocessing_manager_dict[
+                                    f"LOGO:::{orig_chan_name}"
+                                ][0]:
                                     chan_logo = get_pixmap_from_filename(
-                                        multiprocessing_manager_dict[f"LOGO:::{orig_chan_name}"][0]
+                                        multiprocessing_manager_dict[
+                                            f"LOGO:::{orig_chan_name}"
+                                        ][0]
                                     )
                                     if chan_logo:
                                         MyPlaylistWidget.setIcon(chan_logo)
@@ -4958,7 +5358,7 @@ if __name__ == '__main__':
                 try:
                     cur = programmes[j1]
                     for pr in cur:
-                        if time.time() > pr['start'] and time.time() < pr['stop']:
+                        if time.time() > pr["start"] and time.time() < pr["stop"]:
                             current_chan = pr
                             break
                 except Exception:
@@ -4967,20 +5367,23 @@ if __name__ == '__main__':
 
             # Fetch channel logos
             try:
-                if settings['channellogos'] != 3:
+                if settings["channellogos"] != 3:
                     if channel_logos_request != channel_logos_request_old:
                         channel_logos_request_old = channel_logos_request
                         logger.debug("Channel logos request")
                         if channel_logos_process and channel_logos_process.is_alive():
-                            # logger.debug("Old channel logos request found, stopping it")
+                            # logger.debug(
+                            #     "Old channel logos request found, stopping it"
+                            # )
                             channel_logos_process.kill()
                         channel_logos_process = get_context("fork").Process(
-                            name='[yuki-iptv] channel_logos_worker',
+                            name="[yuki-iptv] channel_logos_worker",
                             target=channel_logos_worker,
                             args=(
-                                0, channel_logos_request,
+                                0,
+                                channel_logos_request,
                                 multiprocessing_manager_dict,
-                            )
+                            ),
                         )
                         channel_logos_process.start()
             except Exception:
@@ -5004,7 +5407,7 @@ if __name__ == '__main__':
                     win.listWidget.addItem(chan_3[0])
                     win.listWidget.setItemWidget(chan_3[0], chan_3[1])
             else:
-                win.listWidget.addItem(_('Nothing found'))
+                win.listWidget.addItem(_("Nothing found"))
             win.listWidget.setCurrentRow(row0)
             win.listWidget.verticalScrollBar().setValue(val0)
 
@@ -5032,9 +5435,10 @@ if __name__ == '__main__':
                 tv_widgets = [combobox, win.listWidget, widget4]
                 movies_widgets = [movies_combobox, win.moviesWidget]
                 series_widgets = [win.seriesWidget]
-                # Clear search text when play mode is changed (TV channels, movies, series)
+                # Clear search text when play mode is changed
+                # (TV channels, movies, series)
                 try:
-                    channelfilter.setText('')
+                    channelfilter.setText("")
                     channelfiltersearch.click()
                 except Exception:
                     pass
@@ -5046,7 +5450,7 @@ if __name__ == '__main__':
                     for lbl4 in tv_widgets:
                         lbl4.show()
                     try:
-                        channelfilter.setPlaceholderText(_('Search channel'))
+                        channelfilter.setPlaceholderText(_("Search channel"))
                     except Exception:
                         pass
                 if playmode_selector.currentIndex() == 1:
@@ -5057,7 +5461,7 @@ if __name__ == '__main__':
                     for lbl5 in movies_widgets:
                         lbl5.show()
                     try:
-                        channelfilter.setPlaceholderText(_('Search movie'))
+                        channelfilter.setPlaceholderText(_("Search movie"))
                     except Exception:
                         pass
                 if playmode_selector.currentIndex() == 2:
@@ -5068,7 +5472,7 @@ if __name__ == '__main__':
                     for lbl6 in series_widgets:
                         lbl6.show()
                     try:
-                        channelfilter.setPlaceholderText(_('Search series'))
+                        channelfilter.setPlaceholderText(_("Search series"))
                     except Exception:
                         pass
 
@@ -5095,10 +5499,14 @@ if __name__ == '__main__':
                 sort_list.setCurrentRow(curIndex1 + 1)
 
         sort_upbtn = QtWidgets.QPushButton()
-        sort_upbtn.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'arrow-up.png'))))
+        sort_upbtn.setIcon(
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "arrow-up.png")))
+        )
         sort_upbtn.clicked.connect(sort_upbtn_clicked)
         sort_downbtn = QtWidgets.QPushButton()
-        sort_downbtn.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'arrow-down.png'))))
+        sort_downbtn.setIcon(
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "arrow-down.png")))
+        )
         sort_downbtn.clicked.connect(sort_downbtn_clicked)
 
         sort_widget2 = QtWidgets.QWidget()
@@ -5134,81 +5542,96 @@ if __name__ == '__main__':
             if chan_win.isVisible():
                 chan_win.close()
             title.setText(str(item_selected))
-            if settings['m3u'] in channel_sets and item_selected in channel_sets[settings['m3u']]:
+            if (
+                settings["m3u"] in channel_sets
+                and item_selected in channel_sets[settings["m3u"]]
+            ):
                 deinterlace_chk.setChecked(
-                    channel_sets[settings['m3u']][item_selected]['deinterlace']
+                    channel_sets[settings["m3u"]][item_selected]["deinterlace"]
                 )
                 try:
                     useragent_choose.setText(
-                        channel_sets[settings['m3u']][item_selected]['ua']
+                        channel_sets[settings["m3u"]][item_selected]["ua"]
                     )
                 except Exception:
-                    useragent_choose.setText('')
+                    useragent_choose.setText("")
                 try:
                     referer_choose_custom.setText(
-                        channel_sets[settings['m3u']][item_selected]['ref']
+                        channel_sets[settings["m3u"]][item_selected]["ref"]
                     )
                 except Exception:
-                    referer_choose_custom.setText('')
+                    referer_choose_custom.setText("")
                 try:
-                    group_text.setText(channel_sets[settings['m3u']][item_selected]['group'])
+                    group_text.setText(
+                        channel_sets[settings["m3u"]][item_selected]["group"]
+                    )
                 except Exception:
-                    group_text.setText('')
+                    group_text.setText("")
                 try:
-                    hidden_chk.setChecked(channel_sets[settings['m3u']][item_selected]['hidden'])
+                    hidden_chk.setChecked(
+                        channel_sets[settings["m3u"]][item_selected]["hidden"]
+                    )
                 except Exception:
                     hidden_chk.setChecked(False)
                 try:
                     contrast_choose.setValue(
-                        channel_sets[settings['m3u']][item_selected]['contrast']
+                        channel_sets[settings["m3u"]][item_selected]["contrast"]
                     )
                 except Exception:
                     contrast_choose.setValue(0)
                 try:
                     brightness_choose.setValue(
-                        channel_sets[settings['m3u']][item_selected]['brightness']
+                        channel_sets[settings["m3u"]][item_selected]["brightness"]
                     )
                 except Exception:
                     brightness_choose.setValue(0)
                 try:
-                    hue_choose.setValue(channel_sets[settings['m3u']][item_selected]['hue'])
+                    hue_choose.setValue(
+                        channel_sets[settings["m3u"]][item_selected]["hue"]
+                    )
                 except Exception:
                     hue_choose.setValue(0)
                 try:
                     saturation_choose.setValue(
-                        channel_sets[settings['m3u']][item_selected]['saturation']
+                        channel_sets[settings["m3u"]][item_selected]["saturation"]
                     )
                 except Exception:
                     saturation_choose.setValue(0)
                 try:
-                    gamma_choose.setValue(channel_sets[settings['m3u']][item_selected]['gamma'])
+                    gamma_choose.setValue(
+                        channel_sets[settings["m3u"]][item_selected]["gamma"]
+                    )
                 except Exception:
                     gamma_choose.setValue(0)
                 try:
                     videoaspect_choose.setCurrentIndex(
-                        channel_sets[settings['m3u']][item_selected]['videoaspect']
+                        channel_sets[settings["m3u"]][item_selected]["videoaspect"]
                     )
                 except Exception:
                     videoaspect_choose.setCurrentIndex(0)
                 try:
                     zoom_choose.setCurrentIndex(
-                        channel_sets[settings['m3u']][item_selected]['zoom']
+                        channel_sets[settings["m3u"]][item_selected]["zoom"]
                     )
                 except Exception:
                     zoom_choose.setCurrentIndex(0)
                 try:
-                    panscan_choose.setValue(channel_sets[settings['m3u']][item_selected]['panscan'])
+                    panscan_choose.setValue(
+                        channel_sets[settings["m3u"]][item_selected]["panscan"]
+                    )
                 except Exception:
                     panscan_choose.setValue(0)
                 try:
-                    epgname_saved = channel_sets[settings['m3u']][item_selected]['epgname']
+                    epgname_saved = channel_sets[settings["m3u"]][item_selected][
+                        "epgname"
+                    ]
                     if not epgname_saved:
-                        epgname_saved = _('Default')
+                        epgname_saved = _("Default")
                     epgname_lbl.setText(epgname_saved)
                 except Exception:
-                    epgname_lbl.setText(_('Default'))
+                    epgname_lbl.setText(_("Default"))
             else:
-                deinterlace_chk.setChecked(settings['deinterlace'])
+                deinterlace_chk.setChecked(settings["deinterlace"])
                 hidden_chk.setChecked(False)
                 contrast_choose.setValue(0)
                 brightness_choose.setValue(0)
@@ -5218,10 +5641,10 @@ if __name__ == '__main__':
                 videoaspect_choose.setCurrentIndex(0)
                 zoom_choose.setCurrentIndex(0)
                 panscan_choose.setValue(0)
-                useragent_choose.setText('')
-                referer_choose_custom.setText('')
-                group_text.setText('')
-                epgname_lbl.setText(_('Default'))
+                useragent_choose.setText("")
+                referer_choose_custom.setText("")
+                group_text.setText("")
+                epgname_lbl.setText(_("Default"))
             moveWindowToCenter(chan_win)
             chan_win.show()
 
@@ -5230,9 +5653,10 @@ if __name__ == '__main__':
                 isdelete_fav_msg = QtWidgets.QMessageBox.question(
                     None,
                     MAIN_WINDOW_TITLE,
-                    str(_('Delete from favourites')) + '?',
-                    QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No,
+                    str(_("Delete from favourites")) + "?",
                     QtWidgets.QMessageBox.StandardButton.Yes
+                    | QtWidgets.QMessageBox.StandardButton.No,
+                    QtWidgets.QMessageBox.StandardButton.Yes,
                 )
                 if isdelete_fav_msg == QtWidgets.QMessageBox.StandardButton.Yes:
                     favourite_sets.remove(item_selected)
@@ -5246,67 +5670,72 @@ if __name__ == '__main__':
             ext_win.show()
 
         def tvguide_hide():
-            tvguide_lbl.setText('')
+            tvguide_lbl.setText("")
             tvguide_lbl.hide()
             tvguide_close_lbl.hide()
 
         def favoritesplaylistsep_add():
             ps_data = getArrayItem(item_selected)
             str1 = "#EXTINF:-1"
-            if ps_data['tvg-name']:
+            if ps_data["tvg-name"]:
                 str1 += f" tvg-name=\"{ps_data['tvg-name']}\""
-            if ps_data['tvg-ID']:
+            if ps_data["tvg-ID"]:
                 str1 += f" tvg-id=\"{ps_data['tvg-ID']}\""
-            if ps_data['tvg-logo']:
+            if ps_data["tvg-logo"]:
                 str1 += f" tvg-logo=\"{ps_data['tvg-logo']}\""
-            if ps_data['tvg-group']:
+            if ps_data["tvg-group"]:
                 str1 += f" tvg-group=\"{ps_data['tvg-group']}\""
-            if ps_data['tvg-url']:
+            if ps_data["tvg-url"]:
                 str1 += f" tvg-url=\"{ps_data['tvg-url']}\""
             else:
                 str1 += f" tvg-url=\"{settings['epg']}\""
-            if ps_data['catchup']:
+            if ps_data["catchup"]:
                 str1 += f" catchup=\"{ps_data['catchup']}\""
-            if ps_data['catchup-source']:
+            if ps_data["catchup-source"]:
                 str1 += f" catchup-source=\"{ps_data['catchup-source']}\""
-            if ps_data['catchup-days']:
+            if ps_data["catchup-days"]:
                 str1 += f" catchup-days=\"{ps_data['catchup-days']}\""
 
             str_append = ""
-            if ps_data['useragent']:
+            if ps_data["useragent"]:
                 str_append += f"#EXTVLCOPT:http-user-agent={ps_data['useragent']}\n"
-            if ps_data['referer']:
+            if ps_data["referer"]:
                 str_append += f"#EXTVLCOPT:http-referrer={ps_data['referer']}\n"
 
             str1 += f",{item_selected}\n{str_append}{ps_data['url']}\n"
-            file03 = open(str(Path(LOCAL_DIR, 'favplaylist.m3u')), 'r', encoding="utf8")
+            file03 = open(str(Path(LOCAL_DIR, "favplaylist.m3u")), "r", encoding="utf8")
             file03_contents = file03.read()
             file03.close()
-            if file03_contents == '#EXTM3U\n#EXTINF:-1,-\nhttp://255.255.255.255\n':
-                file04 = open(str(Path(LOCAL_DIR, 'favplaylist.m3u')), 'w', encoding="utf8")
-                file04.write('#EXTM3U\n' + str1)
+            if file03_contents == "#EXTM3U\n#EXTINF:-1,-\nhttp://255.255.255.255\n":
+                file04 = open(
+                    str(Path(LOCAL_DIR, "favplaylist.m3u")), "w", encoding="utf8"
+                )
+                file04.write("#EXTM3U\n" + str1)
                 file04.close()
             else:
                 if str1 in file03_contents:
                     playlistsep_del_msg = QtWidgets.QMessageBox.question(
                         None,
                         MAIN_WINDOW_TITLE,
-                        _('Are you sure?'),
-                        QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No,
+                        _("Are you sure?"),
                         QtWidgets.QMessageBox.StandardButton.Yes
+                        | QtWidgets.QMessageBox.StandardButton.No,
+                        QtWidgets.QMessageBox.StandardButton.Yes,
                     )
                     if playlistsep_del_msg == QtWidgets.QMessageBox.StandardButton.Yes:
-                        new_data = file03_contents.replace(str1, '')
-                        if new_data == '#EXTM3U\n':
-                            new_data = '#EXTM3U\n#EXTINF:-1,-\nhttp://255.255.255.255\n'
+                        new_data = file03_contents.replace(str1, "")
+                        if new_data == "#EXTM3U\n":
+                            new_data = "#EXTM3U\n#EXTINF:-1,-\nhttp://255.255.255.255\n"
                         file05 = open(
-                            str(Path(LOCAL_DIR, 'favplaylist.m3u')), 'w', encoding="utf8"
+                            str(Path(LOCAL_DIR, "favplaylist.m3u")),
+                            "w",
+                            encoding="utf8",
                         )
                         file05.write(new_data)
                         file05.close()
                 else:
                     file02 = open(
-                        str(Path(LOCAL_DIR, 'favplaylist.m3u')), 'w', encoding="utf8"
+                        str(Path(LOCAL_DIR, "favplaylist.m3u")), "w", encoding="utf8"
                     )
                     file02.write(file03_contents + str1)
                     file02.close()
@@ -5314,7 +5743,9 @@ if __name__ == '__main__':
         def show_context_menu(pos):
             is_continue = True
             try:
-                is_continue = win.listWidget.selectedItems()[0].text() != _('Nothing found')
+                is_continue = win.listWidget.selectedItems()[0].text() != _(
+                    "Nothing found"
+                )
             except Exception:
                 pass
             try:
@@ -5324,19 +5755,23 @@ if __name__ == '__main__':
                     sel_item = self.selectedItems()[0]
                     itemSelected_event(sel_item)
                     menu = QtWidgets.QMenu()
-                    menu.addAction(_('Select'), select_context_menu)
+                    menu.addAction(_("Select"), select_context_menu)
                     menu.addSeparator()
-                    menu.addAction(_('TV guide'), tvguide_context_menu)
-                    menu.addAction(_('Hide TV guide'), tvguide_hide)
-                    menu.addAction(_('Favourites'), tvguide_favourites_add)
-                    menu.addAction(_('Favourites+ (separate playlist)'), favoritesplaylistsep_add)
-                    menu.addAction(_('Open in external player'), open_external_player)
-                    menu.addAction(_('Video settings'), settings_context_menu)
+                    menu.addAction(_("TV guide"), tvguide_context_menu)
+                    menu.addAction(_("Hide TV guide"), tvguide_hide)
+                    menu.addAction(_("Favourites"), tvguide_favourites_add)
+                    menu.addAction(
+                        _("Favourites+ (separate playlist)"), favoritesplaylistsep_add
+                    )
+                    menu.addAction(_("Open in external player"), open_external_player)
+                    menu.addAction(_("Video settings"), settings_context_menu)
                     _exec(menu, self.mapToGlobal(pos))
             except Exception:
                 pass
 
-        win.listWidget.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
+        win.listWidget.setContextMenuPolicy(
+            QtCore.Qt.ContextMenuPolicy.CustomContextMenu
+        )
         win.listWidget.customContextMenuRequested.connect(show_context_menu)
         win.listWidget.currentItemChanged.connect(itemSelected_event)
         win.listWidget.itemClicked.connect(itemSelected_event)
@@ -5344,11 +5779,12 @@ if __name__ == '__main__':
 
         def enterPressed():
             itemClicked_event(win.listWidget.currentItem())
+
         shortcuts = {}
         shortcuts_return = QShortcut(
             QtGui.QKeySequence(QtCore.Qt.Key.Key_Return),
             win.listWidget,
-            activated=enterPressed
+            activated=enterPressed,
         )
 
         def channelfilter_do():
@@ -5360,7 +5796,12 @@ if __name__ == '__main__':
                 btn_update.click()
             elif YukiData.playmodeIndex == 1:  # Movies
                 for item3 in range(win.moviesWidget.count()):
-                    if unidecode(filter_txt1).lower().strip() in unidecode(win.moviesWidget.item(item3).text()).lower().strip():  # noqa: E501
+                    if (
+                        unidecode(filter_txt1).lower().strip()
+                        in unidecode(win.moviesWidget.item(item3).text())
+                        .lower()
+                        .strip()
+                    ):
                         win.moviesWidget.item(item3).setHidden(False)
                     else:
                         win.moviesWidget.item(item3).setHidden(True)
@@ -5370,13 +5811,19 @@ if __name__ == '__main__':
                 except Exception:
                     logger.warning("redraw_series FAILED")
                 for item4 in range(win.seriesWidget.count()):
-                    if unidecode(filter_txt1).lower().strip() in unidecode(win.seriesWidget.item(item4).text()).lower().strip():  # noqa: E501
+                    if (
+                        unidecode(filter_txt1).lower().strip()
+                        in unidecode(win.seriesWidget.item(item4).text())
+                        .lower()
+                        .strip()
+                    ):
                         win.seriesWidget.item(item4).setHidden(False)
                     else:
                         win.seriesWidget.item(item4).setHidden(True)
-        loading = QtWidgets.QLabel(_('Loading...'))
+
+        loading = QtWidgets.QLabel(_("Loading..."))
         loading.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        loading.setStyleSheet('color: #778a30')
+        loading.setStyleSheet("color: #778a30")
         hideLoading()
 
         myFont2 = QtGui.QFont()
@@ -5398,21 +5845,26 @@ if __name__ == '__main__':
                     win.moviesWidget.clear()
                     currentMoviesGroup = {}
                     for movies1 in YukiData.movies:
-                        if 'tvg-group' in YukiData.movies[movies1]:
-                            if YukiData.movies[movies1]['tvg-group'] == current_movies_group:
-                                win.moviesWidget.addItem(YukiData.movies[movies1]['title'])
+                        if "tvg-group" in YukiData.movies[movies1]:
+                            if (
+                                YukiData.movies[movies1]["tvg-group"]
+                                == current_movies_group
+                            ):
+                                win.moviesWidget.addItem(
+                                    YukiData.movies[movies1]["title"]
+                                )
                                 currentMoviesGroup[
-                                    YukiData.movies[movies1]['title']
+                                    YukiData.movies[movies1]["title"]
                                 ] = YukiData.movies[movies1]
             else:
                 win.moviesWidget.clear()
-                win.moviesWidget.addItem(_('Nothing found'))
+                win.moviesWidget.addItem(_("Nothing found"))
 
         def movies_play(mov_item):
             global playing_url
             if mov_item.text() in currentMoviesGroup:
                 itemClicked_event(
-                    mov_item.text(), currentMoviesGroup[mov_item.text()]['url']
+                    mov_item.text(), currentMoviesGroup[mov_item.text()]["url"]
                 )
 
         win.moviesWidget.itemDoubleClicked.connect(movies_play)
@@ -5420,9 +5872,9 @@ if __name__ == '__main__':
         movies_groups = []
         movies_combobox = QtWidgets.QComboBox()
         for movie_combobox in YukiData.movies:
-            if 'tvg-group' in YukiData.movies[movie_combobox]:
-                if YukiData.movies[movie_combobox]['tvg-group'] not in movies_groups:
-                    movies_groups.append(YukiData.movies[movie_combobox]['tvg-group'])
+            if "tvg-group" in YukiData.movies[movie_combobox]:
+                if YukiData.movies[movie_combobox]["tvg-group"] not in movies_groups:
+                    movies_groups.append(YukiData.movies[movie_combobox]["tvg-group"])
         for movie_group in movies_groups:
             movies_combobox.addItem(movie_group)
         movies_combobox.currentIndexChanged.connect(movies_group_change)
@@ -5435,30 +5887,34 @@ if __name__ == '__main__':
                 for serie2 in YukiData.series:
                     win.seriesWidget.addItem(serie2)
             else:
-                win.seriesWidget.addItem(_('Nothing found'))
+                win.seriesWidget.addItem(_("Nothing found"))
 
         def series_change(series_item):
             sel_serie = series_item.text()
-            if sel_serie == '< ' + _('Back'):
+            if sel_serie == "< " + _("Back"):
                 redraw_series()
             else:
                 if YukiData.serie_selected:
                     try:
                         serie_data = series_item.data(QtCore.Qt.ItemDataRole.UserRole)
                         if serie_data:
-                            series_name = serie_data.split(':::::::::::::::::::')[2]
-                            season_name = serie_data.split(':::::::::::::::::::')[1]
-                            serie_url = serie_data.split(':::::::::::::::::::')[0]
+                            series_name = serie_data.split(":::::::::::::::::::")[2]
+                            season_name = serie_data.split(":::::::::::::::::::")[1]
+                            serie_url = serie_data.split(":::::::::::::::::::")[0]
                             itemClicked_event(
-                                sel_serie + " ::: " + season_name + " ::: " + series_name,
-                                serie_url
+                                sel_serie
+                                + " ::: "
+                                + season_name
+                                + " ::: "
+                                + series_name,
+                                serie_url,
                             )
                     except Exception:
                         pass
                 else:
                     logger.info(f"Fetching data for serie '{sel_serie}'")
                     win.seriesWidget.clear()
-                    win.seriesWidget.addItem('< ' + _('Back'))
+                    win.seriesWidget.addItem("< " + _("Back"))
                     win.seriesWidget.item(0).setForeground(QtCore.Qt.GlobalColor.blue)
                     try:
                         if not YukiData.series[sel_serie].seasons:
@@ -5466,7 +5922,7 @@ if __name__ == '__main__':
                         for season_name in YukiData.series[sel_serie].seasons.keys():
                             season = YukiData.series[sel_serie].seasons[season_name]
                             season_item = QtWidgets.QListWidgetItem()
-                            season_item.setText('== ' + season.name + ' ==')
+                            season_item.setText("== " + season.name + " ==")
                             season_item.setFont(bold_fnt_1)
                             win.seriesWidget.addItem(season_item)
                             for episode_name in season.episodes.keys():
@@ -5475,7 +5931,11 @@ if __name__ == '__main__':
                                 episode_item.setText(episode.title)
                                 episode_item.setData(
                                     QtCore.Qt.ItemDataRole.UserRole,
-                                    episode.url + ':::::::::::::::::::' + season.name + ':::::::::::::::::::' + sel_serie  # noqa: E501
+                                    episode.url
+                                    + ":::::::::::::::::::"
+                                    + season.name
+                                    + ":::::::::::::::::::"
+                                    + sel_serie,
                                 )
                                 win.seriesWidget.addItem(episode_item)
                         YukiData.serie_selected = True
@@ -5489,20 +5949,24 @@ if __name__ == '__main__':
 
         playmode_selector = QtWidgets.QComboBox()
         playmode_selector.currentIndexChanged.connect(playmode_change)
-        for playmode in [_('TV channels'), _('Movies'), _('Series')]:
+        for playmode in [_("TV channels"), _("Movies"), _("Series")]:
             playmode_selector.addItem(playmode)
 
         def focusOutEvent_after(
-                playlist_widget_visible,
-                controlpanel_widget_visible,
-                channelfiltersearch_has_focus
+            playlist_widget_visible,
+            controlpanel_widget_visible,
+            channelfiltersearch_has_focus,
         ):
             channelfilter.usePopup = False
             playlist_widget.setWindowFlags(
-                QtCore.Qt.WindowType.CustomizeWindowHint | QtCore.Qt.WindowType.FramelessWindowHint | QtCore.Qt.WindowType.X11BypassWindowManagerHint  # noqa: E501
+                QtCore.Qt.WindowType.CustomizeWindowHint
+                | QtCore.Qt.WindowType.FramelessWindowHint
+                | QtCore.Qt.WindowType.X11BypassWindowManagerHint
             )
             controlpanel_widget.setWindowFlags(
-                QtCore.Qt.WindowType.CustomizeWindowHint | QtCore.Qt.WindowType.FramelessWindowHint | QtCore.Qt.WindowType.X11BypassWindowManagerHint  # noqa: E501
+                QtCore.Qt.WindowType.CustomizeWindowHint
+                | QtCore.Qt.WindowType.FramelessWindowHint
+                | QtCore.Qt.WindowType.X11BypassWindowManagerHint
             )
             if playlist_widget_visible:
                 playlist_widget.show()
@@ -5539,11 +6003,10 @@ if __name__ == '__main__':
                         focusOutEvent_after,
                         playlist_widget_visible1,
                         controlpanel_widget_visible1,
-                        channelfiltersearch_has_focus1
+                        channelfiltersearch_has_focus1,
                     )
                     mainthread_timer_1 = partial(
-                        mainthread_timer,
-                        focusOutEvent_after_partial
+                        mainthread_timer, focusOutEvent_after_partial
                     )
                     exInMainThread_partial(mainthread_timer_1)
 
@@ -5553,10 +6016,16 @@ if __name__ == '__main__':
                 controlpanel_widget_visible1 = controlpanel_widget.isVisible()
                 channelfilter.usePopup = True
                 playlist_widget.setWindowFlags(
-                    QtCore.Qt.WindowType.CustomizeWindowHint | QtCore.Qt.WindowType.FramelessWindowHint | QtCore.Qt.WindowType.X11BypassWindowManagerHint | QtCore.Qt.WindowType.Popup  # noqa: E501
+                    QtCore.Qt.WindowType.CustomizeWindowHint
+                    | QtCore.Qt.WindowType.FramelessWindowHint
+                    | QtCore.Qt.WindowType.X11BypassWindowManagerHint
+                    | QtCore.Qt.WindowType.Popup
                 )
                 controlpanel_widget.setWindowFlags(
-                    QtCore.Qt.WindowType.CustomizeWindowHint | QtCore.Qt.WindowType.FramelessWindowHint | QtCore.Qt.WindowType.X11BypassWindowManagerHint | QtCore.Qt.WindowType.Popup  # noqa: E501
+                    QtCore.Qt.WindowType.CustomizeWindowHint
+                    | QtCore.Qt.WindowType.FramelessWindowHint
+                    | QtCore.Qt.WindowType.X11BypassWindowManagerHint
+                    | QtCore.Qt.WindowType.Popup
                 )
                 if playlist_widget_visible1:
                     playlist_widget.show()
@@ -5564,7 +6033,7 @@ if __name__ == '__main__':
                     controlpanel_widget.show()
 
         tvguide_many_win = QtWidgets.QMainWindow()
-        tvguide_many_win.setWindowTitle((_('TV guide')))
+        tvguide_many_win.setWindowTitle((_("TV guide")))
         tvguide_many_win.setWindowIcon(main_icon)
         tvguide_many_win.resize(1000, 700)
 
@@ -5594,7 +6063,9 @@ if __name__ == '__main__':
             a_1_len_array = []
             a_1_array = {}
             for chan_6 in tvguide_many_chans:
-                a_1 = [a_2 for a_2 in programmes[chan_6] if a_2['stop'] > time.time() - 1]
+                a_1 = [
+                    a_2 for a_2 in programmes[chan_6] if a_2["stop"] > time.time() - 1
+                ]
                 a_1_array[chan_6] = a_1
                 a_1_len_array.append(len(a_1))
             tvguide_many_table.setColumnCount(max(a_1_len_array))
@@ -5604,30 +6075,34 @@ if __name__ == '__main__':
                 a_3_i = -1
                 for a_3 in a_1_array[chan_7]:
                     a_3_i += 1
-                    start_3_many = datetime.datetime.fromtimestamp(
-                        a_3['start']
-                    ).strftime('%H:%M') + ' - '
-                    stop_3_many = datetime.datetime.fromtimestamp(
-                        a_3['stop']
-                    ).strftime('%H:%M') + '\n'
+                    start_3_many = (
+                        datetime.datetime.fromtimestamp(a_3["start"]).strftime("%H:%M")
+                        + " - "
+                    )
+                    stop_3_many = (
+                        datetime.datetime.fromtimestamp(a_3["stop"]).strftime("%H:%M")
+                        + "\n"
+                    )
                     try:
-                        title_3_many = a_3['title'] if 'title' in a_3 else ''
+                        title_3_many = a_3["title"] if "title" in a_3 else ""
                     except Exception:
-                        title_3_many = ''
+                        title_3_many = ""
                     try:
-                        desc_3_many = ('\n' + a_3['desc'] + '\n') if 'desc' in a_3 else ''
+                        desc_3_many = (
+                            ("\n" + a_3["desc"] + "\n") if "desc" in a_3 else ""
+                        )
                     except Exception:
-                        desc_3_many = ''
+                        desc_3_many = ""
                     a_3_text = start_3_many + stop_3_many + title_3_many + desc_3_many
                     tvguide_many_table.setItem(
-                        tvguide_many_i2,
-                        a_3_i,
-                        QtWidgets.QTableWidgetItem(a_3_text)
+                        tvguide_many_i2, a_3_i, QtWidgets.QTableWidgetItem(a_3_text)
                     )
-            tvguide_many_table.setHorizontalHeaderLabels([
-                time.strftime('%H:%M', time.localtime()),
-                time.strftime('%H:%M', time.localtime())
-            ])
+            tvguide_many_table.setHorizontalHeaderLabels(
+                [
+                    time.strftime("%H:%M", time.localtime()),
+                    time.strftime("%H:%M", time.localtime()),
+                ]
+            )
             if not tvguide_many_win.isVisible():
                 moveWindowToCenter(tvguide_many_win)
                 tvguide_many_win.show()
@@ -5636,7 +6111,7 @@ if __name__ == '__main__':
                 tvguide_many_win.hide()
 
         tvguide_many = QtWidgets.QPushButton()
-        tvguide_many.setText(_('TV guide'))
+        tvguide_many.setText(_("TV guide"))
         tvguide_many.clicked.connect(tvguide_many_clicked)
 
         tvguide_widget = QtWidgets.QWidget()
@@ -5647,9 +6122,9 @@ if __name__ == '__main__':
 
         channelfilter = MyLineEdit()
         channelfilter.click_event.connect(channelfilter_clicked)
-        channelfilter.setPlaceholderText(_('Search channel'))
+        channelfilter.setPlaceholderText(_("Search channel"))
         channelfiltersearch = QtWidgets.QPushButton()
-        channelfiltersearch.setText(_('Search'))
+        channelfiltersearch.setText(_("Search"))
         channelfiltersearch.clicked.connect(channelfilter_do)
         widget3 = QtWidgets.QWidget()
         layout3 = QtWidgets.QHBoxLayout()
@@ -5661,18 +6136,21 @@ if __name__ == '__main__':
         layout4.setAlignment(
             QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop
         )
-        page_lbl = QtWidgets.QLabel('{}:'.format(_('Page')))
+        page_lbl = QtWidgets.QLabel("{}:".format(_("Page")))
         of_lbl = QtWidgets.QLabel()
         page_box = QtWidgets.QSpinBox()
-        page_box.setSuffix('        ')
+        page_box.setSuffix("        ")
         page_box.setMinimum(1)
         page_box.setMaximum(round(len(array) / 100) + 1)
-        page_box.setStyleSheet('''
+        page_box.setStyleSheet(
+            """
             QSpinBox::down-button  {
               subcontrol-origin: margin;
               subcontrol-position: center left;
               left: 1px;
-              image: url(''' + str(Path('yuki_iptv', ICONS_FOLDER, 'leftarrow.png')) + ''');
+              image: url("""
+            + str(Path("yuki_iptv", ICONS_FOLDER, "leftarrow.png"))
+            + """);
               height: 24px;
               width: 24px;
             }
@@ -5681,11 +6159,14 @@ if __name__ == '__main__':
               subcontrol-origin: margin;
               subcontrol-position: center right;
               right: 1px;
-              image: url(''' + str(Path('yuki_iptv', ICONS_FOLDER, 'rightarrow.png')) + ''');
+              image: url("""
+            + str(Path("yuki_iptv", ICONS_FOLDER, "rightarrow.png"))
+            + """);
               height: 24px;
               width: 24px;
             }
-        ''')
+        """
+        )
         page_box.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         of_lbl.setText(get_of_txt(round(len(array) / 100) + 1))
 
@@ -5732,50 +6213,43 @@ if __name__ == '__main__':
         dockWidget.setFeatures(
             QtWidgets.QDockWidget.DockWidgetFeature.NoDockWidgetFeatures
         )
-        if settings['panelposition'] == 0:
-            win.addDockWidget(
-                QtCore.Qt.DockWidgetArea.RightDockWidgetArea, dockWidget
-            )
+        if settings["panelposition"] == 0:
+            win.addDockWidget(QtCore.Qt.DockWidgetArea.RightDockWidgetArea, dockWidget)
         else:
-            win.addDockWidget(
-                QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, dockWidget
-            )
+            win.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, dockWidget)
 
-        FORBIDDEN_CHARS = ('"', '*', ':', '<', '>', '?', '\\', '/', '|', '[', ']')
+        FORBIDDEN_CHARS = ('"', "*", ":", "<", ">", "?", "\\", "/", "|", "[", "]")
 
         def do_screenshot():
             global l1, time_stop, playing_chan
             if playing_chan:
                 l1.show()
-                l1.setText2(_('Doing screenshot...'))
+                l1.setText2(_("Doing screenshot..."))
                 ch = playing_chan.replace(" ", "_")
                 for char in FORBIDDEN_CHARS:
                     ch = ch.replace(char, "")
-                cur_time = datetime.datetime.now().strftime('%d%m%Y_%H%M%S')
-                file_name = 'screenshot_-_' + cur_time + '_-_' + ch + '.png'
-                if not settings['scrrecnosubfolders']:
-                    file_path = str(Path(save_folder, 'screenshots', file_name))
+                cur_time = datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
+                file_name = "screenshot_-_" + cur_time + "_-_" + ch + ".png"
+                if not settings["scrrecnosubfolders"]:
+                    file_path = str(Path(save_folder, "screenshots", file_name))
                 else:
                     file_path = str(Path(save_folder, file_name))
                 try:
-                    pillow_img = player.screenshot_raw(includes='subtitles')
+                    pillow_img = player.screenshot_raw(includes="subtitles")
                     pillow_img.save(file_path)
                     l1.show()
-                    l1.setText2(_('Screenshot saved!'))
+                    l1.setText2(_("Screenshot saved!"))
                 except Exception:
                     l1.show()
-                    l1.setText2(_('Screenshot saving error!'))
+                    l1.setText2(_("Screenshot saving error!"))
                 time_stop = time.time() + 1
             else:
                 l1.show()
-                l1.setText2("{}!".format(_('No channel selected')))
+                l1.setText2("{}!".format(_("No channel selected")))
                 time_stop = time.time() + 1
 
         def update_tvguide(
-            chan_1='',
-            do_return=False,
-            show_all_guides=False,
-            mark_integers=False
+            chan_1="", do_return=False, show_all_guides=False, mark_integers=False
         ):
             global item_selected
             if array:
@@ -5786,11 +6260,11 @@ if __name__ == '__main__':
                         chan_2 = sorted(array.items())[0][0]
                 else:
                     chan_2 = chan_1
-                txt = _('No TV guide for channel')
+                txt = _("No TV guide for channel")
                 chan_2 = chan_2.lower()
-                newline_symbol = '\n'
+                newline_symbol = "\n"
                 if do_return:
-                    newline_symbol = '!@#$%^^&*('
+                    newline_symbol = "!@#$%^^&*("
                 try:
                     chan_3 = prog_match_arr[chan_2]
                 except Exception:
@@ -5801,52 +6275,73 @@ if __name__ == '__main__':
                     for pr in prog:
                         override_this = False
                         if show_all_guides:
-                            override_this = pr['start'] < time.time() + 1
+                            override_this = pr["start"] < time.time() + 1
                         else:
-                            override_this = pr['stop'] > time.time() - 1
+                            override_this = pr["stop"] > time.time() - 1
                         if override_this:
-                            def_placeholder = '%d.%m.%y %H:%M'
+                            def_placeholder = "%d.%m.%y %H:%M"
                             if mark_integers:
-                                def_placeholder = '%d.%m.%Y %H:%M:%S'
-                            start_2 = datetime.datetime.fromtimestamp(
-                                pr['start']
-                            ).strftime(def_placeholder) + ' - '
-                            stop_2 = datetime.datetime.fromtimestamp(
-                                pr['stop']
-                            ).strftime(def_placeholder) + '\n'
+                                def_placeholder = "%d.%m.%Y %H:%M:%S"
+                            start_2 = (
+                                datetime.datetime.fromtimestamp(pr["start"]).strftime(
+                                    def_placeholder
+                                )
+                                + " - "
+                            )
+                            stop_2 = (
+                                datetime.datetime.fromtimestamp(pr["stop"]).strftime(
+                                    def_placeholder
+                                )
+                                + "\n"
+                            )
                             try:
-                                title_2 = pr['title'] if 'title' in pr else ''
+                                title_2 = pr["title"] if "title" in pr else ""
                             except Exception:
-                                title_2 = ''
+                                title_2 = ""
                             try:
-                                desc_2 = ('\n' + pr['desc'] + '\n') if 'desc' in pr else ''
+                                desc_2 = (
+                                    ("\n" + pr["desc"] + "\n") if "desc" in pr else ""
+                                )
                             except Exception:
-                                desc_2 = ''
-                            attach_1 = ''
+                                desc_2 = ""
+                            attach_1 = ""
                             if mark_integers:
                                 try:
                                     marked_integer = prog.index(pr)
                                 except Exception:
                                     marked_integer = -1
-                                attach_1 = f' ({marked_integer})'
-                            start_symbl = ''
-                            stop_symbl = ''
+                                attach_1 = f" ({marked_integer})"
+                            start_symbl = ""
+                            stop_symbl = ""
                             if YukiData.use_dark_icon_theme:
                                 start_symbl = '<span style="color: white;">'
-                                stop_symbl = '</span>'
-                            txt += '<span style="color: green;">' + start_2 + stop_2 + '</span>' + \
-                                start_symbl + '<b>' + title_2 + '</b>' + \
-                                desc_2 + attach_1 + stop_symbl + newline_symbol
+                                stop_symbl = "</span>"
+                            txt += (
+                                '<span style="color: green;">'
+                                + start_2
+                                + stop_2
+                                + "</span>"
+                                + start_symbl
+                                + "<b>"
+                                + title_2
+                                + "</b>"
+                                + desc_2
+                                + attach_1
+                                + stop_symbl
+                                + newline_symbol
+                            )
                 if do_return:
                     return txt
-                txt = txt.replace('\n', '<br>').replace('<br>', '', 1)
-                txt = txt.replace('<span style="color: green;">', '<span style="color: red;">', 1)
+                txt = txt.replace("\n", "<br>").replace("<br>", "", 1)
+                txt = txt.replace(
+                    '<span style="color: green;">', '<span style="color: red;">', 1
+                )
                 tvguide_lbl.setText(txt)
-            return ''
+            return ""
 
         def show_tvguide():
             if tvguide_lbl.isVisible():
-                tvguide_lbl.setText('')
+                tvguide_lbl.setText("")
                 tvguide_lbl.hide()
                 tvguide_close_lbl.hide()
             else:
@@ -5856,7 +6351,7 @@ if __name__ == '__main__':
 
         def hide_tvguide():
             if tvguide_lbl.isVisible():
-                tvguide_lbl.setText('')
+                tvguide_lbl.setText("")
                 tvguide_lbl.hide()
                 tvguide_close_lbl.hide()
 
@@ -5864,11 +6359,13 @@ if __name__ == '__main__':
             epg_win_checkbox.clear()
             if showonlychplaylist_chk.isChecked():
                 for chan_0 in array:
-                    epg_win_count.setText('({}: {})'.format(_('channels'), len(array)))
+                    epg_win_count.setText("({}: {})".format(_("channels"), len(array)))
                     epg_win_checkbox.addItem(chan_0)
             else:
                 for chan_0 in programmes:
-                    epg_win_count.setText('({}: {})'.format(_('channels'), len(programmes)))
+                    epg_win_count.setText(
+                        "({}: {})".format(_("channels"), len(programmes))
+                    )
                     epg_win_checkbox.addItem(chan_0)
 
         def show_tvguide_2():
@@ -5888,26 +6385,32 @@ if __name__ == '__main__':
             if not is_recording:
                 is_recording = True
                 lbl2.show()
-                lbl2.setText(_('Preparing record'))
+                lbl2.setText(_("Preparing record"))
                 ch = ch1.replace(" ", "_")
                 for char in FORBIDDEN_CHARS:
                     ch = ch.replace(char, "")
-                cur_time = datetime.datetime.now().strftime('%d%m%Y_%H%M%S')
-                if not settings['scrrecnosubfolders']:
-                    out_file = str(Path(
-                        save_folder,
-                        'recordings',
-                        'recording_-_' + cur_time + '_-_' + ch + '.mkv'
-                    ))
+                cur_time = datetime.datetime.now().strftime("%d%m%Y_%H%M%S")
+                if not settings["scrrecnosubfolders"]:
+                    out_file = str(
+                        Path(
+                            save_folder,
+                            "recordings",
+                            "recording_-_" + cur_time + "_-_" + ch + ".mkv",
+                        )
+                    )
                 else:
-                    out_file = str(Path(
-                        save_folder,
-                        'recording_-_' + cur_time + '_-_' + ch + '.mkv'
-                    ))
+                    out_file = str(
+                        Path(
+                            save_folder, "recording_-_" + cur_time + "_-_" + ch + ".mkv"
+                        )
+                    )
                 record_file = out_file
                 record(
-                    url3, out_file, orig_channel_name, f"Referer: {settings['referer']}",
-                    get_ua_ref_for_channel
+                    url3,
+                    out_file,
+                    orig_channel_name,
+                    f"Referer: {settings['referer']}",
+                    get_ua_ref_for_channel,
                 )
             else:
                 is_recording = False
@@ -5923,12 +6426,12 @@ if __name__ == '__main__':
             else:
                 time_stop = time.time() + 1
                 l1.show()
-                l1.setText2(_('No channel selected for record'))
+                l1.setText2(_("No channel selected for record"))
 
         def my_log(mpv_loglevel1, component, message):
-            mpv_log_str = f'[{mpv_loglevel1}] {component}: {message}'
-            if 'Invalid video timestamp: ' not in str(mpv_log_str):
-                if '[debug] ' in str(mpv_log_str):
+            mpv_log_str = f"[{mpv_loglevel1}] {component}: {message}"
+            if "Invalid video timestamp: " not in str(mpv_log_str):
+                if "[debug] " in str(mpv_log_str):
                     mpv_logger.debug(str(mpv_log_str))
                 else:
                     mpv_logger.info(str(mpv_log_str))
@@ -5936,19 +6439,22 @@ if __name__ == '__main__':
         def playLastChannel():
             global playing_url, playing_chan, combobox, m3u
             isPlayingLast = False
-            if os.path.isfile(str(Path(LOCAL_DIR, 'lastchannels.json'))) and settings['openprevchan']:
+            if (
+                os.path.isfile(str(Path(LOCAL_DIR, "lastchannels.json")))
+                and settings["openprevchan"]
+            ):
                 try:
                     lastfile_1 = open(
-                        str(Path(LOCAL_DIR, 'lastchannels.json')), 'r', encoding="utf8"
+                        str(Path(LOCAL_DIR, "lastchannels.json")), "r", encoding="utf8"
                     )
                     lastfile_1_dat = json.loads(lastfile_1.read())
                     lastfile_1.close()
                     if lastfile_1_dat[0] in m3u:
                         isPlayingLast = True
                         player.user_agent = lastfile_1_dat[2]
-                        setChanText('  ' + lastfile_1_dat[0])
+                        setChanText("  " + lastfile_1_dat[0])
                         itemClicked_event(lastfile_1_dat[0])
-                        setChanText('  ' + lastfile_1_dat[0])
+                        setChanText("  " + lastfile_1_dat[0])
                         try:
                             if lastfile_1_dat[3] < combobox.count():
                                 combobox.setCurrentIndex(lastfile_1_dat[3])
@@ -5959,46 +6465,46 @@ if __name__ == '__main__':
                         except Exception:
                             pass
                 except Exception:
-                    if os.path.isfile(str(Path(LOCAL_DIR, 'lastchannels.json'))):
-                        os.remove(str(Path(LOCAL_DIR, 'lastchannels.json')))
+                    if os.path.isfile(str(Path(LOCAL_DIR, "lastchannels.json"))):
+                        os.remove(str(Path(LOCAL_DIR, "lastchannels.json")))
             return isPlayingLast
 
         VIDEO_OUTPUT = "gpu,x11"
-        HWACCEL = "auto-safe" if settings['hwaccel'] else "no"
+        HWACCEL = "auto-safe" if settings["hwaccel"] else "no"
 
         # Wayland fix
         is_apply_wayland_fix = False
 
-        if 'WAYLAND_DISPLAY' in os.environ:
-            if os.environ['WAYLAND_DISPLAY']:
+        if "WAYLAND_DISPLAY" in os.environ:
+            if os.environ["WAYLAND_DISPLAY"]:
                 logger.info("Found environ WAYLAND_DISPLAY")
                 is_apply_wayland_fix = True
-        if 'XDG_SESSION_TYPE' in os.environ:
-            if os.environ['XDG_SESSION_TYPE'] == 'wayland':
+        if "XDG_SESSION_TYPE" in os.environ:
+            if os.environ["XDG_SESSION_TYPE"] == "wayland":
                 logger.info("Environ XDG_SESSION_TYPE == wayland")
                 is_apply_wayland_fix = True
 
         if is_apply_wayland_fix:
             logger.info("")
             logger.info("[NOTE] Applying video output fix for Wayland")
-            VIDEO_OUTPUT = 'x11'
+            VIDEO_OUTPUT = "x11"
 
         options = {
-            'vo': VIDEO_OUTPUT,
-            'hwdec': HWACCEL,
-            'cursor-autohide': 1000,
-            'force-window': True
+            "vo": VIDEO_OUTPUT,
+            "hwdec": HWACCEL,
+            "cursor-autohide": 1000,
+            "force-window": True,
         }
         options_orig = options.copy()
         options_2 = {}
         try:
-            mpv_options_1 = settings['mpv_options']
+            mpv_options_1 = settings["mpv_options"]
             if "=" in mpv_options_1:
                 pairs = mpv_options_1.split()
                 for pair in pairs:
                     key, value = pair.split("=")
-                    options[key.replace('--', '')] = value
-                    options_2[key.replace('--', '')] = value
+                    options[key.replace("--", "")] = value
+                    options_2[key.replace("--", "")] = value
         except Exception as e1:
             logger.warning("Could not parse MPV options!")
             logger.warning(e1)
@@ -6012,8 +6518,10 @@ if __name__ == '__main__':
             msg_wrongmpvoptions = QtWidgets.QMessageBox(
                 qt_icon_warning,
                 MAIN_WINDOW_TITLE,
-                _('Custom MPV options invalid, ignoring them') + "\n\n" + str(json.dumps(options_2)),
-                QtWidgets.QMessageBox.StandardButton.Ok
+                _("Custom MPV options invalid, ignoring them")
+                + "\n\n"
+                + str(json.dumps(options_2)),
+                QtWidgets.QMessageBox.StandardButton.Ok,
             )
             msg_wrongmpvoptions.exec()
             options = options_orig
@@ -6025,24 +6533,25 @@ if __name__ == '__main__':
         QT_URL = "<a href='https://www.qt.io/'>https://www.qt.io/</a>"
         MPV_URL = "<a href='https://mpv.io/'>mpv</a> "
         CLICKABLE_LINKS = [
-            'https://github.com/yuki-chan-nya',
-            'https://fontawesome.com/',
-            'https://creativecommons.org/licenses/by/4.0/'
+            "https://github.com/yuki-chan-nya",
+            "https://fontawesome.com/",
+            "https://creativecommons.org/licenses/by/4.0/",
         ]
 
         def format_about_text(about_txt):
-            about_txt += "\n\n" + _('Using Qt {} ({})').format(QtCore.QT_VERSION_STR, qt_library)
+            about_txt += "\n\n" + _("Using Qt {} ({})").format(
+                QtCore.QT_VERSION_STR, qt_library
+            )
             mpv_version = player.mpv_version
-            if ' ' in mpv_version:
-                mpv_version = mpv_version.split(' ', 1)[1]
+            if " " in mpv_version:
+                mpv_version = mpv_version.split(" ", 1)[1]
             if not mpv_version:
                 mpv_version = "UNKNOWN"
-            about_txt += "\n" + _('Using libmpv {}').format(mpv_version)
-            about_txt = about_txt.replace('\n', '<br>')
+            about_txt += "\n" + _("Using libmpv {}").format(mpv_version)
+            about_txt = about_txt.replace("\n", "<br>")
             for clickable_link in CLICKABLE_LINKS:
                 about_txt = about_txt.replace(
-                    clickable_link,
-                    f"<a href='{clickable_link}'>{clickable_link}</a>"
+                    clickable_link, f"<a href='{clickable_link}'>{clickable_link}</a>"
                 )
             return about_txt
 
@@ -6059,8 +6568,8 @@ if __name__ == '__main__':
                 msg = QtWidgets.QMessageBox(
                     qt_icon_warning,
                     MAIN_WINDOW_TITLE,
-                    _('No channel selected'),
-                    QtWidgets.QMessageBox.StandardButton.Ok
+                    _("No channel selected"),
+                    QtWidgets.QMessageBox.StandardButton.Ok,
                 )
                 msg.exec()
 
@@ -6098,15 +6607,17 @@ if __name__ == '__main__':
 
         stream_info.data = {}
 
-        def process_stream_info(dat_count, name44, stream_props_out, stream_info_lbname):
+        def process_stream_info(
+            dat_count, name44, stream_props_out, stream_info_lbname
+        ):
             bold_fnt = QtGui.QFont()
             bold_fnt.setBold(True)
 
             if stream_info_lbname:
                 la2 = QtWidgets.QLabel()
-                la2.setStyleSheet('color:green')
+                la2.setStyleSheet("color:green")
                 la2.setFont(bold_fnt)
-                la2.setText('\n' + stream_info_lbname + '\n')
+                la2.setText("\n" + stream_info_lbname + "\n")
                 layout36.addWidget(la2, dat_count, 0)
                 dat_count += 1
 
@@ -6122,11 +6633,17 @@ if __name__ == '__main__':
                 wdg1.setText(str(dat1))
                 wdg2.setText(str(stream_props_out[dat1]))
 
-                if str(dat1) == _("Average Bitrate") and stream_props_out == stream_info.video_properties[_("General")]:  # noqa: E501
-                    stream_info.data['video'] = [wdg2, stream_props_out]
+                if (
+                    str(dat1) == _("Average Bitrate")
+                    and stream_props_out == stream_info.video_properties[_("General")]
+                ):
+                    stream_info.data["video"] = [wdg2, stream_props_out]
 
-                if str(dat1) == _("Average Bitrate") and stream_props_out == stream_info.audio_properties[_("General")]:  # noqa: E501
-                    stream_info.data['audio'] = [wdg2, stream_props_out]
+                if (
+                    str(dat1) == _("Average Bitrate")
+                    and stream_props_out == stream_info.audio_properties[_("General")]
+                ):
+                    stream_info.data["audio"] = [wdg2, stream_props_out]
 
                 layout36.addWidget(wdg1, dat_count, 0)
                 layout36.addWidget(wdg2, dat_count, 1)
@@ -6135,13 +6652,13 @@ if __name__ == '__main__':
         def thread_bitrate():
             try:
                 if streaminfo_win.isVisible():
-                    if 'video' in stream_info.data:
-                        stream_info.data['video'][0].setText(
-                            stream_info.data['video'][1][_("Average Bitrate")]
+                    if "video" in stream_info.data:
+                        stream_info.data["video"][0].setText(
+                            stream_info.data["video"][1][_("Average Bitrate")]
                         )
-                    if 'audio' in stream_info.data:
-                        stream_info.data['audio'][0].setText(
-                            stream_info.data['audio'][1][_("Average Bitrate")]
+                    if "audio" in stream_info.data:
+                        stream_info.data["audio"][0].setText(
+                            stream_info.data["audio"][1][_("Average Bitrate")]
                         )
             except Exception:
                 pass
@@ -6156,25 +6673,28 @@ if __name__ == '__main__':
                     stream_info.video_properties[_("General")],
                     stream_info.video_properties[_("Color")],
                     stream_info.audio_properties[_("General")],
-                    stream_info.audio_properties[_("Layout")]
+                    stream_info.audio_properties[_("Layout")],
                 ]
 
                 dat_count = 1
-                stream_info_video_lbl = QtWidgets.QLabel(_("Video") + '\n')
-                stream_info_video_lbl.setStyleSheet('color:green')
+                stream_info_video_lbl = QtWidgets.QLabel(_("Video") + "\n")
+                stream_info_video_lbl.setStyleSheet("color:green")
                 bold_fnt_2 = QtGui.QFont()
                 bold_fnt_2.setBold(True)
                 stream_info_video_lbl.setFont(bold_fnt_2)
                 layout36.addWidget(stream_info_video_lbl, 0, 0)
-                dat_count = process_stream_info(dat_count, _("General"), stream_props[0], "")
-                dat_count = process_stream_info(dat_count, _("Color"), stream_props[1], "")
                 dat_count = process_stream_info(
-                    dat_count,
-                    _("General"),
-                    stream_props[2],
-                    _("Audio")
+                    dat_count, _("General"), stream_props[0], ""
                 )
-                dat_count = process_stream_info(dat_count, _("Layout"), stream_props[3], "")
+                dat_count = process_stream_info(
+                    dat_count, _("Color"), stream_props[1], ""
+                )
+                dat_count = process_stream_info(
+                    dat_count, _("General"), stream_props[2], _("Audio")
+                )
+                dat_count = process_stream_info(
+                    dat_count, _("Layout"), stream_props[3], ""
+                )
 
                 if not streaminfo_win.isVisible():
                     streaminfo_win.show()
@@ -6183,10 +6703,10 @@ if __name__ == '__main__':
                     streaminfo_win.hide()
             else:
                 l1.show()
-                l1.setText2("{}!".format(_('No channel selected')))
+                l1.setText2("{}!".format(_("No channel selected")))
                 time_stop = time.time() + 1
 
-        streaminfo_win.setWindowTitle(_('Stream Information'))
+        streaminfo_win.setWindowTitle(_("Stream Information"))
 
         def is_recording_func():
             global ffmpeg_processes
@@ -6215,7 +6735,7 @@ if __name__ == '__main__':
                     player.track_list,
                     playing_chan,
                     settings["m3u"],
-                    str(Path(LOCAL_DIR, 'alwaysontop.json'))
+                    str(Path(LOCAL_DIR, "alwaysontop.json")),
                 )
             except Exception:
                 logger.warning("redraw_menubar failed")
@@ -6242,9 +6762,9 @@ if __name__ == '__main__':
         def end_file_error_callback(unused=None):
             if loading.isVisible():
                 mpv_stop()
-                chan.setText('')
-                loading.setText(_('Playing error'))
-                loading.setStyleSheet('color: red')
+                chan.setText("")
+                loading.setText(_("Playing error"))
+                loading.setStyleSheet("color: red")
                 showLoading()
                 loading1.hide()
                 loading_movie.stop()
@@ -6253,7 +6773,7 @@ if __name__ == '__main__':
         def end_file_callback(unused=None):
             global playing_chan
             if playing_chan and player.path is None:
-                if settings['autoreconnection']:
+                if settings["autoreconnection"]:
                     logger.info("Connection to stream lost, waiting 1 sec...")
                     do_reconnect1_async()
                 else:
@@ -6282,7 +6802,7 @@ if __name__ == '__main__':
             if settings["mouseswitchchannels"]:
                 next_channel()
             else:
-                volume = int(player.volume + settings['volumechangestep'])
+                volume = int(player.volume + settings["volumechangestep"])
                 volume = min(volume, 200)
                 label7.setValue(volume)
                 mpv_volume_set()
@@ -6293,7 +6813,7 @@ if __name__ == '__main__':
             if settings["mouseswitchchannels"]:
                 prev_channel()
             else:
-                volume = int(player.volume - settings['volumechangestep'])
+                volume = int(player.volume - settings["volumechangestep"])
                 volume = max(volume, 0)
                 time_stop = time.time() + 3
                 show_volume(volume)
@@ -6307,7 +6827,7 @@ if __name__ == '__main__':
 
         def open_recording_folder():
             absolute_path = Path(save_folder).absolute()
-            xdg_open = subprocess.Popen(['xdg-open', str(absolute_path)])
+            xdg_open = subprocess.Popen(["xdg-open", str(absolute_path)])
             xdg_open.wait()
 
         def go_channel(i1):
@@ -6328,7 +6848,7 @@ if __name__ == '__main__':
         def next_channel(unused=None):
             go_channel(1)
 
-        if qt_library == 'PyQt6':
+        if qt_library == "PyQt6":
             qaction_prio = QtGui.QAction.Priority.HighPriority
         else:
             qaction_prio = QtWidgets.QAction.Priority.HighPriority
@@ -6340,10 +6860,14 @@ if __name__ == '__main__':
             arr1 = getArrayItem(archive_channel.text())
             arr1 = format_catchup_array(arr1)
 
-            chan_url = getArrayItem(archive_channel.text())['url']
-            start_time = archive_all.currentItem().text().split(' - ')[0].strip()
-            end_time = archive_all.currentItem().text().split(' - ')[1].split('\n')[0].strip()
-            prog_index = archive_all.currentItem().text().split("(")[-1].replace(')', '')
+            chan_url = getArrayItem(archive_channel.text())["url"]
+            start_time = archive_all.currentItem().text().split(" - ")[0].strip()
+            end_time = (
+                archive_all.currentItem().text().split(" - ")[1].split("\n")[0].strip()
+            )
+            prog_index = (
+                archive_all.currentItem().text().split("(")[-1].replace(")", "")
+            )
 
             catchup_id = ""
             try:
@@ -6354,8 +6878,10 @@ if __name__ == '__main__':
                     pass
                 if match1 in programmes:
                     if programmes[match1]:
-                        if 'catchup-id' in programmes[match1][int(prog_index)]:
-                            catchup_id = programmes[match1][int(prog_index)]['catchup-id']
+                        if "catchup-id" in programmes[match1][int(prog_index)]:
+                            catchup_id = programmes[match1][int(prog_index)][
+                                "catchup-id"
+                            ]
             except Exception:
                 logger.warning("archive_all_clicked / catchup_id parsing failed")
                 logger.warning(traceback.format_exc())
@@ -6363,11 +6889,11 @@ if __name__ == '__main__':
             play_url = get_catchup_url(chan_url, arr1, start_time, end_time, catchup_id)
 
             itemClicked_event(archive_channel.text(), play_url, True)
-            setChanText("({}) {}".format(_('Archive'), archive_channel.text()), True)
+            setChanText("({}) {}".format(_("Archive"), archive_channel.text()), True)
             progress.hide()
-            start_label.setText('')
+            start_label.setText("")
             start_label.hide()
-            stop_label.setText('')
+            stop_label.setText("")
             stop_label.hide()
             archive_win.hide()
 
@@ -6384,12 +6910,12 @@ if __name__ == '__main__':
             got_array = format_catchup_array(got_array)
 
             archive_usingmode.setText(
-                "{}: {}".format(_('Using mode'), got_array['catchup'])
+                "{}: {}".format(_("Using mode"), got_array["catchup"])
             )
             archive_all.clear()
             tvguide_got_1 = re.sub(
-                '<[^<]+?>', '', update_tvguide(cur_name, True, True, True)
-            ).split('!@#$%^^&*(')[2:]
+                "<[^<]+?>", "", update_tvguide(cur_name, True, True, True)
+            ).split("!@#$%^^&*(")[2:]
             for tvguide_el_1 in tvguide_got_1:
                 if tvguide_el_1:
                     archive_all.addItem(tvguide_el_1)
@@ -6407,14 +6933,19 @@ if __name__ == '__main__':
         # MPRIS
         mpris_loop = None
         try:
+
             class MyAppAdapter(MprisAdapter):
                 def metadata(self) -> dict:
                     channel_keys = list(array.keys())
-                    mpris_trackid = str(channel_keys.index(playing_chan) + 1 if playing_chan in channel_keys else 0)
+                    mpris_trackid = str(
+                        channel_keys.index(playing_chan) + 1
+                        if playing_chan in channel_keys
+                        else 0
+                    )
                     metadata = {
                         "mpris:trackid": f"/com/yuki/iptv/playlist/{mpris_trackid}",
                         "xesam:url": playing_url,
-                        "xesam:title": playing_chan
+                        "xesam:title": playing_chan,
                     }
                     return metadata
 
@@ -6494,7 +7025,7 @@ if __name__ == '__main__':
                     return False
 
                 def get_art_url(self, track: int) -> str:
-                    return ''
+                    return ""
 
                 def get_volume(self) -> VolumeDecimal:
                     return player.volume / 100
@@ -6531,14 +7062,14 @@ if __name__ == '__main__':
                     return playing_chan
 
                 def get_previous_track(self) -> Track:
-                    return ''
+                    return ""
 
                 def get_next_track(self) -> Track:
-                    return ''
+                    return ""
 
             # create mpris adapter and initialize mpris server
             my_adapter = MyAppAdapter()
-            mpris = Server('yuki_iptv_' + str(os.getpid()), adapter=my_adapter)
+            mpris = Server("yuki_iptv_" + str(os.getpid()), adapter=my_adapter)
             event_handler = EventAdapter(mpris.player, mpris.root)
 
             def wait_until():
@@ -6574,8 +7105,8 @@ if __name__ == '__main__':
             tvguide_sch.clear()
             if ch_choosed in channel_list_2:
                 tvguide_got = re.sub(
-                    '<[^<]+?>', '', update_tvguide(ch_choosed, True)
-                ).split('!@#$%^^&*(')[2:]
+                    "<[^<]+?>", "", update_tvguide(ch_choosed, True)
+                ).split("!@#$%^^&*(")[2:]
                 for tvguide_el in tvguide_got:
                     if tvguide_el:
                         tvguide_sch.addItem(tvguide_el)
@@ -6598,36 +7129,44 @@ if __name__ == '__main__':
         def mpv_volume_set_custom():
             mpv_volume_set()
 
-        record_icon = QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'record.png')))
-        record_stop_icon = QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'stoprecord.png')))
+        record_icon = QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "record.png")))
+        record_stop_icon = QtGui.QIcon(
+            str(Path("yuki_iptv", ICONS_FOLDER, "stoprecord.png"))
+        )
 
         label3 = QtWidgets.QPushButton()
-        label3.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'pause.png'))))
-        label3.setToolTip(_('Pause'))
+        label3.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "pause.png"))))
+        label3.setToolTip(_("Pause"))
         label3.clicked.connect(mpv_play)
         label4 = QtWidgets.QPushButton()
-        label4.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'stop.png'))))
-        label4.setToolTip(_('Stop'))
+        label4.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "stop.png"))))
+        label4.setToolTip(_("Stop"))
         label4.clicked.connect(mpv_stop)
         label5 = QtWidgets.QPushButton()
-        label5.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'fullscreen.png'))))
-        label5.setToolTip(_('Fullscreen'))
+        label5.setIcon(
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "fullscreen.png")))
+        )
+        label5.setToolTip(_("Fullscreen"))
         label5.clicked.connect(mpv_fullscreen)
         label5_0 = QtWidgets.QPushButton()
-        label5_0.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'folder.png'))))
-        label5_0.setToolTip(_('Open recordings folder'))
+        label5_0.setIcon(
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "folder.png")))
+        )
+        label5_0.setToolTip(_("Open recordings folder"))
         label5_0.clicked.connect(open_recording_folder)
         label5_1 = QtWidgets.QPushButton()
         label5_1.setIcon(record_icon)
         label5_1.setToolTip(_("Record"))
         label5_1.clicked.connect(do_record)
         label5_2 = QtWidgets.QPushButton()
-        label5_2.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'calendar.png'))))
+        label5_2.setIcon(
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "calendar.png")))
+        )
         label5_2.setToolTip(_("Recording scheduler"))
         label5_2.clicked.connect(show_scheduler)
         label6 = QtWidgets.QPushButton()
-        label6.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'volume.png'))))
-        label6.setToolTip(_('Volume'))
+        label6.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "volume.png"))))
+        label6.setToolTip(_("Volume"))
         label6.clicked.connect(mpv_mute)
         LABEL7_SET_WIDTH = 150
         label7 = QtWidgets.QSlider(QtCore.Qt.Orientation.Horizontal)
@@ -6636,52 +7175,62 @@ if __name__ == '__main__':
         label7.setFixedWidth(LABEL7_SET_WIDTH)
         label7.valueChanged.connect(mpv_volume_set_custom)
         label7_1 = QtWidgets.QPushButton()
-        label7_1.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'screenshot.png'))))
-        label7_1.setToolTip(_('Screenshot').capitalize())
+        label7_1.setIcon(
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "screenshot.png")))
+        )
+        label7_1.setToolTip(_("Screenshot").capitalize())
         label7_1.clicked.connect(do_screenshot)
         label7_2 = QtWidgets.QPushButton()
-        label7_2.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'timeshift.png'))))
-        label7_2.setToolTip(_('Archive'))
+        label7_2.setIcon(
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "timeshift.png")))
+        )
+        label7_2.setToolTip(_("Archive"))
         label7_2.clicked.connect(show_timeshift)
-        if not settings['catchupenable']:
+        if not settings["catchupenable"]:
             label7_2.setVisible(False)
         label8 = QtWidgets.QPushButton()
-        label8.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'settings.png'))))
-        label8.setToolTip(_('Settings'))
+        label8.setIcon(
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "settings.png")))
+        )
+        label8.setToolTip(_("Settings"))
         label8.clicked.connect(show_settings)
         label8_0 = QtWidgets.QPushButton()
-        label8_0.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'tv-blue.png'))))
-        label8_0.setToolTip(_('Playlists'))
+        label8_0.setIcon(
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "tv-blue.png")))
+        )
+        label8_0.setToolTip(_("Playlists"))
         label8_0.clicked.connect(show_playlists)
         label8_1 = QtWidgets.QPushButton()
-        label8_1.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'tvguide.png'))))
-        label8_1.setToolTip(_('TV guide'))
+        label8_1.setIcon(
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "tvguide.png")))
+        )
+        label8_1.setToolTip(_("TV guide"))
         label8_1.clicked.connect(show_tvguide)
         label8_4 = QtWidgets.QPushButton()
-        label8_4.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'sort.png'))))
-        label8_4.setToolTip(_('Channel\nsort').replace('\n', ' '))
+        label8_4.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "sort.png"))))
+        label8_4.setToolTip(_("Channel\nsort").replace("\n", " "))
         label8_4.clicked.connect(show_sort)
         label8_2 = QtWidgets.QPushButton()
-        label8_2.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'prev.png'))))
-        label8_2.setToolTip(_('Previous channel'))
+        label8_2.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "prev.png"))))
+        label8_2.setToolTip(_("Previous channel"))
         label8_2.clicked.connect(prev_channel)
         label8_3 = QtWidgets.QPushButton()
-        label8_3.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'next.png'))))
-        label8_3.setToolTip(_('Next channel'))
+        label8_3.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "next.png"))))
+        label8_3.setToolTip(_("Next channel"))
         label8_3.clicked.connect(next_channel)
         label8_5 = QtWidgets.QPushButton()
-        label8_5.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'edit.png'))))
-        label8_5.setToolTip(_('m3u Editor'))
+        label8_5.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "edit.png"))))
+        label8_5.setToolTip(_("m3u Editor"))
         label8_5.clicked.connect(show_m3u_editor)
         label9 = QtWidgets.QPushButton()
-        label9.setIcon(QtGui.QIcon(str(Path('yuki_iptv', ICONS_FOLDER, 'help.png'))))
-        label9.setToolTip(_('Help'))
+        label9.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "help.png"))))
+        label9.setToolTip(_("Help"))
         label9.clicked.connect(show_help)
 
-        label12 = QtWidgets.QLabel('')
+        label12 = QtWidgets.QLabel("")
         myFont4 = QtGui.QFont()
         myFont4.setPointSize(12)
-        label13 = QtWidgets.QLabel('')
+        label13 = QtWidgets.QLabel("")
         label13.setMinimumWidth(50)
         label12.setFont(myFont4)
         myFont5 = QtGui.QFont()
@@ -6690,11 +7239,11 @@ if __name__ == '__main__':
 
         hdd_gif_label = QtWidgets.QLabel()
         hdd_gif_label.setPixmap(
-            QtGui.QIcon(
-                str(Path('yuki_iptv', ICONS_FOLDER, 'hdd.png'))
-            ).pixmap(QtCore.QSize(32, 32))
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "hdd.png"))).pixmap(
+                QtCore.QSize(32, 32)
+            )
         )
-        hdd_gif_label.setToolTip('{}...'.format(_('Writing EPG cache')))
+        hdd_gif_label.setToolTip("{}...".format(_("Writing EPG cache")))
         hdd_gif_label.setVisible(False)
 
         progress = QtWidgets.QProgressBar()
@@ -6711,16 +7260,35 @@ if __name__ == '__main__':
         hlayout1.addWidget(stop_label)
 
         hlayout2_btns = [
-            label3, label4, label5, label5_1,
-            label5_2, label5_0, label6,
-            label7, label13, label7_1, label7_2,
-            label8_1, label8_2, label8_3
+            label3,
+            label4,
+            label5,
+            label5_1,
+            label5_2,
+            label5_0,
+            label6,
+            label7,
+            label13,
+            label7_1,
+            label7_2,
+            label8_1,
+            label8_2,
+            label8_3,
         ]
 
         show_lbls_fullscreen = [
-            label3, label4, label5, label5_1,
-            label6, label7, label13, label7_1, label7_2,
-            label8_1, label8_2, label8_3
+            label3,
+            label4,
+            label5,
+            label5_1,
+            label6,
+            label7,
+            label13,
+            label7_1,
+            label7_2,
+            label8_1,
+            label8_2,
+            label8_3,
         ]
 
         fs_widget = QtWidgets.QWidget()
@@ -6759,7 +7327,7 @@ if __name__ == '__main__':
         myFont1 = QtGui.QFont()
         myFont1.setPointSize(12)
         myFont1.setBold(True)
-        l1.setStyleSheet('background-color: ' + BCOLOR)
+        l1.setStyleSheet("background-color: " + BCOLOR)
         l1.setFont(myFont1)
         l1.setWordWrap(True)
         l1.move(50, 50)
@@ -6804,7 +7372,7 @@ if __name__ == '__main__':
                 current_group_0 = 0
                 if combobox.currentIndex() != 0:
                     try:
-                        current_group_0 = groups.index(array[playing_chan]['tvg-group'])
+                        current_group_0 = groups.index(array[playing_chan]["tvg-group"])
                     except Exception:
                         pass
                 current_channel_0 = 0
@@ -6812,14 +7380,24 @@ if __name__ == '__main__':
                     current_channel_0 = win.listWidget.currentRow()
                 except Exception:
                     pass
-                lastfile = open(str(Path(LOCAL_DIR, 'lastchannels.json')), 'w', encoding="utf8")
-                lastfile.write(json.dumps(
-                    [playing_chan, playing_url, getUserAgent(), current_group_0, current_channel_0]
-                ))
+                lastfile = open(
+                    str(Path(LOCAL_DIR, "lastchannels.json")), "w", encoding="utf8"
+                )
+                lastfile.write(
+                    json.dumps(
+                        [
+                            playing_chan,
+                            playing_url,
+                            getUserAgent(),
+                            current_group_0,
+                            current_channel_0,
+                        ]
+                    )
+                )
                 lastfile.close()
             else:
-                if os.path.isfile(str(Path(LOCAL_DIR, 'lastchannels.json'))):
-                    os.remove(str(Path(LOCAL_DIR, 'lastchannels.json')))
+                if os.path.isfile(str(Path(LOCAL_DIR, "lastchannels.json"))):
+                    os.remove(str(Path(LOCAL_DIR, "lastchannels.json")))
 
         def cur_win_width():
             w1_width = 0
@@ -6836,38 +7414,44 @@ if __name__ == '__main__':
         def myExitHandler_before():
             global stopped, epg_thread_2, mpris_loop
             if comm_instance.comboboxIndex != -1:
-                write_option('comboboxindex', {
-                    "m3u": settings['m3u'],
-                    "index": comm_instance.comboboxIndex
-                })
+                write_option(
+                    "comboboxindex",
+                    {"m3u": settings["m3u"], "index": comm_instance.comboboxIndex},
+                )
             try:
                 if get_first_run():
                     logger.info("Saving active vf filters...")
-                    write_option('vf_filters', get_active_vf_filters())
+                    write_option("vf_filters", get_active_vf_filters())
                     logger.info("Active vf filters saved")
             except Exception:
                 pass
             try:
                 logger.info("Saving main window position / width / height...")
-                write_option('window', {
-                    "x": win.geometry().x(),
-                    "y": win.geometry().y(),
-                    "w": win.width(),
-                    "h": win.height()
-                })
+                write_option(
+                    "window",
+                    {
+                        "x": win.geometry().x(),
+                        "y": win.geometry().y(),
+                        "w": win.width(),
+                        "h": win.height(),
+                    },
+                )
                 logger.info("Main window position / width / height saved")
             except Exception:
                 pass
             try:
-                write_option('compactstate', {
-                    "compact_mode": YukiData.compact_mode,
-                    "playlist_hidden": YukiData.playlist_hidden,
-                    "controlpanel_hidden": YukiData.controlpanel_hidden
-                })
+                write_option(
+                    "compactstate",
+                    {
+                        "compact_mode": YukiData.compact_mode,
+                        "playlist_hidden": YukiData.playlist_hidden,
+                        "controlpanel_hidden": YukiData.controlpanel_hidden,
+                    },
+                )
             except Exception:
                 pass
             try:
-                write_option('volume', int(YukiData.volume))
+                write_option("volume", int(YukiData.volume))
             except Exception:
                 pass
             save_player_tracks()
@@ -6903,11 +7487,19 @@ if __name__ == '__main__':
 
         def get_catchup_days(is_seconds=False):
             try:
-                catchup_days1 = min(max(1, max([
-                    int(
-                        array[xc1]['catchup-days']
-                    ) for xc1 in array if 'catchup-days' in array[xc1]
-                ])), 7)
+                catchup_days1 = min(
+                    max(
+                        1,
+                        max(
+                            [
+                                int(array[xc1]["catchup-days"])
+                                for xc1 in array
+                                if "catchup-days" in array[xc1]
+                            ]
+                        ),
+                    ),
+                    7,
+                )
             except Exception:
                 catchup_days1 = 1
             if not settings["catchupenable"]:
@@ -6920,11 +7512,13 @@ if __name__ == '__main__':
 
         epg_data = None
 
-        def thread_tvguide_redraw():
+        def thread_channels_redraw():
             global ic, multiprocessing_manager_dict
             ic += 0.1
             # redraw every 15 seconds
-            if ic > (14.9 if not multiprocessing_manager_dict['logos_inprogress'] else 2.9):
+            if ic > (
+                14.9 if not multiprocessing_manager_dict["logos_inprogress"] else 2.9
+            ):
                 ic = 0
                 btn_update.click()
 
@@ -6933,7 +7527,7 @@ if __name__ == '__main__':
             global static_text, time_stop
             l1.setStatic2(True)
             l1.show()
-            static_text = _('Updating TV guide...')
+            static_text = _("Updating TV guide...")
             l1.setText2("")
             time_stop = time.time() + 3
 
@@ -6942,21 +7536,21 @@ if __name__ == '__main__':
             global time_stop
             l1.setStatic2(False)
             l1.show()
-            l1.setText2(_('TV guide update error!'))
+            l1.setText2(_("TV guide update error!"))
             time_stop = time.time() + 3
 
         @async_gui_blocking_function
         def thread_tvguide_update():
-            global stopped, first_boot, programmes, btn_update, \
-                tvguide_sets, epg_updating, \
-                waiting_for_epg, epg_failed, first_boot_1, multiprocessing_manager_dict, \
-                epg_update_allowed, epg_data
+            global stopped, first_boot, programmes, btn_update
+            global tvguide_sets, epg_updating, waiting_for_epg
+            global epg_failed, first_boot_1, multiprocessing_manager_dict
+            global epg_update_allowed, epg_data
             while not stopped:
                 if not first_boot:
                     first_boot = True
-                    if settings['epg'] and not epg_failed:
+                    if settings["epg"] and not epg_failed:
                         if not use_local_tvguide:
-                            update_epg = not settings['donotupdateepg']
+                            update_epg = not settings["donotupdateepg"]
                             if not first_boot_1:
                                 update_epg = True
                             if update_epg:
@@ -6965,15 +7559,24 @@ if __name__ == '__main__':
                                     thread_tvguide_update_1()
                                     try:
                                         epg_data = None
-                                        epg_data = get_context("spawn").Pool(1).apply(worker, (
-                                            settings, get_catchup_days(),
-                                            multiprocessing_manager_dict,
-                                        ))
+                                        epg_data = (
+                                            get_context("spawn")
+                                            .Pool(1)
+                                            .apply(
+                                                worker,
+                                                (
+                                                    settings,
+                                                    get_catchup_days(),
+                                                    multiprocessing_manager_dict,
+                                                ),
+                                            )
+                                        )
                                         waiting_for_epg = True
                                     except Exception as e1:
                                         epg_failed = True
                                         logger.warning(
-                                            "[TV guide, part 1] Caught exception: " + str(e1)
+                                            "[TV guide, part 1] Caught exception: "
+                                            + str(e1)
                                         )
                                         logger.warning(traceback.format_exc())
                                         thread_tvguide_update_2()
@@ -6983,7 +7586,8 @@ if __name__ == '__main__':
                             first_boot_1 = False
                         else:
                             programmes = {
-                                prog0.lower(): tvguide_sets[prog0] for prog0 in tvguide_sets
+                                prog0.lower(): tvguide_sets[prog0]
+                                for prog0 in tvguide_sets
                             }
                             btn_update.click()  # start update in main thread
                 time.sleep(0.1)
@@ -7004,7 +7608,7 @@ if __name__ == '__main__':
                             lbl2.setText("REC " + record_time + " - " + record_size)
                         else:
                             recording_time = time.time()
-                            lbl2.setText(_('Waiting for record'))
+                            lbl2.setText(_("Waiting for record"))
                 win.update()
                 if (time.time() > time_stop) and time_stop != 0:
                     time_stop = 0
@@ -7020,7 +7624,9 @@ if __name__ == '__main__':
 
         def do_reconnect():
             global x_conn
-            if (playing_chan and not loading.isVisible()) and (player.cache_buffering_state == 0):
+            if (playing_chan and not loading.isVisible()) and (
+                player.cache_buffering_state == 0
+            ):
                 logger.info("Reconnecting to stream")
                 try:
                     doPlay(*comm_instance.do_play_args)
@@ -7032,12 +7638,14 @@ if __name__ == '__main__':
 
         def check_connection():
             global x_conn
-            if settings['autoreconnection']:
+            if settings["autoreconnection"]:
                 if not YukiData.connprinted:
                     YukiData.connprinted = True
                     logger.info("Connection loss detector enabled")
                 try:
-                    if (playing_chan and not loading.isVisible()) and player.cache_buffering_state == 0:
+                    if (
+                        playing_chan and not loading.isVisible()
+                    ) and player.cache_buffering_state == 0:
                         if not x_conn:
                             logger.info("Connection to stream lost, waiting 5 secs...")
                             x_conn = QtCore.QTimer()
@@ -7057,10 +7665,15 @@ if __name__ == '__main__':
                 try:
                     if player.video_bitrate:
                         bitrate_arr = [
-                            _('bps'), _('kbps'),
-                            _('Mbps'), _('Gbps'), _('Tbps')
+                            _("bps"),
+                            _("kbps"),
+                            _("Mbps"),
+                            _("Gbps"),
+                            _("Tbps"),
                         ]
-                        video_bitrate = " - " + str(format_bytes(player.video_bitrate, bitrate_arr))
+                        video_bitrate = " - " + str(
+                            format_bytes(player.video_bitrate, bitrate_arr)
+                        )
                     else:
                         video_bitrate = ""
                 except Exception:
@@ -7068,26 +7681,29 @@ if __name__ == '__main__':
                 try:
                     audio_codec = player.audio_codec.split(" ")[0]
                 except Exception:
-                    audio_codec = 'no audio'
+                    audio_codec = "no audio"
                 try:
                     codec = player.video_codec.split(" ")[0]
                     width = player.width
                     height = player.height
                 except Exception:
-                    codec = 'png'
+                    codec = "png"
                     width = 800
                     height = 600
-                if (not (codec == 'png' and width == 800 and height == 600)) and (width and height):
-                    if settings['hidebitrateinfo']:
-                        label12.setText('')
+                if (not (codec == "png" and width == 800 and height == 600)) and (
+                    width and height
+                ):
+                    if settings["hidebitrateinfo"]:
+                        label12.setText("")
                     else:
                         label12.setText(
-                            f'  {width}x{height}{video_bitrate} - {codec} / {audio_codec}'
+                            f"  {width}x{height}{video_bitrate}"
+                            f" - {codec} / {audio_codec}"
                         )
-                    if loading.text() == _('Loading...'):
+                    if loading.text() == _("Loading..."):
                         hideLoading()
                 else:
-                    label12.setText('')
+                    label12.setText("")
                 ic2 += 0.1
                 if ic2 > 9.9:
                     ic2 = 0
@@ -7102,7 +7718,7 @@ if __name__ == '__main__':
             global time_stop
             l1.setStatic2(False)
             l1.show()
-            l1.setText2(_('TV guide update done!'))
+            l1.setText2(_("TV guide update done!"))
             time_stop = time.time() + 3
 
         thread_tvguide_update_pt2_e2 = ""
@@ -7112,28 +7728,28 @@ if __name__ == '__main__':
             global time_stop
             l1.setStatic2(False)
             l1.show()
-            if 'Programme not actual' in str(thread_tvguide_update_pt2_e2):
-                l1.setText2(_('EPG is outdated!'))
+            if "Programme not actual" in str(thread_tvguide_update_pt2_e2):
+                l1.setText2(_("EPG is outdated!"))
             else:
-                l1.setText2(_('TV guide update error!'))
+                l1.setText2(_("TV guide update error!"))
             time_stop = time.time() + 3
 
         @async_gui_blocking_function
         def thread_tvguide_update_pt2():
-            global stopped, time_stop, first_boot, programmes, btn_update, \
-                static_text, tvguide_sets, epg_updating, ic, \
-                waiting_for_epg, \
-                epg_failed, prog_ids, epg_icons, \
-                thread_tvguide_update_pt2_e2
+            global stopped, time_stop, first_boot, programmes, btn_update
+            global static_text, tvguide_sets, epg_updating, ic
+            global waiting_for_epg, epg_failed, prog_ids
+            global epg_icons, thread_tvguide_update_pt2_e2
             while not stopped:
-                if waiting_for_epg and epg_data \
-                   and len(epg_data) == 7:
+                if waiting_for_epg and epg_data and len(epg_data) == 7:
                     try:
                         if not epg_data[3]:
                             raise epg_data[4]
                         thread_tvguide_update_pt2_1()
                         values = epg_data
-                        programmes = {prog0.lower(): values[1][prog0] for prog0 in values[1]}
+                        programmes = {
+                            prog0.lower(): values[1][prog0] for prog0 in values[1]
+                        }
                         values = None
                         if not is_program_actual(programmes, epg_ready):
                             raise Exception("Programme not actual")
@@ -7144,7 +7760,9 @@ if __name__ == '__main__':
                         btn_update.click()  # start update in main thread
                     except Exception as e2:
                         epg_failed = True
-                        logger.warning("[TV guide, part 2] Caught exception: " + str(e2))
+                        logger.warning(
+                            "[TV guide, part 2] Caught exception: " + str(e2)
+                        )
                         logger.warning(traceback.format_exc())
                         thread_tvguide_update_pt2_e2 = e2
                         thread_tvguide_update_pt2_2()
@@ -7156,14 +7774,19 @@ if __name__ == '__main__':
 
         def thread_tvguide_3():
             try:
-                global thread_5_lock, waiting_for_epg, multiprocessing_manager_dict, static_text
+                global thread_5_lock, waiting_for_epg
+                global multiprocessing_manager_dict, static_text
                 if not thread_5_lock:
                     thread_5_lock = True
                     try:
                         if waiting_for_epg:
-                            if 'epg_progress' in multiprocessing_manager_dict and \
-                              multiprocessing_manager_dict['epg_progress']:
-                                static_text = multiprocessing_manager_dict['epg_progress']
+                            if (
+                                "epg_progress" in multiprocessing_manager_dict
+                                and multiprocessing_manager_dict["epg_progress"]
+                            ):
+                                static_text = multiprocessing_manager_dict[
+                                    "epg_progress"
+                                ]
                                 l1.setText2(is_previous=True)
                     except Exception:
                         pass
@@ -7209,8 +7832,12 @@ if __name__ == '__main__':
         def thread_cursor():
             global fullscreen, prev_cursor, last_cursor_moved, last_cursor_time
             show_cursor = False
-            cursor_offset = QtGui.QCursor.pos().x() - prev_cursor.x() + \
-                QtGui.QCursor.pos().y() - prev_cursor.y()
+            cursor_offset = (
+                QtGui.QCursor.pos().x()
+                - prev_cursor.x()
+                + QtGui.QCursor.pos().y()
+                - prev_cursor.y()
+            )
             if cursor_offset < 0:
                 cursor_offset = cursor_offset * -1
             if cursor_offset > 5:
@@ -7256,19 +7883,18 @@ if __name__ == '__main__':
             return win.mapToGlobal(QtCore.QPoint(x6, y6))
 
         def show_playlist():
-            if settings['panelposition'] == 0:
+            if settings["panelposition"] == 0:
                 playlist_widget.move(maptoglobal(win.width() - dockWidget.width(), 0))
             else:
                 playlist_widget.move(maptoglobal(0, 0))
             playlist_widget.setFixedWidth(dockWidget.width())
             playlist_widget_height = win.height() - 50
-            playlist_widget.resize(
-                playlist_widget.width(),
-                playlist_widget_height
-            )
+            playlist_widget.resize(playlist_widget.width(), playlist_widget_height)
             playlist_widget.setWindowOpacity(0.55)
             playlist_widget.setWindowFlags(
-                QtCore.Qt.WindowType.CustomizeWindowHint | QtCore.Qt.WindowType.FramelessWindowHint | QtCore.Qt.WindowType.X11BypassWindowManagerHint  # noqa: E501
+                QtCore.Qt.WindowType.CustomizeWindowHint
+                | QtCore.Qt.WindowType.FramelessWindowHint
+                | QtCore.Qt.WindowType.X11BypassWindowManagerHint
             )
             pl_layout.addWidget(widget)
             playlist_widget.show()
@@ -7292,15 +7918,12 @@ if __name__ == '__main__':
             for lb2_wdg in show_lbls_fullscreen:
                 if hlayout2.indexOf(lb2_wdg) != -1 and lb2_wdg.isVisible():
                     lb2_width += lb2_wdg.width() + 10
-            controlpanel_widget.setFixedWidth(
-                lb2_width + 30
+            controlpanel_widget.setFixedWidth(lb2_width + 30)
+            p_3 = (
+                win.container.frameGeometry().center()
+                - QtCore.QRect(QtCore.QPoint(), controlpanel_widget.sizeHint()).center()
             )
-            p_3 = win.container.frameGeometry().center() - QtCore.QRect(
-                QtCore.QPoint(), controlpanel_widget.sizeHint()
-            ).center()
-            controlpanel_widget.move(maptoglobal(
-                p_3.x() - 100, win.height() - 100
-            ))
+            controlpanel_widget.move(maptoglobal(p_3.x() - 100, win.height() - 100))
 
         def show_controlpanel():
             global LABEL7_WIDTH
@@ -7310,11 +7933,16 @@ if __name__ == '__main__':
             controlpanel_widget.setWindowOpacity(0.55)
             if channelfilter.usePopup:
                 controlpanel_widget.setWindowFlags(
-                    QtCore.Qt.WindowType.CustomizeWindowHint | QtCore.Qt.WindowType.FramelessWindowHint | QtCore.Qt.WindowType.X11BypassWindowManagerHint | QtCore.Qt.WindowType.Popup  # noqa: E501
+                    QtCore.Qt.WindowType.CustomizeWindowHint
+                    | QtCore.Qt.WindowType.FramelessWindowHint
+                    | QtCore.Qt.WindowType.X11BypassWindowManagerHint
+                    | QtCore.Qt.WindowType.Popup
                 )
             else:
                 controlpanel_widget.setWindowFlags(
-                    QtCore.Qt.WindowType.CustomizeWindowHint | QtCore.Qt.WindowType.FramelessWindowHint | QtCore.Qt.WindowType.X11BypassWindowManagerHint  # noqa: E501
+                    QtCore.Qt.WindowType.CustomizeWindowHint
+                    | QtCore.Qt.WindowType.FramelessWindowHint
+                    | QtCore.Qt.WindowType.X11BypassWindowManagerHint
                 )
             cp_layout.addWidget(widget2)
             resizeandmove_controlpanel()
@@ -7332,7 +7960,7 @@ if __name__ == '__main__':
             try:
                 cur_recording = False
                 if not lbl2.isVisible():
-                    if 'REC / ' not in lbl2.text():
+                    if "REC / " not in lbl2.text():
                         cur_recording = is_ffmpeg_recording() is False
                     else:
                         cur_recording = not is_recording_func() is True
@@ -7346,45 +7974,49 @@ if __name__ == '__main__':
         win_has_focus = False
 
         def is_win_has_focus():
-            return win.isActiveWindow() or \
-                help_win.isActiveWindow() or \
-                streaminfo_win.isActiveWindow() or \
-                license_win.isActiveWindow() or \
-                sort_win.isActiveWindow() or \
-                chan_win.isActiveWindow() or \
-                ext_win.isActiveWindow() or \
-                scheduler_win.isActiveWindow() or \
-                xtream_win.isActiveWindow() or \
-                xtream_win_2.isActiveWindow() or \
-                archive_win.isActiveWindow() or \
-                playlists_win.isActiveWindow() or \
-                playlists_win_edit.isActiveWindow() or \
-                epg_select_win.isActiveWindow() or \
-                tvguide_many_win.isActiveWindow() or \
-                m3u_editor.isActiveWindow() or \
-                settings_win.isActiveWindow() or \
-                shortcuts_win.isActiveWindow() or \
-                shortcuts_win_2.isActiveWindow()
+            return (
+                win.isActiveWindow()
+                or help_win.isActiveWindow()
+                or streaminfo_win.isActiveWindow()
+                or license_win.isActiveWindow()
+                or sort_win.isActiveWindow()
+                or chan_win.isActiveWindow()
+                or ext_win.isActiveWindow()
+                or scheduler_win.isActiveWindow()
+                or xtream_win.isActiveWindow()
+                or xtream_win_2.isActiveWindow()
+                or archive_win.isActiveWindow()
+                or playlists_win.isActiveWindow()
+                or playlists_win_edit.isActiveWindow()
+                or epg_select_win.isActiveWindow()
+                or tvguide_many_win.isActiveWindow()
+                or m3u_editor.isActiveWindow()
+                or settings_win.isActiveWindow()
+                or shortcuts_win.isActiveWindow()
+                or shortcuts_win_2.isActiveWindow()
+            )
 
         def is_other_wins_has_focus():
-            return help_win.isActiveWindow() or \
-                streaminfo_win.isActiveWindow() or \
-                license_win.isActiveWindow() or \
-                sort_win.isActiveWindow() or \
-                chan_win.isActiveWindow() or \
-                ext_win.isActiveWindow() or \
-                scheduler_win.isActiveWindow() or \
-                xtream_win.isActiveWindow() or \
-                xtream_win_2.isActiveWindow() or \
-                archive_win.isActiveWindow() or \
-                playlists_win.isActiveWindow() or \
-                playlists_win_edit.isActiveWindow() or \
-                epg_select_win.isActiveWindow() or \
-                tvguide_many_win.isActiveWindow() or \
-                m3u_editor.isActiveWindow() or \
-                settings_win.isActiveWindow() or \
-                shortcuts_win.isActiveWindow() or \
-                shortcuts_win_2.isActiveWindow()
+            return (
+                help_win.isActiveWindow()
+                or streaminfo_win.isActiveWindow()
+                or license_win.isActiveWindow()
+                or sort_win.isActiveWindow()
+                or chan_win.isActiveWindow()
+                or ext_win.isActiveWindow()
+                or scheduler_win.isActiveWindow()
+                or xtream_win.isActiveWindow()
+                or xtream_win_2.isActiveWindow()
+                or archive_win.isActiveWindow()
+                or playlists_win.isActiveWindow()
+                or playlists_win_edit.isActiveWindow()
+                or epg_select_win.isActiveWindow()
+                or tvguide_many_win.isActiveWindow()
+                or m3u_editor.isActiveWindow()
+                or settings_win.isActiveWindow()
+                or shortcuts_win.isActiveWindow()
+                or shortcuts_win_2.isActiveWindow()
+            )
 
         menubar_st = False
         YukiData.fcstate = True
@@ -7406,17 +8038,23 @@ if __name__ == '__main__':
         def thread_mouse():
             try:
                 global fullscreen, key_t_visible, dockWidgetVisible, dockWidget2Visible
-                if l1.isVisible() and l1.text().startswith(_('Volume')) and not is_show_volume():
+                if (
+                    l1.isVisible()
+                    and l1.text().startswith(_("Volume"))
+                    and not is_show_volume()
+                ):
                     l1.hide()
                 label13.setText(f"{int(player.volume)}%")
                 dockWidget.setFixedWidth(DOCK_WIDGET_WIDTH)
                 if fullscreen and not key_t_visible:
                     # Playlist
-                    if settings['showplaylistmouse']:
+                    if settings["showplaylistmouse"]:
                         cursor_x = win.container.mapFromGlobal(QtGui.QCursor.pos()).x()
                         win_width = win.width()
-                        if settings['panelposition'] == 0:
-                            is_cursor_x = cursor_x > win_width - (DOCK_WIDGET_WIDTH + 10)
+                        if settings["panelposition"] == 0:
+                            is_cursor_x = cursor_x > win_width - (
+                                DOCK_WIDGET_WIDTH + 10
+                            )
                         else:
                             is_cursor_x = cursor_x < (DOCK_WIDGET_WIDTH + 10)
                         if is_cursor_x and cursor_x < win_width:
@@ -7427,10 +8065,12 @@ if __name__ == '__main__':
                             dockWidgetVisible = False
                             hide_playlist()
                     # Control panel
-                    if settings['showcontrolsmouse']:
+                    if settings["showcontrolsmouse"]:
                         cursor_y = win.container.mapFromGlobal(QtGui.QCursor.pos()).y()
                         win_height = win.height()
-                        is_cursor_y = cursor_y > win_height - (dockWidget2.height() + 250)
+                        is_cursor_y = cursor_y > win_height - (
+                            dockWidget2.height() + 250
+                        )
                         if is_cursor_y and cursor_y < win_height:
                             if not dockWidget2Visible:
                                 dockWidget2Visible = True
@@ -7498,7 +8138,7 @@ if __name__ == '__main__':
             try:
                 if playing_chan:
                     logger.info(f"Seeking to {secs} seconds")
-                    player.command('seek', secs)
+                    player.command("seek", secs)
             except Exception:
                 logger.warning("mpv_seek failed")
 
@@ -7566,7 +8206,7 @@ if __name__ == '__main__':
             "next_channel_1_INTERNAL": next_channel,
             "prev_channel_1_INTERNAL": prev_channel,
             "(lambda: my_up_binding())_INTERNAL": (lambda: my_up_binding_execute()),
-            "(lambda: my_down_binding())_INTERNAL": (lambda: my_down_binding_execute())
+            "(lambda: my_down_binding())_INTERNAL": (lambda: my_down_binding_execute()),
         }
 
         mki2 = []
@@ -7584,47 +8224,49 @@ if __name__ == '__main__':
             "(lambda: mpv_seek(10))": mki2[1],
             "(lambda: mpv_seek(60))": mki2[3],
             "(lambda: mpv_seek(600))": mki2[5],
-            "(lambda: my_down_binding())": _('V&olume -').replace('&', ''),
-            "(lambda: my_up_binding())": _('Vo&lume +').replace('&', ''),
-            "(lambda: set_playback_speed(1.00))": _('&Normal speed').replace('&', ''),
-            "app.quit": _('Quit the program') + ' (2)',
-            "do_record": _('Record'),
-            "do_screenshot": _('Screenshot').capitalize(),
-            "esc_handler": _('Exit fullscreen'),
-            "force_update_epg": _('&Update TV guide').replace('&', ''),
-            "key_quit": _('Quit the program'),
-            "key_t": _('Show/hide playlist'),
-            "lowpanel_ch_1": _('Show/hide controls panel'),
-            "main_channel_settings": _('&Video settings').replace('&', ''),
-            "mpv_fullscreen": _('&Fullscreen').replace('&', ''),
-            "mpv_fullscreen_2": _('&Fullscreen').replace('&', '') + ' (2)',
-            "mpv_mute": _('&Mute audio').replace('&', ''),
-            "mpv_play": _('&Play / Pause').replace('&', ''),
-            "mpv_stop": _('&Stop').replace('&', ''),
-            "my_down_binding_execute": _('V&olume -').replace('&', ''),
-            "my_up_binding_execute": _('Vo&lume +').replace('&', ''),
-            "next_channel": _('&Next').replace('&', ''),
-            "open_stream_info": _('Stream Information'),
-            "prev_channel": _('&Previous').replace('&', ''),
-            "show_m3u_editor": _('&m3u Editor').replace('&', ''),
-            "show_playlists": _('&Playlists').replace('&', ''),
-            "reload_playlist": _('&Update current playlist').replace('&', ''),
-            "show_scheduler": _('Scheduler'),
-            "show_settings": _('Settings'),
-            "show_sort": _('&Channel sort').replace('&', ' ').strip(),
-            "show_timeshift": _('Archive'),
-            "show_tvguide": _('TV guide'),
-            "showhideeverything": _('&Compact mode').replace('&', ''),
-            "show_tvguide_2": _('TV guide for all channels'),
-            "alwaysontop": _('Window always on top')
+            "(lambda: my_down_binding())": _("V&olume -").replace("&", ""),
+            "(lambda: my_up_binding())": _("Vo&lume +").replace("&", ""),
+            "(lambda: set_playback_speed(1.00))": _("&Normal speed").replace("&", ""),
+            "app.quit": _("Quit the program") + " (2)",
+            "do_record": _("Record"),
+            "do_screenshot": _("Screenshot").capitalize(),
+            "esc_handler": _("Exit fullscreen"),
+            "force_update_epg": _("&Update TV guide").replace("&", ""),
+            "key_quit": _("Quit the program"),
+            "key_t": _("Show/hide playlist"),
+            "lowpanel_ch_1": _("Show/hide controls panel"),
+            "main_channel_settings": _("&Video settings").replace("&", ""),
+            "mpv_fullscreen": _("&Fullscreen").replace("&", ""),
+            "mpv_fullscreen_2": _("&Fullscreen").replace("&", "") + " (2)",
+            "mpv_mute": _("&Mute audio").replace("&", ""),
+            "mpv_play": _("&Play / Pause").replace("&", ""),
+            "mpv_stop": _("&Stop").replace("&", ""),
+            "my_down_binding_execute": _("V&olume -").replace("&", ""),
+            "my_up_binding_execute": _("Vo&lume +").replace("&", ""),
+            "next_channel": _("&Next").replace("&", ""),
+            "open_stream_info": _("Stream Information"),
+            "prev_channel": _("&Previous").replace("&", ""),
+            "show_m3u_editor": _("&m3u Editor").replace("&", ""),
+            "show_playlists": _("&Playlists").replace("&", ""),
+            "reload_playlist": _("&Update current playlist").replace("&", ""),
+            "show_scheduler": _("Scheduler"),
+            "show_settings": _("Settings"),
+            "show_sort": _("&Channel sort").replace("&", " ").strip(),
+            "show_timeshift": _("Archive"),
+            "show_tvguide": _("TV guide"),
+            "showhideeverything": _("&Compact mode").replace("&", ""),
+            "show_tvguide_2": _("TV guide for all channels"),
+            "alwaysontop": _("Window always on top"),
         }
 
-        if os.path.isfile(str(Path(LOCAL_DIR, 'hotkeys.json'))):
+        if os.path.isfile(str(Path(LOCAL_DIR, "hotkeys.json"))):
             try:
                 with open(
-                    str(Path(LOCAL_DIR, 'hotkeys.json')), 'r', encoding="utf8"
+                    str(Path(LOCAL_DIR, "hotkeys.json")), "r", encoding="utf8"
                 ) as hotkeys_file_tmp:
-                    hotkeys_tmp = json.loads(hotkeys_file_tmp.read())["current_profile"]["keys"]
+                    hotkeys_tmp = json.loads(hotkeys_file_tmp.read())[
+                        "current_profile"
+                    ]["keys"]
                     main_keybinds = hotkeys_tmp
                     logger.info("hotkeys.json found, using it as hotkey settings")
             except Exception:
@@ -7634,8 +8276,8 @@ if __name__ == '__main__':
             logger.info("No hotkeys.json found, using default hotkeys")
             main_keybinds = main_keybinds_default.copy()
 
-        if 'show_clock' in main_keybinds:
-            main_keybinds.pop('show_clock')
+        if "show_clock" in main_keybinds:
+            main_keybinds.pop("show_clock")
 
         seq = get_seq()
 
@@ -7648,7 +8290,7 @@ if __name__ == '__main__':
 
         def reload_keybinds():
             for shortcut_1 in shortcuts:
-                if not shortcut_1.endswith('_INTERNAL'):
+                if not shortcut_1.endswith("_INTERNAL"):
                     sc_new_keybind = QtGui.QKeySequence(get_keybind(shortcut_1))
                     for shortcut_2 in shortcuts[shortcut_1]:
                         shortcut_2.setKey(sc_new_keybind)
@@ -7660,21 +8302,19 @@ if __name__ == '__main__':
             shortcuts[kbd] = [
                 # Main window
                 QShortcut(
-                    QtGui.QKeySequence(all_keybinds[kbd]),
-                    win,
-                    activated=funcs[kbd]
+                    QtGui.QKeySequence(all_keybinds[kbd]), win, activated=funcs[kbd]
                 ),
                 # Control panel widget
                 QShortcut(
                     QtGui.QKeySequence(all_keybinds[kbd]),
                     controlpanel_widget,
-                    activated=funcs[kbd]
+                    activated=funcs[kbd],
                 ),
                 # Playlist widget
                 QShortcut(
                     QtGui.QKeySequence(all_keybinds[kbd]),
                     playlist_widget,
-                    activated=funcs[kbd]
+                    activated=funcs[kbd],
                 ),
             ]
         all_keybinds = False
@@ -7684,7 +8324,7 @@ if __name__ == '__main__':
         app.aboutToQuit.connect(myExitHandler)
 
         vol_remembered = 100
-        volume_option = read_option('volume')
+        volume_option = read_option("volume")
         if volume_option is not None:
             vol_remembered = int(volume_option)
             YukiData.volume = vol_remembered
@@ -7692,7 +8332,7 @@ if __name__ == '__main__':
 
         def restore_compact_state():
             try:
-                compactstate = read_option('compactstate')
+                compactstate = read_option("compactstate")
                 if compactstate:
                     if compactstate["compact_mode"]:
                         showhideeverything()
@@ -7704,28 +8344,28 @@ if __name__ == '__main__':
             except Exception:
                 pass
 
-        if settings['m3u'] and m3u:
+        if settings["m3u"] and m3u:
             win.show()
             aot_action = init_mpv_player()
             win.raise_()
             win.setFocus(QtCore.Qt.FocusReason.PopupFocusReason)
             win.activateWindow()
-            window_data_1 = read_option('window')
+            window_data_1 = read_option("window")
             if window_data_1:
                 logger.info("Restoring main window position...")
-                win.move(window_data_1['x'], window_data_1['y'])
+                win.move(window_data_1["x"], window_data_1["y"])
                 logger.info("Main window position restored")
             try:
-                combobox_index1 = read_option('comboboxindex')
+                combobox_index1 = read_option("comboboxindex")
                 if combobox_index1:
-                    if combobox_index1['m3u'] == settings['m3u']:
-                        if combobox_index1['index'] < combobox.count():
-                            combobox.setCurrentIndex(combobox_index1['index'])
+                    if combobox_index1["m3u"] == settings["m3u"]:
+                        if combobox_index1["index"] < combobox.count():
+                            combobox.setCurrentIndex(combobox_index1["index"])
             except Exception:
                 pass
             if not playLastChannel():
                 logger.info("Show splash")
-                mpv_override_play(str(Path('yuki_iptv', ICONS_FOLDER, 'main.png')))
+                mpv_override_play(str(Path("yuki_iptv", ICONS_FOLDER, "main.png")))
                 player.pause = True
             else:
                 logger.info("Playing last channel, splash turned off")
@@ -7737,7 +8377,7 @@ if __name__ == '__main__':
                 thread_shortcuts: 25,
                 thread_mouse: 50,
                 thread_cursor: 50,
-                thread_tvguide_redraw: 100,
+                thread_channels_redraw: 100,
                 thread_record: 100,
                 thread_osc: 100,
                 thread_check_tvguide_obsolete: 100,
@@ -7748,7 +8388,7 @@ if __name__ == '__main__':
                 record_thread_2: 1000,
                 thread_afterrecord: 50,
                 thread_bitrate: UPDATE_BR_INTERVAL * 1000,
-                dockwidget_resize_thread: 50
+                dockwidget_resize_thread: 50,
             }
             for timer in timers:
                 timers_array[timer] = QtCore.QTimer()

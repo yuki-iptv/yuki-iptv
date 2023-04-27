@@ -21,8 +21,9 @@
 # https://creativecommons.org/licenses/by/4.0/
 #
 
+
 def get_qt_library():
-    '''Get correct Qt library - PyQt6/5'''
+    """Get correct Qt library - PyQt6/5"""
     qt_library = "none"
     QShortcut = False
     QtWidgets = False
@@ -32,12 +33,14 @@ def get_qt_library():
         from PyQt6 import QtWidgets
         from PyQt6 import QtCore
         from PyQt6 import QtGui
+
         QShortcut = QtGui.QShortcut
         qt_library = "PyQt6"
     except Exception:
         from PyQt5 import QtWidgets
         from PyQt5 import QtCore
         from PyQt5 import QtGui
+
         QShortcut = QtWidgets.QShortcut
         qt_library = "PyQt5"
     return qt_library, QtWidgets, QtCore, QtGui, QShortcut

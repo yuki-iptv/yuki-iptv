@@ -33,19 +33,19 @@ def parse_epg_zip(zip_file):
         namelist = myzip.namelist()
         for name in namelist:
             name = name.strip()
-            if name.endswith('.txt'):
+            if name.endswith(".txt"):
                 logger.info("TXT format detected, trying to parse...")
                 found = True
                 with myzip.open(name) as myfile:
                     return parse_txt(myfile.read())
                 break
-            if name.endswith('.xml'):
+            if name.endswith(".xml"):
                 logger.info("XMLTV inside ZIP detected, trying to parse...")
                 found = True
                 with myzip.open(name) as myfile:
                     return ["xmltv", myfile.read()]
                 break
-            if name.endswith('.ndx'):
+            if name.endswith(".ndx"):
                 logger.info("JTV format detected, trying to parse...")
                 found = True
                 return parse_epg_zip_jtv(myzip)

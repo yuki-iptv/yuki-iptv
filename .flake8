@@ -1,3 +1,4 @@
 [flake8]
-exclude = build,venv,.tox,.git,.pytest_cache,usr/lib/yuki-iptv/thirdparty
-max_line_length = 120
+exclude = .git,usr/lib/yuki-iptv/thirdparty
+max_line_length = 88
+extend-ignore = E203

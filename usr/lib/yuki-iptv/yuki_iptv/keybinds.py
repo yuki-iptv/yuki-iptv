@@ -21,6 +21,7 @@
 # https://creativecommons.org/licenses/by/4.0/
 #
 from yuki_iptv.qt import get_qt_library
+
 qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
 
 main_keybinds_internal = {
@@ -76,5 +77,5 @@ main_keybinds_default = {
     "(lambda: mpv_seek(10))": QtCore.Qt.Key.Key_Right,
     "(lambda: mpv_seek(60))": QtCore.Qt.Key.Key_Up,
     "(lambda: mpv_seek(600))": QtCore.Qt.Key.Key_PageUp,
-    "(lambda: set_playback_speed(1.00))": QtCore.Qt.Key.Key_Backspace
+    "(lambda: set_playback_speed(1.00))": QtCore.Qt.Key.Key_Backspace,
 }

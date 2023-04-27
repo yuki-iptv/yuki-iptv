@@ -29,8 +29,8 @@ logger = logging.getLogger(__name__)
 
 def parse_jtv(ndx, pdt, settings):
     jtv_headers = [
-        b'JTV 3.x TV Program Data\x0A\x0A\x0A',
-        b'JTV 3.x TV Program Data\xA0\xA0\xA0'
+        b"JTV 3.x TV Program Data\x0A\x0A\x0A",
+        b"JTV 3.x TV Program Data\xA0\xA0\xA0",
     ]
     if pdt[0:26] not in jtv_headers:
         logger.debug("Invalid PDT file!")
@@ -42,53 +42,54 @@ def parse_jtv(ndx, pdt, settings):
         logger.debug("Invalid NDX file!")
         return []
 
-    total_num = struct.unpack('<H', ndx[0:2])[0]
+    total_num = struct.unpack("<H", ndx[0:2])[0]
     ndx = ndx[2:]
 
     for i in range(0, total_num):
         try:
-            entry = ndx[i * 12:12 + (i * 12)]
+            entry = ndx[i * 12 : 12 + (i * 12)]
 
-            if len(entry[0:2]) != 2 or entry[0:2] != b'\x00\x00':
+            if len(entry[0:2]) != 2 or entry[0:2] != b"\x00\x00":
                 logger.debug("JTV format violation detected!")
                 continue
 
             if len(entry[2:10]) != 8:
                 logger.debug("Broken JTV time detected")
                 continue
-            filetime = struct.unpack('<Q', entry[2:10])[0]
-            start_time = (datetime.datetime(
-                year=1601, month=1, day=1  # FILETIME
-            ) + datetime.timedelta(
-                microseconds=filetime / 10
-            )).timestamp() + (3600 * settings["epgoffset"])
+            filetime = struct.unpack("<Q", entry[2:10])[0]
+            start_time = (
+                datetime.datetime(year=1601, month=1, day=1)  # FILETIME
+                + datetime.timedelta(microseconds=filetime / 10)
+            ).timestamp() + (3600 * settings["epgoffset"])
 
             if len(entry[10:12]) != 2:
                 logger.debug("Broken JTV offset detected")
                 continue
-            offset = struct.unpack('<H', entry[10:12])[0]
+            offset = struct.unpack("<H", entry[10:12])[0]
 
-            if len(pdt[offset:offset + 2]) != 2:
+            if len(pdt[offset : offset + 2]) != 2:
                 logger.debug("Broken JTV count detected")
                 continue
-            count = struct.unpack('<H', pdt[offset:offset + 2])[0]
+            count = struct.unpack("<H", pdt[offset : offset + 2])[0]
 
-            program_name = pdt[offset + 2:offset + 2 + count]
+            program_name = pdt[offset + 2 : offset + 2 + count]
             try:
-                program_name = program_name.decode('utf-8')
+                program_name = program_name.decode("utf-8")
             except UnicodeDecodeError:
-                program_name = program_name.decode('windows-1251')
+                program_name = program_name.decode("windows-1251")
 
             if isinstance(program_name, str):
                 if count < 1000:  # Workaround, do not allow broken entries
-                    schedules.append({
-                        'start': start_time,
-                        'stop': 0,
-                        'title': program_name,
-                        'desc': ''
-                    })
+                    schedules.append(
+                        {
+                            "start": start_time,
+                            "stop": 0,
+                            "title": program_name,
+                            "desc": "",
+                        }
+                    )
                     try:
-                        schedules[len(schedules) - 2]['stop'] = start_time
+                        schedules[len(schedules) - 2]["stop"] = start_time
                     except Exception:
                         pass
                 else:
@@ -108,9 +109,9 @@ def parse_epg_zip_jtv(zip_file):
     array_out = {}
     namelist = zip_file.namelist()
     for name in namelist:
-        if name.endswith('.ndx'):
-            channel_name = name.replace('.ndx', '')
-            pdt_filename = name.replace('.ndx', '.pdt')
+        if name.endswith(".ndx"):
+            channel_name = name.replace(".ndx", "")
+            pdt_filename = name.replace(".ndx", ".pdt")
             if pdt_filename in namelist:
                 with zip_file.open(pdt_filename) as pdt_file:
                     with zip_file.open(name) as ndx_file:
@@ -119,17 +120,15 @@ def parse_epg_zip_jtv(zip_file):
                         )
                         if parsed_jtv:
                             try:
-                                channel_u_name = \
-                                    str(
-                                        bytes(channel_name, encoding='cp437'),
-                                        encoding='cp866'
-                                    )
+                                channel_u_name = str(
+                                    bytes(channel_name, encoding="cp437"),
+                                    encoding="cp866",
+                                )
                             except UnicodeEncodeError:
                                 channel_u_name = channel_name
                             array_out[channel_u_name] = parsed_jtv
-                            if channel_u_name.replace('_', ' ') not in array_out:
-                                array_out[channel_u_name.replace('_', ' ')] = \
-                                    parsed_jtv
+                            if channel_u_name.replace("_", " ") not in array_out:
+                                array_out[channel_u_name.replace("_", " ")] = parsed_jtv
             else:
                 logger.debug("No PDT file found for channel!")
     if not array_out:

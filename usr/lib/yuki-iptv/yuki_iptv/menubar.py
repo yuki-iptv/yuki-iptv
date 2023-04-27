@@ -43,15 +43,15 @@ class YukiData:
     data = {}
     cur_vf_filters = []
     keyboard_sequences = []
-    if qt_library == 'PyQt6':
-        str_offset = ' ' * 44
+    if qt_library == "PyQt6":
+        str_offset = " " * 44
     else:
-        str_offset = ''
+        str_offset = ""
 
 
 def ast_mpv_seek(secs):
     logger.info(f"Seeking to {secs} seconds")
-    YukiData.player.command('seek', secs)
+    YukiData.player.command("seek", secs)
 
 
 def ast_mpv_speed(spd):
@@ -65,13 +65,15 @@ def yuki_trackset(track, type1):
 
 
 def send_mpv_command(name, act, cmd):
-    if cmd == '__AST_VFBLACK__':
+    if cmd == "__AST_VFBLACK__":
         cur_window_pos = YukiData.get_curwindow_pos()
-        cmd = f'lavfi=[pad=iw:iw*sar/{cur_window_pos[0]}*{cur_window_pos[1]}:0:(oh-ih)/2]'
-    if cmd == '__AST_SOFTSCALING__':
+        cmd = (
+            f"lavfi=[pad=iw:iw*sar/{cur_window_pos[0]}*{cur_window_pos[1]}:0:(oh-ih)/2]"
+        )
+    if cmd == "__AST_SOFTSCALING__":
         cur_window_pos = YukiData.get_curwindow_pos()
-        cmd = f'lavfi=[scale={cur_window_pos[0]}:-2]'
-    logger.info(f"Sending mpv command: \"{name} {act} \\\"{cmd}\\\"\"")
+        cmd = f"lavfi=[scale={cur_window_pos[0]}:-2]"
+    logger.info(f'Sending mpv command: "{name} {act} \\"{cmd}\\""')
     YukiData.player.command(name, act, cmd)
 
 
@@ -82,11 +84,13 @@ def get_active_vf_filters():
 def apply_vf_filter(vf_filter, e_l):
     try:
         if e_l.isChecked():
-            send_mpv_command(vf_filter.split('::::::::')[0], 'add', vf_filter.split('::::::::')[1])
+            send_mpv_command(
+                vf_filter.split("::::::::")[0], "add", vf_filter.split("::::::::")[1]
+            )
             YukiData.cur_vf_filters.append(vf_filter)
         else:
             send_mpv_command(
-                vf_filter.split('::::::::')[0], 'remove', vf_filter.split('::::::::')[1]
+                vf_filter.split("::::::::")[0], "remove", vf_filter.split("::::::::")[1]
             )
             YukiData.cur_vf_filters.remove(vf_filter)
     except Exception as e_4:
@@ -94,7 +98,7 @@ def apply_vf_filter(vf_filter, e_l):
         logger.error("")
         e4_traceback = traceback.format_exc()
         logger.error(e4_traceback)
-        YukiData.show_exception(e_4, e4_traceback, '\n\n' + _('Error applying filters'))
+        YukiData.show_exception(e_4, e4_traceback, "\n\n" + _("Error applying filters"))
 
 
 def get_seq():
@@ -113,10 +117,8 @@ def kbd(k_1):
 
 def alwaysontop_action():
     try:
-        aot_f = open(YukiData.aot_file, 'w', encoding='utf-8')
-        aot_f.write(json.dumps({
-            "alwaysontop": YukiData.alwaysontopAction.isChecked()
-        }))
+        aot_f = open(YukiData.aot_file, "w", encoding="utf-8")
+        aot_f.write(json.dumps({"alwaysontop": YukiData.alwaysontopAction.isChecked()}))
         aot_f.close()
     except Exception:
         pass
@@ -159,7 +161,7 @@ def reload_menubar_shortcuts():
         kbd("(lambda: mpv_seek(-60))"),
         kbd("(lambda: mpv_seek(60))"),
         kbd("(lambda: mpv_seek(-600))"),
-        kbd("(lambda: mpv_seek(600))")
+        kbd("(lambda: mpv_seek(600))"),
     ]
     sec_i_1 = -1
     for i_1 in YukiData.secs:
@@ -170,29 +172,29 @@ def reload_menubar_shortcuts():
 def init_menubar(data):
     # File
 
-    YukiData.playlists = qaction(_('&Playlists'), data)
+    YukiData.playlists = qaction(_("&Playlists"), data)
     YukiData.playlists.setShortcut(kbd("show_playlists"))
     YukiData.playlists.triggered.connect(lambda: YukiData.show_playlists())
 
-    YukiData.reloadPlaylist = qaction(_('&Update current playlist'), data)
+    YukiData.reloadPlaylist = qaction(_("&Update current playlist"), data)
     YukiData.reloadPlaylist.setShortcut(kbd("reload_playlist"))
     YukiData.reloadPlaylist.triggered.connect(lambda: YukiData.reload_playlist())
 
-    YukiData.m3uEditor = qaction(_('&m3u Editor') + YukiData.str_offset, data)
+    YukiData.m3uEditor = qaction(_("&m3u Editor") + YukiData.str_offset, data)
     YukiData.m3uEditor.setShortcut(kbd("show_m3u_editor"))
     YukiData.m3uEditor.triggered.connect(lambda: YukiData.show_m3u_editor())
 
-    YukiData.exitAction = qaction(_('&Exit'), data)
+    YukiData.exitAction = qaction(_("&Exit"), data)
     YukiData.exitAction.setShortcut(kbd("app.quit"))
     YukiData.exitAction.triggered.connect(lambda: YukiData.app_quit())
 
     # Play
 
-    YukiData.playpause = qaction(_('&Play / Pause'), data)
+    YukiData.playpause = qaction(_("&Play / Pause"), data)
     YukiData.playpause.setShortcut(kbd("mpv_play"))
     YukiData.playpause.triggered.connect(lambda: YukiData.mpv_play())
 
-    YukiData.stop = qaction(_('&Stop'), data)
+    YukiData.stop = qaction(_("&Stop"), data)
     YukiData.stop.setShortcut(kbd("mpv_stop"))
     YukiData.stop.triggered.connect(lambda: YukiData.mpv_stop())
 
@@ -203,7 +205,7 @@ def init_menubar(data):
         kbd("(lambda: mpv_seek(-60))"),
         kbd("(lambda: mpv_seek(60))"),
         kbd("(lambda: mpv_seek(-600))"),
-        kbd("(lambda: mpv_seek(600))")
+        kbd("(lambda: mpv_seek(600))"),
     ]
     sec_i18n = [
         gettext.ngettext("-%d second", "-%d seconds", 10) % 10,
@@ -214,22 +216,17 @@ def init_menubar(data):
         gettext.ngettext("+%d minute", "+%d minutes", 10) % 10,
     ]
     sec_i = -1
-    for i in (
-        (10, "seconds", 10),
-        (1, "minutes", 60),
-        (10, "minutes", 600)
-    ):
+    for i in ((10, "seconds", 10), (1, "minutes", 60), (10, "minutes", 600)):
         for k in ("-", "+"):
             sec_i += 1
-            sec = qaction(
-                sec_i18n[sec_i],
-                data
-            )
+            sec = qaction(sec_i18n[sec_i], data)
             sec.setShortcut(qkeysequence(sec_keys[sec_i]))
-            sec.triggered.connect(partial(ast_mpv_seek, i[2] * -1 if k == '-' else i[2]))
+            sec.triggered.connect(
+                partial(ast_mpv_seek, i[2] * -1 if k == "-" else i[2])
+            )
             YukiData.secs.append(sec)
 
-    YukiData.normalSpeed = qaction(_('&Normal speed'), data)
+    YukiData.normalSpeed = qaction(_("&Normal speed"), data)
     YukiData.normalSpeed.triggered.connect(partial(ast_mpv_speed, 1.00))
     YukiData.normalSpeed.setShortcut(kbd("(lambda: set_playback_speed(1.00))"))
 
@@ -240,145 +237,145 @@ def init_menubar(data):
         spd_action.triggered.connect(partial(ast_mpv_speed, spd))
         YukiData.spds.append(spd_action)
 
-    YukiData.prevchannel = qaction(_('&Previous'), data)
+    YukiData.prevchannel = qaction(_("&Previous"), data)
     YukiData.prevchannel.triggered.connect(lambda: YukiData.prev_channel())
     YukiData.prevchannel.setShortcut(kbd("prev_channel"))
 
-    YukiData.nextchannel = qaction(_('&Next'), data)
+    YukiData.nextchannel = qaction(_("&Next"), data)
     YukiData.nextchannel.triggered.connect(lambda: YukiData.next_channel())
     YukiData.nextchannel.setShortcut(kbd("next_channel"))
 
     # Video
-    YukiData.fullscreen = qaction(_('&Fullscreen'), data)
+    YukiData.fullscreen = qaction(_("&Fullscreen"), data)
     YukiData.fullscreen.triggered.connect(lambda: YukiData.mpv_fullscreen())
     YukiData.fullscreen.setShortcut(kbd("mpv_fullscreen"))
 
-    YukiData.compactmode = qaction(_('&Compact mode'), data)
+    YukiData.compactmode = qaction(_("&Compact mode"), data)
     YukiData.compactmode.triggered.connect(lambda: YukiData.showhideeverything())
     YukiData.compactmode.setShortcut(kbd("showhideeverything"))
 
-    YukiData.csforchannel = qaction(
-        _('&Video settings') + YukiData.str_offset, data
-    )
+    YukiData.csforchannel = qaction(_("&Video settings") + YukiData.str_offset, data)
     YukiData.csforchannel.triggered.connect(lambda: YukiData.main_channel_settings())
     YukiData.csforchannel.setShortcut(kbd("main_channel_settings"))
 
-    YukiData.screenshot = qaction(_('&Screenshot'), data)
+    YukiData.screenshot = qaction(_("&Screenshot"), data)
     YukiData.screenshot.triggered.connect(lambda: YukiData.do_screenshot())
     YukiData.screenshot.setShortcut(kbd("do_screenshot"))
 
     # Video filters
-    YukiData.vf_postproc = qaction(_('&Postprocessing'), data)
+    YukiData.vf_postproc = qaction(_("&Postprocessing"), data)
     YukiData.vf_postproc.setCheckable(True)
 
-    YukiData.vf_deblock = qaction(_('&Deblock'), data)
+    YukiData.vf_deblock = qaction(_("&Deblock"), data)
     YukiData.vf_deblock.setCheckable(True)
 
-    YukiData.vf_dering = qaction(_('De&ring'), data)
+    YukiData.vf_dering = qaction(_("De&ring"), data)
     YukiData.vf_dering.setCheckable(True)
 
-    YukiData.vf_debanding = qaction(_('Debanding (&gradfun)') + YukiData.str_offset, data)
+    YukiData.vf_debanding = qaction(
+        _("Debanding (&gradfun)") + YukiData.str_offset, data
+    )
     YukiData.vf_debanding.setCheckable(True)
 
-    YukiData.vf_noise = qaction(_('Add n&oise'), data)
+    YukiData.vf_noise = qaction(_("Add n&oise"), data)
     YukiData.vf_noise.setCheckable(True)
 
-    YukiData.vf_black = qaction(_('Add &black borders'), data)
+    YukiData.vf_black = qaction(_("Add &black borders"), data)
     YukiData.vf_black.setCheckable(True)
 
-    YukiData.vf_softscaling = qaction(_('Soft&ware scaling'), data)
+    YukiData.vf_softscaling = qaction(_("Soft&ware scaling"), data)
     YukiData.vf_softscaling.setCheckable(True)
 
-    YukiData.vf_phase = qaction(_('&Autodetect phase'), data)
+    YukiData.vf_phase = qaction(_("&Autodetect phase"), data)
     YukiData.vf_phase.setCheckable(True)
 
     # Audio
 
-    YukiData.muteAction = qaction(_('&Mute audio'), data)
+    YukiData.muteAction = qaction(_("&Mute audio"), data)
     YukiData.muteAction.triggered.connect(lambda: YukiData.mpv_mute())
     YukiData.muteAction.setShortcut(kbd("mpv_mute"))
 
-    YukiData.volumeMinus = qaction(_('V&olume -'), data)
+    YukiData.volumeMinus = qaction(_("V&olume -"), data)
     YukiData.volumeMinus.triggered.connect(lambda: YukiData.my_down_binding_execute())
     YukiData.volumeMinus.setShortcut(kbd("my_down_binding_execute"))
 
-    YukiData.volumePlus = qaction(_('Vo&lume +'), data)
+    YukiData.volumePlus = qaction(_("Vo&lume +"), data)
     YukiData.volumePlus.triggered.connect(lambda: YukiData.my_up_binding_execute())
     YukiData.volumePlus.setShortcut(kbd("my_up_binding_execute"))
 
     # Audio filters
 
-    YukiData.af_extrastereo = qaction(_('&Extrastereo'), data)
+    YukiData.af_extrastereo = qaction(_("&Extrastereo"), data)
     YukiData.af_extrastereo.setCheckable(True)
 
-    YukiData.af_karaoke = qaction(_('&Karaoke'), data)
+    YukiData.af_karaoke = qaction(_("&Karaoke"), data)
     YukiData.af_karaoke.setCheckable(True)
 
-    YukiData.af_earvax = qaction(_('&Headphone optimization') + YukiData.str_offset, data)
+    YukiData.af_earvax = qaction(
+        _("&Headphone optimization") + YukiData.str_offset, data
+    )
     YukiData.af_earvax.setCheckable(True)
 
-    YukiData.af_volnorm = qaction(_('Volume &normalization'), data)
+    YukiData.af_volnorm = qaction(_("Volume &normalization"), data)
     YukiData.af_volnorm.setCheckable(True)
 
     # View
 
-    YukiData.showhideplaylistAction = qaction(_('Show/hide playlist'), data)
-    YukiData.showhideplaylistAction.triggered.connect(lambda: YukiData.showhideplaylist())
+    YukiData.showhideplaylistAction = qaction(_("Show/hide playlist"), data)
+    YukiData.showhideplaylistAction.triggered.connect(
+        lambda: YukiData.showhideplaylist()
+    )
     YukiData.showhideplaylistAction.setShortcut(kbd("key_t"))
 
-    YukiData.showhidectrlpanelAction = qaction(_('Show/hide controls panel'), data)
+    YukiData.showhidectrlpanelAction = qaction(_("Show/hide controls panel"), data)
     YukiData.showhidectrlpanelAction.triggered.connect(lambda: YukiData.lowpanel_ch_1())
     YukiData.showhidectrlpanelAction.setShortcut(kbd("lowpanel_ch_1"))
 
-    YukiData.alwaysontopAction = qaction(_('Window always on top'), data)
+    YukiData.alwaysontopAction = qaction(_("Window always on top"), data)
     YukiData.alwaysontopAction.triggered.connect(alwaysontop_action)
     YukiData.alwaysontopAction.setCheckable(True)
     YukiData.alwaysontopAction.setShortcut(kbd("alwaysontop"))
-    if qt_library == 'PyQt6':
+    if qt_library == "PyQt6":
         YukiData.alwaysontopAction.setVisible(False)
 
-    YukiData.streaminformationAction = qaction(_('Stream Information'), data)
+    YukiData.streaminformationAction = qaction(_("Stream Information"), data)
     YukiData.streaminformationAction.triggered.connect(
         lambda: YukiData.open_stream_info()
     )
     YukiData.streaminformationAction.setShortcut(kbd("open_stream_info"))
 
-    YukiData.showepgAction = qaction(_('TV guide'), data)
-    YukiData.showepgAction.triggered.connect(
-        lambda: YukiData.show_tvguide_2()
-    )
+    YukiData.showepgAction = qaction(_("TV guide"), data)
+    YukiData.showepgAction.triggered.connect(lambda: YukiData.show_tvguide_2())
     YukiData.showepgAction.setShortcut(kbd("show_tvguide_2"))
 
-    YukiData.forceupdateepgAction = qaction(_('&Update TV guide'), data)
-    YukiData.forceupdateepgAction.triggered.connect(
-        lambda: YukiData.force_update_epg()
-    )
+    YukiData.forceupdateepgAction = qaction(_("&Update TV guide"), data)
+    YukiData.forceupdateepgAction.triggered.connect(lambda: YukiData.force_update_epg())
     YukiData.forceupdateepgAction.setShortcut(kbd("force_update_epg"))
 
     # Options
 
-    YukiData.sortAction = qaction(_('&Channel sort'), data)
+    YukiData.sortAction = qaction(_("&Channel sort"), data)
     YukiData.sortAction.triggered.connect(lambda: YukiData.show_sort())
     YukiData.sortAction.setShortcut(kbd("show_sort"))
 
-    YukiData.shortcutsAction = qaction('&' + _('Shortcuts'), data)
+    YukiData.shortcutsAction = qaction("&" + _("Shortcuts"), data)
     YukiData.shortcutsAction.triggered.connect(lambda: YukiData.show_shortcuts())
 
-    YukiData.settingsAction = qaction(_('&Settings'), data)
+    YukiData.settingsAction = qaction(_("&Settings"), data)
     YukiData.settingsAction.triggered.connect(lambda: YukiData.show_settings())
     YukiData.settingsAction.setShortcut(kbd("show_settings"))
 
     # Help
 
-    YukiData.aboutAction = qaction(_('&About yuki-iptv'), data)
+    YukiData.aboutAction = qaction(_("&About yuki-iptv"), data)
     YukiData.aboutAction.triggered.connect(lambda: YukiData.show_help())
 
     # Empty (track list)
-    YukiData.empty_action = qaction('<{}>'.format(_('empty')), data)
+    YukiData.empty_action = qaction("<{}>".format(_("empty")), data)
     YukiData.empty_action.setEnabled(False)
-    YukiData.empty_action1 = qaction('<{}>'.format(_('empty')), data)
+    YukiData.empty_action1 = qaction("<{}>".format(_("empty")), data)
     YukiData.empty_action1.setEnabled(False)
-    YukiData.empty_action2 = qaction('<{}>'.format(_('empty')), data)
+    YukiData.empty_action2 = qaction("<{}>".format(_("empty")), data)
     YukiData.empty_action2.setEnabled(False)
 
     # Filters mapping
@@ -394,7 +391,7 @@ def init_menubar(data):
         "af::::::::lavfi=[extrastereo]": YukiData.af_extrastereo,
         "af::::::::lavfi=[stereotools=mlev=0.015625]": YukiData.af_karaoke,
         "af::::::::lavfi=[earwax]": YukiData.af_earvax,
-        "af::::::::lavfi=[acompressor]": YukiData.af_volnorm
+        "af::::::::lavfi=[acompressor]": YukiData.af_volnorm,
     }
     for vf_filter in YukiData.filter_mapping:
         YukiData.filter_mapping[vf_filter].triggered.connect(
@@ -404,8 +401,7 @@ def init_menubar(data):
 
 
 def populate_menubar(
-    i, menubar, data, track_list=None, playing_chan=None,
-    get_keybind=None
+    i, menubar, data, track_list=None, playing_chan=None, get_keybind=None
 ):
     # logger.info("populate_menubar called")
     # File
@@ -419,7 +415,7 @@ def populate_menubar(
         aot_action = init_menubar(data)
         YukiData.menubar_ready = True
 
-    file_menu = menubar.addMenu(_('&File'))
+    file_menu = menubar.addMenu(_("&File"))
     file_menu.addAction(YukiData.playlists)
     file_menu.addSeparator()
     file_menu.addAction(YukiData.reloadPlaylist)
@@ -430,7 +426,7 @@ def populate_menubar(
 
     # Play
 
-    play_menu = menubar.addMenu(_('&Play'))
+    play_menu = menubar.addMenu(_("&Play"))
     play_menu.addAction(YukiData.playpause)
     play_menu.addAction(YukiData.stop)
     play_menu.addSeparator()
@@ -438,7 +434,7 @@ def populate_menubar(
         play_menu.addAction(sec)
     play_menu.addSeparator()
 
-    speed_menu = play_menu.addMenu(_('Speed'))
+    speed_menu = play_menu.addMenu(_("Speed"))
     speed_menu.addAction(YukiData.normalSpeed)
     for spd_action1 in YukiData.spds:
         speed_menu.addAction(spd_action1)
@@ -448,13 +444,13 @@ def populate_menubar(
 
     # Video
 
-    video_menu = menubar.addMenu(_('&Video'))
-    video_track_menu = video_menu.addMenu(_('&Track'))
+    video_menu = menubar.addMenu(_("&Video"))
+    video_track_menu = video_menu.addMenu(_("&Track"))
     video_track_menu.clear()
     video_menu.addAction(YukiData.fullscreen)
     video_menu.addAction(YukiData.compactmode)
     video_menu.addAction(YukiData.csforchannel)
-    YukiData.video_menu_filters = video_menu.addMenu(_('F&ilters'))
+    YukiData.video_menu_filters = video_menu.addMenu(_("F&ilters"))
     YukiData.video_menu_filters.addAction(YukiData.vf_postproc)
     YukiData.video_menu_filters.addAction(YukiData.vf_deblock)
     YukiData.video_menu_filters.addAction(YukiData.vf_dering)
@@ -468,10 +464,10 @@ def populate_menubar(
 
     # Audio
 
-    audio_menu = menubar.addMenu(_('&Audio'))
-    audio_track_menu = audio_menu.addMenu(_('&Track'))
+    audio_menu = menubar.addMenu(_("&Audio"))
+    audio_track_menu = audio_menu.addMenu(_("&Track"))
     audio_track_menu.clear()
-    YukiData.audio_menu_filters = audio_menu.addMenu(_('F&ilters'))
+    YukiData.audio_menu_filters = audio_menu.addMenu(_("F&ilters"))
     YukiData.audio_menu_filters.addAction(YukiData.af_extrastereo)
     YukiData.audio_menu_filters.addAction(YukiData.af_karaoke)
     YukiData.audio_menu_filters.addAction(YukiData.af_earvax)
@@ -483,13 +479,13 @@ def populate_menubar(
     audio_menu.addAction(YukiData.volumePlus)
 
     # Subtitles
-    subtitles_menu = menubar.addMenu(_('&Subtitles'))
-    sub_track_menu = subtitles_menu.addMenu(_('&Track'))
+    subtitles_menu = menubar.addMenu(_("&Subtitles"))
+    sub_track_menu = subtitles_menu.addMenu(_("&Track"))
     sub_track_menu.clear()
 
     # View
 
-    view_menu = menubar.addMenu(_('Vie&w'))
+    view_menu = menubar.addMenu(_("Vie&w"))
     view_menu.addAction(YukiData.showhideplaylistAction)
     view_menu.addAction(YukiData.showhidectrlpanelAction)
     view_menu.addAction(YukiData.alwaysontopAction)
@@ -498,7 +494,7 @@ def populate_menubar(
 
     # Options
 
-    options_menu = menubar.addMenu(_('&Options'))
+    options_menu = menubar.addMenu(_("&Options"))
     options_menu.addAction(YukiData.sortAction)
     options_menu.addSeparator()
     options_menu.addAction(YukiData.shortcutsAction)
@@ -506,7 +502,7 @@ def populate_menubar(
 
     # Help
 
-    help_menu = menubar.addMenu(_('&Help'))
+    help_menu = menubar.addMenu(_("&Help"))
     help_menu.addAction(YukiData.aboutAction)
 
     YukiData.menubars[i] = [video_track_menu, audio_track_menu, sub_track_menu]
@@ -523,7 +519,7 @@ def clear_menu(menu):
         #    clear_menu(mb_action.menu())
         #    mb_action.menu().deleteLater()
         else:
-            if mb_action.text() != '<{}>'.format(_('empty')):
+            if mb_action.text() != "<{}>".format(_("empty")):
                 mb_action.deleteLater()
 
 
@@ -549,7 +545,7 @@ def update_menubar(track_list, playing_chan, m3u, aot_file):
             YukiData.first_run = True
             logger.info("YukiData.first_run")
             try:
-                vf_filters_read = read_option('vf_filters')
+                vf_filters_read = read_option("vf_filters")
                 if vf_filters_read:
                     for dat in vf_filters_read:
                         if dat in YukiData.filter_mapping:
@@ -564,7 +560,7 @@ def update_menubar(track_list, playing_chan, m3u, aot_file):
         YukiData.first_run1 = True
         try:
             if os.path.isfile(aot_file):
-                file_2 = open(aot_file, 'r', encoding='utf-8')
+                file_2 = open(aot_file, "r", encoding="utf-8")
                 file_2_out = file_2.read()
                 file_2.close()
                 aot_state = json.loads(file_2_out)["alwaysontop"]
@@ -583,46 +579,44 @@ def update_menubar(track_list, playing_chan, m3u, aot_file):
         YukiData.menubars[i][1].clear()
         YukiData.menubars[i][2].clear()
         if track_list and playing_chan:
-            if not [x for x in track_list if x['type'] == 'video']:
+            if not [x for x in track_list if x["type"] == "video"]:
                 YukiData.menubars[i][0].addAction(YukiData.empty_action)
-            if not [x for x in track_list if x['type'] == 'audio']:
+            if not [x for x in track_list if x["type"] == "audio"]:
                 YukiData.menubars[i][1].addAction(YukiData.empty_action1)
             # Subtitles off
-            sub_off_action = qaction(_('None'), YukiData.data)
-            if YukiData.player.sid == 'no' or not YukiData.player.sid:
+            sub_off_action = qaction(_("None"), YukiData.data)
+            if YukiData.player.sid == "no" or not YukiData.player.sid:
                 sub_off_action.setIcon(YukiData.circle_icon)
-            sub_off_action.triggered.connect(partial(yuki_trackset, 'no', 'sid'))
+            sub_off_action.triggered.connect(partial(yuki_trackset, "no", "sid"))
             YukiData.menubars[i][2].addAction(sub_off_action)
             for track in track_list:
-                if track['type'] == 'video':
-                    trk = qaction(str(track['id']), YukiData.data)
-                    if track['id'] == YukiData.player.vid:
+                if track["type"] == "video":
+                    trk = qaction(str(track["id"]), YukiData.data)
+                    if track["id"] == YukiData.player.vid:
                         trk.setIcon(YukiData.circle_icon)
-                    trk.triggered.connect(partial(yuki_trackset, track['id'], 'vid'))
+                    trk.triggered.connect(partial(yuki_trackset, track["id"], "vid"))
                     YukiData.menubars[i][0].addAction(trk)
-                if track['type'] == 'audio':
-                    if 'lang' in track:
+                if track["type"] == "audio":
+                    if "lang" in track:
                         trk1 = qaction(
-                            '{} ({})'.format(track['id'], track['lang']),
-                            YukiData.data
+                            "{} ({})".format(track["id"], track["lang"]), YukiData.data
                         )
                     else:
-                        trk1 = qaction(str(track['id']), YukiData.data)
-                    if track['id'] == YukiData.player.aid:
+                        trk1 = qaction(str(track["id"]), YukiData.data)
+                    if track["id"] == YukiData.player.aid:
                         trk1.setIcon(YukiData.circle_icon)
-                    trk1.triggered.connect(partial(yuki_trackset, track['id'], 'aid'))
+                    trk1.triggered.connect(partial(yuki_trackset, track["id"], "aid"))
                     YukiData.menubars[i][1].addAction(trk1)
-                if track['type'] == 'sub':
-                    if 'lang' in track:
+                if track["type"] == "sub":
+                    if "lang" in track:
                         trk2 = qaction(
-                            '{} ({})'.format(track['id'], track['lang']),
-                            YukiData.data
+                            "{} ({})".format(track["id"], track["lang"]), YukiData.data
                         )
                     else:
-                        trk2 = qaction(str(track['id']), YukiData.data)
-                    if track['id'] == YukiData.player.sid:
+                        trk2 = qaction(str(track["id"]), YukiData.data)
+                    if track["id"] == YukiData.player.sid:
                         trk2.setIcon(YukiData.circle_icon)
-                    trk2.triggered.connect(partial(yuki_trackset, track['id'], 'sid'))
+                    trk2.triggered.connect(partial(yuki_trackset, track["id"], "sid"))
                     YukiData.menubars[i][2].addAction(trk2)
         else:
             YukiData.menubars[i][0].addAction(YukiData.empty_action)
@@ -668,7 +662,7 @@ def init_menubar_player(
     reload_playlist,
     show_shortcuts,
     aot_file,
-    yuki_track_set
+    yuki_track_set,
 ):
     for func in locals().items():
         setattr(YukiData, func[0], func[1])

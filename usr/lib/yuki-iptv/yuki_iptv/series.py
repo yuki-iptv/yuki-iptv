@@ -26,12 +26,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 SERIES = re.compile(
-    r"(?P<series>.*?) S(?P<season>.\d{1,2}).*E(?P<episode>.\d{1,2}.*)$",
-    re.IGNORECASE
+    r"(?P<series>.*?) S(?P<season>.\d{1,2}).*E(?P<episode>.\d{1,2}.*)$", re.IGNORECASE
 )
 
 
-class SerieM3U():
+class SerieM3U:
     def __init__(self, name):
         self.name = name
         self.logo = None
@@ -40,13 +39,13 @@ class SerieM3U():
         self.episodes = []
 
 
-class SeasonM3U():
+class SeasonM3U:
     def __init__(self, name):
         self.name = name
         self.episodes = {}
 
 
-class ChannelM3U():
+class ChannelM3U:
     def __init__(self):
         self.info = None
         self.id = None
@@ -59,9 +58,9 @@ class ChannelM3U():
 
 
 def get_series_name(obj):
-    chan_name_1 = obj['tvg-name']
+    chan_name_1 = obj["tvg-name"]
     if not chan_name_1:
-        chan_name_1 = obj['title']
+        chan_name_1 = obj["title"]
     return chan_name_1
 
 
@@ -72,26 +71,26 @@ def parse_series(obj1, series):
     if series_match is not None:
         try:
             res1 = series_match.groupdict()
-            series_name = res1['series']
+            series_name = res1["series"]
             if series_name in series:
                 serie1 = series[series_name]
             else:
                 serie1 = SerieM3U(series_name)
-                serie1.logo = obj1['tvg-logo']
+                serie1.logo = obj1["tvg-logo"]
                 series[series_name] = serie1
-            season_name1 = res1['season']
+            season_name1 = res1["season"]
             if season_name1 in serie1.seasons.keys():
                 season1 = serie1.seasons[season_name1]
             else:
                 season1 = SeasonM3U(season_name1)
                 serie1.seasons[season_name1] = season1
 
-            episode_name1 = res1['episode']
+            episode_name1 = res1["episode"]
             ep_channel = ChannelM3U()
             ep_channel.name = chan_name_1
             ep_channel.title = chan_name_1
-            ep_channel.logo = obj1['tvg-logo']
-            ep_channel.url = obj1['url']
+            ep_channel.logo = obj1["tvg-logo"]
+            ep_channel.url = obj1["url"]
             season1.episodes[episode_name1] = ep_channel
             serie1.episodes.append(ep_channel)
             is_matched = True

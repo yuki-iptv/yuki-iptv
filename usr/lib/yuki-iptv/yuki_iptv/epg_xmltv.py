@@ -35,112 +35,112 @@ def parse_timestamp(ts_string, settings):
     # TODO: support string timezones like 'DST'
 
     # Assume UTC if no timezone specified
-    if ' ' not in ts_string.strip():
-        ts_string += ' +0000'
+    if " " not in ts_string.strip():
+        ts_string += " +0000"
 
     timestamp_formats = [
-        '%Y%m%d%H%M%S %z',
-        '%Y%m%d%H%M %z',
-        '%Y%m%d%H %z',
-        '%Y%m%d %z',
-        '%Y%m %z',
-        '%Y %z'
+        "%Y%m%d%H%M%S %z",
+        "%Y%m%d%H%M %z",
+        "%Y%m%d%H %z",
+        "%Y%m%d %z",
+        "%Y%m %z",
+        "%Y %z",
     ]
 
     ts = 0
     for timestamp_format in timestamp_formats:
         try:
-            ts = datetime.datetime.strptime(
-                ts_string, timestamp_format
-            ).timestamp() + (3600 * settings["epgoffset"])
+            ts = datetime.datetime.strptime(ts_string, timestamp_format).timestamp() + (
+                3600 * settings["epgoffset"]
+            )
             break
         except Exception:
             pass
     return ts
 
 
-def parse_as_xmltv(epg, settings, catchup_days1, progress_dict, epg_i, epg_settings_url):
-    '''Load EPG file'''
+def parse_as_xmltv(
+    epg, settings, catchup_days1, progress_dict, epg_i, epg_settings_url
+):
+    """Load EPG file"""
     logger.info("Trying parsing as XMLTV...")
     logger.info(f"catchup-days = {catchup_days1}")
     try:
         tree = ET.ElementTree(ET.fromstring(epg))
     except ET.ParseError:
-        progress_dict['epg_progress'] = _('Updating TV guide... (unpacking {}/{})').format(
-            epg_i,
-            len(epg_settings_url)
-        )
+        progress_dict["epg_progress"] = _(
+            "Updating TV guide... (unpacking {}/{})"
+        ).format(epg_i, len(epg_settings_url))
         try:
             logger.info("Trying to unpack as gzip...")
             tree = ET.ElementTree(ET.fromstring(gzip.decompress(epg)))
         except Exception:
             logger.info("Trying to unpack as xz...")
-            tree = ET.ElementTree(ET.fromstring(
-                lzma.LZMADecompressor().decompress(epg)
-            ))
-    progress_dict['epg_progress'] = _('Updating TV guide... (parsing {}/{})').format(
-        epg_i,
-        len(epg_settings_url)
+            tree = ET.ElementTree(
+                ET.fromstring(lzma.LZMADecompressor().decompress(epg))
+            )
+    progress_dict["epg_progress"] = _("Updating TV guide... (parsing {}/{})").format(
+        epg_i, len(epg_settings_url)
     )
     ids = {}
     programmes_epg = {}
     icons = {}
-    for channel_epg in tree.findall('./channel'):
-        for display_name in channel_epg.findall('./display-name'):
+    for channel_epg in tree.findall("./channel"):
+        for display_name in channel_epg.findall("./display-name"):
             if display_name.text:
-                if not channel_epg.attrib['id'].strip() in ids:
-                    ids[channel_epg.attrib['id'].strip()] = []
-                ids[channel_epg.attrib['id'].strip()].append(display_name.text.strip())
+                if not channel_epg.attrib["id"].strip() in ids:
+                    ids[channel_epg.attrib["id"].strip()] = []
+                ids[channel_epg.attrib["id"].strip()].append(display_name.text.strip())
             try:
-                all_icons = channel_epg.findall('./icon')
+                all_icons = channel_epg.findall("./icon")
                 if all_icons:
                     for icon in all_icons:
                         try:
-                            if 'src' in icon.attrib:
-                                icons[display_name.text.strip().lower()] = icon.attrib['src'].strip()
+                            if "src" in icon.attrib:
+                                icons[display_name.text.strip().lower()] = icon.attrib[
+                                    "src"
+                                ].strip()
                         except Exception:
                             pass
             except Exception:
                 pass
-    for programme in tree.findall('./programme'):
+    for programme in tree.findall("./programme"):
         try:
-            start = parse_timestamp(
-                programme.attrib['start'], settings
-            )
+            start = parse_timestamp(programme.attrib["start"], settings)
         except Exception:
             start = 0
         try:
-            stop = parse_timestamp(
-                programme.attrib['stop'], settings
-            )
+            stop = parse_timestamp(programme.attrib["stop"], settings)
         except Exception:
             stop = 0
         try:
-            chans = ids[programme.attrib['channel'].strip()]
-            catchup_id = ''
+            chans = ids[programme.attrib["channel"].strip()]
+            catchup_id = ""
             try:
-                if 'catchup-id' in programme.attrib:
-                    catchup_id = programme.attrib['catchup-id']
+                if "catchup-id" in programme.attrib:
+                    catchup_id = programme.attrib["catchup-id"]
             except Exception:
                 pass
             for channel_epg_1 in chans:
                 if channel_epg_1 not in programmes_epg:
                     programmes_epg[channel_epg_1] = []
                 try:
-                    prog_title = programme.find('./title').text
+                    prog_title = programme.find("./title").text
                 except Exception:
                     prog_title = ""
                 try:
-                    prog_desc = programme.find('./desc').text
+                    prog_desc = programme.find("./desc").text
                 except Exception:
                     prog_desc = ""
-                programmes_epg[channel_epg_1].append({
-                    "start": start,
-                    "stop": stop,
-                    "title": prog_title,
-                    "desc": prog_desc,
-                    'catchup-id': catchup_id
-                })
+                programmes_epg[channel_epg_1].append(
+                    {
+                        "start": start,
+                        "stop": stop,
+                        "title": prog_title,
+                        "desc": prog_desc,
+                        "catchup-id": catchup_id,
+                    }
+                )
         except Exception:
             pass
     return [programmes_epg, ids, icons]

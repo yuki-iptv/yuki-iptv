@@ -21,22 +21,22 @@
 # https://creativecommons.org/licenses/by/4.0/
 #
 def convert_xtream_to_m3u(_, data, skip_init=False, append_group=""):
-    output = '#EXTM3U\n' if not skip_init else ''
+    output = "#EXTM3U\n" if not skip_init else ""
     for channel in data:
         name = channel.name
         try:
-            group = channel.group_title if channel.group_title else ''
+            group = channel.group_title if channel.group_title else ""
         except Exception:
-            group = _('All channels')
+            group = _("All channels")
         if append_group:
             group = append_group + " " + group
-        logo = channel.logo if channel.logo else ''
+        logo = channel.logo if channel.logo else ""
         url = channel.url
-        line = '#EXTINF:0'
+        line = "#EXTINF:0"
         if logo:
-            line += f" tvg-logo=\"{logo}\""
+            line += f' tvg-logo="{logo}"'
         if group:
-            line += f" group-title=\"{group}\""
+            line += f' group-title="{group}"'
         line += f",{name}"
-        output += line + '\n' + url + '\n'
+        output += line + "\n" + url + "\n"
     return output

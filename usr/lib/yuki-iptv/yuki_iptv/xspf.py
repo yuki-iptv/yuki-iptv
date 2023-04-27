@@ -26,7 +26,7 @@ import xml.etree.ElementTree as ET
 
 logger = logging.getLogger(__name__)
 _ = gettext.gettext
-all_channels = _('All channels')
+all_channels = _("All channels")
 
 
 def parse_xspf(xspf):
@@ -34,20 +34,22 @@ def parse_xspf(xspf):
     array = []
     tree = ET.ElementTree(ET.fromstring(xspf)).getroot()
     for track in tree.findall("{*}trackList/{*}track"):
-        title = track.find('{*}title').text.strip()
-        location = track.find('{*}location').text.strip()
-        array.append({
-            'title': title,
-            'tvg-name': '',
-            'tvg-ID': '',
-            'tvg-logo': '',
-            'tvg-group': all_channels,
-            'tvg-url': '',
-            'catchup': 'default',
-            'catchup-source': '',
-            'catchup-days': '1',
-            'useragent': '',
-            'referer': '',
-            'url': location
-        })
+        title = track.find("{*}title").text.strip()
+        location = track.find("{*}location").text.strip()
+        array.append(
+            {
+                "title": title,
+                "tvg-name": "",
+                "tvg-ID": "",
+                "tvg-logo": "",
+                "tvg-group": all_channels,
+                "tvg-url": "",
+                "catchup": "default",
+                "catchup-source": "",
+                "catchup-days": "1",
+                "useragent": "",
+                "referer": "",
+                "url": location,
+            }
+        )
     return [array, []]

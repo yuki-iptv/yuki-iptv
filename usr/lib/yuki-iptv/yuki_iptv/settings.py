@@ -31,7 +31,7 @@ def parse_settings():
         "epg": "",
         "deinterlace": False,
         "udp_proxy": "",
-        "save_folder": str(Path(os.environ['HOME'], '.config', 'yuki-iptv', 'saves')),
+        "save_folder": str(Path(os.environ["HOME"], ".config", "yuki-iptv", "saves")),
         "nocache": True,
         "epgoffset": 0,
         "hwaccel": False,
@@ -39,39 +39,41 @@ def parse_settings():
         "cache_secs": 0,
         "epgdays": 1,
         "ua": "Mozilla/5.0",
-        "mpv_options": '',
-        'donotupdateepg': False,
-        'openprevchan': False,
-        'hidempv': False,
-        'hideepgpercentage': False,
-        'hidebitrateinfo': False,
-        'styleredefoff': True,
-        'volumechangestep': 1,
-        'mouseswitchchannels': False,
-        'autoreconnection': False,
-        'showplaylistmouse': True,
-        'channellogos': 0,
-        'nocacheepg': False,
-        'scrrecnosubfolders': False,
-        'hidetvprogram': False,
-        'showcontrolsmouse': True,
-        'catchupenable': False,
-        'flpopacity': 0.7,
-        'panelposition': 0,
-        'videoaspect': 0,
-        'zoom': 0,
-        'panscan': 0.0,
-        'referer': '',
-        'gui': 0
+        "mpv_options": "",
+        "donotupdateepg": False,
+        "openprevchan": False,
+        "hidempv": False,
+        "hideepgpercentage": False,
+        "hidebitrateinfo": False,
+        "styleredefoff": True,
+        "volumechangestep": 1,
+        "mouseswitchchannels": False,
+        "autoreconnection": False,
+        "showplaylistmouse": True,
+        "channellogos": 0,
+        "nocacheepg": False,
+        "scrrecnosubfolders": False,
+        "hidetvprogram": False,
+        "showcontrolsmouse": True,
+        "catchupenable": False,
+        "flpopacity": 0.7,
+        "panelposition": 0,
+        "videoaspect": 0,
+        "zoom": 0,
+        "panscan": 0.0,
+        "referer": "",
+        "gui": 0,
     }
 
     settings = settings_default
     settings_loaded = False
 
-    local_dir = str(Path(os.environ['HOME'], '.config', 'yuki-iptv'))
+    local_dir = str(Path(os.environ["HOME"], ".config", "yuki-iptv"))
 
-    if os.path.isfile(str(Path(local_dir, 'settings.json'))):
-        settings_file = open(str(Path(local_dir, 'settings.json')), 'r', encoding="utf8")
+    if os.path.isfile(str(Path(local_dir, "settings.json"))):
+        settings_file = open(
+            str(Path(local_dir, "settings.json")), "r", encoding="utf8"
+        )
         settings = json.loads(settings_file.read())
         settings_file.close()
 
