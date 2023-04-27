@@ -36,7 +36,7 @@ def test_xmltv():
         xmltv = parse_as_xmltv(
             xmltv_file,
             {"epgoffset": epgoffset, "epgdays": 1},
-            1, {}, 0, "", force=True
+            1, {}, 0, ""
         )
         assert xmltv == [
             {

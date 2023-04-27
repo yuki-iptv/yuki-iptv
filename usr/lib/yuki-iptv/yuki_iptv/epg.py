@@ -152,27 +152,26 @@ def fetch_epg(settings, catchup_days1, return_dict1):
     return [{}, programmes_epg, epg_ok, exc, prog_ids, epg_icons]
 
 
-def worker(procnum, sys_settings, catchup_days1, return_dict1):
+def worker(sys_settings, catchup_days1, return_dict1):
     '''Worker running from multiprocess'''
     epg = fetch_epg(sys_settings, catchup_days1, return_dict1)
-    return_dict1['epg'] = [epg[0], epg[1], True, epg[2], epg[3], epg[4], epg[5]]
     return_dict1['epg_progress'] = _('Updating TV guide...')
+    return [epg[0], epg[1], True, epg[2], epg[3], epg[4], epg[5]]
 
 
 def is_program_actual(sets0, epg_ready, force=False):
     if not epg_ready and not force:
         return True
-    found_prog = False
     if sets0:
         for prog1 in sets0:
             pr1 = sets0[prog1]
             for p in pr1:
                 if time.time() > p['start'] and time.time() < p['stop']:
-                    found_prog = True
-    return found_prog
+                    return True
+    return False
 
 
-def load_epg_cache(epg_dict, settings_m3u, settings_epg, epg_ready):
+def load_epg_cache(settings_m3u, settings_epg, epg_ready):
     LOCAL_DIR = str(Path(os.environ['HOME'], '.config', 'yuki-iptv'))
 
     try:
@@ -211,4 +210,4 @@ def load_epg_cache(epg_dict, settings_m3u, settings_epg, epg_ready):
         file1_json["is_program_actual"] = is_program_actual(
             file1_json["tvguide_sets"], epg_ready, force=True
         )
-    epg_dict['load_epg_cache'] = [file1_json]
+    return file1_json

@@ -100,7 +100,7 @@ if not isinstance(numeric_level, int):
     raise ValueError('Invalid log level: %s' % loglevel)
 
 logging.basicConfig(
-    format='%(asctime)s %(name)s %(levelname)s: %(message)s',
+    format='%(asctime)s.%(msecs)03d %(name)s %(levelname)s: %(message)s',
     level=numeric_level,
     datefmt='%H:%M:%S'
 )
@@ -443,7 +443,7 @@ if __name__ == '__main__':
                         {
                             "cache_version": EPG_CACHE_VERSION,
                             "system_timezone": json.dumps(time.tzname),
-                            "tvguide_sets": clean_programme(),
+                            "tvguide_sets": tvguide_sets,
                             "current_url": [str(settings["m3u"]), str(settings["epg"])],
                             "prog_ids": prog_ids,
                             "epg_icons": epg_icons
@@ -487,13 +487,6 @@ if __name__ == '__main__':
                 stop_epg_hdd_animation()
             except Exception:
                 pass
-
-        def clean_programme():
-            sets1 = tvguide_sets.copy()
-            if sets1:
-                for prog2 in sets1:
-                    sets1[prog2] = [x12 for x12 in sets1[prog2] if time.time() + 172800 > x12['start'] and time.time() - get_catchup_days(True) < x12['stop']]  # noqa: E501
-            return sets1
 
         first_boot = False
         epg_updating = False
@@ -563,33 +556,23 @@ if __name__ == '__main__':
                 update_epg_func_static_enable()
 
                 # Disregard existed epg.cache if EPG url changes
-                multiprocessing_manager_dict['load_epg_cache'] = []
-                epg_process = get_context("spawn").Process(
-                    name='[yuki-iptv] load_epg_cache',
-                    target=load_epg_cache,
-                    args=(
-                        multiprocessing_manager_dict, settings['m3u'],
-                        settings['epg'], epg_ready,
-                    )
-                )
-                epg_process.start()
-                epg_process.join()
-                tvguide_json = multiprocessing_manager_dict['load_epg_cache']
+                tvguide_json = get_context("spawn").Pool(1).apply(load_epg_cache, (
+                    settings['m3u'], settings['epg'], epg_ready,
+                ))
                 # Loading epg.cache
                 is_program_actual1 = False
                 if tvguide_json:
-                    tvguide_json = tvguide_json[0]
-                    if tvguide_json:
-                        if "tvguide_sets" in tvguide_json:
-                            tvguide_sets = tvguide_json["tvguide_sets"]
-                        if "prog_ids" in tvguide_json:
-                            prog_ids = tvguide_json["prog_ids"]
-                        if "epg_icons" in tvguide_json:
-                            epg_icons = tvguide_json["epg_icons"]
-                        if "is_program_actual" in tvguide_json:
-                            is_program_actual1 = tvguide_json["is_program_actual"]
-                        if "programmes_1" in tvguide_json:
-                            programmes = tvguide_json["programmes_1"]
+                    if "tvguide_sets" in tvguide_json:
+                        tvguide_sets = tvguide_json["tvguide_sets"]
+                    if "prog_ids" in tvguide_json:
+                        prog_ids = tvguide_json["prog_ids"]
+                    if "epg_icons" in tvguide_json:
+                        epg_icons = tvguide_json["epg_icons"]
+                    if "is_program_actual" in tvguide_json:
+                        is_program_actual1 = tvguide_json["is_program_actual"]
+                    if "programmes_1" in tvguide_json:
+                        programmes = tvguide_json["programmes_1"]
+                    tvguide_json = None
                 if not is_program_actual1:
                     logger.info("EPG cache expired, updating...")
                     epg_ready = True
@@ -2633,7 +2616,7 @@ if __name__ == '__main__':
 
         # Settings window
         def save_settings():
-            global epg_thread, epg_thread_2
+            global epg_thread_2
             settings_old = settings.copy()
             udp_proxy_text = sudp.text()
             udp_proxy_starts = udp_proxy_text.startswith('http://') or \
@@ -6851,7 +6834,7 @@ if __name__ == '__main__':
             return w1_height
 
         def myExitHandler_before():
-            global stopped, epg_thread, epg_thread_2, mpris_loop
+            global stopped, epg_thread_2, mpris_loop
             if comm_instance.comboboxIndex != -1:
                 write_option('comboboxindex', {
                     "m3u": settings['m3u'],
@@ -6895,11 +6878,6 @@ if __name__ == '__main__':
             if mpris_loop:
                 mpris_loop.quit()
             stopped = True
-            if epg_thread:
-                try:
-                    epg_thread.kill()
-                except Exception:
-                    epg_thread.terminate()
             if epg_thread_2:
                 try:
                     epg_thread_2.kill()
@@ -6920,7 +6898,6 @@ if __name__ == '__main__':
 
         first_boot_1 = True
 
-        epg_thread = None
         waiting_for_epg = False
         epg_failed = False
 
@@ -6941,12 +6918,40 @@ if __name__ == '__main__':
 
         logger.info(f"catchup-days = {get_catchup_days()}")
 
-        def thread_tvguide():
-            try:
-                global stopped, time_stop, first_boot, programmes, btn_update, \
-                    epg_thread, static_text, tvguide_sets, epg_updating, ic, \
-                    waiting_for_epg, epg_failed, first_boot_1, multiprocessing_manager_dict, \
-                    epg_update_allowed
+        epg_data = None
+
+        def thread_tvguide_redraw():
+            global ic, multiprocessing_manager_dict
+            ic += 0.1
+            # redraw every 15 seconds
+            if ic > (14.9 if not multiprocessing_manager_dict['logos_inprogress'] else 2.9):
+                ic = 0
+                btn_update.click()
+
+        @idle_function
+        def thread_tvguide_update_1():
+            global static_text, time_stop
+            l1.setStatic2(True)
+            l1.show()
+            static_text = _('Updating TV guide...')
+            l1.setText2("")
+            time_stop = time.time() + 3
+
+        @idle_function
+        def thread_tvguide_update_2():
+            global time_stop
+            l1.setStatic2(False)
+            l1.show()
+            l1.setText2(_('TV guide update error!'))
+            time_stop = time.time() + 3
+
+        @async_gui_blocking_function
+        def thread_tvguide_update():
+            global stopped, first_boot, programmes, btn_update, \
+                tvguide_sets, epg_updating, \
+                waiting_for_epg, epg_failed, first_boot_1, multiprocessing_manager_dict, \
+                epg_update_allowed, epg_data
+            while not stopped:
                 if not first_boot:
                     first_boot = True
                     if settings['epg'] and not epg_failed:
@@ -6957,23 +6962,13 @@ if __name__ == '__main__':
                             if update_epg:
                                 if epg_update_allowed:
                                     epg_updating = True
-                                    l1.setStatic2(True)
-                                    l1.show()
-                                    static_text = _('Updating TV guide...')
-                                    l1.setText2("")
-                                    time_stop = time.time() + 3
+                                    thread_tvguide_update_1()
                                     try:
-                                        multiprocessing_manager_dict['epg'] = None
-                                        p = get_context("spawn").Process(
-                                            name='[yuki-iptv] worker',
-                                            target=worker,
-                                            args=(
-                                                0, settings, get_catchup_days(),
-                                                multiprocessing_manager_dict,
-                                            )
-                                        )
-                                        epg_thread = p
-                                        p.start()
+                                        epg_data = None
+                                        epg_data = get_context("spawn").Pool(1).apply(worker, (
+                                            settings, get_catchup_days(),
+                                            multiprocessing_manager_dict,
+                                        ))
                                         waiting_for_epg = True
                                     except Exception as e1:
                                         epg_failed = True
@@ -6981,10 +6976,7 @@ if __name__ == '__main__':
                                             "[TV guide, part 1] Caught exception: " + str(e1)
                                         )
                                         logger.warning(traceback.format_exc())
-                                        l1.setStatic2(False)
-                                        l1.show()
-                                        l1.setText2(_('TV guide update error!'))
-                                        time_stop = time.time() + 3
+                                        thread_tvguide_update_2()
                                         epg_updating = False
                             else:
                                 logger.info("EPG update at boot disabled")
@@ -6994,14 +6986,7 @@ if __name__ == '__main__':
                                 prog0.lower(): tvguide_sets[prog0] for prog0 in tvguide_sets
                             }
                             btn_update.click()  # start update in main thread
-            except Exception:
-                pass
-
-            ic += 0.1
-            # redraw every 15 seconds
-            if ic > (14.9 if not multiprocessing_manager_dict['logos_inprogress'] else 2.9):
-                ic = 0
-                btn_update.click()
+                time.sleep(0.1)
 
         def thread_record():
             try:
@@ -7112,52 +7097,60 @@ if __name__ == '__main__':
             except Exception:
                 pass
 
-        thread_4_lock = False
+        @idle_function
+        def thread_tvguide_update_pt2_1():
+            global time_stop
+            l1.setStatic2(False)
+            l1.show()
+            l1.setText2(_('TV guide update done!'))
+            time_stop = time.time() + 3
 
-        def thread_tvguide_2():
-            try:
-                global stopped, time_stop, first_boot, programmes, btn_update, \
-                    epg_thread, static_text, tvguide_sets, epg_updating, ic, \
-                    multiprocessing_manager_dict, waiting_for_epg, \
-                    thread_4_lock, epg_failed, prog_ids, epg_icons
-                if not thread_4_lock:
-                    thread_4_lock = True
-                    if waiting_for_epg and 'epg' in multiprocessing_manager_dict \
-                       and multiprocessing_manager_dict['epg'] \
-                       and len(multiprocessing_manager_dict['epg']) == 7:
-                        try:
-                            if not multiprocessing_manager_dict['epg'][3]:
-                                raise multiprocessing_manager_dict['epg'][4]
-                            l1.setStatic2(False)
-                            l1.show()
-                            l1.setText2(_('TV guide update done!'))
-                            time_stop = time.time() + 3
-                            values = multiprocessing_manager_dict['epg']
-                            programmes = {prog0.lower(): values[1][prog0] for prog0 in values[1]}
-                            values = None
-                            if not is_program_actual(programmes, epg_ready):
-                                raise Exception("Programme not actual")
-                            prog_ids = multiprocessing_manager_dict['epg'][5]
-                            epg_icons = multiprocessing_manager_dict['epg'][6]
-                            tvguide_sets = programmes
-                            save_tvguide_sets()
-                            btn_update.click()  # start update in main thread
-                        except Exception as e2:
-                            epg_failed = True
-                            logger.warning("[TV guide, part 2] Caught exception: " + str(e2))
-                            logger.warning(traceback.format_exc())
-                            l1.setStatic2(False)
-                            l1.show()
-                            if 'Programme not actual' in str(e2):
-                                l1.setText2(_('EPG is outdated!'))
-                            else:
-                                l1.setText2(_('TV guide update error!'))
-                            time_stop = time.time() + 3
-                        epg_updating = False
-                        waiting_for_epg = False
-                    thread_4_lock = False
-            except Exception:
-                pass
+        thread_tvguide_update_pt2_e2 = ""
+
+        @idle_function
+        def thread_tvguide_update_pt2_2():
+            global time_stop
+            l1.setStatic2(False)
+            l1.show()
+            if 'Programme not actual' in str(thread_tvguide_update_pt2_e2):
+                l1.setText2(_('EPG is outdated!'))
+            else:
+                l1.setText2(_('TV guide update error!'))
+            time_stop = time.time() + 3
+
+        @async_gui_blocking_function
+        def thread_tvguide_update_pt2():
+            global stopped, time_stop, first_boot, programmes, btn_update, \
+                static_text, tvguide_sets, epg_updating, ic, \
+                waiting_for_epg, \
+                epg_failed, prog_ids, epg_icons, \
+                thread_tvguide_update_pt2_e2
+            while not stopped:
+                if waiting_for_epg and epg_data \
+                   and len(epg_data) == 7:
+                    try:
+                        if not epg_data[3]:
+                            raise epg_data[4]
+                        thread_tvguide_update_pt2_1()
+                        values = epg_data
+                        programmes = {prog0.lower(): values[1][prog0] for prog0 in values[1]}
+                        values = None
+                        if not is_program_actual(programmes, epg_ready):
+                            raise Exception("Programme not actual")
+                        prog_ids = epg_data[5]
+                        epg_icons = epg_data[6]
+                        tvguide_sets = programmes
+                        save_tvguide_sets()
+                        btn_update.click()  # start update in main thread
+                    except Exception as e2:
+                        epg_failed = True
+                        logger.warning("[TV guide, part 2] Caught exception: " + str(e2))
+                        logger.warning(traceback.format_exc())
+                        thread_tvguide_update_pt2_e2 = e2
+                        thread_tvguide_update_pt2_2()
+                    epg_updating = False
+                    waiting_for_epg = False
+                time.sleep(1)
 
         thread_5_lock = False
 
@@ -7744,11 +7737,10 @@ if __name__ == '__main__':
                 thread_shortcuts: 25,
                 thread_mouse: 50,
                 thread_cursor: 50,
-                thread_tvguide: 100,
+                thread_tvguide_redraw: 100,
                 thread_record: 100,
                 thread_osc: 100,
                 thread_check_tvguide_obsolete: 100,
-                thread_tvguide_2: 1000,
                 thread_tvguide_3: 100,
                 thread_update_time: 1000,
                 thread_logos_update: 1000,
@@ -7764,6 +7756,8 @@ if __name__ == '__main__':
                 timers_array[timer].start(timers[timer])
 
             # Updating EPG, async
+            thread_tvguide_update()
+            thread_tvguide_update_pt2()
             update_epg_func()
         else:
             show_playlists()
@@ -7784,4 +7778,9 @@ if __name__ == '__main__':
             myExitHandler_before()
         except Exception:
             pass
+        for process_4 in active_children():
+            try:
+                process_4.kill()
+            except Exception:
+                process_4.terminate()
         sys.exit(1)

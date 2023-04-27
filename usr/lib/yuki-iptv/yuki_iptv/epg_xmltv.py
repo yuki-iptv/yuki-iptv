@@ -59,7 +59,7 @@ def parse_timestamp(ts_string, settings):
     return ts
 
 
-def parse_as_xmltv(epg, settings, catchup_days1, progress_dict, epg_i, epg_settings_url, force=False):
+def parse_as_xmltv(epg, settings, catchup_days1, progress_dict, epg_i, epg_settings_url):
     '''Load EPG file'''
     logger.info("Trying parsing as XMLTV...")
     logger.info(f"catchup-days = {catchup_days1}")
@@ -124,34 +124,23 @@ def parse_as_xmltv(epg, settings, catchup_days1, progress_dict, epg_i, epg_setti
             except Exception:
                 pass
             for channel_epg_1 in chans:
-                day_start = (
-                    datetime.datetime.now() - datetime.timedelta(days=catchup_days1)
-                ).replace(
-                    hour=0, minute=0, second=0
-                ).timestamp() + (3600 * settings["epgoffset"])
-                day_end = (
-                    datetime.datetime.now() + datetime.timedelta(days=settings["epgdays"])
-                ).replace(
-                    hour=23, minute=59, second=59
-                ).timestamp() + (3600 * settings["epgoffset"])
                 if channel_epg_1 not in programmes_epg:
                     programmes_epg[channel_epg_1] = []
-                if (start > day_start and stop < day_end) or force:
-                    try:
-                        prog_title = programme.find('./title').text
-                    except Exception:
-                        prog_title = ""
-                    try:
-                        prog_desc = programme.find('./desc').text
-                    except Exception:
-                        prog_desc = ""
-                    programmes_epg[channel_epg_1].append({
-                        "start": start,
-                        "stop": stop,
-                        "title": prog_title,
-                        "desc": prog_desc,
-                        'catchup-id': catchup_id
-                    })
+                try:
+                    prog_title = programme.find('./title').text
+                except Exception:
+                    prog_title = ""
+                try:
+                    prog_desc = programme.find('./desc').text
+                except Exception:
+                    prog_desc = ""
+                programmes_epg[channel_epg_1].append({
+                    "start": start,
+                    "stop": stop,
+                    "title": prog_title,
+                    "desc": prog_desc,
+                    'catchup-id': catchup_id
+                })
         except Exception:
             pass
     return [programmes_epg, ids, icons]
