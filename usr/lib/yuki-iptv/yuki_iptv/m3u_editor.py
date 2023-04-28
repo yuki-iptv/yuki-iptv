@@ -237,7 +237,7 @@ class M3UEditor(QtWidgets.QMainWindow):
                 current_column = self.table.currentColumn()
                 # Save current row data
                 current_row_data = []
-                for i_0, x_0 in enumerate(self.labels):
+                for i_0, _x_0 in enumerate(self.labels):
                     item2 = self.table.item(current_row2, i_0)
                     if item2:
                         current_row_data.append(item2.text())
