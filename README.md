@@ -27,13 +27,6 @@ sudo apt install yuki-iptv
 [Arch Linux AUR (stable version)](https://aur.archlinux.org/packages/yuki-iptv)  
 [Arch Linux AUR (development version)](https://aur.archlinux.org/packages/yuki-iptv-git)  
 
-## License
-
-Code: [GPL-3.0-or-later](https://github.com/yuki-chan-nya/yuki-iptv/blob/master/COPYING)  
-Icons: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)  
-  
-*Icons by [Font Awesome](https://fontawesome.com/)*  
-
 ## Features
 
 - Watching IPTV (from m3u / m3u8 / xspf playlist, local or remote)  
@@ -55,6 +48,29 @@ Icons: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 - Internalization  
 - MPRIS support  
 - and many more...  
+
+## License
+
+```monospace
+yuki-iptv is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+yuki-iptv is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with yuki-iptv. If not, see <http://www.gnu.org/licenses/>.
+```
+
+```monospace
+The Font Awesome pictograms are licensed under the CC BY 4.0 License.
+https://fontawesome.com/
+https://creativecommons.org/licenses/by/4.0/
+```
 
 ## HowTo make playlists for movies/series
   
