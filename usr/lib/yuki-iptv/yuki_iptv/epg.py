@@ -216,3 +216,33 @@ def load_epg_cache(settings_m3u, settings_epg, epg_ready):
             file1_json["tvguide_sets"], epg_ready, force=True
         )
     return file1_json
+
+
+def save_epg_cache(tvguide_sets_arg, settings_arg, prog_ids_arg, epg_icons_arg):
+    LOCAL_DIR = str(Path(os.environ["HOME"], ".config", "yuki-iptv"))
+
+    if tvguide_sets_arg:
+        if not settings_arg["nocacheepg"]:
+            file2 = open(str(Path(LOCAL_DIR, "epg.cache")), "wb")
+            file2.write(
+                codecs.encode(
+                    bytes(
+                        json.dumps(
+                            {
+                                "cache_version": EPG_CACHE_VERSION,
+                                "system_timezone": json.dumps(time.tzname),
+                                "tvguide_sets": tvguide_sets_arg,
+                                "current_url": [
+                                    str(settings_arg["m3u"]),
+                                    str(settings_arg["epg"]),
+                                ],
+                                "prog_ids": prog_ids_arg,
+                                "epg_icons": epg_icons_arg,
+                            }
+                        ),
+                        "utf-8",
+                    ),
+                    "zlib",
+                )
+            )
+            file2.close()

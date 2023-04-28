@@ -39,7 +39,6 @@ import subprocess
 import re
 import textwrap
 import hashlib
-import codecs
 import threading
 import traceback
 from multiprocessing import Manager, active_children, get_context
@@ -56,7 +55,7 @@ except Exception:
     pass
 
 from yuki_iptv.qt import get_qt_library
-from yuki_iptv.epg import EPG_CACHE_VERSION, worker, is_program_actual, load_epg_cache
+from yuki_iptv.epg import worker, is_program_actual, load_epg_cache, save_epg_cache
 from yuki_iptv.record import (
     record,
     record_return,
@@ -462,33 +461,6 @@ if __name__ == "__main__":
 
         tvguide_sets = {}
 
-        def save_tvguide_sets_proc(tvguide_sets_arg):
-            if tvguide_sets_arg:
-                if not settings["nocacheepg"]:
-                    file2 = open(str(Path(LOCAL_DIR, "epg.cache")), "wb")
-                    file2.write(
-                        codecs.encode(
-                            bytes(
-                                json.dumps(
-                                    {
-                                        "cache_version": EPG_CACHE_VERSION,
-                                        "system_timezone": json.dumps(time.tzname),
-                                        "tvguide_sets": tvguide_sets,
-                                        "current_url": [
-                                            str(settings["m3u"]),
-                                            str(settings["epg"]),
-                                        ],
-                                        "prog_ids": prog_ids,
-                                        "epg_icons": epg_icons,
-                                    }
-                                ),
-                                "utf-8",
-                            ),
-                            "zlib",
-                        )
-                    )
-                    file2.close()
-
         epg_thread_2 = None
 
         @idle_function
@@ -513,10 +485,15 @@ if __name__ == "__main__":
             except Exception:
                 pass
             logger.info("Writing EPG cache...")
-            epg_thread_2 = get_context("fork").Process(
-                name="[yuki-iptv] save_tvguide_sets_proc",
-                target=save_tvguide_sets_proc,
-                args=(tvguide_sets,),
+            epg_thread_2 = get_context("spawn").Process(
+                name="[yuki-iptv] save_epg_cache",
+                target=save_epg_cache,
+                args=(
+                    tvguide_sets,
+                    settings,
+                    prog_ids,
+                    epg_icons,
+                ),
             )
             epg_thread_2.start()
             epg_thread_2.join()
