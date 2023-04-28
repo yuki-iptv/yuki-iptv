@@ -15,9 +15,10 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with yuki-iptv. If not, see <http://www.gnu.org/licenses/>.
+# along with yuki-iptv. If not, see <https://www.gnu.org/licenses/>.
 #
-# The Font Awesome pictograms are licensed under the CC BY 4.0 License
+# The Font Awesome pictograms are licensed under the CC BY 4.0 License.
+# https://fontawesome.com/
 # https://creativecommons.org/licenses/by/4.0/
 #
 def convert_xtream_to_m3u(_, data, skip_init=False, append_group=""):

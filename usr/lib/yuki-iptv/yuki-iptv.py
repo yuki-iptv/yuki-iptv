@@ -15,9 +15,10 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with yuki-iptv. If not, see <http://www.gnu.org/licenses/>.
+# along with yuki-iptv. If not, see <https://www.gnu.org/licenses/>.
 #
-# The Font Awesome pictograms are licensed under the CC BY 4.0 License
+# The Font Awesome pictograms are licensed under the CC BY 4.0 License.
+# https://fontawesome.com/
 # https://creativecommons.org/licenses/by/4.0/
 #
 from pathlib import Path
@@ -328,8 +329,9 @@ if __name__ == "__main__":
         logger.info("(at your option) any later version.")
         logger.info("")
         logger.info(
-            "The Font Awesome pictograms are licensed under the CC BY 4.0 License"
+            "The Font Awesome pictograms are licensed under the CC BY 4.0 License."
         )
+        logger.info("https://fontawesome.com/")
         logger.info("https://creativecommons.org/licenses/by/4.0/")
         logger.info("")
         logger.info(f"yuki-iptv version: {APP_VERSION}")
@@ -3491,7 +3493,8 @@ if __name__ == "__main__":
             " See the GNU General Public License for more details."
             "\n\n"
             "------------------------------------\n\n"
-            "The Font Awesome pictograms are licensed under the CC BY 4.0 License\n"
+            "The Font Awesome pictograms are licensed under the CC BY 4.0 License.\n"
+            "https://fontawesome.com/\n"
             "https://creativecommons.org/licenses/by/4.0/\n\n"
             "------------------------------------"
             "\n\n"
