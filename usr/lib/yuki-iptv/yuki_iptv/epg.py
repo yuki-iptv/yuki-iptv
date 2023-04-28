@@ -161,14 +161,18 @@ def worker(sys_settings, catchup_days1, return_dict1):
     return [epg[0], epg[1], True, epg[2], epg[3], epg[4], epg[5]]
 
 
-def is_program_actual(sets0, epg_ready, force=False):
+def is_program_actual(sets0, epg_ready, force=False, future=False):
     if not epg_ready and not force:
         return True
+    if future:
+        current_time = time.time() + 129600  # 1 day 12 hours
+    else:
+        current_time = time.time()
     if sets0:
         for prog1 in sets0:
             pr1 = sets0[prog1]
             for p in pr1:
-                if time.time() > p["start"] and time.time() < p["stop"]:
+                if current_time > p["start"] and current_time < p["stop"]:
                     return True
     return False
 
@@ -213,7 +217,7 @@ def load_epg_cache(settings_m3u, settings_epg, epg_ready):
             for prog3 in file1_json["tvguide_sets"]
         }
         file1_json["is_program_actual"] = is_program_actual(
-            file1_json["tvguide_sets"], epg_ready, force=True
+            file1_json["tvguide_sets"], epg_ready, force=True, future=True
         )
     return file1_json
 

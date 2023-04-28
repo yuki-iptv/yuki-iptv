@@ -4934,7 +4934,7 @@ if __name__ == "__main__":
         multiprocessing_manager_dict["logos_completed"] = False
         logos_cache = {}
 
-        def channel_logos_worker(procnum1, requested_logos, update_dict):
+        def channel_logos_worker(requested_logos, update_dict):
             # logger.debug("channel_logos_worker started")
             update_dict["logos_inprogress"] = True
             for logo_channel in requested_logos:
@@ -5366,7 +5366,6 @@ if __name__ == "__main__":
                             name="[yuki-iptv] channel_logos_worker",
                             target=channel_logos_worker,
                             args=(
-                                0,
                                 channel_logos_request,
                                 multiprocessing_manager_dict,
                             ),
