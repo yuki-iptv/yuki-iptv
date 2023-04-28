@@ -24,9 +24,6 @@ sudo apt update
 sudo apt install yuki-iptv
 ```
 
-[Arch Linux AUR (stable version)](https://aur.archlinux.org/packages/yuki-iptv)  
-[Arch Linux AUR (development version)](https://aur.archlinux.org/packages/yuki-iptv-git)  
-
 ## Features
 
 - Watching IPTV (from m3u / m3u8 / xspf playlist, local or remote)  
