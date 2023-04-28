@@ -27,7 +27,7 @@ sudo apt install yuki-iptv
 ## Features
 
 - Watching IPTV (from m3u / m3u8 / xspf playlist, local or remote)  
-- XTream API support
+- XTream API support  
 - Viewing unencrypted streams UDP (multicast), HTTP, HLS (m3u8)  
 - Adding channels to favorites  
 - Recording TV programs  
@@ -42,7 +42,6 @@ sudo apt install yuki-iptv
 - Change user agent / HTTP Referer for each channel  
 - M3U playlist editor  
 - TV archive / catchup  
-- Internalization  
 - MPRIS support  
 - and many more...  
 
