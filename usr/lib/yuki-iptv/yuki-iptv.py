@@ -3471,17 +3471,25 @@ if __name__ == "__main__":
             else:
                 license_win.hide()
 
-        license_str = "GPL-3.0-or-later"
-        if os.path.isfile(str(Path("..", "..", "share", "yuki-iptv", "license.txt"))):
-            license_file = open(
-                str(Path("..", "..", "share", "yuki-iptv", "license.txt")),
-                "r",
-                encoding="utf8",
-            )
-            license_str = license_file.read()
-            license_file.close()
+        with open(
+            str(
+                Path(
+                    "..", "..", "share", "yuki-iptv", "licenses", "GPL-3.0-or-later.txt"
+                )
+            ),
+            "r",
+            encoding="utf8",
+        ) as license_gpl_file:
+            license_gpl_str = license_gpl_file.read()
 
-        license_append = (
+        with open(
+            str(Path("..", "..", "share", "yuki-iptv", "licenses", "CC-BY-4.0.txt")),
+            "r",
+            encoding="utf8",
+        ) as license_ccby_file:
+            license_ccby_str = license_ccby_file.read()
+
+        license_str = (
             "This program is free software: you can redistribute it and/or modify it"
             " under the terms of the GNU General Public License as published by the"
             " Free Software Foundation, either version 3 of the License"
@@ -3498,11 +3506,15 @@ if __name__ == "__main__":
             "https://creativecommons.org/licenses/by/4.0/\n\n"
             "------------------------------------"
             "\n\n"
+            "" + license_gpl_str + ""
+            "\n\n"
+            "------------------------------------\n\n"
+            "" + license_ccby_str
         )
 
         licensebox = QtWidgets.QPlainTextEdit()
         licensebox.setReadOnly(True)
-        licensebox.setPlainText(license_append + license_str)
+        licensebox.setPlainText(license_str)
 
         licensebox_close_btn = QtWidgets.QPushButton()
         licensebox_close_btn.setText(_("Close"))
