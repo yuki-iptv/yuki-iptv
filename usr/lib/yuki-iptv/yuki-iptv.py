@@ -4649,7 +4649,9 @@ if __name__ == "__main__":
                     centerwidget(loading1)
                     centerwidget(loading2, 50)
                     time02 = time.time() - time01
-                    logger.info(f"Entering fullscreen ended, took {time02} seconds")
+                    logger.info(
+                        f"Entering fullscreen ended, took {round(time02, 2)} seconds"
+                    )
                     YukiData.fullscreen_locked = False
             else:
                 # Leaving fullscreen
@@ -4715,7 +4717,9 @@ if __name__ == "__main__":
                         win.menu_bar_qt.hide()
                         setShortcutState(True)
                     time04 = time.time() - time03
-                    logger.info(f"Leaving fullscreen ended, took {time04} seconds")
+                    logger.info(
+                        f"Leaving fullscreen ended, took {round(time04, 2)} seconds"
+                    )
                     YukiData.fullscreen_locked = False
 
         dockWidget_out = QtWidgets.QPushButton()
