@@ -32,9 +32,7 @@ import locale
 import gettext
 import logging
 import signal
-import base64
 import argparse
-import io
 import subprocess
 import re
 import textwrap
@@ -47,7 +45,6 @@ import chardet
 import requests
 import setproctitle
 from unidecode import unidecode
-from PIL import Image
 
 try:
     from gi.repository import GLib
@@ -82,6 +79,7 @@ from yuki_iptv.catchup import (
     format_url_clean,
     format_catchup_array,
 )
+from yuki_iptv.channel_logos import channel_logos_worker
 from yuki_iptv.settings import parse_settings
 from yuki_iptv.qt6compat import _exec
 from yuki_iptv.m3u_editor import M3UEditor
@@ -4877,47 +4875,6 @@ if __name__ == "__main__":
         if not os.path.isdir(str(Path(LOCAL_DIR, "logo_cache"))):
             os.mkdir(str(Path(LOCAL_DIR, "logo_cache")))
 
-        def fetch_remote_channel_icon(chan_name, logo_url):
-            icon_ret = None
-            if not logo_url:
-                return None
-            base64_enc = base64.b64encode(bytes(logo_url, "utf-8")).decode("utf-8")
-            sha512_hash = (
-                str(hashlib.sha512(bytes(base64_enc, "utf-8")).hexdigest()) + ".png"
-            )
-            cache_file = str(Path(LOCAL_DIR, "logo_cache", sha512_hash))
-            if os.path.isfile(cache_file):
-                # logger.debug("is remote icon, cache available")
-                icon_ret = cache_file
-            else:
-                try:
-                    if os.path.isfile(logo_url.strip()):
-                        # logger.debug("is local icon")
-                        icon_ret = logo_url.strip()
-                    else:
-                        # logger.debug(
-                        #     "is remote icon, cache not available, fetching it..."
-                        # )
-                        req_data_ua, req_data_ref = get_ua_ref_for_channel(chan_name)
-                        req_data_headers = {"User-Agent": req_data_ua}
-                        if req_data_ref:
-                            req_data_headers["Referer"] = req_data_ref
-                        req_data1 = requests.get(
-                            logo_url,
-                            headers=req_data_headers,
-                            timeout=(3, 3),
-                            stream=True,
-                        ).content
-                        if req_data1:
-                            with io.BytesIO(req_data1) as im_logo_bytes:
-                                with Image.open(im_logo_bytes) as im_logo:
-                                    im_logo.thumbnail((64, 64))
-                                    im_logo.save(cache_file, "PNG")
-                                    icon_ret = cache_file
-                except Exception:
-                    icon_ret = None
-            return icon_ret
-
         def get_of_txt(of_num):
             # try:
             #     of_txt = gettext.ngettext("of %d", "", of_num) % of_num
@@ -4933,22 +4890,6 @@ if __name__ == "__main__":
         multiprocessing_manager_dict["logos_inprogress"] = False
         multiprocessing_manager_dict["logos_completed"] = False
         logos_cache = {}
-
-        def channel_logos_worker(requested_logos, update_dict):
-            # logger.debug("channel_logos_worker started")
-            update_dict["logos_inprogress"] = True
-            for logo_channel in requested_logos:
-                # logger.debug(f"Downloading logo for channel '{logo_channel}'...")
-                logo_m3u = fetch_remote_channel_icon(
-                    logo_channel, requested_logos[logo_channel][0]
-                )
-                logo_epg = fetch_remote_channel_icon(
-                    logo_channel, requested_logos[logo_channel][1]
-                )
-                update_dict[f"LOGO:::{logo_channel}"] = [logo_m3u, logo_epg]
-            # logger.debug("channel_logos_worker ended")
-            update_dict["logos_inprogress"] = False
-            update_dict["logos_completed"] = True
 
         def get_pixmap_from_filename(pixmap_filename):
             if pixmap_filename in logos_cache:
@@ -5220,9 +5161,14 @@ if __name__ == "__main__":
                         if prog_search in epg_icons:
                             epg_logo1 = epg_icons[prog_search]
 
+                        req_data_ua, req_data_ref = get_ua_ref_for_channel(
+                            orig_chan_name
+                        )
                         channel_logos_request[array_filtered[i]["title"]] = [
                             channel_logo1,
                             epg_logo1,
+                            req_data_ua,
+                            req_data_ref,
                         ]
                     except Exception:
                         logger.warning(f"Exception in channel logos (channel '{i}')")
@@ -5362,7 +5308,7 @@ if __name__ == "__main__":
                             #     "Old channel logos request found, stopping it"
                             # )
                             channel_logos_process.kill()
-                        channel_logos_process = get_context("fork").Process(
+                        channel_logos_process = get_context("spawn").Process(
                             name="[yuki-iptv] channel_logos_worker",
                             target=channel_logos_worker,
                             args=(
