@@ -139,6 +139,13 @@ def fetch_epg(settings, catchup_days1, return_dict1):
                 else:
                     zip_epg = None
                     raise Exception("Unknown EPG format or parsing failed!")
+
+            # Sort EPG entries by start time
+            for program_epg in programmes_epg:
+                programmes_epg[program_epg].sort(
+                    key=lambda programme: programme["start"]
+                )
+
             epg_failures.append(False)
             logger.info("Parsing done!")
             logger.info("Parsing EPG...")
