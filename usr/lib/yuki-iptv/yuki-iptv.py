@@ -7490,6 +7490,7 @@ if __name__ == "__main__":
                                     thread_tvguide_update_1()
                                     try:
                                         epg_data = None
+                                        waiting_for_epg = True
                                         epg_data = (
                                             get_context("spawn")
                                             .Pool(1)
@@ -7502,7 +7503,6 @@ if __name__ == "__main__":
                                                 ),
                                             )
                                         )
-                                        waiting_for_epg = True
                                     except Exception as e1:
                                         epg_failed = True
                                         logger.warning(
