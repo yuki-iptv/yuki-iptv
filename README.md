@@ -62,6 +62,8 @@ You should have received a copy of the GNU General Public License
 along with yuki-iptv. If not, see <https://www.gnu.org/licenses/>.
 ```
 
+[Clarification](https://github.com/yuki-chan-nya/yuki-iptv/blob/master/LICENSE-NOTICE.txt)
+
 ```monospace
 The Font Awesome pictograms are licensed under the CC BY 4.0 License.
 https://fontawesome.com/
