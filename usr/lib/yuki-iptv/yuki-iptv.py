@@ -199,6 +199,8 @@ AUDIO_SAMPLE_FORMATS = {
     "dblp": "double, planar",
 }
 
+MPV_OPTIONS_LINK = "https://mpv.io/manual/master/#options"
+
 
 class stream_info:
     pass
@@ -1080,7 +1082,7 @@ if __name__ == "__main__":
             def getLabelHeight(self):
                 return self.label.height()
 
-        class settings_scrollable_window(QtWidgets.QMainWindow):
+        class SettingsScrollableWindow(QtWidgets.QMainWindow):
             def __init__(self):
                 super().__init__()
                 self.scroll = QtWidgets.QScrollArea()
@@ -1093,7 +1095,7 @@ if __name__ == "__main__":
                 self.scroll.setWidgetResizable(True)
                 self.setCentralWidget(self.scroll)
 
-        settings_win = settings_scrollable_window()
+        settings_win = SettingsScrollableWindow()
         settings_win.resize(800, 600)
         settings_win.setWindowTitle(_("Settings"))
         settings_win.setWindowIcon(main_icon)
@@ -2559,11 +2561,7 @@ if __name__ == "__main__":
             try:
                 player.video_aspect_override = va
             except Exception:
-                pass
-            try:
                 player.video_aspect = va
-            except Exception:
-                pass
 
         def setZoom(zm):
             player.video_zoom = zm
@@ -3039,9 +3037,7 @@ if __name__ == "__main__":
         mpv_label = QtWidgets.QLabel(
             "{} ({}):".format(
                 _("mpv options"),
-                '<a href="https://mpv.io/manual/master/#options">{}</a>'.format(
-                    _("list")
-                ),
+                '<a href="' + MPV_OPTIONS_LINK + '">{}</a>'.format(_("list")),
             )
         )
         mpv_label.setOpenExternalLinks(True)
