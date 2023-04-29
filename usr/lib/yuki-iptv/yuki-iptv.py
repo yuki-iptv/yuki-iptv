@@ -7701,7 +7701,7 @@ if __name__ == "__main__":
 
         thread_5_lock = False
 
-        def thread_tvguide_3():
+        def thread_tvguide_progress():
             try:
                 global thread_5_lock, waiting_for_epg
                 global multiprocessing_manager_dict, static_text
@@ -8310,7 +8310,7 @@ if __name__ == "__main__":
                 thread_record: 100,
                 thread_osc: 100,
                 thread_check_tvguide_obsolete: 100,
-                thread_tvguide_3: 100,
+                thread_tvguide_progress: 100,
                 thread_update_time: 1000,
                 thread_logos_update: 1000,
                 record_thread: 1000,
