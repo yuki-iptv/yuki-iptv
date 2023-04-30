@@ -172,7 +172,7 @@ def is_program_actual(sets0, epg_ready, force=False, future=False):
     if not epg_ready and not force:
         return True
     if future:
-        current_time = time.time() + 129600  # 1 day 12 hours
+        current_time = time.time() + 86400  # 1 day
     else:
         current_time = time.time()
     if sets0:
