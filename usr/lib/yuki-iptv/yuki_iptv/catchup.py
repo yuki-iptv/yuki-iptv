@@ -30,6 +30,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+# https://github.com/kodi-pvr/pvr.iptvsimple/blob/5c3a005875253c13b042893073373c41595623a2/src/iptvsimple/data/Channel.cpp#L440
+
+
 def format_catchup_array(array0):
     if "catchup" not in array0:
         array0["catchup"] = "default"
