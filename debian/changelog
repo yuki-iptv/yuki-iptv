@@ -1,3 +1,9 @@
+yuki-iptv (0.0.5) unstable; urgency=medium
+
+  * Load EPG for all days available
+
+ -- yuki-chan-nya <yukichandev@proton.me>  Tue, 02 May 2023 05:56:35 +0000
+
 yuki-iptv (0.0.4) unstable; urgency=medium
 
   * Optimize channel logos load
