@@ -7998,6 +7998,15 @@ if __name__ == "__main__":
                 label13.setText(f"{int(player.volume)}%")
                 dockWidget.setFixedWidth(DOCK_WIDGET_WIDTH)
                 if fullscreen and not key_t_visible:
+                    # Check cursor inside window
+                    cur_pos = QtGui.QCursor.pos()
+                    is_inside_window = (
+                        cur_pos.x() > win.pos().x() - 1
+                        and cur_pos.x() < (win.pos().x() + win.width())
+                    ) and (
+                        cur_pos.y() > win.pos().y() - 1
+                        and cur_pos.y() < (win.pos().y() + win.height())
+                    )
                     # Playlist
                     if settings["showplaylistmouse"]:
                         cursor_x = win.container.mapFromGlobal(QtGui.QCursor.pos()).x()
@@ -8008,7 +8017,7 @@ if __name__ == "__main__":
                             )
                         else:
                             is_cursor_x = cursor_x < (DOCK_WIDGET_WIDTH + 10)
-                        if is_cursor_x and cursor_x < win_width:
+                        if is_cursor_x and cursor_x < win_width and is_inside_window:
                             if not dockWidgetVisible:
                                 dockWidgetVisible = True
                                 show_playlist()
@@ -8022,7 +8031,7 @@ if __name__ == "__main__":
                         is_cursor_y = cursor_y > win_height - (
                             dockWidget2.height() + 250
                         )
-                        if is_cursor_y and cursor_y < win_height:
+                        if is_cursor_y and cursor_y < win_height and is_inside_window:
                             if not dockWidget2Visible:
                                 dockWidget2Visible = True
                                 show_controlpanel()
