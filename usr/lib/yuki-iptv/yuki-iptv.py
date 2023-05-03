@@ -4266,6 +4266,7 @@ if __name__ == "__main__":
 
         playing = False
         playing_chan = ""
+        playing_group = -1
 
         def show_progress(prog):
             global playing_archive, fullscreen
@@ -4454,7 +4455,8 @@ if __name__ == "__main__":
                 pass
 
         def itemClicked_event(item, custom_url="", archived=False):
-            global playing, playing_chan, item_selected, playing_url, playing_archive
+            global playing, playing_chan, item_selected
+            global playing_group, playing_url, playing_archive
             is_ic_ok = True
             try:
                 is_ic_ok = item.text() != _("Nothing found")
@@ -4467,6 +4469,7 @@ if __name__ == "__main__":
                 except Exception:
                     j = item
                 playing_chan = j
+                playing_group = playmode_selector.currentIndex()
                 item_selected = j
                 try:
                     play_url = getArrayItem(j)["url"]
@@ -4523,8 +4526,9 @@ if __name__ == "__main__":
             player.pause = not player.pause
 
         def mpv_stop():
-            global playing, playing_chan, playing_url
+            global playing, playing_chan, playing_group, playing_url
             playing_chan = ""
+            playing_group = -1
             playing_url = ""
             hideLoading()
             setChanText("")
@@ -6719,7 +6723,7 @@ if __name__ == "__main__":
         def end_file_callback(unused=None):
             global playing_chan
             if playing_chan and player.path is None:
-                if settings["autoreconnection"]:
+                if settings["autoreconnection"] and playing_group == 0:
                     logger.info("Connection to stream lost, waiting 1 sec...")
                     do_reconnect1_async()
                 else:
@@ -7585,20 +7589,23 @@ if __name__ == "__main__":
         def check_connection():
             global x_conn
             if settings["autoreconnection"]:
-                if not YukiData.connprinted:
-                    YukiData.connprinted = True
-                    logger.info("Connection loss detector enabled")
-                try:
-                    if (
-                        playing_chan and not loading.isVisible()
-                    ) and player.cache_buffering_state == 0:
-                        if not x_conn:
-                            logger.info("Connection to stream lost, waiting 5 secs...")
-                            x_conn = QtCore.QTimer()
-                            x_conn.timeout.connect(do_reconnect)
-                            x_conn.start(5000)
-                except Exception:
-                    logger.warning("Failed to set connection loss detector!")
+                if playing_group == 0:
+                    if not YukiData.connprinted:
+                        YukiData.connprinted = True
+                        logger.info("Connection loss detector enabled")
+                    try:
+                        if (
+                            playing_chan and not loading.isVisible()
+                        ) and player.cache_buffering_state == 0:
+                            if not x_conn:
+                                logger.info(
+                                    "Connection to stream lost, waiting 5 secs..."
+                                )
+                                x_conn = QtCore.QTimer()
+                                x_conn.timeout.connect(do_reconnect)
+                                x_conn.start(5000)
+                    except Exception:
+                        logger.warning("Failed to set connection loss detector!")
             else:
                 if not YukiData.connprinted:
                     YukiData.connprinted = True
