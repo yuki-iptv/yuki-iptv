@@ -2845,6 +2845,7 @@ if __name__ == "__main__":
                 "openprevchan": openprevchan_flag.isChecked(),
                 "hidempv": hidempv_flag.isChecked(),
                 "hideepgpercentage": hideepgpercentage_flag.isChecked(),
+                "hideepgfromplaylist": hideepgfromplaylist_flag.isChecked(),
                 "hidebitrateinfo": hidebitrateinfo_flag.isChecked(),
                 "styleredefoff": styleredefoff_flag.isChecked(),
                 "volumechangestep": volumechangestep_choose.value(),
@@ -3057,6 +3058,9 @@ if __name__ == "__main__":
         hideepgpercentage_label = QtWidgets.QLabel(
             "{}:".format(_("Hide EPG percentage"))
         )
+        hideepgfromplaylist_label = QtWidgets.QLabel(
+            "{}:".format(_("Hide EPG from playlist"))
+        )
         hidebitrateinfo_label = QtWidgets.QLabel(
             "{}:".format(_("Hide bitrate / video info"))
         )
@@ -3074,6 +3078,9 @@ if __name__ == "__main__":
 
         hideepgpercentage_flag = QtWidgets.QCheckBox()
         hideepgpercentage_flag.setChecked(settings["hideepgpercentage"])
+
+        hideepgfromplaylist_flag = QtWidgets.QCheckBox()
+        hideepgfromplaylist_flag.setChecked(settings["hideepgfromplaylist"])
 
         hidebitrateinfo_flag = QtWidgets.QCheckBox()
         hidebitrateinfo_flag.setChecked(settings["hidebitrateinfo"])
@@ -3263,12 +3270,14 @@ if __name__ == "__main__":
         )
         tab_gui.layout.addWidget(panelposition_label, 0, 0)
         tab_gui.layout.addWidget(panelposition_choose, 0, 1)
-        tab_gui.layout.addWidget(hideepgpercentage_label, 1, 0)
-        tab_gui.layout.addWidget(hideepgpercentage_flag, 1, 1)
-        tab_gui.layout.addWidget(hidebitrateinfo_label, 2, 0)
-        tab_gui.layout.addWidget(hidebitrateinfo_flag, 2, 1)
-        tab_gui.layout.addWidget(hidetvprogram_label, 3, 0)
-        tab_gui.layout.addWidget(hidetvprogram_flag, 3, 1)
+        tab_gui.layout.addWidget(hideepgfromplaylist_label, 1, 0)
+        tab_gui.layout.addWidget(hideepgfromplaylist_flag, 1, 1)
+        tab_gui.layout.addWidget(hideepgpercentage_label, 2, 0)
+        tab_gui.layout.addWidget(hideepgpercentage_flag, 2, 1)
+        tab_gui.layout.addWidget(hidebitrateinfo_label, 3, 0)
+        tab_gui.layout.addWidget(hidebitrateinfo_flag, 3, 1)
+        tab_gui.layout.addWidget(hidetvprogram_label, 4, 0)
+        tab_gui.layout.addWidget(hidetvprogram_flag, 4, 1)
         tab_gui.setLayout(tab_gui.layout)
 
         tab_actions.layout = QtWidgets.QGridLayout()
@@ -5187,7 +5196,11 @@ if __name__ == "__main__":
                 orig_prog = prog
                 if len(prog) > MAX_SIZE:
                     prog = prog[0:MAX_SIZE] + "..."
-                if prog_search in programmes and orig_prog:
+                if (
+                    prog_search in programmes
+                    and orig_prog
+                    and not settings["hideepgfromplaylist"]
+                ):
                     MyPlaylistWidget.setDescription(
                         prog,
                         (
