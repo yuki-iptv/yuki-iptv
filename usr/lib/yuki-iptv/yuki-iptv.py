@@ -488,6 +488,7 @@ if __name__ == "__main__":
             epg_thread_2 = get_context("spawn").Process(
                 name="[yuki-iptv] save_epg_cache",
                 target=save_epg_cache,
+                daemon=True,
                 args=(
                     tvguide_sets,
                     settings,
@@ -5324,6 +5325,7 @@ if __name__ == "__main__":
                         channel_logos_process = get_context("spawn").Process(
                             name="[yuki-iptv] channel_logos_worker",
                             target=channel_logos_worker,
+                            daemon=True,
                             args=(
                                 channel_logos_request,
                                 multiprocessing_manager_dict,
