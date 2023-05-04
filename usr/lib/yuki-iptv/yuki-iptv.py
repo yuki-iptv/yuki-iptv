@@ -25,6 +25,7 @@ from pathlib import Path
 import sys
 import os
 import os.path
+import platform
 import time
 import datetime
 import json
@@ -161,7 +162,10 @@ class YukiLang:
 
 APP = "yuki-iptv"
 LOCALE_DIR = str(Path(os.getcwd(), "..", "..", "share", "locale"))
-locale.bindtextdomain(APP, LOCALE_DIR)
+try:
+    locale.bindtextdomain(APP, LOCALE_DIR)
+except Exception:
+    pass
 gettext.bindtextdomain(APP, LOCALE_DIR)
 gettext.textdomain(APP)
 
@@ -4180,17 +4184,18 @@ if __name__ == "__main__":
 
         window_data = read_option("window")
         if window_data:
-            win.resize(window_data["w"], window_data["h"])
+            win.setGeometry(
+                window_data["x"], window_data["y"], window_data["w"], window_data["h"]
+            )
         else:
             win.resize(WINDOW_SIZE[0], WINDOW_SIZE[1])
-
-        qr = win.frameGeometry()
-        qr.moveCenter(
-            QtGui.QScreen.availableGeometry(
-                QtWidgets.QApplication.primaryScreen()
-            ).center()
-        )
-        win.move(qr.topLeft())
+            qr = win.frameGeometry()
+            qr.moveCenter(
+                QtGui.QScreen.availableGeometry(
+                    QtWidgets.QApplication.primaryScreen()
+                ).center()
+            )
+            win.move(qr.topLeft())
 
         def get_curwindow_pos():
             try:
@@ -6468,6 +6473,9 @@ if __name__ == "__main__":
             "cursor-autohide": 1000,
             "force-window": True,
         }
+        if platform.system() == "Darwin":
+            options.pop("vo")
+            options.pop("force-window")
         options_orig = options.copy()
         options_2 = {}
         try:
@@ -8350,11 +8358,6 @@ if __name__ == "__main__":
             win.raise_()
             win.setFocus(QtCore.Qt.FocusReason.PopupFocusReason)
             win.activateWindow()
-            window_data_1 = read_option("window")
-            if window_data_1:
-                logger.info("Restoring main window position...")
-                win.move(window_data_1["x"], window_data_1["y"])
-                logger.info("Main window position restored")
             try:
                 combobox_index1 = read_option("comboboxindex")
                 if combobox_index1:
