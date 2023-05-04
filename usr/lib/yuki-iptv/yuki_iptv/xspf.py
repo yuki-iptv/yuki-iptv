@@ -36,6 +36,13 @@ def parse_xspf(xspf):
     tree = ET.ElementTree(ET.fromstring(xspf)).getroot()
     for track in tree.findall("{*}trackList/{*}track"):
         title = track.find("{*}title").text.strip()
+        group = ""
+        try:
+            group = track.find("{*}album").text.strip()
+        except Exception:
+            pass
+        if not group:
+            group = all_channels
         location = track.find("{*}location").text.strip()
         array.append(
             {
@@ -43,7 +50,7 @@ def parse_xspf(xspf):
                 "tvg-name": "",
                 "tvg-ID": "",
                 "tvg-logo": "",
-                "tvg-group": all_channels,
+                "tvg-group": group,
                 "tvg-url": "",
                 "catchup": "default",
                 "catchup-source": "",
