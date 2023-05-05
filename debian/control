@@ -21,4 +21,4 @@ Depends: ffmpeg (>= 4.2.7),
          python3-pydbus
 Recommends: yt-dlp | youtube-dl
 Description: IPTV player
- IPTV player with EPG support.
+ IPTV player with EPG support (Astroncia IPTV fork)
