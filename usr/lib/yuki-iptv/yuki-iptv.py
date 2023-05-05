@@ -626,14 +626,9 @@ if __name__ == "__main__":
             ICONS_FOLDER = str(Path("..", "..", "..", "share", "yuki-iptv", "icons"))
 
         main_icon = QtGui.QIcon(
-            QtGui.QPixmap(
-                str(
-                    Path(
-                        os.path.dirname(__file__),
-                        "yuki_iptv",
-                        ICONS_FOLDER,
-                        "tv-blue.svg",
-                    )
+            str(
+                Path(
+                    os.path.dirname(__file__), "yuki_iptv", ICONS_FOLDER, "tv-blue.png"
                 )
             )
         )
@@ -1057,12 +1052,8 @@ if __name__ == "__main__":
         signal.signal(signal.SIGINT, sigint_handler)
         signal.signal(signal.SIGTERM, sigint_handler)
 
-        TV_ICON = QtGui.QIcon(
-            QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "tv.svg")))
-        )
-        MOVIE_ICON = QtGui.QIcon(
-            QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "movie.svg")))
-        )
+        TV_ICON = QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "tv.png")))
+        MOVIE_ICON = QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "movie.png")))
 
         def get_current_time():
             return time.strftime("%d.%m.%y %H:%M", time.localtime())
@@ -1489,12 +1480,12 @@ if __name__ == "__main__":
         epg_edit_1.setPlaceholderText(_("Path to file or URL"))
         m3u_file_1 = QtWidgets.QPushButton()
         m3u_file_1.setIcon(
-            QtGui.QIcon(QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "file.svg"))))
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "file.png")))
         )
         m3u_file_1.clicked.connect(m3u_file_1_clicked)
         epg_file_1 = QtWidgets.QPushButton()
         epg_file_1.setIcon(
-            QtGui.QIcon(QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "file.svg"))))
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "file.png")))
         )
         epg_file_1.clicked.connect(epg_file_1_clicked)
         save_btn_1 = QtWidgets.QPushButton(_("Save"))
@@ -2421,11 +2412,13 @@ if __name__ == "__main__":
 
         def hideLoading():
             loading.hide()
+            loading_movie.stop()
             loading1.hide()
 
         def showLoading():
             centerwidget(loading1)
             loading.show()
+            loading_movie.start()
             loading1.show()
 
         event_handler = None
@@ -2978,21 +2971,23 @@ if __name__ == "__main__":
             save_settings()
 
         sm3ufile = QtWidgets.QPushButton()
-        sm3ufile.setIcon(
-            QtGui.QIcon(QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "file.svg"))))
-        )
+        sm3ufile.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "file.png"))))
         sm3ufile.clicked.connect(m3u_select)
+        sm3uupd = QtWidgets.QPushButton()
+        sm3uupd.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "update.png"))))
+        sm3uupd.clicked.connect(update_m3u)
+        sm3uupd.setToolTip(_("Update"))
 
         sepgfile = QtWidgets.QPushButton()
-        sepgfile.setIcon(
-            QtGui.QIcon(QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "file.svg"))))
-        )
+        sepgfile.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "file.png"))))
         sepgfile.clicked.connect(epg_select)
+        sepgupd = QtWidgets.QPushButton()
+        sepgupd.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "update.png"))))
+        sepgupd.clicked.connect(force_update_epg_act)
+        sepgupd.setToolTip(_("Update"))
 
         sfolder = QtWidgets.QPushButton()
-        sfolder.setIcon(
-            QtGui.QIcon(QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "file.svg"))))
-        )
+        sfolder.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "file.png"))))
         sfolder.clicked.connect(save_folder_select)
 
         soffset = QtWidgets.QDoubleSpinBox()
@@ -3940,18 +3935,14 @@ if __name__ == "__main__":
                     if not player.pause:
                         label3.setIcon(
                             QtGui.QIcon(
-                                QtGui.QPixmap(
-                                    str(Path("yuki_iptv", ICONS_FOLDER, "pause.svg"))
-                                )
+                                str(Path("yuki_iptv", ICONS_FOLDER, "pause.png"))
                             )
                         )
                         label3.setToolTip(_("Pause"))
                     else:
                         label3.setIcon(
                             QtGui.QIcon(
-                                QtGui.QPixmap(
-                                    str(Path("yuki_iptv", ICONS_FOLDER, "play.svg"))
-                                )
+                                str(Path("yuki_iptv", ICONS_FOLDER, "play.png"))
                             )
                         )
                         label3.setToolTip(_("Play"))
@@ -3999,9 +3990,9 @@ if __name__ == "__main__":
                 app.quit,
                 redraw_menubar,
                 QtGui.QIcon(
-                    QtGui.QPixmap(
-                        str(Path("yuki_iptv", ICONS_FOLDER, "circle.svg"))
-                    ).scaled(8, 8)
+                    QtGui.QIcon(
+                        str(Path("yuki_iptv", ICONS_FOLDER, "circle.png"))
+                    ).pixmap(8, 8)
                 ),
                 my_up_binding_execute,
                 my_down_binding_execute,
@@ -4233,7 +4224,10 @@ if __name__ == "__main__":
             wdg3.move(int(xg1), int(yg1) + int(offset1))
 
         loading1 = QtWidgets.QLabel(win)
-        loading1.setText("<b>...</b>")
+        loading_movie = QtGui.QMovie(
+            str(Path("yuki_iptv", ICONS_FOLDER, "loading.gif"))
+        )
+        loading1.setMovie(loading_movie)
         loading1.setStyleSheet("background-color: white;")
         loading1.resize(32, 32)
         loading1.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
@@ -4241,25 +4235,28 @@ if __name__ == "__main__":
         loading1.hide()
 
         loading2 = QtWidgets.QLabel(win)
-        loading2.setPixmap(
-            QtGui.QPixmap(
-                str(Path("yuki_iptv", ICONS_FOLDER, "recordwait.svg"))
-            ).scaled(32, 32)
+        loading_movie2 = QtGui.QMovie(
+            str(Path("yuki_iptv", ICONS_FOLDER, "recordwait.gif"))
         )
+        loading2.setMovie(loading_movie2)
         loading2.setToolTip(_("Processing record..."))
         loading2.resize(32, 32)
         loading2.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         centerwidget(loading2, 50)
         loading2.hide()
+        loading_movie2.stop()
 
         def showLoading2():
             if not loading2.isVisible():
                 centerwidget(loading2, 50)
+                loading_movie2.stop()
+                loading_movie2.start()
                 loading2.show()
 
         def hideLoading2():
             if loading2.isVisible():
                 loading2.hide()
+                loading_movie2.stop()
 
         lbl2_offset = 15
         tvguide_lbl_offset = 30 + lbl2_offset
@@ -4770,18 +4767,12 @@ if __name__ == "__main__":
             if player.mute:
                 if old_value > 50:
                     label6.setIcon(
-                        QtGui.QIcon(
-                            QtGui.QPixmap(
-                                str(Path("yuki_iptv", ICONS_FOLDER, "volume.svg"))
-                            )
-                        )
+                        QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "volume.png")))
                     )
                 else:
                     label6.setIcon(
                         QtGui.QIcon(
-                            QtGui.QPixmap(
-                                str(Path("yuki_iptv", ICONS_FOLDER, "volume-low.svg"))
-                            )
+                            str(Path("yuki_iptv", ICONS_FOLDER, "volume-low.png"))
                         )
                     )
                 mpv_override_mute(False)
@@ -4789,9 +4780,7 @@ if __name__ == "__main__":
                 show_volume(old_value)
             else:
                 label6.setIcon(
-                    QtGui.QIcon(
-                        QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "mute.svg")))
-                    )
+                    QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "mute.png")))
                 )
                 mpv_override_mute(True)
                 old_value = label7.value()
@@ -4813,26 +4802,18 @@ if __name__ == "__main__":
             if vol == 0:
                 mpv_override_mute(True)
                 label6.setIcon(
-                    QtGui.QIcon(
-                        QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "mute.svg")))
-                    )
+                    QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "mute.png")))
                 )
             else:
                 mpv_override_mute(False)
                 if vol > 50:
                     label6.setIcon(
-                        QtGui.QIcon(
-                            QtGui.QPixmap(
-                                str(Path("yuki_iptv", ICONS_FOLDER, "volume.svg"))
-                            )
-                        )
+                        QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "volume.png")))
                     )
                 else:
                     label6.setIcon(
                         QtGui.QIcon(
-                            QtGui.QPixmap(
-                                str(Path("yuki_iptv", ICONS_FOLDER, "volume-low.svg"))
-                            )
+                            str(Path("yuki_iptv", ICONS_FOLDER, "volume-low.png"))
                         )
                     )
 
@@ -4860,7 +4841,7 @@ if __name__ == "__main__":
 
         tvguide_close_lbl = ClickableLabel(tvguide_close_lbl_func, win)
         tvguide_close_lbl.setPixmap(
-            QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "close.svg"))).scaled(
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "close.png"))).pixmap(
                 32, 32
             )
         )
@@ -5474,16 +5455,12 @@ if __name__ == "__main__":
 
         sort_upbtn = QtWidgets.QPushButton()
         sort_upbtn.setIcon(
-            QtGui.QIcon(
-                QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "arrow-up.svg")))
-            )
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "arrow-up.png")))
         )
         sort_upbtn.clicked.connect(sort_upbtn_clicked)
         sort_downbtn = QtWidgets.QPushButton()
         sort_downbtn.setIcon(
-            QtGui.QIcon(
-                QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "arrow-down.svg")))
-            )
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "arrow-down.png")))
         )
         sort_downbtn.clicked.connect(sort_downbtn_clicked)
 
@@ -6127,7 +6104,7 @@ if __name__ == "__main__":
               subcontrol-position: center left;
               left: 1px;
               image: url("""
-            + str(Path("yuki_iptv", ICONS_FOLDER, "leftarrow.svg"))
+            + str(Path("yuki_iptv", ICONS_FOLDER, "leftarrow.png"))
             + """);
               height: 24px;
               width: 24px;
@@ -6138,7 +6115,7 @@ if __name__ == "__main__":
               subcontrol-position: center right;
               right: 1px;
               image: url("""
-            + str(Path("yuki_iptv", ICONS_FOLDER, "rightarrow.svg"))
+            + str(Path("yuki_iptv", ICONS_FOLDER, "rightarrow.png"))
             + """);
               height: 24px;
               width: 24px;
@@ -6748,6 +6725,7 @@ if __name__ == "__main__":
                 loading.setStyleSheet("color: red")
                 showLoading()
                 loading1.hide()
+                loading_movie.stop()
 
         @idle_function
         def end_file_callback(unused=None):
@@ -7109,40 +7087,28 @@ if __name__ == "__main__":
         def mpv_volume_set_custom():
             mpv_volume_set()
 
-        record_icon = QtGui.QIcon(
-            QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "record.svg")))
-        )
+        record_icon = QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "record.png")))
         record_stop_icon = QtGui.QIcon(
-            QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "stoprecord.svg")))
+            str(Path("yuki_iptv", ICONS_FOLDER, "stoprecord.png"))
         )
 
         label3 = QtWidgets.QPushButton()
-        label3.setIcon(
-            QtGui.QIcon(
-                QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "pause.svg")))
-            )
-        )
+        label3.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "pause.png"))))
         label3.setToolTip(_("Pause"))
         label3.clicked.connect(mpv_play)
         label4 = QtWidgets.QPushButton()
-        label4.setIcon(
-            QtGui.QIcon(QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "stop.svg"))))
-        )
+        label4.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "stop.png"))))
         label4.setToolTip(_("Stop"))
         label4.clicked.connect(mpv_stop)
         label5 = QtWidgets.QPushButton()
         label5.setIcon(
-            QtGui.QIcon(
-                QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "fullscreen.svg")))
-            )
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "fullscreen.png")))
         )
         label5.setToolTip(_("Fullscreen"))
         label5.clicked.connect(mpv_fullscreen)
         label5_0 = QtWidgets.QPushButton()
         label5_0.setIcon(
-            QtGui.QIcon(
-                QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "folder.svg")))
-            )
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "folder.png")))
         )
         label5_0.setToolTip(_("Open recordings folder"))
         label5_0.clicked.connect(open_recording_folder)
@@ -7152,18 +7118,12 @@ if __name__ == "__main__":
         label5_1.clicked.connect(do_record)
         label5_2 = QtWidgets.QPushButton()
         label5_2.setIcon(
-            QtGui.QIcon(
-                QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "calendar.svg")))
-            )
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "calendar.png")))
         )
         label5_2.setToolTip(_("Recording scheduler"))
         label5_2.clicked.connect(show_scheduler)
         label6 = QtWidgets.QPushButton()
-        label6.setIcon(
-            QtGui.QIcon(
-                QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "volume.svg")))
-            )
-        )
+        label6.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "volume.png"))))
         label6.setToolTip(_("Volume"))
         label6.clicked.connect(mpv_mute)
         LABEL7_SET_WIDTH = 150
@@ -7174,62 +7134,56 @@ if __name__ == "__main__":
         label7.valueChanged.connect(mpv_volume_set_custom)
         label7_1 = QtWidgets.QPushButton()
         label7_1.setIcon(
-            QtGui.QIcon(
-                QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "screenshot.svg")))
-            )
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "screenshot.png")))
         )
         label7_1.setToolTip(_("Screenshot").capitalize())
         label7_1.clicked.connect(do_screenshot)
         label7_2 = QtWidgets.QPushButton()
         label7_2.setIcon(
-            QtGui.QIcon(
-                QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "timeshift.svg")))
-            )
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "timeshift.png")))
         )
         label7_2.setToolTip(_("Archive"))
         label7_2.clicked.connect(show_timeshift)
         if not settings["catchupenable"]:
             label7_2.setVisible(False)
+        label8 = QtWidgets.QPushButton()
+        label8.setIcon(
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "settings.png")))
+        )
+        label8.setToolTip(_("Settings"))
+        label8.clicked.connect(show_settings)
         label8_0 = QtWidgets.QPushButton()
         label8_0.setIcon(
-            QtGui.QIcon(
-                QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "tv-blue.svg")))
-            )
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "tv-blue.png")))
         )
         label8_0.setToolTip(_("Playlists"))
         label8_0.clicked.connect(show_playlists)
         label8_1 = QtWidgets.QPushButton()
         label8_1.setIcon(
-            QtGui.QIcon(
-                QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "tvguide.svg")))
-            )
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "tvguide.png")))
         )
         label8_1.setToolTip(_("TV guide"))
         label8_1.clicked.connect(show_tvguide)
         label8_4 = QtWidgets.QPushButton()
-        label8_4.setIcon(
-            QtGui.QIcon(QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "sort.svg"))))
-        )
+        label8_4.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "sort.png"))))
         label8_4.setToolTip(_("Channel\nsort").replace("\n", " "))
         label8_4.clicked.connect(show_sort)
         label8_2 = QtWidgets.QPushButton()
-        label8_2.setIcon(
-            QtGui.QIcon(QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "prev.svg"))))
-        )
+        label8_2.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "prev.png"))))
         label8_2.setToolTip(_("Previous channel"))
         label8_2.clicked.connect(prev_channel)
         label8_3 = QtWidgets.QPushButton()
-        label8_3.setIcon(
-            QtGui.QIcon(QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "next.svg"))))
-        )
+        label8_3.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "next.png"))))
         label8_3.setToolTip(_("Next channel"))
         label8_3.clicked.connect(next_channel)
         label8_5 = QtWidgets.QPushButton()
-        label8_5.setIcon(
-            QtGui.QIcon(QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "edit.svg"))))
-        )
+        label8_5.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "edit.png"))))
         label8_5.setToolTip(_("m3u Editor"))
         label8_5.clicked.connect(show_m3u_editor)
+        label9 = QtWidgets.QPushButton()
+        label9.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "help.png"))))
+        label9.setToolTip(_("Help"))
+        label9.clicked.connect(show_help)
 
         label12 = QtWidgets.QLabel("")
         myFont4 = QtGui.QFont()
@@ -7243,8 +7197,8 @@ if __name__ == "__main__":
 
         hdd_gif_label = QtWidgets.QLabel()
         hdd_gif_label.setPixmap(
-            QtGui.QPixmap(str(Path("yuki_iptv", ICONS_FOLDER, "hdd.svg"))).scaled(
-                32, 32
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "hdd.png"))).pixmap(
+                QtCore.QSize(32, 32)
             )
         )
         hdd_gif_label.setToolTip("{}...".format(_("Writing EPG cache")))
@@ -7294,6 +7248,12 @@ if __name__ == "__main__":
             label8_2,
             label8_3,
         ]
+
+        fs_widget = QtWidgets.QWidget()
+        fs_widget_l = QtWidgets.QHBoxLayout()
+        label8.setMaximumWidth(32)
+        fs_widget_l.addWidget(label8)
+        fs_widget.setLayout(fs_widget_l)
 
         for hlayout2_btn in hlayout2_btns:
             hlayout2.addWidget(hlayout2_btn)

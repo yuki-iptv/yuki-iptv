@@ -283,11 +283,7 @@ class M3UEditor(QtWidgets.QMainWindow):
         # Delete current row
         delete_btn = QtWidgets.QToolButton()
         delete_btn.setIcon(
-            QtGui.QIcon(
-                QtGui.QPixmap(
-                    str(Path("yuki_iptv", self.data["icons_folder"], "trash.svg"))
-                )
-            )
+            QtGui.QIcon(str(Path("yuki_iptv", self.data["icons_folder"], "trash.png")))
         )
         delete_btn.setToolTip(_("delete row"))
         delete_btn.clicked.connect(self.delete_row)
@@ -295,11 +291,7 @@ class M3UEditor(QtWidgets.QMainWindow):
         # Add new empty row
         add_btn = QtWidgets.QToolButton()
         add_btn.setIcon(
-            QtGui.QIcon(
-                QtGui.QPixmap(
-                    str(Path("yuki_iptv", self.data["icons_folder"], "plus.svg"))
-                )
-            )
+            QtGui.QIcon(str(Path("yuki_iptv", self.data["icons_folder"], "plus.png")))
         )
         add_btn.setToolTip(_("add row"))
         add_btn.clicked.connect(self.add_row)
@@ -308,9 +300,7 @@ class M3UEditor(QtWidgets.QMainWindow):
         down_btn = QtWidgets.QToolButton()
         down_btn.setIcon(
             QtGui.QIcon(
-                QtGui.QPixmap(
-                    str(Path("yuki_iptv", self.data["icons_folder"], "arrow-down.svg"))
-                )
+                str(Path("yuki_iptv", self.data["icons_folder"], "arrow-down.png"))
             )
         )
         down_btn.clicked.connect(lambda: self.move_row(1))
@@ -319,9 +309,7 @@ class M3UEditor(QtWidgets.QMainWindow):
         up_btn = QtWidgets.QToolButton()
         up_btn.setIcon(
             QtGui.QIcon(
-                QtGui.QPixmap(
-                    str(Path("yuki_iptv", self.data["icons_folder"], "arrow-up.svg"))
-                )
+                str(Path("yuki_iptv", self.data["icons_folder"], "arrow-up.png"))
             )
         )
         up_btn.clicked.connect(lambda: self.move_row(-1))
