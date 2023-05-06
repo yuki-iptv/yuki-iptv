@@ -879,7 +879,7 @@ if __name__ == "__main__":
                                 m3u_req = requests.get(
                                     settings["m3u"],
                                     headers={"User-Agent": settings["ua"]},
-                                    timeout=3,
+                                    timeout=(5, 15),  # connect, read timeout
                                 )
                             except Exception:
                                 m3u_req = PlaylistsFail()
@@ -892,7 +892,7 @@ if __name__ == "__main__":
                                 m3u_req = requests.get(
                                     settings["m3u"],
                                     headers={"User-Agent": ""},
-                                    timeout=3,
+                                    timeout=(5, 15),  # connect, read timeout
                                 )
 
                             logger.info(f"Status code: {m3u_req.status_code}")
