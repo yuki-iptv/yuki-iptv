@@ -35,7 +35,6 @@ import logging
 import signal
 import argparse
 import subprocess
-import webbrowser
 import re
 import textwrap
 import hashlib
@@ -6786,11 +6785,8 @@ if __name__ == "__main__":
 
         def open_recording_folder():
             absolute_path = Path(save_folder).absolute()
-            if platform.system() == "Linux":
-                xdg_open = subprocess.Popen(["xdg-open", str(absolute_path)])
-                xdg_open.wait()
-            else:
-                webbrowser.open(str(absolute_path))
+            xdg_open = subprocess.Popen(["xdg-open", str(absolute_path)])
+            xdg_open.wait()
 
         def go_channel(i1):
             row = win.listWidget.currentRow()
