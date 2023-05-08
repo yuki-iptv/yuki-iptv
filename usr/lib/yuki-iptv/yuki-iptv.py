@@ -25,7 +25,6 @@ from pathlib import Path
 import sys
 import os
 import os.path
-import platform
 import time
 import datetime
 import json
@@ -162,10 +161,7 @@ class YukiLang:
 
 APP = "yuki-iptv"
 LOCALE_DIR = str(Path(os.getcwd(), "..", "..", "share", "locale"))
-try:
-    locale.bindtextdomain(APP, LOCALE_DIR)
-except Exception:
-    pass
+locale.bindtextdomain(APP, LOCALE_DIR)
 gettext.bindtextdomain(APP, LOCALE_DIR)
 gettext.textdomain(APP)
 
@@ -6450,9 +6446,6 @@ if __name__ == "__main__":
             "cursor-autohide": 1000,
             "force-window": True,
         }
-        if platform.system() == "Darwin":
-            options.pop("vo")
-            options.pop("force-window")
         options_orig = options.copy()
         options_2 = {}
         try:
