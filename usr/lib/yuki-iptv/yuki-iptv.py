@@ -5479,11 +5479,6 @@ if __name__ == "__main__":
         for sort_label_ch in sort_label_data:
             sort_list.addItem(sort_label_ch)
 
-        sel_item = None
-
-        def select_context_menu():
-            itemClicked_event(sel_item)
-
         def tvguide_context_menu():
             update_tvguide()
             tvguide_lbl.show()
@@ -5701,13 +5696,9 @@ if __name__ == "__main__":
                 pass
             try:
                 if is_continue:
-                    global sel_item
                     self = win.listWidget
-                    sel_item = self.selectedItems()[0]
-                    itemSelected_event(sel_item)
+                    itemSelected_event(self.selectedItems()[0])
                     menu = QtWidgets.QMenu()
-                    menu.addAction(_("Select"), select_context_menu)
-                    menu.addSeparator()
                     menu.addAction(_("TV guide"), tvguide_context_menu)
                     menu.addAction(_("Hide TV guide"), tvguide_hide)
                     menu.addAction(_("Favourites"), tvguide_favourites_add)
