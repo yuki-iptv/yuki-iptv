@@ -2587,21 +2587,22 @@ if __name__ == "__main__":
             showLoading()
             # Optimizations
             if play_url1.startswith("udp://") or play_url1.startswith("rtp://"):
-                try:
-                    # For low latency on multicast
-                    logger.info("Using multicast optimized settings")
-                    player.cache = "no"
-                    player.untimed = True
-                    player["cache-pause"] = False
-                    player["audio-buffer"] = 0
-                    player["vd-lavc-threads"] = 1
-                    player["demuxer-lavf-probe-info"] = "nostreams"
-                    player["demuxer-lavf-analyzeduration"] = 0.1
-                    player["video-sync"] = "audio"
-                    player["interpolation"] = False
-                    player["video-latency-hacks"] = True
-                except Exception:
-                    logger.warning("Failed to set multicast optimized settings!")
+                if settings["multicastoptimization"]:
+                    try:
+                        # For low latency on multicast
+                        logger.info("Using multicast optimized settings")
+                        player.cache = "no"
+                        player.untimed = True
+                        player["cache-pause"] = False
+                        player["audio-buffer"] = 0
+                        player["vd-lavc-threads"] = 1
+                        player["demuxer-lavf-probe-info"] = "nostreams"
+                        player["demuxer-lavf-analyzeduration"] = 0.1
+                        player["video-sync"] = "audio"
+                        player["interpolation"] = False
+                        player["video-latency-hacks"] = True
+                    except Exception:
+                        logger.warning("Failed to set multicast optimized settings!")
             try:
                 if settings["autoreconnection"]:
                     player.stream_lavf_o = (
@@ -2848,6 +2849,7 @@ if __name__ == "__main__":
                 "hidempv": hidempv_flag.isChecked(),
                 "hideepgpercentage": hideepgpercentage_flag.isChecked(),
                 "hideepgfromplaylist": hideepgfromplaylist_flag.isChecked(),
+                "multicastoptimization": multicastoptimization_flag.isChecked(),
                 "hidebitrateinfo": hidebitrateinfo_flag.isChecked(),
                 "styleredefoff": styleredefoff_flag.isChecked(),
                 "volumechangestep": volumechangestep_choose.value(),
@@ -3063,6 +3065,9 @@ if __name__ == "__main__":
         hideepgfromplaylist_label = QtWidgets.QLabel(
             "{}:".format(_("Hide EPG from playlist"))
         )
+        multicastoptimization_label = QtWidgets.QLabel(
+            "{}:".format(_("Multicast optimization"))
+        )
         hidebitrateinfo_label = QtWidgets.QLabel(
             "{}:".format(_("Hide bitrate / video info"))
         )
@@ -3083,6 +3088,9 @@ if __name__ == "__main__":
 
         hideepgfromplaylist_flag = QtWidgets.QCheckBox()
         hideepgfromplaylist_flag.setChecked(settings["hideepgfromplaylist"])
+
+        multicastoptimization_flag = QtWidgets.QCheckBox()
+        multicastoptimization_flag.setChecked(settings["multicastoptimization"])
 
         hidebitrateinfo_flag = QtWidgets.QCheckBox()
         hidebitrateinfo_flag.setChecked(settings["hidebitrateinfo"])
@@ -3264,6 +3272,8 @@ if __name__ == "__main__":
         tab_network.layout.addWidget(useragent_choose_2, 2, 1)
         tab_network.layout.addWidget(referer_lbl, 3, 0)
         tab_network.layout.addWidget(referer_choose, 3, 1)
+        tab_network.layout.addWidget(multicastoptimization_label, 4, 0)
+        tab_network.layout.addWidget(multicastoptimization_flag, 4, 1)
         tab_network.setLayout(tab_network.layout)
 
         tab_gui.layout = QtWidgets.QGridLayout()

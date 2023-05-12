@@ -45,6 +45,7 @@ def parse_settings():
         "openprevchan": False,
         "hidempv": False,
         "hideepgfromplaylist": False,
+        "multicastoptimization": False,
         "hideepgpercentage": False,
         "hidebitrateinfo": False,
         "styleredefoff": True,
