@@ -3341,14 +3341,28 @@ if __name__ == "__main__":
         tab_other.layout.addWidget(volumechangestep_percent, 3, 2)
         tab_other.setLayout(tab_other.layout)
 
-        tab_debug.layout = QtWidgets.QGridLayout()
+        tab_debug_warning = QtWidgets.QLabel(
+            _("WARNING: experimental function, working with problems")
+        )
+        tab_debug_warning.setStyleSheet("color: #cf9e17")
+
+        tab_debug_widget = QtWidgets.QWidget()
+        tab_debug_layout = QtWidgets.QGridLayout()
+        tab_debug_layout.setAlignment(
+            QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop
+        )
+        tab_debug_layout.addWidget(styleredefoff_label, 0, 0)
+        tab_debug_layout.addWidget(styleredefoff_flag, 0, 1)
+        tab_debug_layout.addWidget(autoreconnection_label, 1, 0)
+        tab_debug_layout.addWidget(autoreconnection_flag, 1, 1)
+        tab_debug_widget.setLayout(tab_debug_layout)
+
+        tab_debug.layout = QtWidgets.QVBoxLayout()
         tab_debug.layout.setAlignment(
             QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop
         )
-        tab_debug.layout.addWidget(styleredefoff_label, 0, 0)
-        tab_debug.layout.addWidget(styleredefoff_flag, 0, 1)
-        tab_debug.layout.addWidget(autoreconnection_label, 1, 0)
-        tab_debug.layout.addWidget(autoreconnection_flag, 1, 1)
+        tab_debug.layout.addWidget(tab_debug_warning)
+        tab_debug.layout.addWidget(tab_debug_widget)
         tab_debug.setLayout(tab_debug.layout)
 
         grid = QtWidgets.QVBoxLayout()
