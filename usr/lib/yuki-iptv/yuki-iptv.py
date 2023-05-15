@@ -6234,8 +6234,7 @@ if __name__ == "__main__":
                 else:
                     file_path = str(Path(save_folder, file_name))
                 try:
-                    pillow_img = player.screenshot_raw(includes="subtitles")
-                    pillow_img.save(file_path)
+                    player.screenshot_to_file(file_path, includes="subtitles")
                     l1.show()
                     l1.setText2(_("Screenshot saved!"))
                 except Exception:
