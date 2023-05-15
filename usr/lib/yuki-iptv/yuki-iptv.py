@@ -893,7 +893,39 @@ if __name__ == "__main__":
 
                             logger.info(f"Status code: {m3u_req.status_code}")
                             logger.info(f"{len(m3u_req.content)} bytes")
-                            m3u = m3u_req.text
+                            m3u = m3u_req.content
+                            try:
+                                m3u = m3u.decode("utf-8")
+                            except Exception:
+                                logger.warning("Playlist is not UTF-8 encoding")
+                                logger.info("Trying to detect encoding...")
+                                guess_encoding = ""
+                                try:
+                                    guess_encoding = chardet.detect(m3u)["encoding"]
+                                except Exception:
+                                    pass
+                                if guess_encoding:
+                                    logger.info(f"Guessed encoding: {guess_encoding}")
+                                    try:
+                                        m3u = m3u.decode(guess_encoding)
+                                    except Exception:
+                                        logger.warning("Wrong encoding guess!")
+                                        show_exception(
+                                            _(
+                                                "Failed to load playlist - unknown "
+                                                "encoding! Please use playlists "
+                                                "in UTF-8 encoding."
+                                            )
+                                        )
+                                else:
+                                    logger.warning("Unknown encoding!")
+                                    show_exception(
+                                        _(
+                                            "Failed to load playlist - unknown "
+                                            "encoding! Please use playlists "
+                                            "in UTF-8 encoding."
+                                        )
+                                    )
                         except Exception:
                             m3u = ""
                             exp3 = traceback.format_exc()
