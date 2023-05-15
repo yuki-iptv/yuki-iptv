@@ -22,12 +22,17 @@
 # https://creativecommons.org/licenses/by/4.0/
 #
 import os
+
+# import logging
+# import traceback
 import requests
 import io
 import base64
 import hashlib
 from pathlib import Path
-from PIL import Image
+from wand.image import Image
+
+# logger = logging.getLogger(__name__)
 
 
 def fetch_remote_channel_icon(chan_name, logo_url, req_data_ua, req_data_ref):
@@ -62,9 +67,10 @@ def fetch_remote_channel_icon(chan_name, logo_url, req_data_ua, req_data_ref):
                 ).content
                 if req_data1:
                     with io.BytesIO(req_data1) as im_logo_bytes:
-                        with Image.open(im_logo_bytes) as im_logo:
-                            im_logo.thumbnail((64, 64))
-                            im_logo.save(cache_file, "PNG")
+                        with Image(file=im_logo_bytes) as original:
+                            with original.convert("png") as im_logo:
+                                im_logo.resize(64, 64)
+                                im_logo.save(filename=cache_file)
                             icon_ret = cache_file
         except Exception:
             icon_ret = None

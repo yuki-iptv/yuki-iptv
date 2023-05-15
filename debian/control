@@ -15,10 +15,10 @@ Depends: ffmpeg (>= 4.2.7),
          python3-chardet,
          python3-setproctitle,
          python3-pyqt6 (>= 6.2.2) | python3-pyqt5 (>= 5.14.1),
-         python3-pil,
+         python3-wand,
          python3-gi,
          python3-unidecode,
          python3-pydbus
-Recommends: yt-dlp | youtube-dl
+Recommends: libmagickcore-6.q16-6-extra, yt-dlp | youtube-dl
 Description: IPTV player with EPG support (Astroncia IPTV fork)
  Watch TV.
