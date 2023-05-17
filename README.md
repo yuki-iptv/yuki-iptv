@@ -6,14 +6,6 @@
 ⚠️ Disclaimer: yuki-iptv doesn't provide any playlists or other digital content.  
 The channels and pictures in the screenshots are for demonstration purposes only.
 
-## Download
-
-[.deb packages](https://github.com/yuki-iptv/yuki-iptv/releases)
-
-[Ubuntu Launchpad PPA (stable version)](https://launchpad.net/~yuki-iptv/+archive/ubuntu/yuki-iptv-stable)
-
-[Ubuntu Launchpad PPA (development version)](https://launchpad.net/~yuki-iptv/+archive/ubuntu/yuki-iptv-develop)
-
 ## Features
 
 - M3u / M3u8 / XSPF playlists support
