@@ -1,4 +1,4 @@
-yuki-iptv (0.0.6) unstable; urgency=medium
+yuki-iptv (0.0.6) bullseye; urgency=medium
 
   * Add 'Hide EPG from playlist' option
   * Add 'Multicast optimization' option
@@ -8,13 +8,13 @@ yuki-iptv (0.0.6) unstable; urgency=medium
 
  -- yuki-chan-nya <yukichandev@proton.me>  Sun, 14 May 2023 20:53:12 +0000
 
-yuki-iptv (0.0.5) unstable; urgency=medium
+yuki-iptv (0.0.5) bullseye; urgency=medium
 
   * Load EPG for all days available
 
  -- yuki-chan-nya <yukichandev@proton.me>  Tue, 02 May 2023 05:56:35 +0000
 
-yuki-iptv (0.0.4) unstable; urgency=medium
+yuki-iptv (0.0.4) bullseye; urgency=medium
 
   * Optimize channel logos load
   * Show warning if ffmpeg crashed
@@ -26,7 +26,7 @@ yuki-iptv (0.0.4) unstable; urgency=medium
 
  -- yuki-chan-nya <yukichandev@proton.me>  Sat, 15 Apr 2023 18:52:48 +0000
 
-yuki-iptv (0.0.3) unstable; urgency=medium
+yuki-iptv (0.0.3) bullseye; urgency=medium
 
   * EPG: trying to fix EPG cache load freezing
   * EPG: fix XMLTV timezone parsing
@@ -40,7 +40,7 @@ yuki-iptv (0.0.3) unstable; urgency=medium
 
  -- yuki-chan-nya <yukichandev@proton.me>  Sun, 09 Apr 2023 20:48:06 +0000
 
-yuki-iptv (0.0.2) unstable; urgency=medium
+yuki-iptv (0.0.2) bullseye; urgency=medium
 
   * l10n: Update translations
   * Fix disabling osc via MPV options
@@ -67,7 +67,7 @@ yuki-iptv (0.0.2) unstable; urgency=medium
 
  -- yuki-chan-nya <yukichandev@proton.me>  Thu, 06 Apr 2023 18:29:16 +0000
 
-yuki-iptv (0.0.1) unstable; urgency=medium
+yuki-iptv (0.0.1) bullseye; urgency=medium
 
   * Change project name to yuki-iptv
 
