@@ -1089,31 +1089,25 @@ if __name__ == "__main__":
         def empty_function(arg1):
             pass
 
-        class ScrollLabel(QtWidgets.QScrollArea):
+        class ScrollableLabel(QtWidgets.QScrollArea):
             def __init__(self, *args, **kwargs):
                 QtWidgets.QScrollArea.__init__(self, *args, **kwargs)
                 self.setWidgetResizable(True)
-                content = QtWidgets.QWidget(self)
+                label_qwidget = QtWidgets.QWidget(self)
                 bcolor_scrollabel = "white"
                 if YukiData.use_dark_icon_theme:
                     bcolor_scrollabel = "black"
-                content.setStyleSheet("background-color: " + bcolor_scrollabel)
-                self.setWidget(content)
-                lay = QtWidgets.QVBoxLayout(content)
-                self.label = QtWidgets.QLabel(content)
+                label_qwidget.setStyleSheet("background-color: " + bcolor_scrollabel)
+                self.setWidget(label_qwidget)
+                label_layout = QtWidgets.QVBoxLayout(label_qwidget)
+                self.label = QtWidgets.QLabel(label_qwidget)
                 self.label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
                 self.label.setWordWrap(True)
                 self.label.setStyleSheet("background-color: " + bcolor_scrollabel)
-                lay.addWidget(self.label)
+                label_layout.addWidget(self.label)
 
             def setText(self, text):
                 self.label.setText(text)
-
-            def getText1(self):
-                return self.label.text()
-
-            def getLabelHeight(self):
-                return self.label.height()
 
         class SettingsScrollableWindow(QtWidgets.QMainWindow):
             def __init__(self):
@@ -1402,7 +1396,7 @@ if __name__ == "__main__":
         epg_win_1_layout.addWidget(showonlychplaylist_chk)
         epg_win_1_widget.setLayout(epg_win_1_layout)
 
-        tvguide_lbl_2 = ScrollLabel()
+        tvguide_lbl_2 = ScrollableLabel()
 
         epg_win_widget = QtWidgets.QWidget()
         epg_win_layout = QtWidgets.QVBoxLayout()
@@ -4879,7 +4873,7 @@ if __name__ == "__main__":
         def tvguide_close_lbl_func(arg):
             hide_tvguide()
 
-        tvguide_lbl = ScrollLabel(win)
+        tvguide_lbl = ScrollableLabel(win)
         tvguide_lbl.move(0, tvguide_lbl_offset)
         tvguide_lbl.setFixedWidth(TVGUIDE_WIDTH)
         tvguide_lbl.hide()
