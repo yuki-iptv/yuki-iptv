@@ -1,12 +1,12 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: yuki-iptv
-Upstream-Contact: yuki-chan-nya <yukichandev@proton.me>
+Upstream-Contact: Ame-chan-angel <yukichandev@proton.me>
 Source: https://github.com/yuki-iptv/yuki-iptv
 
 Files: *
 Copyright:
  2021-2022 Astroncia <kestraly@gmail.com>
- 2023 yuki-chan-nya <yukichandev@proton.me>
+ 2023 Ame-chan-angel <yukichandev@proton.me>
 License: GPL-3+
 
 Files: usr/lib/yuki-iptv/thirdparty/mpris_server

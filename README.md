@@ -1,7 +1,7 @@
 # yuki-iptv
 ### IPTV player with EPG support (Astroncia IPTV fork)
 
-[![Screenshot](https://gist.githubusercontent.com/yuki-chan-nya/c37f80c2cb00afbdbd98959186e1ab80/raw/d990f212d8e9a5170f800aafdfc82333f9264e31/yuki-iptv.png)](https://gist.githubusercontent.com/yuki-chan-nya/c37f80c2cb00afbdbd98959186e1ab80/raw/d990f212d8e9a5170f800aafdfc82333f9264e31/yuki-iptv.png)
+[![Screenshot](https://gist.githubusercontent.com/Ame-chan-angel/c37f80c2cb00afbdbd98959186e1ab80/raw/d990f212d8e9a5170f800aafdfc82333f9264e31/yuki-iptv.png)](https://gist.githubusercontent.com/Ame-chan-angel/c37f80c2cb00afbdbd98959186e1ab80/raw/d990f212d8e9a5170f800aafdfc82333f9264e31/yuki-iptv.png)
 
 ⚠️ Disclaimer: yuki-iptv doesn't provide any playlists or other digital content.  
 The channels and pictures in the screenshots are for demonstration purposes only.
@@ -44,7 +44,7 @@ You should have received a copy of the GNU General Public License
 along with yuki-iptv. If not, see <https://www.gnu.org/licenses/>.
 ```
 
-[Clarification](https://github.com/yuki-chan-nya/yuki-iptv/blob/master/LICENSE-NOTICE.txt)
+[Clarification](https://github.com/Ame-chan-angel/yuki-iptv/blob/master/LICENSE-NOTICE.txt)
 
 ```monospace
 The Font Awesome pictograms are licensed under the CC BY 4.0 License.

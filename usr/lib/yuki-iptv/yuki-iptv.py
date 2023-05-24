@@ -1,6 +1,6 @@
 #
 # Copyright (c) 2021, 2022 Astroncia <kestraly@gmail.com>
-# Copyright (c) 2023 yuki-chan-nya <yukichandev@proton.me>
+# Copyright (c) 2023 Ame-chan-angel <yukichandev@proton.me>
 #
 # This file is part of yuki-iptv.
 #
@@ -316,7 +316,7 @@ if __name__ == "__main__":
         logger.info("")
         logger.info(f"{MAIN_WINDOW_TITLE} starting...")
         logger.info("Copyright (c) 2021, 2022 Astroncia")
-        logger.info("Copyright (c) 2023 yuki-chan-nya")
+        logger.info("Copyright (c) 2023 Ame-chan-angel")
         logger.info("")
         logger.info(
             "This program is free software: you can redistribute it and/or modify"
@@ -3880,8 +3880,8 @@ if __name__ == "__main__":
             textbox.setText(
                 format_about_text(
                     _(
-                        "yuki-iptv {}\n\n© 2021, 2022 Astroncia\n© {} yuki-chan-nya\n"
-                        "https://github.com/yuki-chan-nya\n\nIPTV player\n\nIcons by"
+                        "yuki-iptv {}\n\n© 2021, 2022 Astroncia\n© {} Ame-chan-angel\n"
+                        "https://github.com/Ame-chan-angel\n\nIPTV player\n\nIcons by"
                         " Font Awesome ( https://fontawesome.com/ )\nIcons licensed"
                         " under the CC BY 4.0 License\n"
                         "( https://creativecommons.org/licenses/by/4.0/ )"
@@ -6525,7 +6525,7 @@ if __name__ == "__main__":
         QT_URL = "<a href='https://www.qt.io/'>https://www.qt.io/</a>"
         MPV_URL = "<a href='https://mpv.io/'>mpv</a> "
         CLICKABLE_LINKS = [
-            "https://github.com/yuki-chan-nya",
+            "https://github.com/Ame-chan-angel",
             "https://fontawesome.com/",
             "https://creativecommons.org/licenses/by/4.0/",
         ]

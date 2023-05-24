@@ -1,7 +1,7 @@
 Source: yuki-iptv
 Section: video
 Priority: optional
-Maintainer: yuki-chan-nya <yukichandev@proton.me>
+Maintainer: Ame-chan-angel <yukichandev@proton.me>
 Build-Depends: debhelper (>= 9), python3-pytest
 Standards-Version: 3.9.6
 Rules-Requires-Root: no
