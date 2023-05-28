@@ -6526,6 +6526,7 @@ if __name__ == "__main__":
         MPV_URL = "<a href='https://mpv.io/'>mpv</a> "
         CLICKABLE_LINKS = [
             "https://github.com/Ame-chan-angel",
+            "https://github.com/yuki-iptv/yuki-iptv",
             "https://fontawesome.com/",
             "https://creativecommons.org/licenses/by/4.0/",
         ]
@@ -6540,6 +6541,7 @@ if __name__ == "__main__":
             if not mpv_version:
                 mpv_version = "UNKNOWN"
             about_txt += "\n" + _("Using libmpv {}").format(mpv_version)
+            about_txt += "\n\nhttps://github.com/yuki-iptv/yuki-iptv"
             about_txt = about_txt.replace("\n", "<br>")
             for clickable_link in CLICKABLE_LINKS:
                 about_txt = about_txt.replace(
