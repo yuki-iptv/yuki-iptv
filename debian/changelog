@@ -1,3 +1,11 @@
+yuki-iptv (0.0.7) bullseye; urgency=medium
+
+  * Fix encoding in remote playlists
+  * Use Wand for channel logos
+  * Add tvg-group tag support
+
+ -- Ame-chan-angel <amechanangel@proton.me>  Mon, 05 Jun 2023 22:30:31 +0000
+
 yuki-iptv (0.0.6) bullseye; urgency=medium
 
   * Add 'Hide EPG from playlist' option
