@@ -2,7 +2,9 @@
 Type=Application
 Name=yuki-iptv
 Comment=IPTV player
+Comment[fr]=Lecteur IPTV
 Comment[ru]=IPTV плеер
+Comment[tr]=IPTV Oynatıcı
 Exec=yuki-iptv
 Icon=yuki-iptv
 Categories=AudioVideo;Video;Player;Recorder;TV;
