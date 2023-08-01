@@ -311,6 +311,26 @@ def test_m3u():
                 }
             ],
         ],
+        [
+            Path("tests", "m3u", "9.m3u"),
+            "",
+            [
+                {
+                    "catchup": "default",
+                    "catchup-days": "1",
+                    "catchup-source": "",
+                    "referer": "",
+                    "title": "Example, Example, Example",
+                    "tvg-ID": "",
+                    "tvg-group": "All channels",
+                    "tvg-logo": "",
+                    "tvg-name": "Example1, Example2, Example3",
+                    "tvg-url": "",
+                    "url": "http://127.0.0.1",
+                    "useragent": "",
+                }
+            ],
+        ],
     ]
     for file in data:
         m3u, tvg_url = read_m3u(file[0])

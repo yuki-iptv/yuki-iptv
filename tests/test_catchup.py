@@ -28,8 +28,11 @@ from pathlib import Path
 
 sys.path.append(str(Path(os.getcwd(), "usr", "lib", "yuki-iptv")))
 
-from yuki_iptv.catchup import (get_catchup_url, parse_specifiers_now_url,  # noqa: E402
-                               format_placeholders)
+from yuki_iptv.catchup import (  # noqa: E402
+    get_catchup_url,
+    parse_specifiers_now_url,
+    format_placeholders,
+)
 
 
 # https://github.com/kodi-pvr/pvr.iptvsimple/blob/2143e856dc3f21e4573210cfec73900e65919ef8/src/iptvsimple/data/Channel.cpp#L467
@@ -64,18 +67,14 @@ def test_catchup():
             (
                 "http://127.0.0.1:8080/timeshift/my@account.xc/"
                 "my_password/{duration}/{Y}-{m}-{d}:{H}-{M}/1477.ts"
-            ).replace(
-                "{duration}", "{duration:60}"
-            ),
+            ).replace("{duration}", "{duration:60}"),
         ],
         "http://127.0.0.1:8080/live/my@account.xc/my_password/1477.m3u8": [
             "xc",
             (
                 "http://127.0.0.1:8080/timeshift/my@account.xc/"
                 "my_password/{duration}/{Y}-{m}-{d}:{H}-{M}/1477.m3u8"
-            ).replace(
-                "{duration}", "{duration:60}"
-            ),
+            ).replace("{duration}", "{duration:60}"),
         ],
     }
     for url in urls:
@@ -86,8 +85,9 @@ def test_catchup():
 
 
 def test_catchup_specifiers():
-    assert parse_specifiers_now_url("http://127.0.0.1/index.m3u8?now={now:Ymd}") == \
-        "http://127.0.0.1/index.m3u8?now=" + datetime.datetime.now().strftime("%Y%m%d")
+    assert parse_specifiers_now_url(
+        "http://127.0.0.1/index.m3u8?now={now:Ymd}"
+    ) == "http://127.0.0.1/index.m3u8?now=" + datetime.datetime.now().strftime("%Y%m%d")
 
 
 def test_catchup_placeholders():
@@ -95,5 +95,5 @@ def test_catchup_placeholders():
         "01.01.1970 03:00:00",
         "01.01.1970 03:00:00",
         "",
-        "http://127.0.0.1/index.m3u8?now={now:Ymd}"
+        "http://127.0.0.1/index.m3u8?now={now:Ymd}",
     ) == "http://127.0.0.1/index.m3u8?now=" + datetime.datetime.now().strftime("%Y%m%d")

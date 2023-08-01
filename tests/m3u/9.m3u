@@ -1,0 +1,3 @@
+#EXTM3U
+#EXTINF: -1 tvg-name="Example1, Example2, Example3",Example, Example, Example
+http://127.0.0.1
