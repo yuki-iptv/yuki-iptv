@@ -98,6 +98,14 @@ class M3UParser:
             logger.debug("")
         return url, useragent, referrer
 
+    def get_title(self, line_info):
+        title_regex = re.sub('\\="(.*?)"', "", line_info).split(",", 1)
+        if len(title_regex) < 2:
+            title = ""
+        else:
+            title = title_regex[1].strip()
+        return title
+
     def parse_channel(self, line_info, ch_url, overrides):
         """Parse EXTINF channel info"""
         if self.udp_proxy and (
@@ -127,7 +135,7 @@ class M3UParser:
             catchup_tag = self.parse_regexp("catchup-type", line_info, "default")
 
         ch_array = {
-            "title": self.parse_regexp("[,](?!.*[,])(.*?)$", line_info, "", True),
+            "title": self.get_title(line_info),
             "tvg-name": self.parse_regexp("tvg-name", line_info),
             "tvg-ID": self.parse_regexp("tvg-id", line_info),
             "tvg-logo": self.parse_regexp("tvg-logo", line_info),

@@ -42,7 +42,6 @@ def read_m3u(path):
 
 def test_m3u():
     data = [
-        # TODO: fix channels that contain comma
         [
             Path("tests", "m3u", "1.m3u"),
             "http://127.0.0.1/0",
@@ -116,7 +115,7 @@ def test_m3u():
                     "catchup-days": "1",
                     "catchup-source": "",
                     "referer": "",
-                    "title": "comma",
+                    "title": "Example 4,comma",
                     "tvg-ID": "",
                     "tvg-group": "All channels",
                     "tvg-logo": "",
