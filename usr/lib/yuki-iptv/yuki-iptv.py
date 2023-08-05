@@ -7714,6 +7714,15 @@ if __name__ == "__main__":
                     codec = "png"
                     width = 800
                     height = 600
+                if player.avsync:
+                    avsync = str(round(player.avsync, 2))
+                    deavsync = round(player.avsync, 2)
+                    if deavsync < 0:
+                        deavsync = deavsync * -1
+                    if deavsync > 0.999:
+                        avsync = f"<span style='color: #B58B00;'>{avsync}</span>"
+                else:
+                    avsync = "0.0"
                 if (not (codec == "png" and width == 800 and height == 600)) and (
                     width and height
                 ):
@@ -7722,7 +7731,7 @@ if __name__ == "__main__":
                     else:
                         label12.setText(
                             f"  {width}x{height}{video_bitrate}"
-                            f" - {codec} / {audio_codec}"
+                            f" - {codec} / {audio_codec} - A-V: {avsync}"
                         )
                     if loading.text() == _("Loading..."):
                         hideLoading()
