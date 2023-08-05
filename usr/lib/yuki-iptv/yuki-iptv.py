@@ -220,6 +220,8 @@ class YukiData:
     series = {}
     osc = -1
     volume = 100
+    settings_changed = False
+    demuxer_max_back_bytes = 0
 
 
 stream_info.video_properties = {}
@@ -2536,11 +2538,24 @@ if __name__ == "__main__":
                 except Exception:
                     logger.warning("Failed to set encryption key!")
                     show_exception("Failed to set encryption key!")
+                logger.info("enabling optimization for encrypted channels")
+                YukiData.settings_changed = True
+                player.cache = "no"
+                player.demuxer_readahead_secs = 5
+                player.demuxer_max_back_bytes = 0
             else:
                 try:
                     player.demuxer_lavf_o = "cenc_decryption_key="
                 except Exception:
                     pass
+                if YukiData.settings_changed:
+                    YukiData.settings_changed = False
+                    player.cache = ""
+                    try:
+                        player.demuxer_readahead_secs = settings["cache_secs"]
+                    except Exception:
+                        pass
+                    player.demuxer_max_back_bytes = YukiData.demuxer_max_back_bytes
 
             player.pause = False
             player.play(parse_specifiers_now_url(arg_override_play))
@@ -3931,6 +3946,7 @@ if __name__ == "__main__":
                     pass
             else:
                 logger.info("Using default cache settings")
+            YukiData.demuxer_max_back_bytes = player.demuxer_max_back_bytes
             player.user_agent = def_user_agent
             if settings["referer"]:
                 player.http_header_fields = f"Referer: {settings['referer']}"
@@ -7731,7 +7747,7 @@ if __name__ == "__main__":
                     else:
                         label12.setText(
                             f"  {width}x{height}{video_bitrate}"
-                            f" - {codec} / {audio_codec} - A-V: {avsync}"
+                            f" - {codec} / {audio_codec} - A-V {avsync}"
                         )
                     if loading.text() == _("Loading..."):
                         hideLoading()
