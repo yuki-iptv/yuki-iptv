@@ -49,7 +49,12 @@ def is_ffmpeg_recording():
 
 
 def exit_handler(exit_code, exit_status):
-    if exit_status != QtCore.QProcess.ExitStatus.NormalExit:
+    is_ok = True
+    if exit_code != 0:
+        is_ok = False
+    if exit_code == 255:
+        is_ok = True
+    if not is_ok or exit_status != QtCore.QProcess.ExitStatus.NormalExit:
         logger.warning("ffmpeg process crashed")
         ffmpeg_process_found = False
         if YukiData.show_record_exception:
