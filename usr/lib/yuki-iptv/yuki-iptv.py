@@ -7704,7 +7704,7 @@ if __name__ == "__main__":
                     else:
                         label12.setText(
                             f"  {width}x{height}{video_bitrate}"
-                            f" - {codec} / {audio_codec} - A-V: {avsync}"
+                            f" - {codec} / {audio_codec} - A-V {avsync}"
                         )
                     if loading.text() == _("Loading..."):
                         hideLoading()
