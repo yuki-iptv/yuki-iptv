@@ -5251,6 +5251,12 @@ if __name__ == "__main__":
                 )
                 MAX_SIZE = 28
                 orig_prog = prog
+                try:
+                    tooltip_group = "{}: {}".format(
+                        _("Group"), array_filtered[i]["tvg-group"]
+                    )
+                except Exception:
+                    tooltip_group = "{}: {}".format(_("Group"), _("All channels"))
                 if len(prog) > MAX_SIZE:
                     prog = prog[0:MAX_SIZE] + "..."
                 if (
@@ -5261,7 +5267,7 @@ if __name__ == "__main__":
                     MyPlaylistWidget.setDescription(
                         prog,
                         (
-                            f"<b>{i}</b>" + "<br><br>"
+                            f"<b>{i}</b>" + f"<br>{tooltip_group}<br><br>"
                             "<i>" + orig_prog + "</i>" + prog_desc
                         ).replace("\n", "<br>"),
                     )
@@ -5276,7 +5282,9 @@ if __name__ == "__main__":
                     except Exception:
                         logger.warning("Async EPG load problem, ignoring")
                 else:
-                    MyPlaylistWidget.setDescription("", f"<b>{i}</b>")
+                    MyPlaylistWidget.setDescription(
+                        "", f"<b>{i}</b><br>{tooltip_group}"
+                    )
                     MyPlaylistWidget.hideProgress()
                     MyPlaylistWidget.hideDescription()
 
