@@ -2515,33 +2515,6 @@ if __name__ == "__main__":
                 else:
                     logger.info("Using HTTP Referer: (empty)")
 
-            # Encryption
-            enc_key = None
-            if "$OPT:" in arg_override_play:
-                opt_options = arg_override_play.split("$OPT:", 1)[1]
-                arg_override_play = arg_override_play.split("$OPT:", 1)[0]
-                if "decryption_key=" in opt_options:
-                    enc_group = re.search(
-                        r"decryption_key=([a-zA-Z0-9]{32})", opt_options
-                    )
-                    if enc_group:
-                        try:
-                            enc_key = enc_group.group(1)
-                        except Exception:
-                            pass
-            if enc_key:
-                logger.info("cenc encryption detected")
-                try:
-                    player.demuxer_lavf_o = f"cenc_decryption_key={enc_key}"
-                except Exception:
-                    logger.warning("Failed to set encryption key!")
-                    show_exception("Failed to set encryption key!")
-            else:
-                try:
-                    player.demuxer_lavf_o = "cenc_decryption_key="
-                except Exception:
-                    pass
-
             player.pause = False
             player.play(parse_specifiers_now_url(arg_override_play))
             if event_handler:
