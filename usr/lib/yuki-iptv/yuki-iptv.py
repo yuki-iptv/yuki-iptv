@@ -33,10 +33,12 @@ import gettext
 import logging
 import signal
 import argparse
+import platform
 import subprocess
 import re
 import textwrap
 import hashlib
+import webbrowser
 import threading
 import traceback
 from multiprocessing import Manager, active_children, get_context
@@ -86,6 +88,7 @@ from yuki_iptv.m3u_editor import M3UEditor
 from yuki_iptv.options import read_option, write_option
 from yuki_iptv.keybinds import main_keybinds_internal, main_keybinds_default
 from yuki_iptv.series import parse_series
+from yuki_iptv.crossplatform import LOCAL_DIR, SAVE_FOLDER_DEFAULT
 from thirdparty.xtream import XTream, Serie
 
 parser = argparse.ArgumentParser(prog="yuki-iptv", description="yuki-iptv")
@@ -161,7 +164,8 @@ class YukiLang:
 
 APP = "yuki-iptv"
 LOCALE_DIR = str(Path(os.getcwd(), "..", "..", "share", "locale"))
-locale.bindtextdomain(APP, LOCALE_DIR)
+if platform.system() != "Windows":
+    locale.bindtextdomain(APP, LOCALE_DIR)
 gettext.bindtextdomain(APP, LOCALE_DIR)
 gettext.textdomain(APP)
 
@@ -234,14 +238,13 @@ if args1.version:
     print(f"{MAIN_WINDOW_TITLE} {APP_VERSION}")
     sys.exit(0)
 
-if not os.path.isdir(str(Path(os.environ["HOME"], ".config"))):
-    os.mkdir(str(Path(os.environ["HOME"], ".config")))
+if platform.system() != "Windows":
+    if not os.path.isdir(str(Path(os.environ["HOME"], ".config"))):
+        os.mkdir(str(Path(os.environ["HOME"], ".config")))
 
-if not os.path.isdir(str(Path(os.environ["HOME"], ".cache"))):
-    os.mkdir(str(Path(os.environ["HOME"], ".cache")))
+    if not os.path.isdir(str(Path(os.environ["HOME"], ".cache"))):
+        os.mkdir(str(Path(os.environ["HOME"], ".cache")))
 
-LOCAL_DIR = str(Path(os.environ["HOME"], ".config", "yuki-iptv"))
-SAVE_FOLDER_DEFAULT = str(Path(os.environ["HOME"], ".config", "yuki-iptv", "saves"))
 if not os.path.isdir(LOCAL_DIR):
     os.mkdir(LOCAL_DIR)
 if not os.path.isdir(SAVE_FOLDER_DEFAULT):
@@ -339,12 +342,18 @@ if __name__ == "__main__":
         logger.info(f"Qt version: {QtCore.QT_VERSION_STR}")
         logger.info("")
 
+        old_pwd = os.getcwd()
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
         multiprocessing_manager = Manager()
         multiprocessing_manager_dict = multiprocessing_manager.dict()
 
         m3u = ""
+
+        if platform.system() == "Windows":
+            os.environ["PATH"] = (
+                os.path.dirname(__file__) + os.pathsep + os.environ["PATH"]
+            )
 
         from thirdparty import mpv
 
@@ -1539,7 +1548,8 @@ if __name__ == "__main__":
         playlists_win_edit_layout.addWidget(m3u_label_1, 1, 0)
         playlists_win_edit_layout.addWidget(m3u_edit_1, 1, 1)
         playlists_win_edit_layout.addWidget(m3u_file_1, 1, 2)
-        playlists_win_edit_layout.addWidget(xtream_btn_1, 2, 0)
+        if platform.system() != "Windows":
+            playlists_win_edit_layout.addWidget(xtream_btn_1, 2, 0)
         playlists_win_edit_layout.addWidget(epg_label_1, 3, 0)
         playlists_win_edit_layout.addWidget(epg_edit_1, 3, 1)
         playlists_win_edit_layout.addWidget(epg_file_1, 3, 2)
@@ -2500,7 +2510,10 @@ if __name__ == "__main__":
             else:
                 player.http_header_fields = ""
 
-            if not arg_override_play.endswith("/main.png"):
+            is_main = arg_override_play.endswith(
+                "/main.png"
+            ) or arg_override_play.endswith("\\main.png")
+            if not is_main:
                 logger.info(f"Using User-Agent: {player.user_agent}")
                 cur_ref = ""
                 try:
@@ -2905,6 +2918,8 @@ if __name__ == "__main__":
             settings_file1.close()
             settings_win.hide()
             myExitHandler_before()
+            if platform.system() == "Windows":
+                os.chdir(old_pwd)
             subprocess.Popen([sys.executable] + sys.argv)
             sys.exit(0)
 
@@ -6469,7 +6484,7 @@ if __name__ == "__main__":
                         os.remove(str(Path(LOCAL_DIR, "lastchannels.json")))
             return isPlayingLast
 
-        VIDEO_OUTPUT = "gpu,x11"
+        VIDEO_OUTPUT = "gpu,x11" if platform.system() != "Windows" else ""
         HWACCEL = "auto-safe" if settings["hwaccel"] else "no"
 
         # Wayland fix
@@ -6829,8 +6844,11 @@ if __name__ == "__main__":
 
         def open_recording_folder():
             absolute_path = Path(save_folder).absolute()
-            xdg_open = subprocess.Popen(["xdg-open", str(absolute_path)])
-            xdg_open.wait()
+            if platform.system() != "Windows":
+                xdg_open = subprocess.Popen(["xdg-open", str(absolute_path)])
+                xdg_open.wait()
+            else:
+                webbrowser.open("file:///" + str(absolute_path))
 
         def go_channel(i1):
             row = win.listWidget.currentRow()

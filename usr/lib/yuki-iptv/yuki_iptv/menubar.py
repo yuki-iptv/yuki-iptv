@@ -26,6 +26,7 @@ import logging
 import gettext
 import json
 import traceback
+import platform
 from functools import partial
 from yuki_iptv.qt import get_qt_library
 from yuki_iptv.qt6compat import qaction
@@ -336,7 +337,7 @@ def init_menubar(data):
     YukiData.alwaysontopAction.triggered.connect(alwaysontop_action)
     YukiData.alwaysontopAction.setCheckable(True)
     YukiData.alwaysontopAction.setShortcut(kbd("alwaysontop"))
-    if qt_library == "PyQt6":
+    if qt_library == "PyQt6" or platform.system() == "Windows":
         YukiData.alwaysontopAction.setVisible(False)
 
     YukiData.streaminformationAction = qaction(_("Stream Information"), data)

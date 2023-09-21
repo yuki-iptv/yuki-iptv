@@ -31,6 +31,7 @@ import requests
 import io
 import zipfile
 from pathlib import Path
+from yuki_iptv.crossplatform import LOCAL_DIR
 from yuki_iptv.epg_xmltv import parse_as_xmltv
 from yuki_iptv.epg_zip import parse_epg_zip
 from yuki_iptv.epg_txt import parse_txt
@@ -185,8 +186,6 @@ def is_program_actual(sets0, epg_ready, force=False, future=False):
 
 
 def load_epg_cache(settings_m3u, settings_epg, epg_ready):
-    LOCAL_DIR = str(Path(os.environ["HOME"], ".config", "yuki-iptv"))
-
     try:
         file_epg1 = open(str(Path(LOCAL_DIR, "epg.cache")), "rb")
         file1_json = json.loads(
@@ -230,8 +229,6 @@ def load_epg_cache(settings_m3u, settings_epg, epg_ready):
 
 
 def save_epg_cache(tvguide_sets_arg, settings_arg, prog_ids_arg, epg_icons_arg):
-    LOCAL_DIR = str(Path(os.environ["HOME"], ".config", "yuki-iptv"))
-
     if tvguide_sets_arg:
         if not settings_arg["nocacheepg"]:
             file2 = open(str(Path(LOCAL_DIR, "epg.cache")), "wb")

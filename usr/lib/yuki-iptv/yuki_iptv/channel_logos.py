@@ -29,15 +29,19 @@ import requests
 import io
 import base64
 import hashlib
+import platform
 from pathlib import Path
-from wand.image import Image
+
+if platform.system() != "Windows":
+    from wand.image import Image
+else:
+    from PIL import Image
+from yuki_iptv.crossplatform import LOCAL_DIR
 
 # logger = logging.getLogger(__name__)
 
 
 def fetch_remote_channel_icon(chan_name, logo_url, req_data_ua, req_data_ref):
-    LOCAL_DIR = str(Path(os.environ["HOME"], ".config", "yuki-iptv"))
-
     icon_ret = None
     if not logo_url:
         return None
@@ -67,11 +71,17 @@ def fetch_remote_channel_icon(chan_name, logo_url, req_data_ua, req_data_ref):
                 ).content
                 if req_data1:
                     with io.BytesIO(req_data1) as im_logo_bytes:
-                        with Image(file=im_logo_bytes) as original:
-                            with original.convert("png") as im_logo:
-                                im_logo.resize(64, 64)
-                                im_logo.save(filename=cache_file)
-                            icon_ret = cache_file
+                        if platform.system() != "Windows":
+                            with Image(file=im_logo_bytes) as original:
+                                with original.convert("png") as im_logo:
+                                    im_logo.resize(64, 64)
+                                    im_logo.save(filename=cache_file)
+                                icon_ret = cache_file
+                        else:
+                            with Image.open(im_logo_bytes) as im_logo:
+                                im_logo.thumbnail((64, 64))
+                                im_logo.save(cache_file, "PNG")
+                                icon_ret = cache_file
         except Exception:
             icon_ret = None
     return icon_ret

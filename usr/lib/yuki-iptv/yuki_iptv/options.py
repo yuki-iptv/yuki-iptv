@@ -23,19 +23,19 @@
 import os
 import json
 from pathlib import Path
+from yuki_iptv.crossplatform import LOCAL_DIR
 
 
 class YukiData:
-    local_dir = Path(os.environ["HOME"], ".config", "yuki-iptv")
     write_lock = False
 
 
 def read_option(name):
     options = {}
 
-    if os.path.isfile(Path(YukiData.local_dir, "player_data.json")):
+    if os.path.isfile(Path(LOCAL_DIR, "player_data.json")):
         options_file = open(
-            str(Path(YukiData.local_dir, "player_data.json")), "r", encoding="utf8"
+            str(Path(LOCAL_DIR, "player_data.json")), "r", encoding="utf8"
         )
         options = json.loads(options_file.read())
         options_file.close()
@@ -54,18 +54,16 @@ def write_option(name, value):
 
     options = {}
 
-    if os.path.isfile(Path(YukiData.local_dir, "player_data.json")):
+    if os.path.isfile(Path(LOCAL_DIR, "player_data.json")):
         options_file = open(
-            str(Path(YukiData.local_dir, "player_data.json")), "r", encoding="utf8"
+            str(Path(LOCAL_DIR, "player_data.json")), "r", encoding="utf8"
         )
         options = json.loads(options_file.read())
         options_file.close()
 
     options[name] = value
 
-    options_file = open(
-        str(Path(YukiData.local_dir, "player_data.json")), "w", encoding="utf8"
-    )
+    options_file = open(str(Path(LOCAL_DIR, "player_data.json")), "w", encoding="utf8")
     options_file.write(f"{json.dumps(options)}\n")
     options_file.close()
 

@@ -305,7 +305,12 @@ def format_url_clean(url5):
 
 
 def parse_specifiers_now_url(url4):
-    if url4.endswith("/icons/main.png") or url4.endswith("/icons_dark/main.png"):
+    if (
+        url4.endswith("/icons/main.png")
+        or url4.endswith("/icons_dark/main.png")
+        or url4.endswith("\\icons\\main.png")
+        or url4.endswith("\\icons_dark\\main.png")
+    ):
         return url4
     logger.info("")
     logger.info(f"orig spec url: {format_url_clean(url4)}")

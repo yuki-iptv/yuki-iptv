@@ -24,6 +24,7 @@
 import os
 import json
 from pathlib import Path
+from yuki_iptv.crossplatform import LOCAL_DIR, SAVE_FOLDER_DEFAULT
 
 
 def parse_settings():
@@ -32,7 +33,7 @@ def parse_settings():
         "epg": "",
         "deinterlace": False,
         "udp_proxy": "",
-        "save_folder": str(Path(os.environ["HOME"], ".config", "yuki-iptv", "saves")),
+        "save_folder": SAVE_FOLDER_DEFAULT,
         "nocache": True,
         "epgoffset": 0,
         "hwaccel": False,
@@ -71,11 +72,9 @@ def parse_settings():
     settings = settings_default
     settings_loaded = False
 
-    local_dir = str(Path(os.environ["HOME"], ".config", "yuki-iptv"))
-
-    if os.path.isfile(str(Path(local_dir, "settings.json"))):
+    if os.path.isfile(str(Path(LOCAL_DIR, "settings.json"))):
         settings_file = open(
-            str(Path(local_dir, "settings.json")), "r", encoding="utf8"
+            str(Path(LOCAL_DIR, "settings.json")), "r", encoding="utf8"
         )
         settings = json.loads(settings_file.read())
         settings_file.close()
