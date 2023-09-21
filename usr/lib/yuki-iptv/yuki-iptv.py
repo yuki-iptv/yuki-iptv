@@ -347,6 +347,31 @@ if __name__ == "__main__":
 
         old_pwd = os.getcwd()
         if platform.system() == "Windows":
+            if not os.path.isdir(
+                Path(os.path.dirname(os.path.abspath(__file__)), "usr")
+            ):
+                os.mkdir(Path(os.path.dirname(os.path.abspath(__file__)), "usr"))
+            if not os.path.isdir(
+                Path(os.path.dirname(os.path.abspath(__file__)), "usr", "lib")
+            ):
+                os.mkdir(Path(os.path.dirname(os.path.abspath(__file__)), "usr", "lib"))
+            if not os.path.isdir(
+                Path(
+                    os.path.dirname(os.path.abspath(__file__)),
+                    "usr",
+                    "lib",
+                    "yuki-iptv",
+                )
+            ):
+                os.mkdir(
+                    Path(
+                        os.path.dirname(os.path.abspath(__file__)),
+                        "usr",
+                        "lib",
+                        "yuki-iptv",
+                    )
+                )
+
             os.chdir(
                 Path(
                     os.path.dirname(os.path.abspath(__file__)),
