@@ -41,7 +41,7 @@ import hashlib
 import webbrowser
 import threading
 import traceback
-from multiprocessing import Manager, active_children, get_context
+from multiprocessing import Manager, active_children, get_context, freeze_support
 from functools import partial
 import chardet
 import requests
@@ -90,6 +90,9 @@ from yuki_iptv.keybinds import main_keybinds_internal, main_keybinds_default
 from yuki_iptv.series import parse_series
 from yuki_iptv.crossplatform import LOCAL_DIR, SAVE_FOLDER_DEFAULT
 from thirdparty.xtream import XTream, Serie
+
+if platform.system() == "Windows":
+    freeze_support()
 
 parser = argparse.ArgumentParser(prog="yuki-iptv", description="yuki-iptv")
 parser.add_argument("--version", action="store_true", help="Show version")
