@@ -346,7 +346,17 @@ if __name__ == "__main__":
         logger.info("")
 
         old_pwd = os.getcwd()
-        os.chdir(os.path.dirname(os.path.abspath(__file__)))
+        if platform.system() == "Windows":
+            os.chdir(
+                Path(
+                    os.path.dirname(os.path.abspath(__file__)),
+                    "usr",
+                    "lib",
+                    "yuki-iptv",
+                )
+            )
+        else:
+            os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
         multiprocessing_manager = Manager()
         multiprocessing_manager_dict = multiprocessing_manager.dict()
@@ -636,11 +646,7 @@ if __name__ == "__main__":
             ICONS_FOLDER = str(Path("..", "..", "..", "share", "yuki-iptv", "icons"))
 
         main_icon = QtGui.QIcon(
-            str(
-                Path(
-                    os.path.dirname(__file__), "yuki_iptv", ICONS_FOLDER, "tv-blue.png"
-                )
-            )
+            str(Path(os.getcwd(), "yuki_iptv", ICONS_FOLDER, "tv-blue.png"))
         )
         channels = {}
         programmes = {}
