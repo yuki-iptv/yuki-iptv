@@ -355,7 +355,9 @@ if __name__ == "__main__":
 
         if platform.system() == "Windows":
             os.environ["PATH"] = (
-                os.path.dirname(__file__) + os.pathsep + os.environ["PATH"]
+                str(Path(os.path.dirname(__file__), "bin"))
+                + os.pathsep
+                + os.environ["PATH"]
             )
 
         from thirdparty import mpv
