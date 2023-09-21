@@ -28,5 +28,5 @@ from pathlib import Path
 if platform.system() != "Windows":
     LOCAL_DIR = str(Path(os.environ["HOME"], ".config", "yuki-iptv"))
 else:
-    LOCAL_DIR = str(Path(os.getenv("LOCALAPPDATA"), "yuki-iptv"))
+    LOCAL_DIR = str(Path(os.getenv("LOCALAPPDATA"), "yuki-iptv-config"))
 SAVE_FOLDER_DEFAULT = str(Path(LOCAL_DIR, "saves"))
