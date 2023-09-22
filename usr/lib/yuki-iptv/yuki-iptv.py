@@ -124,21 +124,22 @@ logging.basicConfig(
 logger = logging.getLogger("yuki-iptv")
 mpv_logger = logging.getLogger("libmpv")
 
-try:
-    from thirdparty.mpris_server.adapters import (
-        PlayState,
-        MprisAdapter,
-        Microseconds,
-        VolumeDecimal,
-        RateDecimal,
-        Track,
-        DEFAULT_RATE,
-    )
-    from thirdparty.mpris_server.events import EventAdapter
-    from thirdparty.mpris_server.server import Server
-except Exception:
-    logger.warning("Failed to init MPRIS libraries!")
-    logger.warning(traceback.format_exc())
+if platform.system() != "Windows":
+    try:
+        from thirdparty.mpris_server.adapters import (
+            PlayState,
+            MprisAdapter,
+            Microseconds,
+            VolumeDecimal,
+            RateDecimal,
+            Track,
+            DEFAULT_RATE,
+        )
+        from thirdparty.mpris_server.events import EventAdapter
+        from thirdparty.mpris_server.server import Server
+    except Exception:
+        logger.warning("Failed to init MPRIS libraries!")
+        logger.warning(traceback.format_exc())
 
 qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
 
@@ -7183,8 +7184,9 @@ if __name__ == "__main__":
             mpris_thread = threading.Thread(target=mpris_loop_start)
             mpris_thread.start()
         except Exception as mpris_e:
-            logger.warning(mpris_e)
-            logger.warning("Failed to set up MPRIS!")
+            if platform.system() != "Windows":
+                logger.warning(mpris_e)
+                logger.warning("Failed to set up MPRIS!")
 
         def update_scheduler_programme():
             channel_list_2 = [chan_name for chan_name in doSort(array)]
