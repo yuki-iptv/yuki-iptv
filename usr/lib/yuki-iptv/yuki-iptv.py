@@ -6204,31 +6204,52 @@ if __name__ == "__main__":
         page_box.setSuffix("        ")
         page_box.setMinimum(1)
         page_box.setMaximum(round(len(array) / 100) + 1)
-        page_box.setStyleSheet(
-            """
-            QSpinBox::down-button  {
-              subcontrol-origin: margin;
-              subcontrol-position: center left;
-              left: 1px;
-              image: url("""
-            + str(Path("yuki_iptv", ICONS_FOLDER, "leftarrow.png"))
-            + """);
-              height: 24px;
-              width: 24px;
-            }
+        if platform.system() == "Windows":
+            page_box.setStyleSheet(
+                """
+                QSpinBox::down-button  {
+                  subcontrol-origin: margin;
+                  subcontrol-position: center left;
+                  left: 1px;
+                  height: 24px;
+                  width: 24px;
+                }
 
-            QSpinBox::up-button  {
-              subcontrol-origin: margin;
-              subcontrol-position: center right;
-              right: 1px;
-              image: url("""
-            + str(Path("yuki_iptv", ICONS_FOLDER, "rightarrow.png"))
-            + """);
-              height: 24px;
-              width: 24px;
-            }
-        """
-        )
+                QSpinBox::up-button  {
+                  subcontrol-origin: margin;
+                  subcontrol-position: center right;
+                  right: 1px;
+                  height: 24px;
+                  width: 24px;
+                }
+            """
+            )
+        else:
+            page_box.setStyleSheet(
+                """
+                QSpinBox::down-button  {
+                  subcontrol-origin: margin;
+                  subcontrol-position: center left;
+                  left: 1px;
+                  image: url("""
+                + str(Path("yuki_iptv", ICONS_FOLDER, "leftarrow.png"))
+                + """);
+                  height: 24px;
+                  width: 24px;
+                }
+
+                QSpinBox::up-button  {
+                  subcontrol-origin: margin;
+                  subcontrol-position: center right;
+                  right: 1px;
+                  image: url("""
+                + str(Path("yuki_iptv", ICONS_FOLDER, "rightarrow.png"))
+                + """);
+                  height: 24px;
+                  width: 24px;
+                }
+            """
+            )
         page_box.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         of_lbl.setText(get_of_txt(round(len(array) / 100) + 1))
 
