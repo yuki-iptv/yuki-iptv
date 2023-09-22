@@ -39,6 +39,8 @@ def parse_xspf(xspf):
         group = ""
         try:
             group = track.find("{*}album").text.strip()
+            if " - " in group:
+                group = group.split(" - ")[0]
         except Exception:
             pass
         if not group:
