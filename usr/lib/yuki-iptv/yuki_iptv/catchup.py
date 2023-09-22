@@ -82,6 +82,9 @@ def format_placeholders(start_time, end_time, catchup_id, orig_url):
     orig_url = orig_url.replace("${start}", str(start_timestamp))
     orig_url = orig_url.replace("{start}", str(start_timestamp))
 
+    orig_url = orig_url.replace("${s}", str(start_timestamp))
+    orig_url = orig_url.replace("{s}", str(start_timestamp))
+
     orig_url = orig_url.replace("${lutc}", str(current_utc))
     orig_url = orig_url.replace("{lutc}", str(current_utc))
 
