@@ -1863,7 +1863,12 @@ if __name__ == "__main__":
             if name2 in sch_recordings:
                 ffmpeg_process = sch_recordings[name2][0]
                 if ffmpeg_process:
-                    ffmpeg_process.terminate()
+                    if platform.system() == "Windows":
+                        ffmpeg_process.write(bytes("q\r\n", "utf-8"))
+                        ffmpeg_process.waitForBytesWritten()
+                        ffmpeg_process.closeWriteChannel()
+                    else:
+                        ffmpeg_process.terminate()
 
         recViaScheduler = False
 

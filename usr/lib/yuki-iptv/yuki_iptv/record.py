@@ -23,6 +23,7 @@
 #
 import logging
 import gettext
+import platform
 from yuki_iptv.qt import get_qt_library
 
 qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
@@ -213,7 +214,12 @@ def record_return(
 
 def stop_record():
     if YukiData.ffmpeg_proc:
-        YukiData.ffmpeg_proc.terminate()
+        if platform.system() == "Windows":
+            YukiData.ffmpeg_proc.write(bytes("q\r\n", "utf-8"))
+            YukiData.ffmpeg_proc.waitForBytesWritten()
+            YukiData.ffmpeg_proc.closeWriteChannel()
+        else:
+            YukiData.ffmpeg_proc.terminate()
 
 
 def init_record(show_exception, ffmpeg_processes):
