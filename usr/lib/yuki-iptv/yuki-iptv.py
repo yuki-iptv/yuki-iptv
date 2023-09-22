@@ -21,6 +21,13 @@
 # https://fontawesome.com/
 # https://creativecommons.org/licenses/by/4.0/
 #
+try:
+    from yuki_iptv.plugin import init_plugins
+
+    init_plugins()
+except Exception as ex:  # to avoid module level import not at top error
+    raise ex
+
 from pathlib import Path
 import sys
 import os
@@ -506,7 +513,10 @@ if __name__ == "__main__":
         # URL override for command line
         if args1.URL:
             settings["m3u"] = args1.URL
-            settings["epg"] = ""
+            if args1.URL == "http://____PLUGIN_M3U____":
+                settings["epg"] = "http://____PLUGIN_EPG____"
+            else:
+                settings["epg"] = ""
 
         tvguide_sets = {}
 
