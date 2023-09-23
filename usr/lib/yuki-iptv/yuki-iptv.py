@@ -7025,7 +7025,7 @@ if __name__ == "__main__":
             tvguide_got_1 = re.sub(
                 "<[^<]+?>",
                 "",
-                update_tvguide(cur_name, True, True, False, catchup_array=got_array),
+                update_tvguide(cur_name, True, True, True, catchup_array=got_array),
             ).split("!@#$%^^&*(")[2:]
             for tvguide_el_1 in tvguide_got_1:
                 if tvguide_el_1:
