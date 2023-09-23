@@ -143,7 +143,7 @@ class M3UParser:
             "tvg-url": tvg_url,
             "catchup": catchup_tag,
             "catchup-source": self.parse_regexp("catchup-source", line_info),
-            "catchup-days": self.parse_regexp("catchup-days", line_info, "1"),
+            "catchup-days": self.parse_regexp("catchup-days", line_info, "7"),
             "useragent": self.parse_regexp("user-agent", line_info),
             "referer": "",
             "url": ch_url,

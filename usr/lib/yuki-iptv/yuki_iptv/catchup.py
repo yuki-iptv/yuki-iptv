@@ -39,7 +39,7 @@ def format_catchup_array(array0):
     if "catchup-source" not in array0:
         array0["catchup-source"] = ""
     if "catchup-days" not in array0:
-        array0["catchup-days"] = "1"
+        array0["catchup-days"] = "7"
 
     if not array0["catchup-source"] and array0["catchup"] not in (
         "flussonic",
@@ -208,6 +208,10 @@ def format_placeholders(start_time, end_time, catchup_id, orig_url):
 
 
 def get_catchup_url(chan_url, arr1, start_time, end_time, catchup_id):
+    logger.info(f"Start time: {start_time}")
+    logger.info(f"End time: {end_time}")
+    if catchup_id:
+        logger.info(f"Catchup id: {catchup_id}")
     play_url = chan_url
     if arr1["catchup"] == "default":
         play_url = format_placeholders(

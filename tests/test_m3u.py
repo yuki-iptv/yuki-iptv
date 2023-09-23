@@ -48,7 +48,7 @@ def test_m3u():
             [
                 {
                     "catchup": "default",
-                    "catchup-days": "1",
+                    "catchup-days": "7",
                     "catchup-source": "",
                     "referer": "http://127.0.0.1/referrer",
                     "title": "Example 1",
@@ -62,7 +62,7 @@ def test_m3u():
                 },
                 {
                     "catchup": "default",
-                    "catchup-days": "1",
+                    "catchup-days": "7",
                     "catchup-source": "",
                     "referer": "",
                     "title": "Example 2",
@@ -76,7 +76,7 @@ def test_m3u():
                 },
                 {
                     "catchup": "default",
-                    "catchup-days": "1",
+                    "catchup-days": "7",
                     "catchup-source": "",
                     "referer": "",
                     "title": "=>(★ Example 2 ★)<=",
@@ -112,7 +112,7 @@ def test_m3u():
                 },
                 {
                     "catchup": "default",
-                    "catchup-days": "1",
+                    "catchup-days": "7",
                     "catchup-source": "",
                     "referer": "",
                     "title": "Example 4,comma",
@@ -126,7 +126,7 @@ def test_m3u():
                 },
                 {
                     "catchup": "default",
-                    "catchup-days": "1",
+                    "catchup-days": "7",
                     "catchup-source": "",
                     "referer": "",
                     "title": "Example 5",
@@ -146,7 +146,7 @@ def test_m3u():
             [
                 {
                     "catchup": "default",
-                    "catchup-days": "1",
+                    "catchup-days": "7",
                     "catchup-source": "",
                     "referer": "",
                     "title": "Example 1",
@@ -166,7 +166,7 @@ def test_m3u():
             [
                 {
                     "catchup": "default",
-                    "catchup-days": "1",
+                    "catchup-days": "7",
                     "catchup-source": "",
                     "referer": "",
                     "title": "Example channel",
@@ -180,7 +180,7 @@ def test_m3u():
                 },
                 {
                     "catchup": "default",
-                    "catchup-days": "1",
+                    "catchup-days": "7",
                     "catchup-source": "",
                     "referer": "",
                     "title": "Example channel",
@@ -200,7 +200,7 @@ def test_m3u():
             [
                 {
                     "catchup": "default",
-                    "catchup-days": "1",
+                    "catchup-days": "7",
                     "catchup-source": "",
                     "referer": "",
                     "title": "Example 1",
@@ -220,7 +220,7 @@ def test_m3u():
             [
                 {
                     "catchup": "default",
-                    "catchup-days": "1",
+                    "catchup-days": "7",
                     "catchup-source": "",
                     "referer": "http://127.0.0.1/examplereferer",
                     "title": "Example 1",
@@ -234,7 +234,7 @@ def test_m3u():
                 },
                 {
                     "catchup": "default",
-                    "catchup-days": "1",
+                    "catchup-days": "7",
                     "catchup-source": "",
                     "referer": "http://127.0.0.1/example2",
                     "title": "Example 2",
@@ -254,7 +254,7 @@ def test_m3u():
             [
                 {
                     "catchup": "default",
-                    "catchup-days": "1",
+                    "catchup-days": "7",
                     "catchup-source": "",
                     "referer": "",
                     "title": "Example 1",
@@ -274,7 +274,7 @@ def test_m3u():
             [
                 {
                     "catchup": "default",
-                    "catchup-days": "1",
+                    "catchup-days": "7",
                     "catchup-source": "",
                     "referer": "",
                     "title": "Test",
@@ -297,7 +297,7 @@ def test_m3u():
             [
                 {
                     "catchup": "default",
-                    "catchup-days": "1",
+                    "catchup-days": "7",
                     "catchup-source": "",
                     "referer": "",
                     "title": "Example",
@@ -317,7 +317,7 @@ def test_m3u():
             [
                 {
                     "catchup": "default",
-                    "catchup-days": "1",
+                    "catchup-days": "7",
                     "catchup-source": "",
                     "referer": "",
                     "title": "Example, Example, Example",

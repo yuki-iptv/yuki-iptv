@@ -56,7 +56,7 @@ def parse_xspf(xspf):
                 "tvg-url": "",
                 "catchup": "default",
                 "catchup-source": "",
-                "catchup-days": "1",
+                "catchup-days": "7",
                 "useragent": "",
                 "referer": "",
                 "url": location,

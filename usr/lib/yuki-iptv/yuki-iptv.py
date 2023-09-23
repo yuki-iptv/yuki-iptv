@@ -758,7 +758,7 @@ if __name__ == "__main__":
                                             "tvg-url": "",
                                             "catchup": "default",
                                             "catchup-source": "",
-                                            "catchup-days": "1",
+                                            "catchup-days": "7",
                                             "useragent": "",
                                             "referer": "",
                                             "url": episode.url,
@@ -6337,7 +6337,11 @@ if __name__ == "__main__":
                 time_stop = time.time() + 1
 
         def update_tvguide(
-            chan_1="", do_return=False, show_all_guides=False, mark_integers=False
+            chan_1="",
+            do_return=False,
+            show_all_guides=False,
+            mark_integers=False,
+            catchup_array=None,
         ):
             global item_selected
             if array:
@@ -6366,6 +6370,18 @@ if __name__ == "__main__":
                             override_this = pr["start"] < time.time() + 1
                         else:
                             override_this = pr["stop"] > time.time() - 1
+                        if catchup_array is not None:
+                            try:
+                                catchup_days2 = int(catchup_array["catchup-days"])
+                            except Exception:
+                                catchup_days2 = 7
+                            # support for seconds
+                            if catchup_days2 < 1000:
+                                catchup_days2 = catchup_days2 * 86400
+                            override_this = (
+                                override_this
+                                and pr["stop"] > time.time() - catchup_days2
+                            )
                         if override_this:
                             def_placeholder = "%d.%m.%y %H:%M"
                             if mark_integers:
@@ -7007,7 +7023,9 @@ if __name__ == "__main__":
             )
             archive_all.clear()
             tvguide_got_1 = re.sub(
-                "<[^<]+?>", "", update_tvguide(cur_name, True, True, True)
+                "<[^<]+?>",
+                "",
+                update_tvguide(cur_name, True, True, False, catchup_array=got_array),
             ).split("!@#$%^^&*(")[2:]
             for tvguide_el_1 in tvguide_got_1:
                 if tvguide_el_1:
@@ -7595,9 +7613,9 @@ if __name__ == "__main__":
                     7,
                 )
             except Exception:
-                catchup_days1 = 1
+                catchup_days1 = 7
             if not settings["catchupenable"]:
-                catchup_days1 = 1
+                catchup_days1 = 7
             if is_seconds:
                 catchup_days1 = 86400 * (catchup_days1 + 1)
             return catchup_days1
