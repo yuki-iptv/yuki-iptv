@@ -108,6 +108,9 @@ parser.add_argument(
     action="store",
     help="Log level (CRITICAL, ERROR, WARNING, INFO, DEBUG) default: INFO",
 )
+parser.add_argument(
+    "--disable-plugins", action="store_true", help="Disable all plugins"
+)
 parser.add_argument("URL", help="Playlist URL or file", nargs="?")
 args1 = parser.parse_args()
 

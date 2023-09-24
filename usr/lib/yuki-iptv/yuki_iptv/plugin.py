@@ -28,16 +28,19 @@ from pathlib import Path
 
 
 def init_plugins():
-    plugins_dir = Path(os.path.abspath(os.path.dirname(__file__)), "plugins")
-    if os.path.isdir(plugins_dir):
-        sys.path.append(os.path.abspath(os.path.dirname(__file__)))
-        for plugin in os.listdir(plugins_dir):
-            if (
-                os.path.isfile(Path(plugins_dir, plugin))
-                and plugin.endswith(".py")
-                and not plugin.startswith("_")
-            ):
-                module = importlib.import_module("plugins." + plugin.replace(".py", ""))
-                if "init_plugin" in module.__dict__:
-                    module.init_plugin()
-        sys.path.remove(os.path.abspath(os.path.dirname(__file__)))
+    if "--disable-plugins" not in sys.argv:
+        plugins_dir = Path(os.path.abspath(os.path.dirname(__file__)), "plugins")
+        if os.path.isdir(plugins_dir):
+            sys.path.append(os.path.abspath(os.path.dirname(__file__)))
+            for plugin in os.listdir(plugins_dir):
+                if (
+                    os.path.isfile(Path(plugins_dir, plugin))
+                    and plugin.endswith(".py")
+                    and not plugin.startswith("_")
+                ):
+                    module = importlib.import_module(
+                        "plugins." + plugin.replace(".py", "")
+                    )
+                    if "init_plugin" in module.__dict__:
+                        module.init_plugin()
+            sys.path.remove(os.path.abspath(os.path.dirname(__file__)))
