@@ -3958,22 +3958,25 @@ if __name__ == "__main__":
         fullscreen = False
 
         def set_mpv_osc(osc_value):
-            if osc_value != YukiData.osc:
-                YukiData.osc = osc_value
-                player.osc = osc_value
+            if mpv_osc_enabled:
+                if osc_value != YukiData.osc:
+                    YukiData.osc = osc_value
+                    player.osc = osc_value
+
+        mpv_osc_enabled = True
 
         def init_mpv_player():
-            global player
+            global player, mpv_osc_enabled
             mpv_loglevel = "info" if loglevel.lower() != "debug" else "debug"
-            mpv_osc = True
+            mpv_osc_enabled = True
             if "osc" in options:
                 # To prevent 'multiple values for keyword argument'!
-                mpv_osc = options.pop("osc") != "no"
+                mpv_osc_enabled = options.pop("osc") != "no"
             try:
                 player = mpv.MPV(
                     **options,
                     wid=str(int(win.container.winId())),
-                    osc=mpv_osc,
+                    osc=mpv_osc_enabled,
                     script_opts="osc-layout=box,osc-seekbarstyle=bar,"
                     "osc-deadzonesize=0,osc-minmousemove=3",
                     ytdl=True,
@@ -3986,7 +3989,7 @@ if __name__ == "__main__":
                     player = mpv.MPV(
                         **options,
                         wid=str(int(win.container.winId())),
-                        osc=mpv_osc,
+                        osc=mpv_osc_enabled,
                         script_opts="osc-layout=box,osc-seekbarstyle=bar,"
                         "osc-deadzonesize=0,osc-minmousemove=3",
                         log_handler=my_log,
