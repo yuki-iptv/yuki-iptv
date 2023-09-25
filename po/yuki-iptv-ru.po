@@ -4,17 +4,16 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-05-12 22:01+0000\n"
-"PO-Revision-Date: 2023-05-12 22:01+0000\n"
+"PO-Revision-Date: 2023-09-25 03:02+0000\n"
 "Last-Translator: Astroncia <kestraly@gmail.com>\n"
 "Language-Team: Russian <kde-i18n-doc@kde.org>\n"
 "Language: ru_RU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
-"%100>=11 && n%100<=14)? 2 : 3);\n"
-"X-Generator: Poedit 2.4.2\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"X-Generator: Poedit 3.2.2\n"
 
 #: usr/lib/yuki-iptv/yuki-iptv.py:254 usr/lib/yuki-iptv/yuki-iptv.py:802
 #: usr/lib/yuki-iptv/yuki-iptv.py:818
@@ -246,7 +245,6 @@ msgid_plural "%d hours"
 msgstr[0] "%d час"
 msgstr[1] "%d часа"
 msgstr[2] "%d часов"
-msgstr[3] ""
 
 #: usr/lib/yuki-iptv/yuki-iptv.py:1562 usr/lib/yuki-iptv/yuki-iptv.py:2237
 #: usr/lib/yuki-iptv/yuki-iptv.py:2255 usr/lib/yuki-iptv/yuki-iptv.py:2640
@@ -543,7 +541,6 @@ msgid_plural "%d seconds"
 msgstr[0] "%d секунда"
 msgstr[1] "%d секунды"
 msgstr[2] "%d секунд"
-msgstr[3] ""
 
 #: usr/lib/yuki-iptv/yuki-iptv.py:2939
 msgid "Or select provider"
@@ -584,7 +581,6 @@ msgid_plural "%d days"
 msgstr[0] "%d день"
 msgstr[1] "%d дня"
 msgstr[2] "%d дней"
-msgstr[3] ""
 
 #: usr/lib/yuki-iptv/yuki-iptv.py:3007
 msgid "Load EPG for"
@@ -1039,7 +1035,6 @@ msgid_plural "-%d seconds"
 msgstr[0] "-%d секунда"
 msgstr[1] "-%d секунды"
 msgstr[2] "-%d секунд"
-msgstr[3] ""
 
 #: usr/lib/yuki-iptv/yuki-iptv.py:8176
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:213
@@ -1049,7 +1044,6 @@ msgid_plural "+%d seconds"
 msgstr[0] "+%d секунда"
 msgstr[1] "+%d секунды"
 msgstr[2] "+%d секунд"
-msgstr[3] ""
 
 #: usr/lib/yuki-iptv/yuki-iptv.py:8177 usr/lib/yuki-iptv/yuki-iptv.py:8179
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:214
@@ -1060,7 +1054,6 @@ msgid_plural "-%d minutes"
 msgstr[0] "-%d минута"
 msgstr[1] "-%d минуты"
 msgstr[2] "-%d минут"
-msgstr[3] ""
 
 #: usr/lib/yuki-iptv/yuki-iptv.py:8178 usr/lib/yuki-iptv/yuki-iptv.py:8180
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:215
@@ -1071,7 +1064,6 @@ msgid_plural "+%d minutes"
 msgstr[0] "+%d минута"
 msgstr[1] "+%d минуты"
 msgstr[2] "+%d минут"
-msgstr[3] ""
 
 #: usr/lib/yuki-iptv/yuki-iptv.py:8189 usr/lib/yuki-iptv/yuki-iptv.py:8206
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:299
@@ -1392,9 +1384,9 @@ msgstr "Нет"
 #: usr/lib/yuki-iptv/yuki_iptv/record.py:117
 #: usr/lib/yuki-iptv/yuki_iptv/record.py:125
 msgid "ffmpeg crashed!"
-msgstr ""
+msgstr "ffmpeg аварийно завершил работу!"
 
 #: usr/lib/yuki-iptv/yuki_iptv/record.py:78
 #: usr/lib/yuki-iptv/yuki_iptv/record.py:118
 msgid "exit code:"
-msgstr ""
+msgstr "код выхода:"
