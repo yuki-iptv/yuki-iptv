@@ -6490,7 +6490,11 @@ if __name__ == "__main__":
                                 except Exception:
                                     marked_integer = -1
                                 attach_1 = f" ({marked_integer})"
-                            if date_selected is not None and settings["catchupenable"]:
+                            if (
+                                date_selected is not None
+                                and settings["catchupenable"]
+                                and showonlychplaylist_chk.isChecked()
+                            ):
                                 try:
                                     catchup_days2 = int(chan_1_item["catchup-days"])
                                 except Exception:
