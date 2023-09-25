@@ -63,7 +63,14 @@ except Exception:
     pass
 
 from yuki_iptv.qt import get_qt_library
-from yuki_iptv.epg import worker, is_program_actual, load_epg_cache, save_epg_cache
+from yuki_iptv.epg import (
+    worker,
+    is_program_actual,
+    load_epg_cache,
+    save_epg_cache,
+    exists_in_epg,
+    get_epg,
+)
 from yuki_iptv.record import (
     record,
     record_return,
@@ -1470,6 +1477,13 @@ if __name__ == "__main__":
 
         def epg_date_changed(epg_date):
             global epg_selected_date
+            if "__plugin_trigger" in globals():
+                globals()["__plugin_trigger"](
+                    datetime.datetime.fromordinal(
+                        epg_date.toPyDate().toordinal()
+                    ).strftime("%Y-%m-%d"),
+                    getArrayItem(epg_win_checkbox.currentText()),
+                )
             epg_selected_date = datetime.datetime.fromordinal(
                 epg_date.toPyDate().toordinal()
             ).timestamp()
@@ -1505,12 +1519,15 @@ if __name__ == "__main__":
                         match1 = prog_match_arr[match1]
                     except Exception:
                         pass
-                    if match1 in programmes:
-                        if programmes[match1]:
-                            if "catchup-id" in programmes[match1][int(prog_index)]:
-                                catchup_id = programmes[match1][int(prog_index)][
-                                    "catchup-id"
-                                ]
+                    if exists_in_epg(match1, programmes):
+                        if get_epg(programmes, match1):
+                            if (
+                                "catchup-id"
+                                in get_epg(programmes, match1)[int(prog_index)]
+                            ):
+                                catchup_id = get_epg(programmes, match1)[
+                                    int(prog_index)
+                                ]["catchup-id"]
                 except Exception:
                     logger.warning("do_open_archive / catchup_id parsing failed")
                     logger.warning(traceback.format_exc())
@@ -4682,8 +4699,8 @@ if __name__ == "__main__":
                     jlower = prog_match_arr[jlower]
                 except Exception:
                     pass
-                if settings["epg"] and jlower in programmes:
-                    for pr in programmes[jlower]:
+                if settings["epg"] and exists_in_epg(jlower, programmes):
+                    for pr in get_epg(programmes, jlower):
                         if time.time() > pr["start"] and time.time() < pr["stop"]:
                             current_prog = pr
                             break
@@ -5283,7 +5300,7 @@ if __name__ == "__main__":
                     if "epgname" in channel_sets[settings["m3u"]][i]:
                         if channel_sets[settings["m3u"]][i]["epgname"]:
                             epg_name = channel_sets[settings["m3u"]][i]["epgname"]
-                            if str(epg_name).lower() in programmes:
+                            if exists_in_epg(str(epg_name).lower(), programmes):
                                 prog_search = str(epg_name).lower()
                                 is_epgname_found = True
 
@@ -5299,14 +5316,18 @@ if __name__ == "__main__":
                 # Third, match from tvg-name
                 if not is_epgname_found:
                     if array_filtered[i]["tvg-name"]:
-                        if str(array_filtered[i]["tvg-name"]).lower() in programmes:
+                        if exists_in_epg(
+                            str(array_filtered[i]["tvg-name"]).lower(), programmes
+                        ):
                             prog_search = str(array_filtered[i]["tvg-name"]).lower()
                             is_epgname_found = True
                         else:
                             spaces_replaced_name = array_filtered[i][
                                 "tvg-name"
                             ].replace(" ", "_")
-                            if str(spaces_replaced_name).lower() in programmes:
+                            if exists_in_epg(
+                                str(spaces_replaced_name).lower(), programmes
+                            ):
                                 prog_search = str(spaces_replaced_name).lower()
                                 is_epgname_found = True
 
@@ -5316,9 +5337,9 @@ if __name__ == "__main__":
                     is_epgname_found = True
 
                 prog_match_arr[i.lower()] = prog_search
-                if prog_search in programmes:
+                if exists_in_epg(prog_search, programmes):
                     current_prog = {"start": 0, "stop": 0, "title": "", "desc": ""}
-                    for pr in programmes[prog_search]:
+                    for pr in get_epg(programmes, prog_search):
                         if time.time() > pr["start"] and time.time() < pr["stop"]:
                             current_prog = pr
                             break
@@ -5404,7 +5425,7 @@ if __name__ == "__main__":
                 if len(prog) > MAX_SIZE:
                     prog = prog[0:MAX_SIZE] + "..."
                 if (
-                    prog_search in programmes
+                    exists_in_epg(prog_search, programmes)
                     and orig_prog
                     and not settings["hideepgfromplaylist"]
                 ):
@@ -5510,7 +5531,7 @@ if __name__ == "__main__":
             if j1:
                 current_chan = None
                 try:
-                    cur = programmes[j1]
+                    cur = get_epg(programmes, j1)
                     for pr in cur:
                         if time.time() > pr["start"] and time.time() < pr["stop"]:
                             current_chan = pr
@@ -6198,7 +6219,7 @@ if __name__ == "__main__":
                 epg_search = tvguide_m_chan.lower()
                 if epg_search in prog_match_arr:
                     epg_search = prog_match_arr[epg_search.lower()]
-                if epg_search in programmes:
+                if exists_in_epg(epg_search, programmes):
                     tvguide_many_i += 1
                     tvguide_many_chans.append(epg_search)
                     tvguide_many_chans_names.append(tvguide_m_chan)
@@ -6209,7 +6230,9 @@ if __name__ == "__main__":
             a_1_array = {}
             for chan_6 in tvguide_many_chans:
                 a_1 = [
-                    a_2 for a_2 in programmes[chan_6] if a_2["stop"] > time.time() - 1
+                    a_2
+                    for a_2 in get_epg(programmes, chan_6)
+                    if a_2["stop"] > time.time() - 1
                 ]
                 a_1_array[chan_6] = a_1
                 a_1_len_array.append(len(a_1))
@@ -6443,9 +6466,9 @@ if __name__ == "__main__":
                     chan_3 = prog_match_arr[chan_2]
                 except Exception:
                     chan_3 = chan_2
-                if chan_3 in programmes:
+                if exists_in_epg(chan_3, programmes):
                     txt = newline_symbol
-                    prog = programmes[chan_3]
+                    prog = get_epg(programmes, chan_3)
                     for pr in prog:
                         override_this = False
                         if show_all_guides:

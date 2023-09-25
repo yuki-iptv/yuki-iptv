@@ -254,3 +254,11 @@ def save_epg_cache(tvguide_sets_arg, settings_arg, prog_ids_arg, epg_icons_arg):
                 )
             )
             file2.close()
+
+
+def exists_in_epg(search, programmes):
+    return search in programmes
+
+
+def get_epg(programmes, search):
+    return programmes[search]
