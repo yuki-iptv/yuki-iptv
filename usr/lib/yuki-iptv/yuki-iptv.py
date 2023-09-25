@@ -46,6 +46,8 @@ import re
 import textwrap
 import hashlib
 import webbrowser
+import urllib
+import urllib.parse
 import threading
 import traceback
 from multiprocessing import Manager, active_children, get_context, freeze_support
@@ -1483,7 +1485,53 @@ if __name__ == "__main__":
         epg_win_1_layout.addWidget(showonlychplaylist_chk)
         epg_win_1_widget.setLayout(epg_win_1_layout)
 
+        def do_open_archive(link):
+            if "#__archive__" in link:
+                archive_json = json.loads(
+                    urllib.parse.unquote_plus(link.split("#__archive__")[1])
+                )
+                arr1 = getArrayItem(archive_json[0])
+                arr1 = format_catchup_array(arr1)
+
+                chan_url = getArrayItem(archive_json[0])["url"]
+                start_time = archive_json[1]
+                end_time = archive_json[2]
+                prog_index = archive_json[3]
+
+                catchup_id = ""
+                try:
+                    match1 = archive_json[0].lower()
+                    try:
+                        match1 = prog_match_arr[match1]
+                    except Exception:
+                        pass
+                    if match1 in programmes:
+                        if programmes[match1]:
+                            if "catchup-id" in programmes[match1][int(prog_index)]:
+                                catchup_id = programmes[match1][int(prog_index)][
+                                    "catchup-id"
+                                ]
+                except Exception:
+                    logger.warning("do_open_archive / catchup_id parsing failed")
+                    logger.warning(traceback.format_exc())
+
+                play_url = get_catchup_url(
+                    chan_url, arr1, start_time, end_time, catchup_id
+                )
+
+                itemClicked_event(archive_json[0], play_url, True)
+                setChanText("({}) {}".format(_("Archive"), archive_json[0]), True)
+                progress.hide()
+                start_label.setText("")
+                start_label.hide()
+                stop_label.setText("")
+                stop_label.hide()
+                epg_win.hide()
+
+                return False
+
         tvguide_lbl_2 = ScrollableLabel()
+        tvguide_lbl_2.label.linkActivated.connect(do_open_archive)
 
         epg_win_widget2 = QtWidgets.QWidget()
         epg_win_layout2 = QtWidgets.QHBoxLayout()
@@ -1516,11 +1564,6 @@ if __name__ == "__main__":
         scheduler_win.resize(1200, 650)
         scheduler_win.setWindowTitle(_("Recording scheduler"))
         scheduler_win.setWindowIcon(main_icon)
-
-        archive_win = QtWidgets.QMainWindow()
-        archive_win.resize(800, 600)
-        archive_win.setWindowTitle(_("Archive"))
-        archive_win.setWindowIcon(main_icon)
 
         playlists_win = QtWidgets.QMainWindow()
         playlists_win.resize(500, 600)
@@ -2215,23 +2258,6 @@ if __name__ == "__main__":
         scheduler_widget_main.setLayout(scheduler_layout_main)
 
         scheduler_win.setCentralWidget(scheduler_widget_main)
-
-        archive_all = QtWidgets.QListWidget()
-        archive_font = QtGui.QFont()
-        archive_font.setBold(True)
-        archive_channel = QtWidgets.QLabel()
-        archive_channel.setFont(archive_font)
-
-        archive_usingmode = QtWidgets.QLabel()
-
-        archive_layout_main = QtWidgets.QVBoxLayout()
-        archive_layout_main.addWidget(archive_channel)
-        archive_layout_main.addWidget(archive_usingmode)
-        archive_layout_main.addWidget(archive_all)
-
-        archive_widget_main = QtWidgets.QWidget()
-        archive_widget_main.setLayout(archive_layout_main)
-        archive_win.setCentralWidget(archive_widget_main)
 
         def save_sort():
             global channel_sort
@@ -6393,7 +6419,6 @@ if __name__ == "__main__":
             do_return=False,
             show_all_guides=False,
             mark_integers=False,
-            catchup_array=None,
             date_selected=None,
         ):
             global item_selected
@@ -6405,6 +6430,10 @@ if __name__ == "__main__":
                         chan_2 = sorted(array.items())[0][0]
                 else:
                     chan_2 = chan_1
+                try:
+                    chan_1_item = getArrayItem(chan_1)
+                except Exception:
+                    chan_1_item = None
                 txt = _("No TV guide for channel")
                 chan_2 = chan_2.lower()
                 newline_symbol = "\n"
@@ -6423,22 +6452,11 @@ if __name__ == "__main__":
                             override_this = pr["start"] < time.time() + 1
                         else:
                             override_this = pr["stop"] > time.time() - 1
+                        archive_btn = ""
                         if date_selected is not None:
                             override_this = pr["start"] > date_selected - 1 and pr[
                                 "start"
                             ] < (date_selected + 86401)
-                        if catchup_array is not None:
-                            try:
-                                catchup_days2 = int(catchup_array["catchup-days"])
-                            except Exception:
-                                catchup_days2 = 7
-                            # support for seconds
-                            if catchup_days2 < 1000:
-                                catchup_days2 = catchup_days2 * 86400
-                            override_this = (
-                                override_this
-                                and pr["stop"] > time.time() - catchup_days2
-                            )
                         if override_this:
                             def_placeholder = "%d.%m.%y %H:%M"
                             if mark_integers:
@@ -6472,6 +6490,43 @@ if __name__ == "__main__":
                                 except Exception:
                                     marked_integer = -1
                                 attach_1 = f" ({marked_integer})"
+                            if date_selected is not None and settings["catchupenable"]:
+                                try:
+                                    catchup_days2 = int(chan_1_item["catchup-days"])
+                                except Exception:
+                                    catchup_days2 = 7
+                                # support for seconds
+                                if catchup_days2 < 1000:
+                                    catchup_days2 = catchup_days2 * 86400
+                                if (
+                                    pr["start"] < time.time() + 1
+                                    and not (
+                                        time.time() > pr["start"]
+                                        and time.time() < pr["stop"]
+                                    )
+                                    and pr["stop"] > time.time() - catchup_days2
+                                ):
+                                    archive_link = urllib.parse.quote_plus(
+                                        json.dumps(
+                                            [
+                                                chan_1,
+                                                datetime.datetime.fromtimestamp(
+                                                    pr["start"]
+                                                ).strftime("%d.%m.%Y %H:%M:%S"),
+                                                datetime.datetime.fromtimestamp(
+                                                    pr["stop"]
+                                                ).strftime("%d.%m.%Y %H:%M:%S"),
+                                                prog.index(pr),
+                                            ]
+                                        )
+                                    )
+                                    archive_btn = (
+                                        '\n<a href="#__archive__'
+                                        + archive_link
+                                        + '">'
+                                        + _("Open archive")
+                                        + "</a>"
+                                    )
                             start_symbl = ""
                             stop_symbl = ""
                             if YukiData.use_dark_icon_theme:
@@ -6489,6 +6544,7 @@ if __name__ == "__main__":
                                 + "<b>"
                                 + title_2
                                 + "</b>"
+                                + archive_btn
                                 + desc_2
                                 + attach_1
                                 + stop_symbl
@@ -6533,8 +6589,26 @@ if __name__ == "__main__":
             if epg_win.isVisible():
                 epg_win.hide()
             else:
+                epg_index = epg_win_checkbox.currentIndex()
                 update_tvguide_2()
+                if epg_index != -1:
+                    epg_win_checkbox.setCurrentIndex(epg_index)
                 epg_win.show()
+
+        def show_archive():
+            show_tvguide_2()
+            find_chan = item_selected
+            if not find_chan:
+                find_chan = playing_chan
+            if find_chan:
+                try:
+                    find_chan_index = epg_win_checkbox.findText(
+                        find_chan, QtCore.Qt.MatchFlag.MatchExactly
+                    )
+                except Exception:
+                    find_chan_index = -1
+                if find_chan_index != -1:
+                    epg_win_checkbox.setCurrentIndex(find_chan_index)
 
         is_recording = False
         recording_time = 0
@@ -7022,80 +7096,6 @@ if __name__ == "__main__":
         def get_keybind(func1):
             return main_keybinds[func1]
 
-        def archive_all_clicked():
-            arr1 = getArrayItem(archive_channel.text())
-            arr1 = format_catchup_array(arr1)
-
-            chan_url = getArrayItem(archive_channel.text())["url"]
-            start_time = archive_all.currentItem().text().split(" - ")[0].strip()
-            end_time = (
-                archive_all.currentItem().text().split(" - ")[1].split("\n")[0].strip()
-            )
-            prog_index = (
-                archive_all.currentItem().text().split("(")[-1].replace(")", "")
-            )
-
-            catchup_id = ""
-            try:
-                match1 = archive_channel.text().lower()
-                try:
-                    match1 = prog_match_arr[match1]
-                except Exception:
-                    pass
-                if match1 in programmes:
-                    if programmes[match1]:
-                        if "catchup-id" in programmes[match1][int(prog_index)]:
-                            catchup_id = programmes[match1][int(prog_index)][
-                                "catchup-id"
-                            ]
-            except Exception:
-                logger.warning("archive_all_clicked / catchup_id parsing failed")
-                logger.warning(traceback.format_exc())
-
-            play_url = get_catchup_url(chan_url, arr1, start_time, end_time, catchup_id)
-
-            itemClicked_event(archive_channel.text(), play_url, True)
-            setChanText("({}) {}".format(_("Archive"), archive_channel.text()), True)
-            progress.hide()
-            start_label.setText("")
-            start_label.hide()
-            stop_label.setText("")
-            stop_label.hide()
-            archive_win.hide()
-
-        archive_all.itemDoubleClicked.connect(archive_all_clicked)
-
-        def update_timeshift_programme():
-            global playing_chan, item_selected, archive_all
-            if item_selected:
-                cur_name = item_selected
-            else:
-                cur_name = list(array)[0]
-            archive_channel.setText(cur_name)
-            got_array = getArrayItem(cur_name)
-            got_array = format_catchup_array(got_array)
-
-            archive_usingmode.setText(
-                "{}: {}".format(_("Using mode"), got_array["catchup"])
-            )
-            archive_all.clear()
-            tvguide_got_1 = re.sub(
-                "<[^<]+?>",
-                "",
-                update_tvguide(cur_name, True, True, True, catchup_array=got_array),
-            ).split("!@#$%^^&*(")[2:]
-            for tvguide_el_1 in tvguide_got_1:
-                if tvguide_el_1:
-                    archive_all.addItem(tvguide_el_1)
-
-        def show_timeshift():
-            update_timeshift_programme()
-            if archive_win.isVisible():
-                archive_win.hide()
-            else:
-                moveWindowToCenter(archive_win)
-                archive_win.show()
-
         stopped = False
 
         # MPRIS
@@ -7354,7 +7354,7 @@ if __name__ == "__main__":
             QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "timeshift.png")))
         )
         label7_2.setToolTip(_("Archive"))
-        label7_2.clicked.connect(show_timeshift)
+        label7_2.clicked.connect(show_archive)
         if not settings["catchupenable"]:
             label7_2.setVisible(False)
         label8 = QtWidgets.QPushButton()
@@ -8164,7 +8164,6 @@ if __name__ == "__main__":
                 or scheduler_win.isActiveWindow()
                 or xtream_win.isActiveWindow()
                 or xtream_win_2.isActiveWindow()
-                or archive_win.isActiveWindow()
                 or playlists_win.isActiveWindow()
                 or playlists_win_edit.isActiveWindow()
                 or epg_select_win.isActiveWindow()
@@ -8186,7 +8185,6 @@ if __name__ == "__main__":
                 or scheduler_win.isActiveWindow()
                 or xtream_win.isActiveWindow()
                 or xtream_win_2.isActiveWindow()
-                or archive_win.isActiveWindow()
                 or playlists_win.isActiveWindow()
                 or playlists_win_edit.isActiveWindow()
                 or epg_select_win.isActiveWindow()
@@ -8360,7 +8358,7 @@ if __name__ == "__main__":
             "next_channel": next_channel,
             "(lambda: my_up_binding())": (lambda: my_up_binding_execute()),
             "(lambda: my_down_binding())": (lambda: my_down_binding_execute()),
-            "show_timeshift": show_timeshift,
+            "show_timeshift": show_archive,
             "show_scheduler": show_scheduler,
             "showhideeverything": showhideeverything,
             "show_settings": show_settings,
