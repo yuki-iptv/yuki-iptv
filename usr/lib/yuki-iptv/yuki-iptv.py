@@ -1390,20 +1390,25 @@ if __name__ == "__main__":
         ext_win.setWindowIcon(main_icon)
 
         epg_win = QtWidgets.QMainWindow()
-        epg_win.resize(600, 600)
+        epg_win.resize(1000, 600)
         epg_win.setWindowTitle(_("TV guide"))
         epg_win.setWindowIcon(main_icon)
 
         def epg_win_checkbox_changed():
+            tvguide_lbl_2.verticalScrollBar().setSliderPosition(
+                tvguide_lbl_2.verticalScrollBar().minimum()
+            )
             tvguide_lbl_2.setText(_("No TV guide for channel"))
             try:
                 ch_3 = epg_win_checkbox.currentText()
-                ch_3_guide = update_tvguide(ch_3, True).replace("!@#$%^^&*(", "\n")
+                ch_3_guide = update_tvguide(
+                    ch_3, True, date_selected=epg_selected_date
+                ).replace("!@#$%^^&*(", "\n")
                 ch_3_guide = ch_3_guide.replace("\n", "<br>").replace("<br>", "", 1)
-                ch_3_guide = ch_3_guide.replace(
-                    '<span style="color: green;">', '<span style="color: red;">', 1
-                )
-                tvguide_lbl_2.setText(ch_3_guide)
+                if ch_3_guide.strip():
+                    tvguide_lbl_2.setText(ch_3_guide)
+                else:
+                    tvguide_lbl_2.setText(_("No TV guide for channel"))
             except Exception:
                 logger.warning("Exception in epg_win_checkbox_changed")
 
@@ -1429,6 +1434,7 @@ if __name__ == "__main__":
         tvguidechannelfiltersearch = QtWidgets.QPushButton()
         tvguidechannelfiltersearch.setText(_("Search"))
         tvguidechannelfiltersearch.clicked.connect(tvguide_channelfilter_do)
+        tvguidechannelfilter.returnPressed.connect(tvguide_channelfilter_do)
 
         tvguidechannelwidget = QtWidgets.QWidget()
         tvguidechannellayout = QtWidgets.QHBoxLayout()
@@ -1449,21 +1455,50 @@ if __name__ == "__main__":
         epg_win_count = QtWidgets.QLabel()
         epg_win_count.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
+        epg_select_date = QtWidgets.QCalendarWidget()
+        epg_select_date.setDateRange(
+            QtCore.QDate().currentDate().addDays(-31),
+            QtCore.QDate().currentDate().addDays(31),
+        )
+        epg_select_date.setMaximumWidth(300)
+
+        epg_selected_date = datetime.datetime.fromordinal(
+            datetime.date.today().toordinal()
+        ).timestamp()
+
+        def epg_date_changed(epg_date):
+            global epg_selected_date
+            epg_selected_date = datetime.datetime.fromordinal(
+                epg_date.toPyDate().toordinal()
+            ).timestamp()
+            epg_win_checkbox_changed()
+
+        epg_select_date.activated.connect(epg_date_changed)
+        epg_select_date.clicked.connect(epg_date_changed)
+
         epg_win_1_widget = QtWidgets.QWidget()
         epg_win_1_layout = QtWidgets.QHBoxLayout()
+        epg_win_1_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
         epg_win_1_layout.addWidget(showonlychplaylist_lbl)
         epg_win_1_layout.addWidget(showonlychplaylist_chk)
         epg_win_1_widget.setLayout(epg_win_1_layout)
 
         tvguide_lbl_2 = ScrollableLabel()
 
+        epg_win_widget2 = QtWidgets.QWidget()
+        epg_win_layout2 = QtWidgets.QHBoxLayout()
+        epg_win_layout2.addWidget(epg_select_date)
+        epg_win_layout2.addWidget(tvguide_lbl_2)
+        epg_win_widget2.setLayout(epg_win_layout2)
+
         epg_win_widget = QtWidgets.QWidget()
         epg_win_layout = QtWidgets.QVBoxLayout()
+        epg_win_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         epg_win_layout.addWidget(epg_win_1_widget)
         epg_win_layout.addWidget(tvguidechannelwidget)
         epg_win_layout.addWidget(epg_win_checkbox)
         epg_win_layout.addWidget(epg_win_count)
-        epg_win_layout.addWidget(tvguide_lbl_2)
+        epg_win_layout.addWidget(epg_win_widget2)
         epg_win_widget.setLayout(epg_win_layout)
         epg_win.setCentralWidget(epg_win_widget)
 
@@ -1784,6 +1819,8 @@ if __name__ == "__main__":
         settings_win_l.setY(origY)
         settings_win.move(qr.topLeft())
 
+        moveWindowToCenter(epg_win)
+
         ffmpeg_processes = []
 
         init_record(show_exception, ffmpeg_processes)
@@ -1811,10 +1848,20 @@ if __name__ == "__main__":
         def addrecord_clicked():
             selected_chan = choosechannel_ch.currentText()
             if qt_library == "PyQt6":
-                start_time_r = (
-                    starttime_w.dateTime().toPython().strftime("%d.%m.%y %H:%M")
-                )
-                end_time_r = endtime_w.dateTime().toPython().strftime("%d.%m.%y %H:%M")
+                try:
+                    start_time_r = (
+                        starttime_w.dateTime().toPython().strftime("%d.%m.%y %H:%M")
+                    )
+                    end_time_r = (
+                        endtime_w.dateTime().toPython().strftime("%d.%m.%y %H:%M")
+                    )
+                except Exception:
+                    start_time_r = (
+                        starttime_w.dateTime().toPyDateTime().strftime("%d.%m.%y %H:%M")
+                    )
+                    end_time_r = (
+                        endtime_w.dateTime().toPyDateTime().strftime("%d.%m.%y %H:%M")
+                    )
             else:
                 start_time_r = (
                     starttime_w.dateTime().toPyDateTime().strftime("%d.%m.%y %H:%M")
@@ -2066,6 +2113,7 @@ if __name__ == "__main__":
         schedulerchannelfiltersearch = QtWidgets.QPushButton()
         schedulerchannelfiltersearch.setText(_("Search"))
         schedulerchannelfiltersearch.clicked.connect(scheduler_channelfilter_do)
+        schedulerchannelfilter.returnPressed.connect(scheduler_channelfilter_do)
 
         schedulerchannelwidget = QtWidgets.QWidget()
         schedulerchannellayout = QtWidgets.QHBoxLayout()
@@ -6197,6 +6245,7 @@ if __name__ == "__main__":
         channelfiltersearch = QtWidgets.QPushButton()
         channelfiltersearch.setText(_("Search"))
         channelfiltersearch.clicked.connect(channelfilter_do)
+        channelfilter.returnPressed.connect(channelfilter_do)
         widget3 = QtWidgets.QWidget()
         layout3 = QtWidgets.QHBoxLayout()
         layout3.addWidget(channelfilter)
@@ -6345,6 +6394,7 @@ if __name__ == "__main__":
             show_all_guides=False,
             mark_integers=False,
             catchup_array=None,
+            date_selected=None,
         ):
             global item_selected
             if array:
@@ -6373,6 +6423,10 @@ if __name__ == "__main__":
                             override_this = pr["start"] < time.time() + 1
                         else:
                             override_this = pr["stop"] > time.time() - 1
+                        if date_selected is not None:
+                            override_this = pr["start"] > date_selected - 1 and pr[
+                                "start"
+                            ] < (date_selected + 86401)
                         if catchup_array is not None:
                             try:
                                 catchup_days2 = int(catchup_array["catchup-days"])
