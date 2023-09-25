@@ -6477,8 +6477,11 @@ if __name__ == "__main__":
                             if YukiData.use_dark_icon_theme:
                                 start_symbl = '<span style="color: white;">'
                                 stop_symbl = "</span>"
+                            use_epg_color = "green"
+                            if time.time() > pr["start"] and time.time() < pr["stop"]:
+                                use_epg_color = "red"
                             txt += (
-                                '<span style="color: green;">'
+                                f'<span style="color: {use_epg_color};">'
                                 + start_2
                                 + stop_2
                                 + "</span>"
@@ -6494,9 +6497,6 @@ if __name__ == "__main__":
                 if do_return:
                     return txt
                 txt = txt.replace("\n", "<br>").replace("<br>", "", 1)
-                txt = txt.replace(
-                    '<span style="color: green;">', '<span style="color: red;">', 1
-                )
                 tvguide_lbl.setText(txt)
             return ""
 
