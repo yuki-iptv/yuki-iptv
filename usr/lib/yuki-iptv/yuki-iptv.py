@@ -6623,19 +6623,23 @@ if __name__ == "__main__":
                 epg_win.show()
 
         def show_archive():
-            show_tvguide_2()
-            find_chan = item_selected
-            if not find_chan:
-                find_chan = playing_chan
-            if find_chan:
-                try:
-                    find_chan_index = epg_win_checkbox.findText(
-                        find_chan, QtCore.Qt.MatchFlag.MatchExactly
-                    )
-                except Exception:
-                    find_chan_index = -1
-                if find_chan_index != -1:
-                    epg_win_checkbox.setCurrentIndex(find_chan_index)
+            if not epg_win.isVisible():
+                show_tvguide_2()
+                find_chan = item_selected
+                if not find_chan:
+                    find_chan = playing_chan
+                if find_chan:
+                    try:
+                        find_chan_index = epg_win_checkbox.findText(
+                            find_chan, QtCore.Qt.MatchFlag.MatchExactly
+                        )
+                    except Exception:
+                        find_chan_index = -1
+                    if find_chan_index != -1:
+                        epg_win_checkbox.setCurrentIndex(find_chan_index)
+                epg_date_changed(epg_select_date.selectedDate())
+            else:
+                epg_win.hide()
 
         is_recording = False
         recording_time = 0
