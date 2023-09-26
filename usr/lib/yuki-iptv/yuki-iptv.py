@@ -418,6 +418,8 @@ if __name__ == "__main__":
         from thirdparty import mpv
 
         if "APPIMAGE_TEST_EXIT_YUKI_IPTV" in os.environ:
+            player_test = mpv.MPV()
+            logger.info(f"mpv version: {player_test.mpv_version}")
             logger.info("AppImage test completed")
             sys.exit(0)
 
