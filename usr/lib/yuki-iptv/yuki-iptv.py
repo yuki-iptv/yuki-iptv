@@ -417,6 +417,10 @@ if __name__ == "__main__":
 
         from thirdparty import mpv
 
+        if "APPIMAGE_TEST_EXIT_YUKI_IPTV" in os.environ:
+            logger.info("AppImage test completed")
+            sys.exit(0)
+
         if not os.path.isdir(LOCAL_DIR):
             os.mkdir(LOCAL_DIR)
 
