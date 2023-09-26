@@ -305,6 +305,8 @@ def async_gui_blocking_function(func):
 
 if __name__ == "__main__":
     logger.info("Qt init...")
+    if "APPIMAGE_TEST_EXIT_YUKI_IPTV" in os.environ:
+        os.environ["QT_QPA_PLATFORM"] = "offscreen"
     app = QtWidgets.QApplication(sys.argv)
     logger.info("Qt init successful")
     logger.info("")
