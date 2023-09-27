@@ -3083,6 +3083,8 @@ if __name__ == "__main__":
                 os.chdir(old_pwd)
             s_p = subprocess.Popen([sys.executable] + sys.argv)
             if "YUKI_IPTV_IS_APPIMAGE" in os.environ:
+                for window in QtWidgets.QApplication.topLevelWidgets():
+                    window.close()
                 s_p.wait()
             sys.exit(0)
 
