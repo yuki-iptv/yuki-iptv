@@ -307,7 +307,10 @@ if __name__ == "__main__":
     logger.info("Qt init...")
     if "APPIMAGE_TEST_EXIT_YUKI_IPTV" in os.environ:
         os.environ["QT_QPA_PLATFORM"] = "offscreen"
-    app = QtWidgets.QApplication(sys.argv)
+    if not QtWidgets.QApplication.instance():
+        app = QtWidgets.QApplication(sys.argv)
+    else:
+        app = QtWidgets.QApplication.instance()
     logger.info("Qt init successful")
     logger.info("")
 
