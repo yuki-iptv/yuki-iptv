@@ -24,24 +24,34 @@
 
 
 def get_qt_library():
-    """Get correct Qt library - PyQt6/5"""
+    """Get correct Qt library - PySide6/PyQt6/PyQt5"""
     qt_library = "none"
     QShortcut = False
     QtWidgets = False
     QtCore = False
     QtGui = False
     try:
-        from PyQt6 import QtWidgets
-        from PyQt6 import QtCore
-        from PyQt6 import QtGui
+        from PySide6 import QtWidgets
+        from PySide6 import QtCore
+        from PySide6 import QtGui
+
+        QtCore.QT_VERSION_STR = QtCore.qVersion()
 
         QShortcut = QtGui.QShortcut
-        qt_library = "PyQt6"
+        qt_library = "PySide6"
     except Exception:
-        from PyQt5 import QtWidgets
-        from PyQt5 import QtCore
-        from PyQt5 import QtGui
+        try:
+            from PyQt6 import QtWidgets
+            from PyQt6 import QtCore
+            from PyQt6 import QtGui
 
-        QShortcut = QtWidgets.QShortcut
-        qt_library = "PyQt5"
+            QShortcut = QtGui.QShortcut
+            qt_library = "PyQt6"
+        except Exception:
+            from PyQt5 import QtWidgets
+            from PyQt5 import QtCore
+            from PyQt5 import QtGui
+
+            QShortcut = QtWidgets.QShortcut
+            qt_library = "PyQt5"
     return qt_library, QtWidgets, QtCore, QtGui, QShortcut

@@ -40,7 +40,7 @@ def _exec(obj, arg=None):
 
 
 def qaction(arg1, arg2):
-    if qt_library == "PyQt6":
+    if qt_library == "PyQt6" or qt_library == "PySide6":
         func = QtGui.QAction
     else:
         func = QtWidgets.QAction

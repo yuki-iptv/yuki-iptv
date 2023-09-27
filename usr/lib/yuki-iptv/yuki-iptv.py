@@ -1493,17 +1493,24 @@ if __name__ == "__main__":
             datetime.date.today().toordinal()
         ).timestamp()
 
+        def getPyDate(epg_date_1):
+            if qt_library == "PySide6":
+                date_ret = epg_date_1.toPython()
+            else:
+                date_ret = epg_date_1.toPyDate()
+            return date_ret
+
         def epg_date_changed(epg_date):
             global epg_selected_date
             if "__plugin_trigger" in globals():
                 globals()["__plugin_trigger"](
                     datetime.datetime.fromordinal(
-                        epg_date.toPyDate().toordinal()
+                        getPyDate(epg_date).toordinal()
                     ).strftime("%Y-%m-%d"),
                     getArrayItem(epg_win_checkbox.currentText()),
                 )
             epg_selected_date = datetime.datetime.fromordinal(
-                epg_date.toPyDate().toordinal()
+                getPyDate(epg_date).toordinal()
             ).timestamp()
             epg_win_checkbox_changed()
 
@@ -1925,21 +1932,11 @@ if __name__ == "__main__":
 
         def addrecord_clicked():
             selected_chan = choosechannel_ch.currentText()
-            if qt_library == "PyQt6":
-                try:
-                    start_time_r = (
-                        starttime_w.dateTime().toPython().strftime("%d.%m.%y %H:%M")
-                    )
-                    end_time_r = (
-                        endtime_w.dateTime().toPython().strftime("%d.%m.%y %H:%M")
-                    )
-                except Exception:
-                    start_time_r = (
-                        starttime_w.dateTime().toPyDateTime().strftime("%d.%m.%y %H:%M")
-                    )
-                    end_time_r = (
-                        endtime_w.dateTime().toPyDateTime().strftime("%d.%m.%y %H:%M")
-                    )
+            if qt_library == "PySide6":
+                start_time_r = (
+                    starttime_w.dateTime().toPython().strftime("%d.%m.%y %H:%M")
+                )
+                end_time_r = endtime_w.dateTime().toPython().strftime("%d.%m.%y %H:%M")
             else:
                 start_time_r = (
                     starttime_w.dateTime().toPyDateTime().strftime("%d.%m.%y %H:%M")
@@ -7144,7 +7141,7 @@ if __name__ == "__main__":
         def next_channel(unused=None):
             go_channel(1)
 
-        if qt_library == "PyQt6":
+        if qt_library == "PyQt6" or qt_library == "PySide6":
             qaction_prio = QtGui.QAction.Priority.HighPriority
         else:
             qaction_prio = QtWidgets.QAction.Priority.HighPriority
