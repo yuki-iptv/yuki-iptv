@@ -3081,7 +3081,9 @@ if __name__ == "__main__":
             myExitHandler_before()
             if platform.system() == "Windows":
                 os.chdir(old_pwd)
-            subprocess.Popen([sys.executable] + sys.argv)
+            s_p = subprocess.Popen([sys.executable] + sys.argv)
+            if "YUKI_IPTV_IS_APPIMAGE" in os.environ:
+                s_p.wait()
             sys.exit(0)
 
         wid2 = QtWidgets.QWidget()
