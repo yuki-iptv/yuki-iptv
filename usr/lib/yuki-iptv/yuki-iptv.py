@@ -22,13 +22,6 @@
 # https://creativecommons.org/licenses/by/4.0/
 #
 try:
-    from yuki_iptv.log import init_log
-
-    args1, loglevel = init_log()
-except Exception as ex:  # to avoid module level import not at top error
-    raise ex
-
-try:
     from yuki_iptv.plugin import init_plugins
 
     init_plugins()
@@ -46,6 +39,7 @@ import locale
 import gettext
 import logging
 import signal
+import argparse
 import platform
 import subprocess
 import re
@@ -116,6 +110,29 @@ from thirdparty.xtream import XTream, Serie
 if platform.system() == "Windows":
     freeze_support()
 
+parser = argparse.ArgumentParser(prog="yuki-iptv", description="yuki-iptv")
+parser.add_argument("--version", action="store_true", help="Show version")
+parser.add_argument(
+    "--loglevel",
+    action="store",
+    help="Log level (CRITICAL, ERROR, WARNING, INFO, DEBUG) default: INFO",
+)
+parser.add_argument(
+    "--disable-plugins", action="store_true", help="Disable all plugins"
+)
+parser.add_argument("URL", help="Playlist URL or file", nargs="?")
+args1 = parser.parse_args()
+
+loglevel = args1.loglevel if args1.loglevel else "INFO"
+numeric_level = getattr(logging, loglevel.upper(), None)
+if not isinstance(numeric_level, int):
+    raise ValueError("Invalid log level: %s" % loglevel)
+
+logging.basicConfig(
+    format="%(asctime)s.%(msecs)03d %(name)s %(levelname)s: %(message)s",
+    level=numeric_level,
+    datefmt="%H:%M:%S",
+)
 logger = logging.getLogger("yuki-iptv")
 mpv_logger = logging.getLogger("libmpv")
 
