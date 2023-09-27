@@ -21,12 +21,7 @@
 # https://fontawesome.com/
 # https://creativecommons.org/licenses/by/4.0/
 #
-import platform
-from multiprocessing import freeze_support
-
 try:
-    if platform.system() == "Windows":
-        freeze_support()
     from yuki_iptv.log import init_log
 
     args1, loglevel = init_log()
@@ -51,6 +46,7 @@ import locale
 import gettext
 import logging
 import signal
+import platform
 import subprocess
 import re
 import textwrap
@@ -60,7 +56,7 @@ import urllib
 import urllib.parse
 import threading
 import traceback
-from multiprocessing import Manager, active_children, get_context
+from multiprocessing import Manager, active_children, get_context, freeze_support
 from functools import partial
 import chardet
 import requests
@@ -116,6 +112,9 @@ from yuki_iptv.keybinds import main_keybinds_internal, main_keybinds_default
 from yuki_iptv.series import parse_series
 from yuki_iptv.crossplatform import LOCAL_DIR, SAVE_FOLDER_DEFAULT
 from thirdparty.xtream import XTream, Serie
+
+if platform.system() == "Windows":
+    freeze_support()
 
 logger = logging.getLogger("yuki-iptv")
 mpv_logger = logging.getLogger("libmpv")
