@@ -118,6 +118,9 @@ parser.add_argument(
     help="Log level (CRITICAL, ERROR, WARNING, INFO, DEBUG) default: INFO",
 )
 parser.add_argument(
+    "--disable-plugin", action="store", help="Disable some plugins, comma separated"
+)
+parser.add_argument(
     "--disable-plugins", action="store_true", help="Disable all plugins"
 )
 parser.add_argument("URL", help="Playlist URL or file", nargs="?")
