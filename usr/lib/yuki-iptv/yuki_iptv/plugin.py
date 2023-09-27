@@ -23,12 +23,17 @@
 import os
 import os.path
 import sys
+import logging
 import importlib
+import multiprocessing
 from pathlib import Path
+from yuki_iptv.log import args1
+
+logger = logging.getLogger(__name__)
 
 
 def init_plugins():
-    if "--disable-plugins" not in sys.argv:
+    if not args1.disable_plugins:
         plugins_dir = Path(os.path.abspath(os.path.dirname(__file__)), "plugins")
         if os.path.isdir(plugins_dir):
             sys.path.append(os.path.abspath(os.path.dirname(__file__)))
@@ -42,5 +47,12 @@ def init_plugins():
                         "plugins." + plugin.replace(".py", "")
                     )
                     if "init_plugin" in module.__dict__:
+                        if (
+                            multiprocessing.current_process().name == "MainProcess"
+                            and "--multiprocessing-fork" not in sys.argv
+                        ):
+                            logger.info(f"Loading plugin {plugin.replace('.py', '')}")
                         module.init_plugin()
             sys.path.remove(os.path.abspath(os.path.dirname(__file__)))
+    else:
+        logger.info("Plugins disabled")
