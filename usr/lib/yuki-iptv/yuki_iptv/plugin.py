@@ -47,7 +47,7 @@ def init_plugins():
                             multiprocessing.current_process().name == "MainProcess"
                             and "--multiprocessing-fork" not in sys.argv
                         ):
-                            print(f"Loading plugin {plugin.replace('.py', '')}")
+                            print(f"Loading plugin: {plugin.replace('.py', '')}")
                         module.init_plugin()
             sys.path.remove(os.path.abspath(os.path.dirname(__file__)))
     else:
