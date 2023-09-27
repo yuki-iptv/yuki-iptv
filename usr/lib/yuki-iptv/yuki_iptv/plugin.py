@@ -23,6 +23,7 @@
 import os
 import os.path
 import sys
+import multiprocessing
 import importlib
 from pathlib import Path
 
@@ -42,5 +43,16 @@ def init_plugins():
                         "plugins." + plugin.replace(".py", "")
                     )
                     if "init_plugin" in module.__dict__:
+                        if (
+                            multiprocessing.current_process().name == "MainProcess"
+                            and "--multiprocessing-fork" not in sys.argv
+                        ):
+                            print(f"Loading plugin {plugin.replace('.py', '')}")
                         module.init_plugin()
             sys.path.remove(os.path.abspath(os.path.dirname(__file__)))
+    else:
+        if (
+            multiprocessing.current_process().name == "MainProcess"
+            and "--multiprocessing-fork" not in sys.argv
+        ):
+            print("Plugins disabled")
