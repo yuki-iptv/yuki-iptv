@@ -7684,14 +7684,20 @@ if __name__ == "__main__":
                 try:
                     epg_thread_2.kill()
                 except Exception:
-                    epg_thread_2.terminate()
+                    try:
+                        epg_thread_2.terminate()
+                    except Exception:
+                        pass
             if multiprocessing_manager:
                 multiprocessing_manager.shutdown()
             for process_3 in active_children():
                 try:
                     process_3.kill()
                 except Exception:
-                    process_3.terminate()
+                    try:
+                        process_3.terminate()
+                    except Exception:
+                        pass
 
         def myExitHandler():
             myExitHandler_before()
