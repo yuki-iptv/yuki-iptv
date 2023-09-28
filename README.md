@@ -1,5 +1,6 @@
 # yuki-iptv
-### IPTV player with EPG support (Astroncia IPTV fork)
+
+**IPTV player with EPG support (Astroncia IPTV fork)**
 
 [![Screenshot](https://gist.githubusercontent.com/Ame-chan-angel/c37f80c2cb00afbdbd98959186e1ab80/raw/d990f212d8e9a5170f800aafdfc82333f9264e31/yuki-iptv.png)](https://gist.githubusercontent.com/Ame-chan-angel/c37f80c2cb00afbdbd98959186e1ab80/raw/d990f212d8e9a5170f800aafdfc82333f9264e31/yuki-iptv.png)
 
@@ -7,7 +8,7 @@
 it is a player application which streams from IPTV providers.  
 The channels and pictures in the screenshots are for demonstration purposes only.
 
-## Features
+# Features
 
 - M3u / M3u8 / XSPF playlists support
 - XTream API support
@@ -28,7 +29,7 @@ The channels and pictures in the screenshots are for demonstration purposes only
 - MPRIS support
 - and many more...
 
-## License
+# License
 
 ```monospace
 yuki-iptv is free software: you can redistribute it and/or modify
@@ -53,7 +54,7 @@ https://fontawesome.com/
 https://creativecommons.org/licenses/by/4.0/
 ```
 
-## Localization
+# Localization
 
 To help with localization you can use [Crowdin](https://crowdin.com/project/yuki-iptv) or create pull request with translated .po file.  
 To add a new language, write me on the Crowdin page.
