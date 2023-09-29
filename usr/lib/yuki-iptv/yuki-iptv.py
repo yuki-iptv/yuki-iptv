@@ -108,7 +108,7 @@ from yuki_iptv.crossplatform import LOCAL_DIR, SAVE_FOLDER_DEFAULT
 from yuki_iptv.mpv_opengl import MPVOpenGLWidget
 from thirdparty.xtream import XTream, Serie
 
-if platform.system() == "Windows" or platform.system() == "Darwin":
+if platform.system() == "Windows":
     freeze_support()
 
 parser = argparse.ArgumentParser(prog="yuki-iptv", description="yuki-iptv")
@@ -125,7 +125,7 @@ parser.add_argument(
     "--disable-plugins", action="store_true", help="Disable all plugins"
 )
 parser.add_argument("URL", help="Playlist URL or file", nargs="?")
-args1 = parser.parse_args()
+args1, _unparsed_args = parser.parse_known_args()
 
 loglevel = args1.loglevel if args1.loglevel else "INFO"
 numeric_level = getattr(logging, loglevel.upper(), None)
