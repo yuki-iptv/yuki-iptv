@@ -8675,6 +8675,7 @@ if __name__ == "__main__":
                     player["vo"] = "libmpv"
                 if not playLastChannel():
                     logger.info("Show splash")
+                    print(os.getcwd())  # TODO
                     mpv_override_play(str(Path("yuki_iptv", ICONS_FOLDER, "main.png")))
                     player.pause = True
                 else:
