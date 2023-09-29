@@ -108,7 +108,7 @@ from yuki_iptv.crossplatform import LOCAL_DIR, SAVE_FOLDER_DEFAULT
 from yuki_iptv.mpv_opengl import MPVOpenGLWidget
 from thirdparty.xtream import XTream, Serie
 
-if platform.system() == "Windows":
+if platform.system() == "Windows" or platform.system() == "Darwin":
     freeze_support()
 
 parser = argparse.ArgumentParser(prog="yuki-iptv", description="yuki-iptv")
