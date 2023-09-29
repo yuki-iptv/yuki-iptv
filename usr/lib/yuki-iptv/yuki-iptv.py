@@ -140,7 +140,7 @@ logging.basicConfig(
 logger = logging.getLogger("yuki-iptv")
 mpv_logger = logging.getLogger("libmpv")
 
-if platform.system() != "Windows":
+if platform.system() == "Linux":
     try:
         from thirdparty.mpris_server.adapters import (
             PlayState,
@@ -7382,7 +7382,7 @@ if __name__ == "__main__":
             mpris_thread = threading.Thread(target=mpris_loop_start)
             mpris_thread.start()
         except Exception as mpris_e:
-            if platform.system() != "Windows":
+            if platform.system() == "Linux":
                 logger.warning(mpris_e)
                 logger.warning("Failed to set up MPRIS!")
 
