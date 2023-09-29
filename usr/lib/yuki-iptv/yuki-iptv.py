@@ -442,13 +442,6 @@ if __name__ == "__main__":
 
         m3u = ""
 
-        if platform.system() == "Windows" or platform.system() == "Darwin":
-            os.environ["PATH"] = (
-                str(Path(os.path.dirname(__file__), "bin"))
-                + os.pathsep
-                + os.environ["PATH"]
-            )
-
         from thirdparty import mpv
 
         if "APPIMAGE_TEST_EXIT_YUKI_IPTV" in os.environ:

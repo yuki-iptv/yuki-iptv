@@ -21,9 +21,12 @@
 # https://creativecommons.org/licenses/by/4.0/
 #
 import sys
+import os
 import logging
+import platform
 import gettext
 import traceback
+from pathlib import Path
 
 try:
     from PySide6 import QtCore, QtWidgets
@@ -71,6 +74,11 @@ def show_exception(e, e_traceback="", prev=""):
     )
     msg.exec()
 
+
+if platform.system() == "Windows" or platform.system() == "Darwin":
+    os.environ["PATH"] = (
+        str(Path(os.path.dirname(__file__), "bin")) + os.pathsep + os.environ["PATH"]
+    )
 
 try:
     from thirdparty.mpv import MpvRenderContext, MpvGlGetProcAddressFn
