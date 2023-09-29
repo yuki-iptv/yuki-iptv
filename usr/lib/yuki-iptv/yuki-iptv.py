@@ -105,6 +105,7 @@ from yuki_iptv.options import read_option, write_option
 from yuki_iptv.keybinds import main_keybinds_internal, main_keybinds_default
 from yuki_iptv.series import parse_series
 from yuki_iptv.crossplatform import LOCAL_DIR, SAVE_FOLDER_DEFAULT
+from yuki_iptv.mpv_opengl import MPVOpenGLWidget
 from thirdparty.xtream import XTream, Serie
 
 if platform.system() == "Windows":
@@ -369,9 +370,16 @@ if __name__ == "__main__":
         logger.info("")
         logger.info(f"yuki-iptv version: {APP_VERSION}")
         logger.info("Using Python " + sys.version.replace("\n", ""))
+        logger.info(f"System: {platform.system()}")
         logger.info(f"Qt library: {qt_library}")
         logger.info(f"Qt version: {QtCore.QT_VERSION_STR}")
+        try:
+            logger.info(f"Qt platform: {app.platformName()}")
+        except Exception:
+            logger.info("Failed to determine Qt platform!")
         logger.info("")
+
+        enable_libmpv_render_context = platform.system() == "Darwin"  # Mac OS
 
         old_pwd = os.getcwd()
         if platform.system() == "Windows":
@@ -3994,10 +4002,13 @@ if __name__ == "__main__":
             if "osc" in options:
                 # To prevent 'multiple values for keyword argument'!
                 mpv_osc_enabled = options.pop("osc") != "no"
+            if not enable_libmpv_render_context:
+                options["wid"] = str(int(win.container.winId()))
+            else:
+                options["vo"] = "null"
             try:
                 player = mpv.MPV(
                     **options,
-                    wid=str(int(win.container.winId())),
                     osc=mpv_osc_enabled,
                     script_opts="osc-layout=box,osc-seekbarstyle=bar,"
                     "osc-deadzonesize=0,osc-minmousemove=3",
@@ -4010,7 +4021,6 @@ if __name__ == "__main__":
                 try:
                     player = mpv.MPV(
                         **options,
-                        wid=str(int(win.container.winId())),
                         osc=mpv_osc_enabled,
                         script_opts="osc-layout=box,osc-seekbarstyle=bar,"
                         "osc-deadzonesize=0,osc-minmousemove=3",
@@ -4021,7 +4031,6 @@ if __name__ == "__main__":
                     logger.warning("mpv init with osc failed")
                     player = mpv.MPV(
                         **options,
-                        wid=str(int(win.container.winId())),
                         log_handler=my_log,
                         loglevel=mpv_loglevel,
                     )
@@ -4030,6 +4039,15 @@ if __name__ == "__main__":
                     set_mpv_osc(False)
                 except Exception:
                     logger.warning("player.osc set failed")
+
+            if enable_libmpv_render_context:
+                container_layout = QtWidgets.QVBoxLayout()
+                container_layout.setContentsMargins(0, 0, 0, 0)
+                container_layout.setSpacing(0)
+                mpv_opengl_widget = MPVOpenGLWidget(app, player)
+                container_layout.addWidget(mpv_opengl_widget)
+                win.container.setLayout(container_layout)
+
             try:
                 player["force-seekable"] = True
             except Exception:
@@ -4133,33 +4151,35 @@ if __name__ == "__main__":
                 else:
                     end_file_callback()
 
-            @player.on_key_press("MBTN_RIGHT")
-            def my_mouse_right():
-                my_mouse_right_callback()
+            if not enable_libmpv_render_context:
 
-            @player.on_key_press("MBTN_LEFT")
-            def my_mouse_left():
-                my_mouse_left_callback()
+                @player.on_key_press("MBTN_RIGHT")
+                def my_mouse_right():
+                    my_mouse_right_callback()
 
-            @player.on_key_press("MBTN_LEFT_DBL")
-            def my_leftdbl_binding():
-                mpv_fullscreen()
+                @player.on_key_press("MBTN_LEFT")
+                def my_mouse_left():
+                    my_mouse_left_callback()
 
-            @player.on_key_press("MBTN_FORWARD")
-            def my_forward_binding():
-                next_channel()
+                @player.on_key_press("MBTN_LEFT_DBL")
+                def my_leftdbl_binding():
+                    mpv_fullscreen()
 
-            @player.on_key_press("MBTN_BACK")
-            def my_back_binding():
-                prev_channel()
+                @player.on_key_press("MBTN_FORWARD")
+                def my_forward_binding():
+                    next_channel()
 
-            @player.on_key_press("WHEEL_UP")
-            def my_up_binding():
-                my_up_binding_execute()
+                @player.on_key_press("MBTN_BACK")
+                def my_back_binding():
+                    prev_channel()
 
-            @player.on_key_press("WHEEL_DOWN")
-            def my_down_binding():
-                my_down_binding_execute()
+                @player.on_key_press("WHEEL_UP")
+                def my_up_binding():
+                    my_up_binding_execute()
+
+                @player.on_key_press("WHEEL_DOWN")
+                def my_down_binding():
+                    my_down_binding_execute()
 
             @idle_function
             def pause_handler(unused=None, unused2=None, unused3=None):
@@ -4281,15 +4301,57 @@ if __name__ == "__main__":
                 self.latestWidth = 0
                 self.latestHeight = 0
                 self.createMenuBar_mw()
+
                 #
                 # == mpv init ==
                 #
-                self.container = QtWidgets.QWidget(self)
+
+                class Container(QtWidgets.QWidget):
+                    def mousePressEvent(self, event3):
+                        if event3.button() == QtCore.Qt.MouseButton.LeftButton:
+                            my_mouse_left_callback()
+                        elif event3.button() == QtCore.Qt.MouseButton.RightButton:
+                            my_mouse_right_callback()
+                        elif event3.button() in [
+                            QtCore.Qt.MouseButton.BackButton,
+                            QtCore.Qt.MouseButton.XButton1,
+                            QtCore.Qt.MouseButton.ExtraButton1,
+                        ]:
+                            prev_channel()
+                        elif event3.button() in [
+                            QtCore.Qt.MouseButton.ForwardButton,
+                            QtCore.Qt.MouseButton.XButton2,
+                            QtCore.Qt.MouseButton.ExtraButton2,
+                        ]:
+                            next_channel()
+                        else:
+                            super().mousePressEvent(event3)
+
+                    def mouseDoubleClickEvent(self, event3):
+                        if event3.button() == QtCore.Qt.MouseButton.LeftButton:
+                            mpv_fullscreen()
+
+                    def wheelEvent(self, event3):
+                        if event3.angleDelta().y() > 0:
+                            # up
+                            my_up_binding_execute()
+                        else:
+                            # down
+                            my_down_binding_execute()
+                        event3.accept()
+
+                if not enable_libmpv_render_context:
+                    self.container = QtWidgets.QWidget(self)
+                else:
+                    self.container = Container(self)
                 self.setCentralWidget(self.container)
                 self.container.setAttribute(
                     QtCore.Qt.WidgetAttribute.WA_DontCreateNativeAncestors
                 )
-                self.container.setAttribute(QtCore.Qt.WidgetAttribute.WA_NativeWindow)
+                if not enable_libmpv_render_context:
+                    self.container.setAttribute(
+                        QtCore.Qt.WidgetAttribute.WA_NativeWindow
+                    )
                 self.container.setFocus()
                 self.container.setStyleSheet(
                     """
@@ -8606,13 +8668,24 @@ if __name__ == "__main__":
                             combobox.setCurrentIndex(combobox_index1["index"])
             except Exception:
                 pass
-            if not playLastChannel():
-                logger.info("Show splash")
-                mpv_override_play(str(Path("yuki_iptv", ICONS_FOLDER, "main.png")))
-                player.pause = True
+
+            def after_mpv_init():
+                if enable_libmpv_render_context:
+                    logger.info("Render context enabled, switching vo to libmpv")
+                    player["vo"] = "libmpv"
+                if not playLastChannel():
+                    logger.info("Show splash")
+                    mpv_override_play(str(Path("yuki_iptv", ICONS_FOLDER, "main.png")))
+                    player.pause = True
+                else:
+                    logger.info("Playing last channel, splash turned off")
+                restore_compact_state()
+
+            if not enable_libmpv_render_context:
+                after_mpv_init()
             else:
-                logger.info("Playing last channel, splash turned off")
-            restore_compact_state()
+                # Workaround for "No render context set"
+                QtCore.QTimer.singleShot(0, after_mpv_init)
 
             ic, ic1, ic2 = 0, 0, 0
             timers_array = {}
