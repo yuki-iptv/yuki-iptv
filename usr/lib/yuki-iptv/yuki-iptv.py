@@ -424,7 +424,7 @@ if __name__ == "__main__":
 
         m3u = ""
 
-        if platform.system() == "Windows":
+        if platform.system() == "Windows" or platform.system() == "Darwin":
             os.environ["PATH"] = (
                 str(Path(os.path.dirname(__file__), "bin"))
                 + os.pathsep
