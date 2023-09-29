@@ -407,6 +407,24 @@ if __name__ == "__main__":
                         "yuki-iptv",
                     )
                 )
+            if not os.path.isdir(
+                Path(
+                    os.path.dirname(os.path.abspath(__file__)),
+                    "usr",
+                    "lib",
+                    "yuki-iptv",
+                    "yuki_iptv",
+                )
+            ):
+                os.mkdir(
+                    Path(
+                        os.path.dirname(os.path.abspath(__file__)),
+                        "usr",
+                        "lib",
+                        "yuki-iptv",
+                        "yuki_iptv",
+                    )
+                )
 
             os.chdir(
                 Path(
@@ -3092,10 +3110,11 @@ if __name__ == "__main__":
             myExitHandler_before()
             if platform.system() == "Windows" or platform.system() == "Darwin":
                 os.chdir(old_pwd)
-            s_p = subprocess.Popen([sys.executable] + sys.argv)
-            if "YUKI_IPTV_IS_APPIMAGE" in os.environ:
+            if "YUKI_IPTV_IS_APPIMAGE" in os.environ or platform.system() == "Darwin":
                 for window in QtWidgets.QApplication.topLevelWidgets():
                     window.close()
+            s_p = subprocess.Popen([sys.executable] + sys.argv)
+            if "YUKI_IPTV_IS_APPIMAGE" in os.environ or platform.system() == "Darwin":
                 s_p.wait()
             sys.exit(0)
 
@@ -8675,7 +8694,6 @@ if __name__ == "__main__":
                     player["vo"] = "libmpv"
                 if not playLastChannel():
                     logger.info("Show splash")
-                    print(os.getcwd())  # TODO
                     mpv_override_play(str(Path("yuki_iptv", ICONS_FOLDER, "main.png")))
                     player.pause = True
                 else:
