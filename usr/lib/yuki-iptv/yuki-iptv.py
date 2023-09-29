@@ -3021,9 +3021,11 @@ if __name__ == "__main__":
         wid.setLayout(verticalLayout)
         chan_win.setCentralWidget(wid)
 
+        do_save_settings = False
+
         # Settings window
         def save_settings():
-            global epg_thread_2
+            global epg_thread_2, do_save_settings
             settings_old = settings.copy()
             udp_proxy_text = sudp.text()
             udp_proxy_starts = udp_proxy_text.startswith(
@@ -3107,16 +3109,13 @@ if __name__ == "__main__":
             settings_file1.write(json.dumps(settings_arr))
             settings_file1.close()
             settings_win.hide()
-            myExitHandler_before()
             if platform.system() == "Windows" or platform.system() == "Darwin":
                 os.chdir(old_pwd)
             if "YUKI_IPTV_IS_APPIMAGE" in os.environ or platform.system() == "Darwin":
                 for window in QtWidgets.QApplication.topLevelWidgets():
                     window.close()
-            s_p = subprocess.Popen([sys.executable] + sys.argv)
-            if "YUKI_IPTV_IS_APPIMAGE" in os.environ or platform.system() == "Darwin":
-                s_p.wait()
-            sys.exit(0)
+            do_save_settings = True
+            app.quit()
 
         wid2 = QtWidgets.QWidget()
 
@@ -7790,7 +7789,8 @@ if __name__ == "__main__":
         def myExitHandler():
             myExitHandler_before()
             logger.info("Stopped")
-            sys.exit(0)
+            if not do_save_settings:
+                sys.exit(0)
 
         first_boot_1 = True
 
@@ -8742,7 +8742,12 @@ if __name__ == "__main__":
             playlists_win.activateWindow()
             moveWindowToCenter(playlists_win)
 
-        sys.exit(_exec(app))
+        app_exit_code = _exec(app)
+        if do_save_settings:
+            s_p = subprocess.Popen([sys.executable] + sys.argv)
+            if "YUKI_IPTV_IS_APPIMAGE" in os.environ or platform.system() == "Darwin":
+                s_p.wait()
+        sys.exit(app_exit_code)
     except Exception as e3:
         logger.warning("ERROR")
         logger.warning("")
