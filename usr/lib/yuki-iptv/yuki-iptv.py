@@ -191,7 +191,7 @@ class YukiLang:
 
 APP = "yuki-iptv"
 LOCALE_DIR = str(Path(os.getcwd(), "..", "..", "share", "locale"))
-if platform.system() != "Windows":
+if platform.system() == "Linux":
     locale.bindtextdomain(APP, LOCALE_DIR)
 gettext.bindtextdomain(APP, LOCALE_DIR)
 gettext.textdomain(APP)
