@@ -51,6 +51,11 @@ class YukiData:
         str_offset = ""
 
 
+def doSetShortcut(name1, shortcut1):
+    if platform.system() != "Darwin":
+        name1.setShortcut(shortcut1)
+
+
 def ast_mpv_seek(secs):
     logger.info(f"Seeking to {secs} seconds")
     YukiData.player.command("seek", secs)
@@ -133,30 +138,30 @@ def alwaysontop_action():
 
 
 def reload_menubar_shortcuts():
-    YukiData.playlists.setShortcut(kbd("show_playlists"))
-    YukiData.reloadPlaylist.setShortcut(kbd("reload_playlist"))
-    YukiData.m3uEditor.setShortcut(kbd("show_m3u_editor"))
-    YukiData.exitAction.setShortcut(kbd("app.quit"))
-    YukiData.playpause.setShortcut(kbd("mpv_play"))
-    YukiData.stop.setShortcut(kbd("mpv_stop"))
-    YukiData.normalSpeed.setShortcut(kbd("(lambda: set_playback_speed(1.00))"))
-    YukiData.prevchannel.setShortcut(kbd("prev_channel"))
-    YukiData.nextchannel.setShortcut(kbd("next_channel"))
-    YukiData.fullscreen.setShortcut(kbd("mpv_fullscreen"))
-    YukiData.compactmode.setShortcut(kbd("showhideeverything"))
-    YukiData.csforchannel.setShortcut(kbd("main_channel_settings"))
-    YukiData.screenshot.setShortcut(kbd("do_screenshot"))
-    YukiData.muteAction.setShortcut(kbd("mpv_mute"))
-    YukiData.volumeMinus.setShortcut(kbd("my_down_binding_execute"))
-    YukiData.volumePlus.setShortcut(kbd("my_up_binding_execute"))
-    YukiData.showhideplaylistAction.setShortcut(kbd("key_t"))
-    YukiData.showhidectrlpanelAction.setShortcut(kbd("lowpanel_ch_1"))
-    YukiData.alwaysontopAction.setShortcut(kbd("alwaysontop"))
-    YukiData.streaminformationAction.setShortcut(kbd("open_stream_info"))
-    YukiData.showepgAction.setShortcut(kbd("show_tvguide_2"))
-    YukiData.forceupdateepgAction.setShortcut(kbd("force_update_epg"))
-    YukiData.sortAction.setShortcut(kbd("show_sort"))
-    YukiData.settingsAction.setShortcut(kbd("show_settings"))
+    doSetShortcut(YukiData.playlists, kbd("show_playlists"))
+    doSetShortcut(YukiData.reloadPlaylist, kbd("reload_playlist"))
+    doSetShortcut(YukiData.m3uEditor, kbd("show_m3u_editor"))
+    doSetShortcut(YukiData.exitAction, kbd("app.quit"))
+    doSetShortcut(YukiData.playpause, kbd("mpv_play"))
+    doSetShortcut(YukiData.stop, kbd("mpv_stop"))
+    doSetShortcut(YukiData.normalSpeed, kbd("(lambda: set_playback_speed(1.00))"))
+    doSetShortcut(YukiData.prevchannel, kbd("prev_channel"))
+    doSetShortcut(YukiData.nextchannel, kbd("next_channel"))
+    doSetShortcut(YukiData.fullscreen, kbd("mpv_fullscreen"))
+    doSetShortcut(YukiData.compactmode, kbd("showhideeverything"))
+    doSetShortcut(YukiData.csforchannel, kbd("main_channel_settings"))
+    doSetShortcut(YukiData.screenshot, kbd("do_screenshot"))
+    doSetShortcut(YukiData.muteAction, kbd("mpv_mute"))
+    doSetShortcut(YukiData.volumeMinus, kbd("my_down_binding_execute"))
+    doSetShortcut(YukiData.volumePlus, kbd("my_up_binding_execute"))
+    doSetShortcut(YukiData.showhideplaylistAction, kbd("key_t"))
+    doSetShortcut(YukiData.showhidectrlpanelAction, kbd("lowpanel_ch_1"))
+    doSetShortcut(YukiData.alwaysontopAction, kbd("alwaysontop"))
+    doSetShortcut(YukiData.streaminformationAction, kbd("open_stream_info"))
+    doSetShortcut(YukiData.showepgAction, kbd("show_tvguide_2"))
+    doSetShortcut(YukiData.forceupdateepgAction, kbd("force_update_epg"))
+    doSetShortcut(YukiData.sortAction, kbd("show_sort"))
+    doSetShortcut(YukiData.settingsAction, kbd("show_settings"))
     sec_keys_1 = [
         kbd("(lambda: mpv_seek(-10))"),
         kbd("(lambda: mpv_seek(10))"),
@@ -168,36 +173,36 @@ def reload_menubar_shortcuts():
     sec_i_1 = -1
     for i_1 in YukiData.secs:
         sec_i_1 += 1
-        i_1.setShortcut(qkeysequence(sec_keys_1[sec_i_1]))
+        doSetShortcut(i_1, qkeysequence(sec_keys_1[sec_i_1]))
 
 
 def init_menubar(data):
     # File
 
     YukiData.playlists = qaction(_("&Playlists"), data)
-    YukiData.playlists.setShortcut(kbd("show_playlists"))
+    doSetShortcut(YukiData.playlists, kbd("show_playlists"))
     YukiData.playlists.triggered.connect(lambda: YukiData.show_playlists())
 
     YukiData.reloadPlaylist = qaction(_("&Update current playlist"), data)
-    YukiData.reloadPlaylist.setShortcut(kbd("reload_playlist"))
+    doSetShortcut(YukiData.reloadPlaylist, kbd("reload_playlist"))
     YukiData.reloadPlaylist.triggered.connect(lambda: YukiData.reload_playlist())
 
     YukiData.m3uEditor = qaction(_("&m3u Editor") + YukiData.str_offset, data)
-    YukiData.m3uEditor.setShortcut(kbd("show_m3u_editor"))
+    doSetShortcut(YukiData.m3uEditor, kbd("show_m3u_editor"))
     YukiData.m3uEditor.triggered.connect(lambda: YukiData.show_m3u_editor())
 
     YukiData.exitAction = qaction(_("&Exit"), data)
-    YukiData.exitAction.setShortcut(kbd("app.quit"))
+    doSetShortcut(YukiData.exitAction, kbd("app.quit"))
     YukiData.exitAction.triggered.connect(lambda: YukiData.app_quit())
 
     # Play
 
     YukiData.playpause = qaction(_("&Play / Pause"), data)
-    YukiData.playpause.setShortcut(kbd("mpv_play"))
+    doSetShortcut(YukiData.playpause, kbd("mpv_play"))
     YukiData.playpause.triggered.connect(lambda: YukiData.mpv_play())
 
     YukiData.stop = qaction(_("&Stop"), data)
-    YukiData.stop.setShortcut(kbd("mpv_stop"))
+    doSetShortcut(YukiData.stop, kbd("mpv_stop"))
     YukiData.stop.triggered.connect(lambda: YukiData.mpv_stop())
 
     YukiData.secs = []
@@ -222,7 +227,7 @@ def init_menubar(data):
         for k in ("-", "+"):
             sec_i += 1
             sec = qaction(sec_i18n[sec_i], data)
-            sec.setShortcut(qkeysequence(sec_keys[sec_i]))
+            doSetShortcut(sec, qkeysequence(sec_keys[sec_i]))
             sec.triggered.connect(
                 partial(ast_mpv_seek, i[2] * -1 if k == "-" else i[2])
             )
@@ -230,7 +235,7 @@ def init_menubar(data):
 
     YukiData.normalSpeed = qaction(_("&Normal speed"), data)
     YukiData.normalSpeed.triggered.connect(partial(ast_mpv_speed, 1.00))
-    YukiData.normalSpeed.setShortcut(kbd("(lambda: set_playback_speed(1.00))"))
+    doSetShortcut(YukiData.normalSpeed, kbd("(lambda: set_playback_speed(1.00))"))
 
     YukiData.spds = []
 
@@ -241,28 +246,28 @@ def init_menubar(data):
 
     YukiData.prevchannel = qaction(_("&Previous"), data)
     YukiData.prevchannel.triggered.connect(lambda: YukiData.prev_channel())
-    YukiData.prevchannel.setShortcut(kbd("prev_channel"))
+    doSetShortcut(YukiData.prevchannel, kbd("prev_channel"))
 
     YukiData.nextchannel = qaction(_("&Next"), data)
     YukiData.nextchannel.triggered.connect(lambda: YukiData.next_channel())
-    YukiData.nextchannel.setShortcut(kbd("next_channel"))
+    doSetShortcut(YukiData.nextchannel, kbd("next_channel"))
 
     # Video
     YukiData.fullscreen = qaction(_("&Fullscreen"), data)
     YukiData.fullscreen.triggered.connect(lambda: YukiData.mpv_fullscreen())
-    YukiData.fullscreen.setShortcut(kbd("mpv_fullscreen"))
+    doSetShortcut(YukiData.fullscreen, kbd("mpv_fullscreen"))
 
     YukiData.compactmode = qaction(_("&Compact mode"), data)
     YukiData.compactmode.triggered.connect(lambda: YukiData.showhideeverything())
-    YukiData.compactmode.setShortcut(kbd("showhideeverything"))
+    doSetShortcut(YukiData.compactmode, kbd("showhideeverything"))
 
     YukiData.csforchannel = qaction(_("&Video settings") + YukiData.str_offset, data)
     YukiData.csforchannel.triggered.connect(lambda: YukiData.main_channel_settings())
-    YukiData.csforchannel.setShortcut(kbd("main_channel_settings"))
+    doSetShortcut(YukiData.csforchannel, kbd("main_channel_settings"))
 
     YukiData.screenshot = qaction(_("&Screenshot"), data)
     YukiData.screenshot.triggered.connect(lambda: YukiData.do_screenshot())
-    YukiData.screenshot.setShortcut(kbd("do_screenshot"))
+    doSetShortcut(YukiData.screenshot, kbd("do_screenshot"))
 
     # Video filters
     YukiData.vf_postproc = qaction(_("&Postprocessing"), data)
@@ -295,15 +300,15 @@ def init_menubar(data):
 
     YukiData.muteAction = qaction(_("&Mute audio"), data)
     YukiData.muteAction.triggered.connect(lambda: YukiData.mpv_mute())
-    YukiData.muteAction.setShortcut(kbd("mpv_mute"))
+    doSetShortcut(YukiData.muteAction, kbd("mpv_mute"))
 
     YukiData.volumeMinus = qaction(_("V&olume -"), data)
     YukiData.volumeMinus.triggered.connect(lambda: YukiData.my_down_binding_execute())
-    YukiData.volumeMinus.setShortcut(kbd("my_down_binding_execute"))
+    doSetShortcut(YukiData.volumeMinus, kbd("my_down_binding_execute"))
 
     YukiData.volumePlus = qaction(_("Vo&lume +"), data)
     YukiData.volumePlus.triggered.connect(lambda: YukiData.my_up_binding_execute())
-    YukiData.volumePlus.setShortcut(kbd("my_up_binding_execute"))
+    doSetShortcut(YukiData.volumePlus, kbd("my_up_binding_execute"))
 
     # Audio filters
 
@@ -327,16 +332,16 @@ def init_menubar(data):
     YukiData.showhideplaylistAction.triggered.connect(
         lambda: YukiData.showhideplaylist()
     )
-    YukiData.showhideplaylistAction.setShortcut(kbd("key_t"))
+    doSetShortcut(YukiData.showhideplaylistAction, kbd("key_t"))
 
     YukiData.showhidectrlpanelAction = qaction(_("Show/hide controls panel"), data)
     YukiData.showhidectrlpanelAction.triggered.connect(lambda: YukiData.lowpanel_ch_1())
-    YukiData.showhidectrlpanelAction.setShortcut(kbd("lowpanel_ch_1"))
+    doSetShortcut(YukiData.showhidectrlpanelAction, kbd("lowpanel_ch_1"))
 
     YukiData.alwaysontopAction = qaction(_("Window always on top"), data)
     YukiData.alwaysontopAction.triggered.connect(alwaysontop_action)
     YukiData.alwaysontopAction.setCheckable(True)
-    YukiData.alwaysontopAction.setShortcut(kbd("alwaysontop"))
+    doSetShortcut(YukiData.alwaysontopAction, kbd("alwaysontop"))
     if (
         qt_library == "PyQt6"
         or qt_library == "PySide6"
@@ -348,28 +353,28 @@ def init_menubar(data):
     YukiData.streaminformationAction.triggered.connect(
         lambda: YukiData.open_stream_info()
     )
-    YukiData.streaminformationAction.setShortcut(kbd("open_stream_info"))
+    doSetShortcut(YukiData.streaminformationAction, kbd("open_stream_info"))
 
     YukiData.showepgAction = qaction(_("TV guide"), data)
     YukiData.showepgAction.triggered.connect(lambda: YukiData.show_tvguide_2())
-    YukiData.showepgAction.setShortcut(kbd("show_tvguide_2"))
+    doSetShortcut(YukiData.showepgAction, kbd("show_tvguide_2"))
 
     YukiData.forceupdateepgAction = qaction(_("&Update TV guide"), data)
     YukiData.forceupdateepgAction.triggered.connect(lambda: YukiData.force_update_epg())
-    YukiData.forceupdateepgAction.setShortcut(kbd("force_update_epg"))
+    doSetShortcut(YukiData.forceupdateepgAction, kbd("force_update_epg"))
 
     # Options
 
     YukiData.sortAction = qaction(_("&Channel sort"), data)
     YukiData.sortAction.triggered.connect(lambda: YukiData.show_sort())
-    YukiData.sortAction.setShortcut(kbd("show_sort"))
+    doSetShortcut(YukiData.sortAction, kbd("show_sort"))
 
     YukiData.shortcutsAction = qaction("&" + _("Shortcuts"), data)
     YukiData.shortcutsAction.triggered.connect(lambda: YukiData.show_shortcuts())
 
     YukiData.settingsAction = qaction(_("&Settings"), data)
     YukiData.settingsAction.triggered.connect(lambda: YukiData.show_settings())
-    YukiData.settingsAction.setShortcut(kbd("show_settings"))
+    doSetShortcut(YukiData.settingsAction, kbd("show_settings"))
 
     # Help
 
