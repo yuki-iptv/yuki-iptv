@@ -32,7 +32,7 @@ import hashlib
 import platform
 from pathlib import Path
 
-if platform.system() != "Windows":
+if platform.system() == "Linux":
     from wand.image import Image
 else:
     from PIL import Image
@@ -71,7 +71,7 @@ def fetch_remote_channel_icon(chan_name, logo_url, req_data_ua, req_data_ref):
                 ).content
                 if req_data1:
                     with io.BytesIO(req_data1) as im_logo_bytes:
-                        if platform.system() != "Windows":
+                        if platform.system() == "Linux":
                             with Image(file=im_logo_bytes) as original:
                                 with original.convert("png") as im_logo:
                                     im_logo.resize(64, 64)
