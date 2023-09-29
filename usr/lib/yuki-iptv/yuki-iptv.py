@@ -382,7 +382,7 @@ if __name__ == "__main__":
         enable_libmpv_render_context = platform.system() == "Darwin"  # Mac OS
 
         old_pwd = os.getcwd()
-        if platform.system() == "Windows":
+        if platform.system() == "Windows" or platform.system() == "Darwin":
             if not os.path.isdir(
                 Path(os.path.dirname(os.path.abspath(__file__)), "usr")
             ):
@@ -3090,7 +3090,7 @@ if __name__ == "__main__":
             settings_file1.close()
             settings_win.hide()
             myExitHandler_before()
-            if platform.system() == "Windows":
+            if platform.system() == "Windows" or platform.system() == "Darwin":
                 os.chdir(old_pwd)
             s_p = subprocess.Popen([sys.executable] + sys.argv)
             if "YUKI_IPTV_IS_APPIMAGE" in os.environ:
