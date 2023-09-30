@@ -77,8 +77,11 @@ def show_exception(e, e_traceback="", prev=""):
 
 if platform.system() == "Windows" or platform.system() == "Darwin":
     os.environ["PATH"] = (
-        str(Path(os.path.dirname(__file__), "bin")) + os.pathsep + os.environ["PATH"]
+        str(Path(os.path.dirname(__file__), "..", "bin"))
+        + os.pathsep
+        + os.environ["PATH"]
     )
+    print(os.environ["PATH"])  # TODO
 
 try:
     from thirdparty.mpv import MpvRenderContext, MpvGlGetProcAddressFn

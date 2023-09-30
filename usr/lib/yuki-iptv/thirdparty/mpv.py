@@ -48,9 +48,6 @@ else:
 
     if platform.system() == "Darwin":
         sofile = str(Path(os.path.dirname(__file__), "..", "bin", "libmpv.2.dylib"))
-        os.environ["DYLD_LIBRARY_PATH"] = str(
-            Path(os.path.dirname(__file__), "..", "bin")
-        ) + os.pathsep + os.environ["DYLD_LIBRARY_PATH"] if "DYLD_LIBRARY_PATH" in os.environ else ""
     else:
         sofile = ctypes.util.find_library('mpv')
     if sofile is None:
