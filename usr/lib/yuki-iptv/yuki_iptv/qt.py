@@ -21,6 +21,10 @@
 # https://fontawesome.com/
 # https://creativecommons.org/licenses/by/4.0/
 #
+import sys
+import gettext
+
+_ = gettext.gettext
 
 
 def get_qt_library():
@@ -30,10 +34,12 @@ def get_qt_library():
     QtWidgets = False
     QtCore = False
     QtGui = False
+    QtOpenGLWidgets = False
     try:
         from PySide6 import QtWidgets
         from PySide6 import QtCore
         from PySide6 import QtGui
+        from PySide6 import QtOpenGLWidgets
 
         QtCore.QT_VERSION_STR = QtCore.qVersion()
 
@@ -44,6 +50,7 @@ def get_qt_library():
             from PyQt6 import QtWidgets
             from PyQt6 import QtCore
             from PyQt6 import QtGui
+            from PyQt6 import QtOpenGLWidgets
 
             QShortcut = QtGui.QShortcut
             qt_library = "PyQt6"
@@ -52,6 +59,29 @@ def get_qt_library():
             from PyQt5 import QtCore
             from PyQt5 import QtGui
 
+            QtOpenGLWidgets = QtWidgets
             QShortcut = QtWidgets.QShortcut
             qt_library = "PyQt5"
-    return qt_library, QtWidgets, QtCore, QtGui, QShortcut
+    return qt_library, QtWidgets, QtCore, QtGui, QShortcut, QtOpenGLWidgets
+
+
+def show_exception(e, e_traceback="", prev=""):
+    qt_library, QtWidgets, QtCore, QtGui, QShortcut, QtOpenGLWidgets = get_qt_library()
+    if not QtWidgets.QApplication.instance():
+        app = QtWidgets.QApplication(sys.argv)
+    else:
+        app = QtWidgets.QApplication.instance()  # noqa: F841
+    if e_traceback:
+        e = e_traceback.strip()
+    message = "{}{}\n\n{}".format(_("yuki-iptv error"), prev, str(e))
+    try:
+        qt_icon_critical = QtWidgets.QMessageBox.Icon.Critical
+    except Exception:
+        qt_icon_critical = 3
+    msg = QtWidgets.QMessageBox(
+        qt_icon_critical,
+        _("Error"),
+        message,
+        QtWidgets.QMessageBox.StandardButton.Ok,
+    )
+    msg.exec()

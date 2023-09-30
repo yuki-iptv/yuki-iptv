@@ -32,7 +32,7 @@ from yuki_iptv.qt import get_qt_library
 from yuki_iptv.qt6compat import qaction
 from yuki_iptv.options import read_option
 
-qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
+qt_library, QtWidgets, QtCore, QtGui, QShortcut, QtOpenGLWidgets = get_qt_library()
 logger = logging.getLogger(__name__)
 _ = gettext.gettext
 

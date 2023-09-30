@@ -62,7 +62,7 @@ try:
 except Exception:
     pass
 
-from yuki_iptv.qt import get_qt_library
+from yuki_iptv.qt import get_qt_library, show_exception
 from yuki_iptv.epg import (
     worker,
     is_program_actual,
@@ -157,7 +157,7 @@ if platform.system() == "Linux":
         logger.warning("Failed to init MPRIS libraries!")
         logger.warning(traceback.format_exc())
 
-qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
+qt_library, QtWidgets, QtCore, QtGui, QShortcut, QtOpenGLWidgets = get_qt_library()
 
 if "PyQt6" in sys.modules or "PyQt5" in sys.modules:
     Signal = QtCore.pyqtSignal
@@ -276,16 +276,6 @@ if not os.path.isdir(LOCAL_DIR):
     os.mkdir(LOCAL_DIR)
 if not os.path.isdir(SAVE_FOLDER_DEFAULT):
     os.mkdir(SAVE_FOLDER_DEFAULT)
-
-
-def show_exception(e, e_traceback="", prev=""):
-    if e_traceback:
-        e = e_traceback.strip()
-    message = "{}{}\n\n{}".format(_("yuki-iptv error"), prev, str(e))
-    msg = QtWidgets.QMessageBox(
-        qt_icon_critical, _("Error"), message, QtWidgets.QMessageBox.StandardButton.Ok
-    )
-    msg.exec()
 
 
 # Used as a decorator to run things in the main loop, from another thread

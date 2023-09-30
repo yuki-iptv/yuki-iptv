@@ -20,60 +20,17 @@
 # https://fontawesome.com/
 # https://creativecommons.org/licenses/by/4.0/
 #
-import sys
 import os
 import logging
 import platform
-import gettext
 import traceback
 from pathlib import Path
-
-try:
-    from PySide6 import QtCore, QtWidgets
-    from PySide6 import QtOpenGLWidgets
-    from PySide6.QtGui import QOpenGLContext
-
-    opengl_widget = QtOpenGLWidgets.QOpenGLWidget
-    use_slot = QtCore.Slot
-    qt_icon_critical = QtWidgets.QMessageBox.Icon.Critical
-except Exception:
-    try:
-        from PyQt6 import QtCore, QtWidgets
-        from PyQt6 import QtOpenGLWidgets
-        from PyQt6.QtGui import QOpenGLContext
-
-        opengl_widget = QtOpenGLWidgets.QOpenGLWidget
-        use_slot = QtCore.pyqtSlot
-        qt_icon_critical = QtWidgets.QMessageBox.Icon.Critical
-    except Exception:
-        from PyQt5 import QtCore, QtWidgets
-        from PyQt5.QtGui import QOpenGLContext
-
-        opengl_widget = QtWidgets.QOpenGLWidget
-        use_slot = QtCore.pyqtSlot
-        qt_icon_critical = 3
+from yuki_iptv.qt import get_qt_library, show_exception
 
 # https://github.com/feeluown/FeelUOwn/blob/25a0a714b39a0a8e12cd09dd9b7c92bf3c75667c/feeluown/gui/widgets/mpv.py
 
 logger = logging.getLogger(__name__)
-
-
-def show_exception(e, e_traceback="", prev=""):
-    if not QtWidgets.QApplication.instance():
-        app = QtWidgets.QApplication(sys.argv)
-    else:
-        app = QtWidgets.QApplication.instance()  # noqa: F841
-    if e_traceback:
-        e = e_traceback.strip()
-    message = "{}{}\n\n{}".format(gettext.gettext("yuki-iptv error"), prev, str(e))
-    msg = QtWidgets.QMessageBox(
-        qt_icon_critical,
-        gettext.gettext("Error"),
-        message,
-        QtWidgets.QMessageBox.StandardButton.Ok,
-    )
-    msg.exec()
-
+qt_library, QtWidgets, QtCore, QtGui, QShortcut, QtOpenGLWidgets = get_qt_library()
 
 if platform.system() == "Windows" or platform.system() == "Darwin":
     os.environ["PATH"] = (
@@ -81,7 +38,6 @@ if platform.system() == "Windows" or platform.system() == "Darwin":
         + os.pathsep
         + os.environ["PATH"]
     )
-    print(os.environ["PATH"])  # TODO
 
 try:
     from thirdparty.mpv import MpvRenderContext, MpvGlGetProcAddressFn
@@ -91,16 +47,22 @@ except Exception as e3:
     e3_traceback = traceback.format_exc()
     logger.warning(e3_traceback)
     show_exception(e3, e3_traceback)
+    raise e3
+
+if qt_library == "PySide6":
+    use_slot = QtCore.Slot
+else:
+    use_slot = QtCore.pyqtSlot
 
 
 def get_process_address(_, name):
-    glctx = QOpenGLContext.currentContext()
+    glctx = QtGui.QOpenGLContext.currentContext()
     if glctx is None:
         return 0
     return int(glctx.getProcAddress(name))
 
 
-class MPVOpenGLWidget(opengl_widget):
+class MPVOpenGLWidget(QtOpenGLWidgets.QOpenGLWidget):
     def __init__(self, app, player):
         super().__init__()
         self.app = app
