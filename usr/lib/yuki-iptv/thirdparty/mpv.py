@@ -47,7 +47,7 @@ else:
     locale.setlocale(locale.LC_NUMERIC, 'C')
 
     if platform.system() == "Darwin":
-        sofile = str(Path(os.path.dirname(__file__), "..", "bin", "libmpv.2.dylib"))
+        sofile = str(Path(Path(os.path.dirname(__file__)).parent, "bin", "libmpv.2.dylib"))
     else:
         sofile = ctypes.util.find_library('mpv')
     if sofile is None:

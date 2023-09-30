@@ -384,10 +384,6 @@ if __name__ == "__main__":
         old_pwd = os.getcwd()
         if platform.system() == "Windows" or platform.system() == "Darwin":
             if not os.path.isdir(
-                Path(os.path.dirname(os.path.abspath(__file__)), "thirdparty")
-            ):
-                os.mkdir(Path(os.path.dirname(os.path.abspath(__file__)), "thirdparty"))
-            if not os.path.isdir(
                 Path(os.path.dirname(os.path.abspath(__file__)), "usr")
             ):
                 os.mkdir(Path(os.path.dirname(os.path.abspath(__file__)), "usr"))

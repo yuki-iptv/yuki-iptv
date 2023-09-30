@@ -77,7 +77,7 @@ def show_exception(e, e_traceback="", prev=""):
 
 if platform.system() == "Windows" or platform.system() == "Darwin":
     os.environ["PATH"] = (
-        str(Path(os.path.dirname(__file__), "..", "bin"))
+        str(Path(Path(os.path.dirname(__file__)).parent, "bin"))
         + os.pathsep
         + os.environ["PATH"]
     )
