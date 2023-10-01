@@ -323,6 +323,7 @@ class YukiData:
     series = {}
     osc = -1
     volume = 100
+    needs_resize = False
 
 
 stream_info.video_properties = {}
@@ -4486,6 +4487,7 @@ if __name__ == "__main__":
                 window_data["x"], window_data["y"], window_data["w"], window_data["h"]
             )
         else:
+            YukiData.needs_resize = True
             win.resize(WINDOW_SIZE[0], WINDOW_SIZE[1])
             qr = win.frameGeometry()
             qr.moveCenter(
@@ -8683,6 +8685,18 @@ if __name__ == "__main__":
                 pass
 
             def after_mpv_init():
+                # Fix window size on Mac OS
+                # maybe needed on other systems?
+                if YukiData.needs_resize:
+                    logger.info("Fix window size")
+                    win.resize(WINDOW_SIZE[0], WINDOW_SIZE[1])
+                    qr = win.frameGeometry()
+                    qr.moveCenter(
+                        QtGui.QScreen.availableGeometry(
+                            QtWidgets.QApplication.primaryScreen()
+                        ).center()
+                    )
+                    win.move(qr.topLeft())
                 if enable_libmpv_render_context:
                     logger.info("Render context enabled, switching vo to libmpv")
                     player["vo"] = "libmpv"
