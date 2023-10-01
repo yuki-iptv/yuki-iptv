@@ -255,7 +255,7 @@ if platform.system() == "Darwin" and not locale.getlocale()[0]:
             mac_lang = mac_lang + ".UTF-8"
         if "_" in mac_lang:
             logger.info(f"Fixing Mac OS locale, set to {mac_lang}")
-            locale.setlocale(locale.LC_ALL, mac_lang)
+            os.environ["LC_ALL"] = mac_lang
         else:
             logger.info("Failed to fix Mac OS locale!")
     except Exception:
@@ -8741,6 +8741,7 @@ if __name__ == "__main__":
 
         app_exit_code = _exec(app)
         if do_save_settings:
+            print(sys.executable)  # TODO
             s_p = subprocess.Popen([sys.executable] + sys.argv)
             if "YUKI_IPTV_IS_APPIMAGE" in os.environ:
                 s_p.wait()
