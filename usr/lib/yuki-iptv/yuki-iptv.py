@@ -8741,8 +8741,10 @@ if __name__ == "__main__":
 
         app_exit_code = _exec(app)
         if do_save_settings:
-            print(sys.executable, "--", sys.argv)  # TODO
-            s_p = subprocess.Popen([sys.executable] + sys.argv)
+            start_args = sys.argv
+            if "python" not in sys.executable:
+                start_args.pop(0)
+            s_p = subprocess.Popen([sys.executable] + start_args)
             if "YUKI_IPTV_IS_APPIMAGE" in os.environ:
                 s_p.wait()
         sys.exit(app_exit_code)
