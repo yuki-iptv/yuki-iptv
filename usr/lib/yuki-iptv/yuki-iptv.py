@@ -572,10 +572,7 @@ if __name__ == "__main__":
         # URL override for command line
         if args1.URL:
             settings["m3u"] = args1.URL
-            if args1.URL == "http://____PLUGIN_M3U____":
-                settings["epg"] = "http://____PLUGIN_EPG____"
-            else:
-                settings["epg"] = ""
+            settings["epg"] = ""
 
         tvguide_sets = {}
 
