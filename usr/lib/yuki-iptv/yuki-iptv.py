@@ -189,6 +189,60 @@ class YukiLang:
     cache = {}
 
 
+old_pwd = os.getcwd()
+if platform.system() == "Windows" or platform.system() == "Darwin":
+    if not os.path.isdir(Path(os.path.dirname(os.path.abspath(__file__)), "usr")):
+        os.mkdir(Path(os.path.dirname(os.path.abspath(__file__)), "usr"))
+    if not os.path.isdir(
+        Path(os.path.dirname(os.path.abspath(__file__)), "usr", "lib")
+    ):
+        os.mkdir(Path(os.path.dirname(os.path.abspath(__file__)), "usr", "lib"))
+    if not os.path.isdir(
+        Path(
+            os.path.dirname(os.path.abspath(__file__)),
+            "usr",
+            "lib",
+            "yuki-iptv",
+        )
+    ):
+        os.mkdir(
+            Path(
+                os.path.dirname(os.path.abspath(__file__)),
+                "usr",
+                "lib",
+                "yuki-iptv",
+            )
+        )
+    if not os.path.isdir(
+        Path(
+            os.path.dirname(os.path.abspath(__file__)),
+            "usr",
+            "lib",
+            "yuki-iptv",
+            "yuki_iptv",
+        )
+    ):
+        os.mkdir(
+            Path(
+                os.path.dirname(os.path.abspath(__file__)),
+                "usr",
+                "lib",
+                "yuki-iptv",
+                "yuki_iptv",
+            )
+        )
+
+    os.chdir(
+        Path(
+            os.path.dirname(os.path.abspath(__file__)),
+            "usr",
+            "lib",
+            "yuki-iptv",
+        )
+    )
+else:
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
 APP = "yuki-iptv"
 LOCALE_DIR = str(Path(os.getcwd(), "..", "..", "share", "locale"))
 if platform.system() == "Linux":
@@ -370,62 +424,6 @@ if __name__ == "__main__":
         logger.info("")
 
         enable_libmpv_render_context = platform.system() == "Darwin"  # Mac OS
-
-        old_pwd = os.getcwd()
-        if platform.system() == "Windows" or platform.system() == "Darwin":
-            if not os.path.isdir(
-                Path(os.path.dirname(os.path.abspath(__file__)), "usr")
-            ):
-                os.mkdir(Path(os.path.dirname(os.path.abspath(__file__)), "usr"))
-            if not os.path.isdir(
-                Path(os.path.dirname(os.path.abspath(__file__)), "usr", "lib")
-            ):
-                os.mkdir(Path(os.path.dirname(os.path.abspath(__file__)), "usr", "lib"))
-            if not os.path.isdir(
-                Path(
-                    os.path.dirname(os.path.abspath(__file__)),
-                    "usr",
-                    "lib",
-                    "yuki-iptv",
-                )
-            ):
-                os.mkdir(
-                    Path(
-                        os.path.dirname(os.path.abspath(__file__)),
-                        "usr",
-                        "lib",
-                        "yuki-iptv",
-                    )
-                )
-            if not os.path.isdir(
-                Path(
-                    os.path.dirname(os.path.abspath(__file__)),
-                    "usr",
-                    "lib",
-                    "yuki-iptv",
-                    "yuki_iptv",
-                )
-            ):
-                os.mkdir(
-                    Path(
-                        os.path.dirname(os.path.abspath(__file__)),
-                        "usr",
-                        "lib",
-                        "yuki-iptv",
-                        "yuki_iptv",
-                    )
-                )
-
-            os.chdir(
-                Path(
-                    os.path.dirname(os.path.abspath(__file__)),
-                    "usr",
-                    "lib",
-                    "yuki-iptv",
-                )
-            )
-        else:
-            os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
         multiprocessing_manager = Manager()
         multiprocessing_manager_dict = multiprocessing_manager.dict()
@@ -723,9 +721,7 @@ if __name__ == "__main__":
         else:
             ICONS_FOLDER = str(Path("..", "..", "..", "share", "yuki-iptv", "icons"))
 
-        main_icon = QtGui.QIcon(
-            str(Path(os.getcwd(), "yuki_iptv", ICONS_FOLDER, "tv-blue.png"))
-        )
+        main_icon = QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "tv-blue.png")))
         channels = {}
         programmes = {}
 
@@ -8728,7 +8724,7 @@ if __name__ == "__main__":
         app_exit_code = _exec(app)
         if do_save_settings:
             s_p = subprocess.Popen([sys.executable] + sys.argv)
-            if "YUKI_IPTV_IS_APPIMAGE" in os.environ or platform.system() == "Darwin":
+            if "YUKI_IPTV_IS_APPIMAGE" in os.environ:
                 s_p.wait()
         sys.exit(app_exit_code)
     except Exception as e3:
