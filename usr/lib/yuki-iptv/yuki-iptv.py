@@ -243,6 +243,24 @@ if platform.system() == "Windows" or platform.system() == "Darwin":
 else:
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+# Mac OS locale fix/workaround
+if platform.system() == "Darwin" and not locale.getlocale()[0]:
+    try:
+        mac_lang = (
+            subprocess.check_output(["defaults", "read", "-g", "AppleLocale"])
+            .decode("utf-8")
+            .strip()
+        )
+        if ".UTF-8" not in mac_lang:
+            mac_lang = mac_lang + ".UTF-8"
+        if "_" in mac_lang:
+            logger.info(f"Fixing Mac OS locale, set to {mac_lang}")
+            locale.setlocale(locale.LC_ALL, mac_lang)
+        else:
+            logger.info("Failed to fix Mac OS locale!")
+    except Exception:
+        logger.info("Failed to fix Mac OS locale!")
+
 APP = "yuki-iptv"
 LOCALE_DIR = str(Path(os.getcwd(), "..", "..", "share", "locale"))
 if platform.system() == "Linux":
