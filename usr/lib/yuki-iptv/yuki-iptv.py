@@ -4188,7 +4188,7 @@ if __name__ == "__main__":
                 else:
                     end_file_callback()
 
-            if not enable_libmpv_render_context:
+            if needs_player_keybinds:
 
                 @player.on_key_press("MBTN_RIGHT")
                 def my_mouse_right():
@@ -4323,6 +4323,14 @@ if __name__ == "__main__":
         def get_global_cursor_position():
             return QtGui.QCursor.pos()
 
+        if enable_libmpv_render_context:
+            needs_player_keybinds = False
+        else:
+            needs_player_keybinds = True
+
+        if platform.system() == "Windows":
+            needs_player_keybinds = False
+
         class MainWindow(QtWidgets.QMainWindow):
             oldpos = None
             oldpos1 = None
@@ -4377,10 +4385,10 @@ if __name__ == "__main__":
                             my_down_binding_execute()
                         event3.accept()
 
-                if not enable_libmpv_render_context:
-                    self.container = QtWidgets.QWidget(self)
-                else:
+                if not needs_player_keybinds:
                     self.container = Container(self)
+                else:
+                    self.container = QtWidgets.QWidget(self)
                 self.setCentralWidget(self.container)
                 self.container.setAttribute(
                     QtCore.Qt.WidgetAttribute.WA_DontCreateNativeAncestors
