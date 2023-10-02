@@ -323,6 +323,8 @@ class YukiData:
     series = {}
     osc = -1
     volume = 100
+    needs_resize = False
+    first_start = False
 
 
 stream_info.video_properties = {}
@@ -4486,6 +4488,7 @@ if __name__ == "__main__":
                 window_data["x"], window_data["y"], window_data["w"], window_data["h"]
             )
         else:
+            YukiData.needs_resize = True
             win.resize(WINDOW_SIZE[0], WINDOW_SIZE[1])
             qr = win.frameGeometry()
             qr.moveCenter(
@@ -7725,17 +7728,18 @@ if __name__ == "__main__":
             except Exception:
                 pass
             try:
-                logger.info("Saving main window position / width / height...")
-                write_option(
-                    "window",
-                    {
-                        "x": win.geometry().x(),
-                        "y": win.geometry().y(),
-                        "w": win.width(),
-                        "h": win.height(),
-                    },
-                )
-                logger.info("Main window position / width / height saved")
+                if not YukiData.first_start:
+                    logger.info("Saving main window position / width / height...")
+                    write_option(
+                        "window",
+                        {
+                            "x": win.geometry().x(),
+                            "y": win.geometry().y(),
+                            "w": win.width(),
+                            "h": win.height(),
+                        },
+                    )
+                    logger.info("Main window position / width / height saved")
             except Exception:
                 pass
             try:
@@ -8683,6 +8687,18 @@ if __name__ == "__main__":
                 pass
 
             def after_mpv_init():
+                # Fix window size on Mac OS
+                # maybe needed on other systems?
+                if YukiData.needs_resize:
+                    logger.info("Fix window size")
+                    win.resize(WINDOW_SIZE[0], WINDOW_SIZE[1])
+                    qr = win.frameGeometry()
+                    qr.moveCenter(
+                        QtGui.QScreen.availableGeometry(
+                            QtWidgets.QApplication.primaryScreen()
+                        ).center()
+                    )
+                    win.move(qr.topLeft())
                 if enable_libmpv_render_context:
                     logger.info("Render context enabled, switching vo to libmpv")
                     player["vo"] = "libmpv"
@@ -8729,6 +8745,7 @@ if __name__ == "__main__":
             thread_tvguide_update_pt2()
             update_epg_func()
         else:
+            YukiData.first_start = True
             show_playlists()
             playlists_win.show()
             playlists_win.raise_()
