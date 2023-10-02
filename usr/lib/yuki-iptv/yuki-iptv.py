@@ -325,6 +325,7 @@ class YukiData:
     volume = 100
     needs_resize = False
     first_start = False
+    streaminfo_win_visible = False
 
 
 stream_info.video_properties = {}
@@ -624,7 +625,8 @@ if __name__ == "__main__":
         first_boot = False
         epg_updating = False
 
-        def force_update_epg():
+        @idle_function
+        def force_update_epg(unused=None):
             global use_local_tvguide, first_boot
             if os.path.exists(str(Path(LOCAL_DIR, "epg.cache"))):
                 os.remove(str(Path(LOCAL_DIR, "epg.cache")))
@@ -670,6 +672,10 @@ if __name__ == "__main__":
             l1.hide()
             l1.setText2("")
             time_stop = time.time()
+
+        @idle_function
+        def btn_update_click(unused=None):
+            btn_update.click()
 
         @async_gui_blocking_function
         def update_epg_func():
@@ -725,7 +731,7 @@ if __name__ == "__main__":
                     "TV guide read done, took "
                     f"{round(time.time() - tvguide_read_time, 2)} seconds"
                 )
-                btn_update.click()
+                btn_update_click()
             else:
                 logger.info("No EPG cache found")
                 epg_ready = True
@@ -1413,7 +1419,14 @@ if __name__ == "__main__":
 
         shortcuts_win_2.setCentralWidget(shortcuts_win_2_widget)
 
-        streaminfo_win = QtWidgets.QMainWindow()
+        class StreaminfoWin(QtWidgets.QMainWindow):
+            def showEvent(self, event4):
+                YukiData.streaminfo_win_visible = True
+
+            def hideEvent(self, event4):
+                YukiData.streaminfo_win_visible = False
+
+        streaminfo_win = StreaminfoWin()
         streaminfo_win.setWindowIcon(main_icon)
 
         help_win = QtWidgets.QMainWindow()
@@ -2022,16 +2035,20 @@ if __name__ == "__main__":
 
         recViaScheduler = False
 
+        @idle_function
+        def record_post_action_after(unused=None):
+            logger.info("Record via scheduler ended, executing post-action...")
+            # 0 - nothing to do
+            if praction_choose.currentIndex() == 1:  # 1 - Press Stop
+                mpv_stop()
+
         @async_gui_blocking_function
         def record_post_action():
             while True:
                 if is_recording_func() is True:
                     break
                 time.sleep(1)
-            logger.info("Record via scheduler ended, executing post-action...")
-            # 0 - nothing to do
-            if praction_choose.currentIndex() == 1:  # 1 - Press Stop
-                mpv_stop()
+            record_post_action_after()
 
         def format_bytes(bytes1, hbnames):
             idx = 0
@@ -2515,7 +2532,7 @@ if __name__ == "__main__":
 
                 if _("Average Bitrate") in stream_info.video_properties:
                     if _("Average Bitrate") in stream_info.audio_properties:
-                        if not streaminfo_win.isVisible():
+                        if not YukiData.streaminfo_win_visible:
                             return
 
                 rates = {
@@ -2883,7 +2900,7 @@ if __name__ == "__main__":
                         list(videoaspect_vars)[videoaspect_choose.currentIndex()]
                     ]
                 )
-            btn_update.click()
+            btn_update_click()
             chan_win.close()
 
         save_btn = QtWidgets.QPushButton(_("Save settings"))
@@ -4824,7 +4841,7 @@ if __name__ == "__main__":
                     doPlay(play_url, ua_choose, j)
                 else:
                     doPlay(custom_url, ua_choose, j)
-                btn_update.click()
+                btn_update_click()
 
         item_selected = ""
 
@@ -4861,7 +4878,7 @@ if __name__ == "__main__":
             stop_label.setText("")
             dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
             win.update()
-            btn_update.click()
+            btn_update_click()
             redraw_menubar()
 
         def esc_handler():
@@ -5244,7 +5261,7 @@ if __name__ == "__main__":
                     thread_logos_update_lock = True
                     if multiprocessing_manager_dict["logos_completed"]:
                         multiprocessing_manager_dict["logos_completed"] = False
-                        btn_update.click()
+                        btn_update_click()
                     thread_logos_update_lock = False
             except Exception:
                 pass
@@ -5697,7 +5714,7 @@ if __name__ == "__main__":
             if not first_change:
                 first_change = True
             else:
-                btn_update.click()
+                btn_update_click()
 
         btn_update.clicked.connect(redraw_chans)
 
@@ -5935,7 +5952,7 @@ if __name__ == "__main__":
             else:
                 favourite_sets.append(item_selected)
             save_favourite_sets()
-            btn_update.click()
+            btn_update_click()
 
         def open_external_player():
             moveWindowToCenter(ext_win)
@@ -6061,7 +6078,7 @@ if __name__ == "__main__":
             except Exception:
                 filter_txt1 = ""
             if YukiData.playmodeIndex == 0:  # TV channels
-                btn_update.click()
+                btn_update_click()
             elif YukiData.playmodeIndex == 1:  # Movies
                 for item3 in range(win.moviesWidget.count()):
                     if (
@@ -6944,7 +6961,7 @@ if __name__ == "__main__":
                 msg.exec()
 
         @idle_function
-        def showhideplaylist(arg33=None):
+        def showhideplaylist(unused=None):
             global fullscreen
             if not fullscreen:
                 try:
@@ -6953,7 +6970,7 @@ if __name__ == "__main__":
                     pass
 
         @idle_function
-        def lowpanel_ch_1(arg33=None):
+        def lowpanel_ch_1(unused=None):
             global fullscreen
             if not fullscreen:
                 try:
@@ -7830,10 +7847,10 @@ if __name__ == "__main__":
                 14.9 if not multiprocessing_manager_dict["logos_inprogress"] else 2.9
             ):
                 ic = 0
-                btn_update.click()
+                btn_update_click()
 
         @idle_function
-        def thread_tvguide_update_1():
+        def thread_tvguide_update_1(unused=None):
             global static_text, time_stop
             l1.setStatic2(True)
             l1.show()
@@ -7842,7 +7859,7 @@ if __name__ == "__main__":
             time_stop = time.time() + 3
 
         @idle_function
-        def thread_tvguide_update_2():
+        def thread_tvguide_update_2(unused=None):
             global time_stop
             l1.setStatic2(False)
             l1.show()
@@ -7899,7 +7916,7 @@ if __name__ == "__main__":
                                 prog0.lower(): tvguide_sets[prog0]
                                 for prog0 in tvguide_sets
                             }
-                            btn_update.click()  # start update in main thread
+                            btn_update_click()  # start update in main thread
                 time.sleep(0.1)
 
         def thread_record():
@@ -8036,7 +8053,7 @@ if __name__ == "__main__":
                 pass
 
         @idle_function
-        def thread_tvguide_update_pt2_1():
+        def thread_tvguide_update_pt2_1(unused=None):
             global time_stop
             l1.setStatic2(False)
             l1.show()
@@ -8046,7 +8063,7 @@ if __name__ == "__main__":
         thread_tvguide_update_pt2_e2 = ""
 
         @idle_function
-        def thread_tvguide_update_pt2_2():
+        def thread_tvguide_update_pt2_2(unused=None):
             global time_stop
             l1.setStatic2(False)
             l1.show()
@@ -8077,7 +8094,7 @@ if __name__ == "__main__":
                         epg_icons = epg_data[6]
                         tvguide_sets = programmes
                         save_tvguide_sets()
-                        btn_update.click()  # start update in main thread
+                        btn_update_click()  # start update in main thread
                     except Exception as e2:
                         epg_failed = True
                         logger.warning(
@@ -8759,7 +8776,8 @@ if __name__ == "__main__":
             if "python" not in sys.executable:
                 start_args.pop(0)
             s_p = subprocess.Popen([sys.executable] + start_args)
-            if "YUKI_IPTV_IS_APPIMAGE" in os.environ:
+            # needed for Nuitka onefile and AppImage
+            if "YUKI_IPTV_IS_APPIMAGE" in os.environ or platform.system() == "Windows":
                 s_p.wait()
         sys.exit(app_exit_code)
     except Exception as e3:
