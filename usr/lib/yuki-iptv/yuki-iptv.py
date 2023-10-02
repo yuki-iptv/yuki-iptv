@@ -3124,7 +3124,11 @@ if __name__ == "__main__":
             settings_win.hide()
             if platform.system() == "Windows" or platform.system() == "Darwin":
                 os.chdir(old_pwd)
-            if "YUKI_IPTV_IS_APPIMAGE" in os.environ or platform.system() == "Darwin":
+            if (
+                "YUKI_IPTV_IS_APPIMAGE" in os.environ
+                or platform.system() == "Darwin"
+                or platform.system() == "Windows"
+            ):
                 for window in QtWidgets.QApplication.topLevelWidgets():
                     window.close()
             do_save_settings = True
