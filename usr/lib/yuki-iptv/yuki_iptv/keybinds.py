@@ -23,7 +23,7 @@
 #
 from yuki_iptv.qt import get_qt_library
 
-qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
+qt_library, QtWidgets, QtCore, QtGui, QShortcut, QtOpenGLWidgets = get_qt_library()
 
 main_keybinds_internal = {
     "do_record_1_INTERNAL": QtCore.Qt.Key.Key_MediaRecord,

@@ -62,7 +62,7 @@ try:
 except Exception:
     pass
 
-from yuki_iptv.qt import get_qt_library
+from yuki_iptv.qt import get_qt_library, show_exception
 from yuki_iptv.epg import (
     worker,
     is_program_actual,
@@ -105,6 +105,7 @@ from yuki_iptv.options import read_option, write_option
 from yuki_iptv.keybinds import main_keybinds_internal, main_keybinds_default
 from yuki_iptv.series import parse_series
 from yuki_iptv.crossplatform import LOCAL_DIR, SAVE_FOLDER_DEFAULT
+from yuki_iptv.mpv_opengl import MPVOpenGLWidget
 from thirdparty.xtream import XTream, Serie
 
 if platform.system() == "Windows":
@@ -124,7 +125,7 @@ parser.add_argument(
     "--disable-plugins", action="store_true", help="Disable all plugins"
 )
 parser.add_argument("URL", help="Playlist URL or file", nargs="?")
-args1 = parser.parse_args()
+args1, _unparsed_args = parser.parse_known_args()
 
 loglevel = args1.loglevel if args1.loglevel else "INFO"
 numeric_level = getattr(logging, loglevel.upper(), None)
@@ -139,7 +140,7 @@ logging.basicConfig(
 logger = logging.getLogger("yuki-iptv")
 mpv_logger = logging.getLogger("libmpv")
 
-if platform.system() != "Windows":
+if platform.system() == "Linux":
     try:
         from thirdparty.mpris_server.adapters import (
             PlayState,
@@ -156,7 +157,7 @@ if platform.system() != "Windows":
         logger.warning("Failed to init MPRIS libraries!")
         logger.warning(traceback.format_exc())
 
-qt_library, QtWidgets, QtCore, QtGui, QShortcut = get_qt_library()
+qt_library, QtWidgets, QtCore, QtGui, QShortcut, QtOpenGLWidgets = get_qt_library()
 
 if "PyQt6" in sys.modules or "PyQt5" in sys.modules:
     Signal = QtCore.pyqtSignal
@@ -188,9 +189,81 @@ class YukiLang:
     cache = {}
 
 
+old_pwd = os.getcwd()
+if platform.system() == "Windows" or platform.system() == "Darwin":
+    if not os.path.isdir(Path(os.path.dirname(os.path.abspath(__file__)), "usr")):
+        os.mkdir(Path(os.path.dirname(os.path.abspath(__file__)), "usr"))
+    if not os.path.isdir(
+        Path(os.path.dirname(os.path.abspath(__file__)), "usr", "lib")
+    ):
+        os.mkdir(Path(os.path.dirname(os.path.abspath(__file__)), "usr", "lib"))
+    if not os.path.isdir(
+        Path(
+            os.path.dirname(os.path.abspath(__file__)),
+            "usr",
+            "lib",
+            "yuki-iptv",
+        )
+    ):
+        os.mkdir(
+            Path(
+                os.path.dirname(os.path.abspath(__file__)),
+                "usr",
+                "lib",
+                "yuki-iptv",
+            )
+        )
+    if not os.path.isdir(
+        Path(
+            os.path.dirname(os.path.abspath(__file__)),
+            "usr",
+            "lib",
+            "yuki-iptv",
+            "yuki_iptv",
+        )
+    ):
+        os.mkdir(
+            Path(
+                os.path.dirname(os.path.abspath(__file__)),
+                "usr",
+                "lib",
+                "yuki-iptv",
+                "yuki_iptv",
+            )
+        )
+
+    os.chdir(
+        Path(
+            os.path.dirname(os.path.abspath(__file__)),
+            "usr",
+            "lib",
+            "yuki-iptv",
+        )
+    )
+else:
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
+# Mac OS locale fix/workaround
+if platform.system() == "Darwin" and not locale.getlocale()[0]:
+    try:
+        mac_lang = (
+            subprocess.check_output(["defaults", "read", "-g", "AppleLocale"])
+            .decode("utf-8")
+            .strip()
+        )
+        if ".UTF-8" not in mac_lang:
+            mac_lang = mac_lang + ".UTF-8"
+        if "_" in mac_lang:
+            logger.info(f"Fixing Mac OS locale, set to {mac_lang}")
+            os.environ["LC_ALL"] = mac_lang
+        else:
+            logger.info("Failed to fix Mac OS locale!")
+    except Exception:
+        logger.info("Failed to fix Mac OS locale!")
+
 APP = "yuki-iptv"
 LOCALE_DIR = str(Path(os.getcwd(), "..", "..", "share", "locale"))
-if platform.system() != "Windows":
+if platform.system() == "Linux":
     locale.bindtextdomain(APP, LOCALE_DIR)
 gettext.bindtextdomain(APP, LOCALE_DIR)
 gettext.textdomain(APP)
@@ -250,6 +323,8 @@ class YukiData:
     series = {}
     osc = -1
     volume = 100
+    needs_resize = False
+    first_start = False
 
 
 stream_info.video_properties = {}
@@ -275,16 +350,6 @@ if not os.path.isdir(LOCAL_DIR):
     os.mkdir(LOCAL_DIR)
 if not os.path.isdir(SAVE_FOLDER_DEFAULT):
     os.mkdir(SAVE_FOLDER_DEFAULT)
-
-
-def show_exception(e, e_traceback="", prev=""):
-    if e_traceback:
-        e = e_traceback.strip()
-    message = "{}{}\n\n{}".format(_("yuki-iptv error"), prev, str(e))
-    msg = QtWidgets.QMessageBox(
-        qt_icon_critical, _("Error"), message, QtWidgets.QMessageBox.StandardButton.Ok
-    )
-    msg.exec()
 
 
 # Used as a decorator to run things in the main loop, from another thread
@@ -369,59 +434,21 @@ if __name__ == "__main__":
         logger.info("")
         logger.info(f"yuki-iptv version: {APP_VERSION}")
         logger.info("Using Python " + sys.version.replace("\n", ""))
+        logger.info(f"System: {platform.system()}")
         logger.info(f"Qt library: {qt_library}")
         logger.info(f"Qt version: {QtCore.QT_VERSION_STR}")
+        try:
+            logger.info(f"Qt platform: {app.platformName()}")
+        except Exception:
+            logger.info("Failed to determine Qt platform!")
         logger.info("")
 
-        old_pwd = os.getcwd()
-        if platform.system() == "Windows":
-            if not os.path.isdir(
-                Path(os.path.dirname(os.path.abspath(__file__)), "usr")
-            ):
-                os.mkdir(Path(os.path.dirname(os.path.abspath(__file__)), "usr"))
-            if not os.path.isdir(
-                Path(os.path.dirname(os.path.abspath(__file__)), "usr", "lib")
-            ):
-                os.mkdir(Path(os.path.dirname(os.path.abspath(__file__)), "usr", "lib"))
-            if not os.path.isdir(
-                Path(
-                    os.path.dirname(os.path.abspath(__file__)),
-                    "usr",
-                    "lib",
-                    "yuki-iptv",
-                )
-            ):
-                os.mkdir(
-                    Path(
-                        os.path.dirname(os.path.abspath(__file__)),
-                        "usr",
-                        "lib",
-                        "yuki-iptv",
-                    )
-                )
-
-            os.chdir(
-                Path(
-                    os.path.dirname(os.path.abspath(__file__)),
-                    "usr",
-                    "lib",
-                    "yuki-iptv",
-                )
-            )
-        else:
-            os.chdir(os.path.dirname(os.path.abspath(__file__)))
+        enable_libmpv_render_context = platform.system() == "Darwin"  # Mac OS
 
         multiprocessing_manager = Manager()
         multiprocessing_manager_dict = multiprocessing_manager.dict()
 
         m3u = ""
-
-        if platform.system() == "Windows":
-            os.environ["PATH"] = (
-                str(Path(os.path.dirname(__file__), "bin"))
-                + os.pathsep
-                + os.environ["PATH"]
-            )
 
         from thirdparty import mpv
 
@@ -547,10 +574,7 @@ if __name__ == "__main__":
         # URL override for command line
         if args1.URL:
             settings["m3u"] = args1.URL
-            if args1.URL == "http://____PLUGIN_M3U____":
-                settings["epg"] = "http://____PLUGIN_EPG____"
-            else:
-                settings["epg"] = ""
+            settings["epg"] = ""
 
         tvguide_sets = {}
 
@@ -714,9 +738,7 @@ if __name__ == "__main__":
         else:
             ICONS_FOLDER = str(Path("..", "..", "..", "share", "yuki-iptv", "icons"))
 
-        main_icon = QtGui.QIcon(
-            str(Path(os.getcwd(), "yuki_iptv", ICONS_FOLDER, "tv-blue.png"))
-        )
+        main_icon = QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "tv-blue.png")))
         channels = {}
         programmes = {}
 
@@ -2995,9 +3017,11 @@ if __name__ == "__main__":
         wid.setLayout(verticalLayout)
         chan_win.setCentralWidget(wid)
 
+        do_save_settings = False
+
         # Settings window
         def save_settings():
-            global epg_thread_2
+            global epg_thread_2, do_save_settings
             settings_old = settings.copy()
             udp_proxy_text = sudp.text()
             udp_proxy_starts = udp_proxy_text.startswith(
@@ -3081,15 +3105,13 @@ if __name__ == "__main__":
             settings_file1.write(json.dumps(settings_arr))
             settings_file1.close()
             settings_win.hide()
-            myExitHandler_before()
-            if platform.system() == "Windows":
+            if platform.system() == "Windows" or platform.system() == "Darwin":
                 os.chdir(old_pwd)
-            s_p = subprocess.Popen([sys.executable] + sys.argv)
-            if "YUKI_IPTV_IS_APPIMAGE" in os.environ:
+            if "YUKI_IPTV_IS_APPIMAGE" in os.environ or platform.system() == "Darwin":
                 for window in QtWidgets.QApplication.topLevelWidgets():
                     window.close()
-                s_p.wait()
-            sys.exit(0)
+            do_save_settings = True
+            app.quit()
 
         wid2 = QtWidgets.QWidget()
 
@@ -3994,10 +4016,13 @@ if __name__ == "__main__":
             if "osc" in options:
                 # To prevent 'multiple values for keyword argument'!
                 mpv_osc_enabled = options.pop("osc") != "no"
+            if not enable_libmpv_render_context:
+                options["wid"] = str(int(win.container.winId()))
+            else:
+                options["vo"] = "null"
             try:
                 player = mpv.MPV(
                     **options,
-                    wid=str(int(win.container.winId())),
                     osc=mpv_osc_enabled,
                     script_opts="osc-layout=box,osc-seekbarstyle=bar,"
                     "osc-deadzonesize=0,osc-minmousemove=3",
@@ -4010,7 +4035,6 @@ if __name__ == "__main__":
                 try:
                     player = mpv.MPV(
                         **options,
-                        wid=str(int(win.container.winId())),
                         osc=mpv_osc_enabled,
                         script_opts="osc-layout=box,osc-seekbarstyle=bar,"
                         "osc-deadzonesize=0,osc-minmousemove=3",
@@ -4021,7 +4045,6 @@ if __name__ == "__main__":
                     logger.warning("mpv init with osc failed")
                     player = mpv.MPV(
                         **options,
-                        wid=str(int(win.container.winId())),
                         log_handler=my_log,
                         loglevel=mpv_loglevel,
                     )
@@ -4030,6 +4053,15 @@ if __name__ == "__main__":
                     set_mpv_osc(False)
                 except Exception:
                     logger.warning("player.osc set failed")
+
+            if enable_libmpv_render_context:
+                container_layout = QtWidgets.QVBoxLayout()
+                container_layout.setContentsMargins(0, 0, 0, 0)
+                container_layout.setSpacing(0)
+                mpv_opengl_widget = MPVOpenGLWidget(app, player)
+                container_layout.addWidget(mpv_opengl_widget)
+                win.container.setLayout(container_layout)
+
             try:
                 player["force-seekable"] = True
             except Exception:
@@ -4133,33 +4165,35 @@ if __name__ == "__main__":
                 else:
                     end_file_callback()
 
-            @player.on_key_press("MBTN_RIGHT")
-            def my_mouse_right():
-                my_mouse_right_callback()
+            if not enable_libmpv_render_context:
 
-            @player.on_key_press("MBTN_LEFT")
-            def my_mouse_left():
-                my_mouse_left_callback()
+                @player.on_key_press("MBTN_RIGHT")
+                def my_mouse_right():
+                    my_mouse_right_callback()
 
-            @player.on_key_press("MBTN_LEFT_DBL")
-            def my_leftdbl_binding():
-                mpv_fullscreen()
+                @player.on_key_press("MBTN_LEFT")
+                def my_mouse_left():
+                    my_mouse_left_callback()
 
-            @player.on_key_press("MBTN_FORWARD")
-            def my_forward_binding():
-                next_channel()
+                @player.on_key_press("MBTN_LEFT_DBL")
+                def my_leftdbl_binding():
+                    mpv_fullscreen()
 
-            @player.on_key_press("MBTN_BACK")
-            def my_back_binding():
-                prev_channel()
+                @player.on_key_press("MBTN_FORWARD")
+                def my_forward_binding():
+                    next_channel()
 
-            @player.on_key_press("WHEEL_UP")
-            def my_up_binding():
-                my_up_binding_execute()
+                @player.on_key_press("MBTN_BACK")
+                def my_back_binding():
+                    prev_channel()
 
-            @player.on_key_press("WHEEL_DOWN")
-            def my_down_binding():
-                my_down_binding_execute()
+                @player.on_key_press("WHEEL_UP")
+                def my_up_binding():
+                    my_up_binding_execute()
+
+                @player.on_key_press("WHEEL_DOWN")
+                def my_down_binding():
+                    my_down_binding_execute()
 
             @idle_function
             def pause_handler(unused=None, unused2=None, unused3=None):
@@ -4281,15 +4315,57 @@ if __name__ == "__main__":
                 self.latestWidth = 0
                 self.latestHeight = 0
                 self.createMenuBar_mw()
+
                 #
                 # == mpv init ==
                 #
-                self.container = QtWidgets.QWidget(self)
+
+                class Container(QtWidgets.QWidget):
+                    def mousePressEvent(self, event3):
+                        if event3.button() == QtCore.Qt.MouseButton.LeftButton:
+                            my_mouse_left_callback()
+                        elif event3.button() == QtCore.Qt.MouseButton.RightButton:
+                            my_mouse_right_callback()
+                        elif event3.button() in [
+                            QtCore.Qt.MouseButton.BackButton,
+                            QtCore.Qt.MouseButton.XButton1,
+                            QtCore.Qt.MouseButton.ExtraButton1,
+                        ]:
+                            prev_channel()
+                        elif event3.button() in [
+                            QtCore.Qt.MouseButton.ForwardButton,
+                            QtCore.Qt.MouseButton.XButton2,
+                            QtCore.Qt.MouseButton.ExtraButton2,
+                        ]:
+                            next_channel()
+                        else:
+                            super().mousePressEvent(event3)
+
+                    def mouseDoubleClickEvent(self, event3):
+                        if event3.button() == QtCore.Qt.MouseButton.LeftButton:
+                            mpv_fullscreen()
+
+                    def wheelEvent(self, event3):
+                        if event3.angleDelta().y() > 0:
+                            # up
+                            my_up_binding_execute()
+                        else:
+                            # down
+                            my_down_binding_execute()
+                        event3.accept()
+
+                if not enable_libmpv_render_context:
+                    self.container = QtWidgets.QWidget(self)
+                else:
+                    self.container = Container(self)
                 self.setCentralWidget(self.container)
                 self.container.setAttribute(
                     QtCore.Qt.WidgetAttribute.WA_DontCreateNativeAncestors
                 )
-                self.container.setAttribute(QtCore.Qt.WidgetAttribute.WA_NativeWindow)
+                if not enable_libmpv_render_context:
+                    self.container.setAttribute(
+                        QtCore.Qt.WidgetAttribute.WA_NativeWindow
+                    )
                 self.container.setFocus()
                 self.container.setStyleSheet(
                     """
@@ -4412,6 +4488,7 @@ if __name__ == "__main__":
                 window_data["x"], window_data["y"], window_data["w"], window_data["h"]
             )
         else:
+            YukiData.needs_resize = True
             win.resize(WINDOW_SIZE[0], WINDOW_SIZE[1])
             qr = win.frameGeometry()
             qr.moveCenter(
@@ -7320,7 +7397,7 @@ if __name__ == "__main__":
             mpris_thread = threading.Thread(target=mpris_loop_start)
             mpris_thread.start()
         except Exception as mpris_e:
-            if platform.system() != "Windows":
+            if platform.system() == "Linux":
                 logger.warning(mpris_e)
                 logger.warning("Failed to set up MPRIS!")
 
@@ -7651,17 +7728,18 @@ if __name__ == "__main__":
             except Exception:
                 pass
             try:
-                logger.info("Saving main window position / width / height...")
-                write_option(
-                    "window",
-                    {
-                        "x": win.geometry().x(),
-                        "y": win.geometry().y(),
-                        "w": win.width(),
-                        "h": win.height(),
-                    },
-                )
-                logger.info("Main window position / width / height saved")
+                if not YukiData.first_start:
+                    logger.info("Saving main window position / width / height...")
+                    write_option(
+                        "window",
+                        {
+                            "x": win.geometry().x(),
+                            "y": win.geometry().y(),
+                            "w": win.width(),
+                            "h": win.height(),
+                        },
+                    )
+                    logger.info("Main window position / width / height saved")
             except Exception:
                 pass
             try:
@@ -7709,7 +7787,8 @@ if __name__ == "__main__":
         def myExitHandler():
             myExitHandler_before()
             logger.info("Stopped")
-            sys.exit(0)
+            if not do_save_settings:
+                sys.exit(0)
 
         first_boot_1 = True
 
@@ -8606,13 +8685,36 @@ if __name__ == "__main__":
                             combobox.setCurrentIndex(combobox_index1["index"])
             except Exception:
                 pass
-            if not playLastChannel():
-                logger.info("Show splash")
-                mpv_override_play(str(Path("yuki_iptv", ICONS_FOLDER, "main.png")))
-                player.pause = True
+
+            def after_mpv_init():
+                # Fix window size on Mac OS
+                # maybe needed on other systems?
+                if YukiData.needs_resize:
+                    logger.info("Fix window size")
+                    win.resize(WINDOW_SIZE[0], WINDOW_SIZE[1])
+                    qr = win.frameGeometry()
+                    qr.moveCenter(
+                        QtGui.QScreen.availableGeometry(
+                            QtWidgets.QApplication.primaryScreen()
+                        ).center()
+                    )
+                    win.move(qr.topLeft())
+                if enable_libmpv_render_context:
+                    logger.info("Render context enabled, switching vo to libmpv")
+                    player["vo"] = "libmpv"
+                if not playLastChannel():
+                    logger.info("Show splash")
+                    mpv_override_play(str(Path("yuki_iptv", ICONS_FOLDER, "main.png")))
+                    player.pause = True
+                else:
+                    logger.info("Playing last channel, splash turned off")
+                restore_compact_state()
+
+            if not enable_libmpv_render_context:
+                after_mpv_init()
             else:
-                logger.info("Playing last channel, splash turned off")
-            restore_compact_state()
+                # Workaround for "No render context set"
+                QtCore.QTimer.singleShot(0, after_mpv_init)
 
             ic, ic1, ic2 = 0, 0, 0
             timers_array = {}
@@ -8643,6 +8745,7 @@ if __name__ == "__main__":
             thread_tvguide_update_pt2()
             update_epg_func()
         else:
+            YukiData.first_start = True
             show_playlists()
             playlists_win.show()
             playlists_win.raise_()
@@ -8650,7 +8753,15 @@ if __name__ == "__main__":
             playlists_win.activateWindow()
             moveWindowToCenter(playlists_win)
 
-        sys.exit(_exec(app))
+        app_exit_code = _exec(app)
+        if do_save_settings:
+            start_args = sys.argv
+            if "python" not in sys.executable:
+                start_args.pop(0)
+            s_p = subprocess.Popen([sys.executable] + start_args)
+            if "YUKI_IPTV_IS_APPIMAGE" in os.environ:
+                s_p.wait()
+        sys.exit(app_exit_code)
     except Exception as e3:
         logger.warning("ERROR")
         logger.warning("")

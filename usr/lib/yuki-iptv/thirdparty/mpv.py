@@ -21,12 +21,14 @@ import ctypes.util
 import threading
 import os
 import sys
+import platform
 from warnings import warn
 from functools import partial, wraps
 from contextlib import contextmanager
 import collections
 import re
 import traceback
+from pathlib import Path
 
 if os.name == 'nt':
     dll = ctypes.util.find_library('mpv-2.exe')
@@ -44,7 +46,10 @@ else:
     # still better than segfaulting, we are setting LC_NUMERIC to "C".
     locale.setlocale(locale.LC_NUMERIC, 'C')
 
-    sofile = ctypes.util.find_library('mpv')
+    if platform.system() == "Darwin":
+        sofile = str(Path(Path(os.path.dirname(__file__)).parent, "bin", "libmpv.2.dylib"))
+    else:
+        sofile = ctypes.util.find_library('mpv')
     if sofile is None:
         raise OSError("Cannot find libmpv in the usual places. Depending on your distro, you may try installing an "
                 "mpv-devel or mpv-libs package. If you have libmpv around but this script can't find it, consult "
