@@ -436,6 +436,8 @@ if __name__ == "__main__":
         logger.info(f"yuki-iptv version: {APP_VERSION}")
         logger.info("Using Python " + sys.version.replace("\n", ""))
         logger.info(f"System: {platform.system()}")
+        if "YUKI_IPTV_IS_APPIMAGE" in os.environ:
+            logger.info("[AppImage]")
         logger.info(f"Qt library: {qt_library}")
         logger.info(f"Qt version: {QtCore.QT_VERSION_STR}")
         try:
