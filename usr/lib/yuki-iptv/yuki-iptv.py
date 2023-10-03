@@ -456,16 +456,21 @@ if __name__ == "__main__":
         from thirdparty import mpv
 
         if "APPIMAGE_TEST_EXIT_YUKI_IPTV" in os.environ:
-            logger.info("Checking mpv version...")
-            player_test = mpv.MPV()
-            logger.info(player_test.mpv_version)
-            logger.info("Checking ffmpeg version...")
-            logger.info(
-                subprocess.check_output(["ffmpeg", "-version"])
-                .decode("utf-8")
-                .split("\n")[0]
-            )
-            logger.info("AppImage test completed")
+            try:
+                logger.info("Checking mpv version...")
+                player_test = mpv.MPV()
+                logger.info(player_test.mpv_version)
+                logger.info("Checking ffmpeg version...")
+                logger.info(
+                    subprocess.check_output(["ffmpeg", "-version"])
+                    .decode("utf-8")
+                    .split("\n")[0]
+                )
+                logger.info("AppImage test completed")
+            except Exception:
+                logger.info(traceback.format_exc())
+                logger.info("AppImage test failed!")
+                sys.exit(1)
             sys.exit(0)
 
         if not os.path.isdir(LOCAL_DIR):
