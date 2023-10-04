@@ -6492,11 +6492,16 @@ if __name__ == "__main__":
             """
             )
         page_box.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        page_box.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
         of_lbl.setText(get_of_txt(round(len(array) / 100) + 1))
 
         def page_change():
             win.listWidget.verticalScrollBar().setValue(0)
             redraw_chans()
+            try:
+                page_box.clearFocus()
+            except Exception:
+                pass
 
         page_box.valueChanged.connect(page_change)
         layout4.addWidget(page_lbl)
