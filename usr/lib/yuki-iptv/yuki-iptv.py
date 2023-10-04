@@ -8048,8 +8048,10 @@ if __name__ == "__main__":
                         avsync = f"<span style='color: #B58B00;'>{avsync}</span>"
                 else:
                     avsync = "0.0"
-                if (not (codec == "png" and width == 800 and height == 600)) and (
-                    width and height
+                if (
+                    (not (codec == "png" and width == 800 and height == 600))
+                    and (not (codec == "png" and width == 1274 and height == 708))
+                    and (width and height)
                 ):
                     if settings["hidebitrateinfo"]:
                         label12.setText("")
