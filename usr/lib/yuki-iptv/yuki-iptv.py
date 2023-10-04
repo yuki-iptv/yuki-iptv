@@ -3797,8 +3797,6 @@ if __name__ == "__main__":
         textbox.setReadOnly(True)
 
         class Communicate(QtCore.QObject):
-            winPosition = False
-            winPosition2 = False
             do_play_args = ()
             j_save = None
             comboboxIndex = -1
@@ -4488,16 +4486,6 @@ if __name__ == "__main__":
                     ((self.windowHeight - l1_h - h) - 40 - l1_h + h2)
                 )
 
-            def moveEvent(self, event):
-                try:
-                    comm_instance.winPosition2 = {
-                        "x": win.pos().x(),
-                        "y": win.pos().y(),
-                    }
-                except Exception:
-                    pass
-                QtWidgets.QMainWindow.moveEvent(self, event)
-
             def resizeEvent(self, event):
                 try:
                     self.update()
@@ -4964,7 +4952,12 @@ if __name__ == "__main__":
 
         cur_aot_state = is_aot
 
-        currentWidthHeight = [win.width(), win.height()]
+        currentWidthHeight = [
+            win.geometry().x(),
+            win.geometry().y(),
+            win.width(),
+            win.height(),
+        ]
         currentMaximized = win.isMaximized()
         currentDockWidgetPos = -1
 
@@ -4983,8 +4976,12 @@ if __name__ == "__main__":
                     isControlPanelVisible = dockWidget2.isVisible()
                     isPlaylistVisible = dockWidget.isVisible()
                     setShortcutState(True)
-                    comm_instance.winPosition = win.geometry()
-                    currentWidthHeight = [win.width(), win.height()]
+                    currentWidthHeight = [
+                        win.geometry().x(),
+                        win.geometry().y(),
+                        win.width(),
+                        win.height(),
+                    ]
                     currentMaximized = win.isMaximized()
                     channelfilter.usePopup = False
                     win.menu_bar_qt.hide()
@@ -5055,13 +5052,12 @@ if __name__ == "__main__":
                         win.showNormal()
                     else:
                         win.showMaximized()
-                    win.resize(currentWidthHeight[0], currentWidthHeight[1])
-                    if comm_instance.winPosition:
-                        win.move(
-                            comm_instance.winPosition.x(), comm_instance.winPosition.y()
-                        )
-                    else:
-                        moveWindowToCenter(win, True)
+                    win.setGeometry(
+                        currentWidthHeight[0],
+                        currentWidthHeight[1],
+                        currentWidthHeight[2],
+                        currentWidthHeight[3],
+                    )
                     if not isPlaylistVisible:
                         key_t()
                     if settings["panelposition"] == 1:
