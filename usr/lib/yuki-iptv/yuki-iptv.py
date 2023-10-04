@@ -8048,9 +8048,10 @@ if __name__ == "__main__":
                         avsync = f"<span style='color: #B58B00;'>{avsync}</span>"
                 else:
                     avsync = "0.0"
-                if (not (codec == "png" and width == 800 and height == 600)) and (
-                    width and height
-                ):
+                is_main_png = (
+                    str(Path("yuki_iptv", ICONS_FOLDER, "main.png")) in player.path
+                )
+                if (not is_main_png) and (width and height):
                     if settings["hidebitrateinfo"]:
                         label12.setText("")
                     else:
