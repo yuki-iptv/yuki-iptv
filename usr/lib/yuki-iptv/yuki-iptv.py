@@ -4807,6 +4807,8 @@ if __name__ == "__main__":
                     j = item.data(QtCore.Qt.ItemDataRole.UserRole)
                 except Exception:
                     j = item
+                if not j:
+                    return
                 playing_chan = j
                 playing_group = playmode_selector.currentIndex()
                 item_selected = j
@@ -6078,7 +6080,9 @@ if __name__ == "__main__":
         win.listWidget.itemDoubleClicked.connect(itemClicked_event)
 
         def enterPressed():
-            itemClicked_event(win.listWidget.currentItem())
+            currentItem1 = win.listWidget.currentItem()
+            if currentItem1:
+                itemClicked_event(currentItem1)
 
         shortcuts = {}
         shortcuts_return = QShortcut(
