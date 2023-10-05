@@ -8652,6 +8652,8 @@ if __name__ == "__main__":
         seq = get_seq()
 
         def setShortcutState(st1):
+            if platform.system() == "Darwin":  # Mac OS
+                return
             YukiData.shortcuts_state = st1
             for shortcut_arr in shortcuts:
                 for shortcut in shortcuts[shortcut_arr]:
