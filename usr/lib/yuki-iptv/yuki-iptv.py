@@ -436,6 +436,8 @@ if __name__ == "__main__":
         logger.info(f"yuki-iptv version: {APP_VERSION}")
         logger.info("Using Python " + sys.version.replace("\n", ""))
         logger.info(f"System: {platform.system()}")
+        if "YUKI_IPTV_IS_APPIMAGE" in os.environ:
+            logger.info("[AppImage]")
         logger.info(f"Qt library: {qt_library}")
         logger.info(f"Qt version: {QtCore.QT_VERSION_STR}")
         try:
@@ -454,16 +456,21 @@ if __name__ == "__main__":
         from thirdparty import mpv
 
         if "APPIMAGE_TEST_EXIT_YUKI_IPTV" in os.environ:
-            logger.info("Checking mpv version...")
-            player_test = mpv.MPV()
-            logger.info(player_test.mpv_version)
-            logger.info("Checking ffmpeg version...")
-            logger.info(
-                subprocess.check_output(["ffmpeg", "-version"])
-                .decode("utf-8")
-                .split("\n")[0]
-            )
-            logger.info("AppImage test completed")
+            try:
+                logger.info("Checking mpv version...")
+                player_test = mpv.MPV()
+                logger.info(player_test.mpv_version)
+                logger.info("Checking ffmpeg version...")
+                logger.info(
+                    subprocess.check_output(["ffmpeg", "-version"])
+                    .decode("utf-8")
+                    .split("\n")[0]
+                )
+                logger.info("AppImage test completed")
+            except Exception:
+                logger.info(traceback.format_exc())
+                logger.info("AppImage test failed!")
+                sys.exit(1)
             sys.exit(0)
 
         if not os.path.isdir(LOCAL_DIR):
@@ -3790,8 +3797,6 @@ if __name__ == "__main__":
         textbox.setReadOnly(True)
 
         class Communicate(QtCore.QObject):
-            winPosition = False
-            winPosition2 = False
             do_play_args = ()
             j_save = None
             comboboxIndex = -1
@@ -4186,7 +4191,7 @@ if __name__ == "__main__":
                 else:
                     end_file_callback()
 
-            if not enable_libmpv_render_context:
+            if needs_player_keybinds:
 
                 @player.on_key_press("MBTN_RIGHT")
                 def my_mouse_right():
@@ -4321,6 +4326,14 @@ if __name__ == "__main__":
         def get_global_cursor_position():
             return QtGui.QCursor.pos()
 
+        if enable_libmpv_render_context:
+            needs_player_keybinds = False
+        else:
+            needs_player_keybinds = True
+
+        if platform.system() == "Windows":
+            needs_player_keybinds = False
+
         class MainWindow(QtWidgets.QMainWindow):
             oldpos = None
             oldpos1 = None
@@ -4375,10 +4388,10 @@ if __name__ == "__main__":
                             my_down_binding_execute()
                         event3.accept()
 
-                if not enable_libmpv_render_context:
-                    self.container = QtWidgets.QWidget(self)
-                else:
+                if not needs_player_keybinds:
                     self.container = Container(self)
+                else:
+                    self.container = QtWidgets.QWidget(self)
                 self.setCentralWidget(self.container)
                 self.container.setAttribute(
                     QtCore.Qt.WidgetAttribute.WA_DontCreateNativeAncestors
@@ -4472,16 +4485,6 @@ if __name__ == "__main__":
                 tvguide_lbl.setFixedHeight(
                     ((self.windowHeight - l1_h - h) - 40 - l1_h + h2)
                 )
-
-            def moveEvent(self, event):
-                try:
-                    comm_instance.winPosition2 = {
-                        "x": win.pos().x(),
-                        "y": win.pos().y(),
-                    }
-                except Exception:
-                    pass
-                QtWidgets.QMainWindow.moveEvent(self, event)
 
             def resizeEvent(self, event):
                 try:
@@ -4804,6 +4807,8 @@ if __name__ == "__main__":
                     j = item.data(QtCore.Qt.ItemDataRole.UserRole)
                 except Exception:
                     j = item
+                if not j:
+                    return
                 playing_chan = j
                 playing_group = playmode_selector.currentIndex()
                 item_selected = j
@@ -4949,7 +4954,12 @@ if __name__ == "__main__":
 
         cur_aot_state = is_aot
 
-        currentWidthHeight = [win.width(), win.height()]
+        currentWidthHeight = [
+            win.geometry().x(),
+            win.geometry().y(),
+            win.width(),
+            win.height(),
+        ]
         currentMaximized = win.isMaximized()
         currentDockWidgetPos = -1
 
@@ -4968,8 +4978,12 @@ if __name__ == "__main__":
                     isControlPanelVisible = dockWidget2.isVisible()
                     isPlaylistVisible = dockWidget.isVisible()
                     setShortcutState(True)
-                    comm_instance.winPosition = win.geometry()
-                    currentWidthHeight = [win.width(), win.height()]
+                    currentWidthHeight = [
+                        win.geometry().x(),
+                        win.geometry().y(),
+                        win.width(),
+                        win.height(),
+                    ]
                     currentMaximized = win.isMaximized()
                     channelfilter.usePopup = False
                     win.menu_bar_qt.hide()
@@ -5040,13 +5054,12 @@ if __name__ == "__main__":
                         win.showNormal()
                     else:
                         win.showMaximized()
-                    win.resize(currentWidthHeight[0], currentWidthHeight[1])
-                    if comm_instance.winPosition:
-                        win.move(
-                            comm_instance.winPosition.x(), comm_instance.winPosition.y()
-                        )
-                    else:
-                        moveWindowToCenter(win, True)
+                    win.setGeometry(
+                        currentWidthHeight[0],
+                        currentWidthHeight[1],
+                        currentWidthHeight[2],
+                        currentWidthHeight[3],
+                    )
                     if not isPlaylistVisible:
                         key_t()
                     if settings["panelposition"] == 1:
@@ -6067,7 +6080,9 @@ if __name__ == "__main__":
         win.listWidget.itemDoubleClicked.connect(itemClicked_event)
 
         def enterPressed():
-            itemClicked_event(win.listWidget.currentItem())
+            currentItem1 = win.listWidget.currentItem()
+            if currentItem1:
+                itemClicked_event(currentItem1)
 
         shortcuts = {}
         shortcuts_return = QShortcut(
@@ -6481,11 +6496,16 @@ if __name__ == "__main__":
             """
             )
         page_box.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        page_box.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
         of_lbl.setText(get_of_txt(round(len(array) / 100) + 1))
 
         def page_change():
             win.listWidget.verticalScrollBar().setValue(0)
             redraw_chans()
+            try:
+                page_box.clearFocus()
+            except Exception:
+                pass
 
         page_box.valueChanged.connect(page_change)
         layout4.addWidget(page_lbl)
@@ -8033,8 +8053,10 @@ if __name__ == "__main__":
                         avsync = f"<span style='color: #B58B00;'>{avsync}</span>"
                 else:
                     avsync = "0.0"
-                if (not (codec == "png" and width == 800 and height == 600)) and (
-                    width and height
+                if (
+                    (not (codec == "png" and width == 800 and height == 600))
+                    and (not (codec == "png" and width == 1274 and height == 708))
+                    and (width and height)
                 ):
                     if settings["hidebitrateinfo"]:
                         label12.setText("")
@@ -8630,6 +8652,8 @@ if __name__ == "__main__":
         seq = get_seq()
 
         def setShortcutState(st1):
+            if platform.system() == "Darwin":  # Mac OS
+                return
             YukiData.shortcuts_state = st1
             for shortcut_arr in shortcuts:
                 for shortcut in shortcuts[shortcut_arr]:
