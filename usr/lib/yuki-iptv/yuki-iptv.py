@@ -36,6 +36,7 @@ import time
 import datetime
 import json
 import locale
+import uuid
 import gettext
 import logging
 import signal
@@ -1569,7 +1570,10 @@ if __name__ == "__main__":
         epg_win_1_layout.addWidget(showonlychplaylist_chk)
         epg_win_1_widget.setLayout(epg_win_1_layout)
 
+        archive_epg = None
+
         def do_open_archive(link):
+            global archive_epg
             if "#__archive__" in link:
                 archive_json = json.loads(
                     urllib.parse.unquote_plus(link.split("#__archive__")[1])
@@ -1581,6 +1585,9 @@ if __name__ == "__main__":
                 start_time = archive_json[1]
                 end_time = archive_json[2]
                 prog_index = archive_json[3]
+
+                if "#__rewind__" not in link:
+                    archive_epg = archive_json
 
                 catchup_id = ""
                 try:
@@ -1606,7 +1613,9 @@ if __name__ == "__main__":
                     chan_url, arr1, start_time, end_time, catchup_id
                 )
 
-                itemClicked_event(archive_json[0], play_url, True)
+                itemClicked_event(
+                    archive_json[0], play_url, True, is_rewind=(len(archive_json) == 5)
+                )
                 setChanText("({}) {}".format(_("Archive"), archive_json[0]), True)
                 progress.hide()
                 start_label.setText("")
@@ -2738,6 +2747,13 @@ if __name__ == "__main__":
                 else:
                     logger.info("Using HTTP Referer: (empty)")
 
+            if "uuid" in settings:
+                if settings["uuid"] and not is_main:
+                    logger.info("Set X-Playback-Session-Id header")
+                    player.http_header_fields = "X-Playback-Session-Id: " + str(
+                        uuid.uuid1()
+                    )
+
             player.pause = False
             player.play(parse_specifiers_now_url(arg_override_play))
             if event_handler:
@@ -3081,6 +3097,8 @@ if __name__ == "__main__":
                 if os.path.exists(str(Path(LOCAL_DIR, "epg.cache"))):
                     os.remove(str(Path(LOCAL_DIR, "epg.cache")))
 
+            old_uuid = settings["uuid"] if "uuid" in settings else False
+
             settings_arr = {
                 "m3u": sm3u.text(),
                 "epg": sepg.text(),
@@ -3113,12 +3131,14 @@ if __name__ == "__main__":
                 "hidetvprogram": hidetvprogram_flag.isChecked(),
                 "showcontrolsmouse": showcontrolsmouse_flag.isChecked(),
                 "catchupenable": catchupenable_flag.isChecked(),
+                "rewindenable": rewindenable_flag.isChecked(),
                 "flpopacity": flpopacity_input.value(),
                 "panelposition": panelposition_choose.currentIndex(),
                 "videoaspect": videoaspect_def_choose.currentIndex(),
                 "zoom": zoom_def_choose.currentIndex(),
                 "panscan": panscan_def_choose.value(),
                 "referer": referer_choose.text(),
+                "uuid": old_uuid,
             }
             if catchupenable_flag.isChecked() != settings_old["catchupenable"]:
                 if os.path.exists(str(Path(LOCAL_DIR, "epg.cache"))):
@@ -3463,6 +3483,10 @@ if __name__ == "__main__":
         catchupenable_flag = QtWidgets.QCheckBox()
         catchupenable_flag.setChecked(settings["catchupenable"])
 
+        rewindenable_label = QtWidgets.QLabel("{}:".format(_("Enable rewind")))
+        rewindenable_flag = QtWidgets.QCheckBox()
+        rewindenable_flag.setChecked(settings["rewindenable"])
+
         tabs = QtWidgets.QTabWidget()
 
         tab_main = QtWidgets.QWidget()
@@ -3570,6 +3594,8 @@ if __name__ == "__main__":
         )
         tab_catchup.layout.addWidget(catchupenable_label, 0, 0)
         tab_catchup.layout.addWidget(catchupenable_flag, 0, 1)
+        tab_catchup.layout.addWidget(rewindenable_label, 1, 0)
+        tab_catchup.layout.addWidget(rewindenable_flag, 1, 1)
         tab_catchup.setLayout(tab_catchup.layout)
 
         tab_epg.layout = QtWidgets.QGridLayout()
@@ -4418,6 +4444,9 @@ if __name__ == "__main__":
             def update(self):
                 global l1, tvguide_lbl, fullscreen
 
+                rewind_normal_offset = 150
+                rewind_fullscreen_offset = 180
+
                 self.windowWidth = self.width()
                 self.windowHeight = self.height()
                 self.updateWindowSize()
@@ -4440,6 +4469,22 @@ if __name__ == "__main__":
                             ),
                             int(((self.windowHeight - l1.height()) - 20)),
                         )
+                        set_label_width(
+                            rewind, self.windowWidth - dockWidget.width() + 58
+                        )
+                        move_label(
+                            rewind,
+                            int(
+                                ((self.windowWidth - rewind.width()) / 2)
+                                - (dockWidget.width() / 1.7)
+                            ),
+                            int(
+                                (
+                                    (self.windowHeight - rewind.height())
+                                    - rewind_fullscreen_offset
+                                )
+                            ),
+                        )
                         h = 0
                         h2 = 10
                     else:
@@ -4458,6 +4503,23 @@ if __name__ == "__main__":
                                 )
                             ),
                         )
+                        set_label_width(
+                            rewind, self.windowWidth - dockWidget.width() + 58
+                        )
+                        move_label(
+                            rewind,
+                            int(
+                                ((self.windowWidth - rewind.width()) / 2)
+                                - (dockWidget.width() / 1.7)
+                            ),
+                            int(
+                                (
+                                    (self.windowHeight - rewind.height())
+                                    - dockWidget2.height()
+                                    - rewind_normal_offset
+                                )
+                            ),
+                        )
                         h = dockWidget2.height()
                         h2 = 20
                 else:
@@ -4466,6 +4528,17 @@ if __name__ == "__main__":
                         l1,
                         int(((self.windowWidth - l1.width()) / 2)),
                         int(((self.windowHeight - l1.height()) - 20)),
+                    )
+                    set_label_width(rewind, self.windowWidth)
+                    move_label(
+                        rewind,
+                        int(((self.windowWidth - rewind.width()) / 2)),
+                        int(
+                            (
+                                (self.windowHeight - rewind.height())
+                                - rewind_fullscreen_offset
+                            )
+                        ),
                     )
                     h = 0
                     h2 = 10
@@ -4793,8 +4866,8 @@ if __name__ == "__main__":
             except Exception:
                 pass
 
-        def itemClicked_event(item, custom_url="", archived=False):
-            global playing, playing_chan, item_selected
+        def itemClicked_event(item, custom_url="", archived=False, is_rewind=False):
+            global playing, playing_chan, item_selected, archive_epg
             global playing_group, playing_url, playing_archive
             is_ic_ok = True
             try:
@@ -4803,6 +4876,12 @@ if __name__ == "__main__":
                 pass
             if is_ic_ok:
                 playing_archive = archived
+                if not archived:
+                    archive_epg = None
+                    rewind_slider.setValue(100)
+                else:
+                    if not is_rewind:
+                        rewind_slider.setValue(0)
                 try:
                     j = item.data(QtCore.Qt.ItemDataRole.UserRole)
                 except Exception:
@@ -4975,6 +5054,10 @@ if __name__ == "__main__":
                     YukiData.fullscreen_locked = True
                     logger.info("Entering fullscreen started")
                     time01 = time.time()
+                    rewind_layout_offset = 700
+                    rewind_layout.setContentsMargins(
+                        rewind_layout_offset, 0, rewind_layout_offset - 50, 0
+                    )
                     isControlPanelVisible = dockWidget2.isVisible()
                     isPlaylistVisible = dockWidget.isVisible()
                     setShortcutState(True)
@@ -5019,6 +5102,7 @@ if __name__ == "__main__":
                     YukiData.fullscreen_locked = True
                     logger.info("Leaving fullscreen started")
                     time03 = time.time()
+                    rewind_layout.setContentsMargins(100, 0, 50, 0)
                     setShortcutState(False)
                     if l1.isVisible() and l1.text().startswith(_("Volume")):
                         l1.hide()
@@ -7676,6 +7760,99 @@ if __name__ == "__main__":
         l1.move(50, 50)
         l1.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
+        rewind = QtWidgets.QWidget(win)
+        myFont3 = QtGui.QFont()
+        myFont3.setPointSize(12)
+        myFont3.setBold(True)
+        rewind.setStyleSheet("background-color: " + BCOLOR)
+        rewind.setFont(myFont3)
+        rewind.move(50, 50)
+        rewind.resize(rewind.width(), rewind.height() + 5)
+
+        rewind_layout = QtWidgets.QVBoxLayout()
+        rewind_layout.setContentsMargins(100, 0, 50, 0)
+        rewind_layout.setSpacing(0)
+        rewind_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+
+        class Slider(QtWidgets.QSlider):
+            def getRewindTime(self):
+                s_start = None
+                s_stop = None
+                s_index = None
+                if archive_epg:
+                    s_start = datetime.datetime.strptime(
+                        archive_epg[1], "%d.%m.%Y %H:%M:%S"
+                    ).timestamp()
+                    s_stop = datetime.datetime.strptime(
+                        archive_epg[2], "%d.%m.%Y %H:%M:%S"
+                    ).timestamp()
+                    s_index = archive_epg[3]
+                else:
+                    if settings["epg"] and exists_in_epg(
+                        playing_chan.lower(), programmes
+                    ):
+                        prog1 = get_epg(programmes, playing_chan.lower())
+                        for pr in prog1:
+                            if time.time() > pr["start"] and time.time() < pr["stop"]:
+                                s_start = pr["start"]
+                                # s_stop = pr["stop"]
+                                s_stop = datetime.datetime.now().timestamp()
+                                s_index = prog1.index(pr)
+                return (
+                    s_start + (self.value() / 100) * (s_stop - s_start),
+                    s_stop,
+                    s_index,
+                )
+
+            def mouseMoveEvent(self, event1):
+                if playing_chan:
+                    QtWidgets.QToolTip.showText(
+                        self.mapToGlobal(event1.pos()),
+                        datetime.datetime.fromtimestamp(
+                            self.getRewindTime()[0]
+                        ).strftime("%H:%M:%S"),
+                    )
+                super().mouseMoveEvent(event1)
+
+            def mouseReleaseEvent(self, event1):
+                if playing_chan:
+                    rewind_time = self.getRewindTime()
+                    do_open_archive(
+                        "#__rewind__#__archive__"
+                        + urllib.parse.quote_plus(
+                            json.dumps(
+                                [
+                                    playing_chan,
+                                    datetime.datetime.fromtimestamp(
+                                        rewind_time[0]
+                                    ).strftime("%d.%m.%Y %H:%M:%S"),
+                                    datetime.datetime.fromtimestamp(
+                                        rewind_time[1]
+                                    ).strftime("%d.%m.%Y %H:%M:%S"),
+                                    rewind_time[2],
+                                    True,
+                                ]
+                            )
+                        )
+                    )
+                super().mouseReleaseEvent(event1)
+
+        rewind_label = QtWidgets.QLabel(_("Rewind"))
+        rewind_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        bold_fnt_3 = QtGui.QFont()
+        bold_fnt_3.setBold(True)
+        rewind_label.setFont(bold_fnt_3)
+        rewind_label.setStyleSheet("color: pink")
+
+        rewind_slider = Slider(QtCore.Qt.Orientation.Horizontal)
+        rewind_slider.setTickInterval(1)
+
+        rewind_layout.addWidget(rewind_label)
+        rewind_layout.addWidget(rewind_slider)
+
+        rewind.setLayout(rewind_layout)
+        rewind.hide()
+
         static_text = ""
         gl_is_static = False
         previous_text = ""
@@ -8185,6 +8362,7 @@ if __name__ == "__main__":
 
         dockWidgetVisible = False
         dockWidget2Visible = False
+        rewindWidgetVisible = False
 
         dockWidget.installEventFilter(win)
 
@@ -8318,6 +8496,7 @@ if __name__ == "__main__":
             cp_layout.removeWidget(widget2)
             dockWidget2.setWidget(widget2)
             controlpanel_widget.hide()
+            rewind.hide()
 
         def thread_afterrecord():
             try:
@@ -8398,7 +8577,8 @@ if __name__ == "__main__":
 
         def thread_mouse():
             try:
-                global fullscreen, key_t_visible, dockWidgetVisible, dockWidget2Visible
+                global fullscreen, key_t_visible, dockWidgetVisible
+                global dockWidget2Visible, rewindWidgetVisible
                 if (
                     l1.isVisible()
                     and l1.text().startswith(_("Volume"))
@@ -8448,6 +8628,28 @@ if __name__ == "__main__":
                         else:
                             dockWidget2Visible = False
                             hide_controlpanel()
+                if settings["rewindenable"]:
+                    # Check cursor inside window
+                    cur_pos = QtGui.QCursor.pos()
+                    is_inside_window = (
+                        cur_pos.x() > win.pos().x() - 1
+                        and cur_pos.x() < (win.pos().x() + win.width())
+                    ) and (
+                        cur_pos.y() > win.pos().y() - 1
+                        and cur_pos.y() < (win.pos().y() + win.height())
+                    )
+                    # Rewind
+                    cursor_y = win.container.mapFromGlobal(QtGui.QCursor.pos()).y()
+                    win_height = win.height()
+                    is_cursor_y = cursor_y > win_height - (dockWidget2.height() + 250)
+                    if is_cursor_y and cursor_y < win_height and is_inside_window:
+                        if not rewindWidgetVisible:
+                            rewindWidgetVisible = True
+                            if playing_chan and playing_chan in array:
+                                rewind.show()
+                    else:
+                        rewindWidgetVisible = False
+                        rewind.hide()
             except Exception:
                 pass
 

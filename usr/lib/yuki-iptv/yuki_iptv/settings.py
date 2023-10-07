@@ -60,6 +60,7 @@ def parse_settings():
         "hidetvprogram": False,
         "showcontrolsmouse": True,
         "catchupenable": False,
+        "rewindenable": False,
         "flpopacity": 0.7,
         "panelposition": 0,
         "videoaspect": 0,
@@ -67,6 +68,7 @@ def parse_settings():
         "panscan": 0.0,
         "referer": "",
         "gui": 0,
+        "uuid": False,
     }
 
     settings = settings_default
