@@ -4447,34 +4447,12 @@ if __name__ == "__main__":
                     self.latestWidth = self.width()
                     self.latestHeight = self.height()
 
-            def update(self):
-                global l1, tvguide_lbl, fullscreen
-
+            def resize_rewind(self):
                 rewind_normal_offset = 150
                 rewind_fullscreen_offset = 180
 
-                self.windowWidth = self.width()
-                self.windowHeight = self.height()
-                self.updateWindowSize()
-                if settings["panelposition"] == 0:
-                    move_label(tvguide_lbl, 2, tvguide_lbl_offset)
-                else:
-                    move_label(
-                        tvguide_lbl,
-                        win.width() - tvguide_lbl.width(),
-                        tvguide_lbl_offset,
-                    )
                 if not fullscreen:
                     if not dockWidget2.isVisible():
-                        set_label_width(l1, self.windowWidth - dockWidget.width() + 58)
-                        move_label(
-                            l1,
-                            int(
-                                ((self.windowWidth - l1.width()) / 2)
-                                - (dockWidget.width() / 1.7)
-                            ),
-                            int(((self.windowHeight - l1.height()) - 20)),
-                        )
                         set_label_width(
                             rewind, self.windowWidth - dockWidget.width() + 58
                         )
@@ -4490,6 +4468,66 @@ if __name__ == "__main__":
                                     - rewind_fullscreen_offset
                                 )
                             ),
+                        )
+                    else:
+                        set_label_width(
+                            rewind, self.windowWidth - dockWidget.width() + 58
+                        )
+                        move_label(
+                            rewind,
+                            int(
+                                ((self.windowWidth - rewind.width()) / 2)
+                                - (dockWidget.width() / 1.7)
+                            ),
+                            int(
+                                (
+                                    (self.windowHeight - rewind.height())
+                                    - dockWidget2.height()
+                                    - rewind_normal_offset
+                                )
+                            ),
+                        )
+                else:
+                    set_label_width(rewind, controlpanel_widget.width())
+                    rewind_position_x = controlpanel_widget.pos().x() - win.pos().x()
+                    if rewind_position_x < 0:
+                        rewind_position_x = 0
+                    move_label(
+                        rewind,
+                        rewind_position_x,
+                        int(
+                            (
+                                (self.windowHeight - rewind.height())
+                                - rewind_fullscreen_offset
+                            )
+                        ),
+                    )
+
+            def update(self):
+                global l1, tvguide_lbl, fullscreen
+
+                self.windowWidth = self.width()
+                self.windowHeight = self.height()
+                self.updateWindowSize()
+                if settings["panelposition"] == 0:
+                    move_label(tvguide_lbl, 2, tvguide_lbl_offset)
+                else:
+                    move_label(
+                        tvguide_lbl,
+                        win.width() - tvguide_lbl.width(),
+                        tvguide_lbl_offset,
+                    )
+                self.resize_rewind()
+                if not fullscreen:
+                    if not dockWidget2.isVisible():
+                        set_label_width(l1, self.windowWidth - dockWidget.width() + 58)
+                        move_label(
+                            l1,
+                            int(
+                                ((self.windowWidth - l1.width()) / 2)
+                                - (dockWidget.width() / 1.7)
+                            ),
+                            int(((self.windowHeight - l1.height()) - 20)),
                         )
                         h = 0
                         h2 = 10
@@ -4509,23 +4547,6 @@ if __name__ == "__main__":
                                 )
                             ),
                         )
-                        set_label_width(
-                            rewind, self.windowWidth - dockWidget.width() + 58
-                        )
-                        move_label(
-                            rewind,
-                            int(
-                                ((self.windowWidth - rewind.width()) / 2)
-                                - (dockWidget.width() / 1.7)
-                            ),
-                            int(
-                                (
-                                    (self.windowHeight - rewind.height())
-                                    - dockWidget2.height()
-                                    - rewind_normal_offset
-                                )
-                            ),
-                        )
                         h = dockWidget2.height()
                         h2 = 20
                 else:
@@ -4534,20 +4555,6 @@ if __name__ == "__main__":
                         l1,
                         int(((self.windowWidth - l1.width()) / 2)),
                         int(((self.windowHeight - l1.height()) - 20)),
-                    )
-                    set_label_width(rewind, controlpanel_widget.width())
-                    rewind_position_x = controlpanel_widget.pos().x() - win.pos().x()
-                    if rewind_position_x < 0:
-                        rewind_position_x = 0
-                    move_label(
-                        rewind,
-                        rewind_position_x,
-                        int(
-                            (
-                                (self.windowHeight - rewind.height())
-                                - rewind_fullscreen_offset
-                            )
-                        ),
                     )
                     h = 0
                     h2 = 10
@@ -8690,6 +8697,7 @@ if __name__ == "__main__":
                     ):
                         if not rewindWidgetVisible:
                             rewindWidgetVisible = True
+                            win.resize_rewind()
                             rewind.show()
                     else:
                         rewindWidgetVisible = False
