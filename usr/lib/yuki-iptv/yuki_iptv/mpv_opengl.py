@@ -23,9 +23,8 @@
 import os
 import logging
 import platform
-import traceback
 from pathlib import Path
-from yuki_iptv.qt import get_qt_library, show_exception
+from yuki_iptv.qt import get_qt_library
 
 # https://github.com/feeluown/FeelUOwn/blob/25a0a714b39a0a8e12cd09dd9b7c92bf3c75667c/feeluown/gui/widgets/mpv.py
 
@@ -38,16 +37,6 @@ if platform.system() == "Windows" or platform.system() == "Darwin":
         + os.pathsep
         + os.environ["PATH"]
     )
-
-try:
-    from thirdparty.mpv import MpvRenderContext, MpvGlGetProcAddressFn
-except Exception as e3:
-    logger.warning("ERROR")
-    logger.warning("")
-    e3_traceback = traceback.format_exc()
-    logger.warning(e3_traceback)
-    show_exception(e3, e3_traceback)
-    raise e3
 
 if qt_library == "PySide6":
     use_slot = QtCore.Slot
@@ -63,15 +52,16 @@ def get_process_address(_, name):
 
 
 class MPVOpenGLWidget(QtOpenGLWidgets.QOpenGLWidget):
-    def __init__(self, app, player):
+    def __init__(self, app, player, MpvRenderContext, MpvGlGetProcAddressFn):
         super().__init__()
         self.app = app
         self._mpv = player
         self.ctx = None
+        self.MpvRenderContext = MpvRenderContext
         self._proc_addr_wrapper = MpvGlGetProcAddressFn(get_process_address)
 
     def initializeGL(self):
-        self.ctx = MpvRenderContext(
+        self.ctx = self.MpvRenderContext(
             self._mpv,
             "opengl",
             opengl_init_params={"get_proc_address": self._proc_addr_wrapper},

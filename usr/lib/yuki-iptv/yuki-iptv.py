@@ -4114,7 +4114,9 @@ if __name__ == "__main__":
                 container_layout = QtWidgets.QVBoxLayout()
                 container_layout.setContentsMargins(0, 0, 0, 0)
                 container_layout.setSpacing(0)
-                mpv_opengl_widget = MPVOpenGLWidget(app, player)
+                mpv_opengl_widget = MPVOpenGLWidget(
+                    app, player, mpv.MpvRenderContext, mpv.MpvGlGetProcAddressFn
+                )
                 container_layout.addWidget(mpv_opengl_widget)
                 win.container.setLayout(container_layout)
 
