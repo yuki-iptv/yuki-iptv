@@ -327,6 +327,10 @@ class YukiData:
     needs_resize = False
     first_start = False
     streaminfo_win_visible = False
+    current_prog1 = None
+    check_playlist_visible = False
+    check_controlpanel_visible = False
+    rewind_value = None
 
 
 stream_info.video_properties = {}
@@ -2081,7 +2085,7 @@ if __name__ == "__main__":
                 size_bytes, ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
             )
 
-        def record_thread_2():
+        def record_timer_2():
             try:
                 global recViaScheduler
                 activerec_list_value = activerec_list.verticalScrollBar().value()
@@ -2127,7 +2131,7 @@ if __name__ == "__main__":
         def set_record_stop_icon(unused=None):
             label5_1.setIcon(record_stop_icon)
 
-        def record_thread():
+        def record_timer():
             try:
                 global is_recording, is_recording_old, ffmpeg_processes
                 if is_recording != is_recording_old:
@@ -4529,10 +4533,13 @@ if __name__ == "__main__":
                         int(((self.windowWidth - l1.width()) / 2)),
                         int(((self.windowHeight - l1.height()) - 20)),
                     )
-                    set_label_width(rewind, self.windowWidth)
+                    set_label_width(rewind, controlpanel_widget.width())
+                    rewind_position_x = controlpanel_widget.pos().x() - win.pos().x()
+                    if rewind_position_x < 0:
+                        rewind_position_x = 0
                     move_label(
                         rewind,
-                        int(((self.windowWidth - rewind.width()) / 2)),
+                        rewind_position_x,
                         int(
                             (
                                 (self.windowHeight - rewind.height())
@@ -4879,9 +4886,11 @@ if __name__ == "__main__":
                 if not archived:
                     archive_epg = None
                     rewind_slider.setValue(100)
+                    YukiData.rewind_value = rewind_slider.value()
                 else:
                     if not is_rewind:
                         rewind_slider.setValue(0)
+                        YukiData.rewind_value = rewind_slider.value()
                 try:
                     j = item.data(QtCore.Qt.ItemDataRole.UserRole)
                 except Exception:
@@ -4911,6 +4920,7 @@ if __name__ == "__main__":
                         if time.time() > pr["start"] and time.time() < pr["stop"]:
                             current_prog = pr
                             break
+                YukiData.current_prog1 = current_prog
                 show_progress(current_prog)
                 if start_label.isVisible():
                     dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
@@ -5054,7 +5064,7 @@ if __name__ == "__main__":
                     YukiData.fullscreen_locked = True
                     logger.info("Entering fullscreen started")
                     time01 = time.time()
-                    rewind_layout_offset = 700
+                    rewind_layout_offset = 10
                     rewind_layout.setContentsMargins(
                         rewind_layout_offset, 0, rewind_layout_offset - 50, 0
                     )
@@ -5245,7 +5255,14 @@ if __name__ == "__main__":
                         )
                     )
 
-        dockWidget = QtWidgets.QDockWidget(win)
+        class PlaylistDockWidget(QtWidgets.QDockWidget):
+            def enterEvent(self, event4):
+                YukiData.check_playlist_visible = True
+
+            def leaveEvent(self, event4):
+                YukiData.check_playlist_visible = False
+
+        dockWidget = PlaylistDockWidget(win)
 
         win.listWidget = QtWidgets.QListWidget()
         win.moviesWidget = QtWidgets.QListWidget()
@@ -5353,17 +5370,17 @@ if __name__ == "__main__":
                 except Exception:
                     return None
 
-        thread_logos_update_lock = False
+        timer_logos_update_lock = False
 
-        def thread_logos_update():
-            global thread_logos_update_lock, multiprocessing_manager_dict
+        def timer_logos_update():
+            global timer_logos_update_lock, multiprocessing_manager_dict
             try:
-                if not thread_logos_update_lock:
-                    thread_logos_update_lock = True
+                if not timer_logos_update_lock:
+                    timer_logos_update_lock = True
                     if multiprocessing_manager_dict["logos_completed"]:
                         multiprocessing_manager_dict["logos_completed"] = False
                         btn_update_click()
-                    thread_logos_update_lock = False
+                    timer_logos_update_lock = False
             except Exception:
                 pass
 
@@ -7144,7 +7161,7 @@ if __name__ == "__main__":
                 layout36.addWidget(wdg2, dat_count, 1)
             return dat_count + 1
 
-        def thread_bitrate():
+        def timer_bitrate():
             try:
                 if streaminfo_win.isVisible():
                     if "video" in stream_info.data:
@@ -7315,7 +7332,14 @@ if __name__ == "__main__":
                 label7.setValue(volume)
                 mpv_volume_set()
 
-        dockWidget2 = QtWidgets.QDockWidget(win)
+        class ControlPanelDockWidget(QtWidgets.QDockWidget):
+            def enterEvent(self, event4):
+                YukiData.check_controlpanel_visible = True
+
+            def leaveEvent(self, event4):
+                YukiData.check_controlpanel_visible = False
+
+        dockWidget2 = ControlPanelDockWidget(win)
 
         dockWidget.setObjectName("dockWidget")
         dockWidget2.setObjectName("dockWidget2")
@@ -7798,6 +7822,8 @@ if __name__ == "__main__":
                                 # s_stop = pr["stop"]
                                 s_stop = datetime.datetime.now().timestamp()
                                 s_index = prog1.index(pr)
+                if not s_start:
+                    return None
                 return (
                     s_start + (self.value() / 100) * (s_stop - s_start),
                     s_stop,
@@ -7806,35 +7832,43 @@ if __name__ == "__main__":
 
             def mouseMoveEvent(self, event1):
                 if playing_chan:
-                    QtWidgets.QToolTip.showText(
-                        self.mapToGlobal(event1.pos()),
-                        datetime.datetime.fromtimestamp(
-                            self.getRewindTime()[0]
-                        ).strftime("%H:%M:%S"),
-                    )
+                    rewind_time = self.getRewindTime()
+                    if rewind_time:
+                        QtWidgets.QToolTip.showText(
+                            self.mapToGlobal(event1.pos()),
+                            datetime.datetime.fromtimestamp(rewind_time[0]).strftime(
+                                "%H:%M:%S"
+                            ),
+                        )
                 super().mouseMoveEvent(event1)
 
-            def mouseReleaseEvent(self, event1):
+            def doMouseReleaseEvent(self):
                 if playing_chan:
+                    QtWidgets.QToolTip.hideText()
                     rewind_time = self.getRewindTime()
-                    do_open_archive(
-                        "#__rewind__#__archive__"
-                        + urllib.parse.quote_plus(
-                            json.dumps(
-                                [
-                                    playing_chan,
-                                    datetime.datetime.fromtimestamp(
-                                        rewind_time[0]
-                                    ).strftime("%d.%m.%Y %H:%M:%S"),
-                                    datetime.datetime.fromtimestamp(
-                                        rewind_time[1]
-                                    ).strftime("%d.%m.%Y %H:%M:%S"),
-                                    rewind_time[2],
-                                    True,
-                                ]
+                    if rewind_time:
+                        YukiData.rewind_value = self.value()
+                        do_open_archive(
+                            "#__rewind__#__archive__"
+                            + urllib.parse.quote_plus(
+                                json.dumps(
+                                    [
+                                        playing_chan,
+                                        datetime.datetime.fromtimestamp(
+                                            rewind_time[0]
+                                        ).strftime("%d.%m.%Y %H:%M:%S"),
+                                        datetime.datetime.fromtimestamp(
+                                            rewind_time[1]
+                                        ).strftime("%d.%m.%Y %H:%M:%S"),
+                                        rewind_time[2],
+                                        True,
+                                    ]
+                                )
                             )
                         )
-                    )
+
+            def mouseReleaseEvent(self, event1):
+                self.doMouseReleaseEvent()
                 super().mouseReleaseEvent(event1)
 
         rewind_label = QtWidgets.QLabel(_("Rewind"))
@@ -8040,7 +8074,7 @@ if __name__ == "__main__":
 
         epg_data = None
 
-        def thread_channels_redraw():
+        def timer_channels_redraw():
             global ic, multiprocessing_manager_dict
             ic += 0.1
             # redraw every 15 seconds
@@ -8120,7 +8154,7 @@ if __name__ == "__main__":
                             btn_update_click()  # start update in main thread
                 time.sleep(0.1)
 
-        def thread_record():
+        def timer_record():
             try:
                 global time_stop, gl_is_static, static_text, recording_time, ic1
                 ic1 += 0.1
@@ -8189,7 +8223,7 @@ if __name__ == "__main__":
                     YukiData.connprinted = True
                     logger.info("Connection loss detector disabled")
 
-        def thread_check_tvguide_obsolete():
+        def timer_check_tvguide_obsolete():
             try:
                 global first_boot, ic2
                 check_connection()
@@ -8312,7 +8346,7 @@ if __name__ == "__main__":
 
         thread_5_lock = False
 
-        def thread_tvguide_progress():
+        def timer_tvguide_progress():
             try:
                 global thread_5_lock, waiting_for_epg
                 global multiprocessing_manager_dict, static_text
@@ -8334,13 +8368,13 @@ if __name__ == "__main__":
             except Exception:
                 pass
 
-        def thread_update_time():
+        def timer_update_time():
             try:
                 scheduler_clock.setText(get_current_time())
             except Exception:
                 pass
 
-        def thread_osc():
+        def timer_osc():
             try:
                 global playing_url, force_turnoff_osc
                 if playing_url:
@@ -8370,7 +8404,7 @@ if __name__ == "__main__":
         last_cursor_moved = 0
         last_cursor_time = 0
 
-        def thread_cursor():
+        def timer_cursor():
             global fullscreen, prev_cursor, last_cursor_moved, last_cursor_time
             show_cursor = False
             cursor_offset = (
@@ -8498,7 +8532,7 @@ if __name__ == "__main__":
             controlpanel_widget.hide()
             rewind.hide()
 
-        def thread_afterrecord():
+        def timer_afterrecord():
             try:
                 cur_recording = False
                 if not lbl2.isVisible():
@@ -8561,7 +8595,7 @@ if __name__ == "__main__":
         menubar_st = False
         YukiData.fcstate = True
 
-        def thread_shortcuts():
+        def timer_shortcuts():
             global fullscreen, menubar_st, win_has_focus
             try:
                 if not fullscreen:
@@ -8575,7 +8609,7 @@ if __name__ == "__main__":
             except Exception:
                 pass
 
-        def thread_mouse():
+        def timer_mouse():
             try:
                 global fullscreen, key_t_visible, dockWidgetVisible
                 global dockWidget2Visible, rewindWidgetVisible
@@ -8642,14 +8676,26 @@ if __name__ == "__main__":
                     cursor_y = win.container.mapFromGlobal(QtGui.QCursor.pos()).y()
                     win_height = win.height()
                     is_cursor_y = cursor_y > win_height - (dockWidget2.height() + 250)
-                    if is_cursor_y and cursor_y < win_height and is_inside_window:
+                    if (
+                        is_cursor_y
+                        and cursor_y < win_height
+                        and is_inside_window
+                        and playing_chan
+                        and playing_chan in array
+                        and YukiData.current_prog1
+                        and not YukiData.check_playlist_visible
+                        and not YukiData.check_controlpanel_visible
+                    ):
                         if not rewindWidgetVisible:
                             rewindWidgetVisible = True
-                            if playing_chan and playing_chan in array:
-                                rewind.show()
+                            rewind.show()
                     else:
                         rewindWidgetVisible = False
-                        rewind.hide()
+                        if rewind.isVisible():
+                            if YukiData.rewind_value:
+                                if YukiData.rewind_value != rewind_slider.value():
+                                    rewind_slider.doMouseReleaseEvent()
+                            rewind.hide()
             except Exception:
                 pass
 
@@ -8685,7 +8731,7 @@ if __name__ == "__main__":
             myExitHandler()
             app.quit()
 
-        def dockwidget_resize_thread():
+        def dockwidget_resize_timer():
             try:
                 if start_label.text() and start_label.isVisible():
                     if dockWidget2.height() != DOCK_WIDGET2_HEIGHT_HIGH:
@@ -8966,21 +9012,21 @@ if __name__ == "__main__":
             ic, ic1, ic2 = 0, 0, 0
             timers_array = {}
             timers = {
-                thread_shortcuts: 25,
-                thread_mouse: 50,
-                thread_cursor: 50,
-                thread_channels_redraw: 100,
-                thread_record: 100,
-                thread_osc: 100,
-                thread_check_tvguide_obsolete: 100,
-                thread_tvguide_progress: 100,
-                thread_update_time: 1000,
-                thread_logos_update: 1000,
-                record_thread: 1000,
-                record_thread_2: 1000,
-                thread_afterrecord: 50,
-                thread_bitrate: UPDATE_BR_INTERVAL * 1000,
-                dockwidget_resize_thread: 50,
+                timer_shortcuts: 25,
+                timer_mouse: 50,
+                timer_cursor: 50,
+                timer_channels_redraw: 100,
+                timer_record: 100,
+                timer_osc: 100,
+                timer_check_tvguide_obsolete: 100,
+                timer_tvguide_progress: 100,
+                timer_update_time: 1000,
+                timer_logos_update: 1000,
+                record_timer: 1000,
+                record_timer_2: 1000,
+                timer_afterrecord: 50,
+                timer_bitrate: UPDATE_BR_INTERVAL * 1000,
+                dockwidget_resize_timer: 50,
             }
             for timer in timers:
                 timers_array[timer] = QtCore.QTimer()
