@@ -144,6 +144,8 @@ def reload_menubar_shortcuts():
     doSetShortcut(YukiData.exitAction, kbd("app.quit"))
     doSetShortcut(YukiData.playpause, kbd("mpv_play"))
     doSetShortcut(YukiData.stop, kbd("mpv_stop"))
+    doSetShortcut(YukiData.frame_step, kbd("mpv_frame_step"))
+    doSetShortcut(YukiData.frame_back_step, kbd("mpv_frame_back_step"))
     doSetShortcut(YukiData.normalSpeed, kbd("(lambda: set_playback_speed(1.00))"))
     doSetShortcut(YukiData.prevchannel, kbd("prev_channel"))
     doSetShortcut(YukiData.nextchannel, kbd("next_channel"))
@@ -204,6 +206,14 @@ def init_menubar(data):
     YukiData.stop = qaction(_("&Stop"), data)
     doSetShortcut(YukiData.stop, kbd("mpv_stop"))
     YukiData.stop.triggered.connect(lambda: YukiData.mpv_stop())
+
+    YukiData.frame_step = qaction(_("&Frame step"), data)
+    doSetShortcut(YukiData.frame_step, kbd("mpv_frame_step"))
+    YukiData.frame_step.triggered.connect(lambda: YukiData.mpv_frame_step())
+
+    YukiData.frame_back_step = qaction(_("Fra&me back step"), data)
+    doSetShortcut(YukiData.frame_back_step, kbd("mpv_frame_back_step"))
+    YukiData.frame_back_step.triggered.connect(lambda: YukiData.mpv_frame_back_step())
 
     YukiData.secs = []
     sec_keys = [
@@ -440,6 +450,8 @@ def populate_menubar(
     play_menu = menubar.addMenu(_("&Play"))
     play_menu.addAction(YukiData.playpause)
     play_menu.addAction(YukiData.stop)
+    play_menu.addAction(YukiData.frame_step)
+    play_menu.addAction(YukiData.frame_back_step)
     play_menu.addSeparator()
     for sec in YukiData.secs:
         play_menu.addAction(sec)
@@ -674,6 +686,8 @@ def init_menubar_player(
     show_shortcuts,
     aot_file,
     yuki_track_set,
+    mpv_frame_step,
+    mpv_frame_back_step,
 ):
     for func in locals().items():
         setattr(YukiData, func[0], func[1])

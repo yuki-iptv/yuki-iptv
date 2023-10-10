@@ -4339,6 +4339,8 @@ if __name__ == "__main__":
                 show_shortcuts,
                 str(Path(LOCAL_DIR, "alwaysontop.json")),
                 yuki_track_set,
+                mpv_frame_step,
+                mpv_frame_back_step,
             )
 
             volume_option1 = read_option("volume")
@@ -8786,6 +8788,14 @@ if __name__ == "__main__":
                     aot_action.setChecked(True)
                     enable_always_on_top()
 
+        def mpv_frame_step():
+            logger.info("frame-step")
+            player.command("frame-step")
+
+        def mpv_frame_back_step():
+            logger.info("frame-back-step")
+            player.command("frame-back-step")
+
         funcs = {
             "show_sort": show_sort,
             "key_t": key_t,
@@ -8839,6 +8849,8 @@ if __name__ == "__main__":
             "prev_channel_1_INTERNAL": prev_channel,
             "(lambda: my_up_binding())_INTERNAL": (lambda: my_up_binding_execute()),
             "(lambda: my_down_binding())_INTERNAL": (lambda: my_down_binding_execute()),
+            "mpv_frame_step": mpv_frame_step,
+            "mpv_frame_back_step": mpv_frame_back_step,
         }
 
         mki2 = []
@@ -8889,6 +8901,8 @@ if __name__ == "__main__":
             "showhideeverything": _("&Compact mode").replace("&", ""),
             "show_tvguide_2": _("TV guide for all channels"),
             "alwaysontop": _("Window always on top"),
+            "mpv_frame_step": _("&Frame step").replace("&", ""),
+            "mpv_frame_back_step": _("Fra&me back step").replace("&", ""),
         }
 
         if os.path.isfile(str(Path(LOCAL_DIR, "hotkeys.json"))):

@@ -60,7 +60,6 @@ main_keybinds_default = {
     "mpv_fullscreen": QtCore.Qt.Key.Key_F,
     "mpv_fullscreen_2": QtCore.Qt.Key.Key_F11,
     "open_stream_info": QtCore.Qt.Key.Key_F2,
-    "show_clock": QtCore.Qt.Key.Key_O,
     "show_m3u_editor": "Ctrl+E",
     "show_playlists": "Ctrl+O",
     "reload_playlist": "Ctrl+R",
@@ -79,4 +78,6 @@ main_keybinds_default = {
     "(lambda: mpv_seek(60))": QtCore.Qt.Key.Key_Up,
     "(lambda: mpv_seek(600))": QtCore.Qt.Key.Key_PageUp,
     "(lambda: set_playback_speed(1.00))": QtCore.Qt.Key.Key_Backspace,
+    "mpv_frame_step": QtCore.Qt.Key.Key_Period,
+    "mpv_frame_back_step": QtCore.Qt.Key.Key_Comma,
 }
