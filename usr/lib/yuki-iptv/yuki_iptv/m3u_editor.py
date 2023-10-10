@@ -23,8 +23,14 @@
 #
 import os
 import gettext
+import platform
 from pathlib import Path
-from unidecode import unidecode
+
+if platform.system() == "Windows":
+    from text_unidecode import unidecode
+else:
+    from unidecode import unidecode
+
 from yuki_iptv.m3u import M3UParser
 from yuki_iptv.xspf import parse_xspf
 from yuki_iptv.qt6compat import qaction
