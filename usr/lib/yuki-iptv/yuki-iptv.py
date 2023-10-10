@@ -56,7 +56,11 @@ from functools import partial
 import chardet
 import requests
 import setproctitle
-from unidecode import unidecode
+
+if platform.system() == "Windows":
+    from text_unidecode import unidecode
+else:
+    from unidecode import unidecode
 
 try:
     from gi.repository import GLib
