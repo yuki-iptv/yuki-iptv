@@ -6727,7 +6727,7 @@ if __name__ == "__main__":
                     chan_3 = chan_2
                 if exists_in_epg(chan_3, programmes):
                     txt = newline_symbol
-                    prog = get_epg(programmes, chan_3)
+                    prog = get_epg(programmes, chan_3, True)
                     for pr in prog:
                         override_this = False
                         if show_all_guides:
