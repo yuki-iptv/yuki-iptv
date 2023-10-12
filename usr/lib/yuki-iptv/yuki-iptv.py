@@ -4221,6 +4221,7 @@ if __name__ == "__main__":
             except Exception:
                 logger.warning("populate_menubar failed")
                 show_exception("populate_menubar failed\n\n" + traceback.format_exc())
+            logger.info("redraw_menubar triggered by init")
             redraw_menubar()
 
             @player.event_callback("file-loaded")
@@ -4999,6 +5000,7 @@ if __name__ == "__main__":
             dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
             win.update()
             btn_update_click()
+            logger.info("redraw_menubar triggered by mpv_stop")
             redraw_menubar()
 
         def esc_handler():
@@ -7318,6 +7320,7 @@ if __name__ == "__main__":
         def file_loaded_callback(unused=None):
             global playing_chan
             if playing_chan:
+                logger.info("redraw_menubar triggered by file_loaded_callback")
                 redraw_menubar()
 
         @idle_function

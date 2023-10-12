@@ -68,6 +68,7 @@ def ast_mpv_speed(spd):
 
 def yuki_trackset(track, type1):
     YukiData.yuki_track_set(track, type1)
+    logger.info("redraw_menubar triggered by yuki_trackset")
     YukiData.redraw_menubar()
 
 
