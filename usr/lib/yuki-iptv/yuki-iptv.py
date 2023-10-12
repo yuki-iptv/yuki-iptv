@@ -9003,6 +9003,9 @@ if __name__ == "__main__":
             except Exception:
                 pass
 
+        if "__plugin_loaded" in globals():
+            globals()["__plugin_loaded"]()
+
         if settings["m3u"] and m3u:
             win.show()
             aot_action = init_mpv_player()
