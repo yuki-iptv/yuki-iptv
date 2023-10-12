@@ -3139,6 +3139,7 @@ if __name__ == "__main__":
                 "hidetvprogram": hidetvprogram_flag.isChecked(),
                 "showcontrolsmouse": showcontrolsmouse_flag.isChecked(),
                 "catchupenable": catchupenable_flag.isChecked(),
+                "hidechannellogos": hidechannellogos_flag.isChecked(),
                 "rewindenable": rewindenable_flag.isChecked(),
                 "flpopacity": flpopacity_input.value(),
                 "panelposition": panelposition_choose.currentIndex(),
@@ -3495,6 +3496,10 @@ if __name__ == "__main__":
         rewindenable_flag = QtWidgets.QCheckBox()
         rewindenable_flag.setChecked(settings["rewindenable"])
 
+        hidechannellogos_label = QtWidgets.QLabel("{}:".format(_("Hide channel logos")))
+        hidechannellogos_flag = QtWidgets.QCheckBox()
+        hidechannellogos_flag.setChecked(settings["hidechannellogos"])
+
         tabs = QtWidgets.QTabWidget()
 
         tab_main = QtWidgets.QWidget()
@@ -3581,6 +3586,8 @@ if __name__ == "__main__":
         tab_gui.layout.addWidget(hidebitrateinfo_flag, 3, 1)
         tab_gui.layout.addWidget(hidetvprogram_label, 4, 0)
         tab_gui.layout.addWidget(hidetvprogram_flag, 4, 1)
+        tab_gui.layout.addWidget(hidechannellogos_label, 5, 0)
+        tab_gui.layout.addWidget(hidechannellogos_flag, 5, 1)
         tab_gui.setLayout(tab_gui.layout)
 
         tab_actions.layout = QtWidgets.QGridLayout()
@@ -5429,7 +5436,8 @@ if __name__ == "__main__":
 
                 self.layout2 = QtWidgets.QGridLayout()
                 self.layout2.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
-                self.layout2.addWidget(self.icon_label, 0, 0)
+                if not settings["hidechannellogos"]:
+                    self.layout2.addWidget(self.icon_label, 0, 0)
                 self.layout2.addLayout(self.layout, 0, 1)
                 self.layout2.setSpacing(10)
 

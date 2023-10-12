@@ -61,6 +61,7 @@ def parse_settings():
         "showcontrolsmouse": True,
         "catchupenable": False,
         "rewindenable": False,
+        "hidechannellogos": False,
         "flpopacity": 0.7,
         "panelposition": 0,
         "videoaspect": 0,
