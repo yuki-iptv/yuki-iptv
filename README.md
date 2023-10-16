@@ -29,6 +29,37 @@ The channels and pictures in the screenshots are for demonstration purposes only
 - MPRIS support
 - and many more...
 
+# HowTo make playlists for movies/series
+  
+Use group **VOD** for movies  
+example:  
+  
+```
+#EXTM3U
+#EXTINF:-1 group-title="VOD",Channel 1
+https://example.com
+#EXTINF:-1 group-title="VOD SomeGroup",Channel 2
+https://example.com
+```
+  
+Use **ExxSxx** in your playlist to get it shown as series.  
+  
+- S01E12 = Season 1 Episode 12  
+  
+example:  
+  
+```
+#EXTM3U
+#EXTINF:-1 tvg-name="SomeName S04E06 Season Title 1" group-title="SERIES SomeName",
+file:///home/user/Videos/SomeName_4/SomeName.S04E06.mp4
+#EXTINF:-1 tvg-name="SomeName S04E07 Season Title 2" group-title="SERIES SomeName",
+file:///home/user/Videos/SomeName_4/SomeName.S04E07.mp4
+#EXTINF:-1 tvg-name="SomeName S04E09 Season Title 3" group-title="SERIES SomeName",
+file:///home/user/Videos/SomeName_4/SomeName.S04E09.mp4
+#EXTINF:-1 tvg-name="SomeName S04E10 Season Title 4" group-title="SERIES SomeName",
+file:///home/user/Videos/SomeName_4/SomeName.S04E10.mp4
+```
+
 # License
 
 ```monospace
