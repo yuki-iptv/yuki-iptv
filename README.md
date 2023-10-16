@@ -33,7 +33,7 @@ The channels and pictures in the screenshots are for demonstration purposes only
 
 Develop PPA: https://launchpad.net/~yuki-iptv/+archive/ubuntu/yuki-iptv-develop  
 ```
-sudo add-apt-repository -y ppa:yuki-iptv/yuki-iptv-develop
+sudo add-apt-repository ppa:yuki-iptv/yuki-iptv-develop
 sudo apt update
 sudo apt install yuki-iptv
 ```
