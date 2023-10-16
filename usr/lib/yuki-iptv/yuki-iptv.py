@@ -960,6 +960,7 @@ if __name__ == "__main__":
                         msg1.exec()
                 else:
                     if os.path.isfile(settings["m3u"]):
+                        logger.info("Playlist is local file")
                         try:
                             file = open(settings["m3u"], "r", encoding="utf8")
                             m3u = file.read()
@@ -1003,6 +1004,7 @@ if __name__ == "__main__":
                                     )
                                 )
                     else:
+                        logger.info("Playlist is remote URL")
                         try:
                             try:
                                 m3u_req = requests.get(
@@ -1011,6 +1013,7 @@ if __name__ == "__main__":
                                     timeout=(5, 15),  # connect, read timeout
                                 )
                             except Exception:
+                                logger.info(traceback.format_exc())
                                 m3u_req = PlaylistsFail()
                                 m3u_req.status_code = 400
 
@@ -2698,17 +2701,19 @@ if __name__ == "__main__":
         def get_ua_ref_for_channel(channel_name1):
             useragent_ref = settings["ua"]
             referer_ref = settings["referer"]
-            if channel_name1 and channel_name1 in array:
-                useragent_ref = (
-                    array[channel_name1]["useragent"]
-                    if array[channel_name1]["useragent"]
-                    else settings["ua"]
-                )
-                referer_ref = (
-                    array[channel_name1]["referer"]
-                    if array[channel_name1]["referer"]
-                    else settings["referer"]
-                )
+            if channel_name1:
+                channel_item = getArrayItem(channel_name1)
+                if channel_item:
+                    useragent_ref = (
+                        channel_item["useragent"]
+                        if "useragent" in channel_item and channel_item["useragent"]
+                        else settings["ua"]
+                    )
+                    referer_ref = (
+                        channel_item["referer"]
+                        if "referer" in channel_item and channel_item["referer"]
+                        else settings["referer"]
+                    )
             if settings["m3u"] in channel_sets:
                 channel_set = channel_sets[settings["m3u"]]
                 if channel_name1 and channel_name1 in channel_set:
@@ -5377,6 +5382,8 @@ if __name__ == "__main__":
         channel_logos_process = None
         multiprocessing_manager_dict["logos_inprogress"] = False
         multiprocessing_manager_dict["logos_completed"] = False
+        multiprocessing_manager_dict["logosmovie_inprogress"] = False
+        multiprocessing_manager_dict["logosmovie_completed"] = False
         logos_cache = {}
 
         def get_pixmap_from_filename(pixmap_filename):
@@ -5404,6 +5411,9 @@ if __name__ == "__main__":
                     if multiprocessing_manager_dict["logos_completed"]:
                         multiprocessing_manager_dict["logos_completed"] = False
                         btn_update_click()
+                    if multiprocessing_manager_dict["logosmovie_completed"]:
+                        multiprocessing_manager_dict["logosmovie_completed"] = False
+                        update_movie_icons()
                     timer_logos_update_lock = False
             except Exception:
                 pass
@@ -5776,7 +5786,7 @@ if __name__ == "__main__":
                                     if chan_logo:
                                         MyPlaylistWidget.setIcon(chan_logo)
                     except Exception:
-                        logger.warning("Set failed logos failed with exception")
+                        logger.warning("Set channel logos failed with exception")
                         logger.warning(traceback.format_exc())
 
                 # Create QListWidgetItem
@@ -5880,6 +5890,7 @@ if __name__ == "__main__":
                 except Exception:
                     pass
                 if playmode_selector.currentIndex() == 0:
+                    # TV channels
                     for lbl5 in movies_widgets:
                         lbl5.hide()
                     for lbl6 in series_widgets:
@@ -5891,6 +5902,7 @@ if __name__ == "__main__":
                     except Exception:
                         pass
                 if playmode_selector.currentIndex() == 1:
+                    # Movies
                     for lbl4 in tv_widgets:
                         lbl4.hide()
                     for lbl6 in series_widgets:
@@ -5902,6 +5914,7 @@ if __name__ == "__main__":
                     except Exception:
                         pass
                 if playmode_selector.currentIndex() == 2:
+                    # Series
                     for lbl4 in tv_widgets:
                         lbl4.hide()
                     for lbl5 in movies_widgets:
@@ -6217,6 +6230,18 @@ if __name__ == "__main__":
             activated=enterPressed,
         )
 
+        def get_movie_text(movie_1):
+            movie_1_txt = ""
+            try:
+                movie_1_txt = movie_1.text()
+            except Exception:
+                pass
+            try:
+                movie_1_txt = movie_1.data(QtCore.Qt.ItemDataRole.UserRole)
+            except Exception:
+                pass
+            return movie_1_txt
+
         def channelfilter_do():
             try:
                 filter_txt1 = channelfilter.text()
@@ -6228,7 +6253,7 @@ if __name__ == "__main__":
                 for item3 in range(win.moviesWidget.count()):
                     if (
                         unidecode(filter_txt1).lower().strip()
-                        in unidecode(win.moviesWidget.item(item3).text())
+                        in unidecode(get_movie_text(win.moviesWidget.item(item3)))
                         .lower()
                         .strip()
                     ):
@@ -6267,34 +6292,126 @@ if __name__ == "__main__":
 
         currentMoviesGroup = {}
 
+        movie_logos_request_old = {}
+        movie_logos_process = None
+
+        def update_movie_icons():
+            if settings["channellogos"] != 3:  # Do not load any logos
+                try:
+                    for item4 in range(win.moviesWidget.count()):
+                        movie_name = get_movie_text(win.moviesWidget.item(item4))
+                        if movie_name:
+                            if (
+                                f"LOGOmovie:::{movie_name}"
+                                in multiprocessing_manager_dict
+                            ):
+                                if multiprocessing_manager_dict[
+                                    f"LOGOmovie:::{movie_name}"
+                                ][0]:
+                                    movie_logo = get_pixmap_from_filename(
+                                        multiprocessing_manager_dict[
+                                            f"LOGOmovie:::{movie_name}"
+                                        ][0]
+                                    )
+                                    if movie_logo:
+                                        win.moviesWidget.itemWidget(
+                                            win.moviesWidget.item(item4)
+                                        ).setIcon(movie_logo)
+                except Exception:
+                    logger.warning("Set movie logos failed with exception")
+                    logger.warning(traceback.format_exc())
+
         def movies_group_change():
-            global currentMoviesGroup
+            global currentMoviesGroup, movie_logos_request_old, movie_logos_process
             if YukiData.movies:
                 current_movies_group = movies_combobox.currentText()
                 if current_movies_group:
                     win.moviesWidget.clear()
                     currentMoviesGroup = {}
+                    movie_logos_request = {}
                     for movies1 in YukiData.movies:
                         if "tvg-group" in YukiData.movies[movies1]:
                             if (
                                 YukiData.movies[movies1]["tvg-group"]
                                 == current_movies_group
                             ):
-                                win.moviesWidget.addItem(
+                                MovieWidget = PlaylistWidget()
+                                MovieWidget.name_label.setText(
                                     YukiData.movies[movies1]["title"]
+                                )
+                                MovieWidget.hideProgress()
+                                MovieWidget.hideDescription()
+                                MovieWidget.setIcon(MOVIE_ICON)
+                                # Create QListWidgetItem
+                                myMovieQListWidgetItem = QtWidgets.QListWidgetItem()
+                                myMovieQListWidgetItem.setData(
+                                    QtCore.Qt.ItemDataRole.UserRole,
+                                    YukiData.movies[movies1]["title"],
+                                )
+                                # Set size hint
+                                myMovieQListWidgetItem.setSizeHint(
+                                    MovieWidget.sizeHint()
+                                )
+                                win.moviesWidget.addItem(myMovieQListWidgetItem)
+                                win.moviesWidget.setItemWidget(
+                                    myMovieQListWidgetItem, MovieWidget
                                 )
                                 currentMoviesGroup[
                                     YukiData.movies[movies1]["title"]
                                 ] = YukiData.movies[movies1]
+                                req_data_ua1, req_data_ref1 = get_ua_ref_for_channel(
+                                    YukiData.movies[movies1]["title"]
+                                )
+                                movie_logo1 = ""
+                                if "tvg-logo" in YukiData.movies[movies1]:
+                                    movie_logo1 = YukiData.movies[movies1]["tvg-logo"]
+                                movie_logos_request[
+                                    YukiData.movies[movies1]["title"]
+                                ] = [
+                                    movie_logo1,
+                                    "",
+                                    req_data_ua1,
+                                    req_data_ref1,
+                                ]
+                    # Fetch movie logos
+                    try:
+                        if settings["channellogos"] != 3:
+                            if movie_logos_request != movie_logos_request_old:
+                                movie_logos_request_old = movie_logos_request
+                                logger.debug("Movie logos request")
+                                if (
+                                    movie_logos_process
+                                    and movie_logos_process.is_alive()
+                                ):
+                                    # logger.debug(
+                                    #     "Old movie logos request found, stopping it"
+                                    # )
+                                    movie_logos_process.kill()
+                                movie_logos_process = get_context("spawn").Process(
+                                    name="[yuki-iptv] channel_logos_worker_for_movie",
+                                    target=channel_logos_worker,
+                                    daemon=True,
+                                    args=(
+                                        movie_logos_request,
+                                        multiprocessing_manager_dict,
+                                        "movie",
+                                    ),
+                                )
+                                movie_logos_process.start()
+                    except Exception:
+                        logger.warning("Fetch movie logos failed with exception:")
+                        logger.warning(traceback.format_exc())
+                    update_movie_icons()
             else:
                 win.moviesWidget.clear()
                 win.moviesWidget.addItem(_("Nothing found"))
 
         def movies_play(mov_item):
             global playing_url
-            if mov_item.text() in currentMoviesGroup:
+            if get_movie_text(mov_item) in currentMoviesGroup:
                 itemClicked_event(
-                    mov_item.text(), currentMoviesGroup[mov_item.text()]["url"]
+                    get_movie_text(mov_item),
+                    currentMoviesGroup[get_movie_text(mov_item)]["url"],
                 )
 
         win.moviesWidget.itemDoubleClicked.connect(movies_play)
@@ -8101,7 +8218,7 @@ if __name__ == "__main__":
         epg_data = None
 
         def timer_channels_redraw():
-            global ic, multiprocessing_manager_dict
+            global ic, ic3, multiprocessing_manager_dict
             ic += 0.1
             # redraw every 15 seconds
             if ic > (
@@ -8109,6 +8226,15 @@ if __name__ == "__main__":
             ):
                 ic = 0
                 btn_update_click()
+            ic3 += 0.1
+            # redraw every 15 seconds
+            if ic3 > (
+                14.9
+                if not multiprocessing_manager_dict["logosmovie_inprogress"]
+                else 2.9
+            ):
+                ic3 = 0
+                update_movie_icons()
 
         @idle_function
         def thread_tvguide_update_1(unused=None):
@@ -9051,7 +9177,7 @@ if __name__ == "__main__":
                 # Workaround for "No render context set"
                 QtCore.QTimer.singleShot(0, after_mpv_init)
 
-            ic, ic1, ic2 = 0, 0, 0
+            ic, ic1, ic2, ic3 = 0, 0, 0, 0
             timers_array = {}
             timers = {
                 timer_shortcuts: 25,

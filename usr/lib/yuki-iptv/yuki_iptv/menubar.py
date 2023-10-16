@@ -425,7 +425,7 @@ def init_menubar(data):
 def populate_menubar(
     i, menubar, data, track_list=None, playing_chan=None, get_keybind=None
 ):
-    # logger.info("populate_menubar called")
+    logger.info("populate_menubar called")
     # File
 
     if get_keybind:

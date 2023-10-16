@@ -87,9 +87,9 @@ def fetch_remote_channel_icon(chan_name, logo_url, req_data_ua, req_data_ref):
     return icon_ret
 
 
-def channel_logos_worker(requested_logos, update_dict):
+def channel_logos_worker(requested_logos, update_dict, append=""):
     # logger.debug("channel_logos_worker started")
-    update_dict["logos_inprogress"] = True
+    update_dict[f"logos{append}_inprogress"] = True
     for logo_channel in requested_logos:
         # logger.debug(f"Downloading logo for channel '{logo_channel}'...")
         logo_m3u = fetch_remote_channel_icon(
@@ -104,7 +104,7 @@ def channel_logos_worker(requested_logos, update_dict):
             requested_logos[logo_channel][2],
             requested_logos[logo_channel][3],
         )
-        update_dict[f"LOGO:::{logo_channel}"] = [logo_m3u, logo_epg]
+        update_dict[f"LOGO{append}:::{logo_channel}"] = [logo_m3u, logo_epg]
     # logger.debug("channel_logos_worker ended")
-    update_dict["logos_inprogress"] = False
-    update_dict["logos_completed"] = True
+    update_dict[f"logos{append}_inprogress"] = False
+    update_dict[f"logos{append}_completed"] = True
