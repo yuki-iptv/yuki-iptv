@@ -29,6 +29,15 @@ The channels and pictures in the screenshots are for demonstration purposes only
 - MPRIS support
 - and many more...
 
+# Ubuntu PPA
+
+Develop PPA: https://launchpad.net/~yuki-iptv/+archive/ubuntu/yuki-iptv-develop  
+```
+sudo add-apt-repository -y ppa:yuki-iptv/yuki-iptv-develop
+sudo apt update
+sudo apt install yuki-iptv
+```
+
 # HowTo make playlists for movies/series
   
 Use group **VOD** for movies  
