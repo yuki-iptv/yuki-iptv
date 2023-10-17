@@ -387,8 +387,11 @@ if __name__ == "__main__":
     def exit_handler(*args):
         try:
             logger.info("exit_handler called")
-            if multiprocessing_manager:
-                multiprocessing_manager.shutdown()
+            try:
+                if multiprocessing_manager:
+                    multiprocessing_manager.shutdown()
+            except Exception:
+                pass
             for process_3 in active_children():
                 try:
                     process_3.kill()
