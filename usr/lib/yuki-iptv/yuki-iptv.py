@@ -3113,8 +3113,8 @@ if __name__ == "__main__":
             old_uuid = settings["uuid"] if "uuid" in settings else False
 
             settings_arr = {
-                "m3u": sm3u.text(),
-                "epg": sepg.text(),
+                "m3u": sm3u.text().strip(),
+                "epg": sepg.text().strip(),
                 "deinterlace": sdei.isChecked(),
                 "udp_proxy": udp_proxy_text,
                 "save_folder": sfld_text,
