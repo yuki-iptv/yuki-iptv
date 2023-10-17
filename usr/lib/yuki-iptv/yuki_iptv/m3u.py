@@ -35,6 +35,7 @@ class M3UParser:
         self.all_channels = _("All channels")
         self.epg_urls = []
         self.m3u_epg = ""
+        self.catchup_data = ["default", "7", ""]
         self.epg_url_final = ""
         self.regexp_cache = {}
 
@@ -132,7 +133,9 @@ class M3UParser:
 
         catchup_tag = self.parse_regexp("catchup", line_info, "")
         if not catchup_tag:
-            catchup_tag = self.parse_regexp("catchup-type", line_info, "default")
+            catchup_tag = self.parse_regexp(
+                "catchup-type", line_info, self.catchup_data[0]
+            )
 
         ch_array = {
             "title": self.get_title(line_info),
@@ -142,8 +145,12 @@ class M3UParser:
             "tvg-group": group,
             "tvg-url": tvg_url,
             "catchup": catchup_tag,
-            "catchup-source": self.parse_regexp("catchup-source", line_info),
-            "catchup-days": self.parse_regexp("catchup-days", line_info, "7"),
+            "catchup-source": self.parse_regexp(
+                "catchup-source", line_info, self.catchup_data[2]
+            ),
+            "catchup-days": self.parse_regexp(
+                "catchup-days", line_info, self.catchup_data[1]
+            ),
             "useragent": self.parse_regexp("user-agent", line_info),
             "referer": "",
             "url": ch_url,
@@ -174,6 +181,7 @@ class M3UParser:
         """Parse m3u string"""
         self.epg_urls = []
         self.m3u_epg = ""
+        self.catchup_data = ["default", "7", ""]
         self.epg_url_final = ""
         if not ("#EXTM3U" in m3u_str and "#EXTINF" in m3u_str):
             raise Exception("Malformed M3U")
@@ -199,6 +207,25 @@ class M3UParser:
                             epg_m3u_url = re.findall('url-tvg="(.*?)"', line)[0]
                         except Exception:
                             pass
+                if 'catchup="' in line:
+                    try:
+                        self.catchup_data[0] = re.findall('catchup="(.*?)"', line)[0]
+                    except Exception:
+                        pass
+                if 'catchup-days="' in line:
+                    try:
+                        self.catchup_data[1] = re.findall('catchup-days="(.*?)"', line)[
+                            0
+                        ]
+                    except Exception:
+                        pass
+                if 'catchup-source="' in line:
+                    try:
+                        self.catchup_data[2] = re.findall(
+                            'catchup-source="(.*?)"', line
+                        )[0]
+                    except Exception:
+                        pass
                 if epg_m3u_url:
                     self.m3u_epg = epg_m3u_url
             else:
