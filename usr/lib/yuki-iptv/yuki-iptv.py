@@ -40,6 +40,7 @@ import uuid
 import gettext
 import logging
 import signal
+import atexit
 import argparse
 import platform
 import subprocess
@@ -382,6 +383,51 @@ def async_gui_blocking_function(func):
 
 
 if __name__ == "__main__":
+
+    def exit_handler(*args):
+        try:
+            logger.info("exit_handler called")
+            if multiprocessing_manager:
+                multiprocessing_manager.shutdown()
+            for process_3 in active_children():
+                try:
+                    process_3.kill()
+                except Exception:
+                    try:
+                        process_3.terminate()
+                    except Exception:
+                        pass
+            stop_record()
+            for rec_1 in sch_recordings:
+                do_stop_record(rec_1)
+            if mpris_loop:
+                mpris_loop.quit()
+            if epg_thread_2:
+                try:
+                    epg_thread_2.kill()
+                except Exception:
+                    try:
+                        epg_thread_2.terminate()
+                    except Exception:
+                        pass
+            if multiprocessing_manager:
+                multiprocessing_manager.shutdown()
+            for process_3 in active_children():
+                try:
+                    process_3.kill()
+                except Exception:
+                    try:
+                        process_3.terminate()
+                    except Exception:
+                        pass
+            logger.info("exit_handler completed")
+        except BaseException:
+            pass
+
+    atexit.register(exit_handler)
+    signal.signal(signal.SIGTERM, exit_handler)
+    signal.signal(signal.SIGINT, exit_handler)
+
     logger.info("Qt init...")
     if "APPIMAGE_TEST_EXIT_YUKI_IPTV" in os.environ:
         os.environ["QT_QPA_PLATFORM"] = "offscreen"
