@@ -22,9 +22,11 @@
 # https://creativecommons.org/licenses/by/4.0/
 #
 import logging
+import uuid
 import gettext
 import platform
 from yuki_iptv.qt import get_qt_library
+from yuki_iptv.settings import parse_settings
 
 qt_library, QtWidgets, QtCore, QtGui, QShortcut, QtOpenGLWidgets = get_qt_library()
 
@@ -139,6 +141,7 @@ def record(
     get_ua_ref_for_channel,
     is_return=False,
 ):
+    settings, settings_loaded = parse_settings()
     if http_referer == "Referer: ":
         http_referer = ""
     useragent_ref, referer_ref = get_ua_ref_for_channel(channel_name)
@@ -147,6 +150,11 @@ def record(
         http_referer = f"Referer: {referer_ref}"
     logger.info(f"Using user agent '{user_agent}' for record channel '{channel_name}'")
     logger.info(f"HTTP headers: '{http_referer}'")
+    uuid_add = ""
+    uuid_arr = []
+    if settings["uuid"]:
+        uuid_add = "X-Playback-Session-Id: " + str(uuid.uuid1()) + "\r\n"
+        uuid_arr = ["-headers", uuid_add]
     if input_url.startswith("http://") or input_url.startswith("https://"):
         arr = [
             "-nostats",
@@ -156,7 +164,7 @@ def record(
             "-user_agent",
             user_agent,
             "-headers",
-            http_referer,
+            http_referer + "\r\n" + uuid_add,
             "-i",
             input_url,
             "-map",
@@ -173,26 +181,31 @@ def record(
             out_file,
         ]
     else:
-        arr = [
-            "-nostats",
-            "-hide_banner",
-            "-loglevel",
-            "warning",
-            "-i",
-            input_url,
-            "-map",
-            "-0:s?",
-            "-sn",
-            "-map",
-            "-0:d?",
-            "-codec",
-            "copy",
-            "-acodec",
-            "aac",
-            "-max_muxing_queue_size",
-            "4096",
-            out_file,
-        ]
+        arr = (
+            [
+                "-nostats",
+                "-hide_banner",
+                "-loglevel",
+                "warning",
+            ]
+            + uuid_arr
+            + [
+                "-i",
+                input_url,
+                "-map",
+                "-0:s?",
+                "-sn",
+                "-map",
+                "-0:d?",
+                "-codec",
+                "copy",
+                "-acodec",
+                "aac",
+                "-max_muxing_queue_size",
+                "4096",
+                out_file,
+            ]
+        )
     if not is_return:
         YukiData.ffmpeg_proc = QtCore.QProcess()
         YukiData.ffmpeg_proc.start("ffmpeg", arr)

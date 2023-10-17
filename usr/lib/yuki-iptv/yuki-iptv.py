@@ -4932,6 +4932,8 @@ if __name__ == "__main__":
                     play_url = getArrayItem(j)["url"]
                 except Exception:
                     play_url = custom_url
+                if archived:
+                    play_url = custom_url
                 MAX_CHAN_SIZE = 35
                 channel_name = j
                 if len(channel_name) > MAX_CHAN_SIZE:
