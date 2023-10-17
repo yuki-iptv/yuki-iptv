@@ -76,6 +76,10 @@ def format_placeholders(start_time, end_time, catchup_id, orig_url):
         reversed(start_time.split(" ")[0].split("."))
     ) + start_time.split(" ")[1].split(":")
 
+    # offset
+    orig_url = orig_url.replace("${offset}", "${offset:1}")
+    orig_url = orig_url.replace("{offset}", "{offset:1}")
+
     orig_url = orig_url.replace("${utc}", str(start_timestamp))
     orig_url = orig_url.replace("{utc}", str(start_timestamp))
 
