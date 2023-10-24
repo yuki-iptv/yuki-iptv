@@ -1711,11 +1711,6 @@ if __name__ == "__main__":
         xtream_win.setWindowTitle("XTream")
         xtream_win.setWindowIcon(main_icon)
 
-        xtream_win_2 = QtWidgets.QMainWindow()
-        xtream_win_2.resize(400, 140)
-        xtream_win_2.setWindowTitle("XTream")
-        xtream_win_2.setWindowIcon(main_icon)
-
         scheduler_win = QtWidgets.QMainWindow()
         scheduler_win.resize(1200, 650)
         scheduler_win.setWindowTitle(_("Recording scheduler"))
@@ -1816,11 +1811,11 @@ if __name__ == "__main__":
             (gettext.ngettext("%d hour", "%d hours", 0) % 0).replace("0 ", "")
         )
 
-        def lo_xtream_select_1():
-            xtream_select_1()
+        def lo_xtream_select():
+            xtream_select()
 
         xtream_btn_1 = QtWidgets.QPushButton("XTream")
-        xtream_btn_1.clicked.connect(lo_xtream_select_1)
+        xtream_btn_1.clicked.connect(lo_xtream_select)
 
         playlists_win_edit_widget = QtWidgets.QWidget()
         playlists_win_edit_layout = QtWidgets.QGridLayout()
@@ -3355,24 +3350,14 @@ if __name__ == "__main__":
         epgdays.setValue(settings["epgdays"])
 
         def xtream_select():
-            sm3u_text = sm3u.text()
-            if sm3u_text.startswith("XTREAM::::::::::::::"):
-                sm3u_text_sp = sm3u_text.split("::::::::::::::")
-                xtr_username_input.setText(sm3u_text_sp[1])
-                xtr_password_input.setText(sm3u_text_sp[2])
-                xtr_url_input.setText(sm3u_text_sp[3])
-            moveWindowToCenter(xtream_win)
-            xtream_win.show()
-
-        def xtream_select_1():
             m3u_edit_1_text = m3u_edit_1.text()
             if m3u_edit_1_text.startswith("XTREAM::::::::::::::"):
                 m3u_edit_1_text_sp = m3u_edit_1_text.split("::::::::::::::")
                 xtr_username_input_2.setText(m3u_edit_1_text_sp[1])
                 xtr_password_input_2.setText(m3u_edit_1_text_sp[2])
                 xtr_url_input_2.setText(m3u_edit_1_text_sp[3])
-            moveWindowToCenter(xtream_win_2)
-            xtream_win_2.show()
+            moveWindowToCenter(xtream_win)
+            xtream_win.show()
 
         useragent_lbl_2 = QtWidgets.QLabel("{}:".format(_("User agent")))
         referer_lbl = QtWidgets.QLabel(_("HTTP Referer:"))
@@ -3747,22 +3732,6 @@ if __name__ == "__main__":
         wid2.setLayout(layout2)
         settings_win.scroll.setWidget(wid2)
 
-        def xtream_save_btn_action():
-            if (
-                xtr_username_input.text()
-                and xtr_password_input.text()
-                and xtr_url_input.text()
-            ):
-                xtream_gen_url = "XTREAM::::::::::::::" + "::::::::::::::".join(
-                    [
-                        xtr_username_input.text(),
-                        xtr_password_input.text(),
-                        xtr_url_input.text(),
-                    ]
-                )
-                sm3u.setText(xtream_gen_url)
-            xtream_win.hide()
-
         def xtream_save_btn_action_2():
             if (
                 xtr_username_input_2.text()
@@ -3777,27 +3746,9 @@ if __name__ == "__main__":
                     ]
                 )
                 m3u_edit_1.setText(xtream_gen_url_2)
-            xtream_win_2.hide()
+            xtream_win.hide()
 
-        wid3 = QtWidgets.QWidget()
         wid4 = QtWidgets.QWidget()
-
-        save_btn_xtream = QtWidgets.QPushButton(_("Save"))
-        save_btn_xtream.setStyleSheet("font-weight: bold; color: green;")
-        save_btn_xtream.clicked.connect(xtream_save_btn_action)
-        xtr_username_input = QtWidgets.QLineEdit()
-        xtr_password_input = QtWidgets.QLineEdit()
-        xtr_url_input = QtWidgets.QLineEdit()
-
-        layout34 = QtWidgets.QGridLayout()
-        layout34.addWidget(QtWidgets.QLabel("{}:".format(_("Username"))), 0, 0)
-        layout34.addWidget(xtr_username_input, 0, 1)
-        layout34.addWidget(QtWidgets.QLabel("{}:".format(_("Password"))), 1, 0)
-        layout34.addWidget(xtr_password_input, 1, 1)
-        layout34.addWidget(QtWidgets.QLabel("{}:".format(_("URL"))), 2, 0)
-        layout34.addWidget(xtr_url_input, 2, 1)
-        layout34.addWidget(save_btn_xtream, 3, 1)
-        wid3.setLayout(layout34)
 
         save_btn_xtream_2 = QtWidgets.QPushButton(_("Save"))
         save_btn_xtream_2.setStyleSheet("font-weight: bold; color: green;")
@@ -3816,8 +3767,7 @@ if __name__ == "__main__":
         layout35.addWidget(save_btn_xtream_2, 3, 1)
         wid4.setLayout(layout35)
 
-        xtream_win.setCentralWidget(wid3)
-        xtream_win_2.setCentralWidget(wid4)
+        xtream_win.setCentralWidget(wid4)
 
         wid5 = QtWidgets.QWidget()
         layout36 = QtWidgets.QGridLayout()
@@ -8763,7 +8713,6 @@ if __name__ == "__main__":
                 or ext_win.isActiveWindow()
                 or scheduler_win.isActiveWindow()
                 or xtream_win.isActiveWindow()
-                or xtream_win_2.isActiveWindow()
                 or playlists_win.isActiveWindow()
                 or playlists_win_edit.isActiveWindow()
                 or epg_select_win.isActiveWindow()
@@ -8784,7 +8733,6 @@ if __name__ == "__main__":
                 or ext_win.isActiveWindow()
                 or scheduler_win.isActiveWindow()
                 or xtream_win.isActiveWindow()
-                or xtream_win_2.isActiveWindow()
                 or playlists_win.isActiveWindow()
                 or playlists_win_edit.isActiveWindow()
                 or epg_select_win.isActiveWindow()
