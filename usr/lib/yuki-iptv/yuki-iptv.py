@@ -6241,6 +6241,8 @@ if __name__ == "__main__":
                 movie_1_txt = movie_1.data(QtCore.Qt.ItemDataRole.UserRole)
             except Exception:
                 pass
+            if not movie_1_txt:
+                movie_1_txt = ""
             return movie_1_txt
 
         def channelfilter_do():
