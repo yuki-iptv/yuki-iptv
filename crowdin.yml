@@ -5,3 +5,5 @@ append_commit_message: false
 files:
   - source: /yuki-iptv.pot
     translation: /po/yuki-iptv-%locale_with_underscore%.po
+    export_only_approved: true
+    skip_untranslated_files: true
