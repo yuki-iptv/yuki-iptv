@@ -1,0 +1,5 @@
+commit_message: "Update %language% localization from Crowdin"
+append_commit_message: false
+files:
+  - source: /yuki-iptv.pot
+    translation: /po/yuki-iptv-%locale_with_underscore%.po
