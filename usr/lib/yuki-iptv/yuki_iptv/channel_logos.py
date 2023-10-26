@@ -25,7 +25,6 @@ import os
 
 # import logging
 # import traceback
-import requests
 import io
 import base64
 import hashlib
@@ -37,6 +36,7 @@ if platform.system() == "Linux":
 else:
     from PIL import Image
 from yuki_iptv.crossplatform import LOCAL_DIR
+from yuki_iptv.requests_timeout import requests_get
 
 # logger = logging.getLogger(__name__)
 
@@ -63,7 +63,7 @@ def fetch_remote_channel_icon(chan_name, logo_url, req_data_ua, req_data_ref):
                 req_data_headers = {"User-Agent": req_data_ua}
                 if req_data_ref:
                     req_data_headers["Referer"] = req_data_ref
-                req_data1 = requests.get(
+                req_data1 = requests_get(
                     logo_url,
                     headers=req_data_headers,
                     timeout=(3, 3),

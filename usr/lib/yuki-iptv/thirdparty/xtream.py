@@ -27,6 +27,7 @@ from os import path as osp
 from os import makedirs
 from timeit import default_timer as timer  # Timing xtream json downloads
 from typing import List, Tuple
+from yuki_iptv.requests_timeout import requests_get
 
 import requests
 
@@ -432,7 +433,7 @@ class XTream:
             self.auth_data = {}
             try:
                 # Request authentication, wait 4 seconds maximum
-                r = requests.get(self.get_authenticate_URL(), timeout=(4))
+                r = requests_get(self.get_authenticate_URL(), timeout=(4))
                 # If the answer is ok, process data and change state
                 if r.ok:
                     self.auth_data = r.json()
@@ -747,7 +748,7 @@ class XTream:
             [type]: JSON dictionary of the loaded data, or None
         """
         try:
-            r = requests.get(URL, timeout=timeout)
+            r = requests_get(URL, timeout=timeout)
             if r.status_code == 200:
                 return r.json()
 

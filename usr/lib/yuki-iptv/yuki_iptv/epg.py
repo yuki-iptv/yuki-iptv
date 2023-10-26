@@ -27,7 +27,6 @@ import logging
 import json
 import codecs
 import time
-import requests
 import io
 import zipfile
 from pathlib import Path
@@ -35,6 +34,7 @@ from yuki_iptv.crossplatform import LOCAL_DIR
 from yuki_iptv.epg_xmltv import parse_as_xmltv
 from yuki_iptv.epg_zip import parse_epg_zip
 from yuki_iptv.epg_txt import parse_txt
+from yuki_iptv.requests_timeout import requests_get
 
 _ = gettext.gettext
 logger = logging.getLogger(__name__)
@@ -51,7 +51,7 @@ def load_epg(epg_url, user_agent):
         epg = epg_file.read()
         epg_file.close()
     else:
-        epg_req = requests.get(
+        epg_req = requests_get(
             epg_url, headers={"User-Agent": user_agent}, stream=True, timeout=35
         )
         logger.info(f"EPG URL status code: {epg_req.status_code}")

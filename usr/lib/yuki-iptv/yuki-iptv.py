@@ -55,7 +55,6 @@ import traceback
 from multiprocessing import Manager, active_children, get_context, freeze_support
 from functools import partial
 import chardet
-import requests
 import setproctitle
 
 if platform.system() == "Windows":
@@ -95,6 +94,7 @@ from yuki_iptv.menubar import (
     reload_menubar_shortcuts,
 )
 from yuki_iptv.xtreamtom3u import convert_xtream_to_m3u
+from yuki_iptv.requests_timeout import requests_get
 from yuki_iptv.m3u import M3UParser
 from yuki_iptv.xspf import parse_xspf
 from yuki_iptv.catchup import (
@@ -1056,7 +1056,7 @@ if __name__ == "__main__":
                         logger.info("Playlist is remote URL")
                         try:
                             try:
-                                m3u_req = requests.get(
+                                m3u_req = requests_get(
                                     settings["m3u"],
                                     headers={"User-Agent": settings["ua"]},
                                     timeout=(5, 15),  # connect, read timeout
@@ -1070,7 +1070,7 @@ if __name__ == "__main__":
                                 logger.warning(
                                     "Playlist load failed, trying empty user agent"
                                 )
-                                m3u_req = requests.get(
+                                m3u_req = requests_get(
                                     settings["m3u"],
                                     headers={"User-Agent": ""},
                                     timeout=(5, 15),  # connect, read timeout
