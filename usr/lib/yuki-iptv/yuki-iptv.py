@@ -7429,12 +7429,13 @@ if __name__ == "__main__":
         @idle_function
         def end_file_callback(unused=None):
             global playing_chan
-            if playing_chan and player.path is None:
-                if settings["autoreconnection"] and playing_group == 0:
-                    logger.info("Connection to stream lost, waiting 1 sec...")
-                    do_reconnect1_async()
-                else:
-                    mpv_stop()
+            if win.isVisible():
+                if playing_chan and player.path is None:
+                    if settings["autoreconnection"] and playing_group == 0:
+                        logger.info("Connection to stream lost, waiting 1 sec...")
+                        do_reconnect1_async()
+                    else:
+                        mpv_stop()
 
         @idle_function
         def file_loaded_callback(unused=None):
@@ -8380,67 +8381,68 @@ if __name__ == "__main__":
 
         def timer_check_tvguide_obsolete():
             try:
-                global first_boot, ic2
-                check_connection()
-                try:
-                    if player.video_bitrate:
-                        bitrate_arr = [
-                            _("bps"),
-                            _("kbps"),
-                            _("Mbps"),
-                            _("Gbps"),
-                            _("Tbps"),
-                        ]
-                        video_bitrate = " - " + str(
-                            format_bytes(player.video_bitrate, bitrate_arr)
-                        )
-                    else:
+                if win.isVisible():
+                    global first_boot, ic2
+                    check_connection()
+                    try:
+                        if player.video_bitrate:
+                            bitrate_arr = [
+                                _("bps"),
+                                _("kbps"),
+                                _("Mbps"),
+                                _("Gbps"),
+                                _("Tbps"),
+                            ]
+                            video_bitrate = " - " + str(
+                                format_bytes(player.video_bitrate, bitrate_arr)
+                            )
+                        else:
+                            video_bitrate = ""
+                    except Exception:
                         video_bitrate = ""
-                except Exception:
-                    video_bitrate = ""
-                try:
-                    audio_codec = player.audio_codec.split(" ")[0]
-                except Exception:
-                    audio_codec = "no audio"
-                try:
-                    codec = player.video_codec.split(" ")[0]
-                    width = player.width
-                    height = player.height
-                except Exception:
-                    codec = "png"
-                    width = 800
-                    height = 600
-                if player.avsync:
-                    avsync = str(round(player.avsync, 2))
-                    deavsync = round(player.avsync, 2)
-                    if deavsync < 0:
-                        deavsync = deavsync * -1
-                    if deavsync > 0.999:
-                        avsync = f"<span style='color: #B58B00;'>{avsync}</span>"
-                else:
-                    avsync = "0.0"
-                if (
-                    (not (codec == "png" and width == 800 and height == 600))
-                    and (not (codec == "png" and width == 1024 and height == 699))
-                    and (width and height)
-                ):
-                    if settings["hidebitrateinfo"]:
-                        label12.setText("")
+                    try:
+                        audio_codec = player.audio_codec.split(" ")[0]
+                    except Exception:
+                        audio_codec = "no audio"
+                    try:
+                        codec = player.video_codec.split(" ")[0]
+                        width = player.width
+                        height = player.height
+                    except Exception:
+                        codec = "png"
+                        width = 800
+                        height = 600
+                    if player.avsync:
+                        avsync = str(round(player.avsync, 2))
+                        deavsync = round(player.avsync, 2)
+                        if deavsync < 0:
+                            deavsync = deavsync * -1
+                        if deavsync > 0.999:
+                            avsync = f"<span style='color: #B58B00;'>{avsync}</span>"
                     else:
-                        label12.setText(
-                            f"  {width}x{height}{video_bitrate}"
-                            f" - {codec} / {audio_codec} - A-V {avsync}"
-                        )
-                    if loading.text() == _("Loading..."):
-                        hideLoading()
-                else:
-                    label12.setText("")
-                ic2 += 0.1
-                if ic2 > 9.9:
-                    ic2 = 0
-                    if not epg_updating:
-                        if not is_program_actual(programmes, epg_ready):
-                            force_update_epg()
+                        avsync = "0.0"
+                    if (
+                        (not (codec == "png" and width == 800 and height == 600))
+                        and (not (codec == "png" and width == 1024 and height == 699))
+                        and (width and height)
+                    ):
+                        if settings["hidebitrateinfo"]:
+                            label12.setText("")
+                        else:
+                            label12.setText(
+                                f"  {width}x{height}{video_bitrate}"
+                                f" - {codec} / {audio_codec} - A-V {avsync}"
+                            )
+                        if loading.text() == _("Loading..."):
+                            hideLoading()
+                    else:
+                        label12.setText("")
+                    ic2 += 0.1
+                    if ic2 > 9.9:
+                        ic2 = 0
+                        if not epg_updating:
+                            if not is_program_actual(programmes, epg_ready):
+                                force_update_epg()
             except Exception:
                 pass
 
@@ -8531,21 +8533,22 @@ if __name__ == "__main__":
 
         def timer_osc():
             try:
-                global playing_url, force_turnoff_osc
-                if playing_url:
-                    if not settings["hidempv"]:
+                if win.isVisible():
+                    global playing_url, force_turnoff_osc
+                    if playing_url:
+                        if not settings["hidempv"]:
+                            try:
+                                if not force_turnoff_osc:
+                                    set_mpv_osc(True)
+                                else:
+                                    set_mpv_osc(False)
+                            except Exception:
+                                pass
+                    else:
                         try:
-                            if not force_turnoff_osc:
-                                set_mpv_osc(True)
-                            else:
-                                set_mpv_osc(False)
+                            set_mpv_osc(False)
                         except Exception:
                             pass
-                else:
-                    try:
-                        set_mpv_osc(False)
-                    except Exception:
-                        pass
             except Exception:
                 pass
 
@@ -8764,92 +8767,107 @@ if __name__ == "__main__":
 
         def timer_mouse():
             try:
-                global fullscreen, key_t_visible, dockWidgetVisible
-                global dockWidget2Visible, rewindWidgetVisible
-                if (
-                    l1.isVisible()
-                    and l1.text().startswith(_("Volume"))
-                    and not is_show_volume()
-                ):
-                    l1.hide()
-                label13.setText(f"{int(player.volume)}%")
-                dockWidget.setFixedWidth(DOCK_WIDGET_WIDTH)
-                if fullscreen and not key_t_visible:
-                    # Check cursor inside window
-                    cur_pos = QtGui.QCursor.pos()
-                    is_inside_window = (
-                        cur_pos.x() > win.pos().x() - 1
-                        and cur_pos.x() < (win.pos().x() + win.width())
-                    ) and (
-                        cur_pos.y() > win.pos().y() - 1
-                        and cur_pos.y() < (win.pos().y() + win.height())
-                    )
-                    # Playlist
-                    if settings["showplaylistmouse"]:
-                        cursor_x = win.container.mapFromGlobal(QtGui.QCursor.pos()).x()
-                        win_width = win.width()
-                        if settings["panelposition"] == 0:
-                            is_cursor_x = cursor_x > win_width - (
-                                DOCK_WIDGET_WIDTH + 10
+                if win.isVisible():
+                    global fullscreen, key_t_visible, dockWidgetVisible
+                    global dockWidget2Visible, rewindWidgetVisible
+                    if (
+                        l1.isVisible()
+                        and l1.text().startswith(_("Volume"))
+                        and not is_show_volume()
+                    ):
+                        l1.hide()
+                    label13.setText(f"{int(player.volume)}%")
+                    dockWidget.setFixedWidth(DOCK_WIDGET_WIDTH)
+                    if fullscreen and not key_t_visible:
+                        # Check cursor inside window
+                        cur_pos = QtGui.QCursor.pos()
+                        is_inside_window = (
+                            cur_pos.x() > win.pos().x() - 1
+                            and cur_pos.x() < (win.pos().x() + win.width())
+                        ) and (
+                            cur_pos.y() > win.pos().y() - 1
+                            and cur_pos.y() < (win.pos().y() + win.height())
+                        )
+                        # Playlist
+                        if settings["showplaylistmouse"]:
+                            cursor_x = win.container.mapFromGlobal(
+                                QtGui.QCursor.pos()
+                            ).x()
+                            win_width = win.width()
+                            if settings["panelposition"] == 0:
+                                is_cursor_x = cursor_x > win_width - (
+                                    DOCK_WIDGET_WIDTH + 10
+                                )
+                            else:
+                                is_cursor_x = cursor_x < (DOCK_WIDGET_WIDTH + 10)
+                            if (
+                                is_cursor_x
+                                and cursor_x < win_width
+                                and is_inside_window
+                            ):
+                                if not dockWidgetVisible:
+                                    dockWidgetVisible = True
+                                    show_playlist()
+                            else:
+                                dockWidgetVisible = False
+                                hide_playlist()
+                        # Control panel
+                        if settings["showcontrolsmouse"]:
+                            cursor_y = win.container.mapFromGlobal(
+                                QtGui.QCursor.pos()
+                            ).y()
+                            win_height = win.height()
+                            is_cursor_y = cursor_y > win_height - (
+                                dockWidget2.height() + 250
                             )
-                        else:
-                            is_cursor_x = cursor_x < (DOCK_WIDGET_WIDTH + 10)
-                        if is_cursor_x and cursor_x < win_width and is_inside_window:
-                            if not dockWidgetVisible:
-                                dockWidgetVisible = True
-                                show_playlist()
-                        else:
-                            dockWidgetVisible = False
-                            hide_playlist()
-                    # Control panel
-                    if settings["showcontrolsmouse"]:
+                            if (
+                                is_cursor_y
+                                and cursor_y < win_height
+                                and is_inside_window
+                            ):
+                                if not dockWidget2Visible:
+                                    dockWidget2Visible = True
+                                    show_controlpanel()
+                            else:
+                                dockWidget2Visible = False
+                                hide_controlpanel()
+                    if settings["rewindenable"]:
+                        # Check cursor inside window
+                        cur_pos = QtGui.QCursor.pos()
+                        is_inside_window = (
+                            cur_pos.x() > win.pos().x() - 1
+                            and cur_pos.x() < (win.pos().x() + win.width())
+                        ) and (
+                            cur_pos.y() > win.pos().y() - 1
+                            and cur_pos.y() < (win.pos().y() + win.height())
+                        )
+                        # Rewind
                         cursor_y = win.container.mapFromGlobal(QtGui.QCursor.pos()).y()
                         win_height = win.height()
                         is_cursor_y = cursor_y > win_height - (
                             dockWidget2.height() + 250
                         )
-                        if is_cursor_y and cursor_y < win_height and is_inside_window:
-                            if not dockWidget2Visible:
-                                dockWidget2Visible = True
-                                show_controlpanel()
+                        if (
+                            is_cursor_y
+                            and cursor_y < win_height
+                            and is_inside_window
+                            and playing_chan
+                            and playing_chan in array
+                            and YukiData.current_prog1
+                            and not YukiData.check_playlist_visible
+                            and not YukiData.check_controlpanel_visible
+                        ):
+                            if not rewindWidgetVisible:
+                                rewindWidgetVisible = True
+                                win.resize_rewind()
+                                rewind.show()
                         else:
-                            dockWidget2Visible = False
-                            hide_controlpanel()
-                if settings["rewindenable"]:
-                    # Check cursor inside window
-                    cur_pos = QtGui.QCursor.pos()
-                    is_inside_window = (
-                        cur_pos.x() > win.pos().x() - 1
-                        and cur_pos.x() < (win.pos().x() + win.width())
-                    ) and (
-                        cur_pos.y() > win.pos().y() - 1
-                        and cur_pos.y() < (win.pos().y() + win.height())
-                    )
-                    # Rewind
-                    cursor_y = win.container.mapFromGlobal(QtGui.QCursor.pos()).y()
-                    win_height = win.height()
-                    is_cursor_y = cursor_y > win_height - (dockWidget2.height() + 250)
-                    if (
-                        is_cursor_y
-                        and cursor_y < win_height
-                        and is_inside_window
-                        and playing_chan
-                        and playing_chan in array
-                        and YukiData.current_prog1
-                        and not YukiData.check_playlist_visible
-                        and not YukiData.check_controlpanel_visible
-                    ):
-                        if not rewindWidgetVisible:
-                            rewindWidgetVisible = True
-                            win.resize_rewind()
-                            rewind.show()
-                    else:
-                        rewindWidgetVisible = False
-                        if rewind.isVisible():
-                            if YukiData.rewind_value:
-                                if YukiData.rewind_value != rewind_slider.value():
-                                    rewind_slider.doMouseReleaseEvent()
-                            rewind.hide()
+                            rewindWidgetVisible = False
+                            if rewind.isVisible():
+                                if YukiData.rewind_value:
+                                    if YukiData.rewind_value != rewind_slider.value():
+                                        rewind_slider.doMouseReleaseEvent()
+                                rewind.hide()
             except Exception:
                 pass
 
