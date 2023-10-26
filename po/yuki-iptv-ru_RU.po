@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: yuki-iptv\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-10-12 15:22+0000\n"
-"PO-Revision-Date: 2023-10-26 15:28\n"
+"PO-Revision-Date: 2023-10-26 15:39\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
@@ -236,10 +236,10 @@ msgstr "Общая поправка"
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%d час"
+msgstr[1] "%d часа"
+msgstr[2] "%d часов"
+msgstr[3] "%d часов"
 
 #: usr/lib/yuki-iptv/yuki-iptv.py:1830 usr/lib/yuki-iptv/yuki-iptv.py:2500
 #: usr/lib/yuki-iptv/yuki-iptv.py:2518 usr/lib/yuki-iptv/yuki-iptv.py:2914
@@ -524,10 +524,10 @@ msgstr "Папка для записей\n"
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%d секунда"
+msgstr[1] "%d секунды"
+msgstr[2] "%d секунд"
+msgstr[3] "%d секунд"
 
 #: usr/lib/yuki-iptv/yuki-iptv.py:3228
 msgid "Or select provider"
@@ -565,10 +565,10 @@ msgstr "Обновить"
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%d день"
+msgstr[1] "%d дня"
+msgstr[2] "%d дней"
+msgstr[3] "%d дней"
 
 #: usr/lib/yuki-iptv/yuki-iptv.py:3296
 msgid "Load EPG for"
@@ -1007,20 +1007,20 @@ msgstr "Телепрограмма устарела!"
 #, python-format
 msgid "-%d second"
 msgid_plural "-%d seconds"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "-%d секунда"
+msgstr[1] "-%d секунды"
+msgstr[2] "-%d секунд"
+msgstr[3] "-%d секунд"
 
 #: usr/lib/yuki-iptv/yuki-iptv.py:8866
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:229
 #, python-format
 msgid "+%d second"
 msgid_plural "+%d seconds"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "+%d секунда"
+msgstr[1] "+%d секунды"
+msgstr[2] "+%d секунд"
+msgstr[3] "+%d секунд"
 
 #: usr/lib/yuki-iptv/yuki-iptv.py:8867 usr/lib/yuki-iptv/yuki-iptv.py:8869
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:230
@@ -1028,10 +1028,10 @@ msgstr[3] ""
 #, python-format
 msgid "-%d minute"
 msgid_plural "-%d minutes"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "-%d минута"
+msgstr[1] "-%d минуты"
+msgstr[2] "-%d минут"
+msgstr[3] "-%d минут"
 
 #: usr/lib/yuki-iptv/yuki-iptv.py:8868 usr/lib/yuki-iptv/yuki-iptv.py:8870
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:231
@@ -1039,10 +1039,10 @@ msgstr[3] ""
 #, python-format
 msgid "+%d minute"
 msgid_plural "+%d minutes"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "+%d минута"
+msgstr[1] "+%d минуты"
+msgstr[2] "+%d минут"
+msgstr[3] "+%d минут"
 
 #: usr/lib/yuki-iptv/yuki-iptv.py:8879 usr/lib/yuki-iptv/yuki-iptv.py:8896
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:315
