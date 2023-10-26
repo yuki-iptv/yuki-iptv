@@ -12,11 +12,11 @@ clean:
 	rm -rf usr/share/locale
 
 lint:
-	black --check --diff usr/lib/yuki-iptv/yuki_iptv usr/lib/yuki-iptv/yuki-iptv.py tests
+	black --check --diff usr/lib/yuki-iptv/yuki_iptv usr/lib/yuki-iptv/yuki-iptv.py tests generate_desktop_files
 	flake8 .
 
 black:
-	black usr/lib/yuki-iptv/yuki_iptv usr/lib/yuki-iptv/yuki-iptv.py tests
+	black usr/lib/yuki-iptv/yuki_iptv usr/lib/yuki-iptv/yuki-iptv.py tests generate_desktop_files
 
 test:
 	mkdir -p "/tmp/yuki-iptv-py"
