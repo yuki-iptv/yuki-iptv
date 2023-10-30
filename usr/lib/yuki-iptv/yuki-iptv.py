@@ -1742,6 +1742,16 @@ if __name__ == "__main__":
                 if channel_text_prov:
                     if playlists_data.oldName == "":
                         playlists_list.addItem(channel_text_prov)
+                    else:
+                        if channel_text_prov != playlists_data.oldName:
+                            for i6 in range(0, playlists_list.count()):
+                                if (
+                                    playlists_list.item(i6).text()
+                                    == playlists_data.oldName
+                                ):
+                                    playlists_list.item(i6).setText(channel_text_prov)
+                                    break
+                            playlists_data.playlists_used.pop(playlists_data.oldName)
                     playlists_data.playlists_used[channel_text_prov] = {
                         "m3u": m3u_edit_1.text(),
                         "epg": epg_edit_1.text(),
