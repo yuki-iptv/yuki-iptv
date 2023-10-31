@@ -979,6 +979,13 @@ if __name__ == "__main__":
                             for movie1 in xt.series:
                                 if isinstance(movie1, Serie):
                                     YukiData.series[movie1.name] = movie1
+                            logger.info("XTream init done")
+                            if not settings["epg"]:
+                                logger.info("EPG not specified, using XTream xmltv.php")
+                                settings["epg"] = (
+                                    f"{xtream_url}/xmltv.php?username="
+                                    f"{xtream_username}&password={xtream_password}"
+                                )
                         except Exception as e3:
                             message2 = "{}\n\n{}".format(
                                 _("yuki-iptv error"),
