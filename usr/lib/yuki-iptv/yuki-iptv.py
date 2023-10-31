@@ -1024,34 +1024,14 @@ if __name__ == "__main__":
                         except Exception:
                             logger.warning("Playlist is not UTF-8 encoding")
                             logger.info("Trying to detect encoding...")
-                            file_222_encoding = ""
+                            m3u_file = open(settings["m3u"], "rb")
                             try:
-                                file_222 = open(settings["m3u"], "rb")
-                                file_222_encoding = chardet.detect(file_222.read())[
-                                    "encoding"
-                                ]
-                                file_222.close()
+                                m3u_file_read = m3u_file.read()
+                                m3u_encoding = chardet.detect(m3u_file_read)["encoding"]
+                                logger.info(f"Detected encoding: {m3u_encoding}")
+                                m3u = m3u_file_read.decode(m3u_encoding)
                             except Exception:
-                                pass
-                            if file_222_encoding:
-                                logger.info(f"Guessed encoding: {file_222_encoding}")
-                                try:
-                                    file_111 = open(
-                                        settings["m3u"], "r", encoding=file_222_encoding
-                                    )
-                                    m3u = file_111.read()
-                                    file_111.close()
-                                except Exception:
-                                    logger.warning("Wrong encoding guess!")
-                                    show_exception(
-                                        _(
-                                            "Failed to load playlist - unknown "
-                                            "encoding! Please use playlists "
-                                            "in UTF-8 encoding."
-                                        )
-                                    )
-                            else:
-                                logger.warning("Unknown encoding!")
+                                logger.warning("Encoding detection error!")
                                 show_exception(
                                     _(
                                         "Failed to load playlist - unknown "
@@ -1059,6 +1039,9 @@ if __name__ == "__main__":
                                         "in UTF-8 encoding."
                                     )
                                 )
+                            finally:
+                                m3u_file_read = None
+                                m3u_file.close()
                     else:
                         logger.info("Playlist is remote URL")
                         try:
