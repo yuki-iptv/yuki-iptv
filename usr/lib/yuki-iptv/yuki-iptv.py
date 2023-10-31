@@ -196,48 +196,19 @@ class YukiLang:
 
 
 old_pwd = os.getcwd()
-if platform.system() == "Windows" or platform.system() == "Darwin":
-    if not os.path.isdir(Path(os.path.dirname(os.path.abspath(__file__)), "usr")):
-        os.mkdir(Path(os.path.dirname(os.path.abspath(__file__)), "usr"))
-    if not os.path.isdir(
-        Path(os.path.dirname(os.path.abspath(__file__)), "usr", "lib")
-    ):
-        os.mkdir(Path(os.path.dirname(os.path.abspath(__file__)), "usr", "lib"))
-    if not os.path.isdir(
-        Path(
-            os.path.dirname(os.path.abspath(__file__)),
-            "usr",
-            "lib",
-            "yuki-iptv",
-        )
-    ):
-        os.mkdir(
-            Path(
-                os.path.dirname(os.path.abspath(__file__)),
-                "usr",
-                "lib",
-                "yuki-iptv",
-            )
-        )
-    if not os.path.isdir(
-        Path(
-            os.path.dirname(os.path.abspath(__file__)),
-            "usr",
-            "lib",
-            "yuki-iptv",
-            "yuki_iptv",
-        )
-    ):
-        os.mkdir(
-            Path(
-                os.path.dirname(os.path.abspath(__file__)),
-                "usr",
-                "lib",
-                "yuki-iptv",
-                "yuki_iptv",
-            )
-        )
-
+# For Nuitka
+# don't change this, it's working as expected
+if (platform.system() == "Windows" or platform.system() == "Darwin") and os.path.isdir(
+    Path(os.path.dirname(os.path.abspath(__file__)), "usr")
+):
+    logger.info("Nuitka detected, changing working directory")
+    Path(
+        os.path.dirname(os.path.abspath(__file__)),
+        "usr",
+        "lib",
+        "yuki-iptv",
+        "yuki_iptv",
+    ).mkdir(parents=True, exist_ok=True)
     os.chdir(
         Path(
             os.path.dirname(os.path.abspath(__file__)),
