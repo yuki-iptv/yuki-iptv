@@ -241,9 +241,9 @@ if platform.system() == "Windows" or platform.system() == "Darwin":
     os.chdir(
         Path(
             os.path.dirname(os.path.abspath(__file__)),
-            "usr",
-            "lib",
-            "yuki-iptv",
+#            "usr",
+#            "lib",
+#            "yuki-iptv",
         )
     )
 else:
