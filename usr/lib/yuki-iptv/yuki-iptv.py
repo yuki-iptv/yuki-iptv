@@ -969,8 +969,8 @@ if __name__ == "__main__":
                         xt = EmptyClass()
                         xt.auth_data = {}
                     if xt.auth_data != {}:
-                        xt.load_iptv()
                         try:
+                            xt.load_iptv()
                             m3u = convert_xtream_to_m3u(_, xt.channels)
                             try:
                                 m3u += convert_xtream_to_m3u(_, xt.movies, True, "VOD")
