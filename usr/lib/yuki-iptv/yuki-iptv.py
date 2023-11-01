@@ -876,6 +876,9 @@ if __name__ == "__main__":
         class PlaylistsFail:
             status_code = 0
 
+        def log_xtream(*args):
+            logger.info(" ".join([str(arg2) for arg2 in args]))
+
         m3uFailed = False
 
         use_cache = settings["m3u"].startswith("http://") or settings["m3u"].startswith(
@@ -927,13 +930,19 @@ if __name__ == "__main__":
                     xtream_url = xtream_split[3]
                     if not os.path.isdir(str(Path(LOCAL_DIR, "xtream"))):
                         os.mkdir(str(Path(LOCAL_DIR, "xtream")))
+                    xtream_headers = {"User-Agent": settings["ua"]}
+                    if settings["referer"]:
+                        xtream_headers["Referer"] = settings["referer"]
                     try:
                         xt = XTream(
+                            log_xtream,
                             xtream_sha512,
                             xtream_username,
                             xtream_password,
                             xtream_url,
-                            "",
+                            headers=xtream_headers,
+                            hide_adult_content=False,
+                            cache_path="",
                         )
                     except Exception:
                         logger.warning("XTream init failure")
