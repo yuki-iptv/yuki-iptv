@@ -310,6 +310,7 @@ class YukiData:
     xtream_list_old = set()
     xtream_list_lock = False
     xtream_expiration_list = {}
+    is_xtream = False
 
 
 stream_info.video_properties = {}
@@ -952,6 +953,7 @@ if __name__ == "__main__":
                 # Parsing m3u
                 if settings["m3u"].startswith("XTREAM::::::::::::::"):
                     # XTREAM::::::::::::::username::::::::::::::password::::::::::::::url
+                    YukiData.is_xtream = True
                     logger.info("Using XTream API")
                     xt, xtream_username, xtream_password, xtream_url = load_xtream(
                         settings["m3u"]
@@ -1004,6 +1006,7 @@ if __name__ == "__main__":
                         msg1.exec()
                 else:
                     if os.path.isfile(settings["m3u"]):
+                        YukiData.is_xtream = False
                         logger.info("Playlist is local file")
                         try:
                             file = open(settings["m3u"], "r", encoding="utf8")
@@ -1031,6 +1034,7 @@ if __name__ == "__main__":
                                 m3u_file_read = None
                                 m3u_file.close()
                     else:
+                        YukiData.is_xtream = False
                         logger.info("Playlist is remote URL")
                         try:
                             try:
@@ -1653,8 +1657,13 @@ if __name__ == "__main__":
                     logger.warning("do_open_archive / catchup_id parsing failed")
                     logger.warning(traceback.format_exc())
 
+                arr2 = arr1
+
+                if YukiData.is_xtream:
+                    arr2["catchup"] = "xc"
+
                 play_url = get_catchup_url(
-                    chan_url, arr1, start_time, end_time, catchup_id
+                    chan_url, arr2, start_time, end_time, catchup_id
                 )
 
                 itemClicked_event(

@@ -284,7 +284,7 @@ def get_catchup_url(chan_url, arr1, start_time, end_time, catchup_id):
         logger.info("")
         logger.info(f"orig xc url: {xc_url}")
         xc_re = re.findall(
-            r"^(http[s]?://[^/]+)/(?:live/)?([^/]+)/([^/]+)/([^/\.]+)(\.m3u[8]?)?$",
+            r"^(http[s]?://[^/]+)/(?:live/)?([^/]+)/([^/]+)/([^/\.]+)(\.m3u[8]?|\.ts?)?$",  # noqa: E501
             chan_url,
         )
         if xc_re:
