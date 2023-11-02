@@ -25,7 +25,6 @@ import os
 import logging
 import gettext
 import json
-import webbrowser
 import traceback
 import platform
 from functools import partial
@@ -390,12 +389,6 @@ def init_menubar(data):
 
     # Help
 
-    if _("IPTV player") == "IPTV плеер":
-        YukiData.donateAction = qaction("&Сделать пожертвование", data)
-        YukiData.donateAction.triggered.connect(
-            lambda: webbrowser.open("https://qiwi.com/n/ASTRONCIA")
-        )
-
     YukiData.aboutAction = qaction(_("&About yuki-iptv"), data)
     YukiData.aboutAction.triggered.connect(lambda: YukiData.show_help())
 
@@ -534,9 +527,6 @@ def populate_menubar(
     # Help
 
     help_menu = menubar.addMenu(_("&Help"))
-    if _("IPTV player") == "IPTV плеер":
-        help_menu.addAction(YukiData.donateAction)
-        help_menu.addSeparator()
     help_menu.addAction(YukiData.aboutAction)
 
     YukiData.menubars[i] = [video_track_menu, audio_track_menu, sub_track_menu]
