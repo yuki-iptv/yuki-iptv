@@ -197,7 +197,7 @@ class YukiLang:
 
 old_pwd = os.getcwd()
 # For Nuitka
-# don't change this, it's working as expected
+# don't change this, it's working as intended
 if (platform.system() == "Windows" or platform.system() == "Darwin") and os.path.isdir(
     Path(os.path.dirname(os.path.abspath(__file__)), "usr")
 ):
@@ -307,6 +307,9 @@ class YukiData:
     check_playlist_visible = False
     check_controlpanel_visible = False
     rewind_value = None
+    xtream_list_old = set()
+    xtream_list_lock = False
+    xtream_expiration_list = {}
 
 
 stream_info.video_properties = {}
@@ -879,6 +882,35 @@ if __name__ == "__main__":
         def log_xtream(*args):
             logger.info(" ".join([str(arg2) for arg2 in args]))
 
+        def load_xtream(m3u_url):
+            (
+                _xtream_unused,
+                xtream_username,
+                xtream_password,
+                xtream_url,
+            ) = m3u_url.split("::::::::::::::")
+            if not os.path.isdir(str(Path(LOCAL_DIR, "xtream"))):
+                os.mkdir(str(Path(LOCAL_DIR, "xtream")))
+            xtream_headers = {"User-Agent": settings["ua"]}
+            if settings["referer"]:
+                xtream_headers["Referer"] = settings["referer"]
+            try:
+                xt = XTream(
+                    log_xtream,
+                    hashlib.sha512(settings["m3u"].encode("utf-8")).hexdigest(),
+                    xtream_username,
+                    xtream_password,
+                    xtream_url,
+                    headers=xtream_headers,
+                    hide_adult_content=False,
+                    cache_path="",
+                )
+            except Exception:
+                logger.warning("XTream init failure")
+                xt = EmptyClass()
+                xt.auth_data = {}
+            return xt, xtream_username, xtream_password, xtream_url
+
         m3uFailed = False
 
         use_cache = settings["m3u"].startswith("http://") or settings["m3u"].startswith(
@@ -921,33 +953,9 @@ if __name__ == "__main__":
                 if settings["m3u"].startswith("XTREAM::::::::::::::"):
                     # XTREAM::::::::::::::username::::::::::::::password::::::::::::::url
                     logger.info("Using XTream API")
-                    xtream_sha512 = hashlib.sha512(
-                        settings["m3u"].encode("utf-8")
-                    ).hexdigest()
-                    xtream_split = settings["m3u"].split("::::::::::::::")
-                    xtream_username = xtream_split[1]
-                    xtream_password = xtream_split[2]
-                    xtream_url = xtream_split[3]
-                    if not os.path.isdir(str(Path(LOCAL_DIR, "xtream"))):
-                        os.mkdir(str(Path(LOCAL_DIR, "xtream")))
-                    xtream_headers = {"User-Agent": settings["ua"]}
-                    if settings["referer"]:
-                        xtream_headers["Referer"] = settings["referer"]
-                    try:
-                        xt = XTream(
-                            log_xtream,
-                            xtream_sha512,
-                            xtream_username,
-                            xtream_password,
-                            xtream_url,
-                            headers=xtream_headers,
-                            hide_adult_content=False,
-                            cache_path="",
-                        )
-                    except Exception:
-                        logger.warning("XTream init failure")
-                        xt = EmptyClass()
-                        xt.auth_data = {}
+                    xt, xtream_username, xtream_password, xtream_url = load_xtream(
+                        settings["m3u"]
+                    )
                     if xt.auth_data != {}:
                         try:
                             xt.load_iptv()
@@ -1236,6 +1244,12 @@ if __name__ == "__main__":
         signal.signal(signal.SIGTERM, sigint_handler)
 
         TV_ICON = QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "tv.png")))
+        TV_ICON_SMALL = QtGui.QIcon(TV_ICON.pixmap(16, 16))
+        LOADING_ICON_SMALL = QtGui.QIcon(
+            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "loading.gif"))).pixmap(
+                16, 16
+            )
+        )
         MOVIE_ICON = QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "movie.png")))
 
         def get_current_time():
@@ -1706,20 +1720,149 @@ if __name__ == "__main__":
 
         playlists_data.oldName = ""
 
+        def create_playlist_item_widget(name3):
+            name3_n = name3
+            if name3_n in YukiData.xtream_expiration_list:
+                name3_n = (
+                    name3_n
+                    + "\n("
+                    + _("Expiration date")
+                    + ": "
+                    + YukiData.xtream_expiration_list[name3_n.split("\n")[0]]
+                    + ")"
+                )
+            playlist_item_widget = QtWidgets.QListWidgetItem(TV_ICON_SMALL, name3_n)
+            playlist_item_widget.setData(QtCore.Qt.ItemDataRole.UserRole, name3)
+            return playlist_item_widget
+
+        def get_xtream_expiration_date(xt2):
+            xtream_exp_date = _("Unknown")
+            try:
+                xtream_exp_date = datetime.datetime.fromtimestamp(
+                    int(xt2.auth_data["user_info"]["exp_date"])
+                ).strftime("%d.%m.%Y %H:%M:%S")
+            except Exception:
+                try:
+                    xtream_exp_date = str(xt2.auth_data["user_info"]["exp_date"])
+                except Exception:
+                    pass
+            return xtream_exp_date
+
+        @idle_function
+        def show_xtream_playlists_expiration_pt2(unused=None):
+            try:
+                for i10 in range(0, playlists_list.count()):
+                    if (
+                        playlists_list.item(i10).data(QtCore.Qt.ItemDataRole.UserRole)
+                        in YukiData.xtream_expiration_list
+                    ):
+                        playlists_list.item(i10).setText(
+                            playlists_list.item(i10).text().split("\n")[0]
+                            + "\n("
+                            + _("Expiration date")
+                            + ": "
+                            + YukiData.xtream_expiration_list[
+                                playlists_list.item(i10).text().split("\n")[0]
+                            ]
+                            + ")"
+                        )
+            except Exception:
+                logger.warning("exception in show_xtream_playlists_expiration_pt2")
+                logger.warning(traceback.format_exc())
+
+        @idle_function
+        def xtream_expiration_show_loading(unused=None):
+            try:
+                for i10 in range(0, playlists_list.count()):
+                    i10_name = playlists_list.item(i10).data(
+                        QtCore.Qt.ItemDataRole.UserRole
+                    )
+                    if playlists_data.playlists_used[i10_name]["m3u"].startswith(
+                        "XTREAM::::::::::::::"
+                    ):
+                        playlists_list.item(i10).setIcon(LOADING_ICON_SMALL)
+            except Exception:
+                logger.warning("exception in xtream_expiration_show_loading")
+                logger.warning(traceback.format_exc())
+
+        @idle_function
+        def xtream_expiration_hide_loading(unused=None):
+            try:
+                for i10 in range(0, playlists_list.count()):
+                    i10_name = playlists_list.item(i10).data(
+                        QtCore.Qt.ItemDataRole.UserRole
+                    )
+                    if playlists_data.playlists_used[i10_name]["m3u"].startswith(
+                        "XTREAM::::::::::::::"
+                    ):
+                        playlists_list.item(i10).setIcon(TV_ICON_SMALL)
+            except Exception:
+                logger.warning("exception in xtream_expiration_hide_loading")
+                logger.warning(traceback.format_exc())
+
+        @async_gui_blocking_function
+        def show_xtream_playlists_expiration(unused=None):
+            try:
+                if not YukiData.xtream_list_lock:
+                    YukiData.xtream_list_lock = True
+                    xtream_list = set()
+                    for i8 in playlists_data.playlists_used:
+                        if playlists_data.playlists_used[i8]["m3u"].startswith(
+                            "XTREAM::::::::::::::"
+                        ):
+                            xtream_list.add(
+                                i8
+                                + ":^:^:^:^:^:^:^:^:^:^:"
+                                + playlists_data.playlists_used[i8]["m3u"]
+                            )
+                    if xtream_list != YukiData.xtream_list_old:
+                        YukiData.xtream_list_old = xtream_list
+                        xtream_expiration_show_loading()
+                        expiration_list = {}
+                        for i9 in xtream_list:
+                            (
+                                xt2,
+                                _xtream_username,
+                                _xtream_password,
+                                _xtream_url,
+                            ) = load_xtream(
+                                playlists_data.playlists_used[
+                                    i9.split(":^:^:^:^:^:^:^:^:^:^:")[0]
+                                ]["m3u"]
+                            )
+                            expiration_list[
+                                i9.split(":^:^:^:^:^:^:^:^:^:^:")[0]
+                            ] = get_xtream_expiration_date(xt2)
+                        YukiData.xtream_expiration_list = expiration_list
+                        xtream_expiration_hide_loading()
+                        show_xtream_playlists_expiration_pt2()
+                    YukiData.xtream_list_lock = False
+            except Exception:
+                logger.warning("Exception in show_xtream_playlists_expiration")
+                logger.warning(traceback.format_exc())
+
         def playlists_win_save():
             if m3u_edit_1.text():
                 channel_text_prov = name_edit_1.text()
                 if channel_text_prov:
                     if playlists_data.oldName == "":
-                        playlists_list.addItem(channel_text_prov)
+                        playlists_list.addItem(
+                            create_playlist_item_widget(channel_text_prov)
+                        )
                     else:
                         if channel_text_prov != playlists_data.oldName:
                             for i6 in range(0, playlists_list.count()):
                                 if (
-                                    playlists_list.item(i6).text()
+                                    playlists_list.item(i6).data(
+                                        QtCore.Qt.ItemDataRole.UserRole
+                                    )
                                     == playlists_data.oldName
                                 ):
                                     playlists_list.item(i6).setText(channel_text_prov)
+                                    playlists_list.item(i6).setData(
+                                        QtCore.Qt.ItemDataRole.UserRole,
+                                        channel_text_prov,
+                                    )
                                     break
                             playlists_data.playlists_used.pop(playlists_data.oldName)
                     playlists_data.playlists_used[channel_text_prov] = {
@@ -1729,6 +1872,7 @@ if __name__ == "__main__":
                     }
                     playlists_save_json()
                     playlists_win_edit.hide()
+                    show_xtream_playlists_expiration()
                 else:
                     noemptyname_msg = QtWidgets.QMessageBox(
                         qt_icon_warning,
@@ -3943,9 +4087,10 @@ if __name__ == "__main__":
                 playlists_list.clear()
                 playlists_data.playlists_used = playlists_saved
                 for item2 in playlists_data.playlists_used:
-                    playlists_list.addItem(item2)
+                    playlists_list.addItem(create_playlist_item_widget(item2))
                 moveWindowToCenter(playlists_win)
                 playlists_win.show()
+                show_xtream_playlists_expiration()
             else:
                 playlists_win.hide()
 
@@ -3958,7 +4103,7 @@ if __name__ == "__main__":
         def playlists_selected():
             try:
                 prov_data = playlists_data.playlists_used[
-                    playlists_list.currentItem().text()
+                    playlists_list.currentItem().data(QtCore.Qt.ItemDataRole.UserRole)
                 ]
                 prov_m3u = prov_data["m3u"]
                 prov_epg = ""
@@ -3984,7 +4129,9 @@ if __name__ == "__main__":
 
         def playlists_edit_do(ignore0=False):
             try:
-                currentItem_text = playlists_list.currentItem().text()
+                currentItem_text = playlists_list.currentItem().data(
+                    QtCore.Qt.ItemDataRole.UserRole
+                )
             except Exception:
                 currentItem_text = ""
             if ignore0:
@@ -4032,13 +4179,16 @@ if __name__ == "__main__":
                 == QtWidgets.QMessageBox.StandardButton.Yes
             ):
                 try:
-                    currentItem_text = playlists_list.currentItem().text()
+                    currentItem_text = playlists_list.currentItem().data(
+                        QtCore.Qt.ItemDataRole.UserRole
+                    )
                 except Exception:
                     currentItem_text = ""
                 if currentItem_text:
                     playlists_list.takeItem(playlists_list.currentRow())
                     playlists_data.playlists_used.pop(currentItem_text)
                     playlists_save_json()
+            show_xtream_playlists_expiration()
 
         def playlists_add_do():
             playlists_edit_do(True)
