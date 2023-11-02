@@ -912,180 +912,135 @@ if __name__ == "__main__":
                 xt.auth_data = {}
             return xt, xtream_username, xtream_password, xtream_url
 
-        m3uFailed = False
-
-        use_cache = settings["m3u"].startswith("http://") or settings["m3u"].startswith(
-            "https://"
-        )
-        if settings["nocache"]:
-            use_cache = False
-        if not use_cache:
-            logger.info("Playlist caching off")
-        if use_cache and os.path.isfile(str(Path(LOCAL_DIR, "playlistcache.json"))):
-            pj = open(str(Path(LOCAL_DIR, "playlistcache.json")), "r", encoding="utf8")
-            pj1 = json.loads(pj.read())["url"]
-            pj.close()
-            if pj1 != settings["m3u"]:
-                os.remove(str(Path(LOCAL_DIR, "playlistcache.json")))
-        if (not use_cache) and os.path.isfile(
-            str(Path(LOCAL_DIR, "playlistcache.json"))
-        ):
-            os.remove(str(Path(LOCAL_DIR, "playlistcache.json")))
-        if os.path.isfile(str(Path(LOCAL_DIR, "playlistcache.json"))):
-            try:
-                playlist_load_tmp = open(
-                    str(Path(LOCAL_DIR, "playlistcache.json")), "r", encoding="utf8"
+        logger.info("Loading playlist...")
+        if settings["m3u"]:
+            # Parsing m3u
+            if settings["m3u"].startswith("XTREAM::::::::::::::"):
+                # XTREAM::::::::::::::username::::::::::::::password::::::::::::::url
+                YukiData.is_xtream = True
+                logger.info("Using XTream API")
+                xt, xtream_username, xtream_password, xtream_url = load_xtream(
+                    settings["m3u"]
                 )
-                playlist_load_tmp_data = playlist_load_tmp.read()
-                playlist_load_tmp.close()
-                playlist_load_tmp_data = json.loads(playlist_load_tmp_data)
-                if (
-                    not playlist_load_tmp_data["m3u"]
-                    and not playlist_load_tmp_data["array"]
-                ):
-                    logger.warning("Cached playlist broken, ignoring and deleting")
-                    os.remove(str(Path(LOCAL_DIR, "playlistcache.json")))
-            except Exception:
-                pass
-        if not os.path.isfile(str(Path(LOCAL_DIR, "playlistcache.json"))):
-            logger.info("Loading playlist...")
-            if settings["m3u"]:
-                # Parsing m3u
-                if settings["m3u"].startswith("XTREAM::::::::::::::"):
-                    # XTREAM::::::::::::::username::::::::::::::password::::::::::::::url
-                    YukiData.is_xtream = True
-                    logger.info("Using XTream API")
-                    xt, xtream_username, xtream_password, xtream_url = load_xtream(
-                        settings["m3u"]
-                    )
-                    if xt.auth_data != {}:
+                if xt.auth_data != {}:
+                    try:
+                        xt.load_iptv()
+                        m3u = convert_xtream_to_m3u(_, xt.channels)
                         try:
-                            xt.load_iptv()
-                            m3u = convert_xtream_to_m3u(_, xt.channels)
-                            try:
-                                m3u += convert_xtream_to_m3u(_, xt.movies, True, "VOD")
-                            except Exception:
-                                logger.warning("XTream movies parse FAILED")
-                            for movie1 in xt.series:
-                                if isinstance(movie1, Serie):
-                                    YukiData.series[movie1.name] = movie1
-                            logger.info("XTream init done")
-                            if not settings["epg"]:
-                                logger.info("EPG not specified, using XTream xmltv.php")
-                                settings["epg"] = (
-                                    f"{xtream_url}/xmltv.php?username="
-                                    f"{xtream_username}&password={xtream_password}"
-                                )
-                        except Exception as e3:
-                            message2 = "{}\n\n{}".format(
-                                _("yuki-iptv error"),
-                                str(
-                                    "XTream API: {}\n\n{}".format(
-                                        _("Processing error"), str(e3)
-                                    )
-                                ),
+                            m3u += convert_xtream_to_m3u(_, xt.movies, True, "VOD")
+                        except Exception:
+                            logger.warning("XTream movies parse FAILED")
+                        for movie1 in xt.series:
+                            if isinstance(movie1, Serie):
+                                YukiData.series[movie1.name] = movie1
+                        logger.info("XTream init done")
+                        if not settings["epg"]:
+                            logger.info("EPG not specified, using XTream xmltv.php")
+                            settings["epg"] = (
+                                f"{xtream_url}/xmltv.php?username="
+                                f"{xtream_username}&password={xtream_password}"
                             )
-                            msg2 = QtWidgets.QMessageBox(
-                                qt_icon_warning,
-                                _("Error"),
-                                message2,
-                                QtWidgets.QMessageBox.StandardButton.Ok,
-                            )
-                            msg2.exec()
-                    else:
-                        message1 = "{}\n\n{}".format(
+                    except Exception as e3:
+                        message2 = "{}\n\n{}".format(
                             _("yuki-iptv error"),
-                            str("XTream API: {}".format(_("Could not connect"))),
+                            str(
+                                "XTream API: {}\n\n{}".format(
+                                    _("Processing error"), str(e3)
+                                )
+                            ),
                         )
-                        msg1 = QtWidgets.QMessageBox(
+                        msg2 = QtWidgets.QMessageBox(
                             qt_icon_warning,
                             _("Error"),
-                            message1,
+                            message2,
                             QtWidgets.QMessageBox.StandardButton.Ok,
                         )
-                        msg1.exec()
+                        msg2.exec()
                 else:
-                    if os.path.isfile(settings["m3u"]):
-                        YukiData.is_xtream = False
-                        logger.info("Playlist is local file")
+                    message1 = "{}\n\n{}".format(
+                        _("yuki-iptv error"),
+                        str("XTream API: {}".format(_("Could not connect"))),
+                    )
+                    msg1 = QtWidgets.QMessageBox(
+                        qt_icon_warning,
+                        _("Error"),
+                        message1,
+                        QtWidgets.QMessageBox.StandardButton.Ok,
+                    )
+                    msg1.exec()
+            else:
+                if os.path.isfile(settings["m3u"]):
+                    YukiData.is_xtream = False
+                    logger.info("Playlist is local file")
+                    try:
+                        file = open(settings["m3u"], "r", encoding="utf8")
+                        m3u = file.read()
+                        file.close()
+                    except Exception:
+                        logger.warning("Playlist is not UTF-8 encoding")
+                        logger.info("Trying to detect encoding...")
+                        m3u_file = open(settings["m3u"], "rb")
                         try:
-                            file = open(settings["m3u"], "r", encoding="utf8")
-                            m3u = file.read()
-                            file.close()
+                            m3u_file_read = m3u_file.read()
+                            m3u_encoding = chardet.detect(m3u_file_read)["encoding"]
+                            logger.info(f"Detected encoding: {m3u_encoding}")
+                            m3u = m3u_file_read.decode(m3u_encoding)
+                        except Exception:
+                            logger.warning("Encoding detection error!")
+                            show_exception(
+                                _(
+                                    "Failed to load playlist - unknown "
+                                    "encoding! Please use playlists "
+                                    "in UTF-8 encoding."
+                                )
+                            )
+                        finally:
+                            m3u_file_read = None
+                            m3u_file.close()
+                else:
+                    YukiData.is_xtream = False
+                    logger.info("Playlist is remote URL")
+                    try:
+                        try:
+                            m3u_req = requests_get(
+                                settings["m3u"],
+                                headers={"User-Agent": settings["ua"]},
+                                timeout=(5, 15),  # connect, read timeout
+                            )
+                        except Exception:
+                            logger.info(traceback.format_exc())
+                            m3u_req = PlaylistsFail()
+                            m3u_req.status_code = 400
+
+                        if m3u_req.status_code != 200:
+                            logger.warning(
+                                "Playlist load failed, trying empty user agent"
+                            )
+                            m3u_req = requests_get(
+                                settings["m3u"],
+                                headers={"User-Agent": ""},
+                                timeout=(5, 15),  # connect, read timeout
+                            )
+
+                        logger.info(f"Status code: {m3u_req.status_code}")
+                        logger.info(f"{len(m3u_req.content)} bytes")
+                        m3u = m3u_req.content
+                        try:
+                            m3u = m3u.decode("utf-8")
                         except Exception:
                             logger.warning("Playlist is not UTF-8 encoding")
                             logger.info("Trying to detect encoding...")
-                            m3u_file = open(settings["m3u"], "rb")
+                            guess_encoding = ""
                             try:
-                                m3u_file_read = m3u_file.read()
-                                m3u_encoding = chardet.detect(m3u_file_read)["encoding"]
-                                logger.info(f"Detected encoding: {m3u_encoding}")
-                                m3u = m3u_file_read.decode(m3u_encoding)
+                                guess_encoding = chardet.detect(m3u)["encoding"]
                             except Exception:
-                                logger.warning("Encoding detection error!")
-                                show_exception(
-                                    _(
-                                        "Failed to load playlist - unknown "
-                                        "encoding! Please use playlists "
-                                        "in UTF-8 encoding."
-                                    )
-                                )
-                            finally:
-                                m3u_file_read = None
-                                m3u_file.close()
-                    else:
-                        YukiData.is_xtream = False
-                        logger.info("Playlist is remote URL")
-                        try:
-                            try:
-                                m3u_req = requests_get(
-                                    settings["m3u"],
-                                    headers={"User-Agent": settings["ua"]},
-                                    timeout=(5, 15),  # connect, read timeout
-                                )
-                            except Exception:
-                                logger.info(traceback.format_exc())
-                                m3u_req = PlaylistsFail()
-                                m3u_req.status_code = 400
-
-                            if m3u_req.status_code != 200:
-                                logger.warning(
-                                    "Playlist load failed, trying empty user agent"
-                                )
-                                m3u_req = requests_get(
-                                    settings["m3u"],
-                                    headers={"User-Agent": ""},
-                                    timeout=(5, 15),  # connect, read timeout
-                                )
-
-                            logger.info(f"Status code: {m3u_req.status_code}")
-                            logger.info(f"{len(m3u_req.content)} bytes")
-                            m3u = m3u_req.content
-                            try:
-                                m3u = m3u.decode("utf-8")
-                            except Exception:
-                                logger.warning("Playlist is not UTF-8 encoding")
-                                logger.info("Trying to detect encoding...")
-                                guess_encoding = ""
+                                pass
+                            if guess_encoding:
+                                logger.info(f"Guessed encoding: {guess_encoding}")
                                 try:
-                                    guess_encoding = chardet.detect(m3u)["encoding"]
+                                    m3u = m3u.decode(guess_encoding)
                                 except Exception:
-                                    pass
-                                if guess_encoding:
-                                    logger.info(f"Guessed encoding: {guess_encoding}")
-                                    try:
-                                        m3u = m3u.decode(guess_encoding)
-                                    except Exception:
-                                        logger.warning("Wrong encoding guess!")
-                                        show_exception(
-                                            _(
-                                                "Failed to load playlist - unknown "
-                                                "encoding! Please use playlists "
-                                                "in UTF-8 encoding."
-                                            )
-                                        )
-                                else:
-                                    logger.warning("Unknown encoding!")
+                                    logger.warning("Wrong encoding guess!")
                                     show_exception(
                                         _(
                                             "Failed to load playlist - unknown "
@@ -1093,106 +1048,74 @@ if __name__ == "__main__":
                                             "in UTF-8 encoding."
                                         )
                                     )
-                        except Exception:
-                            m3u = ""
-                            exp3 = traceback.format_exc()
-                            logger.warning("Playlist URL loading error!" + "\n" + exp3)
-                            show_exception(_("Playlist loading error!"))
-
-            m3u_parser = M3UParser(settings["udp_proxy"], _)
-            epg_url = ""
-            m3uFailed = False
-            if m3u:
-                try:
-                    is_xspf = '<?xml version="' in m3u and (
-                        "http://xspf.org/" in m3u or "https://xspf.org/" in m3u
-                    )
-                    if not is_xspf:
-                        m3u_data0 = m3u_parser.parse_m3u(m3u)
-                    else:
-                        m3u_data0 = parse_xspf(m3u)
-                    m3u_data_got = m3u_data0[0]
-                    m3u_data = []
-
-                    for m3u_datai in m3u_data_got:
-                        if "tvg-group" in m3u_datai:
-                            if m3u_datai["tvg-group"].lower() == "vod" or m3u_datai[
-                                "tvg-group"
-                            ].lower().startswith("vod "):
-                                YukiData.movies[m3u_datai["title"]] = m3u_datai
                             else:
-                                YukiData.series, is_matched = parse_series(
-                                    m3u_datai, YukiData.series
+                                logger.warning("Unknown encoding!")
+                                show_exception(
+                                    _(
+                                        "Failed to load playlist - unknown "
+                                        "encoding! Please use playlists "
+                                        "in UTF-8 encoding."
+                                    )
                                 )
-                                if not is_matched:
-                                    m3u_data.append(m3u_datai)
+                    except Exception:
+                        m3u = ""
+                        exp3 = traceback.format_exc()
+                        logger.warning("Playlist URL loading error!" + "\n" + exp3)
+                        show_exception(_("Playlist loading error!"))
 
-                    epg_url = m3u_data0[1]
-                    if epg_url and not settings["epg"]:
-                        settings["epg"] = epg_url
-                    for m3u_line in m3u_data:
-                        array[m3u_line["title"]] = m3u_line
-                        if not m3u_line["tvg-group"] in groups:
-                            groups.append(m3u_line["tvg-group"])
-                except Exception:
-                    logger.warning(
-                        "Playlist parsing error!" + "\n" + traceback.format_exc()
-                    )
-                    show_exception(_("Playlist loading error!"))
-                    m3u = ""
-                    array = {}
-                    groups = []
-                    m3uFailed = True
-
-            logger.info(
-                "{} channels, {} groups, {} movies, {} series".format(
-                    len(array),
-                    len([group2 for group2 in groups if group2 != _("All channels")]),
-                    len(YukiData.movies),
-                    len(YukiData.series),
-                )
-            )
-
-            logger.info("Playling loading done!")
-            if use_cache:
-                logger.info("Caching playlist...")
-                cm3u = json.dumps(
-                    {
-                        "url": settings["m3u"],
-                        "array": array,
-                        "groups": groups,
-                        "m3u": m3u,
-                        "epgurl": epg_url,
-                        "movies": YukiData.movies,
-                    }
-                )
-                cm3uf = open(
-                    str(Path(LOCAL_DIR, "playlistcache.json")), "w", encoding="utf8"
-                )
-                cm3uf.write(cm3u)
-                cm3uf.close()
-                logger.info("Playlist cache saved!")
-        else:
-            logger.info("Using cached playlist")
-            cm3uf = open(
-                str(Path(LOCAL_DIR, "playlistcache.json")), "r", encoding="utf8"
-            )
-            cm3u = json.loads(cm3uf.read())
-            cm3uf.close()
-            array = cm3u["array"]
-            groups = cm3u["groups"]
-            m3u = cm3u["m3u"]
+        m3u_parser = M3UParser(settings["udp_proxy"], _)
+        epg_url = ""
+        if m3u:
             try:
-                epg_url = cm3u["epgurl"]
+                is_xspf = '<?xml version="' in m3u and (
+                    "http://xspf.org/" in m3u or "https://xspf.org/" in m3u
+                )
+                if not is_xspf:
+                    m3u_data0 = m3u_parser.parse_m3u(m3u)
+                else:
+                    m3u_data0 = parse_xspf(m3u)
+                m3u_data_got = m3u_data0[0]
+                m3u_data = []
+
+                for m3u_datai in m3u_data_got:
+                    if "tvg-group" in m3u_datai:
+                        if m3u_datai["tvg-group"].lower() == "vod" or m3u_datai[
+                            "tvg-group"
+                        ].lower().startswith("vod "):
+                            YukiData.movies[m3u_datai["title"]] = m3u_datai
+                        else:
+                            YukiData.series, is_matched = parse_series(
+                                m3u_datai, YukiData.series
+                            )
+                            if not is_matched:
+                                m3u_data.append(m3u_datai)
+
+                epg_url = m3u_data0[1]
                 if epg_url and not settings["epg"]:
                     settings["epg"] = epg_url
+                for m3u_line in m3u_data:
+                    array[m3u_line["title"]] = m3u_line
+                    if not m3u_line["tvg-group"] in groups:
+                        groups.append(m3u_line["tvg-group"])
             except Exception:
-                pass
-            try:
-                if "movies" in cm3u:
-                    YukiData.movies = cm3u["movies"]
-            except Exception:
-                pass
+                logger.warning(
+                    "Playlist parsing error!" + "\n" + traceback.format_exc()
+                )
+                show_exception(_("Playlist loading error!"))
+                m3u = ""
+                array = {}
+                groups = []
+
+        logger.info(
+            "{} channels, {} groups, {} movies, {} series".format(
+                len(array),
+                len([group2 for group2 in groups if group2 != _("All channels")]),
+                len(YukiData.movies),
+                len(YukiData.series),
+            )
+        )
+
+        logger.info("Playling loading done!")
 
         for ch3 in array.copy():
             if settings["m3u"] in channel_sets:
@@ -1216,9 +1139,6 @@ if __name__ == "__main__":
         if _("All channels") in groups:
             groups.remove(_("All channels"))
         groups = [_("All channels"), _("Favourites")] + groups
-
-        if m3uFailed and os.path.isfile(str(Path(LOCAL_DIR, "playlistcache.json"))):
-            os.remove(str(Path(LOCAL_DIR, "playlistcache.json")))
 
         try:
             if os.path.isfile(str(Path(LOCAL_DIR, "settings.json"))):
@@ -2593,20 +2513,6 @@ if __name__ == "__main__":
         except Exception:
             pass
 
-        def m3u_select():
-            fname = QtWidgets.QFileDialog.getOpenFileName(
-                settings_win, _("Select m3u playlist"), home_folder
-            )[0]
-            if fname:
-                sm3u.setText(fname)
-
-        def epg_select():
-            fname = QtWidgets.QFileDialog.getOpenFileName(
-                settings_win, _("Select EPG file"), home_folder
-            )[0]
-            if fname:
-                sepg.setText(fname if not fname.startswith("^^::MULTIPLE::^^") else "")
-
         def save_folder_select():
             folder_name = QtWidgets.QFileDialog.getExistingDirectory(
                 settings_win,
@@ -3253,21 +3159,17 @@ if __name__ == "__main__":
         def save_settings():
             global epg_thread_2, do_save_settings
             settings_old = settings.copy()
+
             udp_proxy_text = sudp.text()
             udp_proxy_starts = udp_proxy_text.startswith(
                 "http://"
             ) or udp_proxy_text.startswith("https://")
             if udp_proxy_text and not udp_proxy_starts:
                 udp_proxy_text = "http://" + udp_proxy_text
-            if udp_proxy_text:
-                if os.path.isfile(str(Path(LOCAL_DIR, "playlistcache.json"))):
-                    os.remove(str(Path(LOCAL_DIR, "playlistcache.json")))
+
             if settings["epgoffset"] != soffset.value():
                 if os.path.isfile(str(Path(LOCAL_DIR, "epg.cache"))):
                     os.remove(str(Path(LOCAL_DIR, "epg.cache")))
-            if sort_widget.currentIndex() != settings["sort"]:
-                if os.path.isfile(str(Path(LOCAL_DIR, "playlistcache.json"))):
-                    os.remove(str(Path(LOCAL_DIR, "playlistcache.json")))
             sfld_text = sfld.text()
             HOME_SYMBOL = "~"
             try:
@@ -3433,27 +3335,6 @@ if __name__ == "__main__":
         sclose = QtWidgets.QPushButton(_("Close"))
         sclose.setStyleSheet("color: red;")
         sclose.clicked.connect(close_settings)
-
-        def update_m3u():
-            if os.path.isfile(str(Path(LOCAL_DIR, "playlistcache.json"))):
-                os.remove(str(Path(LOCAL_DIR, "playlistcache.json")))
-            save_settings()
-
-        sm3ufile = QtWidgets.QPushButton()
-        sm3ufile.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "file.png"))))
-        sm3ufile.clicked.connect(m3u_select)
-        sm3uupd = QtWidgets.QPushButton()
-        sm3uupd.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "update.png"))))
-        sm3uupd.clicked.connect(update_m3u)
-        sm3uupd.setToolTip(_("Update"))
-
-        sepgfile = QtWidgets.QPushButton()
-        sepgfile.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "file.png"))))
-        sepgfile.clicked.connect(epg_select)
-        sepgupd = QtWidgets.QPushButton()
-        sepgupd.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "update.png"))))
-        sepgupd.clicked.connect(force_update_epg_act)
-        sepgupd.setToolTip(_("Update"))
 
         sfolder = QtWidgets.QPushButton()
         sfolder.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "file.png"))))
@@ -4105,8 +3986,6 @@ if __name__ == "__main__":
 
         def reload_playlist():
             logger.info("Reloading playlist...")
-            if os.path.isfile(str(Path(LOCAL_DIR, "playlistcache.json"))):
-                os.remove(str(Path(LOCAL_DIR, "playlistcache.json")))
             save_settings()
 
         def playlists_selected():

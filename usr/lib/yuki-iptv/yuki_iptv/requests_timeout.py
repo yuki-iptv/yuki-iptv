@@ -25,6 +25,9 @@ import sys
 import requests
 
 
+# https://stackoverflow.com/questions/21965484/timeout-for-python-requests-get-entire-response/71453648#71453648
+
+
 def requests_get(*args, **kwargs):
     def trace_func(frame, event, arg):
         if time.time() - start_time > 20:
