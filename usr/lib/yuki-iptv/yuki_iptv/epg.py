@@ -33,7 +33,7 @@ from pathlib import Path
 from yuki_iptv.crossplatform import LOCAL_DIR
 from yuki_iptv.epg_xmltv import parse_as_xmltv
 from yuki_iptv.epg_zip import parse_epg_zip
-from yuki_iptv.epg_txt import parse_txt
+from yuki_iptv.epg_listtv import parse_txt
 from yuki_iptv.requests_timeout import requests_get
 
 _ = gettext.gettext

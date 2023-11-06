@@ -22,7 +22,7 @@
 #
 import logging
 import zipfile
-from yuki_iptv.epg_txt import parse_txt
+from yuki_iptv.epg_listtv import parse_txt
 from yuki_iptv.epg_jtv import parse_epg_zip_jtv
 
 logger = logging.getLogger(__name__)

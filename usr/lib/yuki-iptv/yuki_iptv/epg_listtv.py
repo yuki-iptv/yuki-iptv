@@ -106,7 +106,7 @@ def parse_txt(txt):
         except Exception:
             pass
     if txt[0:6] == "tv.all":
-        logger.info("TV.ALL format detected, trying to parse...")
+        logger.info("ListTV format detected, trying to parse...")
         txt = [str1.strip() for str1 in txt.split("\n")[2:] if str1.strip()] + ["\n"]
         # day and channel name
         current_channel = None
