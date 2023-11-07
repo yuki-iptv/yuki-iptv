@@ -596,10 +596,11 @@ if __name__ == "__main__":
         else:
             logger.info("Hardware acceleration disabled")
 
-        dark_label = QtWidgets.QLabel("Darkness test")
+        # https://www.qt.io/blog/dark-mode-on-windows-11-with-qt-6.5
+        dark_palette = QtGui.QPalette()
         is_dark_theme = (
-            dark_label.palette().color(QtGui.QPalette.ColorRole.WindowText).value()
-            > dark_label.palette().color(QtGui.QPalette.ColorRole.Window).value()
+            dark_palette.color(QtGui.QPalette.ColorRole.WindowText).lightness()
+            > dark_palette.color(QtGui.QPalette.ColorRole.Window).lightness()
         )
         if is_dark_theme:
             logger.info("Detected dark window theme, applying icons compat")
