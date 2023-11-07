@@ -1,3 +1,27 @@
+yuki-iptv (0.0.8) bullseye; urgency=medium
+
+  * l10n: Update translations
+  * Fix parsing channel name with comma
+  * Show audio/video desynchronization
+  * Show group in channel tooltip
+  * Add ability to select EPG date
+  * Fix osc disabling via mpv options
+  * Fix crashing if save settings called when EPG is updating
+  * Fix page selection taking focus and blocking keybinds
+  * Fix crash in channel search
+  * Add rewind
+  * Add frame-step and frame-back-step commands
+  * Fix loading playlists with trailing spaces in URL
+  * Fix crashing in movies
+  * Fix requests timeout
+  * Fix changing playlist name when editing it
+  * Update XTream library
+  * Show XTream expiration dates in playlists window
+  * Fix catchup on XTream playlists
+  * Load EPG for XTream
+
+ -- Ame-chan-angel <amechanangel@proton.me>  Tue, 07 Nov 2023 08:23:17 +0000
+
 yuki-iptv (0.0.7) bullseye; urgency=medium
 
   * Fix encoding in remote playlists
