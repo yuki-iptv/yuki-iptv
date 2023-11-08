@@ -10,29 +10,17 @@ BuildRequires:	hicolor-icon-theme
 BuildRequires:	gettext
 Requires:	python3
 Requires:	mpv
-%if 0%{?sle_version} <= 150500 && 0%{?is_opensuse}
-%if %{__isa_bits} == 64
-Requires:	libmpv.so.1()(64bit)
-%else
-Requires:	libmpv.so.1
-%endif
-%else
 %if %{__isa_bits} == 64
 Requires:	libmpv.so.2()(64bit)
 %else
 Requires:	libmpv.so.2
-%endif
 %endif
 %if %{defined fedora}
 Requires:	python3-qt5
 Requires:	python3-pillow
 %else
 Requires:	python3-qt6
-%if 0%{?sle_version} <= 150500 && 0%{?is_opensuse}
-Requires:	python3-Pillow
-%else
 Requires:	python3-Wand
-%endif
 %endif
 Requires:	python3-gobject
 Requires:	python3-pydbus
