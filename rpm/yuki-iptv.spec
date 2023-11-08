@@ -6,6 +6,7 @@ Group:		Multimedia
 License:	GPL-3.0-or-later
 URL:		https://github.com/yuki-iptv/yuki-iptv
 Source0:	%{name}-%{version}.tar.gz
+BuildRequires:	gettext
 Requires:	python3
 Requires:	mpv
 %if %{__isa_bits} == 64
@@ -53,6 +54,7 @@ ldconfig
 %setup -q
 
 %build
+make
 sed -i "s/__DEB_VERSION__/%{version}/g" usr/lib/yuki-iptv/yuki-iptv.py
 
 %install
