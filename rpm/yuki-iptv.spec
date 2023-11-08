@@ -44,6 +44,7 @@ IPTV player with EPG support (Astroncia IPTV fork)
 /usr/share/locale/*/*/yuki-iptv.mo
 %{_prefix}/lib/%{name}
 /usr/share/icons/hicolor/scalable/apps/yuki-iptv.svg
+/usr/share/metainfo/yuki-iptv.appdata.xml
 
 %global debug_package %{nil}
 
