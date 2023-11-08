@@ -20,7 +20,11 @@ Requires:	python3-qt5
 Requires:	python3-pillow
 %else
 Requires:	python3-qt6
+%if %{defined mageia}
+Requires:	python3-pillow
+%else
 Requires:	python3-Wand
+%endif
 %endif
 Requires:	python3-gobject
 Requires:	python3-pydbus
