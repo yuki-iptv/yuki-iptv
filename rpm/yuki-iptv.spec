@@ -6,8 +6,6 @@ Group:		Multimedia
 License:	GPL-3.0-or-later
 URL:		https://github.com/yuki-iptv/yuki-iptv
 Source0:	%{name}-%{version}.tar.gz
-BuildRequires:	desktop-file-utils
-BuildRequires:	update-desktop-files
 BuildRequires:	hicolor-icon-theme
 BuildRequires:	gettext
 Requires:	python3
@@ -49,19 +47,13 @@ IPTV player with EPG support (Astroncia IPTV fork)
 /usr/share/icons/hicolor/scalable/apps/yuki-iptv.svg
 /usr/share/metainfo/yuki-iptv.appdata.xml
 
+%dir /usr/share/locale/*
 %dir /usr/share/locale/*/*
 
 %global debug_package %{nil}
 
 %post
 ldconfig
-
-%desktop_database_post
-%icon_theme_cache_post
-%mime_database_post
-
-update-desktop-database
-gtk-update-icon-cache
 
 %prep
 %setup -q
