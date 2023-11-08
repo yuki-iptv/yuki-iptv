@@ -37,7 +37,13 @@ Requires:	yt-dlp
 IPTV player with EPG support (Astroncia IPTV fork)
 
 %files
-/usr/*
+%{_bindir}/%{name}
+%{_datadir}/applications/%{name}.desktop
+%{_datadir}/%{name}
+%{_localedir}/*/*/yuki-iptv.mo
+%{_docdir}/yuki-iptv/changelog.gz
+%{_prefix}/lib/%{name}
+%{_iconsdir}/hicolor/scalable/apps/yuki-iptv.svg
 
 %global debug_package %{nil}
 
@@ -48,7 +54,7 @@ ldconfig
 %setup -q
 
 %build
-#nothing
+sed -i "s/__DEB_VERSION__/%{version}/g" usr/lib/yuki-iptv/yuki-iptv.py
 
 %install
 cp -af usr %{buildroot}
