@@ -41,7 +41,6 @@ IPTV player with EPG support (Astroncia IPTV fork)
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/%{name}
 %{_localedir}/*/*/yuki-iptv.mo
-%{_docdir}/yuki-iptv/changelog.gz
 %{_prefix}/lib/%{name}
 %{_iconsdir}/hicolor/scalable/apps/yuki-iptv.svg
 
