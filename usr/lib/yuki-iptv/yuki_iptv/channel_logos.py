@@ -28,17 +28,20 @@ import os
 import io
 import base64
 import hashlib
-import platform
 from pathlib import Path
-
-if platform.system() == "Linux":
-    from wand.image import Image
-else:
-    from PIL import Image
 from yuki_iptv.crossplatform import LOCAL_DIR
 from yuki_iptv.requests_timeout import requests_get
 
 # logger = logging.getLogger(__name__)
+
+try:
+    from wand.image import Image
+
+    use_wand = True
+except Exception:
+    from PIL import Image
+
+    use_wand = False
 
 
 def fetch_remote_channel_icon(chan_name, logo_url, req_data_ua, req_data_ref):
@@ -71,7 +74,7 @@ def fetch_remote_channel_icon(chan_name, logo_url, req_data_ua, req_data_ref):
                 ).content
                 if req_data1:
                     with io.BytesIO(req_data1) as im_logo_bytes:
-                        if platform.system() == "Linux":
+                        if use_wand:
                             with Image(file=im_logo_bytes) as original:
                                 with original.convert("png") as im_logo:
                                     im_logo.resize(64, 64)

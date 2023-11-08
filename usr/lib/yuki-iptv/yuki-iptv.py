@@ -596,6 +596,14 @@ if __name__ == "__main__":
         else:
             logger.info("Hardware acceleration disabled")
 
+        try:
+            from wand.image import Image  # noqa: F401
+        except Exception:
+            logger.warning(
+                "Wand is not available! Falling back to Pillow."
+                " Logos in svg and avif formats will not be available!"
+            )
+
         # https://www.qt.io/blog/dark-mode-on-windows-11-with-qt-6.5#before-qt-65
         current_palette = QtGui.QPalette()
         is_dark_theme = (
