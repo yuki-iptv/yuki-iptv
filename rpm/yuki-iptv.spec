@@ -13,8 +13,13 @@ Requires:	libmpv.so.2()(64bit)
 %else
 Requires:	libmpv.so.2
 %endif
+%if %{defined fedora}
+Requires:	python3-qt5
+Requires:	python3-pillow
+%else
 Requires:	python3-qt6
 Requires:	python3-Wand
+%endif
 Requires:	python3-gobject
 Requires:	python3-pydbus
 %if 0%{?suse_version} || 0%{?sle_version}
