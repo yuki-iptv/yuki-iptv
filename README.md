@@ -38,6 +38,16 @@ sudo apt update
 sudo apt install yuki-iptv
 ```
 
+# Open Build Service (rpm packages)
+
+https://software.opensuse.org/download.html?project=home%3Aame-chan%3Ayuki-iptv&package=yuki-iptv  
+  
+Feel free to create issue if you got an issue with rpms or your distribution is not listed there ( but make sure it's not too old - for example openSUSE Leap 15.x ships Python 3.6 - that's too old :) )  
+  
+**Multimedia codecs:**  
+For Fedora you'll need https://rpmfusion.org  
+For openSUSE you'll need **libopenh264-7** (for h264 decoding) and **libjack0** (currently (2023-11-09) mpv package in openSUSE is broken, you will need this only if error is shown)
+
 # HowTo make playlists for movies/series
   
 Use group **VOD** for movies  
