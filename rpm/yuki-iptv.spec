@@ -10,32 +10,49 @@ BuildRequires:	hicolor-icon-theme
 BuildRequires:	gettext
 Requires:	python3
 Requires:	mpv
+%if 0%{?sle_version} <= 150500 && 0%{?is_opensuse}
+%define use_python_version python311
+%else
+%define use_python_version python3
+%endif
+%if 0%{?sle_version} <= 150500 && 0%{?is_opensuse}
+%if %{__isa_bits} == 64
+Requires:	libmpv.so.1()(64bit)
+%else
+Requires:	libmpv.so.1
+%endif
+%else
 %if %{__isa_bits} == 64
 Requires:	libmpv.so.2()(64bit)
 %else
 Requires:	libmpv.so.2
 %endif
+%endif
 %if %{defined fedora}
-Requires:	python3-qt5
-Requires:	python3-pillow
+Requires:	%{use_python_version}-qt5
+Requires:	%{use_python_version}-pillow
 %else
-Requires:	python3-qt6
+Requires:	%{use_python_version}-qt6
 %if %{defined mageia}
-Requires:	python3-pillow
+Requires:	%{use_python_version}-pillow
 %else
-Requires:	python3-Wand
+%if 0%{?sle_version} <= 150500 && 0%{?is_opensuse}
+Requires:	%{use_python_version}-Pillow
+%else
+Requires:	%{use_python_version}-Wand
 %endif
 %endif
-Requires:	python3-gobject
-Requires:	python3-pydbus
+%endif
+Requires:	%{use_python_version}-gobject
+Requires:	%{use_python_version}-pydbus
 %if 0%{?suse_version} || 0%{?sle_version}
-Requires:	python3-Unidecode
+Requires:	%{use_python_version}-Unidecode
 %else
-Requires:	python3-unidecode
+Requires:	%{use_python_version}-unidecode
 %endif
-Requires:	python3-chardet
-Requires:	python3-requests
-Requires:	python3-setproctitle
+Requires:	%{use_python_version}-chardet
+Requires:	%{use_python_version}-requests
+Requires:	%{use_python_version}-setproctitle
 Requires:	ffmpeg
 Requires:	yt-dlp
 
