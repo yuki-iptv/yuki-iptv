@@ -8512,12 +8512,12 @@ if __name__ == "__main__":
                             thread_tvguide_update_pt2_e2 = epg_data[4]
                             thread_tvguide_update_pt2_2()
                             raise epg_data[4]
-                        thread_tvguide_update_pt2_1()
                         programmes = {
                             prog0.lower(): epg_data[1][prog0] for prog0 in epg_data[1]
                         }
                         if not is_program_actual(programmes, epg_ready):
                             raise Exception("Programme not actual")
+                        thread_tvguide_update_pt2_1()
                         prog_ids = epg_data[5]
                         epg_icons = epg_data[6]
                         tvguide_sets = programmes
