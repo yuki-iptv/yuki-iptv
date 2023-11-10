@@ -45,24 +45,33 @@ def init_plugins():
         ]
         if disabled_plugins:
             disabled_plugins = disabled_plugins[0]
-        plugins_dir = Path(os.path.abspath(os.path.dirname(__file__)), "plugins")
-        if os.path.isdir(plugins_dir):
-            sys.path.append(os.path.abspath(os.path.dirname(__file__)))
-            for plugin in os.listdir(plugins_dir):
-                if (
-                    os.path.isfile(Path(plugins_dir, plugin))
-                    and plugin.endswith(".py")
-                    and not plugin.startswith("_")
-                ):
-                    if plugin.replace(".py", "") not in disabled_plugins:
-                        module = importlib.import_module(
-                            "plugins." + plugin.replace(".py", "")
-                        )
-                        if "init_plugin" in module.__dict__:
-                            print_log(f"Loading plugin: {plugin.replace('.py', '')}")
-                            module.init_plugin()
-                    else:
-                        print_log(f"Plugin disabled: {plugin.replace('.py', '')}")
-            sys.path.remove(os.path.abspath(os.path.dirname(__file__)))
+        # Global plugins
+        plugins_dirs = [Path(os.path.abspath(os.path.dirname(__file__)), "plugins")]
+        # Local plugins
+        if "HOME" in os.environ:
+            plugins_dirs.append(
+                Path(os.environ["HOME"], ".config", "yuki-iptv", "plugins")
+            )
+        for plugins_dir in plugins_dirs:
+            if os.path.isdir(plugins_dir):
+                sys.path.append(str(Path(plugins_dir).parent))
+                for plugin in os.listdir(plugins_dir):
+                    if (
+                        os.path.isfile(Path(plugins_dir, plugin))
+                        and plugin.endswith(".py")
+                        and not plugin.startswith("_")
+                    ):
+                        if plugin.replace(".py", "") not in disabled_plugins:
+                            module = importlib.import_module(
+                                "plugins." + plugin.replace(".py", "")
+                            )
+                            if "init_plugin" in module.__dict__:
+                                print_log(
+                                    f"Loading plugin: {plugin.replace('.py', '')}"
+                                )
+                                module.init_plugin()
+                        else:
+                            print_log(f"Plugin disabled: {plugin.replace('.py', '')}")
+                sys.path.remove(str(Path(plugins_dir).parent))
     else:
         print_log("Plugins disabled")
