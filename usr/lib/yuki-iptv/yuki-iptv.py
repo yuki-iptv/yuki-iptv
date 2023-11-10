@@ -8484,7 +8484,7 @@ if __name__ == "__main__":
         thread_tvguide_update_pt2_e2 = ""
 
         @idle_function
-        def thread_tvguide_update_pt2_2(unused=None):
+        def thread_tvguide_update_pt2_3(unused=None):
             global time_stop
             l1.setStatic2(False)
             l1.show()
@@ -8493,6 +8493,11 @@ if __name__ == "__main__":
             else:
                 l1.setText2(_("TV guide update error!"))
             time_stop = time.time() + 3
+
+        @async_gui_blocking_function
+        def thread_tvguide_update_pt2_2(unused=None):
+            time.sleep(0.5)
+            thread_tvguide_update_pt2_3()
 
         @async_gui_blocking_function
         def thread_tvguide_update_pt2():
@@ -8504,6 +8509,8 @@ if __name__ == "__main__":
                 if waiting_for_epg and epg_data and len(epg_data) == 7:
                     try:
                         if not epg_data[3]:
+                            thread_tvguide_update_pt2_e2 = epg_data[3]
+                            thread_tvguide_update_pt2_2()
                             raise epg_data[4]
                         thread_tvguide_update_pt2_1()
                         programmes = {

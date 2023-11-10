@@ -52,7 +52,7 @@ def load_epg(epg_url, user_agent):
         epg_file.close()
     else:
         epg_req = requests_get(
-            epg_url, headers={"User-Agent": user_agent}, stream=True, timeout=35
+            epg_url, headers={"User-Agent": user_agent}, stream=True, timeout=(35, 35)
         )
         logger.info(f"EPG URL status code: {epg_req.status_code}")
         epg = epg_req.content
