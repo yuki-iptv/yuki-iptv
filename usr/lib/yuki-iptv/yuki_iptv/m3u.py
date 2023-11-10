@@ -184,7 +184,7 @@ class M3UParser:
         self.catchup_data = ["default", "7", ""]
         self.epg_url_final = ""
         if not ("#EXTM3U" in m3u_str and "#EXTINF" in m3u_str):
-            raise Exception("Malformed M3U")
+            raise Exception("Malformed M3U: no #EXTM3U and #EXTINF tags found")
         channels = []
         buffer = []
         for line in m3u_str.split("\n"):
