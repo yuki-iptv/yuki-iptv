@@ -8509,7 +8509,7 @@ if __name__ == "__main__":
                 if waiting_for_epg and epg_data and len(epg_data) == 7:
                     try:
                         if not epg_data[3]:
-                            thread_tvguide_update_pt2_e2 = epg_data[3]
+                            thread_tvguide_update_pt2_e2 = epg_data[4]
                             thread_tvguide_update_pt2_2()
                             raise epg_data[4]
                         thread_tvguide_update_pt2_1()
