@@ -1804,8 +1804,8 @@ if __name__ == "__main__":
                                     break
                             playlists_data.playlists_used.pop(playlists_data.oldName)
                     playlists_data.playlists_used[channel_text_prov] = {
-                        "m3u": m3u_edit_1.text(),
-                        "epg": epg_edit_1.text(),
+                        "m3u": m3u_edit_1.text().strip(),
+                        "epg": epg_edit_1.text().strip(),
                         "epgoffset": soffset_1.value(),
                     }
                     playlists_save_json()
