@@ -15,7 +15,7 @@ Requires:	libmpv.so.2()(64bit)
 %else
 Requires:	libmpv.so.2
 %endif
-%if %{defined fedora}
+%if %{defined fedora} || 0%{?centos_version}
 Requires:	python3-qt5
 Requires:	python3-pillow
 %else
