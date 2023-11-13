@@ -8,13 +8,23 @@
 it is a player application which streams from IPTV providers.  
 The channels and pictures in the screenshots are for demonstration purposes only.
 
-# Repository mirrors
+## Content
+
+- [Repository mirrors](#repository-mirrors)
+- [Features](#features)
+- [Ubuntu PPA](#ubuntu-ppa)
+- [Open Build Service (rpm packages)](#open-build-service-rpm-packages)
+- [HowTo make playlists for movies/series](#howto-make-playlists-for-moviesseries)
+- [License](#license)
+- [Localization](#localization)
+
+## Repository mirrors
 
 [GitHub](https://github.com/yuki-iptv/yuki-iptv) **(main repository)**  
 [GitLab](https://gitlab.com/yuki-iptv/yuki-iptv)  
 [Codeberg](https://codeberg.org/yuki-iptv/yuki-iptv)  
 
-# Features
+## Features
 
 - M3u / M3u8 / XSPF playlists support
 - XTream API support
@@ -35,7 +45,7 @@ The channels and pictures in the screenshots are for demonstration purposes only
 - MPRIS support
 - and many more...
 
-# Ubuntu PPA
+## Ubuntu PPA
 
 Develop PPA: https://launchpad.net/~yuki-iptv/+archive/ubuntu/yuki-iptv-develop  
 ```
@@ -44,17 +54,23 @@ sudo apt update
 sudo apt install yuki-iptv
 ```
 
-# Open Build Service (rpm packages)
+## Open Build Service (rpm packages)
 
 https://software.opensuse.org/download.html?project=home%3Aame-chan%3Ayuki-iptv&package=yuki-iptv  
   
 Feel free to create issue if you got an issue with rpms or your distribution is not listed there ( but make sure it's not too old - for example openSUSE Leap 15.x ships Python 3.6 - that's too old :) )  
   
 **Multimedia codecs:**  
-For **Fedora** you'll need https://rpmfusion.org  
+For **Fedora** and **CentOS** you'll need https://rpmfusion.org  
 For **openSUSE** you'll need **libopenh264-7** (for h264 decoding) and **libjack0** (currently (2023-11-09) mpv package in openSUSE is broken, you will need this only if error is shown)
+  
+**CentOS:**  
+rpmfusion is required  
+yuki-iptv requires **pydbus**, so you'll need to build it from source:  
+https://linuxsoft.cern.ch/cern/centos/8/AppStream/Source/SPackages/python-pydbus-0.6.0-5.el8.src.rpm  
+https://wiki.centos.org/HowTos(2f)RebuildSRPM.html  
 
-# HowTo make playlists for movies/series
+## HowTo make playlists for movies/series
   
 Use group **VOD** for movies  
 example:  
@@ -85,7 +101,7 @@ file:///home/user/Videos/SomeName_4/SomeName.S04E09.mp4
 file:///home/user/Videos/SomeName_4/SomeName.S04E10.mp4
 ```
 
-# License
+## License
 
 ```monospace
 yuki-iptv is free software: you can redistribute it and/or modify
@@ -110,7 +126,7 @@ https://fontawesome.com/
 https://creativecommons.org/licenses/by/4.0/
 ```
 
-# Localization
+## Localization
 
 To help with localization you can use [Crowdin](https://crowdin.com/project/yuki-iptv) or create pull request with translated .po file.  
 To add a new language, write me on the Crowdin page.
