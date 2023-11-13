@@ -58,7 +58,7 @@ sudo apt install yuki-iptv
 
 https://software.opensuse.org/download.html?project=home%3Aame-chan%3Ayuki-iptv&package=yuki-iptv  
   
-Feel free to create issue if you got an issue with rpms or your distribution is not listed there ( but make sure it's not too old - for example openSUSE Leap 15.x ships Python 3.6 - that's too old :) )  
+Feel free to create issue if you got an issue with rpms.  
   
 **Multimedia codecs:**  
 For **Fedora** and **CentOS** you'll need https://rpmfusion.org  
