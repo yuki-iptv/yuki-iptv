@@ -62,7 +62,7 @@ Feel free to create issue if you got an issue with rpms.
   
 **Multimedia codecs:**  
 For **Fedora** and **CentOS** you'll need https://rpmfusion.org  
-For **openSUSE** you'll need **libopenh264-7** (for h264 decoding) and **libjack0** (currently (2023-11-09) mpv package in openSUSE is broken, you will need this only if error is shown)
+For **openSUSE** you'll need **libopenh264-7** (for h264 decoding) (run ```zypper install libopenh264-7``` as root)  
   
 **CentOS:**  
 rpmfusion is required  
