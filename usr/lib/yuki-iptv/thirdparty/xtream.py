@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 """xtream
 
 Module handles downloading xtream data
