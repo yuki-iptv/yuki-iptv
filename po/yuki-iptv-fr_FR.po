@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: yuki-iptv\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-11-05 09:30+0000\n"
-"PO-Revision-Date: 2023-11-05 10:05\n"
+"PO-Revision-Date: 2023-11-14 13:15\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -189,11 +189,11 @@ msgstr "Listes de lecture"
 
 #: usr/lib/yuki-iptv/yuki-iptv.py:1658 usr/lib/yuki-iptv/yuki-iptv.py:1691
 msgid "Expiration date"
-msgstr ""
+msgstr "Date d'expiration"
 
 #: usr/lib/yuki-iptv/yuki-iptv.py:1668
 msgid "Unknown"
-msgstr ""
+msgstr "Inconnue"
 
 #: usr/lib/yuki-iptv/yuki-iptv.py:1809
 msgid "Name should not be empty!"
