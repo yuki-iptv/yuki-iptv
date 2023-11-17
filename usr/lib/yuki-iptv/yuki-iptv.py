@@ -7219,6 +7219,7 @@ if __name__ == "__main__":
             "https://github.com/yuki-iptv/yuki-iptv",
             "https://fontawesome.com/",
             "https://creativecommons.org/licenses/by/4.0/",
+            "https://unixforum.org/viewtopic.php?t=156722",
         ]
 
         def format_about_text(about_txt):
@@ -7232,6 +7233,10 @@ if __name__ == "__main__":
                 mpv_version = "UNKNOWN"
             about_txt += "\n" + _("Using libmpv {}").format(mpv_version)
             about_txt += "\n\nhttps://github.com/yuki-iptv/yuki-iptv"
+            if _("IPTV player") == "IPTV плеер":
+                about_txt += (
+                    "\n\nПоддержка: https://unixforum.org/viewtopic.php?t=156722"
+                )
             about_txt = about_txt.replace("\n", "<br>")
             for clickable_link in CLICKABLE_LINKS:
                 about_txt = about_txt.replace(
