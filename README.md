@@ -17,6 +17,7 @@ The channels and pictures in the screenshots are for demonstration purposes only
 - [HowTo make playlists for movies/series](#howto-make-playlists-for-moviesseries)
 - [License](#license)
 - [Localization](#localization)
+- [Why it's called yuki?](#why-its-called-yuki)
 
 ## Repository mirrors
 
