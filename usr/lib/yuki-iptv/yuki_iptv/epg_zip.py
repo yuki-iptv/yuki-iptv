@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2023 Ame-chan-angel <amechanangel@proton.me>
+# Copyright (c) 2023, 2024 Ame-chan-angel <amechanangel@proton.me>
 #
 # This file is part of yuki-iptv.
 #

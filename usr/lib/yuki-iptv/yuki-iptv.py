@@ -1,6 +1,6 @@
 #
 # Copyright (c) 2021, 2022 Astroncia <kestraly@gmail.com>
-# Copyright (c) 2023 Ame-chan-angel <amechanangel@proton.me>
+# Copyright (c) 2023, 2024 Ame-chan-angel <amechanangel@proton.me>
 #
 # This file is part of yuki-iptv.
 #
@@ -180,7 +180,7 @@ else:
     qt_icon_information = QtWidgets.QMessageBox.Icon.Information
 
 APP_VERSION = "__DEB_VERSION__"
-COPYRIGHT_YEAR = "2023"
+COPYRIGHT_YEAR = "2023, 2024"
 
 setproctitle.setproctitle("yuki-iptv")
 try:
@@ -449,7 +449,7 @@ if __name__ == "__main__":
         logger.info("")
         logger.info(f"{MAIN_WINDOW_TITLE} starting...")
         logger.info("Copyright (c) 2021, 2022 Astroncia")
-        logger.info("Copyright (c) 2023 Ame-chan-angel")
+        logger.info(f"Copyright (c) {COPYRIGHT_YEAR} Ame-chan-angel")
         logger.info("")
         logger.info(
             "This program is free software: you can redistribute it and/or modify"

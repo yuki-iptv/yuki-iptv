@@ -6,7 +6,7 @@ Source: https://github.com/yuki-iptv/yuki-iptv
 Files: *
 Copyright:
  2021-2022 Astroncia <kestraly@gmail.com>
- 2023 Ame-chan-angel <amechanangel@proton.me>
+ 2023-2024 Ame-chan-angel <amechanangel@proton.me>
 License: GPL-3+
 
 Files: usr/lib/yuki-iptv/thirdparty/mpris_server
