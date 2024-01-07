@@ -58,8 +58,6 @@ sudo apt install yuki-iptv
 
 https://software.opensuse.org/download.html?project=home%3Aame-chan%3Ayuki-iptv&package=yuki-iptv  
   
-Feel free to create issue if you got an issue with rpms.  
-  
 **Multimedia codecs:**  
 For **Fedora** and **CentOS** you'll need https://rpmfusion.org  
 For **openSUSE** you'll need **libopenh264-7** (for h264 decoding) (run ```zypper install libopenh264-7``` as root)  
