@@ -17,7 +17,6 @@ The channels and pictures in the screenshots are for demonstration purposes only
 - [HowTo make playlists for movies/series](#howto-make-playlists-for-moviesseries)
 - [License](#license)
 - [Localization](#localization)
-- [Why it's called yuki?](#why-its-called-yuki)
 
 ## Repository mirrors
 
@@ -131,7 +130,3 @@ https://creativecommons.org/licenses/by/4.0/
 
 To help with localization you can use [Crowdin](https://crowdin.com/project/yuki-iptv) or create pull request with translated .po file.  
 To add a new language, write me on the Crowdin page.
-
-## Why it's called yuki?
-
-Because of [Yuki Nagato](https://en.wikipedia.org/wiki/Yuki%20Nagato) :)
