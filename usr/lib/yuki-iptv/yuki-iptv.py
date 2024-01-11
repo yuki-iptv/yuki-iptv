@@ -112,7 +112,6 @@ from yuki_iptv.keybinds import main_keybinds_internal, main_keybinds_default
 from yuki_iptv.series import parse_series
 from yuki_iptv.crossplatform import LOCAL_DIR, SAVE_FOLDER_DEFAULT
 from yuki_iptv.mpv_opengl import MPVOpenGLWidget
-from yuki_iptv.xdg import get_config_dir, get_cache_dir
 from thirdparty.xtream import XTream, Serie
 
 if platform.system() == "Windows":
@@ -326,13 +325,6 @@ if args1.version:
     print(f"{MAIN_WINDOW_TITLE} {APP_VERSION}")
     sys.exit(0)
 
-if platform.system() != "Windows":
-    if not os.path.isdir(get_config_dir()):
-        os.mkdir(get_config_dir())
-
-    if not os.path.isdir(get_cache_dir()):
-        os.mkdir(get_cache_dir())
-
 if not os.path.isdir(LOCAL_DIR):
     os.mkdir(LOCAL_DIR)
 if not os.path.isdir(SAVE_FOLDER_DEFAULT):
@@ -506,9 +498,6 @@ if __name__ == "__main__":
                 logger.info("AppImage test failed!")
                 sys.exit(1)
             sys.exit(0)
-
-        if not os.path.isdir(LOCAL_DIR):
-            os.mkdir(LOCAL_DIR)
 
         if not os.path.isfile(str(Path(LOCAL_DIR, "favplaylist.m3u"))):
             file01 = open(str(Path(LOCAL_DIR, "favplaylist.m3u")), "w", encoding="utf8")

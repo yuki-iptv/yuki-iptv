@@ -26,13 +26,17 @@ from pathlib import Path
 
 def get_cache_dir():
     if "XDG_CACHE_HOME" in os.environ:
-        return os.environ["XDG_CACHE_HOME"]
+        cache_dir = os.environ["XDG_CACHE_HOME"]
     else:
-        return str(Path(os.environ["HOME"], ".cache"))
+        cache_dir = str(Path(os.environ["HOME"], ".cache"))
+    Path(cache_dir).mkdir(parents=True, exist_ok=True)
+    return cache_dir
 
 
 def get_config_dir():
     if "XDG_CONFIG_HOME" in os.environ:
-        return os.environ["XDG_CONFIG_HOME"]
+        config_dir = os.environ["XDG_CONFIG_HOME"]
     else:
-        return str(Path(os.environ["HOME"], ".config"))
+        config_dir = str(Path(os.environ["HOME"], ".config"))
+    Path(config_dir).mkdir(parents=True, exist_ok=True)
+    return config_dir
