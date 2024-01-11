@@ -12,7 +12,7 @@
     <p>
       IPTV player with EPG support (Astroncia IPTV fork)
     </p>
-    <h2>Features</h2>
+    <p>Features</p>
     <ul>
        <li>M3u, M3u8, XSPF playlists support</li>
        <li>XTream API support</li>
