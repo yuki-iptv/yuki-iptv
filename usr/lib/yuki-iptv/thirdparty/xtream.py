@@ -27,7 +27,9 @@ from os import path as osp
 from sys import stdout
 from timeit import default_timer as timer  # Timing xtream json downloads
 from typing import List, Tuple, Protocol
+from pathlib import Path
 from yuki_iptv.requests_timeout import requests_get
+from yuki_iptv.xdg import get_cache_dir
 
 import requests
 
@@ -323,16 +325,18 @@ class XTream:
         self.hide_adult_content = hide_adult_content
         self.update_status = update_status
 
+        default_cache_path = str(Path(get_cache_dir(), "yuki-iptv-xtream-cache"))
+
         # if the cache_path is specified, test that it is a directory
         if self.cache_path != "":
             # If the cache_path is not a directory, clear it
             if not osp.isdir(self.cache_path):
-                logger.warning(" - Cache Path is not a directory, using default '~/.cache/yuki-iptv-xtream-cache/'")
+                logger.warning(f" - Cache Path is not a directory, using default '{default_cache_path}'")
                 self.cache_path == ""
 
         # If the cache_path is still empty, use default
         if self.cache_path == "":
-            self.cache_path = osp.expanduser("~/.cache/yuki-iptv-xtream-cache/")
+            self.cache_path = default_cache_path
             if not osp.isdir(self.cache_path):
                 makedirs(self.cache_path, exist_ok=True)
 

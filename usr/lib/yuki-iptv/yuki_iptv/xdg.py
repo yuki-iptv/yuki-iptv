@@ -1,6 +1,5 @@
 #
-# Copyright (c) 2021, 2022 Astroncia <kestraly@gmail.com>
-# Copyright (c) 2023, 2024 Ame-chan-angel <amechanangel@proton.me>
+# Copyright (c) 2024 Ame-chan-angel <amechanangel@proton.me>
 #
 # This file is part of yuki-iptv.
 #
@@ -22,12 +21,18 @@
 # https://creativecommons.org/licenses/by/4.0/
 #
 import os
-import platform
 from pathlib import Path
-from yuki_iptv.xdg import get_config_dir
 
-if platform.system() != "Windows":
-    LOCAL_DIR = str(Path(get_config_dir(), "yuki-iptv"))
-else:
-    LOCAL_DIR = str(Path(os.getenv("LOCALAPPDATA"), "yuki-iptv-config"))
-SAVE_FOLDER_DEFAULT = str(Path(LOCAL_DIR, "saves"))
+
+def get_cache_dir():
+    if "XDG_CACHE_HOME" in os.environ:
+        return os.environ["XDG_CACHE_HOME"]
+    else:
+        return str(Path(os.environ["HOME"], ".cache"))
+
+
+def get_config_dir():
+    if "XDG_CONFIG_HOME" in os.environ:
+        return os.environ["XDG_CONFIG_HOME"]
+    else:
+        return str(Path(os.environ["HOME"], ".config"))

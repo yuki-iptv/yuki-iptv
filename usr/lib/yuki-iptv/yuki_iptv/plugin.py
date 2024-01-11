@@ -26,6 +26,7 @@ import sys
 import multiprocessing
 import importlib
 from pathlib import Path
+from yuki_iptv.xdg import get_config_dir
 
 
 def print_log(msg):
@@ -49,9 +50,7 @@ def init_plugins():
         plugins_dirs = [Path(os.path.abspath(os.path.dirname(__file__)), "plugins")]
         # Local plugins
         if "HOME" in os.environ:
-            plugins_dirs.append(
-                Path(os.environ["HOME"], ".config", "yuki-iptv", "plugins")
-            )
+            plugins_dirs.append(Path(get_config_dir(), "yuki-iptv", "plugins"))
         for plugins_dir in plugins_dirs:
             if os.path.isdir(plugins_dir):
                 sys.path.append(str(Path(plugins_dir).parent))
