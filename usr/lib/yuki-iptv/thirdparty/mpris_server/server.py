@@ -8,7 +8,7 @@ from .player import Player
 from .playlists import Playlists
 from .root import Root
 from .base import NAME, BUS_TYPE
-from .compat import get_dbus_name
+# from .compat import get_dbus_name
 from .adapters import MprisAdapter
 from .tracklist import TrackList
 
@@ -22,7 +22,8 @@ class Server:
                adapter: MprisAdapter = None):
     self.name = name
     self.adapter = adapter
-    self.dbus_name = get_dbus_name(self.name)
+    # self.dbus_name = get_dbus_name(self.name)
+    self.dbus_name = self.name
     self.root = Root(name, self.adapter)
     self.player = Player(name, self.adapter)
     self.playlists = Playlists(name, self.adapter)
