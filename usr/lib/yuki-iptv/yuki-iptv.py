@@ -8439,8 +8439,20 @@ if __name__ == "__main__":
                     else:
                         avsync = "0.0"
                     if (
-                        (not (codec == "png" and width == 800 and height == 600))
-                        and (not (codec == "png" and width == 1024 and height == 699))
+                        (
+                            not (
+                                codec.lower() == "png"
+                                and width == 800
+                                and height == 600
+                            )
+                        )
+                        and (
+                            not (
+                                codec.lower() == "png"
+                                and width == 1024
+                                and height == 699
+                            )
+                        )
                         and (width and height)
                     ):
                         if settings["hidebitrateinfo"]:
