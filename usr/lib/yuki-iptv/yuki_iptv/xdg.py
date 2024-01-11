@@ -21,6 +21,7 @@
 # https://creativecommons.org/licenses/by/4.0/
 #
 import os
+import os.path
 from pathlib import Path
 
 
@@ -29,7 +30,8 @@ def get_cache_dir():
         cache_dir = os.environ["XDG_CACHE_HOME"]
     else:
         cache_dir = str(Path(os.environ["HOME"], ".cache"))
-    Path(cache_dir).mkdir(parents=True, exist_ok=True)
+    if not os.path.isdir(cache_dir):
+        Path(cache_dir).mkdir(parents=True, exist_ok=True)
     return cache_dir
 
 
@@ -38,5 +40,6 @@ def get_config_dir():
         config_dir = os.environ["XDG_CONFIG_HOME"]
     else:
         config_dir = str(Path(os.environ["HOME"], ".config"))
-    Path(config_dir).mkdir(parents=True, exist_ok=True)
+    if not os.path.isdir(config_dir):
+        Path(config_dir).mkdir(parents=True, exist_ok=True)
     return config_dir
