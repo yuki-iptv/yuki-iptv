@@ -12,6 +12,27 @@
     <p>
       IPTV player with EPG support (Astroncia IPTV fork)
     </p>
+    <h2>Features</h2>
+    <ul>
+       <li>M3u, M3u8, XSPF playlists support</li>
+       <li>XTream API support</li>
+       <li>Viewing unencrypted streams UDP (multicast), HTTP, HLS (M3u8)</li>
+       <li>Save channels as favorites</li>
+       <li>Stream recording</li>
+       <li>Hotkeys</li>
+       <li>Channel search</li>
+       <li>TV program (EPG) support in XMLTV and JTV formats</li>
+       <li>Display of technical information - video / audio codec, bitrate, resolution</li>
+       <li>Channel groups (from playlist and custom)</li>
+       <li>Hide channels</li>
+       <li>Sorting channels</li>
+       <li>Video settings for each channel - contrast, brightness, hue, saturation, gamma</li>
+       <li>Change user agent / HTTP Referer for each channel</li>
+       <li>M3u playlist editor</li>
+       <li>TV archive / catchup</li>
+       <li>MPRIS support</li>
+       <li>and many more...</li>
+    </ul>    
   </description>
 
   <launchable type="desktop-id">yuki-iptv.desktop</launchable>
@@ -22,8 +43,13 @@
     </screenshot>
   </screenshots>
 
+  <releases>
+    <release version="0.0.8" date="2023-11-07"/>
+  </releases> 
+
   <url type="homepage">https://github.com/Ame-chan-angel/yuki-iptv</url>
   <url type="bugtracker">https://github.com/Ame-chan-angel/yuki-iptv/issues</url>
   <developer_name>Ame-chan-angel</developer_name>
   <translation type="gettext">yuki-iptv</translation>
+  <content_rating type="oars-1.1"/>  
 </component>
