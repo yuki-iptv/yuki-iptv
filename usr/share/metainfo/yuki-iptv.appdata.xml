@@ -47,8 +47,8 @@
     <release version="0.0.8" date="2023-11-07"/>
   </releases> 
 
-  <url type="homepage">https://github.com/Ame-chan-angel/yuki-iptv</url>
-  <url type="bugtracker">https://github.com/Ame-chan-angel/yuki-iptv/issues</url>
+  <url type="homepage">https://github.com/yuki-iptv/yuki-iptv</url>
+  <url type="bugtracker">https://github.com/yuki-iptv/yuki-iptv/issues</url>
   <developer_name>Ame-chan-angel</developer_name>
   <translation type="gettext">yuki-iptv</translation>
   <content_rating type="oars-1.1"/>  
