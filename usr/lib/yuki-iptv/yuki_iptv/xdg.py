@@ -31,7 +31,10 @@ def get_cache_dir():
     else:
         cache_dir = str(Path(os.environ["HOME"], ".cache"))
     if not os.path.isdir(cache_dir):
-        Path(cache_dir).mkdir(parents=True, exist_ok=True)
+        try:
+            Path(cache_dir).mkdir(parents=True, exist_ok=True)
+        except Exception:
+            pass
     return cache_dir
 
 
@@ -41,5 +44,8 @@ def get_config_dir():
     else:
         config_dir = str(Path(os.environ["HOME"], ".config"))
     if not os.path.isdir(config_dir):
-        Path(config_dir).mkdir(parents=True, exist_ok=True)
+        try:
+            Path(config_dir).mkdir(parents=True, exist_ok=True)
+        except Exception:
+            pass
     return config_dir
