@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021, 2022 Astroncia <kestraly@gmail.com>
+# Copyright (c) 2021, 2022 Astroncia
 # Copyright (c) 2023, 2024 Ame-chan-angel <amechanangel@proton.me>
 #
 # This file is part of yuki-iptv.
