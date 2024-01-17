@@ -1820,14 +1820,20 @@ if __name__ == "__main__":
 
         def m3u_file_1_clicked():
             fname_1 = QtWidgets.QFileDialog.getOpenFileName(
-                playlists_win_edit, _("Select m3u playlist"), home_folder
+                playlists_win_edit,
+                _("Select m3u playlist"),
+                home_folder,
+                "All Files (*);;M3U (*.m3u *.m3u8);;XSPF (*.xspf)",
             )[0]
             if fname_1:
                 m3u_edit_1.setText(fname_1)
 
         def epg_file_1_clicked():
             fname_2 = QtWidgets.QFileDialog.getOpenFileName(
-                playlists_win_edit, _("Select EPG file"), home_folder
+                playlists_win_edit,
+                _("Select EPG file"),
+                home_folder,
+                "All Files (*);;XMLTV (*.xml *.xml.gz *.xml.xz);;JTV (*.zip)",
             )[0]
             if fname_2:
                 epg_edit_1.setText(fname_2)
