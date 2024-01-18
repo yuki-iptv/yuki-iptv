@@ -334,5 +334,4 @@ def test_m3u():
     ]
     for file in data:
         m3u, tvg_url = read_m3u(file[0])
-        assert tvg_url == file[1]
-        assert m3u == file[2]
+        assert tvg_url == file[1] and m3u == file[2]
