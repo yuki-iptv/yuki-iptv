@@ -32,7 +32,7 @@
        <li>TV archive / catchup</li>
        <li>MPRIS support</li>
        <li>and many more...</li>
-    </ul>    
+    </ul>
   </description>
 
   <launchable type="desktop-id">yuki-iptv.desktop</launchable>
@@ -45,11 +45,11 @@
 
   <releases>
     <release version="0.0.8" date="2023-11-07"/>
-  </releases> 
+  </releases>
 
   <url type="homepage">https://github.com/yuki-iptv/yuki-iptv</url>
   <url type="bugtracker">https://github.com/yuki-iptv/yuki-iptv/issues</url>
   <developer_name>Ame-chan-angel</developer_name>
   <translation type="gettext">yuki-iptv</translation>
-  <content_rating type="oars-1.1"/>  
+  <content_rating type="oars-1.1"/>
 </component>
