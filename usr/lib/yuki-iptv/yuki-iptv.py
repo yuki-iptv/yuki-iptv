@@ -400,8 +400,6 @@ if __name__ == "__main__":
     signal.signal(signal.SIGINT, exit_handler)
 
     logger.info("Qt init...")
-    if "APPIMAGE_TEST_EXIT_YUKI_IPTV" in os.environ:
-        os.environ["QT_QPA_PLATFORM"] = "offscreen"
     if not QtWidgets.QApplication.instance():
         app = QtWidgets.QApplication(sys.argv)
     else:
@@ -462,8 +460,6 @@ if __name__ == "__main__":
         logger.info(f"yuki-iptv version: {APP_VERSION}")
         logger.info("Using Python " + sys.version.replace("\n", ""))
         logger.info(f"System: {platform.system()}")
-        if "YUKI_IPTV_IS_APPIMAGE" in os.environ:
-            logger.info("[AppImage]")
         logger.info(f"Qt library: {qt_library}")
         logger.info(f"Qt version: {QtCore.QT_VERSION_STR}")
         try:
@@ -480,24 +476,6 @@ if __name__ == "__main__":
         m3u = ""
 
         from thirdparty import mpv
-
-        if "APPIMAGE_TEST_EXIT_YUKI_IPTV" in os.environ:
-            try:
-                logger.info("Checking mpv version...")
-                player_test = mpv.MPV()
-                logger.info(player_test.mpv_version)
-                logger.info("Checking ffmpeg version...")
-                logger.info(
-                    subprocess.check_output(["ffmpeg", "-version"])
-                    .decode("utf-8")
-                    .split("\n")[0]
-                )
-                logger.info("AppImage test completed")
-            except Exception:
-                logger.info(traceback.format_exc())
-                logger.info("AppImage test failed!")
-                sys.exit(1)
-            sys.exit(0)
 
         if not os.path.isfile(str(Path(LOCAL_DIR, "favplaylist.m3u"))):
             file01 = open(str(Path(LOCAL_DIR, "favplaylist.m3u")), "w", encoding="utf8")
@@ -3249,11 +3227,7 @@ if __name__ == "__main__":
             settings_win.hide()
             if platform.system() == "Windows" or platform.system() == "Darwin":
                 os.chdir(old_pwd)
-            if (
-                "YUKI_IPTV_IS_APPIMAGE" in os.environ
-                or platform.system() == "Darwin"
-                or platform.system() == "Windows"
-            ):
+            if platform.system() == "Darwin" or platform.system() == "Windows":
                 for window in QtWidgets.QApplication.topLevelWidgets():
                     window.close()
             do_save_settings = True
@@ -9283,8 +9257,8 @@ if __name__ == "__main__":
             if "python" not in sys.executable:
                 start_args.pop(0)
             s_p = subprocess.Popen([sys.executable] + start_args)
-            # needed for Nuitka onefile and AppImage
-            if "YUKI_IPTV_IS_APPIMAGE" in os.environ or platform.system() == "Windows":
+            # needed for Nuitka onefile
+            if platform.system() == "Windows":
                 s_p.wait()
         sys.exit(app_exit_code)
     except Exception as e3:
