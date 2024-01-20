@@ -96,7 +96,10 @@ class M3UEditor(QtWidgets.QMainWindow):
     def select_file(self):
         self.ask_changed(False)
         filename = QtWidgets.QFileDialog.getOpenFileName(
-            self, _("Select m3u playlist"), HOME_FOLDER
+            self,
+            _("Select m3u playlist"),
+            HOME_FOLDER,
+            "All Files (*);;M3U (*.m3u *.m3u8);;XSPF (*.xspf)",
         )[0]
         if filename:
             m3u_parser = M3UParser(self.data["settings"]["udp_proxy"], _)
