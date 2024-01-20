@@ -457,6 +457,22 @@ if __name__ == "__main__":
         logger.info("https://fontawesome.com/")
         logger.info("https://creativecommons.org/licenses/by/4.0/")
         logger.info("")
+        is_unofficial_build = ""
+        if os.path.isfile("/.flatpak-info"):
+            is_unofficial_build = "Flatpak"
+        if "APPIMAGE" in os.environ:
+            is_unofficial_build = "AppImage"
+        if "SNAP" in os.environ:
+            is_unofficial_build = "Snap"
+        if is_unofficial_build:
+            logger.info("WARNING WARNING WARNING")
+            logger.info(
+                "You are using an unofficial "
+                f"build of yuki-iptv ({is_unofficial_build})."
+            )
+            logger.info("You won't receive any support from yuki-iptv.")
+            logger.info("WARNING WARNING WARNING")
+            logger.info("")
         logger.info(f"yuki-iptv version: {APP_VERSION}")
         logger.info("Using Python " + sys.version.replace("\n", ""))
         logger.info(f"System: {platform.system()}")
