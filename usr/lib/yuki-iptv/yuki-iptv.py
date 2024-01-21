@@ -7706,6 +7706,7 @@ if __name__ == "__main__":
                         mpris_loop.run()
                     except Exception:
                         logger.warning("Failed to start MPRIS loop!")
+                        logger.warning(traceback.format_exc())
 
             mpris_loop = GLib.MainLoop()
             mpris_thread = threading.Thread(target=mpris_loop_start)
