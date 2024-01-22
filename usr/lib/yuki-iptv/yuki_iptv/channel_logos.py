@@ -87,8 +87,8 @@ def fetch_remote_channel_icon(loglevel, chan_name, logo_url, req_data_ua, req_da
                                 icon_ret = cache_file
         except Exception:
             if loglevel.upper() == "DEBUG":
-                logger.warning("Logging failed channel logo because loglevel is DEBUG")
-                logger.warning(traceback.format_exc())
+                logger.debug("Logging failed channel logo because loglevel is DEBUG")
+                logger.debug(traceback.format_exc())
             icon_ret = None
     return icon_ret
 
