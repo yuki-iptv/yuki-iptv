@@ -23,8 +23,8 @@
 #
 import os
 
-# import logging
-# import traceback
+import logging
+import traceback
 import io
 import base64
 import hashlib
@@ -32,7 +32,7 @@ from pathlib import Path
 from yuki_iptv.crossplatform import LOCAL_DIR
 from yuki_iptv.requests_timeout import requests_get
 
-# logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 try:
     from wand.image import Image
@@ -44,7 +44,7 @@ except Exception:
     use_wand = False
 
 
-def fetch_remote_channel_icon(chan_name, logo_url, req_data_ua, req_data_ref):
+def fetch_remote_channel_icon(loglevel, chan_name, logo_url, req_data_ua, req_data_ref):
     icon_ret = None
     if not logo_url:
         return None
@@ -86,22 +86,27 @@ def fetch_remote_channel_icon(chan_name, logo_url, req_data_ua, req_data_ref):
                                 im_logo.save(cache_file, "PNG")
                                 icon_ret = cache_file
         except Exception:
+            if loglevel.upper() == "DEBUG":
+                logger.warning("Logging failed channel logo because loglevel is DEBUG")
+                logger.warning(traceback.format_exc())
             icon_ret = None
     return icon_ret
 
 
-def channel_logos_worker(requested_logos, update_dict, append=""):
+def channel_logos_worker(loglevel, requested_logos, update_dict, append=""):
     # logger.debug("channel_logos_worker started")
     update_dict[f"logos{append}_inprogress"] = True
     for logo_channel in requested_logos:
         # logger.debug(f"Downloading logo for channel '{logo_channel}'...")
         logo_m3u = fetch_remote_channel_icon(
+            loglevel,
             logo_channel,
             requested_logos[logo_channel][0],
             requested_logos[logo_channel][2],
             requested_logos[logo_channel][3],
         )
         logo_epg = fetch_remote_channel_icon(
+            loglevel,
             logo_channel,
             requested_logos[logo_channel][1],
             requested_logos[logo_channel][2],

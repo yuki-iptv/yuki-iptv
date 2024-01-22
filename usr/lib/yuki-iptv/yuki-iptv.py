@@ -5847,6 +5847,7 @@ if __name__ == "__main__":
                             target=channel_logos_worker,
                             daemon=True,
                             args=(
+                                loglevel,
                                 channel_logos_request,
                                 multiprocessing_manager_dict,
                             ),
@@ -6413,6 +6414,7 @@ if __name__ == "__main__":
                                     target=channel_logos_worker,
                                     daemon=True,
                                     args=(
+                                        loglevel,
                                         movie_logos_request,
                                         multiprocessing_manager_dict,
                                         "movie",
