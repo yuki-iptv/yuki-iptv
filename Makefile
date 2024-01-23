@@ -20,5 +20,5 @@ black:
 
 test:
 	mkdir -p "/tmp/yuki-iptv-py"
-	PYTHONPYCACHEPREFIX="/tmp/yuki-iptv-py" python3 -m pytest tests
+	PYTHONPYCACHEPREFIX="/tmp/yuki-iptv-py" LC_ALL=C python3 -m pytest tests
 	rm -rf "/tmp/yuki-iptv-py"
