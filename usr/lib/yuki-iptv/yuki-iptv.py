@@ -1076,9 +1076,11 @@ if __name__ == "__main__":
 
                 for m3u_datai in m3u_data_got:
                     if "tvg-group" in m3u_datai:
-                        if m3u_datai["tvg-group"].lower() == "vod" or m3u_datai[
-                            "tvg-group"
-                        ].lower().startswith("vod "):
+                        if (
+                            m3u_datai["tvg-group"].lower() == "vod"
+                            or m3u_datai["tvg-group"].lower().startswith("vod ")
+                            or m3u_datai["tvg-group"].lower().endswith(" vod")
+                        ):
                             YukiData.movies[m3u_datai["title"]] = m3u_datai
                         else:
                             YukiData.series, is_matched = parse_series(
