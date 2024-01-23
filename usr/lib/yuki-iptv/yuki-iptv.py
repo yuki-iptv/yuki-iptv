@@ -117,6 +117,9 @@ from thirdparty.xtream import XTream, Serie
 if platform.system() == "Windows":
     freeze_support()
 
+if "PULSE_PROP" not in os.environ:
+    os.environ["PULSE_PROP"] = "media.role=video"
+
 parser = argparse.ArgumentParser(prog="yuki-iptv", description="yuki-iptv")
 parser.add_argument("--version", action="store_true", help="Show version")
 parser.add_argument(
