@@ -468,6 +468,7 @@ if __name__ == "__main__":
         if "SNAP" in os.environ:
             is_unofficial_build = "Snap"
         if is_unofficial_build:
+            APP_VERSION = APP_VERSION + f" ({is_unofficial_build})"
             logger.info("WARNING WARNING WARNING")
             logger.info(
                 "You are using an unofficial "
