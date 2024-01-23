@@ -1,3 +1,13 @@
+yuki-iptv (0.0.9) bullseye; urgency=medium
+
+  * l10n: Update translations
+  * Respect XDG environment variables
+  * Fix YouTube channels recording
+  * Add file filter when adding playlist
+  * Add file filter when opening file in M3U editor
+
+ -- Ame-chan-angel <amechanangel@proton.me>  Tue, 23 Jan 2024 04:13:28 +0000
+
 yuki-iptv (0.0.8) bullseye; urgency=medium
 
   * l10n: Update translations
