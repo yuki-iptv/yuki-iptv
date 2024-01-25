@@ -16,11 +16,11 @@
        <li>M3u, M3u8, XSPF playlists support</li>
        <li>XTream API support</li>
        <li>Viewing unencrypted streams UDP (multicast), HTTP, HLS (M3u8)</li>
+       <li>TV program (EPG) support in XMLTV and JTV formats</li>
        <li>Save channels as favorites</li>
        <li>Stream recording</li>
        <li>Hotkeys</li>
        <li>Channel search</li>
-       <li>TV program (EPG) support in XMLTV and JTV formats</li>
        <li>Display of technical information - video / audio codec, bitrate, resolution</li>
        <li>Channel groups (from playlist and custom)</li>
        <li>Hide channels</li>

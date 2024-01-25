@@ -29,11 +29,11 @@ The channels and pictures in the screenshots are for demonstration purposes only
 - M3u / M3u8 / XSPF playlists support
 - XTream API support
 - Viewing unencrypted streams UDP (multicast), HTTP, HLS (M3u8)
+- TV program (EPG) support in XMLTV and JTV formats
 - Save channels as favorites
 - Stream recording
 - Hotkeys
 - Channel search
-- TV program (EPG) support in XMLTV and JTV formats
 - Display of technical information - video / audio codec, bitrate, resolution
 - Channel groups (from playlist and custom)
 - Hide channels
