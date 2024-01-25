@@ -22,4 +22,13 @@ Depends: ffmpeg (>= 4.2.7),
          yt-dlp | youtube-dl
 Recommends: libmagickcore-6.q16-6-extra
 Description: IPTV player with EPG support (Astroncia IPTV fork)
- Watch TV.
+ yuki-iptv is a IPTV player with many features, such as:
+  * M3u / M3u8 / XSPF playlists support
+  * XTream API support
+  * TV program (EPG) support in XMLTV and JTV formats
+  * Save channels as favorites
+  * Stream recording
+  * Channel groups, hide channels, sorting channels
+  * M3u playlist editor
+  * TV archive / catchup
+  * ...
