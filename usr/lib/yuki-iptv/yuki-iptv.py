@@ -223,24 +223,6 @@ if (platform.system() == "Windows" or platform.system() == "Darwin") and os.path
 else:
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-# Mac OS locale fix/workaround
-if platform.system() == "Darwin" and not locale.getlocale()[0]:
-    try:
-        mac_lang = (
-            subprocess.check_output(["defaults", "read", "-g", "AppleLocale"])
-            .decode("utf-8")
-            .strip()
-        )
-        if ".UTF-8" not in mac_lang:
-            mac_lang = mac_lang + ".UTF-8"
-        if "_" in mac_lang:
-            logger.info(f"Fixing Mac OS locale, set to {mac_lang}")
-            os.environ["LC_ALL"] = mac_lang
-        else:
-            logger.info("Failed to fix Mac OS locale!")
-    except Exception:
-        logger.info("Failed to fix Mac OS locale!")
-
 APP = "yuki-iptv"
 LOCALE_DIR = str(Path(os.getcwd(), "..", "..", "share", "locale"))
 if platform.system() == "Linux":
@@ -477,13 +459,11 @@ if __name__ == "__main__":
             is_unofficial_build = "Snap"
         if is_unofficial_build:
             APP_VERSION = APP_VERSION + f" ({is_unofficial_build})"
-            logger.info("WARNING WARNING WARNING")
-            logger.info(
+            logger.warning(
                 "You are using an unofficial "
                 f"build of yuki-iptv ({is_unofficial_build})."
             )
-            logger.info("You won't receive any support from yuki-iptv.")
-            logger.info("WARNING WARNING WARNING")
+            logger.warning("You won't receive any support from yuki-iptv.")
             logger.info("")
         logger.info(f"Version: {APP_VERSION}")
         logger.info("Using Python " + sys.version.replace("\n", ""))
@@ -493,7 +473,7 @@ if __name__ == "__main__":
         try:
             logger.info(f"Qt platform: {app.platformName()}")
         except Exception:
-            logger.info("Failed to determine Qt platform!")
+            logger.warning("Failed to determine Qt platform!")
         logger.info("")
 
         enable_libmpv_render_context = platform.system() == "Darwin"  # Mac OS
@@ -607,7 +587,7 @@ if __name__ == "__main__":
             > current_palette.color(QtGui.QPalette.ColorRole.Window).lightness()
         )
         if is_dark_theme:
-            logger.info("Detected dark window theme, applying icons compat")
+            logger.info("Detected dark window theme")
             YukiData.use_dark_icon_theme = True
         else:
             YukiData.use_dark_icon_theme = False
@@ -793,11 +773,9 @@ if __name__ == "__main__":
         channels = {}
         programmes = {}
 
-        logger.info("Init m3u editor")
         m3u_editor = M3UEditor(
             _=_, icon=main_icon, icons_folder=ICONS_FOLDER, settings=settings
         )
-        logger.info("M3u editor init done")
 
         def show_m3u_editor():
             if m3u_editor.isVisible():
@@ -1013,7 +991,7 @@ if __name__ == "__main__":
                                 timeout=(5, 15),  # connect, read timeout
                             )
                         except Exception:
-                            logger.info(traceback.format_exc())
+                            logger.warning(traceback.format_exc())
                             m3u_req = PlaylistsFail()
                             m3u_req.status_code = 400
 
@@ -7229,10 +7207,6 @@ if __name__ == "__main__":
                 )
             return about_txt
 
-        # logger.info("")
-        # logger.info(f"M3U: '{settings['m3u'}' EPG: '{settings['epg']}'")
-        # logger.info("")
-
         def main_channel_settings():
             global item_selected, playing_chan
             if playing_chan:
@@ -7449,7 +7423,7 @@ if __name__ == "__main__":
             if win.isVisible():
                 if playing_chan and player.path is None:
                     if settings["autoreconnection"] and playing_group == 0:
-                        logger.info("Connection to stream lost, waiting 1 sec...")
+                        logger.warning("Connection to stream lost, waiting 1 sec...")
                         do_reconnect1_async()
                     else:
                         mpv_stop()
@@ -8384,7 +8358,7 @@ if __name__ == "__main__":
                             playing_chan and not loading.isVisible()
                         ) and player.cache_buffering_state == 0:
                             if not x_conn:
-                                logger.info(
+                                logger.warning(
                                     "Connection to stream lost, waiting 5 secs..."
                                 )
                                 x_conn = QtCore.QTimer()
