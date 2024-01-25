@@ -21,13 +21,8 @@
 # Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com
 # License - https://creativecommons.org/licenses/by/4.0/
 #
-import os
-import platform
 from pathlib import Path
 from yuki_iptv.xdg import get_config_dir
 
-if platform.system() != "Windows":
-    LOCAL_DIR = str(Path(get_config_dir(), "yuki-iptv"))
-else:
-    LOCAL_DIR = str(Path(os.getenv("LOCALAPPDATA"), "yuki-iptv-config"))
+LOCAL_DIR = str(Path(get_config_dir(), "yuki-iptv"))
 SAVE_FOLDER_DEFAULT = str(Path(LOCAL_DIR, "saves"))

@@ -22,14 +22,18 @@
 #
 import os
 import os.path
+import platform
 from pathlib import Path
 
 
 def get_cache_dir():
-    if "XDG_CACHE_HOME" in os.environ:
-        cache_dir = os.environ["XDG_CACHE_HOME"]
+    if platform.system() == "Windows":
+        cache_dir = str(Path(os.getenv("LOCALAPPDATA")))
     else:
-        cache_dir = str(Path(os.environ["HOME"], ".cache"))
+        if "XDG_CACHE_HOME" in os.environ:
+            cache_dir = os.environ["XDG_CACHE_HOME"]
+        else:
+            cache_dir = str(Path(os.environ["HOME"], ".cache"))
     if not os.path.isdir(cache_dir):
         try:
             Path(cache_dir).mkdir(parents=True, exist_ok=True)
@@ -39,10 +43,13 @@ def get_cache_dir():
 
 
 def get_config_dir():
-    if "XDG_CONFIG_HOME" in os.environ:
-        config_dir = os.environ["XDG_CONFIG_HOME"]
+    if platform.system() == "Windows":
+        config_dir = str(Path(os.getenv("LOCALAPPDATA")))
     else:
-        config_dir = str(Path(os.environ["HOME"], ".config"))
+        if "XDG_CONFIG_HOME" in os.environ:
+            config_dir = os.environ["XDG_CONFIG_HOME"]
+        else:
+            config_dir = str(Path(os.environ["HOME"], ".config"))
     if not os.path.isdir(config_dir):
         try:
             Path(config_dir).mkdir(parents=True, exist_ok=True)
