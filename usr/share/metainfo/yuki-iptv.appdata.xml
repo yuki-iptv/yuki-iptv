@@ -6,13 +6,12 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
   <name>yuki-iptv</name>
-  <summary>IPTV player</summary>
+  <summary>IPTV player with EPG support (Astroncia IPTV fork)</summary>
 
   <description>
     <p>
-      IPTV player with EPG support (Astroncia IPTV fork)
+      yuki-iptv is a IPTV player with many features, such as:
     </p>
-    <p>Features</p>
     <ul>
        <li>M3u, M3u8, XSPF playlists support</li>
        <li>XTream API support</li>
