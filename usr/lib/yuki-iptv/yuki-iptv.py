@@ -402,12 +402,10 @@ if __name__ == "__main__":
     signal.signal(signal.SIGTERM, exit_handler)
     signal.signal(signal.SIGINT, exit_handler)
 
-    logger.info("Qt init...")
     if not QtWidgets.QApplication.instance():
         app = QtWidgets.QApplication(sys.argv)
     else:
         app = QtWidgets.QApplication.instance()
-    logger.info("Qt init successful")
 
     setAppFusion = True
     try:
@@ -424,7 +422,6 @@ if __name__ == "__main__":
     try:
         if setAppFusion:
             app.setStyle("fusion")
-            logger.info('app.setStyle("fusion") OK')
         else:
             logger.info("fusion style turned OFF")
     except Exception:
@@ -439,6 +436,7 @@ if __name__ == "__main__":
     locale.setlocale(locale.LC_NUMERIC, "C")
 
     try:
+        logger.info("yuki-iptv - IPTV player with EPG support (Astroncia IPTV fork)")
         logger.info("")
         logger.info("Copyright (c) 2021, 2022 Astroncia")
         logger.info(f"Copyright (c) {COPYRIGHT_YEAR} Ame-chan-angel")
@@ -487,7 +485,7 @@ if __name__ == "__main__":
             logger.info("You won't receive any support from yuki-iptv.")
             logger.info("WARNING WARNING WARNING")
             logger.info("")
-        logger.info(f"yuki-iptv version: {APP_VERSION}")
+        logger.info(f"Version: {APP_VERSION}")
         logger.info("Using Python " + sys.version.replace("\n", ""))
         logger.info(f"System: {platform.system()}")
         logger.info(f"Qt library: {qt_library}")
