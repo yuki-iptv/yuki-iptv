@@ -441,9 +441,7 @@ if __name__ == "__main__":
     try:
         logger.info("")
         logger.info("Copyright (c) 2021, 2022 Astroncia")
-        logger.info(
-            f"Copyright (c) {COPYRIGHT_YEAR} Ame-chan-angel <amechanangel@proton.me>"
-        )
+        logger.info(f"Copyright (c) {COPYRIGHT_YEAR} Ame-chan-angel")
         logger.info("")
         logger.info(
             "This program is free software: you can redistribute it and/or modify"
