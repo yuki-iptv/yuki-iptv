@@ -18,8 +18,8 @@
 # along with yuki-iptv. If not, see <https://www.gnu.org/licenses/>.
 #
 # The Font Awesome pictograms are licensed under the CC BY 4.0 License.
-# https://fontawesome.com/
-# https://creativecommons.org/licenses/by/4.0/
+# Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com
+# License - https://creativecommons.org/licenses/by/4.0/
 #
 try:
     from yuki_iptv.plugin import init_plugins
@@ -408,7 +408,6 @@ if __name__ == "__main__":
     else:
         app = QtWidgets.QApplication.instance()
     logger.info("Qt init successful")
-    logger.info("")
 
     setAppFusion = True
     try:
@@ -441,9 +440,10 @@ if __name__ == "__main__":
 
     try:
         logger.info("")
-        logger.info(f"{MAIN_WINDOW_TITLE} starting...")
         logger.info("Copyright (c) 2021, 2022 Astroncia")
-        logger.info(f"Copyright (c) {COPYRIGHT_YEAR} Ame-chan-angel")
+        logger.info(
+            f"Copyright (c) {COPYRIGHT_YEAR} Ame-chan-angel <amechanangel@proton.me>"
+        )
         logger.info("")
         logger.info(
             "This program is free software: you can redistribute it and/or modify"
@@ -454,11 +454,23 @@ if __name__ == "__main__":
         logger.info("the Free Software Foundation, either version 3 of the License, or")
         logger.info("(at your option) any later version.")
         logger.info("")
+        logger.info("This program is distributed in the hope that it will be useful,")
+        logger.info("but WITHOUT ANY WARRANTY; without even the implied warranty of")
+        logger.info("MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the")
+        logger.info("GNU General Public License for more details.")
+        logger.info("")
+        logger.info("You should have received a copy of the GNU General Public License")
+        logger.info(
+            "along with this program.  If not, see <https://www.gnu.org/licenses/>."
+        )
+        logger.info("")
         logger.info(
             "The Font Awesome pictograms are licensed under the CC BY 4.0 License."
         )
-        logger.info("https://fontawesome.com/")
-        logger.info("https://creativecommons.org/licenses/by/4.0/")
+        logger.info(
+            "Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com"
+        )
+        logger.info("License - https://creativecommons.org/licenses/by/4.0/")
         logger.info("")
         is_unofficial_build = ""
         if os.path.isfile("/.flatpak-info"):
@@ -3796,51 +3808,34 @@ if __name__ == "__main__":
             else:
                 license_win.hide()
 
-        with open(
-            str(
-                Path(
-                    "..", "..", "share", "yuki-iptv", "licenses", "GPL-3.0-or-later.txt"
-                )
-            ),
-            "r",
-            encoding="utf8",
-        ) as license_gpl_file:
-            license_gpl_str = license_gpl_file.read()
-
-        with open(
-            str(Path("..", "..", "share", "yuki-iptv", "licenses", "CC-BY-4.0.txt")),
-            "r",
-            encoding="utf8",
-        ) as license_ccby_file:
-            license_ccby_str = license_ccby_file.read()
-
         license_str = (
-            "This program is free software: you can redistribute it and/or modify it"
-            " under the terms of the GNU General Public License as published by the"
-            " Free Software Foundation, either version 3 of the License"
-            ", or (at your option) any later version."
-            "\n\n"
-            "This program is distributed in the hope that it will be useful"
-            ", but WITHOUT ANY WARRANTY; without even the implied warranty"
-            " of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
-            " See the GNU General Public License for more details."
-            "\n\n"
-            "------------------------------------\n\n"
-            "The Font Awesome pictograms are licensed under the CC BY 4.0 License.\n"
-            "https://fontawesome.com/\n"
-            "https://creativecommons.org/licenses/by/4.0/\n\n"
-            "------------------------------------"
-            "\n\n"
+            "This program is free software: you can redistribute it and/or modify\n"
+            "it under the terms of the GNU General Public License as published by\n"
+            "the Free Software Foundation, either version 3 of the License, or\n"
+            "(at your option) any later version.\n"
+            "\n"
+            "This program is distributed in the hope that it will be useful,\n"
+            "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+            "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+            "GNU General Public License for more details.\n"
+            "\n"
+            "You should have received a copy of the GNU General Public License\n"
+            "along with this program.  If not, see <https://www.gnu.org/licenses/>.\n"
+            "\n"
             "Original Astroncia IPTV code is licensed under GPL-3.0-only.\n"
             "I have permission from original code author (Astroncia)\n"
-            "to relicense code to GPL-3.0-or-later.\n\n"
-            "------------------------------------"
-            "\n\n"
-            "" + license_gpl_str + ""
-            "\n\n"
-            "------------------------------------\n\n"
-            "" + license_ccby_str
+            "to relicense code to GPL-3.0-or-later.\n"
+            "\n"
+            "The Font Awesome pictograms are licensed under the CC BY 4.0 License.\n"
+            "Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com\n"
+            "License - https://creativecommons.org/licenses/by/4.0/\n"
         )
+
+        if os.path.isfile("/usr/share/common-licenses/GPL"):
+            with open(
+                "/usr/share/common-licenses/GPL", "r", encoding="utf8"
+            ) as license_gpl_file:
+                license_str += "\n" + license_gpl_file.read()
 
         licensebox = QtWidgets.QPlainTextEdit()
         licensebox.setReadOnly(True)

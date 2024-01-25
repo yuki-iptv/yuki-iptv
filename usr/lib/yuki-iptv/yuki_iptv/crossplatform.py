@@ -18,8 +18,8 @@
 # along with yuki-iptv. If not, see <https://www.gnu.org/licenses/>.
 #
 # The Font Awesome pictograms are licensed under the CC BY 4.0 License.
-# https://fontawesome.com/
-# https://creativecommons.org/licenses/by/4.0/
+# Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com
+# License - https://creativecommons.org/licenses/by/4.0/
 #
 import os
 import platform
