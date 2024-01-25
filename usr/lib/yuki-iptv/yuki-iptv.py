@@ -7081,8 +7081,14 @@ if __name__ == "__main__":
         def my_log(mpv_loglevel1, component, message):
             mpv_log_str = f"[{mpv_loglevel1}] {component}: {message}"
             if "Invalid video timestamp: " not in str(mpv_log_str):
-                if "[debug] " in str(mpv_log_str):
+                if "[debug] " in str(mpv_log_str) or "[trace] " in str(mpv_log_str):
                     mpv_logger.debug(str(mpv_log_str))
+                elif "[warn] " in str(mpv_log_str):
+                    mpv_logger.warning(str(mpv_log_str))
+                elif "[error] " in str(mpv_log_str):
+                    mpv_logger.error(str(mpv_log_str))
+                elif "[fatal] " in str(mpv_log_str):
+                    mpv_logger.critical(str(mpv_log_str))
                 else:
                     mpv_logger.info(str(mpv_log_str))
 
