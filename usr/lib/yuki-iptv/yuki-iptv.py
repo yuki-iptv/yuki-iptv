@@ -1080,7 +1080,7 @@ if __name__ == "__main__":
                     settings["epg"] = epg_url
                 for m3u_line in m3u_data:
                     array[m3u_line["title"]] = m3u_line
-                    if not m3u_line["tvg-group"] in groups:
+                    if m3u_line["tvg-group"] not in groups:
                         groups.append(m3u_line["tvg-group"])
             except Exception:
                 logger.warning(
@@ -8714,7 +8714,7 @@ if __name__ == "__main__":
                     if "REC / " not in lbl2.text():
                         cur_recording = is_ffmpeg_recording() is False
                     else:
-                        cur_recording = not is_recording_func() is True
+                        cur_recording = is_recording_func() is not True
                     if cur_recording:
                         showLoading2()
                     else:

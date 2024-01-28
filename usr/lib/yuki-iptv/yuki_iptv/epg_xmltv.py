@@ -89,7 +89,7 @@ def parse_as_xmltv(
     for channel_epg in tree.findall("./channel"):
         for display_name in channel_epg.findall("./display-name"):
             if display_name.text:
-                if not channel_epg.attrib["id"].strip() in ids:
+                if channel_epg.attrib["id"].strip() not in ids:
                     ids[channel_epg.attrib["id"].strip()] = []
                 ids[channel_epg.attrib["id"].strip()].append(display_name.text.strip())
             try:
