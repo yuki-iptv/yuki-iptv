@@ -68,6 +68,13 @@ yuki-iptv requires **pydbus**, so you'll need to build it from source:
 https://linuxsoft.cern.ch/cern/centos/8/AppStream/Source/SPackages/python-pydbus-0.6.0-5.el8.src.rpm  
 https://wiki.centos.org/HowTos(2f)RebuildSRPM.html  
 
+## Unofficial builds
+
+**Use at your own risk!**  
+  
+AUR: https://aur.archlinux.org/packages/yuki-iptv  
+Flatpak: https://flathub.org/apps/io.github.yuki_iptv.yuki-iptv
+
 ## HowTo make playlists for movies/series
   
 Use group **VOD** for movies  
