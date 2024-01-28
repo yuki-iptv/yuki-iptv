@@ -71,6 +71,7 @@ https://wiki.centos.org/HowTos(2f)RebuildSRPM.html
 
 ## Unofficial builds
 
+**Might be outdated!**  
 **Use at your own risk!**  
   
 AUR: https://aur.archlinux.org/packages/yuki-iptv  
