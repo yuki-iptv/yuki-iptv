@@ -4,9 +4,8 @@ usr/lib/yuki-iptv/yuki_iptv/plugins
 *.swo
 *.swp
 .pytest_cache
-debian/.debhelper
-debian/debhelper-build-stamp
-debian/files
-debian/yuki-iptv.debhelper.log
-debian/yuki-iptv.substvars
+.ruff_cache
 debian/yuki-iptv
+debian/*debhelper*
+debian/files
+debian/yuki-iptv.substvars
