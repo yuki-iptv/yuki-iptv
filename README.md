@@ -14,6 +14,7 @@ The channels and pictures in the screenshots are for demonstration purposes only
 - [Features](#features)
 - [Ubuntu PPA](#ubuntu-ppa)
 - [Open Build Service (rpm packages)](#open-build-service-rpm-packages)
+- [Unofficial builds](#unofficial-builds)
 - [HowTo make playlists for movies/series](#howto-make-playlists-for-moviesseries)
 - [License](#license)
 - [Localization](#localization)
