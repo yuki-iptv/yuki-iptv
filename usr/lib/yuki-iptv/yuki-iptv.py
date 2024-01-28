@@ -1744,9 +1744,9 @@ if __name__ == "__main__":
                                     i9.split(":^:^:^:^:^:^:^:^:^:^:")[0]
                                 ]["m3u"]
                             )
-                            expiration_list[
-                                i9.split(":^:^:^:^:^:^:^:^:^:^:")[0]
-                            ] = get_xtream_expiration_date(xt2)
+                            expiration_list[i9.split(":^:^:^:^:^:^:^:^:^:^:")[0]] = (
+                                get_xtream_expiration_date(xt2)
+                            )
                         YukiData.xtream_expiration_list = expiration_list
                         xtream_expiration_hide_loading()
                         show_xtream_playlists_expiration_pt2()
@@ -2667,26 +2667,26 @@ if __name__ == "__main__":
                 if not params or not isinstance(params, dict):
                     return
                 if "w" in params and "h" in params:
-                    stream_info.video_properties[_("General")][
-                        _("Dimensions")
-                    ] = "%sx%s" % (params["w"], params["h"])
+                    stream_info.video_properties[_("General")][_("Dimensions")] = (
+                        "%sx%s" % (params["w"], params["h"])
+                    )
                 if "aspect" in params:
                     aspect = round(float(params["aspect"]), 2)
                     stream_info.video_properties[_("General")][_("Aspect")] = (
                         "%s" % aspect
                     )
                 if "pixelformat" in params:
-                    stream_info.video_properties[_("Color")][
-                        _("Pixel Format")
-                    ] = params["pixelformat"]
+                    stream_info.video_properties[_("Color")][_("Pixel Format")] = (
+                        params["pixelformat"]
+                    )
                 if "gamma" in params:
                     stream_info.video_properties[_("Color")][_("Gamma")] = params[
                         "gamma"
                     ]
                 if "average-bpp" in params:
-                    stream_info.video_properties[_("Color")][
-                        _("Bits Per Pixel")
-                    ] = params["average-bpp"]
+                    stream_info.video_properties[_("Color")][_("Bits Per Pixel")] = (
+                        params["average-bpp"]
+                    )
             except Exception:
                 pass
 
@@ -2717,9 +2717,9 @@ if __name__ == "__main__":
                     fmt = AUDIO_SAMPLE_FORMATS.get(fmt, fmt)
                     stream_info.audio_properties[_("General")][_("Format")] = fmt
                 if "channel-count" in params:
-                    stream_info.audio_properties[_("Layout")][
-                        _("Channel Count")
-                    ] = params["channel-count"]
+                    stream_info.audio_properties[_("Layout")][_("Channel Count")] = (
+                        params["channel-count"]
+                    )
             except Exception:
                 pass
 
@@ -2989,9 +2989,9 @@ if __name__ == "__main__":
                 "videoaspect": videoaspect_choose.currentIndex(),
                 "zoom": zoom_choose.currentIndex(),
                 "panscan": panscan_choose.value(),
-                "epgname": epgname_lbl.text()
-                if epgname_lbl.text() != _("Default")
-                else "",
+                "epgname": (
+                    epgname_lbl.text() if epgname_lbl.text() != _("Default") else ""
+                ),
             }
             save_channel_sets()
             if playing_chan == chan_3:
