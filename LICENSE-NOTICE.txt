@@ -1,2 +1,4 @@
 Original Astroncia IPTV code is licensed under GPL-3.0-only.
 I have permission from original code author (Astroncia) to relicense code to GPL-3.0-or-later.
+
+Same for usr/share/metainfo/yuki-iptv.appdata.xml: FSFAP -> CC0-1.0
