@@ -12,6 +12,7 @@ The channels and pictures in the screenshots are for demonstration purposes only
 
 - [Repository mirrors](#repository-mirrors)
 - [Features](#features)
+- [Flatpak](#flatpak)
 - [Ubuntu PPA](#ubuntu-ppa)
 - [Open Build Service (rpm packages)](#open-build-service-rpm-packages)
 - [Unofficial builds](#unofficial-builds)
@@ -45,6 +46,12 @@ The channels and pictures in the screenshots are for demonstration purposes only
 - TV archive / catchup
 - MPRIS support
 - and many more...
+
+## Flatpak
+
+<a href='https://flathub.org/apps/io.github.yuki_iptv.yuki-iptv'>
+    <img width='240' alt='Download on Flathub' src='https://flathub.org/api/badge?locale=en'/>
+</a>
 
 ## Ubuntu PPA
 
