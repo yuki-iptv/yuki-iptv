@@ -1091,6 +1091,10 @@ if __name__ == "__main__":
                 array = {}
                 groups = []
 
+        # Memory optimize
+        m3u_exists = not not m3u
+        m3u = ""
+
         logger.info(
             "{} channels, {} groups, {} movies, {} series".format(
                 len(array),
@@ -9165,7 +9169,7 @@ if __name__ == "__main__":
             except Exception:
                 pass
 
-        if settings["m3u"] and m3u:
+        if settings["m3u"] and m3u_exists:
             win.show()
             aot_action = init_mpv_player()
             win.raise_()

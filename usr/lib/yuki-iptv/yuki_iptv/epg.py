@@ -104,6 +104,7 @@ def fetch_epg(settings, catchup_days1, return_dict1):
                 pr_xmltv = parse_as_xmltv(
                     epg, settings, catchup_days1, return_dict1, epg_i, epg_settings_url
                 )
+                epg = ""
                 programmes_epg = merge_two_dicts(programmes_epg, pr_xmltv[0])
                 prog_ids = merge_two_dicts(prog_ids, pr_xmltv[1])
                 try:
@@ -134,11 +135,16 @@ def fetch_epg(settings, catchup_days1, return_dict1):
                             pass
                     else:
                         programmes_epg = merge_two_dicts(programmes_epg, pr_zip)
+                    zip_epg = None
+                    pr_zip = None
+                    epg = ""
                 elif epg[0:6] == b"tv.all":  # TXT (TV.ALL)
                     zip_epg = None
                     programmes_epg = merge_two_dicts(programmes_epg, parse_txt(epg))
+                    epg = ""
                 else:
                     zip_epg = None
+                    epg = ""
                     raise Exception("Unknown EPG format or parsing failed!")
 
             # Sort EPG entries by start time
