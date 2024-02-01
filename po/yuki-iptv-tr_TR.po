@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: yuki-iptv\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-11-05 09:30+0000\n"
-"PO-Revision-Date: 2023-11-05 16:49\n"
+"PO-Revision-Date: 2024-02-01 22:40\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
 "Language: tr_TR\n"
@@ -698,11 +698,11 @@ msgstr "Tekrar oynatmaları etkinleştir"
 
 #: usr/lib/yuki-iptv/yuki-iptv.py:3548
 msgid "Enable rewind"
-msgstr ""
+msgstr "Geri sarmayı etkinleştir"
 
 #: usr/lib/yuki-iptv/yuki-iptv.py:3552
 msgid "Hide channel logos"
-msgstr ""
+msgstr "Kanal logolarını gizle"
 
 #: usr/lib/yuki-iptv/yuki-iptv.py:3568
 msgid "Main"
@@ -1129,12 +1129,12 @@ msgstr "Her zaman pencerenin üstünde tut"
 #: usr/lib/yuki-iptv/yuki-iptv.py:9078
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:212
 msgid "&Frame step"
-msgstr ""
+msgstr "&Çerçeve adımı"
 
 #: usr/lib/yuki-iptv/yuki-iptv.py:9079
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:216
 msgid "Fra&me back step"
-msgstr ""
+msgstr "Çerçeve&geri adım"
 
 #: usr/lib/yuki-iptv/yuki_iptv/epg.py:93
 msgid "Updating TV guide... (loading {}/{})"
@@ -1242,7 +1242,7 @@ msgstr "&Engellemeyi Kaldır"
 
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:291
 msgid "De&ring"
-msgstr ""
+msgstr "De&halka"
 
 #: usr/lib/yuki-iptv/yuki_iptv/menubar.py:295
 msgid "Debanding (&gradfun)"
