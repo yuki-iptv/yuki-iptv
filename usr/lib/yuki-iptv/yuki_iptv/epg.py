@@ -266,5 +266,5 @@ def exists_in_epg(search, programmes):
     return search in programmes
 
 
-def get_epg(programmes, search, allow_plugin=False):
+def get_epg(programmes, search):
     return programmes[search]
