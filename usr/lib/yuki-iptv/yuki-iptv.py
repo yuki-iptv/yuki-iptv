@@ -9089,8 +9089,6 @@ if __name__ == "__main__":
                 pass
 
             def after_mpv_init():
-                # Fix window size on Mac OS
-                # maybe needed on other systems?
                 if YukiData.needs_resize:
                     logger.info("Fix window size")
                     win.resize(WINDOW_SIZE[0], WINDOW_SIZE[1])
