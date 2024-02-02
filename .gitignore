@@ -1,6 +1,5 @@
 __pycache__
 usr/share/locale
-usr/lib/yuki-iptv/yuki_iptv/plugins
 *.swo
 *.swp
 .pytest_cache
