@@ -6,7 +6,7 @@ import gettext
 PREFIX = """[Desktop Entry]
 Type=Application
 Name=yuki-iptv
-Comment=IPTV player
+Comment=IPTV player with EPG support
 """
 
 SUFFIX = """Exec=yuki-iptv
@@ -24,8 +24,8 @@ for lang_file in glob.glob("./po/yuki-iptv-*.po"):
         translation = gettext.translation(
             "yuki-iptv", "./usr/share/locale/", languages=[lang]
         )
-        playername = translation.gettext("IPTV player")
-        if playername != "IPTV player":
+        playername = translation.gettext("IPTV player with EPG support")
+        if playername != "IPTV player with EPG support":
             if lang.split("_")[0] == lang.split("_")[1].lower():
                 lang = lang.split("_")[0]
             FILE.write("Comment[{}]={}\n".format(lang, playername))

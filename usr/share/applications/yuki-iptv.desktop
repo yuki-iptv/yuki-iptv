@@ -1,12 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=yuki-iptv
-Comment=IPTV player
-Comment[zh_CN]=IPTV 播放器
-Comment[zh_TW]=IPTV 播放器
-Comment[tr]=IPTV Oynatıcı
-Comment[fr]=Lecteur IPTV
-Comment[ru]=IPTV плеер
+Comment=IPTV player with EPG support
 Exec=yuki-iptv
 Icon=yuki-iptv
 Categories=AudioVideo;Video;Player;Recorder;TV;

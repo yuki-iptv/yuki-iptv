@@ -410,7 +410,7 @@ if __name__ == "__main__":
         logger.warning('app.setStyle("fusion") FAILED')
 
     # dummy, for xgettext
-    PLAYERNAME = _("IPTV player")
+    PLAYERNAME = _("IPTV player with EPG support")
 
     # This is necessary since PyQT stomps over the locale settings needed by libmpv.
     # This needs to happen after importing PyQT before

@@ -1,3 +1,8 @@
 #!/bin/sh
 cd "$(dirname "$(realpath "$0")")" || exit 1
 xgettext --language=Python --keyword=_ --package-name=yuki-iptv --output=yuki-iptv.pot usr/lib/yuki-iptv/yuki-iptv.py usr/lib/yuki-iptv/yuki_iptv/*.py
+sed -i \
+        -e 's/^# SOME DESCRIPTIVE TITLE./# yuki-iptv - IPTV player with EPG support (Astroncia IPTV fork)/' \
+        -e "s/^# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER/# Copyright (C) 2021, 2022 Astroncia\n# Copyright (C) 2023-$(date +%Y) Ame-chan-angel/" \
+        -e '/^# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR./d' \
+        yuki-iptv.pot
