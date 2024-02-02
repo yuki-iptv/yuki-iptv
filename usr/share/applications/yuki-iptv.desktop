@@ -2,6 +2,8 @@
 Type=Application
 Name=yuki-iptv
 Comment=IPTV player with EPG support
+Comment[zh_CN]=支持 EPG 的 IPTV 播放器
+Comment[ru]=IPTV плеер с поддержкой EPG
 Exec=yuki-iptv
 Icon=yuki-iptv
 Categories=AudioVideo;Video;Player;Recorder;TV;

@@ -2,6 +2,9 @@
 """Generate desktop file for yuki-iptv"""
 import glob
 import gettext
+import os
+
+os.system("make")
 
 PREFIX = """[Desktop Entry]
 Type=Application
