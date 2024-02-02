@@ -75,7 +75,7 @@ https://wiki.centos.org/HowTos(2f)RebuildSRPM.html
 **Use at your own risk!**  
   
 AUR: https://aur.archlinux.org/packages/yuki-iptv  
-Flatpak (**Use native packages if you can!**): https://flathub.org/apps/io.github.yuki_iptv.yuki-iptv
+Flatpak: https://flathub.org/apps/io.github.yuki_iptv.yuki-iptv
 
 ## HowTo make playlists for movies/series
   
