@@ -23,13 +23,8 @@
 #
 import os
 import gettext
-import platform
 from pathlib import Path
-
-if platform.system() == "Windows":
-    from text_unidecode import unidecode
-else:
-    from unidecode import unidecode
+from unidecode import unidecode
 
 from yuki_iptv.m3u import M3UParser
 from yuki_iptv.xspf import parse_xspf

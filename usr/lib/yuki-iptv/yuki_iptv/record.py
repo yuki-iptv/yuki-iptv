@@ -24,7 +24,6 @@
 import logging
 import uuid
 import gettext
-import platform
 import subprocess
 import os
 import signal
@@ -272,34 +271,29 @@ def record_return(
 
 def stop_record():
     if YukiData.ffmpeg_proc:
-        if platform.system() == "Windows":
-            YukiData.ffmpeg_proc.write(bytes("q\r\n", "utf-8"))
-            YukiData.ffmpeg_proc.waitForBytesWritten()
-            YukiData.ffmpeg_proc.closeWriteChannel()
-        else:
-            ffmpeg_proc_program = YukiData.ffmpeg_proc.program()
-            if "yt-dlp" in ffmpeg_proc_program or "youtube-dl" in ffmpeg_proc_program:
-                try:
-                    child_process_ids = [
-                        int(line)
-                        for line in subprocess.run(
-                            [
-                                "ps",
-                                "-opid",
-                                "--no-headers",
-                                "--ppid",
-                                str(YukiData.ffmpeg_proc.processId()),
-                            ],
-                            stdout=subprocess.PIPE,
-                            encoding="utf8",
-                        ).stdout.splitlines()
-                    ]
-                    for child_process_id in child_process_ids:
-                        logger.info(f"Terminating process with PID {child_process_id}")
-                        os.kill(child_process_id, signal.SIGTERM)
-                except Exception:
-                    pass
-            YukiData.ffmpeg_proc.terminate()
+        ffmpeg_proc_program = YukiData.ffmpeg_proc.program()
+        if "yt-dlp" in ffmpeg_proc_program or "youtube-dl" in ffmpeg_proc_program:
+            try:
+                child_process_ids = [
+                    int(line)
+                    for line in subprocess.run(
+                        [
+                            "ps",
+                            "-opid",
+                            "--no-headers",
+                            "--ppid",
+                            str(YukiData.ffmpeg_proc.processId()),
+                        ],
+                        stdout=subprocess.PIPE,
+                        encoding="utf8",
+                    ).stdout.splitlines()
+                ]
+                for child_process_id in child_process_ids:
+                    logger.info(f"Terminating process with PID {child_process_id}")
+                    os.kill(child_process_id, signal.SIGTERM)
+            except Exception:
+                pass
+        YukiData.ffmpeg_proc.terminate()
 
 
 def init_record(show_exception, ffmpeg_processes):

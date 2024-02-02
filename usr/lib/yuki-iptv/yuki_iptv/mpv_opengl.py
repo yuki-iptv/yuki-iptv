@@ -20,23 +20,13 @@
 # Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com
 # License - https://creativecommons.org/licenses/by/4.0/
 #
-import os
 import logging
-import platform
-from pathlib import Path
 from yuki_iptv.qt import get_qt_library
 
 # https://github.com/feeluown/FeelUOwn/blob/25a0a714b39a0a8e12cd09dd9b7c92bf3c75667c/feeluown/gui/widgets/mpv.py
 
 logger = logging.getLogger(__name__)
 qt_library, QtWidgets, QtCore, QtGui, QShortcut, QtOpenGLWidgets = get_qt_library()
-
-if platform.system() == "Windows" or platform.system() == "Darwin":
-    os.environ["PATH"] = (
-        str(Path(Path(os.path.dirname(__file__)).parent, "bin"))
-        + os.pathsep
-        + os.environ["PATH"]
-    )
 
 if qt_library == "PySide6":
     use_slot = QtCore.Slot

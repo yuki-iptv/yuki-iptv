@@ -40,20 +40,15 @@ import subprocess
 import re
 import textwrap
 import hashlib
-import webbrowser
 import urllib
 import urllib.parse
 import threading
 import traceback
-from multiprocessing import Manager, active_children, get_context, freeze_support
+from multiprocessing import Manager, active_children, get_context
 from functools import partial
 import chardet
 import setproctitle
-
-if platform.system() == "Windows":
-    from text_unidecode import unidecode
-else:
-    from unidecode import unidecode
+from unidecode import unidecode
 
 try:
     from gi.repository import GLib
@@ -107,9 +102,6 @@ from yuki_iptv.crossplatform import LOCAL_DIR, SAVE_FOLDER_DEFAULT
 from yuki_iptv.mpv_opengl import MPVOpenGLWidget
 from thirdparty.xtream import XTream, Serie
 
-if platform.system() == "Windows":
-    freeze_support()
-
 if "PULSE_PROP" not in os.environ:
     os.environ["PULSE_PROP"] = "media.role=video"
 
@@ -136,22 +128,21 @@ logging.basicConfig(
 logger = logging.getLogger("yuki-iptv")
 mpv_logger = logging.getLogger("libmpv")
 
-if platform.system() == "Linux":
-    try:
-        from thirdparty.mpris_server.adapters import (
-            PlayState,
-            MprisAdapter,
-            Microseconds,
-            VolumeDecimal,
-            RateDecimal,
-            Track,
-            DEFAULT_RATE,
-        )
-        from thirdparty.mpris_server.events import EventAdapter
-        from thirdparty.mpris_server.server import Server
-    except Exception:
-        logger.warning("Failed to init MPRIS libraries!")
-        logger.warning(traceback.format_exc())
+try:
+    from thirdparty.mpris_server.adapters import (
+        PlayState,
+        MprisAdapter,
+        Microseconds,
+        VolumeDecimal,
+        RateDecimal,
+        Track,
+        DEFAULT_RATE,
+    )
+    from thirdparty.mpris_server.events import EventAdapter
+    from thirdparty.mpris_server.server import Server
+except Exception:
+    logger.warning("Failed to init MPRIS libraries!")
+    logger.warning(traceback.format_exc())
 
 qt_library, QtWidgets, QtCore, QtGui, QShortcut, QtOpenGLWidgets = get_qt_library()
 
@@ -185,35 +176,9 @@ class YukiLang:
     cache = {}
 
 
-old_pwd = os.getcwd()
-# For Nuitka
-# don't change this, it's working as intended
-if (platform.system() == "Windows" or platform.system() == "Darwin") and os.path.isdir(
-    Path(os.path.dirname(os.path.abspath(__file__)), "usr")
-):
-    logger.info("Nuitka detected, changing working directory")
-    Path(
-        os.path.dirname(os.path.abspath(__file__)),
-        "usr",
-        "lib",
-        "yuki-iptv",
-        "yuki_iptv",
-    ).mkdir(parents=True, exist_ok=True)
-    os.chdir(
-        Path(
-            os.path.dirname(os.path.abspath(__file__)),
-            "usr",
-            "lib",
-            "yuki-iptv",
-        )
-    )
-else:
-    os.chdir(os.path.dirname(os.path.abspath(__file__)))
-
 APP = "yuki-iptv"
 LOCALE_DIR = str(Path(os.getcwd(), "..", "..", "share", "locale"))
-if platform.system() == "Linux":
-    locale.bindtextdomain(APP, LOCALE_DIR)
+locale.bindtextdomain(APP, LOCALE_DIR)
 gettext.bindtextdomain(APP, LOCALE_DIR)
 gettext.textdomain(APP)
 
@@ -463,7 +428,7 @@ if __name__ == "__main__":
             logger.warning("Failed to determine Qt platform!")
         logger.info("")
 
-        enable_libmpv_render_context = platform.system() == "Darwin"  # Mac OS
+        enable_libmpv_render_context = False  # TODO: for native Wayland
 
         multiprocessing_manager = Manager()
         multiprocessing_manager_dict = multiprocessing_manager.dict()
@@ -1855,8 +1820,7 @@ if __name__ == "__main__":
         playlists_win_edit_layout.addWidget(m3u_label_1, 1, 0)
         playlists_win_edit_layout.addWidget(m3u_edit_1, 1, 1)
         playlists_win_edit_layout.addWidget(m3u_file_1, 1, 2)
-        if platform.system() != "Windows":
-            playlists_win_edit_layout.addWidget(xtream_btn_1, 2, 0)
+        playlists_win_edit_layout.addWidget(xtream_btn_1, 2, 0)
         playlists_win_edit_layout.addWidget(epg_label_1, 3, 0)
         playlists_win_edit_layout.addWidget(epg_edit_1, 3, 1)
         playlists_win_edit_layout.addWidget(epg_file_1, 3, 2)
@@ -2125,12 +2089,7 @@ if __name__ == "__main__":
             if name2 in sch_recordings:
                 ffmpeg_process = sch_recordings[name2][0]
                 if ffmpeg_process:
-                    if platform.system() == "Windows":
-                        ffmpeg_process.write(bytes("q\r\n", "utf-8"))
-                        ffmpeg_process.waitForBytesWritten()
-                        ffmpeg_process.closeWriteChannel()
-                    else:
-                        ffmpeg_process.terminate()
+                    ffmpeg_process.terminate()
 
         recViaScheduler = False
 
@@ -3217,11 +3176,6 @@ if __name__ == "__main__":
             settings_file1.write(json.dumps(settings_arr))
             settings_file1.close()
             settings_win.hide()
-            if platform.system() == "Windows" or platform.system() == "Darwin":
-                os.chdir(old_pwd)
-            if platform.system() == "Darwin" or platform.system() == "Windows":
-                for window in QtWidgets.QApplication.topLevelWidgets():
-                    window.close()
             do_save_settings = True
             app.quit()
 
@@ -4357,9 +4311,6 @@ if __name__ == "__main__":
             needs_player_keybinds = False
         else:
             needs_player_keybinds = True
-
-        if platform.system() == "Windows":
-            needs_player_keybinds = False
 
         class MainWindow(QtWidgets.QMainWindow):
             oldpos = None
@@ -6674,52 +6625,31 @@ if __name__ == "__main__":
         page_box.setSuffix("        ")
         page_box.setMinimum(1)
         page_box.setMaximum(round(len(array) / 100) + 1)
-        if platform.system() == "Windows":
-            page_box.setStyleSheet(
-                """
-                QSpinBox::down-button  {
-                  subcontrol-origin: margin;
-                  subcontrol-position: center left;
-                  left: 1px;
-                  height: 24px;
-                  width: 24px;
-                }
-
-                QSpinBox::up-button  {
-                  subcontrol-origin: margin;
-                  subcontrol-position: center right;
-                  right: 1px;
-                  height: 24px;
-                  width: 24px;
-                }
+        page_box.setStyleSheet(
             """
-            )
-        else:
-            page_box.setStyleSheet(
-                """
-                QSpinBox::down-button  {
-                  subcontrol-origin: margin;
-                  subcontrol-position: center left;
-                  left: 1px;
-                  image: url("""
-                + str(Path("yuki_iptv", ICONS_FOLDER, "leftarrow.png"))
-                + """);
-                  height: 24px;
-                  width: 24px;
-                }
+            QSpinBox::down-button  {
+              subcontrol-origin: margin;
+              subcontrol-position: center left;
+              left: 1px;
+              image: url("""
+            + str(Path("yuki_iptv", ICONS_FOLDER, "leftarrow.png"))
+            + """);
+              height: 24px;
+              width: 24px;
+            }
 
-                QSpinBox::up-button  {
-                  subcontrol-origin: margin;
-                  subcontrol-position: center right;
-                  right: 1px;
-                  image: url("""
-                + str(Path("yuki_iptv", ICONS_FOLDER, "rightarrow.png"))
-                + """);
-                  height: 24px;
-                  width: 24px;
-                }
-            """
-            )
+            QSpinBox::up-button  {
+              subcontrol-origin: margin;
+              subcontrol-position: center right;
+              right: 1px;
+              image: url("""
+            + str(Path("yuki_iptv", ICONS_FOLDER, "rightarrow.png"))
+            + """);
+              height: 24px;
+              width: 24px;
+            }
+        """
+        )
         page_box.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         page_box.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
         of_lbl.setText(get_of_txt(round(len(array) / 100) + 1))
@@ -7109,7 +7039,7 @@ if __name__ == "__main__":
                         os.remove(str(Path(LOCAL_DIR, "lastchannels.json")))
             return isPlayingLast
 
-        VIDEO_OUTPUT = "gpu,x11" if platform.system() == "Linux" else ""
+        VIDEO_OUTPUT = "gpu,x11"
         HWACCEL = "auto-safe" if settings["hwaccel"] else "no"
 
         # Wayland fix
@@ -7474,11 +7404,8 @@ if __name__ == "__main__":
 
         def open_recording_folder():
             absolute_path = Path(save_folder).absolute()
-            if platform.system() == "Linux":
-                xdg_open = subprocess.Popen(["xdg-open", str(absolute_path)])
-                xdg_open.wait()
-            else:
-                webbrowser.open("file:///" + str(absolute_path))
+            xdg_open = subprocess.Popen(["xdg-open", str(absolute_path)])
+            xdg_open.wait()
 
         def go_channel(i1):
             row = win.listWidget.currentRow()
@@ -7675,9 +7602,8 @@ if __name__ == "__main__":
             mpris_thread = threading.Thread(target=mpris_loop_start)
             mpris_thread.start()
         except Exception as mpris_e:
-            if platform.system() == "Linux":
-                logger.warning(mpris_e)
-                logger.warning("Failed to set up MPRIS!")
+            logger.warning(mpris_e)
+            logger.warning("Failed to set up MPRIS!")
 
         def update_scheduler_programme():
             channel_list_2 = [chan_name for chan_name in doSort(array)]
@@ -9085,8 +9011,6 @@ if __name__ == "__main__":
         seq = get_seq()
 
         def setShortcutState(st1):
-            if platform.system() == "Darwin":  # Mac OS
-                return
             YukiData.shortcuts_state = st1
             for shortcut_arr in shortcuts:
                 for shortcut in shortcuts[shortcut_arr]:
@@ -9236,10 +9160,7 @@ if __name__ == "__main__":
             start_args = sys.argv
             if "python" not in sys.executable:
                 start_args.pop(0)
-            s_p = subprocess.Popen([sys.executable] + start_args)
-            # needed for Nuitka onefile
-            if platform.system() == "Windows":
-                s_p.wait()
+            subprocess.Popen([sys.executable] + start_args)
         sys.exit(app_exit_code)
     except Exception as e3:
         logger.warning("ERROR")

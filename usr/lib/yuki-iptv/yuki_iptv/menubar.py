@@ -26,7 +26,6 @@ import logging
 import gettext
 import json
 import traceback
-import platform
 from functools import partial
 from yuki_iptv.qt import get_qt_library
 from yuki_iptv.qt6compat import qaction
@@ -52,8 +51,7 @@ class YukiData:
 
 
 def doSetShortcut(name1, shortcut1):
-    if platform.system() != "Darwin":
-        name1.setShortcut(shortcut1)
+    name1.setShortcut(shortcut1)
 
 
 def ast_mpv_seek(secs):
@@ -353,11 +351,7 @@ def init_menubar(data):
     YukiData.alwaysontopAction.triggered.connect(alwaysontop_action)
     YukiData.alwaysontopAction.setCheckable(True)
     doSetShortcut(YukiData.alwaysontopAction, kbd("alwaysontop"))
-    if (
-        qt_library == "PyQt6"
-        or qt_library == "PySide6"
-        or platform.system() == "Windows"
-    ):
+    if qt_library == "PyQt6" or qt_library == "PySide6":
         YukiData.alwaysontopAction.setVisible(False)
 
     YukiData.streaminformationAction = qaction(_("Stream Information"), data)
