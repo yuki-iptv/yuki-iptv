@@ -21,13 +21,6 @@
 # Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com
 # License - https://creativecommons.org/licenses/by/4.0/
 #
-try:
-    from yuki_iptv.plugin import init_plugins
-
-    init_plugins()
-except Exception as ex:  # to avoid module level import not at top error
-    raise ex
-
 from pathlib import Path
 import sys
 import os
@@ -126,12 +119,6 @@ parser.add_argument(
     "--loglevel",
     action="store",
     help="Log level (CRITICAL, ERROR, WARNING, INFO, DEBUG) default: INFO",
-)
-parser.add_argument(
-    "--disable-plugin", action="store", help="Disable some plugins, comma separated"
-)
-parser.add_argument(
-    "--disable-plugins", action="store_true", help="Disable all plugins"
 )
 parser.add_argument("URL", help="Playlist URL or file", nargs="?")
 args1, _unparsed_args = parser.parse_known_args()
@@ -1505,13 +1492,6 @@ if __name__ == "__main__":
 
         def epg_date_changed(epg_date):
             global epg_selected_date
-            if "__plugin_trigger" in globals():
-                globals()["__plugin_trigger"](
-                    datetime.datetime.fromordinal(
-                        getPyDate(epg_date).toordinal()
-                    ).strftime("%Y-%m-%d"),
-                    getArrayItem(epg_win_checkbox.currentText()),
-                )
             epg_selected_date = datetime.datetime.fromordinal(
                 getPyDate(epg_date).toordinal()
             ).timestamp()
