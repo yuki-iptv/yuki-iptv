@@ -35,7 +35,6 @@ import logging
 import signal
 import atexit
 import argparse
-import platform
 import subprocess
 import re
 import textwrap
@@ -51,7 +50,7 @@ import setproctitle
 from unidecode import unidecode
 
 try:
-    from gi.repository import GLib
+    from gi.repository import Gio, GLib
 except Exception:
     pass
 
@@ -100,6 +99,7 @@ from yuki_iptv.keybinds import main_keybinds_internal, main_keybinds_default
 from yuki_iptv.series import parse_series
 from yuki_iptv.crossplatform import LOCAL_DIR, SAVE_FOLDER_DEFAULT
 from yuki_iptv.mpv_opengl import MPVOpenGLWidget
+from yuki_iptv.mpris import start_mpris, emit_mpris_change, mpris_seeked
 from thirdparty.xtream import XTream, Serie
 
 if "PULSE_PROP" not in os.environ:
@@ -127,22 +127,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger("yuki-iptv")
 mpv_logger = logging.getLogger("libmpv")
-
-try:
-    from thirdparty.mpris_server.adapters import (
-        PlayState,
-        MprisAdapter,
-        Microseconds,
-        VolumeDecimal,
-        RateDecimal,
-        Track,
-        DEFAULT_RATE,
-    )
-    from thirdparty.mpris_server.events import EventAdapter
-    from thirdparty.mpris_server.server import Server
-except Exception:
-    logger.warning("Failed to init MPRIS libraries!")
-    logger.warning(traceback.format_exc())
 
 qt_library, QtWidgets, QtCore, QtGui, QShortcut, QtOpenGLWidgets = get_qt_library()
 
@@ -248,6 +232,12 @@ class YukiData:
     xtream_list_lock = False
     xtream_expiration_list = {}
     is_xtream = False
+    # MPRIS
+    mpris_loop = None
+    mpris_ready = False
+    mpris_running = False
+    mpris_select_playlist = None
+    playback_time = 0
 
 
 stream_info.video_properties = {}
@@ -308,8 +298,9 @@ if __name__ == "__main__":
             stop_record()
             for rec_1 in sch_recordings:
                 do_stop_record(rec_1)
-            if mpris_loop:
-                mpris_loop.quit()
+            if YukiData.mpris_loop:
+                YukiData.mpris_running = False
+                YukiData.mpris_loop.quit()
             if epg_thread_2:
                 try:
                     epg_thread_2.kill()
@@ -419,7 +410,6 @@ if __name__ == "__main__":
             logger.info("")
         logger.info(f"Version: {APP_VERSION}")
         logger.info("Using Python " + sys.version.replace("\n", ""))
-        logger.info(f"System: {platform.system()}")
         logger.info(f"Qt library: {qt_library}")
         logger.info(f"Qt version: {QtCore.QT_VERSION_STR}")
         try:
@@ -767,43 +757,44 @@ if __name__ == "__main__":
 
         def getArrayItem(arr_item):
             arr_item_ret = None
-            if arr_item in array:
-                arr_item_ret = array[arr_item]
-            elif arr_item in YukiData.movies:
-                arr_item_ret = YukiData.movies[arr_item]
-            else:
-                try:
-                    if " ::: " in arr_item:
-                        arr_item_split = arr_item.split(" ::: ")
-                        for season_name in YukiData.series[
-                            arr_item_split[2]
-                        ].seasons.keys():
-                            season = YukiData.series[arr_item_split[2]].seasons[
-                                season_name
-                            ]
-                            if season.name == arr_item_split[1]:
-                                for episode_name in season.episodes.keys():
-                                    episode = season.episodes[episode_name]
-                                    if episode.title == arr_item_split[0]:
-                                        arr_item_ret = {
-                                            "title": episode.title,
-                                            "tvg-name": "",
-                                            "tvg-ID": "",
-                                            "tvg-logo": "",
-                                            "tvg-group": _("All channels"),
-                                            "tvg-url": "",
-                                            "catchup": "default",
-                                            "catchup-source": "",
-                                            "catchup-days": "7",
-                                            "useragent": "",
-                                            "referer": "",
-                                            "url": episode.url,
-                                        }
-                                        break
-                                break
-                except Exception:
-                    logger.warning("Exception in getArrayItem (series)")
-                    logger.warning(traceback.format_exc())
+            if arr_item:
+                if arr_item in array:
+                    arr_item_ret = array[arr_item]
+                elif arr_item in YukiData.movies:
+                    arr_item_ret = YukiData.movies[arr_item]
+                else:
+                    try:
+                        if " ::: " in arr_item:
+                            arr_item_split = arr_item.split(" ::: ")
+                            for season_name in YukiData.series[
+                                arr_item_split[2]
+                            ].seasons.keys():
+                                season = YukiData.series[arr_item_split[2]].seasons[
+                                    season_name
+                                ]
+                                if season.name == arr_item_split[1]:
+                                    for episode_name in season.episodes.keys():
+                                        episode = season.episodes[episode_name]
+                                        if episode.title == arr_item_split[0]:
+                                            arr_item_ret = {
+                                                "title": episode.title,
+                                                "tvg-name": "",
+                                                "tvg-ID": "",
+                                                "tvg-logo": "",
+                                                "tvg-group": _("All channels"),
+                                                "tvg-url": "",
+                                                "catchup": "default",
+                                                "catchup-source": "",
+                                                "catchup-days": "7",
+                                                "useragent": "",
+                                                "referer": "",
+                                                "url": episode.url,
+                                            }
+                                            break
+                                    break
+                    except Exception:
+                        logger.warning("Exception in getArrayItem (series)")
+                        logger.warning(traceback.format_exc())
             return arr_item_ret
 
         array = {}
@@ -1100,9 +1091,9 @@ if __name__ == "__main__":
 
         def sigint_handler(*args):
             """Handler for the SIGINT signal."""
-            global mpris_loop
-            if mpris_loop:
-                mpris_loop.quit()
+            if YukiData.mpris_loop:
+                YukiData.mpris_running = False
+                YukiData.mpris_loop.quit()
             app.quit()
 
         signal.signal(signal.SIGINT, sigint_handler)
@@ -2784,19 +2775,12 @@ if __name__ == "__main__":
                         uuid.uuid1()
                     )
 
+            YukiData.playback_time = time.time()
             player.pause = False
             player.play(parse_specifiers_now_url(arg_override_play))
             if event_handler:
                 try:
-                    event_handler.on_title()
-                except Exception:
-                    pass
-                try:
-                    event_handler.on_options()
-                except Exception:
-                    pass
-                try:
-                    event_handler.on_playback()
+                    event_handler.on_metadata()
                 except Exception:
                     pass
 
@@ -2810,15 +2794,7 @@ if __name__ == "__main__":
             player.pause = True
             if event_handler:
                 try:
-                    event_handler.on_title()
-                except Exception:
-                    pass
-                try:
-                    event_handler.on_options()
-                except Exception:
-                    pass
-                try:
-                    event_handler.on_ended()
+                    event_handler.on_metadata()
                 except Exception:
                     pass
 
@@ -3885,12 +3861,15 @@ if __name__ == "__main__":
             else:
                 sort_win.hide()
 
+        def populate_playlists():
+            playlists_list.clear()
+            playlists_data.playlists_used = playlists_saved
+            for item2 in playlists_data.playlists_used:
+                playlists_list.addItem(create_playlist_item_widget(item2))
+
         def show_playlists():
             if not playlists_win.isVisible():
-                playlists_list.clear()
-                playlists_data.playlists_used = playlists_saved
-                for item2 in playlists_data.playlists_used:
-                    playlists_list.addItem(create_playlist_item_widget(item2))
+                populate_playlists()
                 moveWindowToCenter(playlists_win)
                 playlists_win.show()
                 show_xtream_playlists_expiration()
@@ -4018,10 +3997,10 @@ if __name__ == "__main__":
             if "osc" in options:
                 # To prevent 'multiple values for keyword argument'!
                 mpv_osc_enabled = options.pop("osc") != "no"
-            if not enable_libmpv_render_context:
-                options["wid"] = str(int(win.container.winId()))
-            else:
+            if enable_libmpv_render_context:
                 options["vo"] = "null"
+            else:
+                options["wid"] = str(int(win.container.winId()))
             try:
                 player = mpv.MPV(
                     **options,
@@ -4158,6 +4137,29 @@ if __name__ == "__main__":
                 show_exception("populate_menubar failed\n\n" + traceback.format_exc())
             logger.info("redraw_menubar triggered by init")
             redraw_menubar()
+
+            @player.property_observer("duration")
+            def duration_observer(_name, value):
+                try:
+                    if (time.time() - YukiData.playback_time) < 10:
+                        event_handler.on_metadata()
+                except Exception:
+                    pass
+
+            @idle_function
+            def seek_event_callback(unused=None):
+                if YukiData.mpris_ready and YukiData.mpris_running:
+                    (
+                        playback_status,
+                        mpris_trackid,
+                        artUrl,
+                        player_position,
+                    ) = get_mpris_metadata()
+                    mpris_seeked(player_position)
+
+            @player.event_callback("seek")
+            def seek_event(event):
+                seek_event_callback()
 
             @player.event_callback("file-loaded")
             def file_loaded_2(event):
@@ -4529,6 +4531,11 @@ if __name__ == "__main__":
                 QtWidgets.QMainWindow.resizeEvent(self, event)
 
             def closeEvent(self, event1):
+                logger.info("Main window closed")
+                try:
+                    player.vo = "null"
+                except Exception:
+                    pass
                 if streaminfo_win.isVisible():
                     streaminfo_win.hide()
 
@@ -4710,6 +4717,7 @@ if __name__ == "__main__":
                     pass
                 if j == playing_chan:
                     logger.info(f"setPlayerSettings '{j}'")
+                    YukiData.playback_time = time.time()
                     if (
                         settings["m3u"] in channel_sets
                         and j in channel_sets[settings["m3u"]]
@@ -5132,6 +5140,10 @@ if __name__ == "__main__":
                         f"Leaving fullscreen ended, took {round(time04, 2)} seconds"
                     )
                     YukiData.fullscreen_locked = False
+            try:
+                event_handler.on_fullscreen()
+            except Exception:
+                pass
 
         dockWidget_out = QtWidgets.QPushButton()
         dockWidget_out.clicked.connect(dockWidget_out_clicked)
@@ -7055,8 +7067,7 @@ if __name__ == "__main__":
                 is_apply_wayland_fix = True
 
         if is_apply_wayland_fix:
-            logger.info("")
-            logger.info("[NOTE] Applying video output fix for Wayland")
+            logger.info("Set libmpv video output to x11 because Wayland is used")
             VIDEO_OUTPUT = "x11"
 
         options = {
@@ -7408,14 +7419,36 @@ if __name__ == "__main__":
             xdg_open.wait()
 
         def go_channel(i1):
+            pause_state = player.pause
             row = win.listWidget.currentRow()
             if row == -1:
                 row = row0
             next_row = row + i1
+            if next_row < 0:
+                # Previous page
+                if page_box.value() - 1 == 0:
+                    next_row = 0
+                else:
+                    page_box.setValue(page_box.value() - 1)
+                    next_row = win.listWidget.count()
+            elif next_row > win.listWidget.count() - 1:
+                # Next page
+                if page_box.value() + 1 > page_box.maximum():
+                    next_row = row
+                else:
+                    page_box.setValue(page_box.value() + 1)
+                    next_row = 0
             next_row = max(next_row, 0)
             next_row = min(next_row, win.listWidget.count() - 1)
-            win.listWidget.setCurrentRow(next_row)
-            itemClicked_event(win.listWidget.currentItem())
+            chk_pass = True
+            try:
+                chk_pass = win.listWidget.item(next_row).text() != _("Nothing found")
+            except Exception:
+                pass
+            if chk_pass:
+                win.listWidget.setCurrentRow(next_row)
+                itemClicked_event(win.listWidget.currentItem())
+            player.pause = pause_state
 
         @idle_function
         def prev_channel(unused=None):
@@ -7433,149 +7466,341 @@ if __name__ == "__main__":
         def get_keybind(func1):
             return main_keybinds[func1]
 
+        def win_raise():
+            win.show()
+            win.raise_()
+            win.setFocus(QtCore.Qt.FocusReason.PopupFocusReason)
+            win.activateWindow()
+
+        def mpris_set_volume(val):
+            label7.setValue(int(val * 100))
+            mpv_volume_set()
+
+        def mpris_seek(val):
+            if playing_chan:
+                player.command("seek", val)
+
+        def mpris_set_position(track_id, val):
+            if YukiData.mpris_ready and YukiData.mpris_running:
+                (
+                    playback_status,
+                    mpris_trackid,
+                    artUrl,
+                    player_position,
+                ) = get_mpris_metadata()
+                if track_id == mpris_trackid:
+                    player.time_pos = val
+
         stopped = False
 
+        def get_playlist_hash(playlist):
+            return hashlib.sha512(playlist["m3u"].encode("utf-8")).hexdigest()
+
+        def get_playlists():
+            prefix = "/io/github/yuki_iptv/Playlist/"
+            current_playlist = (f"{prefix}Unknown", _("Unknown"), "")
+            current_playlist_name = _("Unknown")
+            for playlist in playlists_saved:
+                if playlists_saved[playlist]["m3u"] == settings["m3u"]:
+                    current_playlist_name = playlist
+                    current_playlist = (
+                        f"{prefix}{get_playlist_hash(playlists_saved[playlist])}",
+                        playlist,
+                        "",
+                    )
+                    break
+            return (
+                current_playlist_name,
+                current_playlist,
+                [
+                    (
+                        f"{prefix}{get_playlist_hash(playlists_saved[x])}",
+                        x,
+                        "",
+                    )
+                    for x in playlists_saved
+                ],
+            )
+
+        @idle_function
+        def mpris_select_playlist(unused=None):
+            (
+                _current_playlist_name,
+                _current_playlist,
+                playlists,
+            ) = get_playlists()
+            for playlist in playlists:
+                if playlist[0] == YukiData.mpris_select_playlist:
+                    populate_playlists()
+                    playlists_list.setCurrentItem(
+                        playlists_list.findItems(
+                            playlist[1], QtCore.Qt.MatchFlag.MatchExactly
+                        )[0]
+                    )
+                    playlists_selected()
+                    break
+
         # MPRIS
-        mpris_loop = None
         try:
 
-            class MyAppAdapter(MprisAdapter):
-                def metadata(self) -> dict:
-                    channel_keys = list(array.keys())
-                    mpris_trackid = str(
-                        channel_keys.index(playing_chan) + 1
-                        if playing_chan in channel_keys
-                        else 0
+            def mpris_callback(mpris_data):
+                if (
+                    mpris_data[0] == "org.mpris.MediaPlayer2"
+                    and mpris_data[1] == "Raise"
+                ):
+                    exInMainThread_partial(partial(win_raise))
+                elif (
+                    mpris_data[0] == "org.mpris.MediaPlayer2"
+                    and mpris_data[1] == "Quit"
+                ):
+                    QtCore.QTimer.singleShot(
+                        100, lambda: exInMainThread_partial(partial(key_quit))
                     )
-                    metadata = {
-                        "mpris:trackid": f"/com/yuki/iptv/playlist/{mpris_trackid}",
-                        "xesam:url": playing_url,
-                        "xesam:title": playing_chan,
-                    }
-                    return metadata
-
-                def can_quit(self) -> bool:
-                    return True
-
-                def quit(self):
-                    key_quit()
-
-                def can_raise(self) -> bool:
-                    return False
-
-                def can_fullscreen(self) -> bool:
-                    return False
-
-                def has_tracklist(self) -> bool:
-                    return False
-
-                def get_current_position(self) -> Microseconds:
-                    return player.time_pos * 1000000 if player.time_pos else 0
-
-                def next(self):
-                    next_channel()
-
-                def previous(self):
-                    prev_channel()
-
-                def pause(self):
-                    mpv_play()
-
-                def resume(self):
-                    mpv_play()
-
-                def stop(self):
-                    mpv_stop()
-
-                def play(self):
-                    mpv_play()
-
-                def get_playstate(self) -> PlayState:
-                    if playing_chan:
-                        if player.pause:
-                            return PlayState.PAUSED
+                elif (
+                    mpris_data[0] == "org.mpris.MediaPlayer2.Player"
+                    and mpris_data[1] == "Next"
+                ):
+                    exInMainThread_partial(partial(next_channel))
+                elif (
+                    mpris_data[0] == "org.mpris.MediaPlayer2.Player"
+                    and mpris_data[1] == "Previous"
+                ):
+                    exInMainThread_partial(partial(prev_channel))
+                elif (
+                    mpris_data[0] == "org.mpris.MediaPlayer2.Player"
+                    and mpris_data[1] == "Pause"
+                ):
+                    if not player.pause:
+                        exInMainThread_partial(partial(mpv_play))
+                elif (
+                    mpris_data[0] == "org.mpris.MediaPlayer2.Player"
+                    and mpris_data[1] == "PlayPause"
+                ):
+                    exInMainThread_partial(partial(mpv_play))
+                elif (
+                    mpris_data[0] == "org.mpris.MediaPlayer2.Player"
+                    and mpris_data[1] == "Stop"
+                ):
+                    exInMainThread_partial(partial(mpv_stop))
+                elif (
+                    mpris_data[0] == "org.mpris.MediaPlayer2.Player"
+                    and mpris_data[1] == "Play"
+                ):
+                    if player.pause:
+                        exInMainThread_partial(partial(mpv_play))
+                elif (
+                    mpris_data[0] == "org.mpris.MediaPlayer2.Player"
+                    and mpris_data[1] == "Seek"
+                ):
+                    # microseconds to seconds
+                    exInMainThread_partial(
+                        partial(mpris_seek, mpris_data[2][0] / 1000000)
+                    )
+                elif (
+                    mpris_data[0] == "org.mpris.MediaPlayer2.Player"
+                    and mpris_data[1] == "SetPosition"
+                ):
+                    track_id = mpris_data[2][0]
+                    position = mpris_data[2][1] / 1000000  # microseconds to seconds
+                    if track_id != "/io/github/yuki_iptv/Track/NoTrack":
+                        exInMainThread_partial(
+                            partial(mpris_set_position, track_id, position)
+                        )
+                elif (
+                    mpris_data[0] == "org.mpris.MediaPlayer2.Player"
+                    and mpris_data[1] == "OpenUri"
+                ):
+                    mpris_play_url = mpris_data[2].unpack()[0]
+                    exInMainThread_partial(
+                        partial(itemClicked_event, mpris_play_url, mpris_play_url)
+                    )
+                elif (
+                    mpris_data[0] == "org.mpris.MediaPlayer2.Playlists"
+                    and mpris_data[1] == "ActivatePlaylist"
+                ):
+                    YukiData.mpris_select_playlist = mpris_data[2].unpack()[0]
+                    mpris_select_playlist()
+                elif (
+                    mpris_data[0] == "org.mpris.MediaPlayer2.Playlists"
+                    and mpris_data[1] == "GetPlaylists"
+                ):
+                    (
+                        _current_playlist_name,
+                        _current_playlist,
+                        playlists,
+                    ) = get_playlists()
+                    return GLib.Variant.new_tuple(GLib.Variant("a(oss)", playlists))
+                elif (
+                    mpris_data[0] == "org.freedesktop.DBus.Properties"
+                    and mpris_data[1] == "Set"
+                ):
+                    mpris_data_params = mpris_data[2].unpack()
+                    if (
+                        mpris_data_params[0] == "org.mpris.MediaPlayer2"
+                        and mpris_data_params[1] == "Fullscreen"
+                    ):
+                        if mpris_data_params[2]:
+                            # Enable fullscreen
+                            if not fullscreen:
+                                exInMainThread_partial(partial(mpv_fullscreen))
                         else:
-                            return PlayState.PLAYING
+                            # Disable fullscreen
+                            if fullscreen:
+                                exInMainThread_partial(partial(mpv_fullscreen))
+                    elif (
+                        mpris_data_params[0] == "org.mpris.MediaPlayer2.Player"
+                        and mpris_data_params[1] == "LoopStatus"
+                    ):
+                        # Not implemented
+                        pass
+                    elif (
+                        mpris_data_params[0] == "org.mpris.MediaPlayer2.Player"
+                        and mpris_data_params[1] == "Rate"
+                    ):
+                        exInMainThread_partial(
+                            partial(set_playback_speed, mpris_data_params[2])
+                        )
+                    elif (
+                        mpris_data_params[0] == "org.mpris.MediaPlayer2.Player"
+                        and mpris_data_params[1] == "Shuffle"
+                    ):
+                        # Not implemented
+                        pass
+                    elif (
+                        mpris_data_params[0] == "org.mpris.MediaPlayer2.Player"
+                        and mpris_data_params[1] == "Volume"
+                    ):
+                        exInMainThread_partial(
+                            partial(mpris_set_volume, mpris_data_params[2])
+                        )
+                # Always responding None, even if unknown command called
+                # to prevent freezing
+                return None
+
+            def get_mpris_metadata():
+                # Playback status
+                if playing_chan:
+                    if player.pause:
+                        playback_status = "Paused"
                     else:
-                        return PlayState.STOPPED
+                        playback_status = "Playing"
+                else:
+                    playback_status = "Stopped"
+                # Metadata
+                playing_url_hash = hashlib.sha512(
+                    playing_url.encode("utf-8")
+                ).hexdigest()
+                mpris_trackid = (
+                    f"/io/github/yuki_iptv/Track/{playing_url_hash}"
+                    if playing_url
+                    else "/io/github/yuki_iptv/Track/NoTrack"
+                )
+                # Logo
+                artUrl = ""
+                if playing_chan in array:
+                    if "tvg-logo" in array[playing_chan]:
+                        if array[playing_chan]["tvg-logo"]:
+                            artUrl = array[playing_chan]["tvg-logo"]
+                # Position in microseconds
+                player_position = player.duration * 1000000 if player.duration else 0
+                return playback_status, mpris_trackid, artUrl, player_position
 
-                def seek(self, time: Microseconds):
-                    pass
-
-                def open_uri(self, uri: str):
-                    pass
-
-                def is_repeating(self) -> bool:
-                    return False
-
-                def is_playlist(self) -> bool:
-                    return self.can_go_next() or self.can_go_previous()
-
-                def set_repeating(self, val: bool):
-                    pass
-
-                def set_loop_status(self, val: str):
-                    pass
-
-                def get_rate(self) -> RateDecimal:
-                    return DEFAULT_RATE
-
-                def set_rate(self, val: RateDecimal):
-                    pass
-
-                def get_shuffle(self) -> bool:
-                    return False
-
-                def set_shuffle(self, val: bool):
-                    return False
-
-                def get_art_url(self, track: int) -> str:
-                    return ""
-
-                def get_volume(self) -> VolumeDecimal:
-                    return player.volume / 100
-
-                def set_volume(self, val: VolumeDecimal):
-                    label7.setValue(int(val * 100))
-                    mpv_volume_set()
-
-                def is_mute(self) -> bool:
-                    return player.mute
-
-                def set_mute(self, val: bool):
-                    mpv_override_mute(val)
-
-                def can_go_next(self) -> bool:
-                    return True
-
-                def can_go_previous(self) -> bool:
-                    return True
-
-                def can_play(self) -> bool:
-                    return True
-
-                def can_pause(self) -> bool:
-                    return True
-
-                def can_seek(self) -> bool:
-                    return False
-
-                def can_control(self) -> bool:
-                    return True
-
-                def get_stream_title(self) -> str:
-                    return playing_chan
-
-                def get_previous_track(self) -> Track:
-                    return ""
-
-                def get_next_track(self) -> Track:
-                    return ""
-
-            # create mpris adapter and initialize mpris server
-            my_adapter = MyAppAdapter()
-            mpris = Server("yuki_iptv.instance" + str(os.getpid()), adapter=my_adapter)
-            event_handler = EventAdapter(mpris.player, mpris.root)
+            def get_mpris_options():
+                if YukiData.mpris_ready and YukiData.mpris_running:
+                    (
+                        playback_status,
+                        mpris_trackid,
+                        artUrl,
+                        player_position,
+                    ) = get_mpris_metadata()
+                    current_playlist_name, current_playlist, playlists = get_playlists()
+                    return {
+                        "org.mpris.MediaPlayer2": {
+                            "CanQuit": GLib.Variant("b", True),
+                            "Fullscreen": GLib.Variant("b", fullscreen),
+                            "CanSetFullscreen": GLib.Variant("b", True),
+                            "CanRaise": GLib.Variant("b", True),
+                            "HasTrackList": GLib.Variant("b", False),
+                            "Identity": GLib.Variant("s", "yuki-iptv"),
+                            "DesktopEntry": GLib.Variant("s", "yuki-iptv"),
+                            "SupportedUriSchemes": GLib.Variant(
+                                "as",
+                                ("file", "http", "https", "rtp", "udp"),
+                            ),
+                            "SupportedMimeTypes": GLib.Variant(
+                                "as",
+                                (
+                                    "audio/mpeg",
+                                    "audio/x-mpeg",
+                                    "video/mpeg",
+                                    "video/x-mpeg",
+                                    "video/x-mpeg-system",
+                                    "video/mp4",
+                                    "audio/mp4",
+                                    "video/x-msvideo",
+                                    "video/quicktime",
+                                    "application/ogg",
+                                    "application/x-ogg",
+                                    "video/x-ms-asf",
+                                    "video/x-ms-asf-plugin",
+                                    "application/x-mplayer2",
+                                    "video/x-ms-wmv",
+                                    "video/x-google-vlc-plugin",
+                                    "audio/x-wav",
+                                    "audio/3gpp",
+                                    "video/3gpp",
+                                    "audio/3gpp2",
+                                    "video/3gpp2",
+                                    "video/x-flv",
+                                    "video/x-matroska",
+                                    "audio/x-matroska",
+                                    "application/xspf+xml",
+                                ),
+                            ),
+                        },
+                        "org.mpris.MediaPlayer2.Player": {
+                            "PlaybackStatus": GLib.Variant("s", playback_status),
+                            "LoopStatus": GLib.Variant("s", "None"),
+                            "Rate": GLib.Variant("d", player.speed),
+                            "Shuffle": GLib.Variant("b", False),
+                            "Metadata": GLib.Variant(
+                                "a{sv}",
+                                {
+                                    "mpris:trackid": GLib.Variant("o", mpris_trackid),
+                                    "mpris:artUrl": GLib.Variant("s", artUrl),
+                                    "mpris:length": GLib.Variant("x", player_position),
+                                    "xesam:url": GLib.Variant("s", playing_url),
+                                    "xesam:title": GLib.Variant("s", playing_chan),
+                                },
+                            ),
+                            "Volume": GLib.Variant("d", float(player.volume / 100)),
+                            "Position": GLib.Variant(
+                                "x", player.time_pos * 1000000 if player.time_pos else 0
+                            ),
+                            "MinimumRate": GLib.Variant("d", 0.01),
+                            "MaximumRate": GLib.Variant("d", 5.0),
+                            "CanGoNext": GLib.Variant("b", True),
+                            "CanGoPrevious": GLib.Variant("b", True),
+                            "CanPlay": GLib.Variant("b", True),
+                            "CanPause": GLib.Variant("b", True),
+                            "CanSeek": GLib.Variant("b", True),
+                            "CanControl": GLib.Variant("b", True),
+                        },
+                        "org.mpris.MediaPlayer2.Playlists": {
+                            "PlaylistCount": GLib.Variant("u", len(playlists)),
+                            "Orderings": GLib.Variant("as", ("UserDefined",)),
+                            "ActivePlaylist": GLib.Variant(
+                                "(b(oss))",
+                                (
+                                    True,
+                                    GLib.Variant(
+                                        "(oss)",
+                                        current_playlist,
+                                    ),
+                                ),
+                            ),
+                        },
+                    }
 
             def wait_until():
                 global stopped
@@ -7592,15 +7817,101 @@ if __name__ == "__main__":
                 if not stopped:
                     logger.info("Starting MPRIS loop")
                     try:
-                        mpris.publish()
-                        mpris_loop.run()
+                        mpris_owner_bus_id = start_mpris(
+                            os.getpid(), mpris_callback, get_mpris_options
+                        )
+                        YukiData.mpris_ready = True
+                        YukiData.mpris_running = True
+                        YukiData.mpris_loop.run()
+                        logger.info("Stopping MPRIS...")
+                        Gio.bus_unown_name(mpris_owner_bus_id)
                     except Exception:
                         logger.warning("Failed to start MPRIS loop!")
                         logger.warning(traceback.format_exc())
 
-            mpris_loop = GLib.MainLoop()
+            YukiData.mpris_loop = GLib.MainLoop()
             mpris_thread = threading.Thread(target=mpris_loop_start)
             mpris_thread.start()
+
+            class MPRISEventHandler:
+                def on_metadata(self):
+                    if YukiData.mpris_ready and YukiData.mpris_running:
+                        (
+                            playback_status,
+                            mpris_trackid,
+                            artUrl,
+                            player_position,
+                        ) = get_mpris_metadata()
+                        exInMainThread_partial(
+                            partial(
+                                emit_mpris_change,
+                                "org.mpris.MediaPlayer2.Player",
+                                {
+                                    "PlaybackStatus": GLib.Variant(
+                                        "s", playback_status
+                                    ),
+                                    "Rate": GLib.Variant("d", player.speed),
+                                    "Metadata": GLib.Variant(
+                                        "a{sv}",
+                                        {
+                                            "mpris:trackid": GLib.Variant(
+                                                "o", mpris_trackid
+                                            ),
+                                            "mpris:artUrl": GLib.Variant("s", artUrl),
+                                            "mpris:length": GLib.Variant(
+                                                "x", player_position
+                                            ),
+                                            "xesam:url": GLib.Variant("s", playing_url),
+                                            "xesam:title": GLib.Variant(
+                                                "s", playing_chan
+                                            ),
+                                        },
+                                    ),
+                                },
+                            )
+                        )
+
+                def on_playpause(self):
+                    if YukiData.mpris_ready and YukiData.mpris_running:
+                        (
+                            playback_status,
+                            mpris_trackid,
+                            artUrl,
+                            player_position,
+                        ) = get_mpris_metadata()
+                        exInMainThread_partial(
+                            partial(
+                                emit_mpris_change,
+                                "org.mpris.MediaPlayer2.Player",
+                                {"PlaybackStatus": GLib.Variant("s", playback_status)},
+                            )
+                        )
+
+                def on_volume(self):
+                    if YukiData.mpris_ready and YukiData.mpris_running:
+                        exInMainThread_partial(
+                            partial(
+                                emit_mpris_change,
+                                "org.mpris.MediaPlayer2.Player",
+                                {
+                                    "Volume": GLib.Variant(
+                                        "d", float(player.volume / 100)
+                                    )
+                                },
+                            )
+                        )
+
+                def on_fullscreen(self):
+                    if YukiData.mpris_ready and YukiData.mpris_running:
+                        exInMainThread_partial(
+                            partial(
+                                emit_mpris_change,
+                                "org.mpris.MediaPlayer2",
+                                {"Fullscreen": GLib.Variant("b", fullscreen)},
+                            )
+                        )
+
+            event_handler = MPRISEventHandler()
         except Exception as mpris_e:
             logger.warning(mpris_e)
             logger.warning("Failed to set up MPRIS!")
@@ -8021,7 +8332,7 @@ if __name__ == "__main__":
             return w1_height
 
         def myExitHandler_before():
-            global stopped, epg_thread_2, mpris_loop
+            global stopped, epg_thread_2
             if comm_instance.comboboxIndex != -1:
                 write_option(
                     "comboboxindex",
@@ -8069,8 +8380,9 @@ if __name__ == "__main__":
             stop_record()
             for rec_1 in sch_recordings:
                 do_stop_record(rec_1)
-            if mpris_loop:
-                mpris_loop.quit()
+            if YukiData.mpris_loop:
+                YukiData.mpris_running = False
+                YukiData.mpris_loop.quit()
             stopped = True
             if epg_thread_2:
                 try:
@@ -8842,11 +9154,13 @@ if __name__ == "__main__":
                 pass
 
         def set_playback_speed(spd):
-            global playing_chan
             try:
-                if playing_chan:
-                    logger.info(f"Set speed to {spd}")
-                    player.speed = spd
+                logger.info(f"Set speed to {spd}")
+                player.speed = spd
+                try:
+                    event_handler.on_metadata()
+                except Exception:
+                    pass
             except Exception:
                 logger.warning("set_playback_speed failed")
 
@@ -9110,11 +9424,11 @@ if __name__ == "__main__":
                     logger.info("Playing last channel, splash turned off")
                 restore_compact_state()
 
-            if not enable_libmpv_render_context:
-                after_mpv_init()
-            else:
+            if enable_libmpv_render_context:
                 # Workaround for "No render context set"
                 QtCore.QTimer.singleShot(0, after_mpv_init)
+            else:
+                after_mpv_init()
 
             ic, ic1, ic2, ic3 = 0, 0, 0, 0
             timers_array = {}

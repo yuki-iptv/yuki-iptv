@@ -27,7 +27,6 @@ Requires:	python3-Wand
 %endif
 %endif
 Requires:	python3-gobject
-Requires:	python3-pydbus
 %if 0%{?suse_version} || 0%{?sle_version}
 Requires:	python3-Unidecode
 %else

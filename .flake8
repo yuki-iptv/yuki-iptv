@@ -2,3 +2,5 @@
 exclude = .git,__pycache__,usr/lib/yuki-iptv/thirdparty
 max_line_length = 88
 extend-ignore = E203
+per-file-ignores =
+    usr/lib/yuki-iptv/yuki_iptv/mpris.py:E501

@@ -62,12 +62,6 @@ https://software.opensuse.org/download.html?project=home%3Aame-chan%3Ayuki-iptv&
 **Multimedia codecs:**  
 For **Fedora** and **CentOS** you'll need https://rpmfusion.org  
 For **openSUSE** you'll need **libopenh264-7** (for h264 decoding) (run ```zypper install libopenh264-7``` as root)  
-  
-**CentOS:**  
-rpmfusion is required  
-yuki-iptv requires **pydbus**, so you'll need to build it from source:  
-https://linuxsoft.cern.ch/cern/centos/8/AppStream/Source/SPackages/python-pydbus-0.6.0-5.el8.src.rpm  
-https://wiki.centos.org/HowTos(2f)RebuildSRPM.html  
 
 ## Unofficial builds
 

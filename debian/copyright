@@ -9,10 +9,6 @@ Copyright:
  2023-2024 Ame-chan-angel <amechanangel@proton.me>
 License: GPL-3+
 
-Files: usr/lib/yuki-iptv/thirdparty/mpris_server
-Copyright: 2020-2021 Alex DeLorenzo <alex@alexdelorenzo.dev>
-License: AGPL-3+
-
 Files: usr/lib/yuki-iptv/thirdparty/mpv.py
 Copyright: 2017-2020 Sebastian Götte <code@jaseg.net>
 License: AGPL-3+
