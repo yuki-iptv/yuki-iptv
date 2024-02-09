@@ -178,11 +178,15 @@ _ = cached_gettext
 
 MAIN_WINDOW_TITLE = "yuki-iptv"
 WINDOW_SIZE = (1200, 600)
-DOCK_WIDGET2_HEIGHT = int(WINDOW_SIZE[1] / 10)
-DOCK_WIDGET2_HEIGHT_OFFSET = 10
-DOCK_WIDGET2_HEIGHT_HIGH = DOCK_WIDGET2_HEIGHT + DOCK_WIDGET2_HEIGHT_OFFSET
-DOCK_WIDGET2_HEIGHT_LOW = DOCK_WIDGET2_HEIGHT_HIGH - (DOCK_WIDGET2_HEIGHT_OFFSET + 10)
-DOCK_WIDGET_WIDTH = int((WINDOW_SIZE[0] / 2) - 200)
+DOCKWIDGET_CONTROLPANEL_HEIGHT = int(WINDOW_SIZE[1] / 10)
+DOCKWIDGET_CONTROLPANEL_HEIGHT_OFFSET = 10
+DOCKWIDGET_CONTROLPANEL_HEIGHT_HIGH = (
+    DOCKWIDGET_CONTROLPANEL_HEIGHT + DOCKWIDGET_CONTROLPANEL_HEIGHT_OFFSET
+)
+DOCKWIDGET_CONTROLPANEL_HEIGHT_LOW = DOCKWIDGET_CONTROLPANEL_HEIGHT_HIGH - (
+    DOCKWIDGET_CONTROLPANEL_HEIGHT_OFFSET + 10
+)
+DOCKWIDGET_PLAYLIST_WIDTH = int((WINDOW_SIZE[0] / 2) - 200)
 TVGUIDE_WIDTH = int((WINDOW_SIZE[0] / 5))
 BCOLOR = "#A2A3A3"
 
@@ -245,8 +249,8 @@ stream_info.audio_properties = {}
 stream_info.video_bitrates = []
 stream_info.audio_bitrates = []
 
-DOCK_WIDGET2_HEIGHT = max(DOCK_WIDGET2_HEIGHT, 0)
-DOCK_WIDGET_WIDTH = max(DOCK_WIDGET_WIDTH, 0)
+DOCKWIDGET_CONTROLPANEL_HEIGHT = max(DOCKWIDGET_CONTROLPANEL_HEIGHT, 0)
+DOCKWIDGET_PLAYLIST_WIDTH = max(DOCKWIDGET_PLAYLIST_WIDTH, 0)
 
 if args1.version:
     print(f"{MAIN_WINDOW_TITLE} {APP_VERSION}")
@@ -4400,15 +4404,15 @@ if __name__ == "__main__":
                 rewind_fullscreen_offset = 180
 
                 if not fullscreen:
-                    if not dockWidget2.isVisible():
+                    if not dockWidget_controlPanel.isVisible():
                         set_label_width(
-                            rewind, self.windowWidth - dockWidget.width() + 58
+                            rewind, self.windowWidth - dockWidget_playlist.width() + 58
                         )
                         move_label(
                             rewind,
                             int(
                                 ((self.windowWidth - rewind.width()) / 2)
-                                - (dockWidget.width() / 1.7)
+                                - (dockWidget_playlist.width() / 1.7)
                             ),
                             int(
                                 (
@@ -4419,18 +4423,18 @@ if __name__ == "__main__":
                         )
                     else:
                         set_label_width(
-                            rewind, self.windowWidth - dockWidget.width() + 58
+                            rewind, self.windowWidth - dockWidget_playlist.width() + 58
                         )
                         move_label(
                             rewind,
                             int(
                                 ((self.windowWidth - rewind.width()) / 2)
-                                - (dockWidget.width() / 1.7)
+                                - (dockWidget_playlist.width() / 1.7)
                             ),
                             int(
                                 (
                                     (self.windowHeight - rewind.height())
-                                    - dockWidget2.height()
+                                    - dockWidget_controlPanel.height()
                                     - rewind_normal_offset
                                 )
                             ),
@@ -4467,35 +4471,39 @@ if __name__ == "__main__":
                     )
                 self.resize_rewind()
                 if not fullscreen:
-                    if not dockWidget2.isVisible():
-                        set_label_width(l1, self.windowWidth - dockWidget.width() + 58)
+                    if not dockWidget_controlPanel.isVisible():
+                        set_label_width(
+                            l1, self.windowWidth - dockWidget_playlist.width() + 58
+                        )
                         move_label(
                             l1,
                             int(
                                 ((self.windowWidth - l1.width()) / 2)
-                                - (dockWidget.width() / 1.7)
+                                - (dockWidget_playlist.width() / 1.7)
                             ),
                             int(((self.windowHeight - l1.height()) - 20)),
                         )
                         h = 0
                         h2 = 10
                     else:
-                        set_label_width(l1, self.windowWidth - dockWidget.width() + 58)
+                        set_label_width(
+                            l1, self.windowWidth - dockWidget_playlist.width() + 58
+                        )
                         move_label(
                             l1,
                             int(
                                 ((self.windowWidth - l1.width()) / 2)
-                                - (dockWidget.width() / 1.7)
+                                - (dockWidget_playlist.width() / 1.7)
                             ),
                             int(
                                 (
                                     (self.windowHeight - l1.height())
-                                    - dockWidget2.height()
+                                    - dockWidget_controlPanel.height()
                                     - 10
                                 )
                             ),
                         )
-                        h = dockWidget2.height()
+                        h = dockWidget_controlPanel.height()
                         h2 = 20
                 else:
                     set_label_width(l1, self.windowWidth)
@@ -4506,7 +4514,7 @@ if __name__ == "__main__":
                     )
                     h = 0
                     h2 = 10
-                if dockWidget.isVisible():
+                if dockWidget_playlist.isVisible():
                     if settings["panelposition"] == 0:
                         move_label(lbl2, 0, lbl2_offset)
                     else:
@@ -4888,9 +4896,13 @@ if __name__ == "__main__":
                 YukiData.current_prog1 = current_prog
                 show_progress(current_prog)
                 if start_label.isVisible():
-                    dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
+                    dockWidget_controlPanel.setFixedHeight(
+                        DOCKWIDGET_CONTROLPANEL_HEIGHT_HIGH
+                    )
                 else:
-                    dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
+                    dockWidget_controlPanel.setFixedHeight(
+                        DOCKWIDGET_CONTROLPANEL_HEIGHT_LOW
+                    )
                 playing = True
                 win.update()
                 playing_url = play_url
@@ -4939,7 +4951,7 @@ if __name__ == "__main__":
             stop_label.hide()
             start_label.setText("")
             stop_label.setText("")
-            dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
+            dockWidget_controlPanel.setFixedHeight(DOCKWIDGET_CONTROLPANEL_HEIGHT_LOW)
             win.update()
             btn_update_click()
             logger.info("redraw_menubar triggered by mpv_stop")
@@ -5016,14 +5028,14 @@ if __name__ == "__main__":
             win.height(),
         ]
         currentMaximized = win.isMaximized()
-        currentDockWidgetPos = -1
 
         isPlaylistVisible = False
         isControlPanelVisible = False
 
-        def dockWidget_out_clicked():
+        @idle_function
+        def mpv_fullscreen(unused=None):
             global fullscreen, l1, time_stop, currentWidthHeight, currentMaximized
-            global currentDockWidgetPos, isPlaylistVisible, isControlPanelVisible
+            global isPlaylistVisible, isControlPanelVisible
             if not fullscreen:
                 # Entering fullscreen
                 if not YukiData.fullscreen_locked:
@@ -5034,8 +5046,8 @@ if __name__ == "__main__":
                     rewind_layout.setContentsMargins(
                         rewind_layout_offset, 0, rewind_layout_offset - 50, 0
                     )
-                    isControlPanelVisible = dockWidget2.isVisible()
-                    isPlaylistVisible = dockWidget.isVisible()
+                    isControlPanelVisible = dockWidget_controlPanel.isVisible()
+                    isPlaylistVisible = dockWidget_playlist.isVisible()
                     setShortcutState(True)
                     currentWidthHeight = [
                         win.geometry().x(),
@@ -5047,7 +5059,7 @@ if __name__ == "__main__":
                     channelfilter.usePopup = False
                     win.menu_bar_qt.hide()
                     fullscreen = True
-                    dockWidget.hide()
+                    dockWidget_playlist.hide()
                     chan.hide()
                     label12.hide()
                     for lbl3 in hlayout2_btns:
@@ -5056,8 +5068,10 @@ if __name__ == "__main__":
                     progress.hide()
                     start_label.hide()
                     stop_label.hide()
-                    dockWidget2.hide()
-                    dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
+                    dockWidget_controlPanel.hide()
+                    dockWidget_controlPanel.setFixedHeight(
+                        DOCKWIDGET_CONTROLPANEL_HEIGHT_LOW
+                    )
                     win.update()
                     win.showFullScreen()
                     if settings["panelposition"] == 1:
@@ -5085,10 +5099,10 @@ if __name__ == "__main__":
                     win.menu_bar_qt.show()
                     hide_playlist()
                     hide_controlpanel()
-                    dockWidget.setWindowOpacity(1)
-                    dockWidget.hide()
-                    dockWidget2.setWindowOpacity(1)
-                    dockWidget2.hide()
+                    dockWidget_playlist.setWindowOpacity(1)
+                    dockWidget_playlist.hide()
+                    dockWidget_controlPanel.setWindowOpacity(1)
+                    dockWidget_controlPanel.hide()
                     fullscreen = False
                     if l1.text().endswith(
                         "{} F".format(_("To exit fullscreen mode press"))
@@ -5101,13 +5115,15 @@ if __name__ == "__main__":
                         progress.show()
                         start_label.show()
                         stop_label.show()
-                        dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
+                        dockWidget_controlPanel.setFixedHeight(
+                            DOCKWIDGET_CONTROLPANEL_HEIGHT_HIGH
+                        )
                     label12.show()
                     for lbl3 in hlayout2_btns:
                         if lbl3 not in show_lbls_fullscreen:
                             lbl3.show()
-                    dockWidget2.show()
-                    dockWidget.show()
+                    dockWidget_controlPanel.show()
+                    dockWidget_playlist.show()
                     chan.show()
                     win.update()
                     if not currentMaximized:
@@ -5129,9 +5145,9 @@ if __name__ == "__main__":
                     centerwidget(loading1)
                     centerwidget(loading2, 50)
                     if isControlPanelVisible:
-                        dockWidget2.show()
+                        dockWidget_controlPanel.show()
                     else:
-                        dockWidget2.hide()
+                        dockWidget_controlPanel.hide()
                     if YukiData.compact_mode:
                         win.menu_bar_qt.hide()
                         setShortcutState(True)
@@ -5145,20 +5161,13 @@ if __name__ == "__main__":
             except Exception:
                 pass
 
-        dockWidget_out = QtWidgets.QPushButton()
-        dockWidget_out.clicked.connect(dockWidget_out_clicked)
-
-        @idle_function
-        def mpv_fullscreen(unused=None):
-            dockWidget_out.click()
-
         old_value = 100
 
         def is_show_volume():
             global fullscreen
             showdata = fullscreen
             if not fullscreen and win.isVisible():
-                showdata = not dockWidget2.isVisible()
+                showdata = not dockWidget_controlPanel.isVisible()
             return showdata and not controlpanel_widget.isVisible()
 
         def show_volume(v1):
@@ -5232,7 +5241,7 @@ if __name__ == "__main__":
             def leaveEvent(self, event4):
                 YukiData.check_playlist_visible = False
 
-        dockWidget = PlaylistDockWidget(win)
+        dockWidget_playlist = PlaylistDockWidget(win)
 
         win.listWidget = QtWidgets.QListWidget()
         win.moviesWidget = QtWidgets.QListWidget()
@@ -6706,17 +6715,21 @@ if __name__ == "__main__":
         widget.layout().addWidget(widget4)
         widget.layout().addWidget(chan)
         widget.layout().addWidget(loading)
-        dockWidget.setFixedWidth(DOCK_WIDGET_WIDTH)
-        dockWidget.setTitleBarWidget(QtWidgets.QWidget())
-        dockWidget.setWidget(widget)
-        dockWidget.setFloating(False)
-        dockWidget.setFeatures(
+        dockWidget_playlist.setFixedWidth(DOCKWIDGET_PLAYLIST_WIDTH)
+        dockWidget_playlist.setTitleBarWidget(QtWidgets.QWidget())
+        dockWidget_playlist.setWidget(widget)
+        dockWidget_playlist.setFloating(False)
+        dockWidget_playlist.setFeatures(
             QtWidgets.QDockWidget.DockWidgetFeature.NoDockWidgetFeatures
         )
         if settings["panelposition"] == 0:
-            win.addDockWidget(QtCore.Qt.DockWidgetArea.RightDockWidgetArea, dockWidget)
+            win.addDockWidget(
+                QtCore.Qt.DockWidgetArea.RightDockWidgetArea, dockWidget_playlist
+            )
         else:
-            win.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, dockWidget)
+            win.addDockWidget(
+                QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, dockWidget_playlist
+            )
 
         FORBIDDEN_CHARS = ('"', "*", ":", "<", ">", "?", "\\", "/", "|", "[", "]")
 
@@ -7173,15 +7186,15 @@ if __name__ == "__main__":
         def showhideeverything():
             global fullscreen
             if not fullscreen:
-                if dockWidget.isVisible():
+                if dockWidget_playlist.isVisible():
                     YukiData.compact_mode = True
-                    dockWidget.hide()
-                    dockWidget2.hide()
+                    dockWidget_playlist.hide()
+                    dockWidget_controlPanel.hide()
                     win.menu_bar_qt.hide()
                 else:
                     YukiData.compact_mode = False
-                    dockWidget.show()
-                    dockWidget2.show()
+                    dockWidget_playlist.show()
+                    dockWidget_controlPanel.show()
                     win.menu_bar_qt.show()
 
         stream_info.data = {}
@@ -7408,10 +7421,10 @@ if __name__ == "__main__":
             def leaveEvent(self, event4):
                 YukiData.check_controlpanel_visible = False
 
-        dockWidget2 = ControlPanelDockWidget(win)
+        dockWidget_controlPanel = ControlPanelDockWidget(win)
 
-        dockWidget.setObjectName("dockWidget")
-        dockWidget2.setObjectName("dockWidget2")
+        dockWidget_playlist.setObjectName("dockWidget_playlist")
+        dockWidget_controlPanel.setObjectName("dockWidget_controlPanel")
 
         def open_recording_folder():
             absolute_path = Path(save_folder).absolute()
@@ -8126,19 +8139,21 @@ if __name__ == "__main__":
 
         widget2 = QtWidgets.QWidget()
         widget2.setLayout(vlayout3)
-        dockWidget2.setTitleBarWidget(QtWidgets.QWidget())
-        dockWidget2.setWidget(widget2)
-        dockWidget2.setFloating(False)
-        dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
-        dockWidget2.setFeatures(
+        dockWidget_controlPanel.setTitleBarWidget(QtWidgets.QWidget())
+        dockWidget_controlPanel.setWidget(widget2)
+        dockWidget_controlPanel.setFloating(False)
+        dockWidget_controlPanel.setFixedHeight(DOCKWIDGET_CONTROLPANEL_HEIGHT_HIGH)
+        dockWidget_controlPanel.setFeatures(
             QtWidgets.QDockWidget.DockWidgetFeature.NoDockWidgetFeatures
         )
-        win.addDockWidget(QtCore.Qt.DockWidgetArea.BottomDockWidgetArea, dockWidget2)
+        win.addDockWidget(
+            QtCore.Qt.DockWidgetArea.BottomDockWidgetArea, dockWidget_controlPanel
+        )
 
         progress.hide()
         start_label.hide()
         stop_label.hide()
-        dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
+        dockWidget_controlPanel.setFixedHeight(DOCKWIDGET_CONTROLPANEL_HEIGHT_LOW)
 
         l1 = QtWidgets.QLabel(win)
         myFont1 = QtGui.QFont()
@@ -8791,11 +8806,11 @@ if __name__ == "__main__":
             except Exception:
                 pass
 
-        dockWidgetVisible = False
-        dockWidget2Visible = False
+        dockWidget_playlistVisible = False
+        dockWidget_controlPanelVisible = False
         rewindWidgetVisible = False
 
-        dockWidget.installEventFilter(win)
+        dockWidget_playlist.installEventFilter(win)
 
         prev_cursor = QtGui.QCursor.pos()
         last_cursor_moved = 0
@@ -8856,10 +8871,12 @@ if __name__ == "__main__":
 
         def show_playlist():
             if settings["panelposition"] == 0:
-                playlist_widget.move(maptoglobal(win.width() - dockWidget.width(), 0))
+                playlist_widget.move(
+                    maptoglobal(win.width() - dockWidget_playlist.width(), 0)
+                )
             else:
                 playlist_widget.move(maptoglobal(0, 0))
-            playlist_widget.setFixedWidth(dockWidget.width())
+            playlist_widget.setFixedWidth(dockWidget_playlist.width())
             playlist_widget_height = win.height() - 50
             playlist_widget.resize(playlist_widget.width(), playlist_widget_height)
             playlist_widget.setWindowOpacity(0.55)
@@ -8873,7 +8890,7 @@ if __name__ == "__main__":
 
         def hide_playlist():
             pl_layout.removeWidget(widget)
-            dockWidget.setWidget(widget)
+            dockWidget_playlist.setWidget(widget)
             playlist_widget.hide()
 
         LABEL7_WIDTH = False
@@ -8925,7 +8942,7 @@ if __name__ == "__main__":
             if LABEL7_WIDTH:
                 label7.setFixedWidth(LABEL7_WIDTH)
             cp_layout.removeWidget(widget2)
-            dockWidget2.setWidget(widget2)
+            dockWidget_controlPanel.setWidget(widget2)
             controlpanel_widget.hide()
             rewind.hide()
 
@@ -9007,8 +9024,8 @@ if __name__ == "__main__":
         def timer_mouse():
             try:
                 if win.isVisible():
-                    global fullscreen, key_t_visible, dockWidgetVisible
-                    global dockWidget2Visible, rewindWidgetVisible
+                    global fullscreen, key_t_visible, dockWidget_playlistVisible
+                    global dockWidget_controlPanelVisible, rewindWidgetVisible
                     if (
                         l1.isVisible()
                         and l1.text().startswith(_("Volume"))
@@ -9016,7 +9033,7 @@ if __name__ == "__main__":
                     ):
                         l1.hide()
                     label13.setText(f"{int(player.volume)}%")
-                    dockWidget.setFixedWidth(DOCK_WIDGET_WIDTH)
+                    dockWidget_playlist.setFixedWidth(DOCKWIDGET_PLAYLIST_WIDTH)
                     if fullscreen and not key_t_visible:
                         # Check cursor inside window
                         cur_pos = QtGui.QCursor.pos()
@@ -9035,20 +9052,22 @@ if __name__ == "__main__":
                             win_width = win.width()
                             if settings["panelposition"] == 0:
                                 is_cursor_x = cursor_x > win_width - (
-                                    DOCK_WIDGET_WIDTH + 10
+                                    DOCKWIDGET_PLAYLIST_WIDTH + 10
                                 )
                             else:
-                                is_cursor_x = cursor_x < (DOCK_WIDGET_WIDTH + 10)
+                                is_cursor_x = cursor_x < (
+                                    DOCKWIDGET_PLAYLIST_WIDTH + 10
+                                )
                             if (
                                 is_cursor_x
                                 and cursor_x < win_width
                                 and is_inside_window
                             ):
-                                if not dockWidgetVisible:
-                                    dockWidgetVisible = True
+                                if not dockWidget_playlistVisible:
+                                    dockWidget_playlistVisible = True
                                     show_playlist()
                             else:
-                                dockWidgetVisible = False
+                                dockWidget_playlistVisible = False
                                 hide_playlist()
                         # Control panel
                         if settings["showcontrolsmouse"]:
@@ -9057,18 +9076,18 @@ if __name__ == "__main__":
                             ).y()
                             win_height = win.height()
                             is_cursor_y = cursor_y > win_height - (
-                                dockWidget2.height() + 250
+                                dockWidget_controlPanel.height() + 250
                             )
                             if (
                                 is_cursor_y
                                 and cursor_y < win_height
                                 and is_inside_window
                             ):
-                                if not dockWidget2Visible:
-                                    dockWidget2Visible = True
+                                if not dockWidget_controlPanelVisible:
+                                    dockWidget_controlPanelVisible = True
                                     show_controlpanel()
                             else:
-                                dockWidget2Visible = False
+                                dockWidget_controlPanelVisible = False
                                 hide_controlpanel()
                     if settings["rewindenable"]:
                         # Check cursor inside window
@@ -9084,7 +9103,7 @@ if __name__ == "__main__":
                         cursor_y = win.container.mapFromGlobal(QtGui.QCursor.pos()).y()
                         win_height = win.height()
                         is_cursor_y = cursor_y > win_height - (
-                            dockWidget2.height() + 250
+                            dockWidget_controlPanel.height() + 250
                         )
                         if (
                             is_cursor_y
@@ -9115,20 +9134,20 @@ if __name__ == "__main__":
         def key_t():
             global fullscreen
             if not fullscreen:
-                if dockWidget.isVisible():
+                if dockWidget_playlist.isVisible():
                     YukiData.playlist_hidden = True
-                    dockWidget.hide()
+                    dockWidget_playlist.hide()
                 else:
                     YukiData.playlist_hidden = False
-                    dockWidget.show()
+                    dockWidget_playlist.show()
 
         def lowpanel_ch():
-            if dockWidget2.isVisible():
+            if dockWidget_controlPanel.isVisible():
                 YukiData.controlpanel_hidden = True
-                dockWidget2.hide()
+                dockWidget_controlPanel.hide()
             else:
                 YukiData.controlpanel_hidden = False
-                dockWidget2.show()
+                dockWidget_controlPanel.show()
 
         # Key bindings
         def key_quit():
@@ -9142,14 +9161,24 @@ if __name__ == "__main__":
             myExitHandler()
             app.quit()
 
-        def dockwidget_resize_timer():
+        def dockwidget_controlpanel_resize_timer():
             try:
                 if start_label.text() and start_label.isVisible():
-                    if dockWidget2.height() != DOCK_WIDGET2_HEIGHT_HIGH:
-                        dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_HIGH)
+                    if (
+                        dockWidget_controlPanel.height()
+                        != DOCKWIDGET_CONTROLPANEL_HEIGHT_HIGH
+                    ):
+                        dockWidget_controlPanel.setFixedHeight(
+                            DOCKWIDGET_CONTROLPANEL_HEIGHT_HIGH
+                        )
                 else:
-                    if dockWidget2.height() != DOCK_WIDGET2_HEIGHT_LOW:
-                        dockWidget2.setFixedHeight(DOCK_WIDGET2_HEIGHT_LOW)
+                    if (
+                        dockWidget_controlPanel.height()
+                        != DOCKWIDGET_CONTROLPANEL_HEIGHT_LOW
+                    ):
+                        dockWidget_controlPanel.setFixedHeight(
+                            DOCKWIDGET_CONTROLPANEL_HEIGHT_LOW
+                        )
             except Exception:
                 pass
 
@@ -9447,7 +9476,7 @@ if __name__ == "__main__":
                 record_timer_2: 1000,
                 timer_afterrecord: 50,
                 timer_bitrate: UPDATE_BR_INTERVAL * 1000,
-                dockwidget_resize_timer: 50,
+                dockwidget_controlpanel_resize_timer: 50,
             }
             for timer in timers:
                 timers_array[timer] = QtCore.QTimer()
