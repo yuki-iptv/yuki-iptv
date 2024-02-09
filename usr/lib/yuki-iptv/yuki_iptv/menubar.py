@@ -577,7 +577,7 @@ def update_menubar(track_list, playing_chan, m3u, aot_file):
         YukiData.first_run1 = True
         try:
             if os.path.isfile(aot_file):
-                file_2 = open(aot_file, "r", encoding="utf-8")
+                file_2 = open(aot_file, encoding="utf-8")
                 file_2_out = file_2.read()
                 file_2.close()
                 aot_state = json.loads(file_2_out)["alwaysontop"]

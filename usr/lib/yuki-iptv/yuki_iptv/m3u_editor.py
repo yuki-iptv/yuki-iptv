@@ -99,7 +99,7 @@ class M3UEditor(QtWidgets.QMainWindow):
         if filename:
             m3u_parser = M3UParser(self.data["settings"]["udp_proxy"], _)
             try:
-                file0 = open(filename, "r")
+                file0 = open(filename)
                 filedata = file0.read()
                 file0.close()
                 is_xspf = '<?xml version="' in filedata and (

@@ -187,7 +187,7 @@ DOCKWIDGET_CONTROLPANEL_HEIGHT_LOW = DOCKWIDGET_CONTROLPANEL_HEIGHT_HIGH - (
     DOCKWIDGET_CONTROLPANEL_HEIGHT_OFFSET + 10
 )
 DOCKWIDGET_PLAYLIST_WIDTH = int((WINDOW_SIZE[0] / 2) - 200)
-TVGUIDE_WIDTH = int((WINDOW_SIZE[0] / 5))
+TVGUIDE_WIDTH = int(WINDOW_SIZE[0] / 5)
 BCOLOR = "#A2A3A3"
 
 UPDATE_BR_INTERVAL = 5
@@ -341,7 +341,7 @@ if __name__ == "__main__":
     try:
         if os.path.isfile(str(Path(LOCAL_DIR, "settings.json"))):
             with open(
-                str(Path(LOCAL_DIR, "settings.json")), "r", encoding="utf8"
+                str(Path(LOCAL_DIR, "settings.json")), encoding="utf8"
             ) as settings_tmp:
                 settings_tmp_json = json.loads(settings_tmp.read())
                 if "styleredefoff" in settings_tmp_json:
@@ -452,9 +452,7 @@ if __name__ == "__main__":
         if not os.path.isfile(str(Path(LOCAL_DIR, "channelsettings.json"))):
             save_channel_sets()
         else:
-            file1 = open(
-                str(Path(LOCAL_DIR, "channelsettings.json")), "r", encoding="utf8"
-            )
+            file1 = open(str(Path(LOCAL_DIR, "channelsettings.json")), encoding="utf8")
             channel_sets = json.loads(file1.read())
             file1.close()
 
@@ -469,7 +467,7 @@ if __name__ == "__main__":
             favourite_sets_2 = {}
             if os.path.isfile(Path(LOCAL_DIR, "favouritechannels.json")):
                 with open(
-                    Path(LOCAL_DIR, "favouritechannels.json"), "r", encoding="utf8"
+                    Path(LOCAL_DIR, "favouritechannels.json"), encoding="utf8"
                 ) as fsetfile:
                     favourite_sets_2 = json.loads(fsetfile.read())
             if settings["m3u"]:
@@ -483,9 +481,7 @@ if __name__ == "__main__":
         if not os.path.isfile(str(Path(LOCAL_DIR, "favouritechannels.json"))):
             save_favourite_sets()
         else:
-            file1 = open(
-                Path(LOCAL_DIR, "favouritechannels.json"), "r", encoding="utf8"
-            )
+            file1 = open(Path(LOCAL_DIR, "favouritechannels.json"), encoding="utf8")
             favourite_sets1 = json.loads(file1.read())
             if settings["m3u"] in favourite_sets1:
                 favourite_sets = favourite_sets1[settings["m3u"]]
@@ -498,7 +494,7 @@ if __name__ == "__main__":
             player_tracks_2 = {}
             if os.path.isfile(Path(LOCAL_DIR, "tracks.json")):
                 with open(
-                    Path(LOCAL_DIR, "tracks.json"), "r", encoding="utf8"
+                    Path(LOCAL_DIR, "tracks.json"), encoding="utf8"
                 ) as tracks_file0:
                     player_tracks_2 = json.loads(tracks_file0.read())
             if settings["m3u"]:
@@ -508,7 +504,7 @@ if __name__ == "__main__":
             tracks_file1.close()
 
         if os.path.isfile(str(Path(LOCAL_DIR, "tracks.json"))):
-            tracks_file = open(Path(LOCAL_DIR, "tracks.json"), "r", encoding="utf8")
+            tracks_file = open(Path(LOCAL_DIR, "tracks.json"), encoding="utf8")
             player_tracks1 = json.loads(tracks_file.read())
             if settings["m3u"] in player_tracks1:
                 player_tracks = player_tracks1[settings["m3u"]]
@@ -904,7 +900,7 @@ if __name__ == "__main__":
                     YukiData.is_xtream = False
                     logger.info("Playlist is local file")
                     try:
-                        file = open(settings["m3u"], "r", encoding="utf8")
+                        file = open(settings["m3u"], encoding="utf8")
                         m3u = file.read()
                         file.close()
                     except Exception:
@@ -1080,7 +1076,7 @@ if __name__ == "__main__":
         try:
             if os.path.isfile(str(Path(LOCAL_DIR, "settings.json"))):
                 settings_file2 = open(
-                    str(Path(LOCAL_DIR, "settings.json")), "r", encoding="utf8"
+                    str(Path(LOCAL_DIR, "settings.json")), encoding="utf8"
                 )
                 settings_file2_json = json.loads(settings_file2.read())
                 settings_file2.close()
@@ -1903,7 +1899,7 @@ if __name__ == "__main__":
         player_ext = "mpv"
         if os.path.isfile(str(Path(LOCAL_DIR, "extplayer.json"))):
             ext_player_file = open(
-                str(Path(LOCAL_DIR, "extplayer.json")), "r", encoding="utf8"
+                str(Path(LOCAL_DIR, "extplayer.json")), encoding="utf8"
             )
             ext_player_file_out = json.loads(ext_player_file.read())
             ext_player_file.close()
@@ -1926,7 +1922,7 @@ if __name__ == "__main__":
 
         if os.path.isfile(str(Path(LOCAL_DIR, "playlists.json"))):
             playlists_json = open(
-                str(Path(LOCAL_DIR, "playlists.json")), "r", encoding="utf8"
+                str(Path(LOCAL_DIR, "playlists.json")), encoding="utf8"
             )
             playlists_saved = json.loads(playlists_json.read())
             playlists_json.close()
@@ -2395,7 +2391,7 @@ if __name__ == "__main__":
             channel_sort2 = {}
             if os.path.isfile(Path(LOCAL_DIR, "sortchannels.json")):
                 with open(
-                    Path(LOCAL_DIR, "sortchannels.json"), "r", encoding="utf8"
+                    Path(LOCAL_DIR, "sortchannels.json"), encoding="utf8"
                 ) as file5:
                     channel_sort2 = json.loads(file5.read())
             channel_sort2[settings["m3u"]] = channel_sort
@@ -2608,7 +2604,7 @@ if __name__ == "__main__":
                 if "w" in params and "h" in params:
                     stream_info.video_properties[_("General")][
                         _("Dimensions")
-                    ] = "%sx%s" % (params["w"], params["h"])
+                    ] = "{}x{}".format(params["w"], params["h"])
                 if "aspect" in params:
                     aspect = round(float(params["aspect"]), 2)
                     stream_info.video_properties[_("General")][_("Aspect")] = (
@@ -3728,7 +3724,7 @@ if __name__ == "__main__":
 
         if os.path.isfile("/usr/share/common-licenses/GPL"):
             with open(
-                "/usr/share/common-licenses/GPL", "r", encoding="utf8"
+                "/usr/share/common-licenses/GPL", encoding="utf8"
             ) as license_gpl_file:
                 license_str += "\n" + license_gpl_file.read()
 
@@ -4418,10 +4414,8 @@ if __name__ == "__main__":
                                 - (dockWidget_playlist.width() / 1.7)
                             ),
                             int(
-                                (
-                                    (self.windowHeight - rewind.height())
-                                    - rewind_fullscreen_offset
-                                )
+                                (self.windowHeight - rewind.height())
+                                - rewind_fullscreen_offset
                             ),
                         )
                     else:
@@ -4435,11 +4429,9 @@ if __name__ == "__main__":
                                 - (dockWidget_playlist.width() / 1.7)
                             ),
                             int(
-                                (
-                                    (self.windowHeight - rewind.height())
-                                    - dockWidget_controlPanel.height()
-                                    - rewind_normal_offset
-                                )
+                                (self.windowHeight - rewind.height())
+                                - dockWidget_controlPanel.height()
+                                - rewind_normal_offset
                             ),
                         )
                 else:
@@ -4451,10 +4443,8 @@ if __name__ == "__main__":
                         rewind,
                         rewind_position_x,
                         int(
-                            (
-                                (self.windowHeight - rewind.height())
-                                - rewind_fullscreen_offset
-                            )
+                            (self.windowHeight - rewind.height())
+                            - rewind_fullscreen_offset
                         ),
                     )
 
@@ -4484,7 +4474,7 @@ if __name__ == "__main__":
                                 ((self.windowWidth - l1.width()) / 2)
                                 - (dockWidget_playlist.width() / 1.7)
                             ),
-                            int(((self.windowHeight - l1.height()) - 20)),
+                            int((self.windowHeight - l1.height()) - 20),
                         )
                         h = 0
                         h2 = 10
@@ -4499,11 +4489,9 @@ if __name__ == "__main__":
                                 - (dockWidget_playlist.width() / 1.7)
                             ),
                             int(
-                                (
-                                    (self.windowHeight - l1.height())
-                                    - dockWidget_controlPanel.height()
-                                    - 10
-                                )
+                                (self.windowHeight - l1.height())
+                                - dockWidget_controlPanel.height()
+                                - 10
                             ),
                         )
                         h = dockWidget_controlPanel.height()
@@ -4512,8 +4500,8 @@ if __name__ == "__main__":
                     set_label_width(l1, self.windowWidth)
                     move_label(
                         l1,
-                        int(((self.windowWidth - l1.width()) / 2)),
-                        int(((self.windowHeight - l1.height()) - 20)),
+                        int((self.windowWidth - l1.width()) / 2),
+                        int((self.windowHeight - l1.height()) - 20),
                     )
                     h = 0
                     h2 = 10
@@ -4531,7 +4519,7 @@ if __name__ == "__main__":
                 else:
                     l1_h = 15
                 tvguide_lbl.setFixedHeight(
-                    ((self.windowHeight - l1_h - h) - 40 - l1_h + h2)
+                    (self.windowHeight - l1_h - h) - 40 - l1_h + h2
                 )
 
             def resizeEvent(self, event):
@@ -5017,7 +5005,7 @@ if __name__ == "__main__":
         if os.path.isfile(str(Path(LOCAL_DIR, "alwaysontop.json"))):
             try:
                 aot_f1 = open(
-                    str(Path(LOCAL_DIR, "alwaysontop.json")), "r", encoding="utf-8"
+                    str(Path(LOCAL_DIR, "alwaysontop.json")), encoding="utf-8"
                 )
                 aot_f1_data = json.loads(aot_f1.read())["alwaysontop"]
                 aot_f1.close()
@@ -5300,7 +5288,7 @@ if __name__ == "__main__":
         channel_sort = {}
         if os.path.isfile(str(Path(LOCAL_DIR, "sortchannels.json"))):
             with open(
-                str(Path(LOCAL_DIR, "sortchannels.json")), "r", encoding="utf8"
+                str(Path(LOCAL_DIR, "sortchannels.json")), encoding="utf8"
             ) as file3:
                 channel_sort3 = json.loads(file3.read())
                 if settings["m3u"] in channel_sort3:
@@ -5505,7 +5493,7 @@ if __name__ == "__main__":
                 in unidecode(x13).lower().strip()
             }
             ch_array = list(ch_array.values())[idx : idx + 100]
-            ch_array = dict([(x14["title"], x14) for x14 in ch_array])
+            ch_array = {x14["title"]: x14 for x14 in ch_array}
             try:
                 if filter_txt:
                     page_box.setMaximum(round(len(ch_array) / 100) + 1)
@@ -6110,7 +6098,7 @@ if __name__ == "__main__":
                 str_append += f"#EXTVLCOPT:http-referrer={ps_data['referer']}\n"
 
             str1 += f",{item_selected}\n{str_append}{ps_data['url']}\n"
-            file03 = open(str(Path(LOCAL_DIR, "favplaylist.m3u")), "r", encoding="utf8")
+            file03 = open(str(Path(LOCAL_DIR, "favplaylist.m3u")), encoding="utf8")
             file03_contents = file03.read()
             file03.close()
             if file03_contents == "#EXTM3U\n#EXTINF:-1,-\nhttp://255.255.255.255\n":
@@ -6545,7 +6533,7 @@ if __name__ == "__main__":
                     controlpanel_widget.show()
 
         tvguide_many_win = QtWidgets.QMainWindow()
-        tvguide_many_win.setWindowTitle((_("TV guide")))
+        tvguide_many_win.setWindowTitle(_("TV guide"))
         tvguide_many_win.setWindowIcon(main_icon)
         tvguide_many_win.resize(1000, 700)
 
@@ -7051,7 +7039,7 @@ if __name__ == "__main__":
             ):
                 try:
                     lastfile_1 = open(
-                        str(Path(LOCAL_DIR, "lastchannels.json")), "r", encoding="utf8"
+                        str(Path(LOCAL_DIR, "lastchannels.json")), encoding="utf8"
                     )
                     lastfile_1_dat = json.loads(lastfile_1.read())
                     lastfile_1.close()
@@ -8446,11 +8434,9 @@ if __name__ == "__main__":
                     max(
                         1,
                         max(
-                            [
-                                int(array[xc1]["catchup-days"])
-                                for xc1 in array
-                                if "catchup-days" in array[xc1]
-                            ]
+                            int(array[xc1]["catchup-days"])
+                            for xc1 in array
+                            if "catchup-days" in array[xc1]
                         ),
                     ),
                     7,
@@ -9345,7 +9331,7 @@ if __name__ == "__main__":
         if os.path.isfile(str(Path(LOCAL_DIR, "hotkeys.json"))):
             try:
                 with open(
-                    str(Path(LOCAL_DIR, "hotkeys.json")), "r", encoding="utf8"
+                    str(Path(LOCAL_DIR, "hotkeys.json")), encoding="utf8"
                 ) as hotkeys_file_tmp:
                     hotkeys_tmp = json.loads(hotkeys_file_tmp.read())[
                         "current_profile"

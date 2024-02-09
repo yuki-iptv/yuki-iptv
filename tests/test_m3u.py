@@ -34,7 +34,7 @@ m3u_parser = M3UParser("", gettext.gettext)
 
 
 def read_m3u(path):
-    file = open(path, "r", encoding="utf8")
+    file = open(path, encoding="utf8")
     contents = file.read()
     file.close()
     return m3u_parser.parse_m3u(contents)

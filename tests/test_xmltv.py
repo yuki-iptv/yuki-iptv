@@ -31,7 +31,7 @@ from yuki_iptv.epg_xmltv import parse_as_xmltv  # noqa: E402
 
 
 def test_xmltv():
-    with open(Path("tests", "xmltv.xml"), "r", encoding="utf8") as xmltv_file_fd:
+    with open(Path("tests", "xmltv.xml"), encoding="utf8") as xmltv_file_fd:
         xmltv_file = xmltv_file_fd.read()
     for epgoffset in [0, -124, 3490]:
         xmltv = parse_as_xmltv(

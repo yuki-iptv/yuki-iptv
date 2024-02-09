@@ -76,9 +76,7 @@ def parse_settings():
     settings_loaded = False
 
     if os.path.isfile(str(Path(LOCAL_DIR, "settings.json"))):
-        settings_file = open(
-            str(Path(LOCAL_DIR, "settings.json")), "r", encoding="utf8"
-        )
+        settings_file = open(str(Path(LOCAL_DIR, "settings.json")), encoding="utf8")
         settings = json.loads(settings_file.read())
         settings_file.close()
 

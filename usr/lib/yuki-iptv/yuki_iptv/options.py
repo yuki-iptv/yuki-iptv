@@ -34,9 +34,7 @@ def read_option(name):
     options = {}
 
     if os.path.isfile(Path(LOCAL_DIR, "player_data.json")):
-        options_file = open(
-            str(Path(LOCAL_DIR, "player_data.json")), "r", encoding="utf8"
-        )
+        options_file = open(str(Path(LOCAL_DIR, "player_data.json")), encoding="utf8")
         options = json.loads(options_file.read())
         options_file.close()
 
@@ -55,9 +53,7 @@ def write_option(name, value):
     options = {}
 
     if os.path.isfile(Path(LOCAL_DIR, "player_data.json")):
-        options_file = open(
-            str(Path(LOCAL_DIR, "player_data.json")), "r", encoding="utf8"
-        )
+        options_file = open(str(Path(LOCAL_DIR, "player_data.json")), encoding="utf8")
         options = json.loads(options_file.read())
         options_file.close()
 

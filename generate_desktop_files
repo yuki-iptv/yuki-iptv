@@ -31,7 +31,7 @@ for lang_file in glob.glob("./po/yuki-iptv-*.po"):
         if playername != "IPTV player with EPG support":
             if lang.split("_")[0] == lang.split("_")[1].lower():
                 lang = lang.split("_")[0]
-            FILE.write("Comment[{}]={}\n".format(lang, playername))
+            FILE.write(f"Comment[{lang}]={playername}\n")
     except Exception:
         print(f"Failed for language {lang}")
 
