@@ -10,7 +10,7 @@
 
   <description>
     <p>
-      yuki-iptv is a IPTV player with many features, such as:
+      IPTV player with many features, such as:
     </p>
     <ul>
        <li>M3u, M3u8, XSPF playlists support</li>
@@ -43,8 +43,114 @@
   </screenshots>
 
   <releases>
-    <release version="0.0.9" date="2024-01-23"/>
-    <release version="0.0.8" date="2023-11-07"/>
+    <release version="0.0.9" date="2024-01-23">
+      <description>
+        <p>l10n: Update translations</p>
+        <p>Respect XDG environment variables</p>
+        <p>Fix YouTube channels recording</p>
+        <p>Add file filter when adding playlist</p>
+        <p>Add file filter when opening file in M3U editor</p>
+      </description>
+    </release>
+    <release version="0.0.8" date="2023-11-07">
+      <description>
+        <p>l10n: Update translations</p>
+        <p>Fix parsing channel name with comma</p>
+        <p>Show audio/video desynchronization</p>
+        <p>Show group in channel tooltip</p>
+        <p>Add ability to select EPG date</p>
+        <p>Fix osc disabling via mpv options</p>
+        <p>Fix crashing if save settings called when EPG is updating</p>
+        <p>Fix page selection taking focus and blocking keybinds</p>
+        <p>Fix crash in channel search</p>
+        <p>Add rewind</p>
+        <p>Add frame-step and frame-back-step commands</p>
+        <p>Fix loading playlists with trailing spaces in URL</p>
+        <p>Fix crashing in movies</p>
+        <p>Fix requests timeout</p>
+        <p>Fix changing playlist name when editing it</p>
+        <p>Update XTream library</p>
+        <p>Show XTream expiration dates in playlists window</p>
+        <p>Fix catchup on XTream playlists</p>
+        <p>Load EPG for XTream</p>
+      </description>
+    </release>
+    <release version="0.0.7" date="2023-06-05">
+      <description>
+        <p>Fix encoding in remote playlists</p>
+        <p>Use Wand for channel logos</p>
+        <p>Add tvg-group tag support</p>
+      </description>
+    </release>
+    <release version="0.0.6" date="2023-05-14">
+      <description>
+        <p>Add 'Hide EPG from playlist' option</p>
+        <p>Add 'Multicast optimization' option</p>
+        <p>Fix control panel not aware of multiple screens</p>
+        <p>Detect group in xspf playlists</p>
+        <p>Increase connect and read timeout</p>
+      </description>
+    </release>
+    <release version="0.0.5" date="2023-05-02">
+      <description>
+        <p>Load EPG for all days available</p>
+      </description>
+    </release>
+    <release version="0.0.4" date="2023-04-15">
+      <description>
+        <p>Optimize channel logos load</p>
+        <p>Show warning if ffmpeg crashed</p>
+        <p>Remember video / audio / subtitle tracks for channel</p>
+        <p>Add subtitles selector</p>
+        <p>Fix pause button behaviour on changing channels</p>
+        <p>UI improvements</p>
+        <p>packaging: add python3-pydbus to depends</p>
+      </description>
+    </release>
+    <release version="0.0.3" date="2023-04-09">
+      <description>
+        <p>EPG: trying to fix EPG cache load freezing</p>
+        <p>EPG: fix XMLTV timezone parsing</p>
+        <p>EPG: re-implement JTV support from scratch</p>
+        <p>EPG: Add support for XMLTV inside zip archive</p>
+        <p>Show Qt and libmpv versions in about window</p>
+        <p>Add TV.ALL EPG format support</p>
+        <p>Fix autoreconnection option</p>
+        <p>Show logo when file ended</p>
+        <p>Fix channel looping</p>
+      </description>
+    </release>
+    <release version="0.0.2" date="2023-04-06">
+      <description>
+        <p>l10n: Update translations</p>
+        <p>Fix disabling osc via MPV options</p>
+        <p>Make libmpv respect loglevel option</p>
+        <p>Lazy load EPG cache</p>
+        <p>Lazy load channel logos</p>
+        <p>Fix crash if no TV channels found</p>
+        <p>tv guide: add channel search</p>
+        <p>scheduler: add channel search</p>
+        <p>channel logos: respect useragent and referer when downloading</p>
+        <p>settings: disable hardware acceleration and deinterlace by default</p>
+        <p>Change default User-Agent to Mozilla/5.0</p>
+        <p>Allow custom HTTP Referer for individual channels</p>
+        <p>Allow custom user agent</p>
+        <p>Verbose EPG loading</p>
+        <p>Show channel name on changing in fullscreen mode</p>
+        <p>Fix custom channel sort in multiple playlists with same channel name</p>
+        <p>Fix favourites in multiple playlists with same channel name</p>
+        <p>Fix channel settings in multiple playlists with same channel name</p>
+        <p>Update pyxtream library</p>
+        <p>Check playlist name is not empty before saving</p>
+        <p>Drop default EPG URLs</p>
+        <p>Drop import from Hypnotix</p>
+      </description>
+    </release>
+    <release version="0.0.1" date="2023-03-27">
+      <description>
+        <p>Change project name to yuki-iptv</p>
+      </description>
+    </release>
   </releases>
 
   <url type="homepage">https://github.com/yuki-iptv/yuki-iptv</url>
