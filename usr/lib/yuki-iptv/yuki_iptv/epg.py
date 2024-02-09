@@ -30,7 +30,7 @@ import time
 import io
 import zipfile
 from pathlib import Path
-from yuki_iptv.crossplatform import LOCAL_DIR
+from yuki_iptv.xdg import LOCAL_DIR
 from yuki_iptv.epg_xmltv import parse_as_xmltv
 from yuki_iptv.epg_zip import parse_epg_zip
 from yuki_iptv.epg_listtv import parse_txt

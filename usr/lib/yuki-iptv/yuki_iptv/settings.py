@@ -24,7 +24,7 @@
 import os
 import json
 from pathlib import Path
-from yuki_iptv.crossplatform import LOCAL_DIR, SAVE_FOLDER_DEFAULT
+from yuki_iptv.xdg import LOCAL_DIR, SAVE_FOLDER_DEFAULT
 
 
 def parse_settings():

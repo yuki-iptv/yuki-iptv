@@ -49,3 +49,7 @@ def get_config_dir():
         except Exception:
             pass
     return config_dir
+
+
+LOCAL_DIR = str(Path(get_config_dir(), "yuki-iptv"))
+SAVE_FOLDER_DEFAULT = str(Path(LOCAL_DIR, "saves"))

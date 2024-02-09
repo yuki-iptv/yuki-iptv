@@ -97,7 +97,7 @@ from yuki_iptv.m3u_editor import M3UEditor
 from yuki_iptv.options import read_option, write_option
 from yuki_iptv.keybinds import main_keybinds_internal, main_keybinds_default
 from yuki_iptv.series import parse_series
-from yuki_iptv.crossplatform import LOCAL_DIR, SAVE_FOLDER_DEFAULT
+from yuki_iptv.xdg import LOCAL_DIR, SAVE_FOLDER_DEFAULT
 from yuki_iptv.mpv_opengl import MPVOpenGLWidget
 from yuki_iptv.mpris import start_mpris, emit_mpris_change, mpris_seeked
 from thirdparty.xtream import XTream, Serie

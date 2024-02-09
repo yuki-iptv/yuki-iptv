@@ -29,7 +29,7 @@ import io
 import base64
 import hashlib
 from pathlib import Path
-from yuki_iptv.crossplatform import LOCAL_DIR
+from yuki_iptv.xdg import LOCAL_DIR
 from yuki_iptv.requests_timeout import requests_get
 
 logger = logging.getLogger(__name__)

@@ -23,7 +23,7 @@
 import os
 import json
 from pathlib import Path
-from yuki_iptv.crossplatform import LOCAL_DIR
+from yuki_iptv.xdg import LOCAL_DIR
 
 
 class YukiData:
