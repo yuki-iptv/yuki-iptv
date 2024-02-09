@@ -242,6 +242,7 @@ class YukiData:
     mpris_running = False
     mpris_select_playlist = None
     playback_time = 0
+    is_loading = False
 
 
 stream_info.video_properties = {}
@@ -2685,11 +2686,13 @@ if __name__ == "__main__":
                 pass
 
         def hideLoading():
+            YukiData.is_loading = False
             loading.hide()
             loading_movie.stop()
             loading1.hide()
 
         def showLoading():
+            YukiData.is_loading = True
             centerwidget(loading1)
             loading.show()
             loading_movie.start()
@@ -4714,6 +4717,13 @@ if __name__ == "__main__":
 
         playing_archive = False
 
+        @idle_function
+        def idle_on_metadata(unused=None):
+            try:
+                event_handler.on_metadata()
+            except Exception:
+                pass
+
         @async_gui_blocking_function
         def setPlayerSettings(j):
             global playing_chan
@@ -4726,6 +4736,7 @@ if __name__ == "__main__":
                 if j == playing_chan:
                     logger.info(f"setPlayerSettings '{j}'")
                     YukiData.playback_time = time.time()
+                    idle_on_metadata()
                     if (
                         settings["m3u"] in channel_sets
                         and j in channel_sets[settings["m3u"]]
@@ -7693,7 +7704,7 @@ if __name__ == "__main__":
             def get_mpris_metadata():
                 # Playback status
                 if playing_chan:
-                    if player.pause:
+                    if player.pause or YukiData.is_loading:
                         playback_status = "Paused"
                     else:
                         playback_status = "Playing"
