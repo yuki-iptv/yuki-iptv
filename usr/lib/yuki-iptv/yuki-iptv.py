@@ -241,8 +241,8 @@ class YukiData:
     mpris_ready = False
     mpris_running = False
     mpris_select_playlist = None
-    playback_time = 0
     is_loading = False
+    old_playing_url = ""
 
 
 stream_info.video_properties = {}
@@ -2686,6 +2686,7 @@ if __name__ == "__main__":
             loading.hide()
             loading_movie.stop()
             loading1.hide()
+            idle_on_metadata()
 
         def showLoading():
             YukiData.is_loading = True
@@ -2693,6 +2694,7 @@ if __name__ == "__main__":
             loading.show()
             loading_movie.start()
             loading1.show()
+            idle_on_metadata()
 
         event_handler = None
 
@@ -2778,7 +2780,6 @@ if __name__ == "__main__":
                         uuid.uuid1()
                     )
 
-            YukiData.playback_time = time.time()
             player.pause = False
             player.play(parse_specifiers_now_url(arg_override_play))
             if event_handler:
@@ -4144,7 +4145,8 @@ if __name__ == "__main__":
             @player.property_observer("duration")
             def duration_observer(_name, value):
                 try:
-                    if (time.time() - YukiData.playback_time) < 10:
+                    if YukiData.old_playing_url != playing_url:
+                        YukiData.old_playing_url = playing_url
                         event_handler.on_metadata()
                 except Exception:
                     pass
@@ -4723,7 +4725,6 @@ if __name__ == "__main__":
                     pass
                 if j == playing_chan:
                     logger.info(f"setPlayerSettings '{j}'")
-                    YukiData.playback_time = time.time()
                     idle_on_metadata()
                     if (
                         settings["m3u"] in channel_sets
