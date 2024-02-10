@@ -4,8 +4,7 @@
 
 [![Screenshot](https://gist.githubusercontent.com/Ame-chan-angel/c37f80c2cb00afbdbd98959186e1ab80/raw/e59228169ace1634fae96f65aace5f4d2d7fa71c/screenshot.png)](https://gist.githubusercontent.com/Ame-chan-angel/c37f80c2cb00afbdbd98959186e1ab80/raw/e59228169ace1634fae96f65aace5f4d2d7fa71c/screenshot.png)
 
-⚠️ Disclaimer: yuki-iptv doesn't provide content or TV channels,  
-it is a player application which streams from IPTV providers.  
+⚠️ Disclaimer: yuki-iptv doesn't provide content or TV channels.  
 The channels and pictures in the screenshots are for demonstration purposes only.
 
 ## Content
