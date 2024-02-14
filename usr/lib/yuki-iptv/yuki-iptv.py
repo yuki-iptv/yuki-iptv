@@ -3273,6 +3273,15 @@ if __name__ == "__main__":
         multicastoptimization_flag = QtWidgets.QCheckBox()
         multicastoptimization_flag.setChecked(settings["multicastoptimization"])
 
+        # Mark option as experimental
+        multicastoptimization_flag.setToolTip(
+            _("WARNING: experimental function, working with problems")
+        )
+        multicastoptimization_label.setToolTip(
+            _("WARNING: experimental function, working with problems")
+        )
+        multicastoptimization_label.setStyleSheet("color: #cf9e17")
+
         hidebitrateinfo_flag = QtWidgets.QCheckBox()
         hidebitrateinfo_flag.setChecked(settings["hidebitrateinfo"])
 
@@ -3459,8 +3468,6 @@ if __name__ == "__main__":
         tab_network.layout.addWidget(useragent_choose_2, 2, 1)
         tab_network.layout.addWidget(referer_lbl, 3, 0)
         tab_network.layout.addWidget(referer_choose, 3, 1)
-        tab_network.layout.addWidget(multicastoptimization_label, 4, 0)
-        tab_network.layout.addWidget(multicastoptimization_flag, 4, 1)
         tab_network.setLayout(tab_network.layout)
 
         tab_gui.layout = QtWidgets.QGridLayout()
@@ -3538,15 +3545,17 @@ if __name__ == "__main__":
         tab_debug_warning.setStyleSheet("color: #cf9e17")
 
         tab_debug_widget = QtWidgets.QWidget()
-        tab_debug_layout = QtWidgets.QGridLayout()
-        tab_debug_layout.setAlignment(
+        tab_debug.layout = QtWidgets.QGridLayout()
+        tab_debug.layout.setAlignment(
             QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignTop
         )
-        tab_debug_layout.addWidget(styleredefoff_label, 0, 0)
-        tab_debug_layout.addWidget(styleredefoff_flag, 0, 1)
-        tab_debug_layout.addWidget(autoreconnection_label, 1, 0)
-        tab_debug_layout.addWidget(autoreconnection_flag, 1, 1)
-        tab_debug_widget.setLayout(tab_debug_layout)
+        tab_debug.layout.addWidget(styleredefoff_label, 0, 0)
+        tab_debug.layout.addWidget(styleredefoff_flag, 0, 1)
+        tab_debug.layout.addWidget(autoreconnection_label, 1, 0)
+        tab_debug.layout.addWidget(autoreconnection_flag, 1, 1)
+        tab_debug.layout.addWidget(multicastoptimization_label, 2, 0)
+        tab_debug.layout.addWidget(multicastoptimization_flag, 2, 1)
+        tab_debug_widget.setLayout(tab_debug.layout)
 
         tab_debug.layout = QtWidgets.QVBoxLayout()
         tab_debug.layout.setAlignment(
