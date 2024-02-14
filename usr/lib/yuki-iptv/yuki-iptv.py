@@ -102,6 +102,8 @@ from yuki_iptv.mpv_opengl import MPVOpenGLWidget
 from yuki_iptv.mpris import start_mpris, emit_mpris_change, mpris_seeked
 from thirdparty.xtream import XTream, Serie
 
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
 if "PULSE_PROP" not in os.environ:
     os.environ["PULSE_PROP"] = "media.role=video"
 
