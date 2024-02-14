@@ -65,7 +65,6 @@ main_keybinds_default = {
     "reload_playlist": "Ctrl+R",
     "show_scheduler": QtCore.Qt.Key.Key_D,
     "show_settings": "Ctrl+P",
-    "show_sort": QtCore.Qt.Key.Key_I,
     "show_timeshift": QtCore.Qt.Key.Key_E,
     "show_tvguide": QtCore.Qt.Key.Key_G,
     "showhideeverything": "Ctrl+C",

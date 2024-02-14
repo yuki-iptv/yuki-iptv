@@ -1348,11 +1348,6 @@ if __name__ == "__main__":
         license_win.setWindowTitle(_("License"))
         license_win.setWindowIcon(main_icon)
 
-        sort_win = QtWidgets.QMainWindow()
-        sort_win.resize(400, 500)
-        sort_win.setWindowTitle(_("Channel\nsort").replace("\n", " "))
-        sort_win.setWindowIcon(main_icon)
-
         chan_win = QtWidgets.QMainWindow()
         chan_win.resize(400, 250)
         chan_win.setWindowTitle(_("Video settings"))
@@ -2383,56 +2378,6 @@ if __name__ == "__main__":
 
         scheduler_win.setCentralWidget(scheduler_widget_main)
 
-        def save_sort():
-            global channel_sort
-            channel_sort = [
-                sort_list.item(z0).text() for z0 in range(sort_list.count())
-            ]
-            channel_sort2 = {}
-            if os.path.isfile(Path(LOCAL_DIR, "sortchannels.json")):
-                with open(
-                    Path(LOCAL_DIR, "sortchannels.json"), encoding="utf8"
-                ) as file5:
-                    channel_sort2 = json.loads(file5.read())
-            channel_sort2[settings["m3u"]] = channel_sort
-            with open(
-                Path(LOCAL_DIR, "sortchannels.json"), "w", encoding="utf8"
-            ) as file4:
-                file4.write(json.dumps(channel_sort2))
-            sort_win.hide()
-
-        close_sort_btn = QtWidgets.QPushButton(_("Close"))
-        close_sort_btn.clicked.connect(sort_win.hide)
-        close_sort_btn.setStyleSheet("color: red;")
-
-        save_sort_btn = QtWidgets.QPushButton(_("Save"))
-        save_sort_btn.setStyleSheet("font-weight: bold; color: green;")
-        save_sort_btn.clicked.connect(save_sort)
-
-        sort_label = QtWidgets.QLabel(
-            _("Do not forget\nto set custom sort order in settings!")
-        )
-        sort_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-
-        sort_widget3 = QtWidgets.QWidget()
-
-        sort_widget4 = QtWidgets.QWidget()
-        sort_widget4_layout = QtWidgets.QHBoxLayout()
-        sort_widget4_layout.addWidget(save_sort_btn)
-        sort_widget4_layout.addWidget(close_sort_btn)
-        sort_widget4.setLayout(sort_widget4_layout)
-
-        sort_widget_main = QtWidgets.QWidget()
-        sort_layout = QtWidgets.QVBoxLayout()
-        sort_layout.addWidget(sort_label)
-        sort_layout.addWidget(sort_widget3)
-        sort_layout.addWidget(sort_widget4)
-        sort_layout.setAlignment(
-            QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignTop
-        )
-        sort_widget_main.setLayout(sort_layout)
-        sort_win.setCentralWidget(sort_widget_main)
-
         home_folder = ""
         try:
             home_folder = os.environ["HOME"]
@@ -3114,7 +3059,6 @@ if __name__ == "__main__":
                 "nocache": supdate.isChecked(),
                 "epgoffset": soffset.value(),
                 "hwaccel": shwaccel.isChecked(),
-                "sort": sort_widget.currentIndex(),
                 "cache_secs": scache1.value(),
                 "epgdays": epgdays.value(),
                 "ua": useragent_choose_2.text(),
@@ -3166,7 +3110,6 @@ if __name__ == "__main__":
         epg_label = QtWidgets.QLabel("{}:".format(_("TV guide\naddress")))
         dei_label = QtWidgets.QLabel("{}:".format(_("Deinterlace")))
         hwaccel_label = QtWidgets.QLabel("{}:".format(_("Hardware\nacceleration")))
-        sort_label = QtWidgets.QLabel("{}:".format(_("Channel\nsort")))
         cache_label = QtWidgets.QLabel("{}:".format(_("Cache")))
         udp_label = QtWidgets.QLabel("{}:".format(_("UDP proxy")))
         fld_label = QtWidgets.QLabel(
@@ -3178,8 +3121,6 @@ if __name__ == "__main__":
                 os.remove(str(Path(LOCAL_DIR, "channelsettings.json")))
             if os.path.isfile(str(Path(LOCAL_DIR, "favouritechannels.json"))):
                 os.remove(str(Path(LOCAL_DIR, "favouritechannels.json")))
-            if os.path.isfile(str(Path(LOCAL_DIR, "sortchannels.json"))):
-                os.remove(str(Path(LOCAL_DIR, "sortchannels.json")))
             save_settings()
 
         def do_clear_logo_cache():
@@ -3219,16 +3160,10 @@ if __name__ == "__main__":
         ssave = QtWidgets.QPushButton(_("Save settings"))
         ssave.setStyleSheet("font-weight: bold; color: green;")
         ssave.clicked.connect(save_settings)
-        sreset = QtWidgets.QPushButton(_("Reset channel settings and sorting"))
+        sreset = QtWidgets.QPushButton(_("Reset channel settings"))
         sreset.clicked.connect(reset_channel_settings)
         clear_logo_cache = QtWidgets.QPushButton(_("Clear logo cache"))
         clear_logo_cache.clicked.connect(do_clear_logo_cache)
-        sort_widget = QtWidgets.QComboBox()
-        sort_widget.addItem(_("as in playlist"))
-        sort_widget.addItem(_("alphabetical order"))
-        sort_widget.addItem(_("reverse alphabetical order"))
-        sort_widget.addItem(_("custom"))
-        sort_widget.setCurrentIndex(settings["sort"])
 
         def close_settings():
             settings_win.hide()
@@ -3489,8 +3424,6 @@ if __name__ == "__main__":
         tab_main.layout.addWidget(sfolder, 0, 2)
         tab_main.layout.addWidget(scrrecnosubfolders_label, 1, 0)
         tab_main.layout.addWidget(scrrecnosubfolders_flag, 1, 1)
-        tab_main.layout.addWidget(sort_label, 2, 0)
-        tab_main.layout.addWidget(sort_widget, 2, 1)
         # tab_main.layout.addWidget(update_label, 3, 0)
         # tab_main.layout.addWidget(supdate, 3, 1)
         tab_main.layout.addWidget(openprevchan_label, 3, 0)
@@ -3857,13 +3790,6 @@ if __name__ == "__main__":
                 help_win.show()
             else:
                 help_win.hide()
-
-        def show_sort():
-            if not sort_win.isVisible():
-                moveWindowToCenter(sort_win)
-                sort_win.show()
-            else:
-                sort_win.hide()
 
         def populate_playlists():
             playlists_list.clear()
@@ -4277,7 +4203,6 @@ if __name__ == "__main__":
                 my_down_binding_execute,
                 show_m3u_editor,
                 show_playlists,
-                show_sort,
                 show_exception,
                 get_curwindow_pos,
                 force_update_epg_act,
@@ -5286,35 +5211,6 @@ if __name__ == "__main__":
 
         current_group = _("All channels")
 
-        channel_sort = {}
-        if os.path.isfile(str(Path(LOCAL_DIR, "sortchannels.json"))):
-            with open(
-                str(Path(LOCAL_DIR, "sortchannels.json")), encoding="utf8"
-            ) as file3:
-                channel_sort3 = json.loads(file3.read())
-                if settings["m3u"] in channel_sort3:
-                    channel_sort = channel_sort3[settings["m3u"]]
-
-        def sort_custom(sub):
-            try:
-                return channel_sort.index(sub)
-            except Exception:
-                return 0
-
-        def doSort(arr0):
-            if settings["sort"] == 0:
-                return arr0
-            if settings["sort"] == 1:
-                return sorted(arr0)
-            if settings["sort"] == 2:
-                return sorted(arr0, reverse=True)
-            if settings["sort"] == 3:
-                try:
-                    return sorted(arr0, reverse=False, key=sort_custom)
-                except Exception:
-                    return arr0
-            return arr0
-
         if not os.path.isdir(str(Path(LOCAL_DIR, "logo_cache"))):
             os.mkdir(str(Path(LOCAL_DIR, "logo_cache")))
 
@@ -5507,7 +5403,7 @@ if __name__ == "__main__":
             res = {}
             k0 = -1
             k = 0
-            for i in doSort(ch_array):
+            for i in ch_array:
                 k0 += 1
                 k += 1
                 prog = ""
@@ -5878,56 +5774,10 @@ if __name__ == "__main__":
                         pass
 
         channels = gen_chans()
-        modelA = []
         for channel in channels:
             # Add QListWidgetItem into QListWidget
-            modelA.append(channels[channel][3])
             win.listWidget.addItem(channels[channel][0])
             win.listWidget.setItemWidget(channels[channel][0], channels[channel][1])
-
-        def sort_upbtn_clicked():
-            curIndex = sort_list.currentRow()
-            if curIndex != -1 and curIndex > 0:
-                curItem = sort_list.takeItem(curIndex)
-                sort_list.insertItem(curIndex - 1, curItem)
-                sort_list.setCurrentRow(curIndex - 1)
-
-        def sort_downbtn_clicked():
-            curIndex1 = sort_list.currentRow()
-            if curIndex1 != -1 and curIndex1 < sort_list.count() - 1:
-                curItem1 = sort_list.takeItem(curIndex1)
-                sort_list.insertItem(curIndex1 + 1, curItem1)
-                sort_list.setCurrentRow(curIndex1 + 1)
-
-        sort_upbtn = QtWidgets.QPushButton()
-        sort_upbtn.setIcon(
-            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "arrow-up.png")))
-        )
-        sort_upbtn.clicked.connect(sort_upbtn_clicked)
-        sort_downbtn = QtWidgets.QPushButton()
-        sort_downbtn.setIcon(
-            QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "arrow-down.png")))
-        )
-        sort_downbtn.clicked.connect(sort_downbtn_clicked)
-
-        sort_widget2 = QtWidgets.QWidget()
-        sort_layout2 = QtWidgets.QVBoxLayout()
-        sort_layout2.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        sort_layout2.addWidget(sort_upbtn)
-        sort_layout2.addWidget(sort_downbtn)
-        sort_widget2.setLayout(sort_layout2)
-
-        sort_list = QtWidgets.QListWidget()
-        sort_layout3 = QtWidgets.QHBoxLayout()
-        sort_layout3.addWidget(sort_list)
-        sort_layout3.addWidget(sort_widget2)
-        sort_widget3.setLayout(sort_layout3)
-        if not channel_sort:
-            sort_label_data = modelA
-        else:
-            sort_label_data = channel_sort
-        for sort_label_ch in sort_label_data:
-            sort_list.addItem(sort_label_ch)
 
         def tvguide_context_menu():
             update_tvguide()
@@ -7930,7 +7780,7 @@ if __name__ == "__main__":
             logger.warning("Failed to set up MPRIS!")
 
         def update_scheduler_programme():
-            channel_list_2 = [chan_name for chan_name in doSort(array)]
+            channel_list_2 = [chan_name for chan_name in array]
             ch_choosed = choosechannel_ch.currentText()
             tvguide_sch.clear()
             if ch_choosed in channel_list_2:
@@ -7946,7 +7796,7 @@ if __name__ == "__main__":
                 scheduler_win.hide()
             else:
                 choosechannel_ch.clear()
-                channel_list = [chan_name for chan_name in doSort(array)]
+                channel_list = [chan_name for chan_name in array]
                 for chan1 in channel_list:
                     choosechannel_ch.addItem(chan1)
                 if item_selected in channel_list:
@@ -8036,10 +7886,6 @@ if __name__ == "__main__":
         )
         label8_1.setToolTip(_("TV guide"))
         label8_1.clicked.connect(show_tvguide)
-        label8_4 = QtWidgets.QPushButton()
-        label8_4.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "sort.png"))))
-        label8_4.setToolTip(_("Channel\nsort").replace("\n", " "))
-        label8_4.clicked.connect(show_sort)
         label8_2 = QtWidgets.QPushButton()
         label8_2.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "prev.png"))))
         label8_2.setToolTip(_("Previous channel"))
@@ -8048,14 +7894,6 @@ if __name__ == "__main__":
         label8_3.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "next.png"))))
         label8_3.setToolTip(_("Next channel"))
         label8_3.clicked.connect(next_channel)
-        label8_5 = QtWidgets.QPushButton()
-        label8_5.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "edit.png"))))
-        label8_5.setToolTip(_("m3u Editor"))
-        label8_5.clicked.connect(show_m3u_editor)
-        label9 = QtWidgets.QPushButton()
-        label9.setIcon(QtGui.QIcon(str(Path("yuki_iptv", ICONS_FOLDER, "help.png"))))
-        label9.setToolTip(_("Help"))
-        label9.clicked.connect(show_help)
 
         label12 = QtWidgets.QLabel("")
         myFont4 = QtGui.QFont()
@@ -8967,7 +8805,6 @@ if __name__ == "__main__":
                 or help_win.isActiveWindow()
                 or streaminfo_win.isActiveWindow()
                 or license_win.isActiveWindow()
-                or sort_win.isActiveWindow()
                 or chan_win.isActiveWindow()
                 or ext_win.isActiveWindow()
                 or scheduler_win.isActiveWindow()
@@ -8987,7 +8824,6 @@ if __name__ == "__main__":
                 help_win.isActiveWindow()
                 or streaminfo_win.isActiveWindow()
                 or license_win.isActiveWindow()
-                or sort_win.isActiveWindow()
                 or chan_win.isActiveWindow()
                 or ext_win.isActiveWindow()
                 or scheduler_win.isActiveWindow()
@@ -9221,7 +9057,6 @@ if __name__ == "__main__":
             player.command("frame-back-step")
 
         funcs = {
-            "show_sort": show_sort,
             "key_t": key_t,
             "esc_handler": esc_handler,
             "mpv_fullscreen": mpv_fullscreen,
@@ -9319,7 +9154,6 @@ if __name__ == "__main__":
             "reload_playlist": _("&Update current playlist").replace("&", ""),
             "show_scheduler": _("Scheduler"),
             "show_settings": _("Settings"),
-            "show_sort": _("&Channel sort").replace("&", " ").strip(),
             "show_timeshift": _("Archive"),
             "show_tvguide": _("TV guide"),
             "showhideeverything": _("&Compact mode").replace("&", ""),
@@ -9348,6 +9182,8 @@ if __name__ == "__main__":
 
         if "show_clock" in main_keybinds:
             main_keybinds.pop("show_clock")
+        if "show_sort" in main_keybinds:
+            main_keybinds.pop("show_sort")
 
         seq = get_seq()
 

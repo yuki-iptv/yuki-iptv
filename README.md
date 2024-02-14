@@ -37,7 +37,6 @@ The channels and pictures in the screenshots are for demonstration purposes only
 - Display of technical information - video / audio codec, bitrate, resolution
 - Channel groups (from playlist and custom)
 - Hide channels
-- Sorting channels
 - Video settings for each channel - contrast, brightness, hue, saturation, gamma
 - Change user agent / HTTP Referer for each channel
 - M3u playlist editor

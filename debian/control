@@ -27,7 +27,7 @@ Description: IPTV player with EPG support (Astroncia IPTV fork)
   * TV program (EPG) support in XMLTV and JTV formats
   * Save channels as favorites
   * Stream recording
-  * Channel groups, hide channels, sorting channels
+  * Channel groups
   * M3u playlist editor
   * TV archive / catchup
   * ...

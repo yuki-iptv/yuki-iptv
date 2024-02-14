@@ -37,7 +37,6 @@ def parse_settings():
         "nocache": True,
         "epgoffset": 0,
         "hwaccel": False,
-        "sort": 0,
         "cache_secs": 0,
         "epgdays": 1,
         "ua": "Mozilla/5.0",

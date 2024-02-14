@@ -24,7 +24,6 @@
        <li>Display of technical information - video / audio codec, bitrate, resolution</li>
        <li>Channel groups (from playlist and custom)</li>
        <li>Hide channels</li>
-       <li>Sorting channels</li>
        <li>Video settings for each channel - contrast, brightness, hue, saturation, gamma</li>
        <li>Change user agent / HTTP Referer for each channel</li>
        <li>M3u playlist editor</li>
