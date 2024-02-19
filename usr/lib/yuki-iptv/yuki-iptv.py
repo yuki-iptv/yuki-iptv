@@ -148,6 +148,7 @@ else:
 
 APP_VERSION = "__DEB_VERSION__"
 COPYRIGHT_YEAR = "2023, 2024"
+REPOSITORY_URL = "https://github.com/yuki-iptv/yuki-iptv"
 
 setproctitle.setproctitle("yuki-iptv")
 try:
@@ -4021,19 +4022,7 @@ if __name__ == "__main__":
 
             logger.info(f"Using {mpv_version}")
 
-            textbox.setText(
-                format_about_text(
-                    _(
-                        "yuki-iptv {}\n\n© 2021, 2022 Astroncia\n© {} Ame-chan-angel\n"
-                        "https://github.com/Ame-chan-angel\n\nIPTV player\n\nIcons by"
-                        " Font Awesome ( https://fontawesome.com/ )\nIcons licensed"
-                        " under the CC BY 4.0 License\n"
-                        "( https://creativecommons.org/licenses/by/4.0/ )"
-                    )
-                    .format(APP_VERSION, COPYRIGHT_YEAR)
-                    .replace("©", "Copyright ©")
-                )
-            )
+            textbox.setText(get_about_text())
 
             if settings["cache_secs"] != 0:
                 try:
@@ -6989,14 +6978,13 @@ if __name__ == "__main__":
 
         QT_URL = "<a href='https://www.qt.io/'>https://www.qt.io/</a>"
         MPV_URL = "<a href='https://mpv.io/'>mpv</a> "
-        CLICKABLE_LINKS = [
-            "https://github.com/Ame-chan-angel",
-            "https://github.com/yuki-iptv/yuki-iptv",
-            "https://fontawesome.com/",
-            "https://creativecommons.org/licenses/by/4.0/",
-        ]
 
-        def format_about_text(about_txt):
+        def get_about_text():
+            about_txt = (
+                f"yuki-iptv {APP_VERSION}\n\nCopyright © 2021, 2022 Astroncia\n"
+                f"Copyright © {COPYRIGHT_YEAR} Ame-chan-angel\n\n"
+                + _("IPTV player with EPG support")
+            )
             about_txt += "\n\n" + _("Using Qt {} ({})").format(
                 QtCore.QT_VERSION_STR, qt_library
             )
@@ -7006,12 +6994,9 @@ if __name__ == "__main__":
             if not mpv_version:
                 mpv_version = "UNKNOWN"
             about_txt += "\n" + _("Using libmpv {}").format(mpv_version)
-            about_txt += "\n\nhttps://github.com/yuki-iptv/yuki-iptv"
+            about_txt += "\n\n<a href='" + REPOSITORY_URL + "'>"
+            about_txt += REPOSITORY_URL + "</a>"
             about_txt = about_txt.replace("\n", "<br>")
-            for clickable_link in CLICKABLE_LINKS:
-                about_txt = about_txt.replace(
-                    clickable_link, f"<a href='{clickable_link}'>{clickable_link}</a>"
-                )
             return about_txt
 
         def main_channel_settings():
