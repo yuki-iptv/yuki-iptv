@@ -3658,6 +3658,8 @@ if __name__ == "__main__":
             "You should have received a copy of the GNU General Public License\n"
             "along with this program.  If not, see <https://www.gnu.org/licenses/>.\n"
             "\n"
+            "yuki-iptv is based on Astroncia IPTV code.\n"
+            "\n"
             "Original Astroncia IPTV code is licensed under GPL-3.0-only.\n"
             "I have permission from original code author (Astroncia)\n"
             "to relicense code to GPL-3.0-or-later.\n"
