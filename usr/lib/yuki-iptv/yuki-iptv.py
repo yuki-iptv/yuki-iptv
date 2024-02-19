@@ -148,7 +148,6 @@ else:
 
 APP_VERSION = "__DEB_VERSION__"
 COPYRIGHT_YEAR = "2023, 2024"
-REPOSITORY_URL = "https://github.com/yuki-iptv/yuki-iptv"
 
 setproctitle.setproctitle("yuki-iptv")
 try:
@@ -6981,11 +6980,11 @@ if __name__ == "__main__":
 
         def get_about_text():
             about_txt = (
-                f"yuki-iptv {APP_VERSION}\n\nCopyright © 2021, 2022 Astroncia\n"
-                f"Copyright © {COPYRIGHT_YEAR} Ame-chan-angel\n\n"
+                f"yuki-iptv {APP_VERSION}<br><br>Copyright © 2021, 2022 Astroncia<br>"
+                f"Copyright © {COPYRIGHT_YEAR} Ame-chan-angel<br><br>"
                 + _("IPTV player with EPG support")
             )
-            about_txt += "\n\n" + _("Using Qt {} ({})").format(
+            about_txt += "<br><br>" + _("Using Qt {} ({})").format(
                 QtCore.QT_VERSION_STR, qt_library
             )
             mpv_version = player.mpv_version
@@ -6993,10 +6992,7 @@ if __name__ == "__main__":
                 mpv_version = mpv_version.split(" ", 1)[1]
             if not mpv_version:
                 mpv_version = "UNKNOWN"
-            about_txt += "\n" + _("Using libmpv {}").format(mpv_version)
-            about_txt += "\n\n<a href='" + REPOSITORY_URL + "'>"
-            about_txt += REPOSITORY_URL + "</a>"
-            about_txt = about_txt.replace("\n", "<br>")
+            about_txt += "<br>" + _("Using libmpv {}").format(mpv_version)
             return about_txt
 
         def main_channel_settings():
