@@ -368,7 +368,7 @@ if __name__ == "__main__":
     locale.setlocale(locale.LC_NUMERIC, "C")
 
     try:
-        logger.info("yuki-iptv - IPTV player with EPG support (Astroncia IPTV fork)")
+        logger.info("yuki-iptv - IPTV player with EPG support")
         logger.info("")
         logger.info("Copyright (c) 2021, 2022 Astroncia")
         logger.info(f"Copyright (c) {COPYRIGHT_YEAR} Ame-chan-angel")

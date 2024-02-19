@@ -1,6 +1,6 @@
 # yuki-iptv
 
-**IPTV player with EPG support (Astroncia IPTV fork)**
+**IPTV player with EPG support**
 
 [![Screenshot](https://gist.githubusercontent.com/Ame-chan-angel/c37f80c2cb00afbdbd98959186e1ab80/raw/e59228169ace1634fae96f65aace5f4d2d7fa71c/screenshot.png)](https://gist.githubusercontent.com/Ame-chan-angel/c37f80c2cb00afbdbd98959186e1ab80/raw/e59228169ace1634fae96f65aace5f4d2d7fa71c/screenshot.png)
 

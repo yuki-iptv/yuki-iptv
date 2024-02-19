@@ -1,4 +1,4 @@
-Summary:	IPTV player with EPG support (Astroncia IPTV fork)
+Summary:	IPTV player with EPG support
 Name:		yuki-iptv
 Version:	1.0
 Release:	1
@@ -39,7 +39,7 @@ Requires:	ffmpeg
 Requires:	yt-dlp
 
 %description
-IPTV player with EPG support (Astroncia IPTV fork)
+IPTV player with EPG support
 
 %files
 %{_bindir}/%{name}
