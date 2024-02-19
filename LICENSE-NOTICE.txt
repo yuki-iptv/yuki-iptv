@@ -1,3 +1,5 @@
+yuki-iptv is based on Astroncia IPTV code.
+
 Original Astroncia IPTV code is licensed under GPL-3.0-only.
 I have permission from original code author (Astroncia) to relicense code to GPL-3.0-or-later.
 
