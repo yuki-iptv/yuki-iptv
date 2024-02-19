@@ -29,19 +29,11 @@ import io
 import base64
 import hashlib
 from pathlib import Path
+from wand.image import Image
 from yuki_iptv.xdg import LOCAL_DIR
 from yuki_iptv.requests_timeout import requests_get
 
 logger = logging.getLogger(__name__)
-
-try:
-    from wand.image import Image
-
-    use_wand = True
-except Exception:
-    from PIL import Image
-
-    use_wand = False
 
 
 def fetch_remote_channel_icon(loglevel, chan_name, logo_url, req_data_ua, req_data_ref):
@@ -74,17 +66,11 @@ def fetch_remote_channel_icon(loglevel, chan_name, logo_url, req_data_ua, req_da
                 ).content
                 if req_data1:
                     with io.BytesIO(req_data1) as im_logo_bytes:
-                        if use_wand:
-                            with Image(file=im_logo_bytes) as original:
-                                with original.convert("png") as im_logo:
-                                    im_logo.resize(64, 64)
-                                    im_logo.save(filename=cache_file)
-                                icon_ret = cache_file
-                        else:
-                            with Image.open(im_logo_bytes) as im_logo:
-                                im_logo.thumbnail((64, 64))
-                                im_logo.save(cache_file, "PNG")
-                                icon_ret = cache_file
+                        with Image(file=im_logo_bytes) as original:
+                            with original.convert("png") as im_logo:
+                                im_logo.resize(64, 64)
+                                im_logo.save(filename=cache_file)
+                            icon_ret = cache_file
         except Exception:
             if loglevel.upper() == "DEBUG":
                 logger.debug("Logging failed channel logo because loglevel is DEBUG")
